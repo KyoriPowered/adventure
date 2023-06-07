@@ -144,9 +144,9 @@ final class StyleSerializer extends TypeAdapter<Style> {
           final HoverEvent.Action<Object> action = this.gson.fromJson(serializedAction, SerializerFactory.HOVER_ACTION_TYPE);
           if (action.readable()) {
             final @Nullable Object value;
+            final Class<?> actionType = action.type();
             if (hoverEventObject.has(HOVER_EVENT_CONTENTS)) {
               final @Nullable JsonElement rawValue = hoverEventObject.get(HOVER_EVENT_CONTENTS);
-              final Class<?> actionType = action.type();
               if (isNullOrEmpty(rawValue)) {
                 value = null;
               } else if (SerializerFactory.COMPONENT_TYPE.isAssignableFrom(actionType)) {
@@ -162,9 +162,13 @@ final class StyleSerializer extends TypeAdapter<Style> {
               final JsonElement element = hoverEventObject.get(HOVER_EVENT_VALUE);
               if (isNullOrEmpty(element)) {
                 value = null;
-              } else {
+              } else if (SerializerFactory.COMPONENT_TYPE.isAssignableFrom(actionType)) {
                 final Component rawValue = this.gson.fromJson(element, SerializerFactory.COMPONENT_TYPE);
                 value = this.legacyHoverEventContents(action, rawValue);
+              } else if (SerializerFactory.STRING_TYPE.isAssignableFrom(actionType)) {
+                value = this.gson.fromJson(element, SerializerFactory.STRING_TYPE);
+              } else {
+                value = null;
               }
             } else {
               value = null;
@@ -264,21 +268,23 @@ final class StyleSerializer extends TypeAdapter<Style> {
     }
 
     final @Nullable HoverEvent<?> hoverEvent = value.hoverEvent();
-    if (hoverEvent != null) {
+    if (hoverEvent != null && (hoverEvent.action() != HoverEvent.Action.SHOW_ACHIEVEMENT || this.emitLegacyHover)) {
       out.name(HOVER_EVENT);
       out.beginObject();
       out.name(HOVER_EVENT_ACTION);
       final HoverEvent.Action<?> action = hoverEvent.action();
       this.gson.toJson(action, SerializerFactory.HOVER_ACTION_TYPE, out);
-      out.name(HOVER_EVENT_CONTENTS);
-      if (action == HoverEvent.Action.SHOW_ITEM) {
-        this.gson.toJson(hoverEvent.value(), SerializerFactory.SHOW_ITEM_TYPE, out);
-      } else if (action == HoverEvent.Action.SHOW_ENTITY) {
-        this.gson.toJson(hoverEvent.value(), SerializerFactory.SHOW_ENTITY_TYPE, out);
-      } else if (action == HoverEvent.Action.SHOW_TEXT) {
-        this.gson.toJson(hoverEvent.value(), SerializerFactory.COMPONENT_TYPE, out);
-      } else {
-        throw new JsonParseException("Don't know how to serialize " + hoverEvent.value());
+      if (action != HoverEvent.Action.SHOW_ACHIEVEMENT) { // legacy action has no modern contents value
+        out.name(HOVER_EVENT_CONTENTS);
+        if (action == HoverEvent.Action.SHOW_ITEM) {
+          this.gson.toJson(hoverEvent.value(), SerializerFactory.SHOW_ITEM_TYPE, out);
+        } else if (action == HoverEvent.Action.SHOW_ENTITY) {
+          this.gson.toJson(hoverEvent.value(), SerializerFactory.SHOW_ENTITY_TYPE, out);
+        } else if (action == HoverEvent.Action.SHOW_TEXT) {
+          this.gson.toJson(hoverEvent.value(), SerializerFactory.COMPONENT_TYPE, out);
+        } else {
+          throw new JsonParseException("Don't know how to serialize " + hoverEvent.value());
+        }
       }
       if (this.emitLegacyHover) {
         out.name(HOVER_EVENT_VALUE);
@@ -300,6 +306,8 @@ final class StyleSerializer extends TypeAdapter<Style> {
   private void serializeLegacyHoverEvent(final HoverEvent<?> hoverEvent, final JsonWriter out) throws IOException {
     if (hoverEvent.action() == HoverEvent.Action.SHOW_TEXT) { // serialization is the same
       this.gson.toJson(hoverEvent.value(), SerializerFactory.COMPONENT_TYPE, out);
+    } else if (hoverEvent.action() == HoverEvent.Action.SHOW_ACHIEVEMENT) {
+      this.gson.toJson(hoverEvent.value(), String.class, out);
     } else if (this.legacyHover != null) { // for data formats that require knowledge of SNBT
       Component serialized = null;
       try {

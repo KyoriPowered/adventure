@@ -95,6 +95,15 @@ class HoverEventTest {
   }
 
   @Test
+  void testShowAchievementValue() {
+    final HoverEvent<String> sa0 = HoverEvent.showAchievement("achievement.bakeCake");
+    assertEquals("achievement.bakeCake", sa0.value());
+    final HoverEvent<String> sa1 = sa0.value("achievement.blazeRod");
+    assertEquals("achievement.bakeCake", sa0.value()); // original should be unmodified
+    assertEquals("achievement.blazeRod", sa1.value());
+  }
+
+  @Test
   void testEquality() {
     final UUID entity = UUID.randomUUID();
     new EqualsTester()

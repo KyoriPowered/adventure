@@ -211,6 +211,19 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
   }
 
   /**
+   * Creates a hover event that shows an achievement on hover.
+   *
+   * @param value the achievement value
+   * @return a hover event
+   * @since 4.14.0
+   * @deprecated Removed in Vanilla 1.12, but we keep it for backwards compat
+   */
+  @Deprecated
+  public static @NotNull HoverEvent<String> showAchievement(final @NotNull String value) {
+    return new HoverEvent<>(Action.SHOW_ACHIEVEMENT, value);
+  }
+
+  /**
    * Creates a hover event.
    *
    * @param action the action
@@ -824,13 +837,26 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
         return value.name(renderer.render(value.name, context));
       }
     });
+    /**
+     * Shows a {@link Component} when hovered over.
+     *
+     * @since 4.14.0
+     * @deprecated Removed in Vanilla 1.12, but we keep it for backwards compat
+     */
+    @Deprecated
+    public static final Action<String> SHOW_ACHIEVEMENT = new Action<>("show_achievement", String.class, true, new Renderer<String>() {
+      @Override
+      public <C> @NotNull String render(final @NotNull ComponentRenderer<C> renderer, final @NotNull C context, final @NotNull String value) {
+        return value;
+      }
+    });
 
     /**
      * The name map.
      *
      * @since 4.0.0
      */
-    public static final Index<String, Action<?>> NAMES = Index.create(constant -> constant.name, SHOW_TEXT, SHOW_ITEM, SHOW_ENTITY);
+    public static final Index<String, Action<?>> NAMES = Index.create(constant -> constant.name, SHOW_TEXT, SHOW_ITEM, SHOW_ENTITY, SHOW_ACHIEVEMENT);
     private final String name;
     private final Class<V> type;
     /**
