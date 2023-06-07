@@ -40,6 +40,9 @@ import org.jetbrains.annotations.Nullable;
 /**
  * A gson component serializer.
  *
+ * <p>This is a specific implementation of {@link JSONComponentSerializer} for the Gson library.
+ * Libraries that want to remain unopinionated should work with that interface instead.</p>
+ *
  * <p>Use {@link Builder#downsampleColors()} to support platforms
  * that do not understand hex colors that were introduced in Minecraft 1.16.</p>
  *

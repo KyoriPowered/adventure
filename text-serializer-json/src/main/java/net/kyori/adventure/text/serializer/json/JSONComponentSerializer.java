@@ -34,6 +34,9 @@ import org.jetbrains.annotations.Nullable;
 /**
  * A JSON component serializer.
  *
+ * <p>This serializer exposes a common superset of functionality across any number of JSON library implementations.
+ * For more specialized operations, users may need to refer to specific implementations.</p>
+ *
  * @since 4.14.0
  */
 public interface JSONComponentSerializer extends ComponentSerializer<Component, Component, String> {
