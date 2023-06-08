@@ -86,7 +86,7 @@ tasks {
     options.links(
       "https://javadoc.io/doc/net.kyori/examination-api/${libs.versions.examination.get()}/",
       "https://javadoc.io/doc/net.kyori/examination-string/${libs.versions.examination.get()}/",
-      "https://javadoc.io/doc/org.jetbrains/annotations/${libs.versions.jetbrainsAnnotations.get()}/",
+      "https://javadoc.io/doc/org.jetbrains/annotations/${libs.versions.jetbrainsAnnotations.get()}/"
     )
   }
 
