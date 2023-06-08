@@ -12,6 +12,7 @@ jmhPlugin = "0.7.1"
 junit = "5.9.3"
 slf4j = "2.0.1"
 truth = "1.1.4"
+jetbrainsAnnotations = "24.0.1"
 
 [libraries]
 # shared
@@ -19,7 +20,7 @@ examination-api = { module = "net.kyori:examination-api", version.ref = "examina
 examination-string = { module = "net.kyori:examination-string", version.ref = "examination" }
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
 guava-testlib = { module = "com.google.guava:guava-testlib", version.ref = "guava" }
-jetbrainsAnnotations = "org.jetbrains:annotations:24.0.1"
+jetbrainsAnnotations = { module = "org.jetbrains:annotations", version.ref = "jetbrainsAnnotations" }
 
 # extra-kotlin
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8" }
