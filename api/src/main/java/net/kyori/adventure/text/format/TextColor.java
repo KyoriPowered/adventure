@@ -261,6 +261,8 @@ public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, S
    * @param b the upper bound ({@code t=1.0})
    * @return the interpolated value, a color between the two input colors {@code a} and {@code b}
    * @since 4.8.0
+   *
+   * @deprecated see {@link net.kyori.adventure.text.format.gradient.RGBGradient#interpolate(float, TextColor, TextColor)}
    */
   static @NotNull TextColor lerp(final float t, final @NotNull RGBLike a, final @NotNull RGBLike b) {
     final float clampedT = Math.min(1.0f, Math.max(0.0f, t)); // clamp between 0 and 1
