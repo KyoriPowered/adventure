@@ -129,7 +129,12 @@ public interface GsonComponentSerializer extends JSONComponentSerializer, Builda
      * @since 4.0.0
      */
     @Override
-    @NotNull Builder downsampleColors();
+    default @NotNull Builder downsampleColors() {
+      return (Builder) JSONComponentSerializer.Builder.super.downsampleColors();
+    }
+
+    @Override
+    @NotNull Builder downsampleColors(final boolean downsampleColors);
 
     /**
      * Sets a serializer that will be used to interpret legacy hover event {@code value} payloads.
@@ -155,7 +160,12 @@ public interface GsonComponentSerializer extends JSONComponentSerializer, Builda
      * @since 4.0.0
      */
     @Override
-    @NotNull Builder emitLegacyHoverEvent();
+    default @NotNull Builder emitLegacyHoverEvent() {
+      return (Builder) JSONComponentSerializer.Builder.super.emitLegacyHoverEvent();
+    }
+
+    @Override
+    @NotNull Builder emitLegacyHoverEvent(final boolean emitLegacyHoverEvent);
 
     /**
      * Builds the serializer.

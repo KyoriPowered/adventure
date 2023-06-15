@@ -48,7 +48,7 @@ final class DummyJSONComponentSerializer implements JSONComponentSerializer {
   // A no-op builder that just returns the unsupported instance.
   static final class BuilderImpl implements Builder {
     @Override
-    public @NotNull Builder downsampleColors() {
+    public @NotNull Builder downsampleColors(final boolean downsampleColors) {
       return this;
     }
 
@@ -58,12 +58,12 @@ final class DummyJSONComponentSerializer implements JSONComponentSerializer {
     }
 
     @Override
-    public @NotNull Builder emitLegacyHoverEvent() {
+    public @NotNull Builder emitLegacyHoverEvent(final boolean emitLegacyHoverEvent) {
       return this;
     }
 
     @Override
-    public JSONComponentSerializer build() {
+    public @NotNull JSONComponentSerializer build() {
       return INSTANCE;
     }
   }

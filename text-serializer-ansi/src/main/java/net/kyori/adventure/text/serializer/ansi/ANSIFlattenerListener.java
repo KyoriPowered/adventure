@@ -21,17 +21,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.serializer.gson;
+package net.kyori.adventure.text.serializer.ansi;
 
-import org.jetbrains.annotations.ApiStatus;
+import net.kyori.adventure.text.flattener.FlattenerListener;
+import net.kyori.adventure.text.format.Style;
+import net.kyori.ansi.ANSIComponentRenderer;
+import org.jetbrains.annotations.NotNull;
 
-/**
- * Adapter to convert between modern and legacy hover event formats.
- *
- * @since 4.0.0
- * @deprecated for removal since 4.13.0, implement {@link net.kyori.adventure.text.serializer.json.LegacyHoverEventSerializer} instead
- */
-@Deprecated
-@ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-public interface LegacyHoverEventSerializer extends net.kyori.adventure.text.serializer.json.LegacyHoverEventSerializer {
+final class ANSIFlattenerListener implements FlattenerListener {
+  private final ANSIComponentRenderer<Style> renderer;
+
+  ANSIFlattenerListener(final ANSIComponentRenderer<Style> renderer) {
+    this.renderer = renderer;
+  }
+
+  @Override
+  public void pushStyle(final @NotNull Style style) {
+    this.renderer.pushStyle(style);
+  }
+
+  @Override
+  public void component(final @NotNull String text) {
+    this.renderer.text(text);
+  }
+
+  @Override
+  public void popStyle(final @NotNull Style style) {
+    this.renderer.popStyle(style);
+  }
 }
