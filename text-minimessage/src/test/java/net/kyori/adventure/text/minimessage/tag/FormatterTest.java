@@ -25,7 +25,10 @@ package net.kyori.adventure.text.minimessage.tag;
 
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.Arrays;
+
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.AbstractTest;
 import org.junit.jupiter.api.Test;
@@ -34,6 +37,7 @@ import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.minimessage.tag.resolver.Formatter.booleanChoice;
 import static net.kyori.adventure.text.minimessage.tag.resolver.Formatter.choice;
 import static net.kyori.adventure.text.minimessage.tag.resolver.Formatter.date;
+import static net.kyori.adventure.text.minimessage.tag.resolver.Formatter.join;
 import static net.kyori.adventure.text.minimessage.tag.resolver.Formatter.number;
 
 public class FormatterTest extends AbstractTest {
@@ -124,5 +128,19 @@ public class FormatterTest extends AbstractTest {
     final String input = "<first:'<second:\\'<third:\"bah\":\"\">\\':\\'\\'>':''>";
     final Component expected = text("bah");
     this.assertParsedEquals(expected, input, booleanChoice("first", true), booleanChoice("second", true), booleanChoice("third", true));
+  }
+
+  @Test
+  void testJoinSeparator() {
+    final String input = "<list:, >";
+    final Component expected = Component.join(JoinConfiguration.separator(text(", ")), Arrays.asList(text("one"), text("two"), text("three")));
+    this.assertParsedEquals(expected, input, join("list", text("one"), text("two"), text("three")));
+  }
+
+  @Test
+  void testJoinSeparatorWithLastSeparator() {
+    final String input = "<list:, : and >";
+    final Component expected = Component.join(JoinConfiguration.separators(text(", "), text(" and ")), Arrays.asList(text("one"), text("two"), text("three")));
+    this.assertParsedEquals(expected, input, join("list", text("one"), text("two"), text("three")));
   }
 }

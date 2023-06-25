@@ -29,7 +29,12 @@ import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
+import java.util.Arrays;
 import java.util.Locale;
+
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
+import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.TagPattern;
 import org.jetbrains.annotations.NotNull;
@@ -139,4 +144,48 @@ public final class Formatter {
       return Tag.inserting(context.deserialize(value ? trueCase : falseCase));
     });
   }
+
+  /**
+   * Creates a replacement that inserts a list of components. These components are joined together by {@link Component#join(JoinConfiguration.Builder, ComponentLike...)}.
+   *
+   * <p>This tag expects a separator as the first argument. A last separator may optionally be provided.</p>
+   *
+   * <p>This replacement is auto-closing, so its style will not influence the style of following components.</p>
+   *
+   * @param key the key
+   * @param components the components to join
+   * @return the placeholder
+   * @since 4.14.0
+   */
+  public static TagResolver join(@TagPattern final @NotNull String key, final @NotNull Iterable<? extends ComponentLike> components) {
+    return TagResolver.resolver(key, (argumentQueue, context) -> {
+      final String separator = argumentQueue.popOr("Separator expected.").value();
+      final JoinConfiguration.Builder configBuilder = JoinConfiguration.builder().separator(context.deserialize(separator));
+
+      if (argumentQueue.hasNext()) {
+        final String lastSeparator = argumentQueue.pop().value();
+        configBuilder.lastSeparator(context.deserialize(lastSeparator));
+      }
+
+      JoinConfiguration config = configBuilder.build();
+      return Tag.inserting(Component.join(config, components));
+    });
+  }
+
+  /**
+   * Creates a replacement that inserts a list of components. These components are joined together by {@link Component#join(JoinConfiguration.Builder, ComponentLike...)}.
+   *
+   * <p>This tag expects a separator as the first argument. A last separator may optionally be provided.</p>
+   *
+   * <p>This replacement is auto-closing, so its style will not influence the style of following components.</p>
+   *
+   * @param key the key
+   * @param components the components to join
+   * @return the placeholder
+   * @since 4.14.0
+   */
+  public static TagResolver join(@TagPattern final @NotNull String key, final @NotNull ComponentLike@NotNull... components) {
+    return join(key, Arrays.asList(components));
+  }
+
 }
