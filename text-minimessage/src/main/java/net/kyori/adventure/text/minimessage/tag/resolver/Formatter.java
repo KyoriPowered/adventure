@@ -31,7 +31,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.Arrays;
 import java.util.Locale;
-
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.JoinConfiguration;
@@ -155,9 +154,9 @@ public final class Formatter {
    * @param key the key
    * @param components the components to join
    * @return the placeholder
-   * @since 4.14.0
+   * @since 4.15.0
    */
-  public static TagResolver join(@TagPattern final @NotNull String key, final @NotNull Iterable<? extends ComponentLike> components) {
+  public static TagResolver joining(@TagPattern final @NotNull String key, final @NotNull Iterable<? extends ComponentLike> components) {
     return TagResolver.resolver(key, (argumentQueue, context) -> {
       final String separator = argumentQueue.popOr("Separator expected.").value();
       final JoinConfiguration.Builder configBuilder = JoinConfiguration.builder().separator(context.deserialize(separator));
@@ -167,7 +166,7 @@ public final class Formatter {
         configBuilder.lastSeparator(context.deserialize(lastSeparator));
       }
 
-      JoinConfiguration config = configBuilder.build();
+      final JoinConfiguration config = configBuilder.build();
       return Tag.inserting(Component.join(config, components));
     });
   }
@@ -182,10 +181,10 @@ public final class Formatter {
    * @param key the key
    * @param components the components to join
    * @return the placeholder
-   * @since 4.14.0
+   * @since 4.15.0
    */
-  public static TagResolver join(@TagPattern final @NotNull String key, final @NotNull ComponentLike@NotNull... components) {
-    return join(key, Arrays.asList(components));
+  public static TagResolver joining(@TagPattern final @NotNull String key, final @NotNull ComponentLike@NotNull... components) {
+    return joining(key, Arrays.asList(components));
   }
 
 }
