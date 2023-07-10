@@ -33,6 +33,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.renderer.TranslatableComponentRenderer;
+import net.kyori.adventure.util.TriState;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -69,6 +70,14 @@ final class GlobalTranslatorImpl implements GlobalTranslator {
   public boolean removeSource(final @NotNull Translator source) {
     requireNonNull(source, "source");
     return this.sources.remove(source);
+  }
+
+  @Override
+  public @NotNull TriState hasAnyTranslations() {
+    if (!this.sources.isEmpty()) {
+      return TriState.TRUE;
+    }
+    return TriState.FALSE;
   }
 
   @Override
