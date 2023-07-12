@@ -45,6 +45,7 @@ import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.translation.Translator;
+import net.kyori.adventure.util.TriState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -79,9 +80,13 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
 
       @Override
       protected @NotNull Component renderTranslatable(final @NotNull TranslatableComponent component, final @NotNull Locale context) {
-        final @Nullable Component translated = source.translate(component, context);
-        if (translated != null) return translated;
-        return super.renderTranslatable(component, context);
+        final TriState anyTranslations = source.hasAnyTranslations();
+        if (anyTranslations == TriState.TRUE || anyTranslations == TriState.NOT_SET) {
+          final @Nullable Component translated = source.translate(component, context);
+          if (translated != null) return translated;
+          return super.renderTranslatable(component, context);
+        }
+        return component;
       }
     };
   }
