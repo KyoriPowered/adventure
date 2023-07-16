@@ -132,14 +132,33 @@ public class FormatterTest extends AbstractTest {
   @Test
   void testJoinSeparator() {
     final String input = "<list:, >";
-    final Component expected = Component.join(JoinConfiguration.separator(text(", ")), Arrays.asList(text("one"), text("two"), text("three")));
-    this.assertParsedEquals(expected, input, joining("list", text("one"), text("two"), text("three")));
+    final Iterable<? extends Component> components = Arrays.asList(text("one"), text("two"), text("three"));
+    final Component expected = Component.join(JoinConfiguration.separator(text(", ")), components);
+    this.assertParsedEquals(expected, input, joining("list", components));
   }
 
   @Test
   void testJoinSeparatorWithLastSeparator() {
     final String input = "<list:, : and >";
-    final Component expected = Component.join(JoinConfiguration.separators(text(", "), text(" and ")), Arrays.asList(text("one"), text("two"), text("three")));
-    this.assertParsedEquals(expected, input, joining("list", text("one"), text("two"), text("three")));
+    final Iterable<? extends Component> components = Arrays.asList(text("one"), text("two"), text("three"));
+    final Component expected = Component.join(JoinConfiguration.separators(text(", "), text(" and ")), components);
+    this.assertParsedEquals(expected, input, joining("list", components));
   }
+
+  @Test
+  void testJoinSeparatorWithLastSeparatorIfSerialAndManyComponents() {
+    final String input = "<list:, : and :, and >";
+    final Iterable<? extends Component> components = Arrays.asList(text("one"), text("two"), text("three"));
+    final Component expected = Component.join(JoinConfiguration.builder().separator(text(", ")).lastSeparator(text(" and ")).lastSeparatorIfSerial(text(", and ")), components);
+    this.assertParsedEquals(expected, input, joining("list", components));
+  }
+
+  @Test
+  void testJoinSeparatorWithLastSeparatorIfSerialAndTwoComponents() {
+    final String input = "<list:, : and :, and >";
+    final Iterable<? extends Component> components = Arrays.asList(text("one"), text("two"));
+    final Component expected = Component.join(JoinConfiguration.builder().separator(text(", ")).lastSeparator(text(" and ")).lastSeparatorIfSerial(text(", and ")), components);
+    this.assertParsedEquals(expected, input, joining("list", components));
+  }
+
 }

@@ -166,6 +166,11 @@ public final class Formatter {
         configBuilder.lastSeparator(context.deserialize(lastSeparator));
       }
 
+      if (argumentQueue.hasNext()) {
+        final String lastSeparatorIfSerial = argumentQueue.pop().value();
+        configBuilder.lastSeparatorIfSerial(context.deserialize(lastSeparatorIfSerial));
+      }
+
       final JoinConfiguration config = configBuilder.build();
       return Tag.inserting(Component.join(config, components));
     });
