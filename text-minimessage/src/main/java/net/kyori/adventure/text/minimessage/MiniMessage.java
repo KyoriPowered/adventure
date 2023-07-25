@@ -197,6 +197,23 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
   }
 
   /**
+   * Returns if this MiniMessage instance is in strict mode.
+   *
+   * @return if the instance is in strict mode
+   * @see Builder#strict(boolean)
+   * @since 4.15.0
+   */
+  boolean strict();
+
+  /**
+   * Returns the base tag resolver of this MiniMessage instance.
+   *
+   * @return the base tag resolver
+   * @since 4.15.0
+   */
+  @NotNull TagResolver tags();
+
+  /**
    * Creates a new {@link MiniMessage.Builder}.
    *
    * @return a builder
