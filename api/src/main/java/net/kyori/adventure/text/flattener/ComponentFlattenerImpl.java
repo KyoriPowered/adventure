@@ -47,7 +47,11 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
   @SuppressWarnings("deprecation")
   static final ComponentFlattener BASIC = new BuilderImpl()
     .mapper(KeybindComponent.class, component -> component.keybind()) // IntelliJ is wrong here, this is fine
-    .mapper(ScoreComponent.class, ScoreComponent::value) // Removed in Vanilla 1.16, but we keep it for backwards compat
+    .mapper(ScoreComponent.class, component -> {
+      // Removed in Vanilla 1.16, but we keep it for backwards compat
+      final @Nullable String value = component.value();
+      return value != null ? value : "";
+    })
     .mapper(SelectorComponent.class, SelectorComponent::pattern)
     .mapper(TextComponent.class, TextComponent::content)
     .mapper(TranslatableComponent.class, component -> {
