@@ -41,6 +41,7 @@ final class JoinConfigurationImpl implements JoinConfiguration {
   static final JoinConfigurationImpl NULL = new JoinConfigurationImpl();
 
   static final JoinConfiguration STANDARD_NEW_LINES = JoinConfiguration.separator(Component.newline());
+  static final JoinConfiguration STANDARD_SPACES = JoinConfiguration.separator(Component.space());
   static final JoinConfiguration STANDARD_COMMA_SEPARATED = JoinConfiguration.separator(Component.text(","));
   static final JoinConfiguration STANDARD_COMMA_SPACE_SEPARATED = JoinConfiguration.separator(Component.text(", "));
   static final JoinConfiguration STANDARD_ARRAY_LIKE = JoinConfiguration.builder()

@@ -277,6 +277,21 @@ class JoinTest {
   }
 
   @Test
+  final void testStandardJoinConfigurationsSpaces() {
+    final Component result = Component.join(JoinConfiguration.spaces(), Component.text("line 1"), Component.text("line 2"), Component.text("line 3"));
+    assertEquals(
+      Component.text()
+        .append(Component.text("line 1"))
+        .append(Component.space())
+        .append(Component.text("line 2"))
+        .append(Component.space())
+        .append(Component.text("line 3"))
+        .build(),
+      result
+    );
+  }
+
+  @Test
   final void testStandardJoinConfigurationsCommas() {
     final Component result = Component.join(JoinConfiguration.commas(false), Component.text("line 1"), Component.text("line 2"), Component.text("line 3"));
     assertEquals(
