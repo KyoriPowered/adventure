@@ -125,7 +125,7 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
    * creating the following output: 'hello there'.</p>
    *
    * @return the join configuration
-   * @since 4.14.0
+   * @since 4.15.0
    */
   static @NotNull JoinConfiguration spaces() {
     return JoinConfigurationImpl.STANDARD_SPACES;
