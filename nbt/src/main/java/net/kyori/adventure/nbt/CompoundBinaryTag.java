@@ -92,6 +92,14 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
   @Nullable BinaryTag get(final String key);
 
   /**
+   * Gets the size.
+   *
+   * @return the size
+   * @since 4.15.0
+   */
+  int size();
+
+  /**
    * Gets a boolean.
    *
    * <p>Booleans are stored as a {@link ByteBinaryTag} with a value of {@code 0} for {@code false} and {@code 1} for {@code true}.</p>
