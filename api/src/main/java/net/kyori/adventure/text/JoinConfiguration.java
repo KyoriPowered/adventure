@@ -119,6 +119,19 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
   }
 
   /**
+   * Provides a join configuration with no prefix or suffix that simply joins the components together using the {@link Component#space()} component.
+   *
+   * <p>A purely text based example of this syntax, without introducing the concepts of components, would join the two strings 'hello' and 'there' together,
+   * creating the following output: 'hello there'.</p>
+   *
+   * @return the join configuration
+   * @since 4.15.0
+   */
+  static @NotNull JoinConfiguration spaces() {
+    return JoinConfigurationImpl.STANDARD_SPACES;
+  }
+
+  /**
    * Provides a join configuration with no prefix or suffix that simply joins the components together using a single comma, matching a CSV like layout.
    *
    * <p>A purely text based example of this syntax, without introducing the concepts of components, would join the two strings 'hello' and 'there' together,
