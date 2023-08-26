@@ -2,10 +2,10 @@
 version = "1.0"
 
 [versions]
-checkstyle = "10.12.1"
+checkstyle = "10.12.2"
 errorprone = "2.21.1"
 examination = "1.3.0"
-guava = "32.1.1-jre"
+guava = "32.1.2-jre"
 indra = "3.1.2"
 jmh = "1.36"
 jmhPlugin = "0.7.1"
@@ -38,7 +38,7 @@ slf4jtest = "com.github.valfirst:slf4j-test:3.0.1" # Specific versions are neede
 gson = "com.google.code.gson:gson:2.8.0"
 
 # text-serializer-ansi
-ansi = "net.kyori:ansi:1.0.1"
+ansi = "net.kyori:ansi:1.0.3"
 
 # tests
 junit-api = { module = "org.junit.jupiter:junit-jupiter-api" }
