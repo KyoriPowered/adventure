@@ -92,9 +92,9 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
   @Nullable BinaryTag get(final String key);
 
   /**
-   * Gets the size.
+   * Gets the number of elements in the compound.
    *
-   * @return the size
+   * @return the number of elements in the compound
    * @since 4.15.0
    */
   int size();
