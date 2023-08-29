@@ -44,6 +44,7 @@ ansi = "net.kyori:ansi:1.0.3"
 junit-api = { module = "org.junit.jupiter:junit-jupiter-api" }
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
 junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine" }
+junit-launcher = { module = "org.junit.platform:junit-platform-launcher" }
 junit-params = { module = "org.junit.jupiter:junit-jupiter-params" }
 truth = { module = "com.google.truth:truth", version.ref = "truth" }
 truth-java8 = { module = "com.google.truth.extensions:truth-java8-extension", version.ref = "truth" }
@@ -73,3 +74,4 @@ zJmh = { module = "org.openjdk.jmh:jmh-core", version.ref = "jmh" }
 indra-sonatype = { id = "net.kyori.indra.publishing.sonatype", version.ref = "indra" }
 jmh = { id = "me.champeau.jmh", version.ref = "jmhPlugin" }
 kotlin = "org.jetbrains.kotlin.jvm:1.9.10"
+nexusPublish = { id = "io.github.gradle-nexus.publish-plugin", version = "2.0.0-rc-1" }
