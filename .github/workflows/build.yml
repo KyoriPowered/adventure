@@ -10,3 +10,5 @@ jobs:
   call-build:
     uses: "KyoriPowered/.github/.github/workflows/shared-ci.yaml@trunk"
     secrets: "inherit"
+    with:
+      gradle_warning_mode: 'all' # allow deprecations until an update is available for the JMH plugin
