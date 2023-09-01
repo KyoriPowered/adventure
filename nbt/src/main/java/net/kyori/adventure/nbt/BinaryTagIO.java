@@ -306,6 +306,76 @@ public final class BinaryTagIO {
     @NotNull CompoundBinaryTag read(final @NotNull DataInput input) throws IOException;
 
     /**
+     * Reads a binary tag from {@code path}.
+     *
+     * <p>This is the equivalent of passing {@code Compression#NONE} as the second parameter to {@link #read(Path, Compression)}.</p>
+     *
+     * <p>Doesn't read a name from the {@link Path}, as changed by mojang in the network protocol since 23w31a (1.20.2 snapshot).</p>
+     *
+     * @param path the path
+     * @return a binary tag
+     * @throws IOException if an exception was encountered while reading the tag
+     * @since 4.15.0
+     */
+    default @NotNull CompoundBinaryTag readNameless(final @NotNull Path path) throws IOException {
+      return this.readNameless(path, Compression.NONE);
+    }
+
+    /**
+     * Reads a binary tag from {@code path} with a {@code compression} type.
+     *
+     * <p>Doesn't read a name from the {@link Path}, as changed by mojang in the network protocol since 23w31a (1.20.2 snapshot).</p>
+     *
+     * @param path the path
+     * @param compression the compression type
+     * @return a binary tag
+     * @throws IOException if an exception was encountered while reading the tag
+     * @since 4.15.0
+     */
+    @NotNull CompoundBinaryTag readNameless(final @NotNull Path path, final @NotNull Compression compression) throws IOException;
+
+    /**
+     * Reads a binary tag from {@code input}.
+     *
+     * <p>This is the equivalent of passing {@code Compression#NONE} as the second parameter to {@link #read(InputStream, Compression)}.</p>
+     *
+     * <p>Doesn't read a name from the {@link InputStream}, as changed by mojang in the network protocol since 23w31a (1.20.2 snapshot).</p>
+     *
+     * @param input the input stream
+     * @return a binary tag
+     * @throws IOException if an exception was encountered while reading the tag
+     * @since 4.15.0
+     */
+    default @NotNull CompoundBinaryTag readNameless(final @NotNull InputStream input) throws IOException {
+      return this.readNameless(input, Compression.NONE);
+    }
+
+    /**
+     * Reads a binary tag from {@code input} with a {@code compression} type.
+     *
+     * <p>Doesn't read a name from the {@link InputStream}, as changed by mojang in the network protocol since 23w31a (1.20.2 snapshot).</p>
+     *
+     * @param input the input stream
+     * @param compression the compression type
+     * @return a binary tag
+     * @throws IOException if an exception was encountered while reading the tag
+     * @since 4.15.0
+     */
+    @NotNull CompoundBinaryTag readNameless(final @NotNull InputStream input, final @NotNull Compression compression) throws IOException;
+
+    /**
+     * Reads a binary tag from {@code input}.
+     *
+     * <p>Doesn't read a name from the {@link DataInput}, as changed by mojang in the network protocol since 23w31a (1.20.2 snapshot).</p>
+     *
+     * @param input the input stream
+     * @return a binary tag
+     * @throws IOException if an exception was encountered while reading the tag
+     * @since 4.15.0
+     */
+    @NotNull CompoundBinaryTag readNameless(final @NotNull DataInput input) throws IOException;
+
+    /**
      * Reads a binary tag, with a name, from {@code path}.
      *
      * <p>This is the equivalent of passing {@code Compression#NONE} as the second parameter to {@link #readNamed(Path, Compression)}.</p>
@@ -431,6 +501,76 @@ public final class BinaryTagIO {
      * @since 4.4.0
      */
     void write(final @NotNull CompoundBinaryTag tag, final @NotNull DataOutput output) throws IOException;
+
+    /**
+     * Writes a binary tag to {@code path} with a {@code compression} type.
+     *
+     * <p>This is the equivalent of passing {@code Compression#NONE} as the second parameter to {@link #write(CompoundBinaryTag, Path, Compression)}.</p>
+     *
+     * <p>Doesn't write a name to the {@link Path}, as changed by mojang in the network protocol since 23w31a (1.20.2 snapshot).</p>
+     *
+     * @param tag the tag to write
+     * @param path the path
+     * @throws IOException if an exception was encountered while reading the tag
+     * @since 4.15.0
+     */
+    default void writeNameless(final @NotNull CompoundBinaryTag tag, final @NotNull Path path) throws IOException {
+      this.writeNameless(tag, path, Compression.NONE);
+    }
+
+    /**
+     * Writes a binary tag to {@code path} with a {@code compression} type.
+     *
+     * <p>Doesn't write a name to the {@link Path}, as changed by mojang in the network protocol since 23w31a (1.20.2 snapshot).</p>
+     *
+     * @param tag the tag to write
+     * @param path the path
+     * @param compression the compression type
+     * @throws IOException if an exception was encountered while reading the tag
+     * @since 4.15.0
+     */
+    void writeNameless(final @NotNull CompoundBinaryTag tag, final @NotNull Path path, final @NotNull Compression compression) throws IOException;
+
+    /**
+     * Writes a binary tag to {@code output}.
+     *
+     * <p>This is the equivalent of passing {@link Compression#NONE} as the second parameter to {@link #write(CompoundBinaryTag, OutputStream, Compression)}.</p>
+     *
+     * <p>Doesn't write a name to the {@link OutputStream}, as changed by mojang in the network protocol since 23w31a (1.20.2 snapshot).</p>
+     *
+     * @param tag the tag to write
+     * @param output the output stream
+     * @throws IOException if an exception was encountered while reading the tag
+     * @since 4.15.0
+     */
+    default void writeNameless(final @NotNull CompoundBinaryTag tag, final @NotNull OutputStream output) throws IOException {
+      this.writeNameless(tag, output, Compression.NONE);
+    }
+
+    /**
+     * Writes a binary tag to {@code output} with a {@code compression} type.
+     *
+     * <p>Doesn't write a name to the {@link OutputStream}, as changed by mojang in the network protocol since 23w31a (1.20.2 snapshot).</p>
+     *
+     * @param tag the tag to write
+     * @param output the output stream
+     * @param compression the compression type
+     * @throws IOException if an exception was encountered while reading the tag
+     * @since 4.15.0
+     */
+    void writeNameless(final @NotNull CompoundBinaryTag tag, final @NotNull OutputStream output, final @NotNull Compression compression) throws IOException;
+
+    /**
+     * Writes a binary tag to {@code output}.
+     *
+     * <p>Doesn't write a name to the {@link DataOutput}, as changed by mojang in the network protocol since 23w31a (1.20.2 snapshot).</p>
+     *
+     * @param tag the tag to write
+     * @param output the output
+     * @throws IOException if an exception was encountered while reading the tag
+     * @since 4.15.0
+     */
+    void writeNameless(final @NotNull CompoundBinaryTag tag, final @NotNull DataOutput output) throws IOException;
 
     /**
      * Writes a binary tag, with a name, to {@code path}.
