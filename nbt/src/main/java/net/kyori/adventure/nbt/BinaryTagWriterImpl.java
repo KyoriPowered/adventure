@@ -57,7 +57,7 @@ final class BinaryTagWriterImpl implements BinaryTagIO.Writer {
     this.write(tag, output, false);
   }
 
-  private void write(final @NotNull CompoundBinaryTag tag, final @NotNull DataOutput output, boolean nameless) throws IOException {
+  private void write(final @NotNull CompoundBinaryTag tag, final @NotNull DataOutput output, final boolean nameless) throws IOException {
     output.writeByte(BinaryTagTypes.COMPOUND.id());
     if (!nameless) {
       output.writeUTF(""); // write empty name

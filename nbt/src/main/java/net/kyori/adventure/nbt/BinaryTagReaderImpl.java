@@ -61,11 +61,11 @@ final class BinaryTagReaderImpl implements BinaryTagIO.Reader {
   }
 
   @Override
-  public @NotNull CompoundBinaryTag read(@NotNull DataInput input) throws IOException {
+  public @NotNull CompoundBinaryTag read(final @NotNull DataInput input) throws IOException {
     return this.read(input, false);
   }
 
-  private @NotNull CompoundBinaryTag read(@NotNull DataInput input, boolean nameless) throws IOException {
+  private @NotNull CompoundBinaryTag read(@NotNull DataInput input, final boolean nameless) throws IOException {
     if (!(input instanceof TrackingDataInput)) {
       input = new TrackingDataInput(input, this.maxBytes);
     }
@@ -93,7 +93,7 @@ final class BinaryTagReaderImpl implements BinaryTagIO.Reader {
   }
 
   @Override
-  public @NotNull CompoundBinaryTag readNameless(@NotNull DataInput input) throws IOException {
+  public @NotNull CompoundBinaryTag readNameless(final @NotNull DataInput input) throws IOException {
     return this.read(input, true);
   }
 
