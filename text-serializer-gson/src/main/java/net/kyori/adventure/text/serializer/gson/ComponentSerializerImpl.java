@@ -88,7 +88,7 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
   public BuildableComponent<?, ?> read(final JsonReader in) throws IOException {
     final JsonToken token = in.peek();
     if (token == JsonToken.STRING || token == JsonToken.NUMBER || token == JsonToken.BOOLEAN) {
-      return Component.text(readString(in));
+      return Component.text(GsonHacks.readString(in));
     } else if (token == JsonToken.BEGIN_ARRAY) {
       ComponentBuilder<?, ?> parent = null;
       in.beginArray();
@@ -134,7 +134,7 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
     while (in.hasNext()) {
       final String fieldName = in.nextName();
       if (fieldName.equals(TEXT)) {
-        text = readString(in);
+        text = GsonHacks.readString(in);
       } else if (fieldName.equals(TRANSLATE)) {
         translate = in.nextString();
       } else if (fieldName.equals(TRANSLATE_FALLBACK)) {
@@ -219,17 +219,6 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
         .append(extra);
     in.endObject();
     return builder.build();
-  }
-
-  private static String readString(final JsonReader in) throws IOException {
-    final JsonToken peek = in.peek();
-    if (peek == JsonToken.STRING || peek == JsonToken.NUMBER) {
-      return in.nextString();
-    } else if (peek == JsonToken.BOOLEAN) {
-      return String.valueOf(in.nextBoolean());
-    } else {
-      throw new JsonParseException("Token of type " + peek + " cannot be interpreted as a string");
-    }
   }
 
   private static <C extends NBTComponent<C, B>, B extends NBTComponentBuilder<C, B>> B nbt(final B builder, final String nbt, final boolean interpret, final @Nullable Component separator) {

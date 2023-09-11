@@ -111,7 +111,7 @@ final class StyleSerializer extends TypeAdapter<Style> {
           style.decoration(color.decoration, TextDecoration.State.TRUE);
         }
       } else if (TextDecoration.NAMES.keys().contains(fieldName)) {
-        style.decoration(TextDecoration.NAMES.value(fieldName), this.readBoolean(in));
+        style.decoration(TextDecoration.NAMES.value(fieldName), GsonHacks.readBoolean(in));
       } else if (fieldName.equals(INSERTION)) {
         style.insertion(in.nextString());
       } else if (fieldName.equals(CLICK_EVENT)) {
@@ -147,7 +147,7 @@ final class StyleSerializer extends TypeAdapter<Style> {
             final Class<?> actionType = action.type();
             if (hoverEventObject.has(HOVER_EVENT_CONTENTS)) {
               final @Nullable JsonElement rawValue = hoverEventObject.get(HOVER_EVENT_CONTENTS);
-              if (isNullOrEmpty(rawValue)) {
+              if (GsonHacks.isNullOrEmpty(rawValue)) {
                 value = null;
               } else if (SerializerFactory.COMPONENT_TYPE.isAssignableFrom(actionType)) {
                 value = this.gson.fromJson(rawValue, SerializerFactory.COMPONENT_TYPE);
@@ -160,7 +160,7 @@ final class StyleSerializer extends TypeAdapter<Style> {
               }
             } else if (hoverEventObject.has(HOVER_EVENT_VALUE)) {
               final JsonElement element = hoverEventObject.get(HOVER_EVENT_VALUE);
-              if (isNullOrEmpty(element)) {
+              if (GsonHacks.isNullOrEmpty(element)) {
                 value = null;
               } else if (SerializerFactory.COMPONENT_TYPE.isAssignableFrom(actionType)) {
                 final Component rawValue = this.gson.fromJson(element, SerializerFactory.COMPONENT_TYPE);
@@ -186,21 +186,6 @@ final class StyleSerializer extends TypeAdapter<Style> {
 
     in.endObject();
     return style.build();
-  }
-
-  private static boolean isNullOrEmpty(final @Nullable JsonElement element) {
-    return element == null || element.isJsonNull() || (element.isJsonArray() && element.getAsJsonArray().size() == 0) || (element.isJsonObject() && element.getAsJsonObject().size() == 0);
-  }
-
-  private boolean readBoolean(final JsonReader in) throws IOException {
-    final JsonToken peek = in.peek();
-    if (peek == JsonToken.BOOLEAN) {
-      return in.nextBoolean();
-    } else if (peek == JsonToken.STRING || peek == JsonToken.NUMBER) {
-      return Boolean.parseBoolean(in.nextString());
-    } else {
-      throw new JsonParseException("Token of type " + peek + " cannot be interpreted as a boolean");
-    }
   }
 
   private Object legacyHoverEventContents(final HoverEvent.Action<?> action, final Component rawValue) {
