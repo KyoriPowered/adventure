@@ -38,7 +38,7 @@ import org.jetbrains.annotations.NotNull;
  */
 @ApiStatus.Internal
 public final class TagInternals {
-  public static final @RegExp String TAG_NAME_REGEX = "[!?#]?[a-z0-9_-]*";
+  public static final @RegExp String TAG_NAME_REGEX = "[!?#]?[a-z0-9&_-]*"; // DiamondFire
   private static final Pattern TAG_NAME_PATTERN = Pattern.compile(TAG_NAME_REGEX);
 
   private TagInternals() {

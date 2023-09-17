@@ -524,6 +524,14 @@ public class MiniMessageParserTest extends AbstractTest {
     assertDoesNotThrow(() -> PARSER.deserialize(passingTest2));
     assertDoesNotThrow(() -> PARSER.deserialize(passingTest3));
     assertDoesNotThrow(() -> PARSER.deserialize(passingTest4));
+
+    // DiamondFire start
+    final String passingTestDF1 = "Hello <&a> but cool?";
+    final String passingTestDF2 = "Hello <&x&c&0&f&f&e&e> but cool?";
+
+    assertDoesNotThrow(() -> PARSER.deserialize(passingTestDF1));
+    assertDoesNotThrow(() -> PARSER.deserialize(passingTestDF2));
+    // DiamondFire end
   }
 
   @Test
