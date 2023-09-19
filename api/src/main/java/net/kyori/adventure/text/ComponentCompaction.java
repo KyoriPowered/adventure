@@ -87,8 +87,6 @@ final class ComponentCompaction {
       child = compact(child, childParentStyle);
 
       // ignore useless empty children (regardless of its style)
-      // DiamondFire start
-      /*
       if (child.children().isEmpty() && child instanceof TextComponent) {
         final TextComponent textComponent = (TextComponent) child;
 
@@ -96,8 +94,6 @@ final class ComponentCompaction {
           continue;
         }
       }
-      */
-      // DiamondFire end
 
       childrenToAppend.add(child);
     }
