@@ -4,7 +4,7 @@ A fork of [Adventure](https://github.com/KyoriPowered/adventure) for DiamondFire
 ## List of Changes
 ### MiniMessage
 - Allows `&` character to be used in tag names
-- Deserializes tags with empty contents such as: `Hello <green><red>world!`
+- Removes the forced check for legacy color codes
 
 ## Attributions
 Adventure is an open source project under [MIT License](https://github.com/KyoriPowered/adventure/blob/main/4/license.txt).
