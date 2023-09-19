@@ -60,10 +60,18 @@ public abstract class MiniMessageTranslator implements Translator {
       return null;
     }
 
+    final Component resultingComponent;
+
     if (component.args().isEmpty()) {
-      return MiniMessage.miniMessage().deserialize(miniMessageString);
+      resultingComponent = MiniMessage.miniMessage().deserialize(miniMessageString);
     } else {
-      return MiniMessage.miniMessage().deserialize(miniMessageString, new ArgumentTag(component.args()));
+      resultingComponent = MiniMessage.miniMessage().deserialize(miniMessageString, new ArgumentTag(component.args()));
+    }
+
+    if (component.children().isEmpty()) {
+      return resultingComponent;
+    } else {
+      return resultingComponent.children(component.children());
     }
   }
 }
