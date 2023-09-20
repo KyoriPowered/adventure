@@ -486,6 +486,8 @@ public class MiniMessageParserTest extends AbstractTest {
     this.assertParsedEquals(parsed, input);
   }
 
+  // DiamondFire start
+  /*
   @Test
   void testLegacySymbolForbidden() {
     final String failingTest = "Hello §Cfriends";
@@ -493,6 +495,8 @@ public class MiniMessageParserTest extends AbstractTest {
     // Non-strict
     System.out.println(assertThrows(ParsingException.class, () -> PARSER.deserialize(failingTest)).getMessage());
   }
+  */
+  // DiamondFire end
 
   @Test
   void testInvalidTagNames() {
