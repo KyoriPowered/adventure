@@ -60,7 +60,7 @@ import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.pars
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+//import static org.junit.jupiter.api.Assertions.assertThrows; // DiamondFire
 
 public class MiniMessageParserTest extends AbstractTest {
 
