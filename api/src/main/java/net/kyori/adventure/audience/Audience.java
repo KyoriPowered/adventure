@@ -36,6 +36,7 @@ import net.kyori.adventure.identity.Identified;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.pointer.Pointered;
+import net.kyori.adventure.resourcepack.ResourcePack;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
@@ -699,5 +700,15 @@ public interface Audience extends Pointered {
    * @since 4.0.0
    */
   default void openBook(final @NotNull Book book) {
+  }
+
+  /**
+   * Sends a resource pack to this audience.
+   *
+   * @param resourcePack the resource pack
+   * @see ResourcePack
+   * @since 4.15.0
+   */
+  default void sendResourcePack(final @NotNull ResourcePack resourcePack) {
   }
 }
