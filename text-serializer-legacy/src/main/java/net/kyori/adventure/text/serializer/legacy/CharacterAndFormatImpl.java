@@ -74,13 +74,14 @@ final class CharacterAndFormatImpl implements CharacterAndFormat {
   }
 
   static final class Defaults {
-    static final List<CharacterAndFormat> DEFAULTS = createDefaults();
+    static final List<CharacterAndFormat> JAVA = createJavaDefaults();
+    static final List<CharacterAndFormat> BEDROCK = createBedrockDefaults();
 
     private Defaults() {
     }
 
     @SuppressWarnings("DuplicatedCode")
-    static List<CharacterAndFormat> createDefaults() {
+    static List<CharacterAndFormat> createJavaDefaults() {
       final List<CharacterAndFormat> formats = new ArrayList<>(16 + 5 + 1); // colours + decorations + reset
 
       formats.add(BLACK);
@@ -107,6 +108,24 @@ final class CharacterAndFormatImpl implements CharacterAndFormat {
       formats.add(ITALIC);
 
       formats.add(RESET);
+
+      return Collections.unmodifiableList(formats);
+    }
+
+    static List<CharacterAndFormat> createBedrockDefaults() {
+      List<CharacterAndFormat> formats = new ArrayList<>(createJavaDefaults());
+
+      formats.add(MINECOIN_GOLD);
+      formats.add(MATERIAL_QUARTZ);
+      formats.add(MATERIAL_IRON);
+      formats.add(MATERIAL_NETHERITE);
+      formats.add(MATERIAL_REDSTONE);
+      formats.add(MATERIAL_COPPER);
+      formats.add(MATERIAL_GOLD);
+      formats.add(MATERIAL_EMERALD);
+      formats.add(MATERIAL_DIAMOND);
+      formats.add(MATERIAL_LAPIS);
+      formats.add(MATERIAL_AMETHYST);
 
       return Collections.unmodifiableList(formats);
     }

@@ -139,6 +139,83 @@ public interface CharacterAndFormat extends Examinable {
   CharacterAndFormat WHITE = characterAndFormat('f', NamedTextColor.WHITE);
 
   /**
+   * Character and format pair representing {@link BedrockNamedTextColor#MINECOIN_GOLD}.
+   *
+   * @since 4.15.0
+   */
+  CharacterAndFormat MINECOIN_GOLD = characterAndFormat('g', BedrockNamedTextColor.MINECOIN_GOLD);
+
+  /**
+   * Character and format pair representing {@link BedrockNamedTextColor#MATERIAL_QUARTZ}.
+   *
+   * @since 4.15.0
+   */
+  CharacterAndFormat MATERIAL_QUARTZ = characterAndFormat('h', BedrockNamedTextColor.MATERIAL_QUARTZ);
+
+  /**
+   * Character and format pair representing {@link BedrockNamedTextColor#MATERIAL_IRON}.
+   *
+   * @since 4.15.0
+   */
+  CharacterAndFormat MATERIAL_IRON = characterAndFormat('i', BedrockNamedTextColor.MATERIAL_IRON);
+
+  /**
+   * Character and format pair representing {@link BedrockNamedTextColor#MATERIAL_NETHERITE}.
+   *
+   * @since 4.15.0
+   */
+  CharacterAndFormat MATERIAL_NETHERITE = characterAndFormat('j', BedrockNamedTextColor.MATERIAL_NETHERITE);
+
+  /**
+   * Character and format pair representing {@link BedrockNamedTextColor#MATERIAL_REDSTONE}.
+   *
+   * @since 4.15.0
+   */
+  CharacterAndFormat MATERIAL_REDSTONE = characterAndFormat('m', BedrockNamedTextColor.MATERIAL_REDSTONE);
+
+  /**
+   * Character and format pair representing {@link BedrockNamedTextColor#MATERIAL_COPPER}.
+   *
+   * @since 4.15.0
+   */
+  CharacterAndFormat MATERIAL_COPPER = characterAndFormat('n', BedrockNamedTextColor.MATERIAL_COPPER);
+
+  /**
+   * Character and format pair representing {@link BedrockNamedTextColor#MATERIAL_GOLD}.
+   *
+   * @since 4.15.0
+   */
+  CharacterAndFormat MATERIAL_GOLD = characterAndFormat('p', BedrockNamedTextColor.MATERIAL_GOLD);
+
+  /**
+   * Character and format pair representing {@link BedrockNamedTextColor#MATERIAL_EMERALD}.
+   *
+   * @since 4.15.0
+   */
+  CharacterAndFormat MATERIAL_EMERALD = characterAndFormat('q', BedrockNamedTextColor.MATERIAL_EMERALD);
+
+  /**
+   * Character and format pair representing {@link BedrockNamedTextColor#MATERIAL_DIAMOND}.
+   *
+   * @since 4.15.0
+   */
+  CharacterAndFormat MATERIAL_DIAMOND = characterAndFormat('s', BedrockNamedTextColor.MATERIAL_DIAMOND);
+
+  /**
+   * Character and format pair representing {@link BedrockNamedTextColor#MATERIAL_LAPIS}.
+   *
+   * @since 4.15.0
+   */
+  CharacterAndFormat MATERIAL_LAPIS = characterAndFormat('t', BedrockNamedTextColor.MATERIAL_LAPIS);
+
+  /**
+   * Character and format pair representing {@link BedrockNamedTextColor#MATERIAL_AMETHYST}.
+   *
+   * @since 4.15.0
+   */
+  CharacterAndFormat MATERIAL_AMETHYST = characterAndFormat('u', BedrockNamedTextColor.MATERIAL_AMETHYST);
+
+  /**
    * Character and format pair representing {@link TextDecoration#OBFUSCATED}.
    *
    * @since 4.14.0
@@ -193,10 +270,34 @@ public interface CharacterAndFormat extends Examinable {
    *
    * @return am unmodifiable list of character and format pairs containing all default vanilla formats
    * @since 4.14.0
+   * @deprecated for removal since 4.15.0, use {@link #javaDefaults()} instead
    */
+  @Deprecated
   @Unmodifiable
   static @NotNull List<CharacterAndFormat> defaults() {
-    return CharacterAndFormatImpl.Defaults.DEFAULTS;
+    return javaDefaults();
+  }
+
+  /**
+   * Gets an unmodifiable list of character and format pairs containing all default vanilla java formats.
+   *
+   * @return am unmodifiable list of character and format pairs containing all default vanilla java formats
+   * @since 4.15.0
+   */
+  @Unmodifiable
+  static @NotNull List<CharacterAndFormat> javaDefaults() {
+    return CharacterAndFormatImpl.Defaults.JAVA;
+  }
+
+  /**
+   * Gets an unmodifiable list of character and format pairs containing all default vanilla bedrock formats.
+   *
+   * @return am unmodifiable list of character and format pairs containing all default vanilla bedrock formats
+   * @since 4.14.0
+   */
+  @Unmodifiable
+  static @NotNull List<CharacterAndFormat> bedrockDefaults() {
+    return CharacterAndFormatImpl.Defaults.BEDROCK;
   }
 
   /**

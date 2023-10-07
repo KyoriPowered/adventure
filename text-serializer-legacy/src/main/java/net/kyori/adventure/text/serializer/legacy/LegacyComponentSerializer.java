@@ -80,6 +80,19 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
 
   /**
    * Gets a component serializer for legacy-based serialization and deserialization. Note that this
+   * serializer works exactly like vanilla Minecraft Bedrock and does not detect any links.
+   *
+   * <p>The returned serializer uses the {@link #SECTION_CHAR section} character.</p>
+   *
+   * @return a component serializer for legacy serialization and deserialization
+   * @since 4.15.0
+   */
+  static @NotNull LegacyComponentSerializer bedrock() {
+    return LegacyComponentSerializerImpl.Instances.BEDROCK_SECTION;
+  }
+
+  /**
+   * Gets a component serializer for legacy-based serialization and deserialization. Note that this
    * serializer works exactly like vanilla Minecraft and does not detect any links. If you want to
    * detect and make URLs clickable, use {@link Builder#extractUrls()}.
    *
@@ -305,6 +318,16 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
     @ApiStatus.Internal
     @PlatformAPI
     @NotNull LegacyComponentSerializer legacySection();
+
+    /**
+     * Provides a {@link LegacyComponentSerializer} using {@link #SECTION_CHAR} for Minecraft: Bedrock.
+     *
+     * @return a {@link LegacyComponentSerializer}
+     * @since 4.15.0
+     */
+    @ApiStatus.Internal
+    @PlatformAPI
+    @NotNull LegacyComponentSerializer bedrock();
 
     /**
      * Completes the building process of {@link Builder}.

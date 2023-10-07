@@ -323,7 +323,7 @@ class LegacyComponentSerializerTest {
 
   @Test
   void testNullTextFormat() {
-    final List<CharacterAndFormat> formats = new ArrayList<>(CharacterAndFormat.defaults());
+    final List<CharacterAndFormat> formats = new ArrayList<>(CharacterAndFormat.javaDefaults());
     formats.remove(CharacterAndFormat.STRIKETHROUGH);
     final LegacyComponentSerializer serializer = LegacyComponentSerializer.legacySection().toBuilder().formats(formats).build();
 

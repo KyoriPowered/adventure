@@ -30,7 +30,8 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextFormat;
 
 final class CharacterAndFormatSet {
-  static final CharacterAndFormatSet DEFAULT = of(CharacterAndFormat.defaults());
+  static final CharacterAndFormatSet JAVA = of(CharacterAndFormat.javaDefaults());
+  static final CharacterAndFormatSet BEDROCK = of(CharacterAndFormat.bedrockDefaults());
   final List<TextFormat> formats;
   final List<TextColor> colors;
   final String characters;

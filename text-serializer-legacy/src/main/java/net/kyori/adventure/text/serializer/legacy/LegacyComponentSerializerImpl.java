@@ -66,10 +66,15 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   static final class Instances {
     static final LegacyComponentSerializer SECTION = SERVICE
       .map(Provider::legacySection)
-      .orElseGet(() -> new LegacyComponentSerializerImpl(SECTION_CHAR, HEX_CHAR, null, false, false, ComponentFlattener.basic(), CharacterAndFormatSet.DEFAULT));
+      .orElseGet(() -> new LegacyComponentSerializerImpl(SECTION_CHAR, HEX_CHAR, null, false, false, ComponentFlattener.basic(), CharacterAndFormatSet.JAVA));
     static final LegacyComponentSerializer AMPERSAND = SERVICE
       .map(Provider::legacyAmpersand)
-      .orElseGet(() -> new LegacyComponentSerializerImpl(AMPERSAND_CHAR, HEX_CHAR, null, false, false, ComponentFlattener.basic(), CharacterAndFormatSet.DEFAULT));
+      .orElseGet(() -> new LegacyComponentSerializerImpl(AMPERSAND_CHAR, HEX_CHAR, null, false, false, ComponentFlattener.basic(), CharacterAndFormatSet.JAVA));
+
+
+    static final LegacyComponentSerializer BEDROCK_SECTION = SERVICE
+      .map(Provider::bedrock)
+      .orElseGet(() -> new LegacyComponentSerializerImpl(SECTION_CHAR, HEX_CHAR, null, false, false, ComponentFlattener.basic(), CharacterAndFormatSet.BEDROCK));
   }
 
   private final char character;
@@ -111,9 +116,9 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   }
 
   static @Nullable LegacyFormat legacyFormat(final char character) {
-    final int index = CharacterAndFormatSet.DEFAULT.characters.indexOf(character);
+    final int index = CharacterAndFormatSet.JAVA.characters.indexOf(character);
     if (index != -1) {
-      final TextFormat format = CharacterAndFormatSet.DEFAULT.formats.get(index);
+      final TextFormat format = CharacterAndFormatSet.JAVA.formats.get(index);
       if (format instanceof NamedTextColor) {
         return new LegacyFormat((NamedTextColor) format);
       } else if (format instanceof TextDecoration) {
@@ -452,7 +457,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     private boolean hexColours = false;
     private boolean useTerriblyStupidHexFormat = false;
     private ComponentFlattener flattener = ComponentFlattener.basic();
-    private CharacterAndFormatSet formats = CharacterAndFormatSet.DEFAULT;
+    private CharacterAndFormatSet formats = CharacterAndFormatSet.JAVA;
 
     BuilderImpl() {
       BUILDER.accept(this); // let service provider touch the builder before anybody else touches it
