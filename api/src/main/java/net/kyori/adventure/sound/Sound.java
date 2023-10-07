@@ -382,7 +382,7 @@ public interface Sound extends Examinable {
     @NotNull Builder volume(final @Range(from = 0, to = Integer.MAX_VALUE) float volume);
 
     /**
-     * The pitch for this sound, indicating how high or low the sound can be heared.
+     * The pitch for this sound, indicating how high or low the sound can be heard.
      *
      * <p>Default value is {@code 1}.</p>
      *
