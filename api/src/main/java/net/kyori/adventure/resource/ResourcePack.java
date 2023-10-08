@@ -26,7 +26,6 @@ package net.kyori.adventure.resource;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.util.Buildable;
 import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -40,7 +39,7 @@ import java.net.URI;
  * @see Audience#sendResourcePack(ResourcePack)
  * @since 4.15.0
  */
-public interface ResourcePack extends Buildable<ResourcePack, ResourcePack.Builder>, Examinable {
+public interface ResourcePack extends Examinable {
   /**
    * Creates a resource pack.
    *
@@ -118,7 +117,6 @@ public interface ResourcePack extends Buildable<ResourcePack, ResourcePack.Build
    * @return the builder
    * @since 4.15.0
    */
-  @Override
   default @NotNull Builder toBuilder() {
     return builder()
       .uri(this.uri())
@@ -132,7 +130,7 @@ public interface ResourcePack extends Buildable<ResourcePack, ResourcePack.Build
    *
    * @since 4.15.0
    */
-  interface Builder extends AbstractBuilder<ResourcePack>, Buildable.Builder<ResourcePack> {
+  interface Builder extends AbstractBuilder<ResourcePack> {
     /**
      * Sets the uri.
      *
