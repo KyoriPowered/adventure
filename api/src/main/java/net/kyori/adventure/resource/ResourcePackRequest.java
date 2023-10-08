@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.resource;
 
+import java.net.URI;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
@@ -30,8 +31,6 @@ import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.net.URI;
 
 /**
  * Represents a resource pack request that can be sent to players.
@@ -98,7 +97,7 @@ public interface ResourcePackRequest extends Examinable {
    * or not.
    *
    * @return True if the resource pack is required,
-   * false otherwise
+   *     false otherwise
    * @since 4.15.0
    */
   boolean required();

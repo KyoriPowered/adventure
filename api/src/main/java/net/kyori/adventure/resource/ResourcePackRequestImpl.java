@@ -23,15 +23,14 @@
  */
 package net.kyori.adventure.resource;
 
+import java.net.URI;
+import java.util.Objects;
+import java.util.stream.Stream;
 import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.Component;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.net.URI;
-import java.util.Objects;
-import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
