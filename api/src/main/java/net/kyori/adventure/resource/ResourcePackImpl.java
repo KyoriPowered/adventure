@@ -102,4 +102,43 @@ final class ResourcePackImpl implements ResourcePack {
     result = 31 * result + (this.prompt != null ? this.prompt.hashCode() : 0);
     return result;
   }
+
+  static final class BuilderImpl implements Builder {
+    private URI uri;
+    private String hash;
+    private boolean required;
+    private Component prompt;
+
+    BuilderImpl() {
+    }
+
+    @Override
+    public @NotNull Builder uri(final @NotNull URI uri) {
+      this.uri = requireNonNull(uri, "uri");
+      return this;
+    }
+
+    @Override
+    public @NotNull Builder hash(final @NotNull String hash) {
+      this.hash = requireNonNull(hash, "hash");
+      return this;
+    }
+
+    @Override
+    public @NotNull Builder required(final boolean required) {
+      this.required = required;
+      return this;
+    }
+
+    @Override
+    public @NotNull Builder prompt(final @Nullable Component prompt) {
+      this.prompt = prompt;
+      return this;
+    }
+
+    @Override
+    public @NotNull ResourcePack build() {
+      return new ResourcePackImpl(this.uri, this.hash, this.required, this.prompt);
+    }
+  }
 }

@@ -24,8 +24,11 @@
 package net.kyori.adventure.resource;
 
 import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.util.Buildable;
 import net.kyori.examination.Examinable;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,7 +40,7 @@ import java.net.URI;
  * @see Audience#sendResourcePack(ResourcePack)
  * @since 4.15.0
  */
-public interface ResourcePack extends Examinable {
+public interface ResourcePack extends Buildable<ResourcePack, ResourcePack.Builder>, Examinable {
   /**
    * Creates a resource pack.
    *
@@ -63,6 +66,16 @@ public interface ResourcePack extends Examinable {
    */
   static @NotNull ResourcePack resourcePack(final @NotNull URI uri, final @NotNull String hash, final boolean required, final @Nullable Component prompt) {
     return new ResourcePackImpl(uri, hash, required, prompt);
+  }
+
+  /**
+   * Create a new builder that will create a {@link ResourcePack}.
+   *
+   * @return a builder
+   * @since 4.15.0
+   */
+  static @NotNull Builder builder() {
+    return new ResourcePackImpl.BuilderImpl();
   }
 
   /**
@@ -98,4 +111,75 @@ public interface ResourcePack extends Examinable {
    * @since 4.15.0
    */
   @Nullable Component prompt();
+
+  /**
+   * Create a new builder initialized with the attributes of this resource pack.
+   *
+   * @return the builder
+   * @since 4.15.0
+   */
+  @Override
+  default @NotNull Builder toBuilder() {
+    return builder()
+      .uri(this.uri())
+      .hash(this.hash())
+      .required(this.required())
+      .prompt(this.prompt());
+  }
+
+  /**
+   * A builder for resource packs.
+   *
+   * @since 4.15.0
+   */
+  interface Builder extends AbstractBuilder<ResourcePack>, Buildable.Builder<ResourcePack> {
+    /**
+     * Sets the uri.
+     *
+     * @param uri the uri
+     * @return this builder
+     * @since 4.15.0
+     */
+    @Contract("_ -> this")
+    @NotNull Builder uri(final @NotNull URI uri);
+
+    /**
+     * Sets the hash.
+     *
+     * @param hash the hash
+     * @return this builder
+     * @since 4.15.0
+     */
+    @Contract("_ -> this")
+    @NotNull Builder hash(final @NotNull String hash);
+
+    /**
+     * Sets whether this resource pack is required or not.
+     *
+     * @param required whether this resource pack is required or not
+     * @return this builder
+     * @since 4.15.0
+     */
+    @Contract("_ -> this")
+    @NotNull Builder required(final boolean required);
+
+    /**
+     * Sets the prompt.
+     *
+     * @param prompt the prompt
+     * @return this builder
+     * @since 4.15.0
+     */
+    @Contract("_ -> this")
+    @NotNull Builder prompt(final @Nullable Component prompt);
+
+    /**
+     * Builds.
+     *
+     * @return a new resource pack
+     * @since 4.15.0
+     */
+    @Override
+    @NotNull ResourcePack build();
+  }
 }
