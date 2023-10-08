@@ -120,7 +120,7 @@ final class EmptyAudience implements Audience {
   }
 
   @Override
-  public void sendResourcePackRequest(final ResourcePackRequest.@NotNull Builder resourcePackRequest) {
+  public void sendResourcePack(final ResourcePackRequest.@NotNull Builder resourcePackRequest) {
   }
 
   @Override

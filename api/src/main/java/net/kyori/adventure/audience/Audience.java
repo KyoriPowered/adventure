@@ -710,8 +710,8 @@ public interface Audience extends Pointered {
    * @since 4.15.0
    */
   @ForwardingAudienceOverrideNotRequired
-  default void sendResourcePackRequest(final ResourcePackRequest.@NotNull Builder resourcePackRequest) {
-    this.sendResourcePackRequest(resourcePackRequest.build());
+  default void sendResourcePack(final ResourcePackRequest.@NotNull Builder resourcePackRequest) {
+    this.sendResourcePack(resourcePackRequest.build());
   }
 
   /**
@@ -721,6 +721,6 @@ public interface Audience extends Pointered {
    * @see ResourcePackRequest
    * @since 4.15.0
    */
-  default void sendResourcePackRequest(final @NotNull ResourcePackRequest resourcePackRequest) {
+  default void sendResourcePack(final @NotNull ResourcePackRequest resourcePackRequest) {
   }
 }

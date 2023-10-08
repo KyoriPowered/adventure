@@ -36,7 +36,7 @@ import java.net.URI;
 /**
  * Represents a resource pack request that can be sent to players.
  *
- * @see Audience#sendResourcePackRequest(ResourcePackRequest)
+ * @see Audience#sendResourcePack(ResourcePackRequest)
  * @since 4.15.0
  */
 public interface ResourcePackRequest extends Examinable {
