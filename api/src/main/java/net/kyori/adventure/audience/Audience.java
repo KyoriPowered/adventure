@@ -709,6 +709,18 @@ public interface Audience extends Pointered {
    * @see ResourcePack
    * @since 4.15.0
    */
+  @ForwardingAudienceOverrideNotRequired
+  default void sendResourcePack(final ResourcePack.@NotNull Builder resourcePack) {
+    this.sendResourcePack(resourcePack.build());
+  }
+
+  /**
+   * Sends a resource pack to this audience.
+   *
+   * @param resourcePack the resource pack
+   * @see ResourcePack
+   * @since 4.15.0
+   */
   default void sendResourcePack(final @NotNull ResourcePack resourcePack) {
   }
 }
