@@ -34,47 +34,47 @@ import org.jetbrains.annotations.Nullable;
 import java.net.URI;
 
 /**
- * Represents a resource pack that can be sent to players.
+ * Represents a resource pack request that can be sent to players.
  *
- * @see Audience#sendResourcePack(ResourcePack)
+ * @see Audience#sendResourcePackRequest(ResourcePackRequest)
  * @since 4.15.0
  */
-public interface ResourcePack extends Examinable {
+public interface ResourcePackRequest extends Examinable {
   /**
-   * Creates a resource pack.
+   * Creates a resource pack request.
    *
    * @param uri the uri
    * @param hash the sha-1 hash
-   * @param required whether this resource pack is required or not
-   * @return the resource pack
+   * @param required whether the resource pack is required or not
+   * @return the resource pack request
    * @since 4.15.0
    */
-  static @NotNull ResourcePack resourcePack(final @NotNull URI uri, final @NotNull String hash, final boolean required) {
-    return resourcePack(uri, hash, required, null);
+  static @NotNull ResourcePackRequest resourcePackRequest(final @NotNull URI uri, final @NotNull String hash, final boolean required) {
+    return resourcePackRequest(uri, hash, required, null);
   }
 
   /**
-   * Creates a resource pack.
+   * Creates a resource pack request.
    *
    * @param uri the uri
    * @param hash the sha-1 hash
-   * @param required whether this resource pack is required or not
+   * @param required whether the resource pack is required or not
    * @param prompt the prompt
-   * @return the resource pack
+   * @return the resource pack request
    * @since 4.15.0
    */
-  static @NotNull ResourcePack resourcePack(final @NotNull URI uri, final @NotNull String hash, final boolean required, final @Nullable Component prompt) {
-    return new ResourcePackImpl(uri, hash, required, prompt);
+  static @NotNull ResourcePackRequest resourcePackRequest(final @NotNull URI uri, final @NotNull String hash, final boolean required, final @Nullable Component prompt) {
+    return new ResourcePackRequestImpl(uri, hash, required, prompt);
   }
 
   /**
-   * Create a new builder that will create a {@link ResourcePack}.
+   * Create a new builder that will create a {@link ResourcePackRequest}.
    *
    * @return a builder
    * @since 4.15.0
    */
-  static @NotNull Builder builder() {
-    return new ResourcePackImpl.BuilderImpl();
+  static @NotNull Builder resourcePackRequest() {
+    return new ResourcePackRequestImpl.BuilderImpl();
   }
 
   /**
@@ -94,10 +94,10 @@ public interface ResourcePack extends Examinable {
   @NotNull String hash();
 
   /**
-   * Gets whether this resource pack is required
+   * Gets whether the resource pack is required
    * or not.
    *
-   * @return True if this resource pack is required,
+   * @return True if the resource pack is required,
    * false otherwise
    * @since 4.15.0
    */
@@ -112,13 +112,13 @@ public interface ResourcePack extends Examinable {
   @Nullable Component prompt();
 
   /**
-   * Create a new builder initialized with the attributes of this resource pack.
+   * Create a new builder initialized with the attributes of this resource pack request.
    *
    * @return the builder
    * @since 4.15.0
    */
   default @NotNull Builder toBuilder() {
-    return builder()
+    return resourcePackRequest()
       .uri(this.uri())
       .hash(this.hash())
       .required(this.required())
@@ -126,11 +126,11 @@ public interface ResourcePack extends Examinable {
   }
 
   /**
-   * A builder for resource packs.
+   * A builder for resource pack requests.
    *
    * @since 4.15.0
    */
-  interface Builder extends AbstractBuilder<ResourcePack> {
+  interface Builder extends AbstractBuilder<ResourcePackRequest> {
     /**
      * Sets the uri.
      *
@@ -152,9 +152,9 @@ public interface ResourcePack extends Examinable {
     @NotNull Builder hash(final @NotNull String hash);
 
     /**
-     * Sets whether this resource pack is required or not.
+     * Sets whether the resource pack is required or not.
      *
-     * @param required whether this resource pack is required or not
+     * @param required whether the resource pack is required or not
      * @return this builder
      * @since 4.15.0
      */
@@ -174,10 +174,10 @@ public interface ResourcePack extends Examinable {
     /**
      * Builds.
      *
-     * @return a new resource pack
+     * @return a new resource pack request
      * @since 4.15.0
      */
     @Override
-    @NotNull ResourcePack build();
+    @NotNull ResourcePackRequest build();
   }
 }

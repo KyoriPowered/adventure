@@ -35,13 +35,13 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
-final class ResourcePackImpl implements ResourcePack {
+final class ResourcePackRequestImpl implements ResourcePackRequest {
   private final URI uri;
   private final String hash;
   private final boolean required;
   private final Component prompt;
 
-  ResourcePackImpl(final @NotNull URI uri, final @NotNull String hash, final boolean required, final @Nullable Component prompt) {
+  ResourcePackRequestImpl(final @NotNull URI uri, final @NotNull String hash, final boolean required, final @Nullable Component prompt) {
     this.uri = requireNonNull(uri, "uri");
     this.hash = requireNonNull(hash, "hash");
     this.required = required;
@@ -86,8 +86,8 @@ final class ResourcePackImpl implements ResourcePack {
   @Override
   public boolean equals(final @Nullable Object other) {
     if (this == other) return true;
-    if (!(other instanceof ResourcePackImpl)) return false;
-    final ResourcePackImpl that = (ResourcePackImpl) other;
+    if (!(other instanceof ResourcePackRequestImpl)) return false;
+    final ResourcePackRequestImpl that = (ResourcePackRequestImpl) other;
     return this.required == that.required
       && this.uri.equals(that.uri)
       && this.hash.equals(that.hash)
@@ -137,8 +137,8 @@ final class ResourcePackImpl implements ResourcePack {
     }
 
     @Override
-    public @NotNull ResourcePack build() {
-      return new ResourcePackImpl(this.uri, this.hash, this.required, this.prompt);
+    public @NotNull ResourcePackRequest build() {
+      return new ResourcePackRequestImpl(this.uri, this.hash, this.required, this.prompt);
     }
   }
 }
