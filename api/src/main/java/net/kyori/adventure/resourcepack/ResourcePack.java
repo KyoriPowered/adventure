@@ -29,6 +29,8 @@ import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.net.URI;
+
 /**
  * Represents a resource pack that can be sent to players.
  *
@@ -39,37 +41,37 @@ public interface ResourcePack extends Examinable {
   /**
    * Creates a resource pack.
    *
-   * @param url the url
+   * @param uri the uri
    * @param hash the sha-1 hash
    * @param required whether this resource pack is required or not
    * @return the resource pack
    * @since 4.15.0
    */
-  static @NotNull ResourcePack resourcePack(final @NotNull String url, final @NotNull String hash, final boolean required) {
-    return resourcePack(url, hash, required, null);
+  static @NotNull ResourcePack resourcePack(final @NotNull URI uri, final @NotNull String hash, final boolean required) {
+    return resourcePack(uri, hash, required, null);
   }
 
   /**
    * Creates a resource pack.
    *
-   * @param url the url
+   * @param uri the uri
    * @param hash the sha-1 hash
    * @param required whether this resource pack is required or not
    * @param prompt the prompt
    * @return the resource pack
    * @since 4.15.0
    */
-  static @NotNull ResourcePack resourcePack(final @NotNull String url, final @NotNull String hash, final boolean required, final @Nullable Component prompt) {
-    return new ResourcePackImpl(url, hash, required, prompt);
+  static @NotNull ResourcePack resourcePack(final @NotNull URI uri, final @NotNull String hash, final boolean required, final @Nullable Component prompt) {
+    return new ResourcePackImpl(uri, hash, required, prompt);
   }
 
   /**
-   * Gets the url.
+   * Gets the uri.
    *
-   * @return the url
+   * @return the uri
    * @since 4.15.0
    */
-  @NotNull String url();
+  @NotNull URI uri();
 
   /**
    * Gets the hash.

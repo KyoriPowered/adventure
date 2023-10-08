@@ -28,27 +28,28 @@ import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.net.URI;
 import java.util.Objects;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
 final class ResourcePackImpl implements ResourcePack {
-  private final String url;
+  private final URI uri;
   private final String hash;
   private final boolean required;
   private final Component prompt;
 
-  ResourcePackImpl(final @NotNull String url, final @NotNull String hash, final boolean required, final @Nullable Component prompt) {
-    this.url = requireNonNull(url, "url");
+  ResourcePackImpl(final @NotNull URI uri, final @NotNull String hash, final boolean required, final @Nullable Component prompt) {
+    this.uri = requireNonNull(uri, "uri");
     this.hash = requireNonNull(hash, "hash");
     this.required = required;
     this.prompt = prompt;
   }
 
   @Override
-  public @NotNull String url() {
-    return this.url;
+  public @NotNull URI uri() {
+    return this.uri;
   }
 
   @Override
@@ -69,7 +70,7 @@ final class ResourcePackImpl implements ResourcePack {
   @Override
   public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
-      ExaminableProperty.of("url", this.url),
+      ExaminableProperty.of("uri", this.uri),
       ExaminableProperty.of("hash", this.hash),
       ExaminableProperty.of("required", this.required),
       ExaminableProperty.of("prompt", this.prompt)
@@ -82,14 +83,14 @@ final class ResourcePackImpl implements ResourcePack {
     if (!(o instanceof ResourcePackImpl)) return false;
     final ResourcePackImpl that = (ResourcePackImpl) o;
     return this.required == that.required
-      && this.url.equals(that.url)
+      && this.uri.equals(that.uri)
       && this.hash.equals(that.hash)
       && Objects.equals(this.prompt, that.prompt);
   }
 
   @Override
   public int hashCode() {
-    int result = this.url.hashCode();
+    int result = this.uri.hashCode();
     result = 31 * result + this.hash.hashCode();
     result = 31 * result + (this.required ? 1 : 0);
     result = 31 * result + (this.prompt != null ? this.prompt.hashCode() : 0);
