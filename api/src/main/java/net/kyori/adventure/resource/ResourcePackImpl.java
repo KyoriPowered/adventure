@@ -21,8 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.resourcepack;
+package net.kyori.adventure.resource;
 
+import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.Component;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
@@ -78,10 +79,15 @@ final class ResourcePackImpl implements ResourcePack {
   }
 
   @Override
-  public boolean equals(final Object o) {
-    if (this == o) return true;
-    if (!(o instanceof ResourcePackImpl)) return false;
-    final ResourcePackImpl that = (ResourcePackImpl) o;
+  public String toString() {
+    return Internals.toString(this);
+  }
+
+  @Override
+  public boolean equals(final @Nullable Object other) {
+    if (this == other) return true;
+    if (!(other instanceof ResourcePackImpl)) return false;
+    final ResourcePackImpl that = (ResourcePackImpl) other;
     return this.required == that.required
       && this.uri.equals(that.uri)
       && this.hash.equals(that.hash)

@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.resourcepack;
+package net.kyori.adventure.resource;
 
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;

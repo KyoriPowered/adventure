@@ -22,6 +22,6 @@
  * SOFTWARE.
  */
 /**
- * Data for controlling resource packs
+ * Data for controlling resource packs.
  */
-package net.kyori.adventure.resourcepack;
+package net.kyori.adventure.resource;
