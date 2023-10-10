@@ -267,6 +267,21 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
    */
   @NotNull String asString();
 
+  /**
+   * Returns the string representation of this key in minimal form.
+   *
+   * <p>If the {@link #namespace()} of this key is {@link #MINECRAFT_NAMESPACE}, only the {@link #value()} will be returned.</p>
+   *
+   * @return the string representation
+   * @since 4.15.0
+   */
+  default @NotNull String asMinimalString() {
+    if (this.namespace().equals(MINECRAFT_NAMESPACE)) {
+      return this.value();
+    }
+    return this.asString();
+  }
+
   @Override
   default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(

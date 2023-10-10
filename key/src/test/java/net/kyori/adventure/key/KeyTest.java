@@ -68,6 +68,13 @@ class KeyTest {
   }
 
   @Test
+  void testAsMinimalString() {
+    assertEquals("empty", Key.key("empty").asMinimalString());
+    assertEquals("empty", Key.key(Key.MINECRAFT_NAMESPACE, "empty").asMinimalString());
+    assertEquals("adventure:empty", Key.key("adventure", "empty").asMinimalString());
+  }
+
+  @Test
   void testEquality() {
     new EqualsTester()
       .addEqualityGroup(
