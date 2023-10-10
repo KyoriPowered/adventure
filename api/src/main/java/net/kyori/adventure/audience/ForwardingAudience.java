@@ -201,8 +201,8 @@ public interface ForwardingAudience extends Audience {
   }
 
   @Override
-  default void sendResourcePack(final @NotNull ResourcePackRequest resourcePackRequest) {
-    for (final Audience audience : this.audiences()) audience.sendResourcePack(resourcePackRequest);
+  default void sendResourcePack(final @NotNull ResourcePackRequest request) {
+    for (final Audience audience : this.audiences()) audience.sendResourcePack(request);
   }
 
   /**
@@ -369,8 +369,8 @@ public interface ForwardingAudience extends Audience {
     }
 
     @Override
-    default void sendResourcePack(final @NotNull ResourcePackRequest resourcePackRequest) {
-      this.audience().sendResourcePack(resourcePackRequest);
+    default void sendResourcePack(final @NotNull ResourcePackRequest request) {
+      this.audience().sendResourcePack(request);
     }
   }
 }

@@ -37,6 +37,7 @@ import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.pointer.Pointered;
 import net.kyori.adventure.resource.ResourcePackRequest;
+import net.kyori.adventure.resource.ResourcePackRequestLike;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
@@ -702,25 +703,29 @@ public interface Audience extends Pointered {
   default void openBook(final @NotNull Book book) {
   }
 
+  // ------------------------
+  // ---- Resource Packs ----
+  // ------------------------
+
   /**
    * Sends a resource pack request to this audience.
    *
-   * @param resourcePackRequest the resource pack request
+   * @param request the resource pack request
    * @see ResourcePackRequest
    * @since 4.15.0
    */
   @ForwardingAudienceOverrideNotRequired
-  default void sendResourcePack(final ResourcePackRequest.@NotNull Builder resourcePackRequest) {
-    this.sendResourcePack(resourcePackRequest.build());
+  default void sendResourcePack(final @NotNull ResourcePackRequestLike request) {
+    this.sendResourcePack(request.asResourcePackRequest());
   }
 
   /**
    * Sends a resource pack request to this audience.
    *
-   * @param resourcePackRequest the resource pack request
+   * @param request the resource pack request
    * @see ResourcePackRequest
    * @since 4.15.0
    */
-  default void sendResourcePack(final @NotNull ResourcePackRequest resourcePackRequest) {
+  default void sendResourcePack(final @NotNull ResourcePackRequest request) {
   }
 }

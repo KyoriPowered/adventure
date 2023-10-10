@@ -38,7 +38,7 @@ import org.jetbrains.annotations.Nullable;
  * @see Audience#sendResourcePack(ResourcePackRequest)
  * @since 4.15.0
  */
-public interface ResourcePackRequest extends Examinable {
+public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike {
   /**
    * Creates a resource pack request.
    *
@@ -110,18 +110,9 @@ public interface ResourcePackRequest extends Examinable {
    */
   @Nullable Component prompt();
 
-  /**
-   * Create a new builder initialized with the attributes of this resource pack request.
-   *
-   * @return the builder
-   * @since 4.15.0
-   */
-  default @NotNull Builder toBuilder() {
-    return resourcePackRequest()
-      .uri(this.uri())
-      .hash(this.hash())
-      .required(this.required())
-      .prompt(this.prompt());
+  @Override
+  default @NotNull ResourcePackRequest asResourcePackRequest() {
+    return this;
   }
 
   /**
@@ -129,7 +120,7 @@ public interface ResourcePackRequest extends Examinable {
    *
    * @since 4.15.0
    */
-  interface Builder extends AbstractBuilder<ResourcePackRequest> {
+  interface Builder extends AbstractBuilder<ResourcePackRequest>, ResourcePackRequestLike {
     /**
      * Sets the uri.
      *
@@ -178,5 +169,10 @@ public interface ResourcePackRequest extends Examinable {
      */
     @Override
     @NotNull ResourcePackRequest build();
+
+    @Override
+    default @NotNull ResourcePackRequest asResourcePackRequest() {
+      return this.build();
+    }
   }
 }
