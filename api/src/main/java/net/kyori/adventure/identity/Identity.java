@@ -41,7 +41,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.0.0
  * @sinceMinecraft 1.16
  */
-public interface Identity extends Examinable {
+public interface Identity extends Examinable, Identified {
   /**
    * A pointer to a name.
    *
@@ -98,6 +98,11 @@ public interface Identity extends Examinable {
    * @since 4.0.0
    */
   @NotNull UUID uuid();
+
+  @Override
+  default @NotNull Identity identity() {
+    return this;
+  }
 
   @Override
   default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
