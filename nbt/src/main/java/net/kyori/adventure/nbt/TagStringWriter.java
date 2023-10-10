@@ -32,6 +32,7 @@ import java.util.Map;
  *
  * <p>Details on the format are described in the package documentation.</p>
  */
+
 final class TagStringWriter implements AutoCloseable {
   private final Appendable out;
   private final String indent; // TODO: pretty-printing

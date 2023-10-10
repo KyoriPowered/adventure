@@ -23,11 +23,12 @@
  */
 package net.kyori.test;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
+@NullMarked
 public final class EqualityAssertions {
 
   private EqualityAssertions() {
@@ -35,7 +36,7 @@ public final class EqualityAssertions {
 
   //Covers all branches in the standard #equals and #hashcode used in this project
   @SafeVarargs
-  public static <T> void assertEqualityAndNonEquality(final @NotNull T value, final @NotNull T equalToValue, final @NotNull T@NotNull... notEqualToValue) {
+  public static <T> void assertEqualityAndNonEquality(final T value, final T equalToValue, final T... notEqualToValue) {
     assertEquals(value, value);
     assertEquals(value, equalToValue);
     assertNotEquals(value, null);

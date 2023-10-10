@@ -25,15 +25,15 @@ package net.kyori.adventure.text.minimessage.internal.parser.node;
 
 import java.util.Objects;
 import net.kyori.adventure.text.minimessage.internal.parser.Token;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Represents a node in the tree which has a text value.
  *
  * @since 4.10.0
  */
-
+@NullMarked
 public abstract class ValueNode extends ElementNode {
   private final String value;
 
@@ -46,7 +46,7 @@ public abstract class ValueNode extends ElementNode {
    * @param value the value of this text node
    * @since 4.10.0
    */
-  ValueNode(final @Nullable ElementNode parent, final @Nullable Token token, final @NotNull String sourceMessage, final @NotNull String value) {
+  ValueNode(final @Nullable ElementNode parent, final @Nullable Token token, final String sourceMessage, final String value) {
     super(parent, token, sourceMessage);
     this.value = value;
   }
@@ -59,17 +59,17 @@ public abstract class ValueNode extends ElementNode {
    * @return the value
    * @since 4.10.0
    */
-  public @NotNull String value() {
+  public String value() {
     return this.value;
   }
 
   @Override
-  public @NotNull Token token() {
+  public Token token() {
     return Objects.requireNonNull(super.token(), "token is not set");
   }
 
   @Override
-  public @NotNull StringBuilder buildToString(final @NotNull StringBuilder sb, final int indent) {
+  public StringBuilder buildToString(final StringBuilder sb, final int indent) {
     final char[] in = this.ident(indent);
     sb.append(in).append(this.valueName()).append("('").append(this.value).append("')\n");
     return sb;

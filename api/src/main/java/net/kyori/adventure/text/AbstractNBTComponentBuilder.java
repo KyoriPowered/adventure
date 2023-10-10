@@ -23,11 +23,12 @@
  */
 package net.kyori.adventure.text;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 abstract class AbstractNBTComponentBuilder<C extends NBTComponent<C, B>, B extends NBTComponentBuilder<C, B>> extends AbstractComponentBuilder<C, B> implements NBTComponentBuilder<C, B> {
   protected @Nullable String nbtPath;
   protected boolean interpret = NBTComponentImpl.INTERPRET_DEFAULT;
@@ -36,7 +37,7 @@ abstract class AbstractNBTComponentBuilder<C extends NBTComponent<C, B>, B exten
   AbstractNBTComponentBuilder() {
   }
 
-  AbstractNBTComponentBuilder(final @NotNull C component) {
+  AbstractNBTComponentBuilder(final C component) {
     super(component);
     this.nbtPath = component.nbtPath();
     this.interpret = component.interpret();
@@ -45,21 +46,21 @@ abstract class AbstractNBTComponentBuilder<C extends NBTComponent<C, B>, B exten
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NotNull B nbtPath(final @NotNull String nbtPath) {
+  public B nbtPath(final String nbtPath) {
     this.nbtPath = requireNonNull(nbtPath, "nbtPath");
     return (B) this;
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NotNull B interpret(final boolean interpret) {
+  public B interpret(final boolean interpret) {
     this.interpret = interpret;
     return (B) this;
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NotNull B separator(final @Nullable ComponentLike separator) {
+  public B separator(final @Nullable ComponentLike separator) {
     this.separator = ComponentLike.unbox(separator);
     return (B) this;
   }

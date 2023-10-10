@@ -25,13 +25,14 @@ package net.kyori.adventure.text.serializer.json.legacyimpl;
 
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.serializer.json.LegacyHoverEventSerializer;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * A legacy {@link HoverEvent} serializer.
  *
  * @since 4.14.0
  */
+@NullMarked
 public interface NBTLegacyHoverEventSerializer extends LegacyHoverEventSerializer {
   /**
    * Gets the legacy {@link HoverEvent} serializer.
@@ -39,7 +40,7 @@ public interface NBTLegacyHoverEventSerializer extends LegacyHoverEventSerialize
    * @return a legacy {@link HoverEvent} serializer
    * @since 4.14.0
    */
-  static @NotNull LegacyHoverEventSerializer get() {
+  static LegacyHoverEventSerializer get() {
     return NBTLegacyHoverEventSerializerImpl.INSTANCE;
   }
 }

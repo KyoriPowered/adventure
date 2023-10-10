@@ -26,16 +26,17 @@ package net.kyori.adventure.text;
 import java.util.List;
 import java.util.Objects;
 import net.kyori.adventure.text.format.Style;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
+@NullMarked
 abstract class NBTComponentImpl<C extends NBTComponent<C, B>, B extends NBTComponentBuilder<C, B>> extends AbstractComponent implements NBTComponent<C, B> {
   static final boolean INTERPRET_DEFAULT = false;
   final String nbtPath;
   final boolean interpret;
   final @Nullable Component separator;
 
-  NBTComponentImpl(final @NotNull List<Component> children, final @NotNull Style style, final String nbtPath, final boolean interpret, final @Nullable Component separator) {
+  NBTComponentImpl(final List<Component> children, final Style style, final String nbtPath, final boolean interpret, final @Nullable Component separator) {
     super(children, style);
     this.nbtPath = nbtPath;
     this.interpret = interpret;
@@ -43,7 +44,7 @@ abstract class NBTComponentImpl<C extends NBTComponent<C, B>, B extends NBTCompo
   }
 
   @Override
-  public @NotNull String nbtPath() {
+  public String nbtPath() {
     return this.nbtPath;
   }
 

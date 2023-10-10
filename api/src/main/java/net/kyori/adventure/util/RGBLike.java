@@ -23,14 +23,15 @@
  */
 package net.kyori.adventure.util;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Something that can provide red, green, and blue colour components.
  *
  * @since 4.0.0
  */
+@NullMarked
 public interface RGBLike {
   /**
    * Gets the red component.
@@ -62,7 +63,7 @@ public interface RGBLike {
    * @return an HSVLike representing this RGBLike in the HSV color space
    * @since 4.6.0
    */
-  default @NotNull HSVLike asHSV() {
+  default HSVLike asHSV() {
     return HSVLike.fromRGB(this.red(), this.green(), this.blue());
   }
 }

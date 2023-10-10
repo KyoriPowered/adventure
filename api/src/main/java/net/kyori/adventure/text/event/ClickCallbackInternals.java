@@ -27,8 +27,9 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.permission.PermissionChecker;
 import net.kyori.adventure.util.Services;
 import net.kyori.adventure.util.TriState;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 final class ClickCallbackInternals {
   private ClickCallbackInternals() {
   }
@@ -40,7 +41,7 @@ final class ClickCallbackInternals {
 
   static final class Fallback implements ClickCallback.Provider {
     @Override
-    public @NotNull ClickEvent create(final @NotNull ClickCallback<Audience> callback, final ClickCallback.@NotNull Options options) {
+    public ClickEvent create(final ClickCallback<Audience> callback, final ClickCallback.Options options) {
       return ClickEvent.suggestCommand("Callbacks are not supported on this platform!");
     }
   }

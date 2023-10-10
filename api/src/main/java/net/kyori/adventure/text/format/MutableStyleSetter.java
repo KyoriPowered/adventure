@@ -28,7 +28,7 @@ import java.util.Set;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 
@@ -41,6 +41,7 @@ import static java.util.Objects.requireNonNull;
  * @since 4.10.0
  */
 @ApiStatus.NonExtendable
+@NullMarked
 public interface MutableStyleSetter<T extends MutableStyleSetter<?>> extends StyleSetter<T> {
   /**
    * Sets {@code decorations} to {@link TextDecoration.State#TRUE}.
@@ -52,7 +53,7 @@ public interface MutableStyleSetter<T extends MutableStyleSetter<?>> extends Sty
   @Override
   @Contract("_ -> this")
   @SuppressWarnings("unchecked")
-  default @NotNull T decorate(final @NotNull TextDecoration@NotNull... decorations) {
+  default T decorate(final TextDecoration... decorations) {
     for (int i = 0, length = decorations.length; i < length; i++) {
       this.decorate(decorations[i]);
     }
@@ -71,7 +72,7 @@ public interface MutableStyleSetter<T extends MutableStyleSetter<?>> extends Sty
   @Override
   @Contract("_ -> this")
   @SuppressWarnings("unchecked")
-  default @NotNull T decorations(final @NotNull Map<TextDecoration, TextDecoration.State> decorations) {
+  default T decorations(final Map<TextDecoration, TextDecoration.State> decorations) {
     requireNonNull(decorations, "decorations");
     for (final Map.Entry<TextDecoration, TextDecoration.State> entry : decorations.entrySet()) {
       this.decoration(entry.getKey(), entry.getValue());
@@ -91,7 +92,7 @@ public interface MutableStyleSetter<T extends MutableStyleSetter<?>> extends Sty
   @Override
   @Contract("_, _ -> this")
   @SuppressWarnings("unchecked")
-  default @NotNull T decorations(final @NotNull Set<TextDecoration> decorations, final boolean flag) {
+  default T decorations(final Set<TextDecoration> decorations, final boolean flag) {
     final TextDecoration.State state = TextDecoration.State.byBoolean(flag);
     decorations.forEach(decoration -> this.decoration(decoration, state));
     return (T) this;

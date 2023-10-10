@@ -23,13 +23,14 @@
  */
 package net.kyori.adventure.translation;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Something that has a translation key.
  *
  * @since 4.8.0
  */
+@NullMarked
 public interface Translatable {
   /**
    * Gets the translation key.
@@ -37,5 +38,5 @@ public interface Translatable {
    * @return the translation key
    * @since 4.8.0
    */
-  @NotNull String translationKey();
+  String translationKey();
 }

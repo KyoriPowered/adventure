@@ -28,19 +28,20 @@ import java.util.function.Predicate;
 import net.kyori.adventure.util.Index;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.ScalarSerializer;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 @SuppressWarnings("UnstableApiUsage") // TypeToken
+@NullMarked
 final class IndexSerializer<T> extends ScalarSerializer<T> {
   private final Index<String, T> idx;
 
-  IndexSerializer(final @NotNull TypeToken<T> type, final @NotNull Index<String, T> idx) {
+  IndexSerializer(final TypeToken<T> type, final Index<String, T> idx) {
     super(type);
     this.idx = idx;
   }
 
   @Override
-  public @NotNull T deserialize(final @NotNull TypeToken<?> type, final @NotNull Object obj) throws ObjectMappingException {
+  public T deserialize(final TypeToken<?> type, final Object obj) throws ObjectMappingException {
     final T value = this.idx.value(obj.toString());
     if (value == null) {
       throw new ObjectMappingException("No value for key '" + obj + "' in index for type " + this.type());
@@ -49,7 +50,7 @@ final class IndexSerializer<T> extends ScalarSerializer<T> {
   }
 
   @Override
-  public Object serialize(final @NotNull T item, final @NotNull Predicate<Class<?>> typeSupported) {
+  public Object serialize(final T item, final Predicate<Class<?>> typeSupported) {
     return this.idx.key(item);
   }
 }

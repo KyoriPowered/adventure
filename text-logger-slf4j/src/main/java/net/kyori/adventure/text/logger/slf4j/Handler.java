@@ -31,13 +31,14 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.flattener.ComponentFlattener;
 import net.kyori.adventure.translation.GlobalTranslator;
 import net.kyori.adventure.util.Services;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Utility methods relating to creating component loggers.
  */
+@NullMarked
 final class Handler {
   private static final ComponentLoggerProvider PROVIDER = Services.service(ComponentLoggerProvider.class)
     .orElse(LoggerFactory.getILoggerFactory() instanceof ComponentLoggerProvider ? (ComponentLoggerProvider) LoggerFactory.getILoggerFactory() : new DefaultProvider());
@@ -53,7 +54,7 @@ final class Handler {
     private final Map<String, ComponentLogger> loggers = new ConcurrentHashMap<>();
 
     @Override
-    public @NotNull ComponentLogger logger(final @NotNull LoggerHelper helper, final @NotNull String name) {
+    public ComponentLogger logger(final LoggerHelper helper, final String name) {
       final ComponentLogger initial = this.loggers.get(name);
       if (initial != null) return initial;
 
@@ -71,7 +72,7 @@ final class Handler {
     }
 
     @Override
-    public @NotNull Function<Component, String> plainSerializer() {
+    public Function<Component, String> plainSerializer() {
       return comp -> {
         final Component translated = GlobalTranslator.render(comp, Locale.getDefault());
         final StringBuilder contents = new StringBuilder();
@@ -81,7 +82,7 @@ final class Handler {
     }
 
     @Override
-    public @NotNull ComponentLogger delegating(final @NotNull Logger base, final @NotNull Function<Component, String> serializer) {
+    public ComponentLogger delegating(final Logger base, final Function<Component, String> serializer) {
       return new WrappingComponentLoggerImpl(base, serializer);
     }
   }

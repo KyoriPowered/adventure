@@ -38,14 +38,15 @@ import net.kyori.adventure.text.minimessage.internal.serializer.TokenEmitter;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Hover tag.
  *
  * @since 4.10.0
  */
+@NullMarked
 final class HoverTag {
   private static final String HOVER = "hover";
 
@@ -92,7 +93,7 @@ final class HoverTag {
   }
 
   interface ActionHandler<V> {
-    @NotNull V parse(final @NotNull ArgumentQueue args, final @NotNull Context ctx) throws ParsingException;
+    V parse(final ArgumentQueue args, final Context ctx) throws ParsingException;
 
     void emit(final V event, final TokenEmitter emit);
   }
@@ -104,7 +105,7 @@ final class HoverTag {
     }
 
     @Override
-    public @NotNull Component parse(final @NotNull ArgumentQueue args, final @NotNull Context ctx) throws ParsingException {
+    public Component parse(final ArgumentQueue args, final Context ctx) throws ParsingException {
       return ctx.deserialize(args.popOr("show_text action requires a message").value());
     }
 
@@ -121,7 +122,7 @@ final class HoverTag {
     }
 
     @Override
-    public HoverEvent.@NotNull ShowItem parse(final @NotNull ArgumentQueue args, final @NotNull Context ctx) throws ParsingException {
+    public HoverEvent.ShowItem parse(final ArgumentQueue args, final Context ctx) throws ParsingException {
       try {
         final Key key = Key.key(args.popOr("Show item hover needs at least an item ID").value());
         final int count = args.hasNext() ? args.pop().asInt().orElseThrow(() -> ctx.newException("The count argument was not a valid integer")) : 1;
@@ -156,7 +157,7 @@ final class HoverTag {
     }
 
     @Override
-    public HoverEvent.@NotNull ShowEntity parse(final @NotNull ArgumentQueue args, final @NotNull Context ctx) throws ParsingException {
+    public HoverEvent.ShowEntity parse(final ArgumentQueue args, final Context ctx) throws ParsingException {
       try {
         final Key key = Key.key(args.popOr("Show entity needs a type argument").value());
         final UUID id = UUID.fromString(args.popOr("Show entity needs an entity UUID").value());
@@ -181,7 +182,7 @@ final class HoverTag {
     }
   }
 
-  static @NotNull String compactAsString(final @NotNull Key key) {
+  static String compactAsString(final Key key) {
     if (key.namespace().equals(Key.MINECRAFT_NAMESPACE)) {
       return key.value();
     } else {

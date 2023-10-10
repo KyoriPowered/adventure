@@ -28,16 +28,17 @@ import java.util.Collections;
 import java.util.List;
 import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.format.TextFormat;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 final class CharacterAndFormatImpl implements CharacterAndFormat {
   private final char character;
   private final TextFormat format;
 
-  CharacterAndFormatImpl(final char character, final @NotNull TextFormat format) {
+  CharacterAndFormatImpl(final char character, final TextFormat format) {
     this.character = character;
     this.format = requireNonNull(format, "format");
   }
@@ -48,7 +49,7 @@ final class CharacterAndFormatImpl implements CharacterAndFormat {
   }
 
   @Override
-  public @NotNull TextFormat format() {
+  public TextFormat format() {
     return this.format;
   }
 
@@ -69,7 +70,7 @@ final class CharacterAndFormatImpl implements CharacterAndFormat {
   }
 
   @Override
-  public @NotNull String toString() {
+  public String toString() {
     return Internals.toString(this);
   }
 

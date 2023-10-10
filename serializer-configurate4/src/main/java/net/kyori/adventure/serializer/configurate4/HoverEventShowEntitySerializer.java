@@ -28,12 +28,13 @@ import java.util.UUID;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
 
+@NullMarked
 final class HoverEventShowEntitySerializer implements TypeSerializer<HoverEvent.ShowEntity> {
   static final HoverEventShowEntitySerializer INSTANCE = new HoverEventShowEntitySerializer();
 
@@ -45,7 +46,7 @@ final class HoverEventShowEntitySerializer implements TypeSerializer<HoverEvent.
   }
 
   @Override
-  public HoverEvent.ShowEntity deserialize(final @NotNull Type type, final @NotNull ConfigurationNode value) throws SerializationException {
+  public HoverEvent.ShowEntity deserialize(final Type type, final ConfigurationNode value) throws SerializationException {
     final Key typeId = value.node(ENTITY_TYPE).get(Key.class);
     final UUID id = value.node(ID).get(UUID.class);
     if (typeId == null || id == null) {
@@ -57,7 +58,7 @@ final class HoverEventShowEntitySerializer implements TypeSerializer<HoverEvent.
   }
 
   @Override
-  public void serialize(final @NotNull Type type, final HoverEvent.@Nullable ShowEntity obj, final @NotNull ConfigurationNode value) throws SerializationException {
+  public void serialize(final Type type, final HoverEvent.@Nullable ShowEntity obj, final ConfigurationNode value) throws SerializationException {
     if (obj == null) {
       value.set(null);
       return;

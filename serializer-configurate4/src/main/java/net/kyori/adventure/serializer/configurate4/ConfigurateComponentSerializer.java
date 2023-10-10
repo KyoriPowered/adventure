@@ -25,7 +25,7 @@ package net.kyori.adventure.serializer.configurate4;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.TypeSerializer;
 import org.spongepowered.configurate.serialize.TypeSerializerCollection;
@@ -42,6 +42,7 @@ import org.spongepowered.configurate.serialize.TypeSerializerCollection;
  *
  * @since 4.2.0
  */
+@NullMarked
 public interface ConfigurateComponentSerializer extends ComponentSerializer<Component, Component, ConfigurationNode> {
   /**
    * Get an instance with default settings.
@@ -49,7 +50,7 @@ public interface ConfigurateComponentSerializer extends ComponentSerializer<Comp
    * @return the shared default instance
    * @since 4.2.0
    */
-  static @NotNull ConfigurateComponentSerializer configurate() {
+  static ConfigurateComponentSerializer configurate() {
     return ConfigurateComponentSerializerImpl.INSTANCE;
   }
 
@@ -59,7 +60,7 @@ public interface ConfigurateComponentSerializer extends ComponentSerializer<Comp
    * @return a new builder
    * @since 4.2.0
    */
-  static @NotNull Builder builder() {
+  static Builder builder() {
     return new ConfigurateComponentSerializerImpl.Builder();
   }
 
@@ -69,7 +70,7 @@ public interface ConfigurateComponentSerializer extends ComponentSerializer<Comp
    * @return a collection containing Adventure serializers
    * @since 4.2.0
    */
-  @NotNull TypeSerializerCollection serializers();
+  TypeSerializerCollection serializers();
 
   /**
    * A builder for a configurate serializer instance.
@@ -88,7 +89,7 @@ public interface ConfigurateComponentSerializer extends ComponentSerializer<Comp
      * @return this builder
      * @since 4.2.0
      */
-    @NotNull Builder scalarSerializer(final @NotNull ComponentSerializer<Component, ?, String> stringSerializer);
+    Builder scalarSerializer(final ComponentSerializer<Component, ?, String> stringSerializer);
 
     /**
      * If the {@link #scalarSerializer(ComponentSerializer)} is set, output components as serialized strings
@@ -101,7 +102,7 @@ public interface ConfigurateComponentSerializer extends ComponentSerializer<Comp
      * @return this builder
      * @since 4.2.0
      */
-    @NotNull Builder outputStringComponents(final boolean stringComponents);
+    Builder outputStringComponents(final boolean stringComponents);
 
     /**
      * Create a new component serializer instance.
@@ -109,6 +110,6 @@ public interface ConfigurateComponentSerializer extends ComponentSerializer<Comp
      * @return new serializer
      * @since 4.2.0
      */
-    @NotNull ConfigurateComponentSerializer build();
+    ConfigurateComponentSerializer build();
   }
 }

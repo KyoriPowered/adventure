@@ -28,8 +28,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.PlatformAPI;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A JSON component serializer.
@@ -39,6 +39,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 4.14.0
  */
+@NullMarked
 public interface JSONComponentSerializer extends ComponentSerializer<Component, Component, String> {
   /**
    * Gets a component serializer for JSON serialization and deserialization.
@@ -46,7 +47,7 @@ public interface JSONComponentSerializer extends ComponentSerializer<Component, 
    * @return a JSON component serializer
    * @since 4.14.0
    */
-  static @NotNull JSONComponentSerializer json() {
+  static JSONComponentSerializer json() {
     return JSONComponentSerializerAccessor.Instances.INSTANCE;
   }
 
@@ -56,7 +57,7 @@ public interface JSONComponentSerializer extends ComponentSerializer<Component, 
    * @return the new builder
    * @since 4.14.0
    */
-  static JSONComponentSerializer.@NotNull Builder builder() {
+  static JSONComponentSerializer.Builder builder() {
     return JSONComponentSerializerAccessor.Instances.BUILDER_SUPPLIER.get();
   }
 
@@ -72,7 +73,7 @@ public interface JSONComponentSerializer extends ComponentSerializer<Component, 
      * @return this builder
      * @since 4.14.0
      */
-    @NotNull Builder downsampleColors();
+    Builder downsampleColors();
 
     /**
      * Sets a serializer that will be used to interpret legacy hover event {@code value} payloads.
@@ -83,7 +84,7 @@ public interface JSONComponentSerializer extends ComponentSerializer<Component, 
      * @return this builder
      * @since 4.14.0
      */
-    @NotNull Builder legacyHoverEventSerializer(final @Nullable LegacyHoverEventSerializer serializer);
+    Builder legacyHoverEventSerializer(final @Nullable LegacyHoverEventSerializer serializer);
 
     /**
      * Output a legacy hover event {@code value} in addition to the modern {@code contents}.
@@ -94,7 +95,7 @@ public interface JSONComponentSerializer extends ComponentSerializer<Component, 
      * @return this builder
      * @since 4.14.0
      */
-    @NotNull Builder emitLegacyHoverEvent();
+    Builder emitLegacyHoverEvent();
 
     /**
      * Create a finished serializer instance.
@@ -121,7 +122,7 @@ public interface JSONComponentSerializer extends ComponentSerializer<Component, 
      */
     @ApiStatus.Internal
     @PlatformAPI
-    @NotNull JSONComponentSerializer instance();
+    JSONComponentSerializer instance();
 
     /**
      * Provide a supplier for builder builders of {@link JSONComponentSerializer} instances.
@@ -131,6 +132,6 @@ public interface JSONComponentSerializer extends ComponentSerializer<Component, 
      */
     @ApiStatus.Internal
     @PlatformAPI
-    @NotNull Supplier<@NotNull Builder> builder();
+    Supplier<Builder> builder();
   }
 }

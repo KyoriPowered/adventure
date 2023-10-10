@@ -29,13 +29,14 @@ import java.util.function.Consumer;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import net.kyori.adventure.text.ComponentLike;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * {@link Audience}-related utilities.
  *
  * @since 4.13.0
  */
+@NullMarked
 public final class Audiences {
   static final Collector<? super Audience, ?, ForwardingAudience> COLLECTOR = Collectors.collectingAndThen(
     Collectors.toCollection(ArrayList::new),
@@ -52,7 +53,7 @@ public final class Audiences {
    * @return an action to send a message
    * @since 4.13.0
    */
-  public static @NotNull Consumer<? super Audience> sendingMessage(final @NotNull ComponentLike message) {
+  public static Consumer<? super Audience> sendingMessage(final ComponentLike message) {
     return audience -> audience.sendMessage(message);
   }
 }

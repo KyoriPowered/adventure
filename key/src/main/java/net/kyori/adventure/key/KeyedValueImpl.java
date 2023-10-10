@@ -27,9 +27,10 @@ import java.util.stream.Stream;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
+@NullMarked
 final class KeyedValueImpl<T> implements Examinable, KeyedValue<T> {
   private final Key key;
   private final T value;
@@ -40,12 +41,12 @@ final class KeyedValueImpl<T> implements Examinable, KeyedValue<T> {
   }
 
   @Override
-  public @NotNull Key key() {
+  public Key key() {
     return this.key;
   }
 
   @Override
-  public @NotNull T value() {
+  public T value() {
     return this.value;
   }
 
@@ -65,7 +66,7 @@ final class KeyedValueImpl<T> implements Examinable, KeyedValue<T> {
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("key", this.key),
       ExaminableProperty.of("value", this.value)

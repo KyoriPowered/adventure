@@ -36,15 +36,16 @@ import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A transformation that applies a colour gradient.
  *
  * @since 4.10.0
  */
+@NullMarked
 final class GradientTag extends AbstractColorChangingTag {
   private static final String GRADIENT = "gradient";
 
@@ -133,7 +134,7 @@ final class GradientTag extends AbstractColorChangingTag {
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("phase", this.phase),
       ExaminableProperty.of("colors", this.colors)

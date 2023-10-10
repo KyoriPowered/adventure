@@ -27,9 +27,10 @@ import java.util.Objects;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
+@NullMarked
 final class InsertingImpl extends AbstractTag implements Inserting {
   private final boolean allowsChildren;
   private final Component value;
@@ -45,7 +46,7 @@ final class InsertingImpl extends AbstractTag implements Inserting {
   }
 
   @Override
-  public @NotNull Component value() {
+  public Component value() {
     return this.value;
   }
 
@@ -63,7 +64,7 @@ final class InsertingImpl extends AbstractTag implements Inserting {
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("allowsChildren", this.allowsChildren),
       ExaminableProperty.of("value", this.value)

@@ -27,10 +27,11 @@ import java.util.function.Function;
 import net.kyori.adventure.text.KeybindComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.flattener.ComponentFlattener;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 @Deprecated
+@NullMarked
 final class PlainComponentSerializerImpl {
   @Deprecated static final PlainComponentSerializer INSTANCE = new PlainComponentSerializer();
 
@@ -66,13 +67,13 @@ final class PlainComponentSerializerImpl {
     }
 
     @Override
-    public PlainComponentSerializer.@NotNull Builder flattener(final @NotNull ComponentFlattener flattener) {
+    public PlainComponentSerializer.Builder flattener(final ComponentFlattener flattener) {
       this.builder.flattener(flattener);
       return this;
     }
 
     @Override
-    public @NotNull PlainComponentSerializer build() {
+    public PlainComponentSerializer build() {
       return new PlainComponentSerializer(this.builder.build());
     }
   }

@@ -37,8 +37,8 @@ import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.TagPattern;
 import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -51,6 +51,7 @@ import static java.util.Objects.requireNonNull;
  * @see Placeholder
  * @since 4.10.0
  */
+@NullMarked
 public interface TagResolver {
   /**
    * Create a new builder for a tag resolver.
@@ -58,7 +59,7 @@ public interface TagResolver {
    * @return the tag resolver builder
    * @since 4.10.0
    */
-  static @NotNull Builder builder() {
+  static Builder builder() {
     return new TagResolverBuilderImpl();
   }
 
@@ -70,7 +71,7 @@ public interface TagResolver {
    * @return the default resolver
    * @since 4.10.0
    */
-  static @NotNull TagResolver standard() {
+  static TagResolver standard() {
     return StandardTags.defaults();
   }
 
@@ -80,7 +81,7 @@ public interface TagResolver {
    * @return the tag resolver
    * @since 4.10.0
    */
-  static @NotNull TagResolver empty() {
+  static TagResolver empty() {
     return EmptyTagResolver.INSTANCE;
   }
 
@@ -92,7 +93,7 @@ public interface TagResolver {
    * @return a new tag resolver
    * @since 4.10.0
    */
-  static TagResolver.@NotNull Single resolver(@TagPattern final @NotNull String name, final @NotNull Tag tag) {
+  static TagResolver.Single resolver(@TagPattern final String name, final Tag tag) {
     TagInternals.assertValidTagName(name);
     return new SingleResolver(
       name,
@@ -108,7 +109,7 @@ public interface TagResolver {
    * @return a resolver that creates tags using the provided handler
    * @since 4.10.0
    */
-  static @NotNull TagResolver resolver(@TagPattern final @NotNull String name, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler) {
+  static TagResolver resolver(@TagPattern final String name, final BiFunction<ArgumentQueue, Context, Tag> handler) {
     return resolver(Collections.singleton(name), handler);
   }
 
@@ -120,7 +121,7 @@ public interface TagResolver {
    * @return a resolver that creates tags using the provided handler
    * @since 4.10.0
    */
-  static @NotNull TagResolver resolver(final @NotNull Set<String> names, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler) {
+  static TagResolver resolver(final Set<String> names, final BiFunction<ArgumentQueue, Context, Tag> handler) {
     final Set<String> ownNames = new HashSet<>(names);
     for (final String name : ownNames) {
       TagInternals.assertValidTagName(name);
@@ -129,14 +130,14 @@ public interface TagResolver {
 
     return new TagResolver() {
       @Override
-      public @Nullable Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) throws ParsingException {
+      public @Nullable Tag resolve(final String name, final ArgumentQueue arguments, final Context ctx) throws ParsingException {
         if (!names.contains(name)) return null;
 
         return handler.apply(arguments, ctx);
       }
 
       @Override
-      public boolean has(final @NotNull String name) {
+      public boolean has(final String name) {
         return names.contains(name);
       }
     };
@@ -151,7 +152,7 @@ public interface TagResolver {
    * @return the tag resolver
    * @since 4.10.0
    */
-  static @NotNull TagResolver resolver(final @NotNull TagResolver@NotNull... resolvers) {
+  static TagResolver resolver(final TagResolver... resolvers) {
     if (Objects.requireNonNull(resolvers, "resolvers").length == 1) {
       return Objects.requireNonNull(resolvers[0], "resolvers must not contain null elements");
     }
@@ -169,7 +170,7 @@ public interface TagResolver {
    * @return the tag resolver
    * @since 4.10.0
    */
-  static @NotNull TagResolver resolver(final @NotNull Iterable<? extends TagResolver> resolvers) {
+  static TagResolver resolver(final Iterable<? extends TagResolver> resolvers) {
     // We can break out early and return exact resolvers in the case of a zero/one length array.
     if (resolvers instanceof Collection<?>) {
       final int size = ((Collection<?>) resolvers).size();
@@ -193,7 +194,7 @@ public interface TagResolver {
    * @return the caching tag resolver
    * @since 4.10.0
    */
-  static @NotNull TagResolver caching(final TagResolver.@NotNull WithoutArguments resolver) {
+  static TagResolver caching(final TagResolver.WithoutArguments resolver) {
     if (resolver instanceof CachingTagResolver) {
       return resolver;
     } else {
@@ -207,7 +208,7 @@ public interface TagResolver {
    * @return a collector for tag resolvers
    * @since 4.10.0
    */
-  static @NotNull Collector<TagResolver, ?, TagResolver> toTagResolver() {
+  static Collector<TagResolver, ?, TagResolver> toTagResolver() {
     return TagResolverBuilderImpl.COLLECTOR;
   }
 
@@ -221,7 +222,7 @@ public interface TagResolver {
    * @throws ParsingException if the provided arguments are invalid
    * @since 4.10.0
    */
-  @Nullable Tag resolve(@TagPattern final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) throws ParsingException;
+  @Nullable Tag resolve(@TagPattern final String name, final ArgumentQueue arguments, final Context ctx) throws ParsingException;
 
   /**
    * Get whether this resolver handles tags with a certain name.
@@ -232,7 +233,7 @@ public interface TagResolver {
    * @return whether this resolver has a tag with this name
    * @since 4.10.0
    */
-  boolean has(final @NotNull String name);
+  boolean has(final String name);
 
   /**
    * A resolver that only handles a single tag key.
@@ -250,7 +251,7 @@ public interface TagResolver {
      * @return the key
      * @since 4.10.0
      */
-    @NotNull String key();
+    String key();
 
     /**
      * The tag returned by this resolver when the key is matching.
@@ -258,10 +259,10 @@ public interface TagResolver {
      * @return the tag
      * @since 4.10.0
      */
-    @NotNull Tag tag();
+    Tag tag();
 
     @Override
-    default @Nullable Tag resolve(@TagPattern final @NotNull String name) {
+    default @Nullable Tag resolve(@TagPattern final String name) {
       if (this.has(name)) {
         return this.tag();
       }
@@ -269,7 +270,7 @@ public interface TagResolver {
     }
 
     @Override
-    default boolean has(final @NotNull String name) {
+    default boolean has(final String name) {
       return name.equalsIgnoreCase(this.key());
     }
   }
@@ -288,7 +289,7 @@ public interface TagResolver {
      * @return a tag, if any is known.
      * @since 4.10.0
      */
-    @Nullable Tag resolve(@TagPattern final @NotNull String name);
+    @Nullable Tag resolve(@TagPattern final String name);
 
     /**
      * Check if this resolver knows of a tag.
@@ -298,12 +299,12 @@ public interface TagResolver {
      * @since 4.10.0
      */
     @Override
-    default boolean has(final @NotNull String name) {
+    default boolean has(final String name) {
       return this.resolve(name) != null;
     }
 
     @Override
-    default @Nullable Tag resolve(@TagPattern final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) throws ParsingException {
+    default @Nullable Tag resolve(@TagPattern final String name, final ArgumentQueue arguments, final Context ctx) throws ParsingException {
       final Tag resolved = this.resolve(name);
       if (resolved != null && arguments.hasNext()) {
         throw ctx.newException("Tag '<" + name + ">' does not accept any arguments");
@@ -328,7 +329,7 @@ public interface TagResolver {
      * @return this builder
      * @since 4.10.0
      */
-    @NotNull Builder tag(@TagPattern final @NotNull String name, final @NotNull Tag tag);
+    Builder tag(@TagPattern final String name, final Tag tag);
 
     /**
      * Add a single dynamically created tag to this resolver.
@@ -338,7 +339,7 @@ public interface TagResolver {
      * @return this builder
      * @since 4.10.0
      */
-    default @NotNull Builder tag(@TagPattern final @NotNull String name, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler) {
+    default Builder tag(@TagPattern final String name, final BiFunction<ArgumentQueue, Context, Tag> handler) {
       return this.tag(Collections.singleton(name), handler);
     }
 
@@ -350,7 +351,7 @@ public interface TagResolver {
      * @return this builder
      * @since 4.10.0
      */
-    default @NotNull Builder tag(final @NotNull Set<String> names, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler) {
+    default Builder tag(final Set<String> names, final BiFunction<ArgumentQueue, Context, Tag> handler) {
       return this.resolver(TagResolver.resolver(names, handler));
     }
 
@@ -361,7 +362,7 @@ public interface TagResolver {
      * @return this builder
      * @since 4.10.0
      */
-    @NotNull Builder resolver(final @NotNull TagResolver resolver);
+    Builder resolver(final TagResolver resolver);
 
     /**
      * Add placeholder resolvers to those queried by the result of this builder.
@@ -370,7 +371,7 @@ public interface TagResolver {
      * @return this builder
      * @since 4.10.0
      */
-    @NotNull Builder resolvers(final @NotNull TagResolver@NotNull... resolvers);
+    Builder resolvers(final TagResolver... resolvers);
 
     /**
      * Add placeholder resolvers to those queried by the result of this builder.
@@ -379,7 +380,7 @@ public interface TagResolver {
      * @return this builder
      * @since 4.10.0
      */
-    @NotNull Builder resolvers(final @NotNull Iterable<? extends TagResolver> resolvers);
+    Builder resolvers(final Iterable<? extends TagResolver> resolvers);
 
     /**
      * Add a resolver that dynamically queries and caches based on the provided function.
@@ -388,7 +389,7 @@ public interface TagResolver {
      * @return this builder
      * @since 4.10.0
      */
-    default @NotNull Builder caching(final TagResolver.@NotNull WithoutArguments dynamic) {
+    default Builder caching(final TagResolver.WithoutArguments dynamic) {
       return this.resolver(TagResolver.caching(dynamic));
     }
 
@@ -400,6 +401,6 @@ public interface TagResolver {
      * @return the resolver
      * @since 4.10.0
      */
-    @NotNull TagResolver build();
+    TagResolver build();
   }
 }

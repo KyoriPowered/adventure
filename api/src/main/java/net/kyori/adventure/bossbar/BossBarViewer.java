@@ -23,14 +23,15 @@
  */
 package net.kyori.adventure.bossbar;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Something that can view a {@link BossBar}.
  *
  * @since 4.14.0
  */
+@NullMarked
 public interface BossBarViewer {
   /**
    * Gets an unmodifiable view of all known currently active bossbars.
@@ -39,5 +40,5 @@ public interface BossBarViewer {
    * @since 4.14.0
    */
   @UnmodifiableView
-  @NotNull Iterable<? extends BossBar> activeBossBars();
+  Iterable<? extends BossBar> activeBossBars();
 }

@@ -31,10 +31,11 @@ import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.function.Function;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
+@NullMarked
 final class AdventurePropertiesImpl {
   private static final String FILESYSTEM_DIRECTORY_NAME = "config";
   private static final String FILESYSTEM_FILE_NAME = "adventure.properties";
@@ -63,11 +64,11 @@ final class AdventurePropertiesImpl {
   }
 
   @VisibleForTesting
-  static @NotNull String systemPropertyName(final String name) {
+  static String systemPropertyName(final String name) {
     return String.join(".", "net", "kyori", "adventure", name);
   }
 
-  static <T> AdventureProperties.@NotNull Property<T> property(final @NotNull String name, final @NotNull Function<String, T> parser, final @Nullable T defaultValue) {
+  static <T> AdventureProperties.Property<T> property(final String name, final Function<String, T> parser, final @Nullable T defaultValue) {
     return new PropertyImpl<>(name, parser, defaultValue);
   }
 
@@ -78,7 +79,7 @@ final class AdventurePropertiesImpl {
     private boolean valueCalculated;
     private @Nullable T value;
 
-    PropertyImpl(final @NotNull String name, final @NotNull Function<String, T> parser, final @Nullable T defaultValue) {
+    PropertyImpl(final String name, final Function<String, T> parser, final @Nullable T defaultValue) {
       this.name = name;
       this.parser = parser;
       this.defaultValue = defaultValue;

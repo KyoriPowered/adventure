@@ -33,7 +33,7 @@ import net.kyori.adventure.text.SelectorComponent;
 import net.kyori.adventure.text.StorageNBTComponent;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * An abstract implementation of a component renderer.
@@ -41,9 +41,10 @@ import org.jetbrains.annotations.NotNull;
  * @param <C> the context type
  * @since 4.0.0
  */
+@NullMarked
 public abstract class AbstractComponentRenderer<C> implements ComponentRenderer<C> {
   @Override
-  public @NotNull Component render(final @NotNull Component component, final @NotNull C context) {
+  public Component render(final Component component, final C context) {
     if (component instanceof TextComponent) {
       return this.renderText((TextComponent) component, context);
     } else if (component instanceof TranslatableComponent) {
@@ -73,7 +74,7 @@ public abstract class AbstractComponentRenderer<C> implements ComponentRenderer<
    * @param context the context
    * @return the rendered component
    */
-  protected abstract @NotNull Component renderBlockNbt(final @NotNull BlockNBTComponent component, final @NotNull C context);
+  protected abstract Component renderBlockNbt(final BlockNBTComponent component, final C context);
 
   /**
    * Renders an entity NBT component.
@@ -82,7 +83,7 @@ public abstract class AbstractComponentRenderer<C> implements ComponentRenderer<
    * @param context the context
    * @return the rendered component
    */
-  protected abstract @NotNull Component renderEntityNbt(final @NotNull EntityNBTComponent component, final @NotNull C context);
+  protected abstract Component renderEntityNbt(final EntityNBTComponent component, final C context);
 
   /**
    * Renders a storage NBT component.
@@ -91,7 +92,7 @@ public abstract class AbstractComponentRenderer<C> implements ComponentRenderer<
    * @param context the context
    * @return the rendered component
    */
-  protected abstract @NotNull Component renderStorageNbt(final @NotNull StorageNBTComponent component, final @NotNull C context);
+  protected abstract Component renderStorageNbt(final StorageNBTComponent component, final C context);
 
   /**
    * Renders a keybind component.
@@ -100,7 +101,7 @@ public abstract class AbstractComponentRenderer<C> implements ComponentRenderer<
    * @param context the context
    * @return the rendered component
    */
-  protected abstract @NotNull Component renderKeybind(final @NotNull KeybindComponent component, final @NotNull C context);
+  protected abstract Component renderKeybind(final KeybindComponent component, final C context);
 
   /**
    * Renders a score component.
@@ -109,7 +110,7 @@ public abstract class AbstractComponentRenderer<C> implements ComponentRenderer<
    * @param context the context
    * @return the rendered component
    */
-  protected abstract @NotNull Component renderScore(final @NotNull ScoreComponent component, final @NotNull C context);
+  protected abstract Component renderScore(final ScoreComponent component, final C context);
 
   /**
    * Renders a selector component.
@@ -118,7 +119,7 @@ public abstract class AbstractComponentRenderer<C> implements ComponentRenderer<
    * @param context the context
    * @return the rendered component
    */
-  protected abstract @NotNull Component renderSelector(final @NotNull SelectorComponent component, final @NotNull C context);
+  protected abstract Component renderSelector(final SelectorComponent component, final C context);
 
   /**
    * Renders a text component.
@@ -127,7 +128,7 @@ public abstract class AbstractComponentRenderer<C> implements ComponentRenderer<
    * @param context the context
    * @return the rendered component
    */
-  protected abstract @NotNull Component renderText(final @NotNull TextComponent component, final @NotNull C context);
+  protected abstract Component renderText(final TextComponent component, final C context);
 
   /**
    * Renders a translatable component.
@@ -136,5 +137,5 @@ public abstract class AbstractComponentRenderer<C> implements ComponentRenderer<
    * @param context the context
    * @return the rendered component
    */
-  protected abstract @NotNull Component renderTranslatable(final @NotNull TranslatableComponent component, final @NotNull C context);
+  protected abstract Component renderTranslatable(final TranslatableComponent component, final C context);
 }

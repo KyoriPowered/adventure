@@ -25,8 +25,8 @@ package net.kyori.adventure.text.minimessage.internal.parser.match;
 
 import net.kyori.adventure.text.minimessage.internal.parser.TokenType;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.UnknownNullability;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A consumer of a region of a string that was identified as a token.
@@ -34,6 +34,7 @@ import org.jetbrains.annotations.UnknownNullability;
  * @param <T> the return result
  * @since 4.10.0
  */
+@NullMarked
 public abstract class MatchedTokenConsumer<T> {
   protected final String input;
 
@@ -45,7 +46,7 @@ public abstract class MatchedTokenConsumer<T> {
    * @param input the input
    * @since 4.10.0
    */
-  public MatchedTokenConsumer(final @NotNull String input) {
+  public MatchedTokenConsumer(final String input) {
     this.input = input;
   }
 
@@ -58,7 +59,7 @@ public abstract class MatchedTokenConsumer<T> {
    * @since 4.10.0
    */
   @MustBeInvokedByOverriders
-  public void accept(final int start, final int end, final @NotNull TokenType tokenType) {
+  public void accept(final int start, final int end, final TokenType tokenType) {
     this.lastIndex = end;
   }
 
@@ -68,7 +69,7 @@ public abstract class MatchedTokenConsumer<T> {
    * @return the result
    * @since 4.10.0
    */
-  public abstract @UnknownNullability T result();
+  public abstract @Nullable T result();
 
   /**
    * The last accepted end index, or {@code -1} if no match has been accepted.

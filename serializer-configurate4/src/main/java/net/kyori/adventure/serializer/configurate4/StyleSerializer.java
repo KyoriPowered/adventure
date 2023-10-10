@@ -32,13 +32,14 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.ConfigurationOptions;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
 
+@NullMarked
 final class StyleSerializer implements TypeSerializer<Style> {
   static final StyleSerializer INSTANCE = new StyleSerializer();
 
@@ -60,7 +61,7 @@ final class StyleSerializer implements TypeSerializer<Style> {
   }
 
   @Override
-  public @NotNull Style deserialize(final @NotNull Type type, final @NotNull ConfigurationNode value) throws SerializationException {
+  public Style deserialize(final Type type, final ConfigurationNode value) throws SerializationException {
     if (value.virtual()) {
       return Style.empty();
     }
@@ -126,7 +127,7 @@ final class StyleSerializer implements TypeSerializer<Style> {
   }
 
   @Override
-  public void serialize(final @NotNull Type type, @Nullable Style obj, final @NotNull ConfigurationNode value) throws SerializationException {
+  public void serialize(final Type type, @Nullable Style obj, final ConfigurationNode value) throws SerializationException {
     if (obj == null) {
       obj = Style.empty();
     }
@@ -169,7 +170,7 @@ final class StyleSerializer implements TypeSerializer<Style> {
     }
   }
 
-  private static <T> @NotNull T nonNull(final @Nullable T value, final @NotNull String type) throws SerializationException {
+  private static <T> T nonNull(final @Nullable T value, final String type) throws SerializationException {
     if (value == null) {
       throw new SerializationException(type + " was null in an unexpected location");
     }

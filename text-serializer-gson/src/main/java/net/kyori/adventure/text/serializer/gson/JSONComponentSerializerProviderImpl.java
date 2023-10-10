@@ -27,7 +27,7 @@ import java.util.function.Supplier;
 import net.kyori.adventure.text.serializer.json.JSONComponentSerializer;
 import net.kyori.adventure.util.Services;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Implementation of the JSON component serializer provider.
@@ -35,14 +35,15 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.14.0
  */
 @ApiStatus.Internal
+@NullMarked
 public final class JSONComponentSerializerProviderImpl implements JSONComponentSerializer.Provider, Services.Fallback {
   @Override
-  public @NotNull JSONComponentSerializer instance() {
+  public JSONComponentSerializer instance() {
     return GsonComponentSerializer.gson();
   }
 
   @Override
-  public @NotNull Supplier<JSONComponentSerializer.@NotNull Builder> builder() {
+  public Supplier<JSONComponentSerializer.Builder> builder() {
     return GsonComponentSerializer::builder;
   }
 

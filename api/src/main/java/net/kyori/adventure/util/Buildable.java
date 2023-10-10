@@ -26,8 +26,8 @@ package net.kyori.adventure.util;
 import java.util.function.Consumer;
 import net.kyori.adventure.builder.AbstractBuilder;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Something that can be built.
@@ -36,6 +36,7 @@ import org.jetbrains.annotations.Nullable;
  * @param <B> the builder type
  * @since 4.0.0
  */
+@NullMarked
 public interface Buildable<R, B extends Buildable.Builder<R>> {
   /**
    * Configures {@code builder} using {@code consumer} and then builds.
@@ -50,7 +51,7 @@ public interface Buildable<R, B extends Buildable.Builder<R>> {
    */
   @Contract(mutates = "param1")
   @Deprecated
-  static <R extends Buildable<R, B>, B extends Builder<R>> @NotNull R configureAndBuild(final @NotNull B builder, final @Nullable Consumer<? super B> consumer) {
+  static <R extends Buildable<R, B>, B extends Builder<R>> R configureAndBuild(final B builder, final @Nullable Consumer<? super B> consumer) {
     return AbstractBuilder.configureAndBuild(builder, consumer);
   }
 
@@ -61,7 +62,7 @@ public interface Buildable<R, B extends Buildable.Builder<R>> {
    * @since 4.0.0
    */
   @Contract(value = "-> new", pure = true)
-  @NotNull B toBuilder();
+  B toBuilder();
 
   /**
    * A builder.
@@ -80,6 +81,6 @@ public interface Buildable<R, B extends Buildable.Builder<R>> {
      */
     @Contract(value = "-> new", pure = true)
     @Override
-    @NotNull R build();
+    R build();
   }
 }

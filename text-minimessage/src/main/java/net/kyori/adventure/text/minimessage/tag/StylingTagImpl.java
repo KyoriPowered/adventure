@@ -29,9 +29,10 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.StyleBuilderApplicable;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
+@NullMarked
 final class StylingTagImpl extends AbstractTag implements Inserting {
   private final StyleBuilderApplicable[] styles;
 
@@ -40,7 +41,7 @@ final class StylingTagImpl extends AbstractTag implements Inserting {
   }
 
   @Override
-  public @NotNull Component value() {
+  public Component value() {
     return Component.text("", Style.style(this.styles));
   }
 
@@ -58,7 +59,7 @@ final class StylingTagImpl extends AbstractTag implements Inserting {
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(ExaminableProperty.of("styles", this.styles));
   }
 }

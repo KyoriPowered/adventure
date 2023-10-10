@@ -26,10 +26,11 @@ package net.kyori.adventure.nbt;
 import java.util.stream.Stream;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Debug;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 @Debug.Renderer(text = "\"0x\" + Integer.toString(this.value, 16)", hasChildren = "false")
+@NullMarked
 final class ByteBinaryTagImpl extends AbstractBinaryTag implements ByteBinaryTag {
   private final byte value;
 
@@ -86,7 +87,7 @@ final class ByteBinaryTagImpl extends AbstractBinaryTag implements ByteBinaryTag
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(ExaminableProperty.of("value", this.value));
   }
 }

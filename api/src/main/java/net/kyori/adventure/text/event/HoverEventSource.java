@@ -24,8 +24,8 @@
 package net.kyori.adventure.text.event;
 
 import java.util.function.UnaryOperator;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Something that can provide a {@link HoverEvent}.
@@ -33,6 +33,7 @@ import org.jetbrains.annotations.Nullable;
  * @param <V> the value type
  * @since 4.0.0
  */
+@NullMarked
 public interface HoverEventSource<V> {
   /**
    * Fetches a {@link HoverEvent} from a {@code HoverEventSource}.
@@ -52,7 +53,7 @@ public interface HoverEventSource<V> {
    * @return a hover event
    * @since 4.0.0
    */
-  default @NotNull HoverEvent<V> asHoverEvent() {
+  default HoverEvent<V> asHoverEvent() {
     return this.asHoverEvent(UnaryOperator.identity());
   }
 
@@ -66,5 +67,5 @@ public interface HoverEventSource<V> {
    * @return a hover event
    * @since 4.0.0
    */
-  @NotNull HoverEvent<V> asHoverEvent(final @NotNull UnaryOperator<V> op);
+  HoverEvent<V> asHoverEvent(final UnaryOperator<V> op);
 }

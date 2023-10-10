@@ -29,9 +29,9 @@ import net.kyori.adventure.util.HSVLike;
 import net.kyori.adventure.util.RGBLike;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -46,6 +46,7 @@ import static java.util.Objects.requireNonNull;
  * @see NamedTextColor
  * @since 4.0.0
  */
+@NullMarked
 public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, StyleBuilderApplicable, TextFormat {
   /**
    * The hex character.
@@ -67,7 +68,7 @@ public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, S
    * @return a new text colour
    * @since 4.0.0
    */
-  static @NotNull TextColor color(final int value) {
+  static TextColor color(final int value) {
     final int truncatedValue = value & 0xffffff;
     final NamedTextColor named = NamedTextColor.namedColor(truncatedValue);
     return named != null ? named : new TextColorImpl(truncatedValue);
@@ -80,7 +81,7 @@ public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, S
    * @return a new text colour
    * @since 4.0.0
    */
-  static @NotNull TextColor color(final @NotNull RGBLike rgb) {
+  static TextColor color(final RGBLike rgb) {
     if (rgb instanceof TextColor) return (TextColor) rgb;
     return color(rgb.red(), rgb.green(), rgb.blue());
   }
@@ -93,7 +94,7 @@ public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, S
    * @see <a href="https://en.wikipedia.org/wiki/HSL_and_HSV">https://en.wikipedia.org/wiki/HSL_and_HSV</a>
    * @since 4.6.0
    */
-  static @NotNull TextColor color(final @NotNull HSVLike hsv) {
+  static TextColor color(final HSVLike hsv) {
     final float s = hsv.s();
     final float v = hsv.v();
     if (s == 0) {
@@ -132,7 +133,7 @@ public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, S
    * @return a new text colour
    * @since 4.0.0
    */
-  static @NotNull TextColor color(final @Range(from = 0x0, to = 0xff) int r, final @Range(from = 0x0, to = 0xff) int g, final @Range(from = 0x0, to = 0xff) int b) {
+  static TextColor color(final @Range(from = 0x0, to = 0xff) int r, final @Range(from = 0x0, to = 0xff) int g, final @Range(from = 0x0, to = 0xff) int b) {
     return color((r & 0xff) << 16 | (g & 0xff) << 8 | (b & 0xff));
   }
 
@@ -145,7 +146,7 @@ public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, S
    * @return a new text colour
    * @since 4.0.0
    */
-  static @NotNull TextColor color(final float r, final float g, final float b) {
+  static TextColor color(final float r, final float g, final float b) {
     return color((int) (r * 0xff), (int) (g * 0xff), (int) (b * 0xff));
   }
 
@@ -156,7 +157,7 @@ public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, S
    * @return a new text colour
    * @since 4.0.0
    */
-  static @Nullable TextColor fromHexString(final @NotNull String string) {
+  static @Nullable TextColor fromHexString(final String string) {
     if (string.startsWith(HEX_PREFIX)) {
       try {
         final int hex = Integer.parseInt(string.substring(1), 16);
@@ -175,7 +176,7 @@ public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, S
    * @return a new text colour
    * @since 4.0.0
    */
-  static @Nullable TextColor fromCSSHexString(final @NotNull String string) {
+  static @Nullable TextColor fromCSSHexString(final String string) {
     if (string.startsWith(HEX_PREFIX)) {
       final String hexString = string.substring(1);
       if (hexString.length() != 3 && hexString.length() != 6) {
@@ -214,7 +215,7 @@ public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, S
    * @return a hex string
    * @since 4.0.0
    */
-  default @NotNull String asHexString() {
+  default String asHexString() {
     return String.format("%c%06x", HEX_CHARACTER, this.value());
   }
 
@@ -262,7 +263,7 @@ public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, S
    * @return the interpolated value, a color between the two input colors {@code a} and {@code b}
    * @since 4.8.0
    */
-  static @NotNull TextColor lerp(final float t, final @NotNull RGBLike a, final @NotNull RGBLike b) {
+  static TextColor lerp(final float t, final RGBLike a, final RGBLike b) {
     final float clampedT = Math.min(1.0f, Math.max(0.0f, t)); // clamp between 0 and 1
     final int ar = a.red();
     final int br = b.red();
@@ -286,7 +287,7 @@ public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, S
    * @return nearest named colour. will always return a value
    * @since 4.14.0
    */
-  static <C extends TextColor> @NotNull C nearestColorTo(final @NotNull List<C> values, final @NotNull TextColor any) {
+  static <C extends TextColor> C nearestColorTo(final List<C> values, final TextColor any) {
     requireNonNull(any, "color");
 
     float matchedDistance = Float.MAX_VALUE;
@@ -306,7 +307,7 @@ public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, S
   }
 
   @Override
-  default void styleApply(final Style.@NotNull Builder style) {
+  default void styleApply(final Style.Builder style) {
     style.color(this);
   }
 
@@ -316,7 +317,7 @@ public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, S
   }
 
   @Override
-  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  default Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(ExaminableProperty.of("value", this.asHexString()));
   }
 }

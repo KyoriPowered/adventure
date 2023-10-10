@@ -25,8 +25,8 @@ package net.kyori.adventure.internal.properties;
 
 import java.util.function.Function;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Adventure properties.
@@ -34,6 +34,7 @@ import org.jetbrains.annotations.Nullable;
  * @since 4.10.0
  */
 @ApiStatus.Internal
+@NullMarked
 public final class AdventureProperties {
   /**
    * Property for specifying whether debug mode is enabled.
@@ -73,7 +74,7 @@ public final class AdventureProperties {
    * @return a property
    * @since 4.10.0
    */
-  public static <T> @NotNull Property<T> property(final @NotNull String name, final @NotNull Function<String, T> parser, final @Nullable T defaultValue) {
+  public static <T> Property<T> property(final String name, final Function<String, T> parser, final @Nullable T defaultValue) {
     return AdventurePropertiesImpl.property(name, parser, defaultValue);
   }
 

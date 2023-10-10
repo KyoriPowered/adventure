@@ -32,7 +32,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * A {@link ResourceBundle.Control} that enforces UTF-8 string encoding.
@@ -41,6 +41,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 4.0.0
  */
+@NullMarked
 public final class UTF8ResourceBundleControl extends ResourceBundle.Control {
   private static final UTF8ResourceBundleControl INSTANCE = new UTF8ResourceBundleControl();
 
@@ -50,7 +51,7 @@ public final class UTF8ResourceBundleControl extends ResourceBundle.Control {
    * @return a resource bundle control
    * @since 4.0.0
    */
-  public static ResourceBundle.@NotNull Control get() {
+  public static ResourceBundle.Control get() {
     return INSTANCE;
   }
 

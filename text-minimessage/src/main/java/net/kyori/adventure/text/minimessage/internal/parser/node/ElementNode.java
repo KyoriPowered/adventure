@@ -30,14 +30,15 @@ import java.util.List;
 import net.kyori.adventure.text.minimessage.internal.parser.Token;
 import net.kyori.adventure.text.minimessage.internal.parser.TokenType;
 import net.kyori.adventure.text.minimessage.tree.Node;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Represents a node in the tree.
  *
  * @since 4.10.0
  */
+@NullMarked
 public class ElementNode implements Node {
   private final @Nullable ElementNode parent;
   private final @Nullable Token token;
@@ -52,7 +53,7 @@ public class ElementNode implements Node {
    * @param sourceMessage the source message
    * @since 4.10.0
    */
-  ElementNode(final @Nullable ElementNode parent, final @Nullable Token token, final @NotNull String sourceMessage) {
+  ElementNode(final @Nullable ElementNode parent, final @Nullable Token token, final String sourceMessage) {
     this.parent = parent;
     this.token = token;
     this.sourceMessage = sourceMessage;
@@ -85,7 +86,7 @@ public class ElementNode implements Node {
    * @return the source message
    * @since 4.10.0
    */
-  public @NotNull String sourceMessage() {
+  public String sourceMessage() {
     return this.sourceMessage;
   }
 
@@ -96,7 +97,7 @@ public class ElementNode implements Node {
    * @since 4.10.0
    */
   @Override
-  public @NotNull List<ElementNode> children() {
+  public List<ElementNode> children() {
     return Collections.unmodifiableList(this.children);
   }
 
@@ -106,7 +107,7 @@ public class ElementNode implements Node {
    * @return the children of this node
    * @since 4.10.0
    */
-  public @NotNull List<ElementNode> unsafeChildren() {
+  public List<ElementNode> unsafeChildren() {
     return this.children;
   }
 
@@ -118,7 +119,7 @@ public class ElementNode implements Node {
    * @param childNode the child node to add.
    * @since 4.10.0
    */
-  public void addChild(final @NotNull ElementNode childNode) {
+  public void addChild(final ElementNode childNode) {
     final int last = this.children.size() - 1;
     if (!(childNode instanceof TextNode) || this.children.isEmpty() || !(this.children.get(last) instanceof TextNode)) {
       this.children.add(childNode);
@@ -143,7 +144,7 @@ public class ElementNode implements Node {
    * @return the passed string builder, for chaining
    * @since 4.10.0
    */
-  public @NotNull StringBuilder buildToString(final @NotNull StringBuilder sb, final int indent) {
+  public StringBuilder buildToString(final StringBuilder sb, final int indent) {
     final char[] in = this.ident(indent);
     sb.append(in).append("Node {\n");
     for (final ElementNode child : this.children) {
@@ -153,14 +154,14 @@ public class ElementNode implements Node {
     return sb;
   }
 
-  char @NotNull [] ident(final int indent) {
+  char[] ident(final int indent) {
     final char[] c = new char[indent * 2];
     Arrays.fill(c, ' ');
     return c;
   }
 
   @Override
-  public @NotNull String toString() {
+  public String toString() {
     return this.buildToString(new StringBuilder(), 0).toString();
   }
 }

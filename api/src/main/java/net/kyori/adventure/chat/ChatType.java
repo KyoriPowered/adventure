@@ -31,8 +31,8 @@ import net.kyori.adventure.text.ComponentLike;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -42,6 +42,7 @@ import static java.util.Objects.requireNonNull;
  * @since 4.12.0
  * @sinceMinecraft 1.19
  */
+@NullMarked
 public interface ChatType extends Examinable, Keyed {
   /**
    * A chat message from a player.
@@ -106,7 +107,7 @@ public interface ChatType extends Examinable, Keyed {
    * @return the chat type
    * @since 4.12.0
    */
-  static @NotNull ChatType chatType(final @NotNull Keyed key) {
+  static ChatType chatType(final Keyed key) {
     return key instanceof ChatType ? (ChatType) key : new ChatTypeImpl(requireNonNull(key, "key").key());
   }
 
@@ -119,7 +120,7 @@ public interface ChatType extends Examinable, Keyed {
    * @sinceMinecraft 1.19
    */
   @Contract(value = "_ -> new", pure = true)
-  default ChatType.@NotNull Bound bind(final @NotNull ComponentLike name) {
+  default ChatType.Bound bind(final ComponentLike name) {
     return this.bind(name, null);
   }
 
@@ -133,12 +134,12 @@ public interface ChatType extends Examinable, Keyed {
    * @sinceMinecraft 1.19
    */
   @Contract(value = "_, _ -> new", pure = true)
-  default ChatType.@NotNull Bound bind(final @NotNull ComponentLike name, final @Nullable ComponentLike target) {
+  default ChatType.Bound bind(final ComponentLike name, final @Nullable ComponentLike target) {
     return new ChatTypeImpl.BoundImpl(this, requireNonNull(name.asComponent(), "name"), ComponentLike.unbox(target));
   }
 
   @Override
-  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  default Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(ExaminableProperty.of("key", this.key()));
   }
 
@@ -158,7 +159,7 @@ public interface ChatType extends Examinable, Keyed {
      * @sinceMinecraft 1.19
      */
     @Contract(pure = true)
-    @NotNull ChatType type();
+    ChatType type();
 
     /**
      * Get the name component.
@@ -168,7 +169,7 @@ public interface ChatType extends Examinable, Keyed {
      * @sinceMinecraft 1.19
      */
     @Contract(pure = true)
-    @NotNull Component name();
+    Component name();
 
     /**
      * Get the target component.
@@ -181,7 +182,7 @@ public interface ChatType extends Examinable, Keyed {
     @Nullable Component target();
 
     @Override
-    default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+    default Stream<? extends ExaminableProperty> examinableProperties() {
       return Stream.of(
         ExaminableProperty.of("type", this.type()),
         ExaminableProperty.of("name", this.name()),

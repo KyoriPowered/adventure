@@ -23,16 +23,17 @@
  */
 package net.kyori.adventure.nbt;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * A numeric binary tag.
  *
  * @since 4.0.0
  */
+@NullMarked
 public interface NumberBinaryTag extends BinaryTag {
   @Override
-  @NotNull BinaryTagType<? extends NumberBinaryTag> type();
+  BinaryTagType<? extends NumberBinaryTag> type();
 
   /**
    * Gets the value as a {@code byte}.

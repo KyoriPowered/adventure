@@ -26,7 +26,7 @@ package net.kyori.adventure.util;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Something that has listeners.
@@ -34,6 +34,7 @@ import org.jetbrains.annotations.NotNull;
  * @param <L> the listener type
  * @since 4.0.0
  */
+@NullMarked
 public abstract class Listenable<L> {
   private final List<L> listeners = new CopyOnWriteArrayList<>();
 
@@ -43,7 +44,7 @@ public abstract class Listenable<L> {
    * @param consumer the consumer
    * @since 4.0.0
    */
-  protected final void forEachListener(final @NotNull Consumer<L> consumer) {
+  protected final void forEachListener(final Consumer<L> consumer) {
     for (final L listener : this.listeners) {
       consumer.accept(listener);
     }
@@ -55,7 +56,7 @@ public abstract class Listenable<L> {
    * @param listener the listener
    * @since 4.0.0
    */
-  protected final void addListener0(final @NotNull L listener) {
+  protected final void addListener0(final L listener) {
     this.listeners.add(listener);
   }
 
@@ -65,7 +66,7 @@ public abstract class Listenable<L> {
    * @param listener the listener
    * @since 4.0.0
    */
-  protected final void removeListener0(final @NotNull L listener) {
+  protected final void removeListener0(final L listener) {
     this.listeners.remove(listener);
   }
 }

@@ -33,7 +33,7 @@ import java.util.UUID;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.SHOW_ENTITY_ID;
 import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.SHOW_ENTITY_NAME;

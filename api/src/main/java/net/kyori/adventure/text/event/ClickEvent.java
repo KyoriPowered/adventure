@@ -35,8 +35,8 @@ import net.kyori.adventure.text.format.StyleBuilderApplicable;
 import net.kyori.adventure.util.Index;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -47,6 +47,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 4.0.0
  */
+@NullMarked
 public final class ClickEvent implements Examinable, StyleBuilderApplicable {
   /**
    * Creates a click event that opens a url.
@@ -55,7 +56,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @return a click event
    * @since 4.0.0
    */
-  public static @NotNull ClickEvent openUrl(final @NotNull String url) {
+  public static ClickEvent openUrl(final String url) {
     return new ClickEvent(Action.OPEN_URL, url);
   }
 
@@ -66,7 +67,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @return a click event
    * @since 4.0.0
    */
-  public static @NotNull ClickEvent openUrl(final @NotNull URL url) {
+  public static ClickEvent openUrl(final URL url) {
     return openUrl(url.toExternalForm());
   }
 
@@ -79,7 +80,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @return a click event
    * @since 4.0.0
    */
-  public static @NotNull ClickEvent openFile(final @NotNull String file) {
+  public static ClickEvent openFile(final String file) {
     return new ClickEvent(Action.OPEN_FILE, file);
   }
 
@@ -90,7 +91,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @return a click event
    * @since 4.0.0
    */
-  public static @NotNull ClickEvent runCommand(final @NotNull String command) {
+  public static ClickEvent runCommand(final String command) {
     return new ClickEvent(Action.RUN_COMMAND, command);
   }
 
@@ -101,7 +102,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @return a click event
    * @since 4.0.0
    */
-  public static @NotNull ClickEvent suggestCommand(final @NotNull String command) {
+  public static ClickEvent suggestCommand(final String command) {
     return new ClickEvent(Action.SUGGEST_COMMAND, command);
   }
 
@@ -112,7 +113,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @return a click event
    * @since 4.0.0
    */
-  public static @NotNull ClickEvent changePage(final @NotNull String page) {
+  public static ClickEvent changePage(final String page) {
     return new ClickEvent(Action.CHANGE_PAGE, page);
   }
 
@@ -123,7 +124,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @return a click event
    * @since 4.0.0
    */
-  public static @NotNull ClickEvent changePage(final int page) {
+  public static ClickEvent changePage(final int page) {
     return changePage(String.valueOf(page));
   }
 
@@ -135,7 +136,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @since 4.0.0
    * @sinceMinecraft 1.15
    */
-  public static @NotNull ClickEvent copyToClipboard(final @NotNull String text) {
+  public static ClickEvent copyToClipboard(final String text) {
     return new ClickEvent(Action.COPY_TO_CLIPBOARD, text);
   }
 
@@ -148,7 +149,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @return a callback click event
    * @since 4.13.0
    */
-  public static @NotNull ClickEvent callback(final @NotNull ClickCallback<Audience> function) {
+  public static ClickEvent callback(final ClickCallback<Audience> function) {
     return ClickCallbackInternals.PROVIDER.create(requireNonNull(function, "function"), ClickCallbackOptionsImpl.DEFAULT);
   }
 
@@ -160,7 +161,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @return a callback click event
    * @since 4.13.0
    */
-  public static @NotNull ClickEvent callback(final @NotNull ClickCallback<Audience> function, final ClickCallback.@NotNull Options options) {
+  public static ClickEvent callback(final ClickCallback<Audience> function, final ClickCallback.Options options) {
     return ClickCallbackInternals.PROVIDER.create(requireNonNull(function, "function"), requireNonNull(options, "options"));
   }
 
@@ -172,7 +173,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @return a callback click event
    * @since 4.13.0
    */
-  public static @NotNull ClickEvent callback(final @NotNull ClickCallback<Audience> function, final @NotNull Consumer<ClickCallback.Options.@NotNull Builder> optionsBuilder) {
+  public static ClickEvent callback(final ClickCallback<Audience> function, final Consumer<ClickCallback.Options.Builder> optionsBuilder) {
     return ClickCallbackInternals.PROVIDER.create(
       requireNonNull(function, "function"),
       AbstractBuilder.configureAndBuild(ClickCallback.Options.builder(), requireNonNull(optionsBuilder, "optionsBuilder"))
@@ -187,14 +188,14 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @return a click event
    * @since 4.0.0
    */
-  public static @NotNull ClickEvent clickEvent(final @NotNull Action action, final @NotNull String value) {
+  public static ClickEvent clickEvent(final Action action, final String value) {
     return new ClickEvent(action, value);
   }
 
   private final Action action;
   private final String value;
 
-  private ClickEvent(final @NotNull Action action, final @NotNull String value) {
+  private ClickEvent(final Action action, final String value) {
     this.action = requireNonNull(action, "action");
     this.value = requireNonNull(value, "value");
   }
@@ -205,7 +206,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @return the click event action
    * @since 4.0.0
    */
-  public @NotNull Action action() {
+  public Action action() {
     return this.action;
   }
 
@@ -215,12 +216,12 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @return the click event value
    * @since 4.0.0
    */
-  public @NotNull String value() {
+  public String value() {
     return this.value;
   }
 
   @Override
-  public void styleApply(final Style.@NotNull Builder style) {
+  public void styleApply(final Style.Builder style) {
     style.clickEvent(this);
   }
 
@@ -240,7 +241,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("action", this.action),
       ExaminableProperty.of("value", this.value)
@@ -312,7 +313,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
      */
     private final boolean readable;
 
-    Action(final @NotNull String name, final boolean readable) {
+    Action(final String name, final boolean readable) {
       this.name = name;
       this.readable = readable;
     }
@@ -329,7 +330,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
     }
 
     @Override
-    public @NotNull String toString() {
+    public String toString() {
       return this.name;
     }
   }

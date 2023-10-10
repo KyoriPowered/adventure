@@ -24,8 +24,7 @@
 package net.kyori.adventure.text;
 
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /*
  * This can't be a child of NBTComponent.
@@ -47,7 +46,7 @@ public interface NBTComponentBuilder<C extends NBTComponent<C, B>, B extends NBT
    * @since 4.0.0
    */
   @Contract("_ -> this")
-  @NotNull B nbtPath(final @NotNull String nbtPath);
+  B nbtPath(final String nbtPath);
 
   /**
    * Sets whether to interpret.
@@ -57,7 +56,7 @@ public interface NBTComponentBuilder<C extends NBTComponent<C, B>, B extends NBT
    * @since 4.0.0
    */
   @Contract("_ -> this")
-  @NotNull B interpret(final boolean interpret);
+  B interpret(final boolean interpret);
 
   /**
    * Sets the separator.
@@ -67,5 +66,5 @@ public interface NBTComponentBuilder<C extends NBTComponent<C, B>, B extends NBT
    * @since 4.8.0
    */
   @Contract("_ -> this")
-  @NotNull B separator(final @Nullable ComponentLike separator);
+  B separator(final @Nullable ComponentLike separator);
 }

@@ -29,9 +29,10 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.ScalarSerializer;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 @SuppressWarnings("UnstableApiUsage") // TypeToken
+@NullMarked
 final class TextColorSerializer extends ScalarSerializer<TextColor> {
   static final TextColorSerializer INSTANCE = new TextColorSerializer();
 
@@ -40,7 +41,7 @@ final class TextColorSerializer extends ScalarSerializer<TextColor> {
   }
 
   @Override
-  public TextColor deserialize(final @NotNull TypeToken<?> type, final @NotNull Object obj) throws ObjectMappingException {
+  public TextColor deserialize(final TypeToken<?> type, final Object obj) throws ObjectMappingException {
     if (obj instanceof Number) { // numerical values
       return TextColor.color(((Number) obj).intValue());
     } else if (!(obj instanceof CharSequence)) {
@@ -60,7 +61,7 @@ final class TextColorSerializer extends ScalarSerializer<TextColor> {
   }
 
   @Override
-  public Object serialize(final @NotNull TextColor item, final @NotNull Predicate<Class<?>> typeSupported) {
+  public Object serialize(final TextColor item, final Predicate<Class<?>> typeSupported) {
     if (item instanceof NamedTextColor) { // TODO: Downsampling
       return NamedTextColor.NAMES.key((NamedTextColor) item);
     } else {

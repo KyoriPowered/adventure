@@ -31,15 +31,16 @@ import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.util.ShadyPines;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, BlockNBTComponent.Builder> implements BlockNBTComponent {
   private final Pos pos;
 
-  static BlockNBTComponent create(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final String nbtPath, final boolean interpret, final @Nullable ComponentLike separator, final @NotNull Pos pos) {
+  static BlockNBTComponent create(final List<? extends ComponentLike> children, final Style style, final String nbtPath, final boolean interpret, final @Nullable ComponentLike separator, final Pos pos) {
     return new BlockNBTComponentImpl(
       ComponentLike.asComponents(children, IS_NOT_EMPTY),
       requireNonNull(style, "style"),
@@ -50,19 +51,19 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
     );
   }
 
-  BlockNBTComponentImpl(final @NotNull List<Component> children, final @NotNull Style style, final String nbtPath, final boolean interpret, final @Nullable Component separator, final @NotNull Pos pos) {
+  BlockNBTComponentImpl(final List<Component> children, final Style style, final String nbtPath, final boolean interpret, final @Nullable Component separator, final Pos pos) {
     super(children, style, nbtPath, interpret, separator);
     this.pos = pos;
   }
 
   @Override
-  public @NotNull BlockNBTComponent nbtPath(final @NotNull String nbtPath) {
+  public BlockNBTComponent nbtPath(final String nbtPath) {
     if (Objects.equals(this.nbtPath, nbtPath)) return this;
     return create(this.children, this.style, nbtPath, this.interpret, this.separator, this.pos);
   }
 
   @Override
-  public @NotNull BlockNBTComponent interpret(final boolean interpret) {
+  public BlockNBTComponent interpret(final boolean interpret) {
     if (this.interpret == interpret) return this;
     return create(this.children, this.style, this.nbtPath, interpret, this.separator, this.pos);
   }
@@ -73,27 +74,27 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
   }
 
   @Override
-  public @NotNull BlockNBTComponent separator(final @Nullable ComponentLike separator) {
+  public BlockNBTComponent separator(final @Nullable ComponentLike separator) {
     return create(this.children, this.style, this.nbtPath, this.interpret, separator, this.pos);
   }
 
   @Override
-  public @NotNull Pos pos() {
+  public Pos pos() {
     return this.pos;
   }
 
   @Override
-  public @NotNull BlockNBTComponent pos(final @NotNull Pos pos) {
+  public BlockNBTComponent pos(final Pos pos) {
     return create(this.children, this.style, this.nbtPath, this.interpret, this.separator, pos);
   }
 
   @Override
-  public @NotNull BlockNBTComponent children(final @NotNull List<? extends ComponentLike> children) {
+  public BlockNBTComponent children(final List<? extends ComponentLike> children) {
     return create(children, this.style, this.nbtPath, this.interpret, this.separator, this.pos);
   }
 
   @Override
-  public @NotNull BlockNBTComponent style(final @NotNull Style style) {
+  public BlockNBTComponent style(final Style style) {
     return create(this.children, style, this.nbtPath, this.interpret, this.separator, this.pos);
   }
 
@@ -119,7 +120,7 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
   }
 
   @Override
-  public BlockNBTComponent.@NotNull Builder toBuilder() {
+  public BlockNBTComponent.Builder toBuilder() {
     return new BuilderImpl(this);
   }
 
@@ -129,19 +130,19 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
     BuilderImpl() {
     }
 
-    BuilderImpl(final @NotNull BlockNBTComponent component) {
+    BuilderImpl(final BlockNBTComponent component) {
       super(component);
       this.pos = component.pos();
     }
 
     @Override
-    public BlockNBTComponent.@NotNull Builder pos(final @NotNull Pos pos) {
+    public BlockNBTComponent.Builder pos(final Pos pos) {
       this.pos = requireNonNull(pos, "pos");
       return this;
     }
 
     @Override
-    public @NotNull BlockNBTComponent build() {
+    public BlockNBTComponent build() {
       if (this.nbtPath == null) throw new IllegalStateException("nbt path must be set");
       if (this.pos == null) throw new IllegalStateException("pos must be set");
       return create(this.children, this.buildStyle(), this.nbtPath, this.interpret, this.separator, this.pos);
@@ -175,7 +176,7 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
     }
 
     @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+    public Stream<? extends ExaminableProperty> examinableProperties() {
       return Stream.of(
         ExaminableProperty.of("left", this.left),
         ExaminableProperty.of("up", this.up),
@@ -207,7 +208,7 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
     }
 
     @Override
-    public @NotNull String asString() {
+    public String asString() {
       return Tokens.serializeLocal(this.left) + ' ' + Tokens.serializeLocal(this.up) + ' ' + Tokens.serializeLocal(this.forwards);
     }
   }
@@ -224,22 +225,22 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
     }
 
     @Override
-    public @NotNull Coordinate x() {
+    public Coordinate x() {
       return this.x;
     }
 
     @Override
-    public @NotNull Coordinate y() {
+    public Coordinate y() {
       return this.y;
     }
 
     @Override
-    public @NotNull Coordinate z() {
+    public Coordinate z() {
       return this.z;
     }
 
     @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+    public Stream<? extends ExaminableProperty> examinableProperties() {
       return Stream.of(
         ExaminableProperty.of("x", this.x),
         ExaminableProperty.of("y", this.y),
@@ -271,7 +272,7 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
     }
 
     @Override
-    public @NotNull String asString() {
+    public String asString() {
       return Tokens.serializeCoordinate(this.x()) + ' ' + Tokens.serializeCoordinate(this.y()) + ' ' + Tokens.serializeCoordinate(this.z());
     }
 
@@ -279,7 +280,7 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
       private final int value;
       private final Type type;
 
-      CoordinateImpl(final int value, final @NotNull Type type) {
+      CoordinateImpl(final int value, final Type type) {
         this.value = value;
         this.type = requireNonNull(type, "type");
       }
@@ -290,12 +291,12 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
       }
 
       @Override
-      public @NotNull Type type() {
+      public Type type() {
         return this.type;
       }
 
       @Override
-      public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+      public Stream<? extends ExaminableProperty> examinableProperties() {
         return Stream.of(
           ExaminableProperty.of("value", this.value),
           ExaminableProperty.of("type", this.type)

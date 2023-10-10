@@ -28,15 +28,16 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Set;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 final class ComponentIterator implements Iterator<Component> {
   private Component component;
   private final ComponentIteratorType type;
   private final Set<ComponentIteratorFlag> flags;
   private final Deque<Component> deque;
 
-  ComponentIterator(final @NotNull Component component, final @NotNull ComponentIteratorType type, final @NotNull Set<ComponentIteratorFlag> flags) {
+  ComponentIterator(final Component component, final ComponentIteratorType type, final Set<ComponentIteratorFlag> flags) {
     this.component = component;
     this.type = type;
     this.flags = flags;

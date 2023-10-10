@@ -30,8 +30,8 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /*
  * This is a hack.
@@ -42,6 +42,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 4.0.0
  */
+@NullMarked
 public final class LegacyFormat implements Examinable {
   static final LegacyFormat RESET = new LegacyFormat(true);
   private final @Nullable NamedTextColor color;
@@ -117,7 +118,7 @@ public final class LegacyFormat implements Examinable {
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("color", this.color),
       ExaminableProperty.of("decoration", this.decoration),

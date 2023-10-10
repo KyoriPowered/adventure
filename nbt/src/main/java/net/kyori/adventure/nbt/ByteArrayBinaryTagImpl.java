@@ -28,10 +28,11 @@ import java.util.Iterator;
 import java.util.stream.Stream;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Debug;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 @Debug.Renderer(text = "\"byte[\" + this.value.length + \"]\"", childrenArray = "this.value", hasChildren = "this.value.length > 0")
+@NullMarked
 final class ByteArrayBinaryTagImpl extends ArrayBinaryTagImpl implements ByteArrayBinaryTag {
   final byte[] value;
 
@@ -40,7 +41,7 @@ final class ByteArrayBinaryTagImpl extends ArrayBinaryTagImpl implements ByteArr
   }
 
   @Override
-  public byte@NotNull[] value() {
+  public byte[] value() {
     return Arrays.copyOf(this.value, this.value.length);
   }
 
@@ -74,7 +75,7 @@ final class ByteArrayBinaryTagImpl extends ArrayBinaryTagImpl implements ByteArr
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(ExaminableProperty.of("value", this.value));
   }
 

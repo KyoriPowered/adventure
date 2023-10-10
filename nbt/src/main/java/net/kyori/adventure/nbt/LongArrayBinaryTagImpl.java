@@ -32,10 +32,11 @@ import java.util.stream.LongStream;
 import java.util.stream.Stream;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Debug;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 @Debug.Renderer(text = "\"long[\" + this.value.length + \"]\"", childrenArray = "this.value", hasChildren = "this.value.length > 0")
+@NullMarked
 final class LongArrayBinaryTagImpl extends ArrayBinaryTagImpl implements LongArrayBinaryTag {
   final long[] value;
 
@@ -44,7 +45,7 @@ final class LongArrayBinaryTagImpl extends ArrayBinaryTagImpl implements LongArr
   }
 
   @Override
-  public long@NotNull[] value() {
+  public long[] value() {
     return Arrays.copyOf(this.value, this.value.length);
   }
 
@@ -60,7 +61,7 @@ final class LongArrayBinaryTagImpl extends ArrayBinaryTagImpl implements LongArr
   }
 
   @Override
-  public PrimitiveIterator.@NotNull OfLong iterator() {
+  public PrimitiveIterator.OfLong iterator() {
     return new PrimitiveIterator.OfLong() {
       private int index;
 
@@ -80,17 +81,17 @@ final class LongArrayBinaryTagImpl extends ArrayBinaryTagImpl implements LongArr
   }
 
   @Override
-  public Spliterator.@NotNull OfLong spliterator() {
+  public Spliterator.OfLong spliterator() {
     return Arrays.spliterator(this.value);
   }
 
   @Override
-  public @NotNull LongStream stream() {
+  public LongStream stream() {
     return Arrays.stream(this.value);
   }
 
   @Override
-  public void forEachLong(final @NotNull LongConsumer action) {
+  public void forEachLong(final LongConsumer action) {
     for (int i = 0, length = this.value.length; i < length; i++) {
       action.accept(this.value[i]);
     }
@@ -115,7 +116,7 @@ final class LongArrayBinaryTagImpl extends ArrayBinaryTagImpl implements LongArr
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(ExaminableProperty.of("value", this.value));
   }
 }

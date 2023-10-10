@@ -24,13 +24,14 @@
 package net.kyori.adventure.nbt;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * A binary tag holding a {@code double} value.
  *
  * @since 4.0.0
  */
+@NullMarked
 public interface DoubleBinaryTag extends NumberBinaryTag {
   /**
    * Creates a binary tag holding a {@code double} value.
@@ -39,7 +40,7 @@ public interface DoubleBinaryTag extends NumberBinaryTag {
    * @return a binary tag
    * @since 4.14.0
    */
-  static @NotNull DoubleBinaryTag doubleBinaryTag(final double value) {
+  static DoubleBinaryTag doubleBinaryTag(final double value) {
     return new DoubleBinaryTagImpl(value);
   }
 
@@ -53,12 +54,12 @@ public interface DoubleBinaryTag extends NumberBinaryTag {
    */
   @Deprecated
   @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  static @NotNull DoubleBinaryTag of(final double value) {
+  static DoubleBinaryTag of(final double value) {
     return new DoubleBinaryTagImpl(value);
   }
 
   @Override
-  default @NotNull BinaryTagType<DoubleBinaryTag> type() {
+  default BinaryTagType<DoubleBinaryTag> type() {
     return BinaryTagTypes.DOUBLE;
   }
 

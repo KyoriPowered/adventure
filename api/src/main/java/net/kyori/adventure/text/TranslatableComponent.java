@@ -33,8 +33,8 @@ import net.kyori.adventure.translation.Translatable;
 import net.kyori.adventure.translation.TranslationRegistry;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A component that can display translated text.
@@ -61,6 +61,7 @@ import org.jetbrains.annotations.Nullable;
  * @see TranslationRegistry
  * @since 4.0.0
  */
+@NullMarked
 public interface TranslatableComponent extends BuildableComponent<TranslatableComponent, TranslatableComponent.Builder>, ScopedComponent<TranslatableComponent> {
   /**
    * Gets the translation key.
@@ -68,7 +69,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @return the translation key
    * @since 4.0.0
    */
-  @NotNull String key();
+  String key();
 
   /**
    * Sets the translation key.
@@ -78,7 +79,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @since 4.8.0
    */
   @Contract(pure = true)
-  default @NotNull TranslatableComponent key(final @NotNull Translatable translatable) {
+  default TranslatableComponent key(final Translatable translatable) {
     return this.key(Objects.requireNonNull(translatable, "translatable").translationKey());
   }
 
@@ -90,7 +91,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @since 4.0.0
    */
   @Contract(pure = true)
-  @NotNull TranslatableComponent key(final @NotNull String key);
+  TranslatableComponent key(final String key);
 
   /**
    * Gets the unmodifiable list of translation arguments.
@@ -98,7 +99,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @return the unmodifiable list of translation arguments
    * @since 4.0.0
    */
-  @NotNull List<Component> args();
+  List<Component> args();
 
   /**
    * Sets the translation arguments for this component.
@@ -108,7 +109,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @since 4.0.0
    */
   @Contract(pure = true)
-  @NotNull TranslatableComponent args(final @NotNull ComponentLike@NotNull... args);
+  TranslatableComponent args(final ComponentLike... args);
 
   /**
    * Sets the translation arguments for this component.
@@ -118,7 +119,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @since 4.0.0
    */
   @Contract(pure = true)
-  @NotNull TranslatableComponent args(final @NotNull List<? extends ComponentLike> args);
+  TranslatableComponent args(final List<? extends ComponentLike> args);
 
   /**
    * Gets the translation fallback text for this component.
@@ -142,10 +143,10 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @sinceMinecraft 1.19.4
    */
   @Contract(pure = true)
-  @NotNull TranslatableComponent fallback(final @Nullable String fallback);
+  TranslatableComponent fallback(final @Nullable String fallback);
 
   @Override
-  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  default Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.concat(
       Stream.of(
         ExaminableProperty.of("key", this.key()),
@@ -170,7 +171,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      * @since 4.8.0
      */
     @Contract(pure = true)
-    default @NotNull Builder key(final @NotNull Translatable translatable) {
+    default Builder key(final Translatable translatable) {
       return this.key(Objects.requireNonNull(translatable, "translatable").translationKey());
     }
 
@@ -182,7 +183,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      * @since 4.0.0
      */
     @Contract("_ -> this")
-    @NotNull Builder key(final @NotNull String key);
+    Builder key(final String key);
 
     /**
      * Sets the translation args.
@@ -192,7 +193,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      * @since 4.0.0
      */
     @Contract("_ -> this")
-    @NotNull Builder args(final @NotNull ComponentBuilder<?, ?> arg);
+    Builder args(final ComponentBuilder<?, ?> arg);
 
     /**
      * Sets the translation args.
@@ -203,7 +204,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      */
     @Contract("_ -> this")
     @SuppressWarnings("checkstyle:GenericWhitespace")
-    @NotNull Builder args(final @NotNull ComponentBuilder<?, ?>@NotNull... args);
+    Builder args(final ComponentBuilder<?, ?>... args);
 
     /**
      * Sets the translation args.
@@ -213,7 +214,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      * @since 4.0.0
      */
     @Contract("_ -> this")
-    @NotNull Builder args(final @NotNull Component arg);
+    Builder args(final Component arg);
 
     /**
      * Sets the translation args.
@@ -223,7 +224,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      * @since 4.0.0
      */
     @Contract("_ -> this")
-    @NotNull Builder args(final @NotNull ComponentLike@NotNull... args);
+    Builder args(final ComponentLike... args);
 
     /**
      * Sets the translation args.
@@ -233,7 +234,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      * @since 4.0.0
      */
     @Contract("_ -> this")
-    @NotNull Builder args(final @NotNull List<? extends ComponentLike> args);
+    Builder args(final List<? extends ComponentLike> args);
 
     /**
      * Sets the translation fallback text.
@@ -246,6 +247,6 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      * @sinceMinecraft 1.19.4
      */
     @Contract("_ -> this")
-    @NotNull Builder fallback(final @Nullable String fallback);
+    Builder fallback(final @Nullable String fallback);
   }
 }

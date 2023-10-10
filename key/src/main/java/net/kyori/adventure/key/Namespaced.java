@@ -23,13 +23,14 @@
  */
 package net.kyori.adventure.key;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Something that has a namespace.
  *
  * @since 4.4.0
  */
+@NullMarked
 public interface Namespaced {
   /**
    * Gets the namespace.
@@ -37,5 +38,5 @@ public interface Namespaced {
    * @return the namespace
    * @since 4.4.0
    */
-  @NotNull @KeyPattern.Namespace String namespace();
+  @KeyPattern.Namespace String namespace();
 }

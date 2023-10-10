@@ -44,11 +44,12 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextFormat;
 import net.kyori.adventure.util.Services;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   static final Pattern DEFAULT_URL_PATTERN = Pattern.compile("(?:(https?)://)?([-\\w_.]+\\.\\w{2,})(/\\S*)?");
   static final Pattern URL_SCHEME_PATTERN = Pattern.compile("^[a-z][a-z0-9+\\-.]*:");
@@ -203,7 +204,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   }
 
   @Override
-  public @NotNull TextComponent deserialize(final @NotNull String input) {
+  public TextComponent deserialize(final String input) {
     int next = input.lastIndexOf(this.character, input.length() - 2);
     if (next == -1) {
       return this.extractUrl(Component.text(input));
@@ -266,13 +267,13 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   }
 
   @Override
-  public @NotNull String serialize(final @NotNull Component component) {
+  public String serialize(final Component component) {
     final Cereal state = new Cereal();
     this.flattener.flatten(component, state);
     return state.toString();
   }
 
-  private static boolean applyFormat(final TextComponent.@NotNull Builder builder, final @NotNull TextFormat format) {
+  private static boolean applyFormat(final TextComponent.Builder builder, final TextFormat format) {
     if (format instanceof TextColor) {
       builder.colorIfAbsent((TextColor) format);
       return true;
@@ -286,7 +287,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   }
 
   @Override
-  public @NotNull Builder toBuilder() {
+  public Builder toBuilder() {
     return new BuilderImpl(this);
   }
 
@@ -299,7 +300,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     private int head = -1;
 
     @Override
-    public void pushStyle(final @NotNull Style pushed) {
+    public void pushStyle(final Style pushed) {
       final int idx = ++this.head;
       if (idx >= this.styles.length) {
         this.styles = Arrays.copyOf(this.styles, this.styles.length * 2);
@@ -322,7 +323,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
 
     @Override
-    public void component(final @NotNull String text) {
+    public void component(final String text) {
       if (!text.isEmpty()) {
         if (this.head < 0) throw new IllegalStateException("No style has been pushed!");
 
@@ -332,13 +333,13 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
 
     @Override
-    public void popStyle(final @NotNull Style style) {
+    public void popStyle(final Style style) {
       if (this.head-- < 0) {
         throw new IllegalStateException("Tried to pop beyond what was pushed!");
       }
     }
 
-    void append(final @NotNull TextFormat format) {
+    void append(final TextFormat format) {
       if (this.lastWritten != format) {
         final String legacyCode = LegacyComponentSerializerImpl.this.toLegacyCode(format);
         if (legacyCode == null) {
@@ -363,7 +364,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
         this.decorations = EnumSet.noneOf(TextDecoration.class);
       }
 
-      void set(final @NotNull StyleState that) {
+      void set(final StyleState that) {
         this.color = that.color;
         this.decorations.clear();
         this.decorations.addAll(that.decorations);
@@ -374,7 +375,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
         this.decorations.clear();
       }
 
-      void apply(final @NotNull Style component) {
+      void apply(final Style component) {
         final TextColor color = component.color();
         if (color != null) {
           this.color = color;
@@ -458,7 +459,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
       BUILDER.accept(this); // let service provider touch the builder before anybody else touches it
     }
 
-    BuilderImpl(final @NotNull LegacyComponentSerializerImpl serializer) {
+    BuilderImpl(final LegacyComponentSerializerImpl serializer) {
       this();
       this.character = serializer.character;
       this.hexCharacter = serializer.hexCharacter;
@@ -470,34 +471,34 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
 
     @Override
-    public @NotNull Builder character(final char legacyCharacter) {
+    public Builder character(final char legacyCharacter) {
       this.character = legacyCharacter;
       return this;
     }
 
     @Override
-    public @NotNull Builder hexCharacter(final char legacyHexCharacter) {
+    public Builder hexCharacter(final char legacyHexCharacter) {
       this.hexCharacter = legacyHexCharacter;
       return this;
     }
 
     @Override
-    public @NotNull Builder extractUrls() {
+    public Builder extractUrls() {
       return this.extractUrls(DEFAULT_URL_PATTERN, null);
     }
 
     @Override
-    public @NotNull Builder extractUrls(final @NotNull Pattern pattern) {
+    public Builder extractUrls(final Pattern pattern) {
       return this.extractUrls(pattern, null);
     }
 
     @Override
-    public @NotNull Builder extractUrls(final @Nullable Style style) {
+    public Builder extractUrls(final @Nullable Style style) {
       return this.extractUrls(DEFAULT_URL_PATTERN, style);
     }
 
     @Override
-    public @NotNull Builder extractUrls(final @NotNull Pattern pattern, final @Nullable Style style) {
+    public Builder extractUrls(final Pattern pattern, final @Nullable Style style) {
       requireNonNull(pattern, "pattern");
       this.urlReplacementConfig = TextReplacementConfig.builder()
         .match(pattern)
@@ -513,31 +514,31 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
 
     @Override
-    public @NotNull Builder hexColors() {
+    public Builder hexColors() {
       this.hexColours = true;
       return this;
     }
 
     @Override
-    public @NotNull Builder useUnusualXRepeatedCharacterHexFormat() {
+    public Builder useUnusualXRepeatedCharacterHexFormat() {
       this.useTerriblyStupidHexFormat = true; // :(
       return this;
     }
 
     @Override
-    public @NotNull Builder flattener(final @NotNull ComponentFlattener flattener) {
+    public Builder flattener(final ComponentFlattener flattener) {
       this.flattener = requireNonNull(flattener, "flattener");
       return this;
     }
 
     @Override
-    public @NotNull Builder formats(final @NotNull List<CharacterAndFormat> formats) {
+    public Builder formats(final List<CharacterAndFormat> formats) {
       this.formats = CharacterAndFormatSet.of(formats);
       return this;
     }
 
     @Override
-    public @NotNull LegacyComponentSerializer build() {
+    public LegacyComponentSerializer build() {
       return new LegacyComponentSerializerImpl(this.character, this.hexCharacter, this.urlReplacementConfig, this.hexColours, this.useTerriblyStupidHexFormat, this.flattener, this.formats);
     }
   }

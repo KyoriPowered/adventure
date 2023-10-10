@@ -24,7 +24,7 @@
 package net.kyori.adventure.key;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 
@@ -34,6 +34,7 @@ import static java.util.Objects.requireNonNull;
  * @param <T> the value type
  * @since 4.0.0
  */
+@NullMarked
 public interface KeyedValue<T> extends Keyed {
   /**
    * Creates a link.
@@ -44,7 +45,7 @@ public interface KeyedValue<T> extends Keyed {
    * @return the keyed
    * @since 4.10.0
    */
-  static <T> @NotNull KeyedValue<T> keyedValue(final @NotNull Key key, final @NotNull T value) {
+  static <T> KeyedValue<T> keyedValue(final Key key, final T value) {
     return new KeyedValueImpl<>(key, requireNonNull(value, "value"));
   }
 
@@ -60,7 +61,7 @@ public interface KeyedValue<T> extends Keyed {
    */
   @Deprecated
   @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  static <T> @NotNull KeyedValue<T> of(final @NotNull Key key, final @NotNull T value) {
+  static <T> KeyedValue<T> of(final Key key, final T value) {
     return new KeyedValueImpl<>(key, requireNonNull(value, "value"));
   }
 
@@ -70,5 +71,5 @@ public interface KeyedValue<T> extends Keyed {
    * @return the value
    * @since 4.0.0
    */
-  @NotNull T value();
+  T value();
 }

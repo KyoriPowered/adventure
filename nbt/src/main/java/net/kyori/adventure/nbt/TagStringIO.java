@@ -26,13 +26,14 @@ package net.kyori.adventure.nbt;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Arrays;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * A holder for string tag format options.
  *
  * @since 4.0.0
  */
+@NullMarked
 public final class TagStringIO {
   private static final TagStringIO INSTANCE = new TagStringIO(new Builder());
 
@@ -42,7 +43,7 @@ public final class TagStringIO {
    * @return the basic instance
    * @since 4.0.0
    */
-  public static @NotNull TagStringIO get() {
+  public static TagStringIO get() {
     return INSTANCE;
   }
 
@@ -52,7 +53,7 @@ public final class TagStringIO {
    * @return a builder
    * @since 4.0.0
    */
-  public static @NotNull Builder builder() {
+  public static Builder builder() {
     return new Builder();
   }
 
@@ -60,7 +61,7 @@ public final class TagStringIO {
   private final boolean emitLegacy;
   private final String indent;
 
-  private TagStringIO(final @NotNull Builder builder) {
+  private TagStringIO(final Builder builder) {
     this.acceptLegacy = builder.acceptLegacy;
     this.emitLegacy = builder.emitLegacy;
     this.indent = builder.indent;
@@ -148,7 +149,7 @@ public final class TagStringIO {
      * @return this builder
      * @since 4.0.0
      */
-    public @NotNull Builder indent(final int spaces) {
+    public Builder indent(final int spaces) {
       if (spaces == 0) {
         this.indent = "";
       } else if ((this.indent.length() > 0 && this.indent.charAt(0) != ' ') || spaces != this.indent.length()) {
@@ -168,7 +169,7 @@ public final class TagStringIO {
      * @return this builder
      * @since 4.0.0
      */
-    public @NotNull Builder indentTab(final int tabs) {
+    public Builder indentTab(final int tabs) {
       if (tabs == 0) {
         this.indent = "";
       } else if ((this.indent.length() > 0 && this.indent.charAt(0) != '\t') || tabs != this.indent.length()) {
@@ -191,7 +192,7 @@ public final class TagStringIO {
      * @return this builder
      * @since 4.0.0
      */
-    public @NotNull Builder acceptLegacy(final boolean legacy) {
+    public Builder acceptLegacy(final boolean legacy) {
       this.acceptLegacy = legacy;
       return this;
     }
@@ -203,7 +204,7 @@ public final class TagStringIO {
      * @return this builder
      * @since 4.0.0
      */
-    public @NotNull Builder emitLegacy(final boolean legacy) {
+    public Builder emitLegacy(final boolean legacy) {
       this.emitLegacy = legacy;
       return this;
     }
@@ -214,7 +215,7 @@ public final class TagStringIO {
      * @return new IO configuration
      * @since 4.0.0
      */
-    public @NotNull TagStringIO build() {
+    public TagStringIO build() {
       return new TagStringIO(this);
     }
   }

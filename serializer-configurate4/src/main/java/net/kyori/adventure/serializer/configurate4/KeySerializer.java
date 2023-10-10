@@ -27,11 +27,12 @@ import java.lang.reflect.Type;
 import java.util.function.Predicate;
 import net.kyori.adventure.key.InvalidKeyException;
 import net.kyori.adventure.key.Key;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 import org.spongepowered.configurate.serialize.CoercionFailedException;
 import org.spongepowered.configurate.serialize.ScalarSerializer;
 import org.spongepowered.configurate.serialize.SerializationException;
 
+@NullMarked
 final class KeySerializer extends ScalarSerializer<Key> {
   static final KeySerializer INSTANCE = new KeySerializer();
 
@@ -40,7 +41,7 @@ final class KeySerializer extends ScalarSerializer<Key> {
   }
 
   @Override
-  public @NotNull Key deserialize(final @NotNull Type type, final @NotNull Object obj) throws SerializationException {
+  public Key deserialize(final Type type, final Object obj) throws SerializationException {
     if (!(obj instanceof CharSequence)) {
       throw new CoercionFailedException(obj, "string");
     }
@@ -52,7 +53,7 @@ final class KeySerializer extends ScalarSerializer<Key> {
   }
 
   @Override
-  public @NotNull Object serialize(final @NotNull Key item, final @NotNull Predicate<Class<?>> typeSupported) {
+  public Object serialize(final Key item, final Predicate<Class<?>> typeSupported) {
     return item.asString();
   }
 }

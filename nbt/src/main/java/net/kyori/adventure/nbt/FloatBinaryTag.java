@@ -24,13 +24,14 @@
 package net.kyori.adventure.nbt;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * A binary tag holding a {@code float} value.
  *
  * @since 4.0.0
  */
+@NullMarked
 public interface FloatBinaryTag extends NumberBinaryTag {
   /**
    * Creates a binary tag holding a {@code float} value.
@@ -39,7 +40,7 @@ public interface FloatBinaryTag extends NumberBinaryTag {
    * @return a binary tag
    * @since 4.14.0
    */
-  static @NotNull FloatBinaryTag floatBinaryTag(final float value) {
+  static FloatBinaryTag floatBinaryTag(final float value) {
     return new FloatBinaryTagImpl(value);
   }
 
@@ -53,12 +54,12 @@ public interface FloatBinaryTag extends NumberBinaryTag {
    */
   @Deprecated
   @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  static @NotNull FloatBinaryTag of(final float value) {
+  static FloatBinaryTag of(final float value) {
     return new FloatBinaryTagImpl(value);
   }
 
   @Override
-  default @NotNull BinaryTagType<FloatBinaryTag> type() {
+  default BinaryTagType<FloatBinaryTag> type() {
     return BinaryTagTypes.FLOAT;
   }
 

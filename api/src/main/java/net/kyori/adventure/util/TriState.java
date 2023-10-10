@@ -24,14 +24,15 @@
 package net.kyori.adventure.util;
 
 import java.util.function.BooleanSupplier;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Similar to a {@code boolean} but with three states.
  *
  * @since 4.8.0
  */
+@NullMarked
 public enum TriState {
   /**
    * State describing the absence of a value.
@@ -98,7 +99,7 @@ public enum TriState {
    * @return the boolean representing the tri-state or the result of the passed supplier if this state is {@link #NOT_SET}.
    * @since 4.10.0
    */
-  public boolean toBooleanOrElseGet(final @NotNull BooleanSupplier supplier) {
+  public boolean toBooleanOrElseGet(final BooleanSupplier supplier) {
     switch (this) {
       case TRUE: return true;
       case FALSE: return false;
@@ -113,7 +114,7 @@ public enum TriState {
    * @return a tri-state
    * @since 4.8.0
    */
-  public static @NotNull TriState byBoolean(final boolean value) {
+  public static TriState byBoolean(final boolean value) {
     return value ? TRUE : FALSE;
   }
 
@@ -124,7 +125,7 @@ public enum TriState {
    * @return a tri-state
    * @since 4.8.0
    */
-  public static @NotNull TriState byBoolean(final @Nullable Boolean value) {
+  public static TriState byBoolean(final @Nullable Boolean value) {
     return value == null ? NOT_SET : byBoolean(value.booleanValue());
   }
 }

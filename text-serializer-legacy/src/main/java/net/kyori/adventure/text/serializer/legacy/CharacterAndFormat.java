@@ -31,8 +31,8 @@ import net.kyori.adventure.text.format.TextFormat;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * A combination of a {@code character} and a {@link TextFormat}.
@@ -40,6 +40,7 @@ import org.jetbrains.annotations.Unmodifiable;
  * @since 4.14.0
  */
 @ApiStatus.NonExtendable
+@NullMarked
 public interface CharacterAndFormat extends Examinable {
   /**
    * Character and format pair representing {@link NamedTextColor#BLACK}.
@@ -184,7 +185,7 @@ public interface CharacterAndFormat extends Examinable {
    * @return a new character and format pair.
    * @since 4.14.0
    */
-  static @NotNull CharacterAndFormat characterAndFormat(final char character, final @NotNull TextFormat format) {
+  static CharacterAndFormat characterAndFormat(final char character, final TextFormat format) {
     return new CharacterAndFormatImpl(character, format);
   }
 
@@ -195,7 +196,7 @@ public interface CharacterAndFormat extends Examinable {
    * @since 4.14.0
    */
   @Unmodifiable
-  static @NotNull List<CharacterAndFormat> defaults() {
+  static List<CharacterAndFormat> defaults() {
     return CharacterAndFormatImpl.Defaults.DEFAULTS;
   }
 
@@ -213,10 +214,10 @@ public interface CharacterAndFormat extends Examinable {
    * @return the format
    * @since 4.14.0
    */
-  @NotNull TextFormat format();
+  TextFormat format();
 
   @Override
-  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  default Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("character", this.character()),
       ExaminableProperty.of("format", this.format())

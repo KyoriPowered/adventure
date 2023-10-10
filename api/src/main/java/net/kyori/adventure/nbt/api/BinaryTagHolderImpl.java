@@ -24,10 +24,11 @@
 package net.kyori.adventure.nbt.api;
 
 import net.kyori.adventure.util.Codec;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 final class BinaryTagHolderImpl implements BinaryTagHolder {
   private final String string;
 
@@ -36,12 +37,12 @@ final class BinaryTagHolderImpl implements BinaryTagHolder {
   }
 
   @Override
-  public @NotNull String string() {
+  public String string() {
     return this.string;
   }
 
   @Override
-  public <T, DX extends Exception> @NotNull T get(final @NotNull Codec<T, String, DX, ?> codec) throws DX {
+  public <T, DX extends Exception> T get(final Codec<T, String, DX, ?> codec) throws DX {
     return codec.decode(this.string);
   }
 

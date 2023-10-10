@@ -25,13 +25,14 @@ package net.kyori.adventure.util;
 
 import java.util.Set;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Various utilities.
  *
  * @since 4.0.0
  */
+@NullMarked
 public final class ShadyPines {
   private ShadyPines() {
   }
@@ -50,7 +51,7 @@ public final class ShadyPines {
   @Deprecated
   @SafeVarargs
   @SuppressWarnings("varargs")
-  public static <E extends Enum<E>> @NotNull Set<E> enumSet(final Class<E> type, final E@NotNull... constants) {
+  public static <E extends Enum<E>> Set<E> enumSet(final Class<E> type, final E... constants) {
     return MonkeyBars.enumSet(type, constants);
   }
 

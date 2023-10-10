@@ -32,23 +32,24 @@ import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.examination.string.MultiLineStringExaminer;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@NullMarked
 public abstract class AbstractTest {
   protected static final MiniMessage PARSER = MiniMessage.builder().debug(System.out::print).build();
 
-  protected void assertSerializedEquals(final @NotNull String expected, final @NotNull ComponentLike input) {
+  protected void assertSerializedEquals(final String expected, final ComponentLike input) {
     final String string = PARSER.serialize(input.asComponent());
     assertEquals(expected, string);
   }
 
-  protected void assertParsedEquals(final @NotNull Component expected, final @NotNull String input) {
+  protected void assertParsedEquals(final Component expected, final String input) {
     this.assertParsedEquals(PARSER, expected, input);
   }
 
-  protected void assertParsedEquals(final @NotNull Component expected, final @NotNull String input, final @NotNull TagResolver... args) {
+  protected void assertParsedEquals(final Component expected, final String input, final TagResolver... args) {
     this.assertParsedEquals(PARSER, expected, input, args);
   }
 
@@ -58,7 +59,7 @@ public abstract class AbstractTest {
     assertEquals(expectedSerialized, actual);
   }
 
-  protected void assertParsedEquals(final MiniMessage miniMessage, final Component expected, final String input, final @NotNull TagResolver... args) {
+  protected void assertParsedEquals(final MiniMessage miniMessage, final Component expected, final String input, final TagResolver... args) {
     final String expectedSerialized = this.prettyPrint(expected.compact());
     final String actual = this.prettyPrint(miniMessage.deserialize(input, TagResolver.resolver(args)).compact());
     assertEquals(expectedSerialized, actual);

@@ -51,7 +51,7 @@ import net.kyori.adventure.text.SelectorComponent;
 import net.kyori.adventure.text.StorageNBTComponent;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.EXTRA;
 import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.KEYBIND;

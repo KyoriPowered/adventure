@@ -27,7 +27,7 @@ import java.lang.reflect.Type;
 import java.time.Duration;
 import java.time.format.DateTimeParseException;
 import java.util.function.Predicate;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 import org.spongepowered.configurate.serialize.ScalarSerializer;
 import org.spongepowered.configurate.serialize.SerializationException;
 
@@ -36,6 +36,7 @@ import org.spongepowered.configurate.serialize.SerializationException;
  *
  * <p>This will eventually be incorporated into upstream Configurate.</p>
  */
+@NullMarked
 final class DurationSerializer extends ScalarSerializer<Duration> {
   static final DurationSerializer INSTANCE = new DurationSerializer();
 
@@ -44,7 +45,7 @@ final class DurationSerializer extends ScalarSerializer<Duration> {
   }
 
   @Override
-  public Duration deserialize(final @NotNull Type type, final @NotNull Object obj) throws SerializationException {
+  public Duration deserialize(final Type type, final Object obj) throws SerializationException {
     if (obj instanceof CharSequence) {
       String value = obj.toString();
       if (!value.startsWith("P") && !value.startsWith("p")) {
@@ -61,7 +62,7 @@ final class DurationSerializer extends ScalarSerializer<Duration> {
   }
 
   @Override
-  public Object serialize(final @NotNull Duration item, final @NotNull Predicate<Class<?>> typeSupported) {
+  public Object serialize(final Duration item, final Predicate<Class<?>> typeSupported) {
     return item.toString();
   }
 }

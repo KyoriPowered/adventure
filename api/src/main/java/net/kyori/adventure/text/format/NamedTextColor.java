@@ -31,14 +31,15 @@ import net.kyori.adventure.util.HSVLike;
 import net.kyori.adventure.util.Index;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * The named text colours in Minecraft: Java Edition.
  *
  * @since 4.0.0
  */
+@NullMarked
 public final class NamedTextColor implements TextColor {
   private static final int BLACK_VALUE = 0x000000;
   private static final int DARK_BLUE_VALUE = 0x0000aa;
@@ -230,7 +231,7 @@ public final class NamedTextColor implements TextColor {
    * @return nearest named colour. will always return a value
    * @since 4.0.0
    */
-  public static @NotNull NamedTextColor nearestTo(final @NotNull TextColor any) {
+  public static NamedTextColor nearestTo(final TextColor any) {
     if (any instanceof NamedTextColor) {
       return (NamedTextColor) any;
     }
@@ -254,17 +255,17 @@ public final class NamedTextColor implements TextColor {
   }
 
   @Override
-  public @NotNull HSVLike asHSV() {
+  public HSVLike asHSV() {
     return this.hsv;
   }
 
   @Override
-  public @NotNull String toString() {
+  public String toString() {
     return this.name;
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.concat(
       Stream.of(ExaminableProperty.of("name", this.name)),
       TextColor.super.examinableProperties()

@@ -24,13 +24,14 @@
 package net.kyori.adventure.nbt;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * A binary tag holding a {@code short} value.
  *
  * @since 4.0.0
  */
+@NullMarked
 public interface ShortBinaryTag extends NumberBinaryTag {
   /**
    * Creates a binary tag holding a {@code short} value.
@@ -39,7 +40,7 @@ public interface ShortBinaryTag extends NumberBinaryTag {
    * @return a binary tag
    * @since 4.14.0
    */
-  static @NotNull ShortBinaryTag shortBinaryTag(final short value) {
+  static ShortBinaryTag shortBinaryTag(final short value) {
     return new ShortBinaryTagImpl(value);
   }
 
@@ -53,12 +54,12 @@ public interface ShortBinaryTag extends NumberBinaryTag {
    */
   @Deprecated
   @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  static @NotNull ShortBinaryTag of(final short value) {
+  static ShortBinaryTag of(final short value) {
     return new ShortBinaryTagImpl(value);
   }
 
   @Override
-  default @NotNull BinaryTagType<ShortBinaryTag> type() {
+  default BinaryTagType<ShortBinaryTag> type() {
     return BinaryTagTypes.SHORT;
   }
 

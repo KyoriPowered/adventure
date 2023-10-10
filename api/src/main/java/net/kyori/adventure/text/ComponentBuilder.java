@@ -39,8 +39,8 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.util.Buildable;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A component builder.
@@ -50,6 +50,7 @@ import org.jetbrains.annotations.Nullable;
  * @since 4.0.0
  */
 @ApiStatus.NonExtendable
+@NullMarked
 public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> extends AbstractBuilder<C>, Buildable.Builder<C>, ComponentBuilderApplicable, ComponentLike, MutableStyleSetter<B> {
   /**
    * Appends a component to this component.
@@ -59,7 +60,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @since 4.0.0
    */
   @Contract("_ -> this")
-  @NotNull B append(final @NotNull Component component);
+  B append(final Component component);
 
   /**
    * Appends a component to this component.
@@ -69,7 +70,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @since 4.0.0
    */
   @Contract("_ -> this")
-  default @NotNull B append(final @NotNull ComponentLike component) {
+  default B append(final ComponentLike component) {
     return this.append(component.asComponent());
   }
 
@@ -81,7 +82,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @since 4.0.0
    */
   @Contract("_ -> this")
-  default @NotNull B append(final @NotNull ComponentBuilder<?, ?> builder) {
+  default B append(final ComponentBuilder<?, ?> builder) {
     return this.append(builder.build());
   }
 
@@ -93,7 +94,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @since 4.0.0
    */
   @Contract("_ -> this")
-  @NotNull B append(final @NotNull Component@NotNull... components);
+  B append(final Component... components);
 
   /**
    * Appends components to this component.
@@ -103,7 +104,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @since 4.0.0
    */
   @Contract("_ -> this")
-  @NotNull B append(final @NotNull ComponentLike@NotNull... components);
+  B append(final ComponentLike... components);
 
   /**
    * Appends components to this component.
@@ -113,7 +114,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @since 4.0.0
    */
   @Contract("_ -> this")
-  @NotNull B append(final @NotNull Iterable<? extends ComponentLike> components);
+  B append(final Iterable<? extends ComponentLike> components);
 
   /**
    * Appends a newline to this component.
@@ -121,7 +122,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return this builder
    * @since 4.12.0
    */
-  default @NotNull B appendNewline() {
+  default B appendNewline() {
     return this.append(Component.newline());
   }
 
@@ -131,7 +132,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return this builder
    * @since 4.12.0
    */
-  default @NotNull B appendSpace() {
+  default B appendSpace() {
     return this.append(Component.space());
   }
 
@@ -144,7 +145,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    */
   @Contract("_ -> this")
   @SuppressWarnings("unchecked")
-  default @NotNull B apply(final @NotNull Consumer<? super ComponentBuilder<?, ?>> consumer) {
+  default B apply(final Consumer<? super ComponentBuilder<?, ?>> consumer) {
     consumer.accept(this);
     return (B) this;
   }
@@ -158,7 +159,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @since 4.0.0
    */
   @Contract("_ -> this")
-  @NotNull B applyDeep(final @NotNull Consumer<? super ComponentBuilder<?, ?>> action);
+  B applyDeep(final Consumer<? super ComponentBuilder<?, ?>> action);
 
   /**
    * Replaces each child of this component with the resultant component from the function.
@@ -168,7 +169,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @since 4.0.0
    */
   @Contract("_ -> this")
-  @NotNull B mapChildren(final @NotNull Function<BuildableComponent<?, ?>, ? extends BuildableComponent<?, ?>> function);
+  B mapChildren(final Function<BuildableComponent<?, ?>, ? extends BuildableComponent<?, ?>> function);
 
   /**
    * Replaces each child and sub-child of this component with the resultant
@@ -179,7 +180,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @since 4.0.0
    */
   @Contract("_ -> this")
-  @NotNull B mapChildrenDeep(final @NotNull Function<BuildableComponent<?, ?>, ? extends BuildableComponent<?, ?>> function);
+  B mapChildrenDeep(final Function<BuildableComponent<?, ?>, ? extends BuildableComponent<?, ?>> function);
 
   /**
    * Get an unmodifiable list containing all children currently in this builder.
@@ -187,7 +188,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return the list of children
    * @since 4.6.0
    */
-  @NotNull List<Component> children();
+  List<Component> children();
 
   /**
    * Sets the style.
@@ -197,7 +198,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @since 4.0.0
    */
   @Contract("_ -> this")
-  @NotNull B style(final @NotNull Style style);
+  B style(final Style style);
 
   /**
    * Configures the style.
@@ -207,7 +208,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @since 4.0.0
    */
   @Contract("_ -> this")
-  @NotNull B style(final @NotNull Consumer<Style.Builder> consumer);
+  B style(final Consumer<Style.Builder> consumer);
 
   /**
    * Sets the font of this component.
@@ -218,7 +219,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    */
   @Contract("_ -> this")
   @Override
-  @NotNull B font(final @Nullable Key font);
+  B font(final @Nullable Key font);
 
   /**
    * Sets the color of this component.
@@ -229,7 +230,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    */
   @Contract("_ -> this")
   @Override
-  @NotNull B color(final @Nullable TextColor color);
+  B color(final @Nullable TextColor color);
 
   /**
    * Sets the color of this component if there isn't one set already.
@@ -240,7 +241,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    */
   @Contract("_ -> this")
   @Override
-  @NotNull B colorIfAbsent(final @Nullable TextColor color);
+  B colorIfAbsent(final @Nullable TextColor color);
 
   /**
    * Sets the state of a set of decorations to {@code flag} on this component.
@@ -253,7 +254,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    */
   @Contract("_, _ -> this")
   @Override
-  default @NotNull B decorations(final @NotNull Set<TextDecoration> decorations, final boolean flag) {
+  default B decorations(final Set<TextDecoration> decorations, final boolean flag) {
     return MutableStyleSetter.super.decorations(decorations, flag);
   }
 
@@ -266,7 +267,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    */
   @Contract("_ -> this")
   @Override
-  default @NotNull B decorate(final @NotNull TextDecoration decoration) {
+  default B decorate(final TextDecoration decoration) {
     return this.decoration(decoration, TextDecoration.State.TRUE);
   }
 
@@ -279,7 +280,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    */
   @Contract("_ -> this")
   @Override
-  default @NotNull B decorate(final @NotNull TextDecoration@NotNull... decorations) {
+  default B decorate(final TextDecoration... decorations) {
     return MutableStyleSetter.super.decorate(decorations);
   }
 
@@ -294,7 +295,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    */
   @Contract("_, _ -> this")
   @Override
-  default @NotNull B decoration(final @NotNull TextDecoration decoration, final boolean flag) {
+  default B decoration(final TextDecoration decoration, final boolean flag) {
     return this.decoration(decoration, TextDecoration.State.byBoolean(flag));
   }
 
@@ -309,7 +310,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    */
   @Contract("_ -> this")
   @Override
-  default @NotNull B decorations(final @NotNull Map<TextDecoration, TextDecoration.State> decorations) {
+  default B decorations(final Map<TextDecoration, TextDecoration.State> decorations) {
     return MutableStyleSetter.super.decorations(decorations);
   }
 
@@ -326,7 +327,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    */
   @Contract("_, _ -> this")
   @Override
-  @NotNull B decoration(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state);
+  B decoration(final TextDecoration decoration, final TextDecoration.State state);
 
   /**
    * Sets the state of a decoration on this component to {@code state} if the current state of
@@ -339,7 +340,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    */
   @Contract("_, _ -> this")
   @Override
-  @NotNull B decorationIfAbsent(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state);
+  B decorationIfAbsent(final TextDecoration decoration, final TextDecoration.State state);
 
   /**
    * Sets the click event of this component.
@@ -350,7 +351,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    */
   @Contract("_ -> this")
   @Override
-  @NotNull B clickEvent(final @Nullable ClickEvent event);
+  B clickEvent(final @Nullable ClickEvent event);
 
   /**
    * Sets the hover event of this component.
@@ -361,7 +362,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    */
   @Contract("_ -> this")
   @Override
-  @NotNull B hoverEvent(final @Nullable HoverEventSource<?> source);
+  B hoverEvent(final @Nullable HoverEventSource<?> source);
 
   /**
    * Sets the string to be inserted when this component is shift-clicked.
@@ -372,7 +373,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    */
   @Contract("_ -> this")
   @Override
-  @NotNull B insertion(final @Nullable String insertion);
+  B insertion(final @Nullable String insertion);
 
   /**
    * Merges styling from another component into this component.
@@ -382,7 +383,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @since 4.0.0
    */
   @Contract("_ -> this")
-  default @NotNull B mergeStyle(final @NotNull Component that) {
+  default B mergeStyle(final Component that) {
     return this.mergeStyle(that, Style.Merge.all());
   }
 
@@ -395,7 +396,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @since 4.0.0
    */
   @Contract("_, _ -> this")
-  default @NotNull B mergeStyle(final @NotNull Component that, final Style.@NotNull Merge@NotNull... merges) {
+  default B mergeStyle(final Component that, final Style.Merge... merges) {
     return this.mergeStyle(that, Style.Merge.merges(merges));
   }
 
@@ -408,7 +409,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @since 4.0.0
    */
   @Contract("_, _ -> this")
-  @NotNull B mergeStyle(final @NotNull Component that, final @NotNull Set<Style.Merge> merges);
+  B mergeStyle(final Component that, final Set<Style.Merge> merges);
 
   /**
    * Resets all styling on this component.
@@ -416,7 +417,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return this builder
    * @since 4.0.0
    */
-  @NotNull B resetStyle();
+  B resetStyle();
 
   /**
    * Build a component.
@@ -424,7 +425,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return the component
    */
   @Override
-  @NotNull C build();
+  C build();
 
   /**
    * Applies {@code applicable}.
@@ -435,18 +436,18 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    */
   @Contract("_ -> this")
   @SuppressWarnings("unchecked")
-  default @NotNull B applicableApply(final @NotNull ComponentBuilderApplicable applicable) {
+  default B applicableApply(final ComponentBuilderApplicable applicable) {
     applicable.componentBuilderApply(this);
     return (B) this;
   }
 
   @Override
-  default void componentBuilderApply(final @NotNull ComponentBuilder<?, ?> component) {
+  default void componentBuilderApply(final ComponentBuilder<?, ?> component) {
     component.append(this);
   }
 
   @Override
-  default @NotNull Component asComponent() {
+  default Component asComponent() {
     return this.build();
   }
 }

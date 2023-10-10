@@ -32,8 +32,8 @@ import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 import static net.kyori.adventure.text.Component.text;
@@ -44,6 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
+@NullMarked
 class TagResolverTest {
 
   @Test
@@ -165,7 +166,7 @@ class TagResolverTest {
     assertEquals(first, second);
   }
 
-  private static @NotNull Tag resolveForTest(final TagResolver resolver, final String tag) {
+  private static Tag resolveForTest(final TagResolver resolver, final String tag) {
     try {
       final Context ctx = AbstractTest.dummyContext("help i shouldn't be seen");
       final @Nullable Tag result = resolver.resolve(tag, AbstractTest.emptyArgumentQueue(ctx), ctx);

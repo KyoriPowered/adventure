@@ -31,10 +31,11 @@ import java.util.OptionalInt;
 import java.util.stream.Stream;
 import net.kyori.examination.ExaminableProperty;
 import org.intellij.lang.annotations.RegExp;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 final class KeyImpl implements Key {
   static final Comparator<? super Key> COMPARATOR = Comparator.comparing(Key::value).thenComparing(Key::namespace);
 
@@ -44,7 +45,7 @@ final class KeyImpl implements Key {
   private final String namespace;
   private final String value;
 
-  KeyImpl(final @NotNull String namespace, final @NotNull String value) {
+  KeyImpl(final String namespace, final String value) {
     checkError("namespace", namespace, value, Key.checkNamespace(namespace));
     checkError("value", namespace, value, Key.checkValue(value));
     this.namespace = requireNonNull(namespace, "namespace");
@@ -75,31 +76,31 @@ final class KeyImpl implements Key {
   }
 
   @Override
-  public @NotNull String namespace() {
+  public String namespace() {
     return this.namespace;
   }
 
   @Override
-  public @NotNull String value() {
+  public String value() {
     return this.value;
   }
 
   @Override
-  public @NotNull String asString() {
+  public String asString() {
     return asString(this.namespace, this.value);
   }
 
-  private static @NotNull String asString(final @NotNull String namespace, final @NotNull String value) {
+  private static String asString(final String namespace, final String value) {
     return namespace + ':' + value;
   }
 
   @Override
-  public @NotNull String toString() {
+  public String toString() {
     return this.asString();
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("namespace", this.namespace),
       ExaminableProperty.of("value", this.value)
@@ -122,7 +123,7 @@ final class KeyImpl implements Key {
   }
 
   @Override
-  public int compareTo(final @NotNull Key that) {
+  public int compareTo(final Key that) {
     return Key.super.compareTo(that);
   }
 }

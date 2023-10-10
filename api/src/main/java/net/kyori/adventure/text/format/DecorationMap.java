@@ -37,8 +37,8 @@ import java.util.Spliterators;
 import java.util.stream.Stream;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Bit-set driven decoration -&gt; state map.
@@ -78,6 +78,7 @@ import org.jetbrains.annotations.Unmodifiable;
  * a single {@code byte}, I however am not doing that because it's more effort than my time's worth.</p>
  */
 @Unmodifiable
+@NullMarked
 final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.State> implements Examinable {
   static final TextDecoration[] DECORATIONS = TextDecoration.values();
   private static final TextDecoration.State[] STATES = TextDecoration.State.values();
@@ -125,7 +126,7 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
     this.bitSet = bitSet;
   }
 
-  public @NotNull DecorationMap with(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state) {
+  public DecorationMap with(final TextDecoration decoration, final TextDecoration.State state) {
     Objects.requireNonNull(state, "state");
     Objects.requireNonNull(decoration, "decoration");
     final int offset = offset(decoration);
@@ -134,7 +135,7 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Arrays.stream(DECORATIONS)
       .map(decoration -> ExaminableProperty.of(decoration.toString(), this.get(decoration)));
   }
@@ -164,7 +165,7 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
   }
 
   @Override
-  public @NotNull Set<Entry<TextDecoration, TextDecoration.State>> entrySet() {
+  public Set<Entry<TextDecoration, TextDecoration.State>> entrySet() {
     if (this.entrySet == null) {
       synchronized (this) {
         // re-check for lost race condition
@@ -177,12 +178,12 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
   }
 
   @Override
-  public @NotNull Set<TextDecoration> keySet() {
+  public Set<TextDecoration> keySet() {
     return KEY_SET;
   }
 
   @Override
-  public @NotNull Collection<TextDecoration.State> values() {
+  public Collection<TextDecoration.State> values() {
     if (this.values == null) {
       synchronized (this) {
         // re-check for lost race condition
@@ -208,7 +209,7 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
 
   final class EntrySet extends AbstractSet<Entry<TextDecoration, TextDecoration.State>> {
     @Override
-    public @NotNull Iterator<Entry<TextDecoration, TextDecoration.State>> iterator() {
+    public Iterator<Entry<TextDecoration, TextDecoration.State>> iterator() {
       return new Iterator<Entry<TextDecoration, TextDecoration.State>>() {
         private final Iterator<TextDecoration> decorations = KEY_SET.iterator();
         private final Iterator<TextDecoration.State> states = DecorationMap.this.values().iterator();
@@ -236,7 +237,7 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
 
   final class Values extends AbstractCollection<TextDecoration.State> {
     @Override
-    public @NotNull Iterator<TextDecoration.State> iterator() {
+    public Iterator<TextDecoration.State> iterator() {
       return Spliterators.iterator(Arrays.spliterator(this.toArray(EMPTY_STATE_ARRAY)));
     }
 
@@ -246,7 +247,7 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
     }
 
     @Override
-    public Object @NotNull [] toArray() {
+    public Object[] toArray() {
       final Object[] states = new Object[MAP_SIZE];
       for (int i = 0; i < MAP_SIZE; i++) {
         states[i] = DecorationMap.this.get(DECORATIONS[i]);
@@ -256,7 +257,7 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T @NotNull [] toArray(final T @NotNull [] dest) {
+    public <T> T[] toArray(final T[] dest) {
       if (dest.length < MAP_SIZE) {
         return (T[]) Arrays.copyOf(this.toArray(), MAP_SIZE, dest.getClass());
       }
@@ -291,13 +292,13 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
     }
 
     @Override
-    public Object @NotNull [] toArray() {
+    public Object[] toArray() {
       return Arrays.copyOf(DECORATIONS, MAP_SIZE, Object[].class);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T @NotNull [] toArray(final T @NotNull [] dest) {
+    public <T> T[] toArray(final T[] dest) {
       if (dest.length < MAP_SIZE) {
         return (T[]) Arrays.copyOf(DECORATIONS, MAP_SIZE, dest.getClass());
       }
@@ -309,7 +310,7 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
     }
 
     @Override
-    public @NotNull Iterator<TextDecoration> iterator() {
+    public Iterator<TextDecoration> iterator() {
       return Spliterators.iterator(Arrays.spliterator(DECORATIONS));
     }
 

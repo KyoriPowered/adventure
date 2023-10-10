@@ -29,30 +29,30 @@ import java.util.stream.Stream;
 import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.Component;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnknownNullability;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 final class TitleImpl implements Title {
   private final Component title;
   private final Component subtitle;
   private final @Nullable Times times;
 
-  TitleImpl(final @NotNull Component title, final @NotNull Component subtitle, final @Nullable Times times) {
+  TitleImpl(final Component title, final Component subtitle, final @Nullable Times times) {
     this.title = requireNonNull(title, "title");
     this.subtitle = requireNonNull(subtitle, "subtitle");
     this.times = times;
   }
 
   @Override
-  public @NotNull Component title() {
+  public Component title() {
     return this.title;
   }
 
   @Override
-  public @NotNull Component subtitle() {
+  public Component subtitle() {
     return this.subtitle;
   }
 
@@ -63,7 +63,7 @@ final class TitleImpl implements Title {
 
   @Override
   @SuppressWarnings("unchecked") // compared with parts directly
-  public <T> @UnknownNullability T part(final @NotNull TitlePart<T> part) {
+  public <T> @Nullable T part(final TitlePart<T> part) {
     requireNonNull(part, "part");
     if (part == TitlePart.TITLE) {
       return (T) this.title;
@@ -95,7 +95,7 @@ final class TitleImpl implements Title {
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("title", this.title),
       ExaminableProperty.of("subtitle", this.subtitle),
@@ -113,24 +113,24 @@ final class TitleImpl implements Title {
     private final Duration stay;
     private final Duration fadeOut;
 
-    TimesImpl(final @NotNull Duration fadeIn, final @NotNull Duration stay, final @NotNull Duration fadeOut) {
+    TimesImpl(final Duration fadeIn, final Duration stay, final Duration fadeOut) {
       this.fadeIn = requireNonNull(fadeIn, "fadeIn");
       this.stay = requireNonNull(stay, "stay");
       this.fadeOut = requireNonNull(fadeOut, "fadeOut");
     }
 
     @Override
-    public @NotNull Duration fadeIn() {
+    public Duration fadeIn() {
       return this.fadeIn;
     }
 
     @Override
-    public @NotNull Duration stay() {
+    public Duration stay() {
       return this.stay;
     }
 
     @Override
-    public @NotNull Duration fadeOut() {
+    public Duration fadeOut() {
       return this.fadeOut;
     }
 
@@ -153,7 +153,7 @@ final class TitleImpl implements Title {
     }
 
     @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+    public Stream<? extends ExaminableProperty> examinableProperties() {
       return Stream.of(
         ExaminableProperty.of("fadeIn", this.fadeIn),
         ExaminableProperty.of("stay", this.stay),

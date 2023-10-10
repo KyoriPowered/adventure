@@ -23,13 +23,14 @@
  */
 package net.kyori.adventure.nbt;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Something that can be represented as a binary tag.
  *
  * @since 4.4.0
  */
+@NullMarked
 public interface BinaryTagLike {
   /**
    * Gets a {@link BinaryTag} representation.
@@ -37,5 +38,5 @@ public interface BinaryTagLike {
    * @return a binary tag
    * @since 4.4.0
    */
-  @NotNull BinaryTag asBinaryTag();
+  BinaryTag asBinaryTag();
 }

@@ -24,7 +24,7 @@
 package net.kyori.adventure.text.flattener;
 
 import net.kyori.adventure.text.format.Style;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * A listener accepting styled information from flattened components.
@@ -32,6 +32,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.7.0
  */
 @FunctionalInterface
+@NullMarked
 public interface FlattenerListener {
   /**
    * Begin a region of style in the component.
@@ -39,7 +40,7 @@ public interface FlattenerListener {
    * @param style the style to push
    * @since 4.7.0
    */
-  default void pushStyle(final @NotNull Style style) {
+  default void pushStyle(final Style style) {
   }
 
   /**
@@ -48,7 +49,7 @@ public interface FlattenerListener {
    * @param text the component text
    * @since 4.7.0
    */
-  void component(final @NotNull String text);
+  void component(final String text);
 
   /**
    * Pop a pushed style.
@@ -58,6 +59,6 @@ public interface FlattenerListener {
    * @param style the style popped, as passed to {@link #pushStyle(Style)}
    * @since 4.7.0
    */
-  default void popStyle(final @NotNull Style style) {
+  default void popStyle(final Style style) {
   }
 }

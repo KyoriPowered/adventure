@@ -29,11 +29,12 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import net.kyori.adventure.internal.Internals;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 final class TextReplacementConfigImpl implements TextReplacementConfig {
   private final Pattern matchPattern;
   private final BiFunction<MatchResult, TextComponent.Builder, @Nullable ComponentLike> replacement;
@@ -46,7 +47,7 @@ final class TextReplacementConfigImpl implements TextReplacementConfig {
   }
 
   @Override
-  public @NotNull Pattern matchPattern() {
+  public Pattern matchPattern() {
     return this.matchPattern;
   }
 
@@ -55,12 +56,12 @@ final class TextReplacementConfigImpl implements TextReplacementConfig {
   }
 
   @Override
-  public TextReplacementConfig.@NotNull Builder toBuilder() {
+  public TextReplacementConfig.Builder toBuilder() {
     return new Builder(this);
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("matchPattern", this.matchPattern),
       ExaminableProperty.of("replacement", this.replacement),
@@ -88,25 +89,25 @@ final class TextReplacementConfigImpl implements TextReplacementConfig {
     }
 
     @Override
-    public @NotNull Builder match(final @NotNull Pattern pattern) {
+    public Builder match(final Pattern pattern) {
       this.matchPattern = requireNonNull(pattern, "pattern");
       return this;
     }
 
     @Override
-    public @NotNull Builder condition(final TextReplacementConfig.@NotNull Condition condition) {
+    public Builder condition(final TextReplacementConfig.Condition condition) {
       this.continuer = requireNonNull(condition, "continuation");
       return this;
     }
 
     @Override
-    public @NotNull Builder replacement(final @NotNull BiFunction<MatchResult, TextComponent.Builder, @Nullable ComponentLike> replacement) {
+    public Builder replacement(final BiFunction<MatchResult, TextComponent.Builder, @Nullable ComponentLike> replacement) {
       this.replacement = requireNonNull(replacement, "replacement");
       return this;
     }
 
     @Override
-    public @NotNull TextReplacementConfig build() {
+    public TextReplacementConfig build() {
       if (this.matchPattern == null) throw new IllegalStateException("A pattern must be provided to match against");
       if (this.replacement == null) throw new IllegalStateException("A replacement action must be provided");
       return new TextReplacementConfigImpl(this);

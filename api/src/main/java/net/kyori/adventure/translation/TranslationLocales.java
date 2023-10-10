@@ -26,7 +26,7 @@ package net.kyori.adventure.translation;
 import java.util.Locale;
 import java.util.function.Supplier;
 import net.kyori.adventure.internal.properties.AdventureProperties;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 final class TranslationLocales {
   private static final Supplier<Locale> GLOBAL;
