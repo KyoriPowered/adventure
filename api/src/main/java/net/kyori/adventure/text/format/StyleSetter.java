@@ -33,8 +33,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Writes style properties to an object.
@@ -44,6 +44,7 @@ import org.jetbrains.annotations.Nullable;
  * @since 4.10.0
  */
 @ApiStatus.NonExtendable
+@NullMarked
 public interface StyleSetter<T extends StyleSetter<?>> {
   /**
    * Sets the font.
@@ -53,7 +54,7 @@ public interface StyleSetter<T extends StyleSetter<?>> {
    * @since 4.10.0
    * @sinceMinecraft 1.16
    */
-  @NotNull T font(final @Nullable Key font);
+  T font(final @Nullable Key font);
 
   /**
    * Sets the color.
@@ -62,7 +63,7 @@ public interface StyleSetter<T extends StyleSetter<?>> {
    * @return an object ({@code T})
    * @since 4.10.0
    */
-  @NotNull T color(final @Nullable TextColor color);
+  T color(final @Nullable TextColor color);
 
   /**
    * Sets the color if there isn't one set already.
@@ -71,7 +72,7 @@ public interface StyleSetter<T extends StyleSetter<?>> {
    * @return an object ({@code T})
    * @since 4.10.0
    */
-  @NotNull T colorIfAbsent(final @Nullable TextColor color);
+  T colorIfAbsent(final @Nullable TextColor color);
 
   /**
    * Sets the state of {@code decoration} to {@link TextDecoration.State#TRUE}.
@@ -80,7 +81,7 @@ public interface StyleSetter<T extends StyleSetter<?>> {
    * @return an object ({@code T})
    * @since 4.10.0
    */
-  default @NotNull T decorate(final @NotNull TextDecoration decoration) {
+  default T decorate(final TextDecoration decoration) {
     return this.decoration(decoration, TextDecoration.State.TRUE);
   }
 
@@ -91,7 +92,7 @@ public interface StyleSetter<T extends StyleSetter<?>> {
    * @return an object ({@code T})
    * @since 4.10.0
    */
-  default @NotNull T decorate(final @NotNull TextDecoration@NotNull... decorations) {
+  default T decorate(final TextDecoration... decorations) {
     final Map<TextDecoration, TextDecoration.State> map = new EnumMap<>(TextDecoration.class);
     for (int i = 0, length = decorations.length; i < length; i++) {
       map.put(decorations[i], TextDecoration.State.TRUE);
@@ -108,7 +109,7 @@ public interface StyleSetter<T extends StyleSetter<?>> {
    * @return an object ({@code T})
    * @since 4.10.0
    */
-  default @NotNull T decoration(final @NotNull TextDecoration decoration, final boolean flag) {
+  default T decoration(final TextDecoration decoration, final boolean flag) {
     return this.decoration(decoration, TextDecoration.State.byBoolean(flag));
   }
 
@@ -123,7 +124,7 @@ public interface StyleSetter<T extends StyleSetter<?>> {
    * @return an object ({@code T})
    * @since 4.10.0
    */
-  @NotNull T decoration(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state);
+  T decoration(final TextDecoration decoration, final TextDecoration.State state);
 
   /**
    * Sets the state of a decoration to {@code state} if the current state of the decoration is {@link TextDecoration.State#NOT_SET}.
@@ -133,7 +134,7 @@ public interface StyleSetter<T extends StyleSetter<?>> {
    * @return an object ({@code T})
    * @since 4.12.0
    */
-  @NotNull T decorationIfAbsent(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state);
+  T decorationIfAbsent(final TextDecoration decoration, final TextDecoration.State state);
 
   /**
    * Sets decorations using the specified {@code decorations} map.
@@ -144,7 +145,7 @@ public interface StyleSetter<T extends StyleSetter<?>> {
    * @return an object ({@code T})
    * @since 4.10.0
    */
-  @NotNull T decorations(final @NotNull Map<TextDecoration, TextDecoration.State> decorations);
+  T decorations(final Map<TextDecoration, TextDecoration.State> decorations);
 
   /**
    * Sets the state of a set of decorations to {@code flag}.
@@ -155,7 +156,7 @@ public interface StyleSetter<T extends StyleSetter<?>> {
    * @return an object ({@code T})
    * @since 4.10.0
    */
-  default @NotNull T decorations(final @NotNull Set<TextDecoration> decorations, final boolean flag) {
+  default T decorations(final Set<TextDecoration> decorations, final boolean flag) {
     return this.decorations(decorations.stream().collect(Collectors.toMap(Function.identity(), decoration -> TextDecoration.State.byBoolean(flag))));
   }
 
@@ -166,7 +167,7 @@ public interface StyleSetter<T extends StyleSetter<?>> {
    * @return an object ({@code T})
    * @since 4.10.0
    */
-  @NotNull T clickEvent(final @Nullable ClickEvent event);
+  T clickEvent(final @Nullable ClickEvent event);
 
   /**
    * Sets the hover event.
@@ -175,7 +176,7 @@ public interface StyleSetter<T extends StyleSetter<?>> {
    * @return an object ({@code T})
    * @since 4.10.0
    */
-  @NotNull T hoverEvent(final @Nullable HoverEventSource<?> source);
+  T hoverEvent(final @Nullable HoverEventSource<?> source);
 
   /**
    * Sets the string to be inserted when this object ({@code T}) is shift-clicked.
@@ -184,5 +185,5 @@ public interface StyleSetter<T extends StyleSetter<?>> {
    * @return an object ({@code T})
    * @since 4.10.0
    */
-  @NotNull T insertion(final @Nullable String insertion);
+  T insertion(final @Nullable String insertion);
 }

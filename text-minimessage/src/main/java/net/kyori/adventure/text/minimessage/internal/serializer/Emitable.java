@@ -23,7 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage.internal.serializer;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Something that holds data representable as MiniMessage tags.
@@ -31,6 +31,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.10.0
  */
 @FunctionalInterface
+@NullMarked
 public interface Emitable {
   /**
    * Emit tags based on this emitable's data.
@@ -38,5 +39,5 @@ public interface Emitable {
    * @param emitter the target to emit to
    * @since 4.10.0
    */
-  void emit(final @NotNull TokenEmitter emitter);
+  void emit(final TokenEmitter emitter);
 }

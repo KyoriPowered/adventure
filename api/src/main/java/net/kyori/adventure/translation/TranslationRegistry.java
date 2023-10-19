@@ -38,8 +38,8 @@ import java.util.function.Function;
 import java.util.regex.Pattern;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.util.UTF8ResourceBundleControl;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -51,6 +51,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 4.0.0
  */
+@NullMarked
 public interface TranslationRegistry extends Translator {
   /**
    * A pattern which matches a single quote.
@@ -66,7 +67,7 @@ public interface TranslationRegistry extends Translator {
    * @return a translation registry
    * @since 4.0.0
    */
-  static @NotNull TranslationRegistry create(final Key name) {
+  static TranslationRegistry create(final Key name) {
     return new TranslationRegistryImpl(requireNonNull(name, "name"));
   }
 
@@ -77,7 +78,7 @@ public interface TranslationRegistry extends Translator {
    * @return whether the registry contains a value for the translation key
    * @since 4.7.0
    */
-  boolean contains(final @NotNull String key);
+  boolean contains(final String key);
 
   /**
    * Gets a message format from a key and locale.
@@ -90,7 +91,7 @@ public interface TranslationRegistry extends Translator {
    * @since 4.0.0
    */
   @Override
-  @Nullable MessageFormat translate(final @NotNull String key, final @NotNull Locale locale);
+  @Nullable MessageFormat translate(final String key, final Locale locale);
 
   /**
    * Sets the default locale used by this registry.
@@ -98,7 +99,7 @@ public interface TranslationRegistry extends Translator {
    * @param locale the locale to use a default
    * @since 4.0.0
    */
-  void defaultLocale(final @NotNull Locale locale);
+  void defaultLocale(final Locale locale);
 
   /**
    * Registers a translation.
@@ -114,7 +115,7 @@ public interface TranslationRegistry extends Translator {
    * @throws IllegalArgumentException if the translation key is already exists
    * @since 4.0.0
    */
-  void register(final @NotNull String key, final @NotNull Locale locale, final @NotNull MessageFormat format);
+  void register(final String key, final Locale locale, final MessageFormat format);
 
   /**
    * Registers a map of translations.
@@ -135,7 +136,7 @@ public interface TranslationRegistry extends Translator {
    * @see #register(String, Locale, MessageFormat)
    * @since 4.0.0
    */
-  default void registerAll(final @NotNull Locale locale, final @NotNull Map<String, MessageFormat> formats) {
+  default void registerAll(final Locale locale, final Map<String, MessageFormat> formats) {
     this.registerAll(locale, formats.keySet(), formats::get);
   }
 
@@ -149,7 +150,7 @@ public interface TranslationRegistry extends Translator {
    * @see #registerAll(Locale, ResourceBundle, boolean)
    * @since 4.0.0
    */
-  default void registerAll(final @NotNull Locale locale, final @NotNull Path path, final boolean escapeSingleQuotes) {
+  default void registerAll(final Locale locale, final Path path, final boolean escapeSingleQuotes) {
     try (final BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
       this.registerAll(locale, new PropertyResourceBundle(reader), escapeSingleQuotes);
     } catch (final IOException e) {
@@ -174,7 +175,7 @@ public interface TranslationRegistry extends Translator {
    * @see UTF8ResourceBundleControl
    * @since 4.0.0
    */
-  default void registerAll(final @NotNull Locale locale, final @NotNull ResourceBundle bundle, final boolean escapeSingleQuotes) {
+  default void registerAll(final Locale locale, final ResourceBundle bundle, final boolean escapeSingleQuotes) {
     this.registerAll(locale, bundle.keySet(), key -> {
       final String format = bundle.getString(key);
       return new MessageFormat(
@@ -195,7 +196,7 @@ public interface TranslationRegistry extends Translator {
    * @throws IllegalArgumentException if a translation key is already exists
    * @since 4.0.0
    */
-  default void registerAll(final @NotNull Locale locale, final @NotNull Set<String> keys, final Function<String, MessageFormat> function) {
+  default void registerAll(final Locale locale, final Set<String> keys, final Function<String, MessageFormat> function) {
     IllegalArgumentException firstError = null;
     int errorCount = 0;
     for (final String key : keys) {
@@ -223,5 +224,5 @@ public interface TranslationRegistry extends Translator {
    * @param key a translation key
    * @since 4.0.0
    */
-  void unregister(final @NotNull String key);
+  void unregister(final String key);
 }

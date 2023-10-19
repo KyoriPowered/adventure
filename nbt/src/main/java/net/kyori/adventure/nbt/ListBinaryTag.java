@@ -27,15 +27,16 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A list of zero or more values of a single tag type.
  *
  * @since 4.0.0
  */
+@NullMarked
 public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, BinaryTag, Iterable<BinaryTag> {
   /**
    * Gets an empty list tag.
@@ -43,7 +44,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @return an empty tag
    * @since 4.0.0
    */
-  static @NotNull ListBinaryTag empty() {
+  static ListBinaryTag empty() {
     return ListBinaryTagImpl.EMPTY;
   }
 
@@ -57,7 +58,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @throws IllegalArgumentException if {@code tags} has different tag types within
    * @since 4.4.0
    */
-  static @NotNull ListBinaryTag from(final @NotNull Iterable<? extends BinaryTag> tags) {
+  static ListBinaryTag from(final Iterable<? extends BinaryTag> tags) {
     return builder().add(tags).build();
   }
 
@@ -67,7 +68,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @return a new builder
    * @since 4.0.0
    */
-  static @NotNull Builder<BinaryTag> builder() {
+  static Builder<BinaryTag> builder() {
     return new ListTagBuilder<>();
   }
 
@@ -80,7 +81,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @throws IllegalArgumentException if {@code type} is {@link BinaryTagTypes#END}
    * @since 4.0.0
    */
-  static <T extends BinaryTag> @NotNull Builder<T> builder(final @NotNull BinaryTagType<T> type) {
+  static <T extends BinaryTag> Builder<T> builder(final BinaryTagType<T> type) {
     if (type == BinaryTagTypes.END) throw new IllegalArgumentException("Cannot create a list of " + BinaryTagTypes.END);
     return new ListTagBuilder<>(type);
   }
@@ -96,7 +97,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @throws IllegalArgumentException if {@code type} is {@link BinaryTagTypes#END}
    * @since 4.14.0
    */
-  static @NotNull ListBinaryTag listBinaryTag(final @NotNull BinaryTagType<? extends BinaryTag> type, final @NotNull List<BinaryTag> tags) {
+  static ListBinaryTag listBinaryTag(final BinaryTagType<? extends BinaryTag> type, final List<BinaryTag> tags) {
     if (tags.isEmpty()) return empty();
     if (type == BinaryTagTypes.END) throw new IllegalArgumentException("Cannot create a list of " + BinaryTagTypes.END);
     return new ListBinaryTagImpl(type, tags);
@@ -116,12 +117,12 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    */
   @Deprecated
   @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  static @NotNull ListBinaryTag of(final @NotNull BinaryTagType<? extends BinaryTag> type, final @NotNull List<BinaryTag> tags) {
+  static ListBinaryTag of(final BinaryTagType<? extends BinaryTag> type, final List<BinaryTag> tags) {
     return listBinaryTag(type, tags);
   }
 
   @Override
-  default @NotNull BinaryTagType<ListBinaryTag> type() {
+  default BinaryTagType<ListBinaryTag> type() {
     return BinaryTagTypes.LIST;
   }
 
@@ -133,7 +134,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @deprecated since 4.4.0, use {@link #elementType()} instead
    */
   @Deprecated
-  default @NotNull BinaryTagType<? extends BinaryTag> listType() {
+  default BinaryTagType<? extends BinaryTag> listType() {
     return this.elementType();
   }
 
@@ -143,7 +144,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @return the type
    * @since 4.4.0
    */
-  @NotNull BinaryTagType<? extends BinaryTag> elementType();
+  BinaryTagType<? extends BinaryTag> elementType();
 
   /**
    * Gets the size.
@@ -161,7 +162,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @throws IndexOutOfBoundsException if the index is out of range
    * @since 4.0.0
    */
-  @NotNull BinaryTag get(final @Range(from = 0, to = Integer.MAX_VALUE) int index);
+  BinaryTag get(final @Range(from = 0, to = Integer.MAX_VALUE) int index);
 
   /**
    * Sets the tag at index {@code index} to {@code tag}, optionally providing {@code removedConsumer} with the tag previously at index {@code index}.
@@ -172,7 +173,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @return a list tag
    * @since 4.0.0
    */
-  @NotNull ListBinaryTag set(final int index, final @NotNull BinaryTag tag, final @Nullable Consumer<? super BinaryTag> removed);
+  ListBinaryTag set(final int index, final BinaryTag tag, final @Nullable Consumer<? super BinaryTag> removed);
 
   /**
    * Removes the tag at index {@code index}, optionally providing {@code removedConsumer} with the tag previously at index {@code index}.
@@ -182,7 +183,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @return a list tag
    * @since 4.0.0
    */
-  @NotNull ListBinaryTag remove(final int index, final @Nullable Consumer<? super BinaryTag> removed);
+  ListBinaryTag remove(final int index, final @Nullable Consumer<? super BinaryTag> removed);
 
   /**
    * Gets a byte.
@@ -353,7 +354,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @return the array of bytes, or a zero-length array
    * @since 4.0.0
    */
-  default byte@NotNull[] getByteArray(final @Range(from = 0, to = Integer.MAX_VALUE) int index) {
+  default byte[] getByteArray(final @Range(from = 0, to = Integer.MAX_VALUE) int index) {
     final BinaryTag tag = this.get(index);
     if (tag.type() == BinaryTagTypes.BYTE_ARRAY) {
       return ((ByteArrayBinaryTag) tag).value();
@@ -369,7 +370,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @return the array of bytes, or {@code defaultValue}
    * @since 4.0.0
    */
-  default byte@NotNull[] getByteArray(final @Range(from = 0, to = Integer.MAX_VALUE) int index, final byte@NotNull[] defaultValue) {
+  default byte[] getByteArray(final @Range(from = 0, to = Integer.MAX_VALUE) int index, final byte[] defaultValue) {
     final BinaryTag tag = this.get(index);
     if (tag.type() == BinaryTagTypes.BYTE_ARRAY) {
       return ((ByteArrayBinaryTag) tag).value();
@@ -384,7 +385,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @return the string value, or {@code ""}
    * @since 4.0.0
    */
-  default @NotNull String getString(final @Range(from = 0, to = Integer.MAX_VALUE) int index) {
+  default String getString(final @Range(from = 0, to = Integer.MAX_VALUE) int index) {
     return this.getString(index, "");
   }
 
@@ -396,7 +397,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @return the string value, or {@code defaultValue}
    * @since 4.0.0
    */
-  default @NotNull String getString(final @Range(from = 0, to = Integer.MAX_VALUE) int index, final @NotNull String defaultValue) {
+  default String getString(final @Range(from = 0, to = Integer.MAX_VALUE) int index, final String defaultValue) {
     final BinaryTag tag = this.get(index);
     if (tag.type() == BinaryTagTypes.STRING) {
       return ((StringBinaryTag) tag).value();
@@ -411,7 +412,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @return the list, or an empty list if the tag at index {@code index} is not a list tag
    * @since 4.4.0
    */
-  default @NotNull ListBinaryTag getList(final @Range(from = 0, to = Integer.MAX_VALUE) int index) {
+  default ListBinaryTag getList(final @Range(from = 0, to = Integer.MAX_VALUE) int index) {
     return this.getList(index, null, ListBinaryTag.empty());
   }
 
@@ -423,7 +424,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @return the list, or an empty list if the tag at index {@code index} is not a list tag, or if the list tag's element type is not {@code elementType}
    * @since 4.4.0
    */
-  default @NotNull ListBinaryTag getList(final @Range(from = 0, to = Integer.MAX_VALUE) int index, final @Nullable BinaryTagType<?> elementType) {
+  default ListBinaryTag getList(final @Range(from = 0, to = Integer.MAX_VALUE) int index, final @Nullable BinaryTagType<?> elementType) {
     return this.getList(index, elementType, ListBinaryTag.empty());
   }
 
@@ -435,7 +436,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @return the list, or {@code defaultValue} if the tag at index {@code index} is not a list tag
    * @since 4.4.0
    */
-  default @NotNull ListBinaryTag getList(final @Range(from = 0, to = Integer.MAX_VALUE) int index, final @NotNull ListBinaryTag defaultValue) {
+  default ListBinaryTag getList(final @Range(from = 0, to = Integer.MAX_VALUE) int index, final ListBinaryTag defaultValue) {
     return this.getList(index, null, defaultValue);
   }
 
@@ -450,7 +451,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @return the list, or {@code defaultValue} if the tag at index {@code index} is not a list tag, or if the list tag's element type is not {@code elementType}
    * @since 4.4.0
    */
-  default @NotNull ListBinaryTag getList(final @Range(from = 0, to = Integer.MAX_VALUE) int index, final @Nullable BinaryTagType<?> elementType, final @NotNull ListBinaryTag defaultValue) {
+  default ListBinaryTag getList(final @Range(from = 0, to = Integer.MAX_VALUE) int index, final @Nullable BinaryTagType<?> elementType, final ListBinaryTag defaultValue) {
     final BinaryTag tag = this.get(index);
     if (tag.type() == BinaryTagTypes.LIST) {
       final ListBinaryTag list = (ListBinaryTag) tag;
@@ -468,7 +469,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @return the compound, or a new compound
    * @since 4.0.0
    */
-  default @NotNull CompoundBinaryTag getCompound(final @Range(from = 0, to = Integer.MAX_VALUE) int index) {
+  default CompoundBinaryTag getCompound(final @Range(from = 0, to = Integer.MAX_VALUE) int index) {
     return this.getCompound(index, CompoundBinaryTag.empty());
   }
 
@@ -480,7 +481,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @return the compound, or {@code defaultValue}
    * @since 4.0.0
    */
-  default @NotNull CompoundBinaryTag getCompound(final @Range(from = 0, to = Integer.MAX_VALUE) int index, final @NotNull CompoundBinaryTag defaultValue) {
+  default CompoundBinaryTag getCompound(final @Range(from = 0, to = Integer.MAX_VALUE) int index, final CompoundBinaryTag defaultValue) {
     final BinaryTag tag = this.get(index);
     if (tag.type() == BinaryTagTypes.COMPOUND) {
       return (CompoundBinaryTag) tag;
@@ -495,7 +496,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @return the array of ints, or a zero-length array
    * @since 4.0.0
    */
-  default int@NotNull[] getIntArray(final @Range(from = 0, to = Integer.MAX_VALUE) int index) {
+  default int[] getIntArray(final @Range(from = 0, to = Integer.MAX_VALUE) int index) {
     final BinaryTag tag = this.get(index);
     if (tag.type() == BinaryTagTypes.INT_ARRAY) {
       return ((IntArrayBinaryTag) tag).value();
@@ -511,7 +512,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @return the array of ints, or {@code defaultValue}
    * @since 4.0.0
    */
-  default int@NotNull[] getIntArray(final @Range(from = 0, to = Integer.MAX_VALUE) int index, final int@NotNull[] defaultValue) {
+  default int[] getIntArray(final @Range(from = 0, to = Integer.MAX_VALUE) int index, final int[] defaultValue) {
     final BinaryTag tag = this.get(index);
     if (tag.type() == BinaryTagTypes.INT_ARRAY) {
       return ((IntArrayBinaryTag) tag).value();
@@ -526,7 +527,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @return the array of longs, or a zero-length array
    * @since 4.0.0
    */
-  default long@NotNull[] getLongArray(final @Range(from = 0, to = Integer.MAX_VALUE) int index) {
+  default long[] getLongArray(final @Range(from = 0, to = Integer.MAX_VALUE) int index) {
     final BinaryTag tag = this.get(index);
     if (tag.type() == BinaryTagTypes.LONG_ARRAY) {
       return ((LongArrayBinaryTag) tag).value();
@@ -542,7 +543,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @return the array of longs, or {@code defaultValue}
    * @since 4.0.0
    */
-  default long@NotNull[] getLongArray(final @Range(from = 0, to = Integer.MAX_VALUE) int index, final long@NotNull[] defaultValue) {
+  default long[] getLongArray(final @Range(from = 0, to = Integer.MAX_VALUE) int index, final long[] defaultValue) {
     final BinaryTag tag = this.get(index);
     if (tag.type() == BinaryTagTypes.LONG_ARRAY) {
       return ((LongArrayBinaryTag) tag).value();
@@ -556,7 +557,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @return a new stream
    * @since 4.2.0
    */
-  @NotNull Stream<BinaryTag> stream();
+  Stream<BinaryTag> stream();
 
   /**
    * A list tag builder.
@@ -571,6 +572,6 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
      * @return a list tag
      * @since 4.0.0
      */
-    @NotNull ListBinaryTag build();
+    ListBinaryTag build();
   }
 }

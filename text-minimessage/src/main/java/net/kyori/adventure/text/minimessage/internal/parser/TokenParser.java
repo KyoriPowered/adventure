@@ -44,8 +44,8 @@ import net.kyori.adventure.text.minimessage.tag.Inserting;
 import net.kyori.adventure.text.minimessage.tag.ParserDirective;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Handles parsing a string into a list of tokens and then into a tree of nodes.
@@ -53,6 +53,7 @@ import org.jetbrains.annotations.Nullable;
  * @since 4.10.0
  */
 @ApiStatus.Internal
+@NullMarked
 public final class TokenParser {
   private static final int MAX_DEPTH = 16;
   // minimessage tags
@@ -79,10 +80,10 @@ public final class TokenParser {
    * @since 4.10.0
    */
   public static RootNode parse(
-    final @NotNull TagProvider tagProvider,
-    final @NotNull Predicate<String> tagNameChecker,
-    final @NotNull String message,
-    final @NotNull String originalMessage,
+    final TagProvider tagProvider,
+    final Predicate<String> tagNameChecker,
+    final String message,
+    final String originalMessage,
     final boolean strict
   ) throws ParsingException {
     // collect tokens...
@@ -384,11 +385,11 @@ public final class TokenParser {
    * Build a tree from the OPEN_TAG and CLOSE_TAG tokens
    */
   private static RootNode buildTree(
-    final @NotNull TagProvider tagProvider,
-    final @NotNull Predicate<String> tagNameChecker,
-    final @NotNull List<Token> tokens,
-    final @NotNull String message,
-    final @NotNull String originalMessage,
+    final TagProvider tagProvider,
+    final Predicate<String> tagNameChecker,
+    final List<Token> tokens,
+    final String message,
+    final String originalMessage,
     final boolean strict
   ) throws ParsingException {
     final RootNode root = new RootNode(message, originalMessage);
@@ -676,7 +677,7 @@ public final class TokenParser {
      * @return a tag
      * @since 4.10.0
      */
-    @Nullable Tag resolve(final @NotNull String name, final @NotNull List<? extends Tag.Argument> trimmedArgs, final @Nullable Token token);
+    @Nullable Tag resolve(final String name, final List<? extends Tag.Argument> trimmedArgs, final @Nullable Token token);
 
     /**
      * Resolve by sanitized name.
@@ -685,7 +686,7 @@ public final class TokenParser {
      * @return a tag, if any is available
      * @since 4.10.0
      */
-    default @Nullable Tag resolve(final @NotNull String name) {
+    default @Nullable Tag resolve(final String name) {
       return this.resolve(name, Collections.emptyList(), null);
     }
 
@@ -696,7 +697,7 @@ public final class TokenParser {
      * @return a tag, if any is available
      * @since 4.10.0
      */
-    default @Nullable Tag resolve(final @NotNull TagNode node) {
+    default @Nullable Tag resolve(final TagNode node) {
       return this.resolve(
         sanitizePlaceholderName(node.name()),
         node.parts().subList(1, node.parts().size()),
@@ -713,7 +714,7 @@ public final class TokenParser {
      * @return a sanitized name
      * @since 4.10.0
      */
-    static @NotNull String sanitizePlaceholderName(final @NotNull String name) {
+    static String sanitizePlaceholderName(final String name) {
       return name.toLowerCase(Locale.ROOT);
     }
   }

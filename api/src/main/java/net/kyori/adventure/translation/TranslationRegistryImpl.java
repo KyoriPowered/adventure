@@ -34,11 +34,12 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.util.TriState;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 final class TranslationRegistryImpl implements Examinable, TranslationRegistry {
   private final Key name;
   private final Map<String, Translation> translations = new ConcurrentHashMap<>();
@@ -49,27 +50,27 @@ final class TranslationRegistryImpl implements Examinable, TranslationRegistry {
   }
 
   @Override
-  public void register(final @NotNull String key, final @NotNull Locale locale, final @NotNull MessageFormat format) {
+  public void register(final String key, final Locale locale, final MessageFormat format) {
     this.translations.computeIfAbsent(key, Translation::new).register(locale, format);
   }
 
   @Override
-  public void unregister(final @NotNull String key) {
+  public void unregister(final String key) {
     this.translations.remove(key);
   }
 
   @Override
-  public @NotNull Key name() {
+  public Key name() {
     return this.name;
   }
 
   @Override
-  public boolean contains(final @NotNull String key) {
+  public boolean contains(final String key) {
     return this.translations.containsKey(key);
   }
 
   @Override
-  public @NotNull TriState hasAnyTranslations() {
+  public TriState hasAnyTranslations() {
     if (!this.translations.isEmpty()) {
       return TriState.TRUE;
     }
@@ -77,19 +78,19 @@ final class TranslationRegistryImpl implements Examinable, TranslationRegistry {
   }
 
   @Override
-  public @Nullable MessageFormat translate(final @NotNull String key, final @NotNull Locale locale) {
+  public @Nullable MessageFormat translate(final String key, final Locale locale) {
     final Translation translation = this.translations.get(key);
     if (translation == null) return null;
     return translation.translate(locale);
   }
 
   @Override
-  public void defaultLocale(final @NotNull Locale defaultLocale) {
+  public void defaultLocale(final Locale defaultLocale) {
     this.defaultLocale = requireNonNull(defaultLocale, "defaultLocale");
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(ExaminableProperty.of("translations", this.translations));
   }
 
@@ -119,18 +120,18 @@ final class TranslationRegistryImpl implements Examinable, TranslationRegistry {
     private final String key;
     private final Map<Locale, MessageFormat> formats;
 
-    Translation(final @NotNull String key) {
+    Translation(final String key) {
       this.key = requireNonNull(key, "translation key");
       this.formats = new ConcurrentHashMap<>();
     }
 
-    void register(final @NotNull Locale locale, final @NotNull MessageFormat format) {
+    void register(final Locale locale, final MessageFormat format) {
       if (this.formats.putIfAbsent(requireNonNull(locale, "locale"), requireNonNull(format, "message format")) != null) {
         throw new IllegalArgumentException(String.format("Translation already exists: %s for %s", this.key, locale));
       }
     }
 
-    @Nullable MessageFormat translate(final @NotNull Locale locale) {
+    @Nullable MessageFormat translate(final Locale locale) {
       MessageFormat format = this.formats.get(requireNonNull(locale, "locale"));
       if (format == null) {
         format = this.formats.get(new Locale(locale.getLanguage())); // try without country
@@ -145,7 +146,7 @@ final class TranslationRegistryImpl implements Examinable, TranslationRegistry {
     }
 
     @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+    public Stream<? extends ExaminableProperty> examinableProperties() {
       return Stream.of(
         ExaminableProperty.of("key", this.key),
         ExaminableProperty.of("formats", this.formats)

@@ -28,9 +28,10 @@ import java.util.stream.Stream;
 import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.key.Key;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
+@NullMarked
 abstract class SoundStopImpl implements SoundStop {
   static final SoundStop ALL = new SoundStopImpl(null) {
     @Override
@@ -66,7 +67,7 @@ abstract class SoundStopImpl implements SoundStop {
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("name", this.sound()),
       ExaminableProperty.of("source", this.source)

@@ -33,8 +33,8 @@ import net.kyori.adventure.text.minimessage.internal.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -44,6 +44,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 4.10.0
  */
+@NullMarked
 class ContextImpl implements Context {
   private static final Token[] EMPTY_TOKEN_ARRAY = new Token[0];
 
@@ -60,7 +61,7 @@ class ContextImpl implements Context {
     final Consumer<String> debugOutput,
     final String message,
     final MiniMessage miniMessage,
-    final @NotNull TagResolver extraTags,
+    final TagResolver extraTags,
     final UnaryOperator<String> preProcessor,
     final UnaryOperator<Component> postProcessor
   ) {
@@ -93,15 +94,15 @@ class ContextImpl implements Context {
     return this.debugOutput;
   }
 
-  public @NotNull String message() {
+  public String message() {
     return this.message;
   }
 
-  void message(final @NotNull String message) {
+  void message(final String message) {
     this.message = message;
   }
 
-  public @NotNull TagResolver extraTags() {
+  public TagResolver extraTags() {
     return this.tagResolver;
   }
 
@@ -114,34 +115,34 @@ class ContextImpl implements Context {
   }
 
   @Override
-  public @NotNull Component deserialize(final @NotNull String message) {
+  public Component deserialize(final String message) {
     return this.miniMessage.deserialize(requireNonNull(message, "message"), this.tagResolver);
   }
 
   @Override
-  public @NotNull Component deserialize(final @NotNull String message, final @NotNull TagResolver resolver) {
+  public Component deserialize(final String message, final TagResolver resolver) {
     return this.miniMessage.deserialize(requireNonNull(message, "message"),
       TagResolver.builder().resolver(this.tagResolver).resolver(requireNonNull(resolver, "resolver")).build());
   }
 
   @Override
-  public @NotNull Component deserialize(final @NotNull String message, final @NotNull TagResolver@NotNull... resolvers) {
+  public Component deserialize(final String message, final TagResolver... resolvers) {
     return this.miniMessage.deserialize(requireNonNull(message, "message"),
       TagResolver.builder().resolver(this.tagResolver).resolvers(requireNonNull(resolvers, "resolvers")).build());
   }
 
   @Override
-  public @NotNull ParsingException newException(final @NotNull String message) {
+  public ParsingException newException(final String message) {
     return new ParsingExceptionImpl(message, this.message, null, false, EMPTY_TOKEN_ARRAY);
   }
 
   @Override
-  public @NotNull ParsingException newException(final @NotNull String message, final @NotNull ArgumentQueue tags) {
+  public ParsingException newException(final String message, final ArgumentQueue tags) {
     return new ParsingExceptionImpl(message, this.message, null, false, tagsToTokens(((ArgumentQueueImpl<?>) tags).args));
   }
 
   @Override
-  public @NotNull ParsingException newException(final @NotNull String message, final @Nullable Throwable cause, final @NotNull ArgumentQueue tags) {
+  public ParsingException newException(final String message, final @Nullable Throwable cause, final ArgumentQueue tags) {
     return new ParsingExceptionImpl(message, this.message, cause, false, tagsToTokens(((ArgumentQueueImpl<?>) tags).args));
   }
 

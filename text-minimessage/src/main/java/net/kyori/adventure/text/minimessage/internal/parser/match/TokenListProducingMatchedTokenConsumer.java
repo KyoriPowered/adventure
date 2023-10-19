@@ -28,13 +28,14 @@ import java.util.Collections;
 import java.util.List;
 import net.kyori.adventure.text.minimessage.internal.parser.Token;
 import net.kyori.adventure.text.minimessage.internal.parser.TokenType;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * A matched token consumer that produces a list of matched tokens.
  *
  * @since 4.10.0
  */
+@NullMarked
 public final class TokenListProducingMatchedTokenConsumer extends MatchedTokenConsumer<List<Token>> {
   private List<Token> result = null;
 
@@ -44,12 +45,12 @@ public final class TokenListProducingMatchedTokenConsumer extends MatchedTokenCo
    * @param input the input
    * @since 4.10.0
    */
-  public TokenListProducingMatchedTokenConsumer(final @NotNull String input) {
+  public TokenListProducingMatchedTokenConsumer(final String input) {
     super(input);
   }
 
   @Override
-  public void accept(final int start, final int end, final @NotNull TokenType tokenType) {
+  public void accept(final int start, final int end, final TokenType tokenType) {
     super.accept(start, end, tokenType);
 
     if (this.result == null) {
@@ -60,7 +61,7 @@ public final class TokenListProducingMatchedTokenConsumer extends MatchedTokenCo
   }
 
   @Override
-  public @NotNull List<Token> result() {
+  public List<Token> result() {
     return this.result == null ? Collections.emptyList() : this.result;
   }
 }

@@ -25,9 +25,10 @@ package net.kyori.adventure.pointer;
 
 import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.key.Key;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
+@NullMarked
 final class PointerImpl<T> implements Pointer<T> {
   private final Class<T> type;
   private final Key key;
@@ -38,12 +39,12 @@ final class PointerImpl<T> implements Pointer<T> {
   }
 
   @Override
-  public @NotNull Class<T> type() {
+  public Class<T> type() {
     return this.type;
   }
 
   @Override
-  public @NotNull Key key() {
+  public Key key() {
     return this.key;
   }
 

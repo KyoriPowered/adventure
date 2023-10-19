@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Set;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * The iterator types.
@@ -40,6 +40,7 @@ import org.jetbrains.annotations.NotNull;
  */
 @ApiStatus.NonExtendable
 @FunctionalInterface
+@NullMarked
 public interface ComponentIteratorType {
   /**
    * A depth-first iteration.
@@ -104,5 +105,5 @@ public interface ComponentIteratorType {
    * @param flags the flags
    * @since 4.9.0
    */
-  void populate(final @NotNull Component component, final @NotNull Deque<Component> deque, final @NotNull Set<ComponentIteratorFlag> flags);
+  void populate(final Component component, final Deque<Component> deque, final Set<ComponentIteratorFlag> flags);
 }

@@ -28,23 +28,24 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
+@NullMarked
 final class PointersImpl implements Pointers {
   static final Pointers EMPTY = new Pointers() {
     @Override
-    public @NotNull <T> Optional<T> get(final @NotNull Pointer<T> pointer) {
+    public <T> Optional<T> get(final Pointer<T> pointer) {
       return Optional.empty();
     }
 
     @Override
-    public <T> boolean supports(final @NotNull Pointer<T> pointer) {
+    public <T> boolean supports(final Pointer<T> pointer) {
       return false;
     }
 
     @Override
-    public Pointers.@NotNull Builder toBuilder() {
+    public Pointers.Builder toBuilder() {
       return new PointersImpl.BuilderImpl();
     }
 
@@ -56,13 +57,13 @@ final class PointersImpl implements Pointers {
 
   private final Map<Pointer<?>, Supplier<?>> pointers;
 
-  PointersImpl(final @NotNull BuilderImpl builder) {
+  PointersImpl(final BuilderImpl builder) {
     this.pointers = new HashMap<>(builder.pointers);
   }
 
   @Override
   @SuppressWarnings("unchecked") // all values are checked on entry
-  public @NotNull <T> Optional<T> get(final @NotNull Pointer<T> pointer) {
+  public <T> Optional<T> get(final Pointer<T> pointer) {
     Objects.requireNonNull(pointer, "pointer");
     final Supplier<?> supplier = this.pointers.get(pointer);
     if (supplier == null) {
@@ -73,13 +74,13 @@ final class PointersImpl implements Pointers {
   }
 
   @Override
-  public <T> boolean supports(final @NotNull Pointer<T> pointer) {
+  public <T> boolean supports(final Pointer<T> pointer) {
     Objects.requireNonNull(pointer, "pointer");
     return this.pointers.containsKey(pointer);
   }
 
   @Override
-  public Pointers.@NotNull Builder toBuilder() {
+  public Pointers.Builder toBuilder() {
     return new BuilderImpl(this);
   }
 
@@ -90,18 +91,18 @@ final class PointersImpl implements Pointers {
       this.pointers = new HashMap<>();
     }
 
-    BuilderImpl(final @NotNull PointersImpl pointers) {
+    BuilderImpl(final PointersImpl pointers) {
       this.pointers = new HashMap<>(pointers.pointers);
     }
 
     @Override
-    public @NotNull <T> Builder withDynamic(final @NotNull Pointer<T> pointer, final @NotNull Supplier<@Nullable T> value) {
+    public <T> Builder withDynamic(final Pointer<T> pointer, final Supplier<@Nullable T> value) {
       this.pointers.put(Objects.requireNonNull(pointer, "pointer"), Objects.requireNonNull(value, "value"));
       return this;
     }
 
     @Override
-    public @NotNull Pointers build() {
+    public Pointers build() {
       return new PointersImpl(this);
     }
   }

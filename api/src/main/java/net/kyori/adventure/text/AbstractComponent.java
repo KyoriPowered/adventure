@@ -31,8 +31,8 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Debug;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * An abstract implementation of a text component.
@@ -43,22 +43,23 @@ import org.jetbrains.annotations.Nullable;
 @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
 @Debug.Renderer(text = "this.debuggerString()", childrenArray = "this.children().toArray()", hasChildren = "!this.children().isEmpty()")
 @Deprecated
+@NullMarked
 public abstract class AbstractComponent implements Component {
   protected final List<Component> children;
   protected final Style style;
 
-  protected AbstractComponent(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style) {
+  protected AbstractComponent(final List<? extends ComponentLike> children, final Style style) {
     this.children = ComponentLike.asComponents(children, IS_NOT_EMPTY);
     this.style = style;
   }
 
   @Override
-  public final @NotNull List<Component> children() {
+  public final List<Component> children() {
     return this.children;
   }
 
   @Override
-  public final @NotNull Style style() {
+  public final Style style() {
     return this.style;
   }
 

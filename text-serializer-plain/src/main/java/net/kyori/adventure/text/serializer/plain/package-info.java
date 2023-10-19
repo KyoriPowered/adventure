@@ -24,4 +24,7 @@
 /**
  * Plain text based serialization and deserialization.
  */
+@NullMarked
 package net.kyori.adventure.text.serializer.plain;
+
+import org.jspecify.annotations.NullMarked;

@@ -28,12 +28,13 @@ import java.util.Collections;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
 
+@NullMarked
 final class SoundStopSerializer implements TypeSerializer<SoundStop> {
   static final SoundStopSerializer INSTANCE = new SoundStopSerializer();
 
@@ -44,7 +45,7 @@ final class SoundStopSerializer implements TypeSerializer<SoundStop> {
   }
 
   @Override
-  public SoundStop deserialize(final @NotNull Type type, final @NotNull ConfigurationNode value) throws SerializationException {
+  public SoundStop deserialize(final Type type, final ConfigurationNode value) throws SerializationException {
     if (value.empty()) {
       return SoundStop.all();
     } else {
@@ -59,7 +60,7 @@ final class SoundStopSerializer implements TypeSerializer<SoundStop> {
   }
 
   @Override
-  public void serialize(final @NotNull Type type, final @Nullable SoundStop obj, final @NotNull ConfigurationNode value) throws SerializationException {
+  public void serialize(final Type type, final @Nullable SoundStop obj, final ConfigurationNode value) throws SerializationException {
     value.node(SOUND).set(Key.class, obj == null ? null : obj.sound());
     value.node(SOURCE).set(Sound.Source.class, obj == null ? null : obj.source());
     if (value.empty()) {

@@ -26,15 +26,15 @@ package net.kyori.adventure.pointer;
 import java.util.Optional;
 import java.util.function.Supplier;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnknownNullability;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Something that can retrieve values based on a given {@link Pointer}.
  *
  * @since 4.8.0
  */
+@NullMarked
 public interface Pointered {
   /**
    * Gets the value of {@code pointer}.
@@ -44,7 +44,7 @@ public interface Pointered {
    * @return the value
    * @since 4.8.0
    */
-  default <T> @NotNull Optional<T> get(final @NotNull Pointer<T> pointer) {
+  default <T> Optional<T> get(final Pointer<T> pointer) {
     return this.pointers().get(pointer);
   }
 
@@ -61,7 +61,7 @@ public interface Pointered {
    */
   @Contract("_, null -> _; _, !null -> !null")
   @SuppressWarnings("checkstyle:MethodName")
-  default <T> @Nullable T getOrDefault(final @NotNull Pointer<T> pointer, final @Nullable T defaultValue) {
+  default <T> @Nullable T getOrDefault(final Pointer<T> pointer, final @Nullable T defaultValue) {
     return this.pointers().getOrDefault(pointer, defaultValue);
   }
 
@@ -77,7 +77,7 @@ public interface Pointered {
    * @since 4.8.0
    */
   @SuppressWarnings("checkstyle:MethodName")
-  default <T> @UnknownNullability T getOrDefaultFrom(final @NotNull Pointer<T> pointer, final @NotNull Supplier<? extends T> defaultValue) {
+  default <T> @Nullable T getOrDefaultFrom(final Pointer<T> pointer, final Supplier<? extends T> defaultValue) {
     return this.pointers().getOrDefaultFrom(pointer, defaultValue);
   }
 
@@ -87,7 +87,7 @@ public interface Pointered {
    * @return the pointers
    * @since 4.8.0
    */
-  default @NotNull Pointers pointers() {
+  default Pointers pointers() {
     return Pointers.empty();
   }
 }

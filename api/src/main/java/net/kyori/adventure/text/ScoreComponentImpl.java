@@ -27,18 +27,19 @@ import java.util.List;
 import java.util.Objects;
 import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.format.Style;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 final class ScoreComponentImpl extends AbstractComponent implements ScoreComponent {
   private final String name;
   private final String objective;
   @Deprecated
   private final @Nullable String value;
 
-  static ScoreComponent create(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final @NotNull String name, final @NotNull String objective, final @Nullable String value) {
+  static ScoreComponent create(final List<? extends ComponentLike> children, final Style style, final String name, final String objective, final @Nullable String value) {
     return new ScoreComponentImpl(
       ComponentLike.asComponents(children, IS_NOT_EMPTY),
       requireNonNull(style, "style"),
@@ -48,7 +49,7 @@ final class ScoreComponentImpl extends AbstractComponent implements ScoreCompone
     );
   }
 
-  ScoreComponentImpl(final @NotNull List<Component> children, final @NotNull Style style, final @NotNull String name, final @NotNull String objective, final @Nullable String value) {
+  ScoreComponentImpl(final List<Component> children, final Style style, final String name, final String objective, final @Nullable String value) {
     super(children, style);
     this.name = name;
     this.objective = objective;
@@ -56,23 +57,23 @@ final class ScoreComponentImpl extends AbstractComponent implements ScoreCompone
   }
 
   @Override
-  public @NotNull String name() {
+  public String name() {
     return this.name;
   }
 
   @Override
-  public @NotNull ScoreComponent name(final @NotNull String name) {
+  public ScoreComponent name(final String name) {
     if (Objects.equals(this.name, name)) return this;
     return create(this.children, this.style, name, this.objective, this.value);
   }
 
   @Override
-  public @NotNull String objective() {
+  public String objective() {
     return this.objective;
   }
 
   @Override
-  public @NotNull ScoreComponent objective(final @NotNull String objective) {
+  public ScoreComponent objective(final String objective) {
     if (Objects.equals(this.objective, objective)) return this;
     return create(this.children, this.style, this.name, objective, this.value);
   }
@@ -85,18 +86,18 @@ final class ScoreComponentImpl extends AbstractComponent implements ScoreCompone
 
   @Override
   @Deprecated
-  public @NotNull ScoreComponent value(final @Nullable String value) {
+  public ScoreComponent value(final @Nullable String value) {
     if (Objects.equals(this.value, value)) return this;
     return create(this.children, this.style, this.name, this.objective, value);
   }
 
   @Override
-  public @NotNull ScoreComponent children(final @NotNull List<? extends ComponentLike> children) {
+  public ScoreComponent children(final List<? extends ComponentLike> children) {
     return create(children, this.style, this.name, this.objective, this.value);
   }
 
   @Override
-  public @NotNull ScoreComponent style(final @NotNull Style style) {
+  public ScoreComponent style(final Style style) {
     return create(this.children, style, this.name, this.objective, this.value);
   }
 
@@ -127,7 +128,7 @@ final class ScoreComponentImpl extends AbstractComponent implements ScoreCompone
   }
 
   @Override
-  public @NotNull Builder toBuilder() {
+  public Builder toBuilder() {
     return new BuilderImpl(this);
   }
 
@@ -140,7 +141,7 @@ final class ScoreComponentImpl extends AbstractComponent implements ScoreCompone
     }
 
     @SuppressWarnings("deprecation")
-    BuilderImpl(final @NotNull ScoreComponent component) {
+    BuilderImpl(final ScoreComponent component) {
       super(component);
       this.name = component.name();
       this.objective = component.objective();
@@ -148,26 +149,26 @@ final class ScoreComponentImpl extends AbstractComponent implements ScoreCompone
     }
 
     @Override
-    public @NotNull Builder name(final @NotNull String name) {
+    public Builder name(final String name) {
       this.name = requireNonNull(name, "name");
       return this;
     }
 
     @Override
-    public @NotNull Builder objective(final @NotNull String objective) {
+    public Builder objective(final String objective) {
       this.objective = requireNonNull(objective, "objective");
       return this;
     }
 
     @Override
     @Deprecated
-    public @NotNull Builder value(final @Nullable String value) {
+    public Builder value(final @Nullable String value) {
       this.value = value;
       return this;
     }
 
     @Override
-    public @NotNull ScoreComponent build() {
+    public ScoreComponent build() {
       if (this.name == null) throw new IllegalStateException("name must be set");
       if (this.objective == null) throw new IllegalStateException("objective must be set");
       return create(this.children, this.buildStyle(), this.name, this.objective, this.value);

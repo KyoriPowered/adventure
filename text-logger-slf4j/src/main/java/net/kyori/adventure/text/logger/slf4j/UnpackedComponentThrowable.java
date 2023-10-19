@@ -26,7 +26,7 @@ package net.kyori.adventure.text.logger.slf4j;
 import java.util.function.Function;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.ComponentMessageThrowable;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A wrapper for exceptions that implement ComponentMessageThrowable.

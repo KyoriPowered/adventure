@@ -25,13 +25,14 @@ package net.kyori.adventure.text;
 
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.StyleBuilderApplicable;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * A utility class that allows {@link Component components} to be created where {@link Style styles} can be specified inline.
  *
  * @since 4.0.0
  */
+@NullMarked
 public final class LinearComponents {
   private LinearComponents() {
   }
@@ -51,7 +52,7 @@ public final class LinearComponents {
    * @return a component
    * @since 4.0.0
    */
-  public static @NotNull Component linear(final @NotNull ComponentBuilderApplicable@NotNull... applicables) {
+  public static Component linear(final ComponentBuilderApplicable... applicables) {
     final int length = applicables.length;
     if (length == 0) return Component.empty();
     if (length == 1) {

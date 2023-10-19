@@ -26,8 +26,8 @@ package net.kyori.adventure.text.minimessage.tag.resolver;
 import java.util.function.Supplier;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A queue of {@link Tag} arguments.
@@ -35,6 +35,7 @@ import org.jetbrains.annotations.Nullable;
  * @since 4.10.0
  */
 @ApiStatus.NonExtendable
+@NullMarked
 public interface ArgumentQueue {
   /**
    * Pop an argument, throwing an exception if no argument was present.
@@ -44,7 +45,7 @@ public interface ArgumentQueue {
    * @return the popped argument
    * @since 4.10.0
    */
-  Tag.@NotNull Argument pop();
+  Tag.Argument pop();
 
   /**
    * Pop an argument, throwing an exception if no argument was present.
@@ -55,7 +56,7 @@ public interface ArgumentQueue {
    * @return the popped argument
    * @since 4.10.0
    */
-  Tag.@NotNull Argument popOr(final @NotNull String errorMessage);
+  Tag.Argument popOr(final String errorMessage);
 
   /**
    * Pop an argument, throwing an exception if no argument was present.
@@ -66,7 +67,7 @@ public interface ArgumentQueue {
    * @return the popped argument
    * @since 4.10.0
    */
-  Tag.@NotNull Argument popOr(final @NotNull Supplier<String> errorMessage);
+  Tag.Argument popOr(final Supplier<String> errorMessage);
 
   /**
    * Peek at the next argument without advancing the iteration pointer.

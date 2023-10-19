@@ -26,9 +26,10 @@ package net.kyori.adventure.text.minimessage.tag;
 import java.util.Objects;
 import java.util.stream.Stream;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
+@NullMarked
 final class PreProcessTagImpl extends AbstractTag implements PreProcess {
   private final String value;
 
@@ -37,7 +38,7 @@ final class PreProcessTagImpl extends AbstractTag implements PreProcess {
   }
 
   @Override
-  public @NotNull String value() {
+  public String value() {
     return this.value;
   }
 
@@ -55,7 +56,7 @@ final class PreProcessTagImpl extends AbstractTag implements PreProcess {
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(ExaminableProperty.of("value", this.value));
   }
 }

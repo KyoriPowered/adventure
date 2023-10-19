@@ -24,9 +24,10 @@
 package net.kyori.adventure.permission;
 
 import net.kyori.adventure.util.TriState;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
+@NullMarked
 final class PermissionCheckers {
   static final PermissionChecker NOT_SET = new Always(TriState.NOT_SET);
   static final PermissionChecker FALSE = new Always(TriState.FALSE);
@@ -43,7 +44,7 @@ final class PermissionCheckers {
     }
 
     @Override
-    public @NotNull TriState value(final @NotNull String permission) {
+    public TriState value(final String permission) {
       return this.value;
     }
 

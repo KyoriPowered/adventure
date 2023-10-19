@@ -29,13 +29,14 @@ import java.util.stream.Stream;
 import net.kyori.adventure.internal.Internals;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Represents a token for the lexer.
  *
  * @since 4.10.0
  */
+@NullMarked
 public final class Token implements Examinable {
   private final int startIndex;
   private final int endIndex;
@@ -119,7 +120,7 @@ public final class Token implements Examinable {
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("startIndex", this.startIndex),
       ExaminableProperty.of("endIndex", this.endIndex),

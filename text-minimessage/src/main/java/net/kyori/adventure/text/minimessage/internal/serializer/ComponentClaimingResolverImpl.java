@@ -32,13 +32,14 @@ import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
+@NullMarked
 class ComponentClaimingResolverImpl implements TagResolver, SerializableResolver.Single {
-  private final @NotNull Set<String> names;
-  private final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler;
-  private final @NotNull Function<Component, @Nullable Emitable> componentClaim;
+  private final Set<String> names;
+  private final BiFunction<ArgumentQueue, Context, Tag> handler;
+  private final Function<Component, @Nullable Emitable> componentClaim;
 
   ComponentClaimingResolverImpl(final Set<String> names, final BiFunction<ArgumentQueue, Context, Tag> handler, final Function<Component, @Nullable Emitable> componentClaim) {
     this.names = names;
@@ -47,19 +48,19 @@ class ComponentClaimingResolverImpl implements TagResolver, SerializableResolver
   }
 
   @Override
-  public @Nullable Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) throws ParsingException {
+  public @Nullable Tag resolve(final String name, final ArgumentQueue arguments, final Context ctx) throws ParsingException {
     if (!this.names.contains(name)) return null;
 
     return this.handler.apply(arguments, ctx);
   }
 
   @Override
-  public boolean has(final @NotNull String name) {
+  public boolean has(final String name) {
     return this.names.contains(name);
   }
 
   @Override
-  public @Nullable Emitable claimComponent(final @NotNull Component component) {
+  public @Nullable Emitable claimComponent(final Component component) {
     return this.componentClaim.apply(component);
   }
 }

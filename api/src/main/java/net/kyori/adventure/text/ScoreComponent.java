@@ -26,8 +26,8 @@ package net.kyori.adventure.text;
 import java.util.stream.Stream;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A component that can display a player's score from a scoreboard objective,
@@ -51,6 +51,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 4.0.0
  */
+@NullMarked
 public interface ScoreComponent extends BuildableComponent<ScoreComponent, ScoreComponent.Builder>, ScopedComponent<ScoreComponent> {
   /**
    * Gets the score name.
@@ -58,7 +59,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    * @return the score name
    * @since 4.0.0
    */
-  @NotNull String name();
+  String name();
 
   /**
    * Sets the score name.
@@ -68,7 +69,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    * @since 4.0.0
    */
   @Contract(pure = true)
-  @NotNull ScoreComponent name(final @NotNull String name);
+  ScoreComponent name(final String name);
 
   /**
    * Gets the objective name.
@@ -76,7 +77,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    * @return the objective name
    * @since 4.0.0
    */
-  @NotNull String objective();
+  String objective();
 
   /**
    * Sets the score objective.
@@ -86,7 +87,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    * @since 4.0.0
    */
   @Contract(pure = true)
-  @NotNull ScoreComponent objective(final @NotNull String objective);
+  ScoreComponent objective(final String objective);
 
   /**
    * Gets the value.
@@ -108,10 +109,10 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    */
   @Deprecated
   @Contract(pure = true)
-  @NotNull ScoreComponent value(final @Nullable String value);
+  ScoreComponent value(final @Nullable String value);
 
   @Override
-  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  default Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.concat(
       Stream.of(
         ExaminableProperty.of("name", this.name()),
@@ -136,7 +137,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
      * @since 4.0.0
      */
     @Contract("_ -> this")
-    @NotNull Builder name(final @NotNull String name);
+    Builder name(final String name);
 
     /**
      * Sets the score objective.
@@ -146,7 +147,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
      * @since 4.0.0
      */
     @Contract("_ -> this")
-    @NotNull Builder objective(final @NotNull String objective);
+    Builder objective(final String objective);
 
     /**
      * Sets the value.
@@ -158,6 +159,6 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
      */
     @Deprecated
     @Contract("_ -> this")
-    @NotNull Builder value(final @Nullable String value);
+    Builder value(final @Nullable String value);
   }
 }

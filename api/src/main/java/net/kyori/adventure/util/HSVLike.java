@@ -27,8 +27,8 @@ import java.util.stream.Stream;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Something that can provide hue, saturation, and value color components.
@@ -37,6 +37,7 @@ import org.jetbrains.annotations.Range;
  *
  * @since 4.6.0
  */
+@NullMarked
 public interface HSVLike extends Examinable {
   /**
    * Creates a new HSVLike.
@@ -47,7 +48,7 @@ public interface HSVLike extends Examinable {
    * @return a new HSVLike
    * @since 4.10.0
    */
-  static @NotNull HSVLike hsvLike(final float h, final float s, final float v) {
+  static HSVLike hsvLike(final float h, final float s, final float v) {
     return new HSVLikeImpl(h, s, v);
   }
 
@@ -63,7 +64,7 @@ public interface HSVLike extends Examinable {
    */
   @Deprecated
   @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  static @NotNull HSVLike of(final float h, final float s, final float v) {
+  static HSVLike of(final float h, final float s, final float v) {
     return new HSVLikeImpl(h, s, v);
   }
 
@@ -76,7 +77,7 @@ public interface HSVLike extends Examinable {
    * @return a new HSVLike
    * @since 4.6.0
    */
-  static @NotNull HSVLike fromRGB(@Range(from = 0x0, to = 0xff) final int red, @Range(from = 0x0, to = 0xff) final int green, @Range(from = 0x0, to = 0xff) final int blue) {
+  static HSVLike fromRGB(@Range(from = 0x0, to = 0xff) final int red, @Range(from = 0x0, to = 0xff) final int green, @Range(from = 0x0, to = 0xff) final int blue) {
     final float r = red / 255.0f;
     final float g = green / 255.0f;
     final float b = blue / 255.0f;
@@ -137,7 +138,7 @@ public interface HSVLike extends Examinable {
   float v();
 
   @Override
-  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  default Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("h", this.h()),
       ExaminableProperty.of("s", this.s()),

@@ -27,10 +27,11 @@ import java.security.SecureRandom;
 import java.time.Instant;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.text.Component;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 // Used for system messages ONLY
+@NullMarked
 final class SignedMessageImpl implements SignedMessage {
   static final SecureRandom RANDOM = new SecureRandom();
 
@@ -47,7 +48,7 @@ final class SignedMessageImpl implements SignedMessage {
   }
 
   @Override
-  public @NotNull Instant timestamp() {
+  public Instant timestamp() {
     return this.instant;
   }
 
@@ -67,12 +68,12 @@ final class SignedMessageImpl implements SignedMessage {
   }
 
   @Override
-  public @NotNull String message() {
+  public String message() {
     return this.message;
   }
 
   @Override
-  public @NotNull Identity identity() {
+  public Identity identity() {
     return Identity.nil();
   }
 

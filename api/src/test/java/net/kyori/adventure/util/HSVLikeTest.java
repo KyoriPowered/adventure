@@ -28,7 +28,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -36,6 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@NullMarked
 class HSVLikeTest {
   @Test
   void roundTripRgbHsvTest() {
@@ -50,7 +51,7 @@ class HSVLikeTest {
     NamedTextColor.NAMES.values().forEach(HSVLikeTest::assertRgbToHsvConversionRoughlyMatchesJavaAwtColor);
   }
 
-  private static void assertRgbToHsvConversionRoughlyMatchesJavaAwtColor(final @NotNull RGBLike rgb) {
+  private static void assertRgbToHsvConversionRoughlyMatchesJavaAwtColor(final RGBLike rgb) {
     final HSVLike hsv = rgb.asHSV();
     assertArrayEquals(
       roundFloats(Color.RGBtoHSB(rgb.red(), rgb.green(), rgb.blue(), null)),
@@ -59,7 +60,7 @@ class HSVLikeTest {
     );
   }
 
-  private static float[] roundFloats(final float @NotNull [] floats) {
+  private static float[] roundFloats(final float[] floats) {
     final float[] result = new float[floats.length];
     for (int i = 0; i < floats.length; i++) {
       result[i] = BigDecimal.valueOf(floats[i]).setScale(7, RoundingMode.UP).floatValue();

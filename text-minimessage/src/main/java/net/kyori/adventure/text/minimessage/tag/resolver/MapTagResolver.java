@@ -26,23 +26,24 @@ package net.kyori.adventure.text.minimessage.tag.resolver;
 import java.util.Map;
 import java.util.Objects;
 import net.kyori.adventure.text.minimessage.tag.Tag;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
+@NullMarked
 final class MapTagResolver implements TagResolver.WithoutArguments, MappableResolver {
   private final Map<String, ? extends Tag> tagMap;
 
-  MapTagResolver(final @NotNull Map<String, ? extends Tag> placeholderMap) {
+  MapTagResolver(final Map<String, ? extends Tag> placeholderMap) {
     this.tagMap = placeholderMap;
   }
 
   @Override
-  public @Nullable Tag resolve(final @NotNull String name) {
+  public @Nullable Tag resolve(final String name) {
     return this.tagMap.get(name);
   }
 
   @Override
-  public boolean contributeToMap(final @NotNull Map<String, Tag> map) {
+  public boolean contributeToMap(final Map<String, Tag> map) {
     map.putAll(this.tagMap);
     return true;
   }

@@ -30,12 +30,13 @@ import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.internal.properties.AdventureProperties;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.util.Nag;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 final class TextComponentImpl extends AbstractComponent implements TextComponent {
   private static final boolean WARN_WHEN_LEGACY_FORMATTING_DETECTED = Boolean.TRUE.equals(AdventureProperties.TEXT_WARN_WHEN_LEGACY_FORMATTING_DETECTED.value());
   @VisibleForTesting
@@ -45,7 +46,7 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
   static final TextComponent NEWLINE = createDirect("\n");
   static final TextComponent SPACE = createDirect(" ");
 
-  static TextComponent create(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final @NotNull String content) {
+  static TextComponent create(final List<? extends ComponentLike> children, final Style style, final String content) {
     final List<Component> filteredChildren = ComponentLike.asComponents(children, IS_NOT_EMPTY);
     if (filteredChildren.isEmpty() && style.isEmpty() && content.isEmpty()) return Component.empty();
 
@@ -56,13 +57,13 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
     );
   }
 
-  private static @NotNull TextComponent createDirect(final @NotNull String content) {
+  private static TextComponent createDirect(final String content) {
     return new TextComponentImpl(Collections.emptyList(), Style.empty(), content);
   }
 
   private final String content;
 
-  TextComponentImpl(final @NotNull List<Component> children, final @NotNull Style style, final @NotNull String content) {
+  TextComponentImpl(final List<Component> children, final Style style, final String content) {
     super(children, style);
     this.content = content;
 
@@ -83,23 +84,23 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
   }
 
   @Override
-  public @NotNull String content() {
+  public String content() {
     return this.content;
   }
 
   @Override
-  public @NotNull TextComponent content(final @NotNull String content) {
+  public TextComponent content(final String content) {
     if (Objects.equals(this.content, content)) return this;
     return create(this.children, this.style, content);
   }
 
   @Override
-  public @NotNull TextComponent children(final @NotNull List<? extends ComponentLike> children) {
+  public TextComponent children(final List<? extends ComponentLike> children) {
     return create(children, this.style, this.content);
   }
 
   @Override
-  public @NotNull TextComponent style(final @NotNull Style style) {
+  public TextComponent style(final Style style) {
     return create(this.children, style, this.content);
   }
 
@@ -125,7 +126,7 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
   }
 
   @Override
-  public @NotNull Builder toBuilder() {
+  public Builder toBuilder() {
     return new BuilderImpl(this);
   }
 
@@ -140,24 +141,24 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
     BuilderImpl() {
     }
 
-    BuilderImpl(final @NotNull TextComponent component) {
+    BuilderImpl(final TextComponent component) {
       super(component);
       this.content = component.content();
     }
 
     @Override
-    public @NotNull Builder content(final @NotNull String content) {
+    public Builder content(final String content) {
       this.content = requireNonNull(content, "content");
       return this;
     }
 
     @Override
-    public @NotNull String content() {
+    public String content() {
       return this.content;
     }
 
     @Override
-    public @NotNull TextComponent build() {
+    public TextComponent build() {
       if (this.isEmpty()) {
         return Component.empty();
       }

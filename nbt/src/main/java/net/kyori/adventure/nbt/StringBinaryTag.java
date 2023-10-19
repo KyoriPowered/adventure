@@ -24,13 +24,14 @@
 package net.kyori.adventure.nbt;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * A binary tag holding a {@link String} value.
  *
  * @since 4.0.0
  */
+@NullMarked
 public interface StringBinaryTag extends BinaryTag {
   /**
    * Creates a binary tag holding a {@link String} value.
@@ -39,7 +40,7 @@ public interface StringBinaryTag extends BinaryTag {
    * @return a binary tag
    * @since 4.14.0
    */
-  static @NotNull StringBinaryTag stringBinaryTag(final @NotNull String value) {
+  static StringBinaryTag stringBinaryTag(final String value) {
     return new StringBinaryTagImpl(value);
   }
 
@@ -53,12 +54,12 @@ public interface StringBinaryTag extends BinaryTag {
    */
   @Deprecated
   @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  static @NotNull StringBinaryTag of(final @NotNull String value) {
+  static StringBinaryTag of(final String value) {
     return new StringBinaryTagImpl(value);
   }
 
   @Override
-  default @NotNull BinaryTagType<StringBinaryTag> type() {
+  default BinaryTagType<StringBinaryTag> type() {
     return BinaryTagTypes.STRING;
   }
 
@@ -68,5 +69,5 @@ public interface StringBinaryTag extends BinaryTag {
    * @return the value
    * @since 4.0.0
    */
-  @NotNull String value();
+  String value();
 }

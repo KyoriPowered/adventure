@@ -26,12 +26,13 @@ package net.kyori.adventure.internal;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Utilities internal to Adventure.
  */
 @ApiStatus.Internal
+@NullMarked
 public final class Internals {
   private Internals() {
   }
@@ -43,7 +44,7 @@ public final class Internals {
    * @return the result from examining
    * @since 4.10.0
    */
-  public static @NotNull String toString(final @NotNull Examinable examinable) {
+  public static String toString(final Examinable examinable) {
     return examinable.examine(StringExaminer.simpleEscaping());
   }
 }

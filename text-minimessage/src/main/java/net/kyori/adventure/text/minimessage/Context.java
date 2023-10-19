@@ -27,8 +27,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Parser context for use within transformations.
@@ -38,6 +38,7 @@ import org.jetbrains.annotations.Nullable;
  * @since 4.10.0
  */
 @ApiStatus.NonExtendable
+@NullMarked
 public interface Context {
 
   /**
@@ -47,7 +48,7 @@ public interface Context {
    * @return the parsed message
    * @since 4.10.0
    */
-  @NotNull Component deserialize(final @NotNull String message);
+  Component deserialize(final String message);
 
   /**
    * Deserializes a MiniMessage string using all the settings of this context.
@@ -57,7 +58,7 @@ public interface Context {
    * @return the parsed message
    * @since 4.10.0
    */
-  @NotNull Component deserialize(final @NotNull String message, final @NotNull TagResolver resolver);
+  Component deserialize(final String message, final TagResolver resolver);
 
   /**
    * Deserializes a MiniMessage string using all the settings of this context.
@@ -67,7 +68,7 @@ public interface Context {
    * @return the parsed message
    * @since 4.10.0
    */
-  @NotNull Component deserialize(final @NotNull String message, final @NotNull TagResolver@NotNull... resolvers);
+  Component deserialize(final String message, final TagResolver... resolvers);
 
   /**
    * Create a new parsing exception.
@@ -77,9 +78,9 @@ public interface Context {
    * @return the new parsing exception
    * @since 4.10.0
    */
-  @NotNull ParsingException newException(
-    final @NotNull String message,
-    final @NotNull ArgumentQueue tags
+  ParsingException newException(
+    final String message,
+    final ArgumentQueue tags
   );
 
   /**
@@ -89,7 +90,7 @@ public interface Context {
    * @return the new parsing exception
    * @since 4.10.0
    */
-  @NotNull ParsingException newException(final @NotNull String message);
+  ParsingException newException(final String message);
 
   /**
    * Create a new parsing exception.
@@ -100,9 +101,9 @@ public interface Context {
    * @return the new parsing exception
    * @since 4.10.0
    */
-  @NotNull ParsingException newException(
-    final @NotNull String message,
+  ParsingException newException(
+    final String message,
     final @Nullable Throwable cause,
-    final @NotNull ArgumentQueue args
+    final ArgumentQueue args
   );
 }

@@ -26,9 +26,10 @@ package net.kyori.adventure.identity;
 import java.util.UUID;
 import net.kyori.adventure.internal.Internals;
 import net.kyori.examination.Examinable;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
+@NullMarked
 final class IdentityImpl implements Examinable, Identity {
   private final UUID uuid;
 
@@ -37,7 +38,7 @@ final class IdentityImpl implements Examinable, Identity {
   }
 
   @Override
-  public @NotNull UUID uuid() {
+  public UUID uuid() {
     return this.uuid;
   }
 

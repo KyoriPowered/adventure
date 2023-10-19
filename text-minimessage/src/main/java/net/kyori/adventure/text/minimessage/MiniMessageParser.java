@@ -45,9 +45,10 @@ import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.string.MultiLineStringExaminer;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
+@NullMarked
 final class MiniMessageParser {
   final TagResolver tagResolver;
 
@@ -59,13 +60,13 @@ final class MiniMessageParser {
     this.tagResolver = tagResolver;
   }
 
-  @NotNull String escapeTokens(final @NotNull ContextImpl context) {
+  String escapeTokens(final ContextImpl context) {
     final StringBuilder sb = new StringBuilder(context.message().length());
     this.escapeTokens(sb, context);
     return sb.toString();
   }
 
-  void escapeTokens(final StringBuilder sb, final @NotNull ContextImpl context) {
+  void escapeTokens(final StringBuilder sb, final ContextImpl context) {
     this.escapeTokens(sb, context.message(), context);
   }
 
@@ -86,17 +87,17 @@ final class MiniMessageParser {
     });
   }
 
-  @NotNull String stripTokens(final @NotNull ContextImpl context) {
+  String stripTokens(final ContextImpl context) {
     final StringBuilder sb = new StringBuilder(context.message().length());
     this.processTokens(sb, context, (token, builder) -> {});
     return sb.toString();
   }
 
-  private void processTokens(final @NotNull StringBuilder sb, final @NotNull ContextImpl context, final BiConsumer<Token, StringBuilder> tagHandler) {
+  private void processTokens(final StringBuilder sb, final ContextImpl context, final BiConsumer<Token, StringBuilder> tagHandler) {
     this.processTokens(sb, context.message(), context, tagHandler);
   }
 
-  private void processTokens(final @NotNull StringBuilder sb, final @NotNull String richMessage, final @NotNull ContextImpl context, final BiConsumer<Token, StringBuilder> tagHandler) {
+  private void processTokens(final StringBuilder sb, final String richMessage, final ContextImpl context, final BiConsumer<Token, StringBuilder> tagHandler) {
     final TagResolver combinedResolver = TagResolver.resolver(this.tagResolver, context.extraTags());
     final List<Token> root = TokenParser.tokenize(richMessage, true);
     for (final Token token : root) {
@@ -125,7 +126,7 @@ final class MiniMessageParser {
     }
   }
 
-  @NotNull RootNode parseToTree(final @NotNull ContextImpl context) {
+  RootNode parseToTree(final ContextImpl context) {
     final TagResolver combinedResolver = TagResolver.resolver(this.tagResolver, context.extraTags());
     final String processedMessage = context.preProcessor().apply(context.message());
     final Consumer<String> debug = context.debugOutput();
@@ -205,12 +206,12 @@ final class MiniMessageParser {
     return root;
   }
 
-  @NotNull Component parseFormat(final @NotNull ContextImpl context) {
+  Component parseFormat(final ContextImpl context) {
     final ElementNode root = this.parseToTree(context);
     return Objects.requireNonNull(context.postProcessor().apply(this.treeToComponent(root, context)), "Post-processor must not return null");
   }
 
-  @NotNull Component treeToComponent(final @NotNull ElementNode node, final @NotNull ContextImpl context) {
+  Component treeToComponent(final ElementNode node, final ContextImpl context) {
     Component comp = Component.empty();
     Tag tag = null;
     if (node instanceof ValueNode) {

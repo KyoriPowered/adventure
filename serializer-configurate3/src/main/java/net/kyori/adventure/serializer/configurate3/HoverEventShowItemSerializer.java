@@ -30,10 +30,11 @@ import net.kyori.adventure.text.event.HoverEvent;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializer;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 @SuppressWarnings("UnstableApiUsage") // TypeToken
+@NullMarked
 final class HoverEventShowItemSerializer implements TypeSerializer<HoverEvent.ShowItem> {
   static final HoverEventShowItemSerializer INSTANCE = new HoverEventShowItemSerializer();
   static final TypeToken<HoverEvent.ShowItem> TYPE = TypeToken.of(HoverEvent.ShowItem.class);
@@ -46,7 +47,7 @@ final class HoverEventShowItemSerializer implements TypeSerializer<HoverEvent.Sh
   }
 
   @Override
-  public HoverEvent.ShowItem deserialize(final @NotNull TypeToken<?> type, final @NotNull ConfigurationNode value) throws ObjectMappingException {
+  public HoverEvent.ShowItem deserialize(final TypeToken<?> type, final ConfigurationNode value) throws ObjectMappingException {
     final Key id = value.getNode(ID).getValue(KeySerializer.INSTANCE.type());
     if (id == null) {
       throw new ObjectMappingException("An id is required to deserialize the show_item hover event");
@@ -58,7 +59,7 @@ final class HoverEventShowItemSerializer implements TypeSerializer<HoverEvent.Sh
   }
 
   @Override
-  public void serialize(final @NotNull TypeToken<?> type, final HoverEvent.@Nullable ShowItem obj, final @NotNull ConfigurationNode value) throws ObjectMappingException {
+  public void serialize(final TypeToken<?> type, final HoverEvent.@Nullable ShowItem obj, final ConfigurationNode value) throws ObjectMappingException {
     if (obj == null) {
       value.setValue(null);
       return;

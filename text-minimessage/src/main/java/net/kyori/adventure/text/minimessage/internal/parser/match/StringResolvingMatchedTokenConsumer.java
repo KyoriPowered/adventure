@@ -34,8 +34,8 @@ import net.kyori.adventure.text.minimessage.internal.parser.TokenType;
 import net.kyori.adventure.text.minimessage.internal.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.tag.PreProcess;
 import net.kyori.adventure.text.minimessage.tag.Tag;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import static net.kyori.adventure.text.minimessage.internal.parser.TokenParser.SEPARATOR;
 import static net.kyori.adventure.text.minimessage.internal.parser.TokenParser.tokenize;
@@ -45,6 +45,7 @@ import static net.kyori.adventure.text.minimessage.internal.parser.TokenParser.t
  *
  * @since 4.10.0
  */
+@NullMarked
 public final class StringResolvingMatchedTokenConsumer extends MatchedTokenConsumer<String> {
   private final StringBuilder builder;
   private final TagProvider tagProvider;
@@ -57,8 +58,8 @@ public final class StringResolvingMatchedTokenConsumer extends MatchedTokenConsu
    * @since 4.10.0
    */
   public StringResolvingMatchedTokenConsumer(
-    final @NotNull String input,
-    final @NotNull TagProvider tagProvider
+    final String input,
+    final TagProvider tagProvider
   ) {
     super(input);
     this.builder = new StringBuilder(input.length());
@@ -66,7 +67,7 @@ public final class StringResolvingMatchedTokenConsumer extends MatchedTokenConsu
   }
 
   @Override
-  public void accept(final int start, final int end, final @NotNull TokenType tokenType) {
+  public void accept(final int start, final int end, final TokenType tokenType) {
     super.accept(start, end, tokenType);
 
     if (tokenType != TokenType.OPEN_TAG) {
@@ -105,7 +106,7 @@ public final class StringResolvingMatchedTokenConsumer extends MatchedTokenConsu
   }
 
   @Override
-  public @NotNull String result() {
+  public String result() {
     return this.builder.toString();
   }
 }

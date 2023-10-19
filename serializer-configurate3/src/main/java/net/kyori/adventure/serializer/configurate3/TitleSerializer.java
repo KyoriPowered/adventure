@@ -31,10 +31,11 @@ import net.kyori.adventure.title.Title;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializer;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 @SuppressWarnings("UnstableApiUsage") // TypeToken
+@NullMarked
 final class TitleSerializer implements TypeSerializer<Title> {
   static final TypeToken<Title> TYPE = TypeToken.of(Title.class);
   static final TitleSerializer INSTANCE = new TitleSerializer();
@@ -51,7 +52,7 @@ final class TitleSerializer implements TypeSerializer<Title> {
   static final String FADE_OUT = "fade-out";
 
   @Override
-  public @Nullable Title deserialize(final @NotNull TypeToken<?> type, final @NotNull ConfigurationNode value) throws ObjectMappingException {
+  public @Nullable Title deserialize(final TypeToken<?> type, final ConfigurationNode value) throws ObjectMappingException {
     if (value.isEmpty()) {
       return null;
     }
@@ -70,7 +71,7 @@ final class TitleSerializer implements TypeSerializer<Title> {
   }
 
   @Override
-  public void serialize(final @NotNull TypeToken<?> type, final @Nullable Title obj, final @NotNull ConfigurationNode value) throws ObjectMappingException {
+  public void serialize(final TypeToken<?> type, final @Nullable Title obj, final ConfigurationNode value) throws ObjectMappingException {
     if (obj == null) {
       value.setValue(null);
       return;

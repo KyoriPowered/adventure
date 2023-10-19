@@ -30,8 +30,8 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.util.TriState;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A message translator.
@@ -48,6 +48,7 @@ import org.jetbrains.annotations.Nullable;
  * @see TranslationRegistry
  * @since 4.0.0
  */
+@NullMarked
 public interface Translator {
   /**
    * Parses a {@link Locale} from a {@link String}.
@@ -56,7 +57,7 @@ public interface Translator {
    * @return a locale
    * @since 4.0.0
    */
-  static @Nullable Locale parseLocale(final @NotNull String string) {
+  static @Nullable Locale parseLocale(final String string) {
     final String[] segments = string.split("_", 3); // language_country_variant
     final int length = segments.length;
     if (length == 1) {
@@ -77,7 +78,7 @@ public interface Translator {
    * @return an identifier for this translation source
    * @since 4.0.0
    */
-  @NotNull Key name();
+  Key name();
 
   /**
    * Checks if this translator has any translations.
@@ -85,7 +86,7 @@ public interface Translator {
    * @return {@link TriState#TRUE} if any, {@link TriState#NOT_SET} if unknown, or {@link TriState#FALSE} if none
    * @since 4.15.0
    */
-  default @NotNull TriState hasAnyTranslations() {
+  default TriState hasAnyTranslations() {
     return TriState.NOT_SET;
   }
 
@@ -100,7 +101,7 @@ public interface Translator {
    * @return a message format or {@code null} to skip translation
    * @since 4.0.0
    */
-  @Nullable MessageFormat translate(final @NotNull String key, final @NotNull Locale locale);
+  @Nullable MessageFormat translate(final String key, final Locale locale);
 
   /**
    * Gets a translated component from a translatable component and locale.
@@ -110,7 +111,7 @@ public interface Translator {
    * @return a translated component or {@code null} to use {@link #translate(String, Locale)} instead (if available)
    * @since 4.13.0
    */
-  default @Nullable Component translate(final @NotNull TranslatableComponent component, final @NotNull Locale locale) {
+  default @Nullable Component translate(final TranslatableComponent component, final Locale locale) {
     return null;
   }
 }

@@ -28,7 +28,7 @@ import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.format.StyleBuilderApplicable;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.TagPattern;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 
@@ -39,6 +39,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 4.10.0
  */
+@NullMarked
 public final class Placeholder {
   private Placeholder() {
   }
@@ -53,7 +54,7 @@ public final class Placeholder {
    * @return the placeholder
    * @since 4.10.0
    */
-  public static TagResolver.@NotNull Single parsed(@TagPattern final @NotNull String key, final @NotNull String value) {
+  public static TagResolver.Single parsed(@TagPattern final String key, final String value) {
     return TagResolver.resolver(key, Tag.preProcessParsed(value));
   }
 
@@ -65,7 +66,7 @@ public final class Placeholder {
    * @return the placeholder
    * @since 4.10.0
    */
-  public static TagResolver.@NotNull Single unparsed(@TagPattern final @NotNull String key, final @NotNull String value) {
+  public static TagResolver.Single unparsed(@TagPattern final String key, final String value) {
     requireNonNull(value, "value");
     return Placeholder.component(key, Component.text(value));
   }
@@ -80,7 +81,7 @@ public final class Placeholder {
    * @return the placeholder
    * @since 4.10.0
    */
-  public static TagResolver.@NotNull Single component(@TagPattern final @NotNull String key, final @NotNull ComponentLike value) {
+  public static TagResolver.Single component(@TagPattern final String key, final ComponentLike value) {
     return TagResolver.resolver(key, Tag.selfClosingInserting(value));
   }
 
@@ -94,7 +95,7 @@ public final class Placeholder {
    * @return the placeholder
    * @since 4.13.0
    */
-  public static TagResolver.@NotNull Single styling(@TagPattern final @NotNull String key, final @NotNull StyleBuilderApplicable@NotNull... style) {
+  public static TagResolver.Single styling(@TagPattern final String key, final StyleBuilderApplicable... style) {
     return TagResolver.resolver(key, Tag.styling(style));
   }
 }

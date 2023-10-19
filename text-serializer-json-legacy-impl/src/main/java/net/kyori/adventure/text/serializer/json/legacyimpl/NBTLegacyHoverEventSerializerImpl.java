@@ -34,9 +34,10 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.serializer.json.LegacyHoverEventSerializer;
 import net.kyori.adventure.util.Codec;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
+@NullMarked
 final class NBTLegacyHoverEventSerializerImpl implements LegacyHoverEventSerializer {
   static final NBTLegacyHoverEventSerializerImpl INSTANCE = new NBTLegacyHoverEventSerializerImpl();
   private static final TagStringIO SNBT_IO = TagStringIO.get();
@@ -54,7 +55,7 @@ final class NBTLegacyHoverEventSerializerImpl implements LegacyHoverEventSeriali
   }
 
   @Override
-  public HoverEvent.@NotNull ShowItem deserializeShowItem(final @NotNull Component input) throws IOException {
+  public HoverEvent.ShowItem deserializeShowItem(final Component input) throws IOException {
     assertTextComponent(input);
     final CompoundBinaryTag contents = SNBT_CODEC.decode(((TextComponent) input).content());
     final CompoundBinaryTag tag = contents.getCompound(ITEM_TAG);
@@ -66,7 +67,7 @@ final class NBTLegacyHoverEventSerializerImpl implements LegacyHoverEventSeriali
   }
 
   @Override
-  public @NotNull Component serializeShowItem(final HoverEvent.@NotNull ShowItem input) throws IOException {
+  public Component serializeShowItem(final HoverEvent.ShowItem input) throws IOException {
     final CompoundBinaryTag.Builder builder = CompoundBinaryTag.builder()
       .putString(ITEM_TYPE, input.item().asString())
       .putByte(ITEM_COUNT, (byte) input.count());
@@ -78,7 +79,7 @@ final class NBTLegacyHoverEventSerializerImpl implements LegacyHoverEventSeriali
   }
 
   @Override
-  public HoverEvent.@NotNull ShowEntity deserializeShowEntity(final @NotNull Component input, final Codec.Decoder<Component, String, ? extends RuntimeException> componentCodec) throws IOException {
+  public HoverEvent.ShowEntity deserializeShowEntity(final Component input, final Codec.Decoder<Component, String, ? extends RuntimeException> componentCodec) throws IOException {
     assertTextComponent(input);
     final CompoundBinaryTag contents = SNBT_CODEC.decode(((TextComponent) input).content());
     return HoverEvent.ShowEntity.showEntity(
@@ -89,7 +90,7 @@ final class NBTLegacyHoverEventSerializerImpl implements LegacyHoverEventSeriali
   }
 
   @Override
-  public @NotNull Component serializeShowEntity(final HoverEvent.@NotNull ShowEntity input, final Codec.Encoder<Component, String, ? extends RuntimeException> componentCodec) throws IOException {
+  public Component serializeShowEntity(final HoverEvent.ShowEntity input, final Codec.Encoder<Component, String, ? extends RuntimeException> componentCodec) throws IOException {
     final CompoundBinaryTag.Builder builder = CompoundBinaryTag.builder()
       .putString(ENTITY_ID, input.id().toString())
       .putString(ENTITY_TYPE, input.type().asString());

@@ -38,8 +38,8 @@ import net.kyori.adventure.text.minimessage.tag.Modifying;
 import net.kyori.adventure.text.minimessage.tree.Node;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A transformation that applies a colour change.
@@ -53,6 +53,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 4.10.0
  */
+@NullMarked
 abstract class AbstractColorChangingTag implements Modifying, Examinable {
 
   private static final ComponentFlattener LENGTH_CALCULATOR = ComponentFlattener.builder()
@@ -69,7 +70,7 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
   }
 
   @Override
-  public final void visit(final @NotNull Node current, final int depth) {
+  public final void visit(final Node current, final int depth) {
     if (this.visited) {
       throw new IllegalStateException("Color changing tag instances cannot be re-used, return a new one for each resolve");
     }
@@ -94,7 +95,7 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
   }
 
   @Override
-  public final Component apply(final @NotNull Component current, final int depth) {
+  public final Component apply(final Component current, final int depth) {
     if ((this.disableApplyingColorDepth != -1 && depth > this.disableApplyingColorDepth) || current.style().color() != null) {
       if (this.disableApplyingColorDepth == -1 || depth < this.disableApplyingColorDepth) {
         this.disableApplyingColorDepth = depth;
@@ -158,10 +159,10 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
   // misc
 
   @Override
-  public abstract @NotNull Stream<? extends ExaminableProperty> examinableProperties();
+  public abstract Stream<? extends ExaminableProperty> examinableProperties();
 
   @Override
-  public final @NotNull String toString() {
+  public final String toString() {
     return Internals.toString(this);
   }
 

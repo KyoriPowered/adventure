@@ -23,13 +23,14 @@
  */
 package net.kyori.adventure.key;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Something that has an associated {@link Key}.
  *
  * @since 4.0.0
  */
+@NullMarked
 public interface Keyed {
   /**
    * Gets the key.
@@ -37,5 +38,5 @@ public interface Keyed {
    * @return the key
    * @since 4.0.0
    */
-  @NotNull Key key();
+  Key key();
 }

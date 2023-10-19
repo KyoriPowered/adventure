@@ -26,8 +26,9 @@ package net.kyori.adventure.text.minimessage.tag.resolver;
 import java.util.Map;
 import java.util.Objects;
 import net.kyori.adventure.text.minimessage.tag.Tag;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 final class SingleResolver implements TagResolver.Single, MappableResolver {
   private final String key;
   private final Tag tag;
@@ -38,17 +39,17 @@ final class SingleResolver implements TagResolver.Single, MappableResolver {
   }
 
   @Override
-  public @NotNull String key() {
+  public String key() {
     return this.key;
   }
 
   @Override
-  public @NotNull Tag tag() {
+  public Tag tag() {
     return this.tag;
   }
 
   @Override
-  public boolean contributeToMap(final @NotNull Map<String, Tag> map) {
+  public boolean contributeToMap(final Map<String, Tag> map) {
     map.put(this.key, this.tag);
     return true;
   }

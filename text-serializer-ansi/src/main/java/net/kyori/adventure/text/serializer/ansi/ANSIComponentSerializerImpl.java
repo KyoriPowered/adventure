@@ -36,10 +36,11 @@ import net.kyori.adventure.util.Services;
 import net.kyori.ansi.ANSIComponentRenderer;
 import net.kyori.ansi.ColorLevel;
 import net.kyori.ansi.StyleOps;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
+@NullMarked
 final class ANSIComponentSerializerImpl implements ANSIComponentSerializer {
   private static final Optional<Provider> SERVICE = Services.service(Provider.class);
 
@@ -64,7 +65,7 @@ final class ANSIComponentSerializerImpl implements ANSIComponentSerializer {
   }
 
   @Override
-  public @NotNull String serialize(final @NotNull Component component) {
+  public String serialize(final Component component) {
     final ANSIComponentRenderer.ToString<Style> renderer = ANSIComponentRenderer.toString(ComponentStyleOps.INSTANCE, this.colorLevel);
     this.flattener.flatten(component, new ANSIFlattenerListener(renderer));
     renderer.complete();
@@ -87,38 +88,38 @@ final class ANSIComponentSerializerImpl implements ANSIComponentSerializer {
     static final ComponentStyleOps INSTANCE = new ComponentStyleOps();
 
     @Override
-    public State bold(final @NotNull Style style) {
+    public State bold(final Style style) {
       return mapState(style.decoration(TextDecoration.BOLD));
     }
 
     @Override
-    public State italics(final @NotNull Style style) {
+    public State italics(final Style style) {
       return mapState(style.decoration(TextDecoration.ITALIC));
     }
 
     @Override
-    public State underlined(final @NotNull Style style) {
+    public State underlined(final Style style) {
       return mapState(style.decoration(TextDecoration.UNDERLINED));
     }
 
     @Override
-    public State strikethrough(final @NotNull Style style) {
+    public State strikethrough(final Style style) {
       return mapState(style.decoration(TextDecoration.STRIKETHROUGH));
     }
 
     @Override
-    public State obfuscated(final @NotNull Style style) {
+    public State obfuscated(final Style style) {
       return mapState(style.decoration(TextDecoration.OBFUSCATED));
     }
 
     @Override
-    public @Range(from = -1L, to = 16777215L) int color(final @NotNull Style style) {
+    public @Range(from = -1L, to = 16777215L) int color(final Style style) {
       final TextColor color = style.color();
       return color == null ? -1 : color.value();
     }
 
     @Override
-    public @Nullable String font(final @NotNull Style style) {
+    public @Nullable String font(final Style style) {
       final Key font = style.font();
       return font == null ? null : font.asString();
     }
@@ -132,17 +133,17 @@ final class ANSIComponentSerializerImpl implements ANSIComponentSerializer {
     }
 
     @Override
-    public void pushStyle(final @NotNull Style style) {
+    public void pushStyle(final Style style) {
       this.renderer.pushStyle(style);
     }
 
     @Override
-    public void component(final @NotNull String text) {
+    public void component(final String text) {
       this.renderer.text(text);
     }
 
     @Override
-    public void popStyle(final @NotNull Style style) {
+    public void popStyle(final Style style) {
       this.renderer.popStyle(style);
     }
   }
@@ -156,19 +157,19 @@ final class ANSIComponentSerializerImpl implements ANSIComponentSerializer {
     }
 
     @Override
-    public @NotNull Builder colorLevel(final @NotNull ColorLevel colorLevel) {
+    public Builder colorLevel(final ColorLevel colorLevel) {
       this.colorLevel = colorLevel;
       return this;
     }
 
     @Override
-    public @NotNull Builder flattener(final @NotNull ComponentFlattener componentFlattener) {
+    public Builder flattener(final ComponentFlattener componentFlattener) {
       this.flattener = componentFlattener;
       return this;
     }
 
     @Override
-    public @NotNull ANSIComponentSerializer build() {
+    public ANSIComponentSerializer build() {
       return new ANSIComponentSerializerImpl(this.colorLevel, this.flattener);
     }
   }

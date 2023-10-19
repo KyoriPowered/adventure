@@ -25,8 +25,8 @@ package net.kyori.adventure.nbt;
 
 import java.util.Map;
 import java.util.function.Consumer;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Common methods between {@link CompoundBinaryTag} and {@link CompoundBinaryTag.Builder}.
@@ -34,6 +34,7 @@ import org.jetbrains.annotations.Nullable;
  * @param <R> the return type
  * @since 4.0.0
  */
+@NullMarked
 public interface CompoundTagSetter<R> {
   /**
    * Inserts a tag.
@@ -43,7 +44,7 @@ public interface CompoundTagSetter<R> {
    * @return a compound tag
    * @since 4.0.0
    */
-  @NotNull R put(final @NotNull String key, final @NotNull BinaryTag tag);
+  R put(final String key, final BinaryTag tag);
 
   /**
    * Inserts the tags in {@code tag}, overwriting any that are in {@code this}.
@@ -52,7 +53,7 @@ public interface CompoundTagSetter<R> {
    * @return a compound tag
    * @since 4.6.0
    */
-  @NotNull R put(final @NotNull CompoundBinaryTag tag);
+  R put(final CompoundBinaryTag tag);
 
   /**
    * Inserts some tags.
@@ -61,7 +62,7 @@ public interface CompoundTagSetter<R> {
    * @return a compound tag
    * @since 4.4.0
    */
-  @NotNull R put(final @NotNull Map<String, ? extends BinaryTag> tags);
+  R put(final Map<String, ? extends BinaryTag> tags);
 
   /**
    * Removes a tag.
@@ -70,7 +71,7 @@ public interface CompoundTagSetter<R> {
    * @return a compound tag
    * @since 4.4.0
    */
-  default @NotNull R remove(final @NotNull String key) {
+  default R remove(final String key) {
     return this.remove(key, null);
   }
 
@@ -82,7 +83,7 @@ public interface CompoundTagSetter<R> {
    * @return a compound tag
    * @since 4.4.0
    */
-  @NotNull R remove(final @NotNull String key, final @Nullable Consumer<? super BinaryTag> removed);
+  R remove(final String key, final @Nullable Consumer<? super BinaryTag> removed);
 
   /**
    * Inserts a boolean.
@@ -94,7 +95,7 @@ public interface CompoundTagSetter<R> {
    * @return a compound tag
    * @since 4.0.0
    */
-  default @NotNull R putBoolean(final @NotNull String key, final boolean value) {
+  default R putBoolean(final String key, final boolean value) {
     return this.put(key, value ? ByteBinaryTag.ONE : ByteBinaryTag.ZERO);
   }
 
@@ -106,7 +107,7 @@ public interface CompoundTagSetter<R> {
    * @return a compound tag
    * @since 4.0.0
    */
-  default @NotNull R putByte(final @NotNull String key, final byte value) {
+  default R putByte(final String key, final byte value) {
     return this.put(key, ByteBinaryTag.byteBinaryTag(value));
   }
 
@@ -118,7 +119,7 @@ public interface CompoundTagSetter<R> {
    * @return a compound tag
    * @since 4.0.0
    */
-  default @NotNull R putShort(final @NotNull String key, final short value) {
+  default R putShort(final String key, final short value) {
     return this.put(key, ShortBinaryTag.shortBinaryTag(value));
   }
 
@@ -130,7 +131,7 @@ public interface CompoundTagSetter<R> {
    * @return a compound tag
    * @since 4.0.0
    */
-  default @NotNull R putInt(final @NotNull String key, final int value) {
+  default R putInt(final String key, final int value) {
     return this.put(key, IntBinaryTag.intBinaryTag(value));
   }
 
@@ -142,7 +143,7 @@ public interface CompoundTagSetter<R> {
    * @return a compound tag
    * @since 4.0.0
    */
-  default @NotNull R putLong(final @NotNull String key, final long value) {
+  default R putLong(final String key, final long value) {
     return this.put(key, LongBinaryTag.longBinaryTag(value));
   }
 
@@ -154,7 +155,7 @@ public interface CompoundTagSetter<R> {
    * @return a compound tag
    * @since 4.0.0
    */
-  default @NotNull R putFloat(final @NotNull String key, final float value) {
+  default R putFloat(final String key, final float value) {
     return this.put(key, FloatBinaryTag.floatBinaryTag(value));
   }
 
@@ -166,7 +167,7 @@ public interface CompoundTagSetter<R> {
    * @return a compound tag
    * @since 4.0.0
    */
-  default @NotNull R putDouble(final @NotNull String key, final double value) {
+  default R putDouble(final String key, final double value) {
     return this.put(key, DoubleBinaryTag.doubleBinaryTag(value));
   }
 
@@ -178,7 +179,7 @@ public interface CompoundTagSetter<R> {
    * @return a compound tag
    * @since 4.0.0
    */
-  default @NotNull R putByteArray(final @NotNull String key, final byte@NotNull[] value) {
+  default R putByteArray(final String key, final byte[] value) {
     return this.put(key, ByteArrayBinaryTag.byteArrayBinaryTag(value));
   }
 
@@ -190,7 +191,7 @@ public interface CompoundTagSetter<R> {
    * @return a compound tag
    * @since 4.0.0
    */
-  default @NotNull R putString(final @NotNull String key, final @NotNull String value) {
+  default R putString(final String key, final String value) {
     return this.put(key, StringBinaryTag.stringBinaryTag(value));
   }
 
@@ -202,7 +203,7 @@ public interface CompoundTagSetter<R> {
    * @return a compound tag
    * @since 4.0.0
    */
-  default @NotNull R putIntArray(final @NotNull String key, final int@NotNull[] value) {
+  default R putIntArray(final String key, final int[] value) {
     return this.put(key, IntArrayBinaryTag.intArrayBinaryTag(value));
   }
 
@@ -214,7 +215,7 @@ public interface CompoundTagSetter<R> {
    * @return a compound tag
    * @since 4.0.0
    */
-  default @NotNull R putLongArray(final @NotNull String key, final long@NotNull[] value) {
+  default R putLongArray(final String key, final long[] value) {
     return this.put(key, LongArrayBinaryTag.longArrayBinaryTag(value));
   }
 }

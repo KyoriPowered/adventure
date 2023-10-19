@@ -35,8 +35,8 @@ import net.kyori.adventure.text.flattener.ComponentFlattener;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.Buildable;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A plain component serializer.
@@ -49,6 +49,7 @@ import org.jetbrains.annotations.Nullable;
  */
 @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
 @Deprecated
+@NullMarked
 public class PlainComponentSerializer implements ComponentSerializer<Component, TextComponent, String>, Buildable<PlainComponentSerializer, PlainComponentSerializer.Builder> {
   /**
    * A component serializer for plain-based serialization and deserialization.
@@ -59,7 +60,7 @@ public class PlainComponentSerializer implements ComponentSerializer<Component, 
    */
   @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   @Deprecated
-  public static @NotNull PlainComponentSerializer plain() {
+  public static PlainComponentSerializer plain() {
     return PlainComponentSerializerImpl.INSTANCE;
   }
 
@@ -72,7 +73,7 @@ public class PlainComponentSerializer implements ComponentSerializer<Component, 
    */
   @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   @Deprecated
-  public static PlainComponentSerializer.@NotNull Builder builder() {
+  public static PlainComponentSerializer.Builder builder() {
     return new PlainComponentSerializerImpl.BuilderImpl();
   }
 
@@ -105,17 +106,17 @@ public class PlainComponentSerializer implements ComponentSerializer<Component, 
   }
 
   @Deprecated
-  PlainComponentSerializer(final @NotNull PlainTextComponentSerializer serializer) {
+  PlainComponentSerializer(final PlainTextComponentSerializer serializer) {
     this.serializer = serializer;
   }
 
   @Override
-  public @NotNull TextComponent deserialize(final @NotNull String input) {
+  public TextComponent deserialize(final String input) {
     return this.serializer.deserialize(input);
   }
 
   @Override
-  public @NotNull String serialize(final @NotNull Component component) {
+  public String serialize(final Component component) {
     return this.serializer.serialize(component);
   }
 
@@ -129,12 +130,12 @@ public class PlainComponentSerializer implements ComponentSerializer<Component, 
    */
   @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   @Deprecated
-  public void serialize(final @NotNull StringBuilder sb, final @NotNull Component component) {
+  public void serialize(final StringBuilder sb, final Component component) {
     this.serializer.serialize(sb, component);
   }
 
   @Override
-  public PlainComponentSerializer.@NotNull Builder toBuilder() {
+  public PlainComponentSerializer.Builder toBuilder() {
     return new PlainComponentSerializerImpl.BuilderImpl(this);
   }
 
@@ -159,6 +160,6 @@ public class PlainComponentSerializer implements ComponentSerializer<Component, 
      */
     @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
     @Deprecated
-    @NotNull Builder flattener(final @NotNull ComponentFlattener flattener);
+    Builder flattener(final ComponentFlattener flattener);
   }
 }

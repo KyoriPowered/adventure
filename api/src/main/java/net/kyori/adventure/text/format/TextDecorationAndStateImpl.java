@@ -24,11 +24,12 @@
 package net.kyori.adventure.text.format;
 
 import net.kyori.adventure.internal.Internals;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 final class TextDecorationAndStateImpl implements TextDecorationAndState {
   private final TextDecoration decoration;
   private final TextDecoration.State state;
@@ -41,12 +42,12 @@ final class TextDecorationAndStateImpl implements TextDecorationAndState {
   }
 
   @Override
-  public @NotNull TextDecoration decoration() {
+  public TextDecoration decoration() {
     return this.decoration;
   }
 
   @Override
-  public TextDecoration.@NotNull State state() {
+  public TextDecoration.State state() {
     return this.state;
   }
 

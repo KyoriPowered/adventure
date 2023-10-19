@@ -25,7 +25,7 @@ package net.kyori.adventure.nbt.api;
 
 import net.kyori.adventure.util.Codec;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Holds a compound binary tag.
@@ -37,6 +37,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 4.0.0
  */
+@NullMarked
 public interface BinaryTagHolder {
   /**
    * Encodes {@code nbt} using {@code codec}.
@@ -49,7 +50,7 @@ public interface BinaryTagHolder {
    * @throws EX if an error occurred while encoding the binary tag
    * @since 4.0.0
    */
-  static <T, EX extends Exception> @NotNull BinaryTagHolder encode(final @NotNull T nbt, final @NotNull Codec<? super T, String, ?, EX> codec) throws EX {
+  static <T, EX extends Exception> BinaryTagHolder encode(final T nbt, final Codec<? super T, String, ?, EX> codec) throws EX {
     return new BinaryTagHolderImpl(codec.encode(nbt));
   }
 
@@ -60,7 +61,7 @@ public interface BinaryTagHolder {
    * @return the encoded binary tag
    * @since 4.10.0
    */
-  static @NotNull BinaryTagHolder binaryTagHolder(final @NotNull String string) {
+  static BinaryTagHolder binaryTagHolder(final String string) {
     return new BinaryTagHolderImpl(string);
   }
 
@@ -74,7 +75,7 @@ public interface BinaryTagHolder {
    */
   @Deprecated
   @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  static @NotNull BinaryTagHolder of(final @NotNull String string) {
+  static BinaryTagHolder of(final String string) {
     return new BinaryTagHolderImpl(string);
   }
 
@@ -84,7 +85,7 @@ public interface BinaryTagHolder {
    * @return the raw string value
    * @since 4.0.0
    */
-  @NotNull String string();
+  String string();
 
   /**
    * Gets the held value as a binary tag.
@@ -96,5 +97,5 @@ public interface BinaryTagHolder {
    * @throws DX if an error occurred while retrieving the binary tag
    * @since 4.0.0
    */
-  <T, DX extends Exception> @NotNull T get(final @NotNull Codec<T, String, DX, ?> codec) throws DX;
+  <T, DX extends Exception> T get(final Codec<T, String, DX, ?> codec) throws DX;
 }

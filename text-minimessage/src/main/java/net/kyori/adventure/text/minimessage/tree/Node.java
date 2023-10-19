@@ -25,8 +25,8 @@ package net.kyori.adventure.text.minimessage.tree;
 
 import java.util.List;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A node in the MiniMessage parse tree.
@@ -36,6 +36,7 @@ import org.jetbrains.annotations.Nullable;
  * @since 4.10.0
  */
 @ApiStatus.NonExtendable
+@NullMarked
 public interface Node {
   /**
    * Get a human-readable representation of this node and its descendants for debugging purposes.
@@ -44,7 +45,7 @@ public interface Node {
    * @since 4.10.0
    */
   @Override
-  @NotNull String toString();
+  String toString();
 
   /**
    * Get children of this node.
@@ -54,7 +55,7 @@ public interface Node {
    * @return a list of children
    * @since 4.10.0
    */
-  @NotNull List<? extends Node> children();
+  List<? extends Node> children();
 
   /**
    * Get the parent of this node.
@@ -79,6 +80,6 @@ public interface Node {
      * @return the input message
      * @since 4.10.0
      */
-    @NotNull String input();
+    String input();
   }
 }

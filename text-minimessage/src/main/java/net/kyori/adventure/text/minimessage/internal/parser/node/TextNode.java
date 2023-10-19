@@ -25,14 +25,15 @@ package net.kyori.adventure.text.minimessage.internal.parser.node;
 
 import net.kyori.adventure.text.minimessage.internal.parser.Token;
 import net.kyori.adventure.text.minimessage.internal.parser.TokenParser;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Represents a string of chars.
  *
  * @since 4.10.0
  */
+@NullMarked
 public final class TextNode extends ValueNode {
   private static boolean isEscape(final int escape) {
     return escape == TokenParser.TAG_START || escape == TokenParser.ESCAPE;
@@ -48,8 +49,8 @@ public final class TextNode extends ValueNode {
    */
   public TextNode(
     final @Nullable ElementNode parent,
-    final @NotNull Token token,
-    final @NotNull String sourceMessage
+    final Token token,
+    final String sourceMessage
   ) {
     super(parent, token, sourceMessage, TokenParser.unescape(sourceMessage, token.startIndex(), token.endIndex(), TextNode::isEscape));
   }

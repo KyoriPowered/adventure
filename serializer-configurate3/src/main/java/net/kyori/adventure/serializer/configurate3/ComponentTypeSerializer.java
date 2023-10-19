@@ -44,10 +44,11 @@ import net.kyori.adventure.text.serializer.ComponentSerializer;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializer;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 @SuppressWarnings("UnstableApiUsage") // TypeToken
+@NullMarked
 final class ComponentTypeSerializer implements TypeSerializer<Component> {
   static final TypeToken<Component> TYPE = TypeToken.of(Component.class);
   @SuppressWarnings("serial")
@@ -78,11 +79,11 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
   }
 
   @Override
-  public @NotNull Component deserialize(final @NotNull TypeToken<?> type, final @NotNull ConfigurationNode value) throws ObjectMappingException {
+  public Component deserialize(final TypeToken<?> type, final ConfigurationNode value) throws ObjectMappingException {
     return this.deserialize0(value);
   }
 
-  private @NotNull BuildableComponent<?, ?> deserialize0(final @NotNull ConfigurationNode value) throws ObjectMappingException {
+  private BuildableComponent<?, ?> deserialize0(final ConfigurationNode value) throws ObjectMappingException {
     // Try to read as a string
     if (!value.isList() && !value.isMap()) {
       final String str = value.getString();
@@ -190,7 +191,7 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
   }
 
   @Override
-  public void serialize(final @NotNull TypeToken<?> type, final @Nullable Component src, final @NotNull ConfigurationNode value) throws ObjectMappingException {
+  public void serialize(final TypeToken<?> type, final @Nullable Component src, final ConfigurationNode value) throws ObjectMappingException {
     value.setValue(null);
     if (src == null) {
       return;

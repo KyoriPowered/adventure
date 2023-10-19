@@ -25,8 +25,8 @@ package net.kyori.adventure.builder;
 
 import java.util.function.Consumer;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A builder.
@@ -35,6 +35,7 @@ import org.jetbrains.annotations.Nullable;
  * @since 4.10.0
  */
 @FunctionalInterface
+@NullMarked
 public interface AbstractBuilder<R> {
   /**
    * Configures {@code builder} using {@code consumer} and then builds.
@@ -47,7 +48,7 @@ public interface AbstractBuilder<R> {
    * @since 4.10.0
    */
   @Contract(mutates = "param1")
-  static <R, B extends AbstractBuilder<R>> @NotNull R configureAndBuild(final @NotNull B builder, final @Nullable Consumer<? super B> consumer) {
+  static <R, B extends AbstractBuilder<R>> R configureAndBuild(final B builder, final @Nullable Consumer<? super B> consumer) {
     if (consumer != null) {
       consumer.accept(builder);
     }
@@ -61,5 +62,5 @@ public interface AbstractBuilder<R> {
    * @since 4.10.0
    */
   @Contract(value = "-> new", pure = true)
-  @NotNull R build();
+  R build();
 }

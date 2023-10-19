@@ -26,7 +26,7 @@ package net.kyori.adventure.text.format;
 import net.kyori.adventure.text.ComponentBuilder;
 import net.kyori.adventure.text.ComponentBuilderApplicable;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Something that can be applied to a {@link Style}.
@@ -35,6 +35,7 @@ import org.jetbrains.annotations.NotNull;
  */
 @FunctionalInterface
 @SuppressWarnings("FunctionalInterfaceMethodChanged")
+@NullMarked
 public interface StyleBuilderApplicable extends ComponentBuilderApplicable {
   /**
    * Applies to {@code style}.
@@ -43,10 +44,10 @@ public interface StyleBuilderApplicable extends ComponentBuilderApplicable {
    * @since 4.0.0
    */
   @Contract(mutates = "param")
-  void styleApply(final Style.@NotNull Builder style);
+  void styleApply(final Style.Builder style);
 
   @Override
-  default void componentBuilderApply(final @NotNull ComponentBuilder<?, ?> component) {
+  default void componentBuilderApply(final ComponentBuilder<?, ?> component) {
     component.style(this::styleApply);
   }
 }

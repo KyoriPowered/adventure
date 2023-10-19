@@ -30,14 +30,15 @@ import net.kyori.adventure.text.minimessage.internal.parser.ParsingExceptionImpl
 import net.kyori.adventure.text.minimessage.internal.parser.Token;
 import net.kyori.adventure.text.minimessage.internal.parser.TokenParser;
 import net.kyori.adventure.text.minimessage.tag.Tag;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Node that represents a tag.
  *
  * @since 4.10.0
  */
+@NullMarked
 public final class TagNode extends ElementNode {
   private final List<TagPart> parts;
   private @Nullable Tag tag = null;
@@ -52,10 +53,10 @@ public final class TagNode extends ElementNode {
    * @since 4.10.0
    */
   public TagNode(
-      final @NotNull ElementNode parent,
-      final @NotNull Token token,
-      final @NotNull String sourceMessage,
-      final TokenParser.@NotNull TagProvider tagProvider
+      final ElementNode parent,
+      final Token token,
+      final String sourceMessage,
+      final TokenParser.TagProvider tagProvider
   ) {
     super(parent, token, sourceMessage);
     this.parts = genParts(token, sourceMessage, tagProvider);
@@ -66,10 +67,10 @@ public final class TagNode extends ElementNode {
     }
   }
 
-  private static @NotNull List<TagPart> genParts(
-    final @NotNull Token token,
-    final @NotNull String sourceMessage,
-    final TokenParser.@NotNull TagProvider tagProvider
+  private static List<TagPart> genParts(
+    final Token token,
+    final String sourceMessage,
+    final TokenParser.TagProvider tagProvider
   ) {
     final ArrayList<TagPart> parts = new ArrayList<>();
 
@@ -88,7 +89,7 @@ public final class TagNode extends ElementNode {
    * @return the parts
    * @since 4.10.0
    */
-  public @NotNull List<TagPart> parts() {
+  public List<TagPart> parts() {
     return this.parts;
   }
 
@@ -98,12 +99,12 @@ public final class TagNode extends ElementNode {
    * @return the name
    * @since 4.10.0
    */
-  public @NotNull String name() {
+  public String name() {
     return this.parts.get(0).value();
   }
 
   @Override
-  public @NotNull Token token() {
+  public Token token() {
     return Objects.requireNonNull(super.token(), "token is not set");
   }
 
@@ -113,7 +114,7 @@ public final class TagNode extends ElementNode {
    * @return the tag for this tag node
    * @since 4.10.0
    */
-  public @NotNull Tag tag() {
+  public Tag tag() {
     return Objects.requireNonNull(this.tag, "no tag set");
   }
 
@@ -123,12 +124,12 @@ public final class TagNode extends ElementNode {
    * @param tag the tag logic
    * @since 4.10.0
    */
-  public void tag(final @NotNull Tag tag) {
+  public void tag(final Tag tag) {
     this.tag = tag;
   }
 
   @Override
-  public @NotNull StringBuilder buildToString(final @NotNull StringBuilder sb, final int indent) {
+  public StringBuilder buildToString(final StringBuilder sb, final int indent) {
     final char[] in = this.ident(indent);
     sb.append(in).append("TagNode(");
 

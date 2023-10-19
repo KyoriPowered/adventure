@@ -26,8 +26,8 @@ package net.kyori.adventure.text;
 import java.util.stream.Stream;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A component that can display NBT fetched from different locations, optionally trying to interpret the NBT as JSON
@@ -51,6 +51,7 @@ import org.jetbrains.annotations.Nullable;
  * @since 4.0.0
  * @sinceMinecraft 1.14
  */
+@NullMarked
 public interface NBTComponent<C extends NBTComponent<C, B>, B extends NBTComponentBuilder<C, B>> extends BuildableComponent<C, B> {
   /**
    * Gets the NBT path.
@@ -58,7 +59,7 @@ public interface NBTComponent<C extends NBTComponent<C, B>, B extends NBTCompone
    * @return the NBT path
    * @since 4.0.0
    */
-  @NotNull String nbtPath();
+  String nbtPath();
 
   /**
    * Sets the NBT path.
@@ -68,7 +69,7 @@ public interface NBTComponent<C extends NBTComponent<C, B>, B extends NBTCompone
    * @since 4.0.0
    */
   @Contract(pure = true)
-  @NotNull C nbtPath(final @NotNull String nbtPath);
+  C nbtPath(final String nbtPath);
 
   /**
    * Gets if we should be interpreting.
@@ -86,7 +87,7 @@ public interface NBTComponent<C extends NBTComponent<C, B>, B extends NBTCompone
    * @since 4.0.0
    */
   @Contract(pure = true)
-  @NotNull C interpret(final boolean interpret);
+  C interpret(final boolean interpret);
 
   /**
    * Gets the separator.
@@ -103,10 +104,10 @@ public interface NBTComponent<C extends NBTComponent<C, B>, B extends NBTCompone
    * @return the separator
    * @since 4.8.0
    */
-  @NotNull C separator(final @Nullable ComponentLike separator);
+  C separator(final @Nullable ComponentLike separator);
 
   @Override
-  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  default Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.concat(
       Stream.of(
         ExaminableProperty.of("nbtPath", this.nbtPath()),

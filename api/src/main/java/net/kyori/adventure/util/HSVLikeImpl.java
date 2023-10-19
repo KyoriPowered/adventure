@@ -25,7 +25,7 @@ package net.kyori.adventure.util;
 
 import java.util.Objects;
 import net.kyori.adventure.internal.Internals;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 final class HSVLikeImpl implements HSVLike {
   private final float h;

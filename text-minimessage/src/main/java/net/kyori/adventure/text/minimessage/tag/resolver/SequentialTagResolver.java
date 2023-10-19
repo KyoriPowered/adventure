@@ -30,18 +30,19 @@ import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.internal.serializer.ClaimConsumer;
 import net.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
 import net.kyori.adventure.text.minimessage.tag.Tag;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
+@NullMarked
 final class SequentialTagResolver implements TagResolver, SerializableResolver {
   final TagResolver[] resolvers;
 
-  SequentialTagResolver(final @NotNull TagResolver@NotNull[] resolvers) {
+  SequentialTagResolver(final TagResolver[] resolvers) {
     this.resolvers = resolvers;
   }
 
   @Override
-  public @Nullable Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) throws ParsingException {
+  public @Nullable Tag resolve(final String name, final ArgumentQueue arguments, final Context ctx) throws ParsingException {
     @Nullable ParsingException thrown = null;
     for (final TagResolver resolver : this.resolvers) {
       try {
@@ -73,7 +74,7 @@ final class SequentialTagResolver implements TagResolver, SerializableResolver {
   }
 
   @Override
-  public boolean has(final @NotNull String name) {
+  public boolean has(final String name) {
     for (final TagResolver resolver : this.resolvers) {
       if (resolver.has(name)) {
         return true;
@@ -83,7 +84,7 @@ final class SequentialTagResolver implements TagResolver, SerializableResolver {
   }
 
   @Override
-  public void handle(final @NotNull Component serializable, final @NotNull ClaimConsumer consumer) {
+  public void handle(final Component serializable, final ClaimConsumer consumer) {
     for (final TagResolver resolver : this.resolvers) {
       if (resolver instanceof SerializableResolver) {
         ((SerializableResolver) resolver).handle(serializable, consumer);

@@ -24,7 +24,7 @@
 package net.kyori.adventure.text;
 
 import net.kyori.adventure.util.Buildable;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * A component which may be built.
@@ -33,6 +33,7 @@ import org.jetbrains.annotations.NotNull;
  * @param <B> the builder type
  * @since 4.0.0
  */
+@NullMarked
 public interface BuildableComponent<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> extends Buildable<C, B>, Component {
   /**
    * Create a builder from this component.
@@ -40,5 +41,5 @@ public interface BuildableComponent<C extends BuildableComponent<C, B>, B extend
    * @return the builder
    */
   @Override
-  @NotNull B toBuilder();
+  B toBuilder();
 }

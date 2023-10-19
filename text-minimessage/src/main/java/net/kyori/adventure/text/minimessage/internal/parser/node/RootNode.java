@@ -24,13 +24,14 @@
 package net.kyori.adventure.text.minimessage.internal.parser.node;
 
 import net.kyori.adventure.text.minimessage.tree.Node;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Represents the root node of a tree.
  *
  * @since 4.10.0
  */
+@NullMarked
 public final class RootNode extends ElementNode implements Node.Root {
   private final String beforePreprocessing;
 
@@ -41,13 +42,13 @@ public final class RootNode extends ElementNode implements Node.Root {
    * @param beforePreprocessing the source message before handling preProcess tags
    * @since 4.10.0
    */
-  public RootNode(final @NotNull String sourceMessage, final @NotNull String beforePreprocessing) {
+  public RootNode(final String sourceMessage, final String beforePreprocessing) {
     super(null, null, sourceMessage);
     this.beforePreprocessing = beforePreprocessing;
   }
 
   @Override
-  public @NotNull String input() {
+  public String input() {
     return this.beforePreprocessing;
   }
 }

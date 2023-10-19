@@ -27,7 +27,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * A {@link Component} that displays the client's current keybind for the supplied action.
@@ -41,6 +41,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.0.0
  * @sinceMinecraft 1.12
  */
+@NullMarked
 public interface KeybindComponent extends BuildableComponent<KeybindComponent, KeybindComponent.Builder>, ScopedComponent<KeybindComponent> {
   /**
    * Gets the keybind.
@@ -48,7 +49,7 @@ public interface KeybindComponent extends BuildableComponent<KeybindComponent, K
    * @return the keybind
    * @since 4.0.0
    */
-  @NotNull String keybind();
+  String keybind();
 
   /**
    * Sets the keybind.
@@ -58,7 +59,7 @@ public interface KeybindComponent extends BuildableComponent<KeybindComponent, K
    * @since 4.0.0
    */
   @Contract(pure = true)
-  @NotNull KeybindComponent keybind(final @NotNull String keybind);
+  KeybindComponent keybind(final String keybind);
 
   /**
    * Sets the keybind.
@@ -68,12 +69,12 @@ public interface KeybindComponent extends BuildableComponent<KeybindComponent, K
    * @since 4.9.0
    */
   @Contract(pure = true)
-  default @NotNull KeybindComponent keybind(final @NotNull KeybindLike keybind) {
+  default KeybindComponent keybind(final KeybindLike keybind) {
     return this.keybind(Objects.requireNonNull(keybind, "keybind").asKeybind());
   }
 
   @Override
-  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  default Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.concat(
       Stream.of(
         ExaminableProperty.of("keybind", this.keybind())
@@ -94,7 +95,7 @@ public interface KeybindComponent extends BuildableComponent<KeybindComponent, K
      * @return the keybind identifier
      * @since 4.9.0
      */
-    @NotNull String asKeybind();
+    String asKeybind();
   }
 
   /**
@@ -111,7 +112,7 @@ public interface KeybindComponent extends BuildableComponent<KeybindComponent, K
      * @since 4.0.0
      */
     @Contract("_ -> this")
-    @NotNull Builder keybind(final @NotNull String keybind);
+    Builder keybind(final String keybind);
 
     /**
      * Sets the keybind.
@@ -121,7 +122,7 @@ public interface KeybindComponent extends BuildableComponent<KeybindComponent, K
      * @since 4.9.0
      */
     @Contract(pure = true)
-    default @NotNull Builder keybind(final @NotNull KeybindLike keybind) {
+    default Builder keybind(final KeybindLike keybind) {
       return this.keybind(Objects.requireNonNull(keybind, "keybind").asKeybind());
     }
   }

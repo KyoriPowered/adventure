@@ -37,7 +37,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.minimessage.tree.Node;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
 
 import static net.kyori.adventure.text.Component.empty;
@@ -62,6 +62,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@NullMarked
 public class MiniMessageParserTest extends AbstractTest {
 
   @Test
@@ -532,12 +533,12 @@ public class MiniMessageParserTest extends AbstractTest {
     final Component expected = Component.text("Some<##>of<>these(meow)are<3 >tags");
     final TagResolver alwaysMatchingResolver = new TagResolver() {
       @Override
-      public Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) throws ParsingException {
+      public Tag resolve(final String name, final ArgumentQueue arguments, final Context ctx) throws ParsingException {
         return Tag.preProcessParsed("(meow)");
       }
 
       @Override
-      public boolean has(final @NotNull String name) {
+      public boolean has(final String name) {
         return true;
       }
     };

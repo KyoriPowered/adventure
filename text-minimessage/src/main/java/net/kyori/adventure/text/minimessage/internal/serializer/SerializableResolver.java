@@ -35,8 +35,8 @@ import net.kyori.adventure.text.minimessage.internal.TagInternals;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -45,6 +45,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 4.10.0
  */
+@NullMarked
 public interface SerializableResolver {
   /**
    * Create a tag resolver that only responds to a single tag name, and whose value does not depend on that name.
@@ -55,7 +56,7 @@ public interface SerializableResolver {
    * @return a resolver that creates tags using the provided handler
    * @since 4.10.0
    */
-  static @NotNull TagResolver claimingComponent(final @NotNull String name, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler, final @NotNull Function<Component, @Nullable Emitable> componentClaim) {
+  static TagResolver claimingComponent(final String name, final BiFunction<ArgumentQueue, Context, Tag> handler, final Function<Component, @Nullable Emitable> componentClaim) {
     return claimingComponent(Collections.singleton(name), handler, componentClaim);
   }
 
@@ -68,7 +69,7 @@ public interface SerializableResolver {
    * @return a resolver that creates tags using the provided handler
    * @since 4.10.0
    */
-  static @NotNull TagResolver claimingComponent(final @NotNull Set<String> names, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler, final @NotNull Function<Component, @Nullable Emitable> componentClaim) {
+  static TagResolver claimingComponent(final Set<String> names, final BiFunction<ArgumentQueue, Context, Tag> handler, final Function<Component, @Nullable Emitable> componentClaim) {
     final Set<String> ownNames = new HashSet<>(names);
     for (final String name : ownNames) {
       TagInternals.assertValidTagName(name);
@@ -86,7 +87,7 @@ public interface SerializableResolver {
    * @return a resolver that creates tags using the provided handler
    * @since 4.10.0
    */
-  static @NotNull TagResolver claimingStyle(final @NotNull String name, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler, final @NotNull StyleClaim<?> styleClaim) {
+  static TagResolver claimingStyle(final String name, final BiFunction<ArgumentQueue, Context, Tag> handler, final StyleClaim<?> styleClaim) {
     return claimingStyle(Collections.singleton(name), handler, styleClaim);
   }
 
@@ -99,7 +100,7 @@ public interface SerializableResolver {
    * @return a resolver that creates tags using the provided handler
    * @since 4.10.0
    */
-  static @NotNull TagResolver claimingStyle(final @NotNull Set<String> names, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler, final @NotNull StyleClaim<?> styleClaim) {
+  static TagResolver claimingStyle(final Set<String> names, final BiFunction<ArgumentQueue, Context, Tag> handler, final StyleClaim<?> styleClaim) {
     final Set<String> ownNames = new HashSet<>(names);
     for (final String name : ownNames) {
       TagInternals.assertValidTagName(name);
@@ -115,7 +116,7 @@ public interface SerializableResolver {
    * @param consumer a consumer for component claims, must not be stored
    * @since 4.10.0
    */
-  void handle(final @NotNull Component serializable, final @NotNull ClaimConsumer consumer);
+  void handle(final Component serializable, final ClaimConsumer consumer);
 
   /**
    * A subinterface for resolvers that only handle one single tag.
@@ -124,7 +125,7 @@ public interface SerializableResolver {
    */
   interface Single extends SerializableResolver {
     @Override
-    default void handle(final @NotNull Component serializable, final @NotNull ClaimConsumer consumer) {
+    default void handle(final Component serializable, final ClaimConsumer consumer) {
       final @Nullable StyleClaim<?> style = this.claimStyle();
       if (style != null && !consumer.styleClaimed(style.claimKey())) {
         final @Nullable Emitable applied = style.apply(serializable.style());
@@ -164,7 +165,7 @@ public interface SerializableResolver {
      * @return an emitable if this claimer handles the provided component type
      * @since 4.10.0
      */
-    default @Nullable Emitable claimComponent(final @NotNull Component component) {
+    default @Nullable Emitable claimComponent(final Component component) {
       return null;
     }
   }

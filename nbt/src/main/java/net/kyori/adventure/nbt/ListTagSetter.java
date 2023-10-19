@@ -23,7 +23,7 @@
  */
 package net.kyori.adventure.nbt;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Common methods between {@link ListBinaryTag} and {@link ListBinaryTag.Builder}.
@@ -32,6 +32,7 @@ import org.jetbrains.annotations.NotNull;
  * @param <T> the element type
  * @since 4.0.0
  */
+@NullMarked
 public interface ListTagSetter<R, T extends BinaryTag> {
   /**
    * Adds a tag.
@@ -40,7 +41,7 @@ public interface ListTagSetter<R, T extends BinaryTag> {
    * @return a list tag
    * @since 4.0.0
    */
-  @NotNull R add(final T tag);
+  R add(final T tag);
 
   /**
    * Adds multiple tags.
@@ -49,5 +50,5 @@ public interface ListTagSetter<R, T extends BinaryTag> {
    * @return a list tag
    * @since 4.4.0
    */
-  @NotNull R add(final Iterable<? extends T> tags);
+  R add(final Iterable<? extends T> tags);
 }

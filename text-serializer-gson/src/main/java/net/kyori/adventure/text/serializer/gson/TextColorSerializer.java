@@ -30,9 +30,10 @@ import java.io.IOException;
 import java.util.Locale;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
+@NullMarked
 final class TextColorSerializer extends TypeAdapter<TextColor> {
   static final TypeAdapter<TextColor> INSTANCE = new TextColorSerializer(false).nullSafe();
   static final TypeAdapter<TextColor> DOWNSAMPLE_COLOR = new TextColorSerializer(true).nullSafe();
@@ -66,7 +67,7 @@ final class TextColorSerializer extends TypeAdapter<TextColor> {
     return this.downsampleColor ? NamedTextColor.nearestTo(color) : color;
   }
 
-  static @Nullable TextColor fromString(final @NotNull String value) {
+  static @Nullable TextColor fromString(final String value) {
     if (value.startsWith(TextColor.HEX_PREFIX)) {
       return TextColor.fromHexString(value);
     } else {

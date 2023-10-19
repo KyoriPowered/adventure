@@ -26,18 +26,19 @@ package net.kyori.adventure.chat;
 import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
+@NullMarked
 final class ChatTypeImpl implements ChatType {
   private final Key key;
 
-  ChatTypeImpl(final @NotNull Key key) {
+  ChatTypeImpl(final Key key) {
     this.key = key;
   }
 
   @Override
-  public @NotNull Key key() {
+  public Key key() {
     return this.key;
   }
 
@@ -58,12 +59,12 @@ final class ChatTypeImpl implements ChatType {
     }
 
     @Override
-    public @NotNull ChatType type() {
+    public ChatType type() {
       return this.chatType;
     }
 
     @Override
-    public @NotNull Component name() {
+    public Component name() {
       return this.name;
     }
 

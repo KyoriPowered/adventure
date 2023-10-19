@@ -26,10 +26,11 @@ package net.kyori.adventure.nbt;
 import java.util.stream.Stream;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Debug;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 @Debug.Renderer(text = "String.valueOf(this.value) + \"d\"", hasChildren = "false")
+@NullMarked
 final class DoubleBinaryTagImpl extends AbstractBinaryTag implements DoubleBinaryTag {
   private final double value;
 
@@ -86,7 +87,7 @@ final class DoubleBinaryTagImpl extends AbstractBinaryTag implements DoubleBinar
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(ExaminableProperty.of("value", this.value));
   }
 }

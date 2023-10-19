@@ -24,13 +24,14 @@
 package net.kyori.adventure.nbt;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * An end tag.
  *
  * @since 4.0.0
  */
+@NullMarked
 public interface EndBinaryTag extends BinaryTag {
   /**
    * Gets the end tag.
@@ -38,7 +39,7 @@ public interface EndBinaryTag extends BinaryTag {
    * @return the end tag
    * @since 4.14.0
    */
-  static @NotNull EndBinaryTag endBinaryTag() {
+  static EndBinaryTag endBinaryTag() {
     return EndBinaryTagImpl.INSTANCE;
   }
 
@@ -51,12 +52,12 @@ public interface EndBinaryTag extends BinaryTag {
    */
   @Deprecated
   @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  static @NotNull EndBinaryTag get() {
+  static EndBinaryTag get() {
     return EndBinaryTagImpl.INSTANCE;
   }
 
   @Override
-  default @NotNull BinaryTagType<EndBinaryTag> type() {
+  default BinaryTagType<EndBinaryTag> type() {
     return BinaryTagTypes.END;
   }
 }

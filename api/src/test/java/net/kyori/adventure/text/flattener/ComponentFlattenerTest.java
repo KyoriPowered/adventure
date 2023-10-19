@@ -34,7 +34,7 @@ import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -42,6 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@NullMarked
 class ComponentFlattenerTest {
 
   static class TrackingFlattener implements FlattenerListener {
@@ -51,18 +52,18 @@ class ComponentFlattenerTest {
     final List<String> strings = new ArrayList<>();
 
     @Override
-    public void pushStyle(final @NotNull Style style) {
+    public void pushStyle(final Style style) {
       this.pushCount++;
       this.pushedStyles.add(style);
     }
 
     @Override
-    public void component(final @NotNull String text) {
+    public void component(final String text) {
       this.strings.add(text);
     }
 
     @Override
-    public void popStyle(final @NotNull Style style) {
+    public void popStyle(final Style style) {
       this.popCount++;
     }
 

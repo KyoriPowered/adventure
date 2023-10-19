@@ -25,9 +25,10 @@ package net.kyori.adventure.nbt;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
+@NullMarked
 final class ListTagBuilder<T extends BinaryTag> implements ListBinaryTag.Builder<T> {
   private @Nullable List<BinaryTag> tags;
   private BinaryTagType<? extends BinaryTag> elementType;
@@ -41,7 +42,7 @@ final class ListTagBuilder<T extends BinaryTag> implements ListBinaryTag.Builder
   }
 
   @Override
-  public ListBinaryTag.@NotNull Builder<T> add(final BinaryTag tag) {
+  public ListBinaryTag.Builder<T> add(final BinaryTag tag) {
     ListBinaryTagImpl.noAddEnd(tag);
     // set the type if it has not yet been set
     if (this.elementType == BinaryTagTypes.END) {
@@ -57,7 +58,7 @@ final class ListTagBuilder<T extends BinaryTag> implements ListBinaryTag.Builder
   }
 
   @Override
-  public ListBinaryTag.@NotNull Builder<T> add(final Iterable<? extends T> tagsToAdd) {
+  public ListBinaryTag.Builder<T> add(final Iterable<? extends T> tagsToAdd) {
     for (final T tag : tagsToAdd) {
       this.add(tag);
     }
@@ -65,7 +66,7 @@ final class ListTagBuilder<T extends BinaryTag> implements ListBinaryTag.Builder
   }
 
   @Override
-  public @NotNull ListBinaryTag build() {
+  public ListBinaryTag build() {
     if (this.tags == null) return ListBinaryTag.empty();
     return new ListBinaryTagImpl(this.elementType, new ArrayList<>(this.tags));
   }
