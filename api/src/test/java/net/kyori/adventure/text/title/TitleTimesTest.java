@@ -23,11 +23,11 @@
  */
 package net.kyori.adventure.text.title;
 
+import com.google.common.testing.EqualsTester;
 import java.time.Duration;
 import net.kyori.adventure.title.Title;
 import org.junit.jupiter.api.Test;
 
-import static net.kyori.test.EqualityAssertions.assertEqualityAndNonEquality;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TitleTimesTest {
@@ -52,6 +52,11 @@ public class TitleTimesTest {
     final Title.Times notEqualStay = Title.Times.times(Duration.ofMillis(1000), Duration.ofMillis(2001), Duration.ofMillis(1234));
     final Title.Times notEqualFadeOut = Title.Times.times(Duration.ofMillis(1000), Duration.ofMillis(2000), Duration.ofMillis(1235));
 
-    assertEqualityAndNonEquality(times, equalTimes, notEqualFadeIn, notEqualStay, notEqualFadeOut);
+    new EqualsTester()
+      .addEqualityGroup(times, equalTimes)
+      .addEqualityGroup(notEqualFadeIn)
+      .addEqualityGroup(notEqualStay)
+      .addEqualityGroup(notEqualFadeOut)
+      .testEquals();
   }
 }
