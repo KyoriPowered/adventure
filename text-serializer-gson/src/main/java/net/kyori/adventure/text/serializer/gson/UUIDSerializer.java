@@ -47,12 +47,12 @@ final class UUIDSerializer extends TypeAdapter<UUID> {
     // int-array format was added in 23w40a, a pre for 1.20.3
     if (in.peek() == JsonToken.BEGIN_ARRAY) {
       in.beginArray();
-      final int v0 = in.nextInt();
-      final int v1 = in.nextInt();
-      final int v2 = in.nextInt();
-      final int v3 = in.nextInt();
+      final int msb0 = in.nextInt();
+      final int msb1 = in.nextInt();
+      final int lsb0 = in.nextInt();
+      final int lsb1 = in.nextInt();
       in.endArray();
-      return new UUID((long) v0 << 32 | ((long) v1 & 0xffffffffl), (long) v2 << 32 | ((long) v3 & 0xffffffffl));
+      return new UUID((long) msb0 << 32 | ((long) msb1 & 0xffffffffl), (long) lsb0 << 32 | ((long) lsb1 & 0xffffffffl));
     }
 
     return UUID.fromString(in.nextString());
