@@ -38,6 +38,7 @@ import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.pointer.Pointer;
 import net.kyori.adventure.pointer.Pointers;
+import net.kyori.adventure.resource.ResourcePackRequest;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
@@ -197,6 +198,11 @@ public interface ForwardingAudience extends Audience {
   @Override
   default void openBook(final @NotNull Book book) {
     for (final Audience audience : this.audiences()) audience.openBook(book);
+  }
+
+  @Override
+  default void sendResourcePack(final @NotNull ResourcePackRequest request) {
+    for (final Audience audience : this.audiences()) audience.sendResourcePack(request);
   }
 
   /**
@@ -360,6 +366,11 @@ public interface ForwardingAudience extends Audience {
     @Override
     default void openBook(final @NotNull Book book) {
       this.audience().openBook(book);
+    }
+
+    @Override
+    default void sendResourcePack(final @NotNull ResourcePackRequest request) {
+      this.audience().sendResourcePack(request);
     }
   }
 }
