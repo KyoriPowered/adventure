@@ -25,6 +25,7 @@ package net.kyori.adventure.resource;
 
 import java.net.URI;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Stream;
 import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.Component;
@@ -35,16 +36,23 @@ import org.jetbrains.annotations.Nullable;
 import static java.util.Objects.requireNonNull;
 
 final class ResourcePackRequestImpl implements ResourcePackRequest {
+  private final UUID id;
   private final URI uri;
   private final String hash;
   private final boolean required;
   private final Component prompt;
 
-  ResourcePackRequestImpl(final @NotNull URI uri, final @NotNull String hash, final boolean required, final @Nullable Component prompt) {
+  ResourcePackRequestImpl(final @NotNull UUID id, final @NotNull URI uri, final @NotNull String hash, final boolean required, final @Nullable Component prompt) {
+    this.id = requireNonNull(id, "id");
     this.uri = requireNonNull(uri, "uri");
     this.hash = requireNonNull(hash, "hash");
     this.required = required;
     this.prompt = prompt;
+  }
+
+  @Override
+  public @NotNull UUID id() {
+    return this.id;
   }
 
   @Override
@@ -70,6 +78,7 @@ final class ResourcePackRequestImpl implements ResourcePackRequest {
   @Override
   public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
+      ExaminableProperty.of("id", this.id),
       ExaminableProperty.of("uri", this.uri),
       ExaminableProperty.of("hash", this.hash),
       ExaminableProperty.of("required", this.required),
@@ -87,15 +96,17 @@ final class ResourcePackRequestImpl implements ResourcePackRequest {
     if (this == other) return true;
     if (!(other instanceof ResourcePackRequestImpl)) return false;
     final ResourcePackRequestImpl that = (ResourcePackRequestImpl) other;
-    return this.required == that.required
-      && this.uri.equals(that.uri)
-      && this.hash.equals(that.hash)
-      && Objects.equals(this.prompt, that.prompt);
+    return this.id.equals(that.id) &&
+           this.uri.equals(that.uri) &&
+           this.hash.equals(that.hash) &&
+           this.required == that.required &&
+           Objects.equals(this.prompt, that.prompt);
   }
 
   @Override
   public int hashCode() {
-    int result = this.uri.hashCode();
+    int result = this.id.hashCode();
+    result = 31 * result + this.uri.hashCode();
     result = 31 * result + this.hash.hashCode();
     result = 31 * result + (this.required ? 1 : 0);
     result = 31 * result + (this.prompt != null ? this.prompt.hashCode() : 0);
@@ -103,12 +114,19 @@ final class ResourcePackRequestImpl implements ResourcePackRequest {
   }
 
   static final class BuilderImpl implements Builder {
+    private UUID id;
     private URI uri;
     private String hash;
     private boolean required;
     private Component prompt;
 
     BuilderImpl() {
+    }
+
+    @Override
+    public @NotNull Builder id(final @NotNull UUID id) {
+      this.id = requireNonNull(id, "id");
+      return this;
     }
 
     @Override
@@ -137,7 +155,7 @@ final class ResourcePackRequestImpl implements ResourcePackRequest {
 
     @Override
     public @NotNull ResourcePackRequest build() {
-      return new ResourcePackRequestImpl(this.uri, this.hash, this.required, this.prompt);
+      return new ResourcePackRequestImpl(this.id, this.uri, this.hash, this.required, this.prompt);
     }
   }
 }
