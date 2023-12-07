@@ -27,6 +27,7 @@ import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
 import com.google.gson.reflect.TypeToken;
+import java.util.UUID;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.BlockNBTComponent;
 import net.kyori.adventure.text.Component;
@@ -50,6 +51,7 @@ final class SerializerFactory implements TypeAdapterFactory {
   static final Class<TextColor> COLOR_TYPE = TextColor.class;
   static final Class<TextDecoration> TEXT_DECORATION_TYPE = TextDecoration.class;
   static final Class<BlockNBTComponent.Pos> BLOCK_NBT_POS_TYPE = BlockNBTComponent.Pos.class;
+  static final Class<UUID> UUID_TYPE = UUID.class;
 
   private final boolean downsampleColors;
   private final net.kyori.adventure.text.serializer.json.LegacyHoverEventSerializer legacyHoverSerializer;
@@ -87,6 +89,8 @@ final class SerializerFactory implements TypeAdapterFactory {
       return (TypeAdapter<T>) TextDecorationSerializer.INSTANCE;
     } else if (BLOCK_NBT_POS_TYPE.isAssignableFrom(rawType)) {
       return (TypeAdapter<T>) BlockNBTComponentPosSerializer.INSTANCE;
+    } else if (UUID_TYPE.isAssignableFrom(rawType)) {
+      return (TypeAdapter<T>) UUIDSerializer.INSTANCE;
     } else {
       return null;
     }

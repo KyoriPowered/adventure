@@ -24,6 +24,7 @@
 package net.kyori.adventure.resource;
 
 import java.net.URI;
+import java.util.UUID;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
@@ -42,19 +43,21 @@ public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike
   /**
    * Creates a resource pack request.
    *
+   * @param id the id
    * @param uri the uri
    * @param hash the sha-1 hash
    * @param required whether the resource pack is required or not
    * @return the resource pack request
    * @since 4.15.0
    */
-  static @NotNull ResourcePackRequest resourcePackRequest(final @NotNull URI uri, final @NotNull String hash, final boolean required) {
-    return resourcePackRequest(uri, hash, required, null);
+  static @NotNull ResourcePackRequest resourcePackRequest(final @NotNull UUID id, final @NotNull URI uri, final @NotNull String hash, final boolean required) {
+    return resourcePackRequest(id, uri, hash, required, null);
   }
 
   /**
    * Creates a resource pack request.
    *
+   * @param id the id
    * @param uri the uri
    * @param hash the sha-1 hash
    * @param required whether the resource pack is required or not
@@ -62,8 +65,8 @@ public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike
    * @return the resource pack request
    * @since 4.15.0
    */
-  static @NotNull ResourcePackRequest resourcePackRequest(final @NotNull URI uri, final @NotNull String hash, final boolean required, final @Nullable Component prompt) {
-    return new ResourcePackRequestImpl(uri, hash, required, prompt);
+  static @NotNull ResourcePackRequest resourcePackRequest(final @NotNull UUID id, final @NotNull URI uri, final @NotNull String hash, final boolean required, final @Nullable Component prompt) {
+    return new ResourcePackRequestImpl(id, uri, hash, required, prompt);
   }
 
   /**
@@ -75,6 +78,14 @@ public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike
   static @NotNull Builder resourcePackRequest() {
     return new ResourcePackRequestImpl.BuilderImpl();
   }
+
+  /**
+   * Gets the id.
+   *
+   * @return the id
+   * @since 4.15.0
+   */
+  @NotNull UUID id();
 
   /**
    * Gets the uri.
@@ -121,6 +132,16 @@ public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike
    * @since 4.15.0
    */
   interface Builder extends AbstractBuilder<ResourcePackRequest>, ResourcePackRequestLike {
+    /**
+     * Sets the id.
+     *
+     * @param id the id
+     * @return this builder
+     * @since 4.15.0
+     */
+    @Contract("_ -> this")
+    @NotNull Builder id(final @NotNull UUID id);
+
     /**
      * Sets the uri.
      *

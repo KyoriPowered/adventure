@@ -63,7 +63,7 @@ final class ShowEntitySerializer extends TypeAdapter<HoverEvent.ShowEntity> {
       if (fieldName.equals(SHOW_ENTITY_TYPE)) {
         type = this.gson.fromJson(in, SerializerFactory.KEY_TYPE);
       } else if (fieldName.equals(SHOW_ENTITY_ID)) {
-        id = UUID.fromString(in.nextString());
+        id = this.gson.fromJson(in, SerializerFactory.UUID_TYPE);
       } else if (fieldName.equals(SHOW_ENTITY_NAME)) {
         name = this.gson.fromJson(in, SerializerFactory.COMPONENT_TYPE);
       } else {
