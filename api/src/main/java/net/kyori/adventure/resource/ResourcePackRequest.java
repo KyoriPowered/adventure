@@ -135,7 +135,7 @@ public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike
     /**
      * Sets the id.
      *
-     * @param uri the id
+     * @param id the id
      * @return this builder
      * @since 4.15.0
      */
