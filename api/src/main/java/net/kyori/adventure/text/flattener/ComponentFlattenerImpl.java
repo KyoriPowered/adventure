@@ -99,7 +99,7 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
         flattener.handle(input, listener, depth + 1);
       }
 
-      if (!input.children().isEmpty()) {
+      if (!input.children().isEmpty() && listener.shouldContinue()) {
         for (final Component child : input.children()) {
           this.flatten0(child, listener, depth + 1);
         }

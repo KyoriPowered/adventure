@@ -51,6 +51,16 @@ public interface FlattenerListener {
   void component(final @NotNull String text);
 
   /**
+   * Determine if the flattener should continue running.
+   *
+   * @return {@code true} if the flattener should continue or {@code false} if it should stop
+   * @since 4.15.0
+   */
+  default boolean shouldContinue() {
+    return true;
+  }
+
+  /**
    * Pop a pushed style.
    *
    * <p>The popped style will always be the most recent un-popped style that has been {@link #pushStyle(Style) pushed}.</p>

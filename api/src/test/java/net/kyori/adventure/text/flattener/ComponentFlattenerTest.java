@@ -88,8 +88,27 @@ class ComponentFlattenerTest {
     }
   }
 
+  static class CancellingFlattener extends TrackingFlattener {
+    int maxCount;
+
+    CancellingFlattener(final int maxCount) {
+      this.maxCount = maxCount;
+    }
+
+    @Override
+    public boolean shouldContinue() {
+      return this.strings.size() < this.maxCount;
+    }
+  }
+
   private TrackingFlattener testFlatten(final ComponentFlattener flattener, final Component toFlatten) {
     final TrackingFlattener listener = new TrackingFlattener();
+    flattener.flatten(toFlatten, listener);
+    return listener;
+  }
+
+  private CancellingFlattener testCancellingFlatten(final ComponentFlattener flattener, final Component toFlatten, final int maxCount) {
+    final CancellingFlattener listener = new CancellingFlattener(maxCount);
     flattener.flatten(toFlatten, listener);
     return listener;
   }
@@ -248,5 +267,18 @@ class ComponentFlattenerTest {
     assertThrows(IllegalArgumentException.class, () -> builder.mapper(Component.class, $ -> ""));
     // complex supertype
     assertThrows(IllegalArgumentException.class, () -> builder.complexMapper(Component.class, ($, $$) -> {}));
+  }
+
+  @Test
+  void testEarlyExit() {
+    final Component component = Component.text("Hello")
+      .append(Component.text("How are you?")
+        .append(Component.text("Not great")
+          .append(Component.text("Goodbye"))));
+
+    this.testCancellingFlatten(ComponentFlattener.basic(), component, 3)
+      .assertBalanced()
+      .assertPushesAndPops(3)
+      .assertContents("Hello", "How are you?", "Not great");
   }
 }
