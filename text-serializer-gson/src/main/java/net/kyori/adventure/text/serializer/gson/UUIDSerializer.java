@@ -29,17 +29,36 @@ import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import java.util.UUID;
+import net.kyori.adventure.util.flag.FeatureFlagSet;
 
 final class UUIDSerializer extends TypeAdapter<UUID> {
-  static final TypeAdapter<UUID> INSTANCE = new UUIDSerializer().nullSafe();
+  private final boolean emitIntArray;
 
-  private UUIDSerializer() {
+  static TypeAdapter<UUID> uuidSerializer(final FeatureFlagSet flags) {
+    return new UUIDSerializer(flags.value(GsonFlags.EMIT_HOVER_SHOW_ENTITY_ID_AS_INT_ARRAY)).nullSafe();
+  }
+
+  private UUIDSerializer(final boolean emitIntArray) {
+    this.emitIntArray = emitIntArray;
   }
 
   @Override
   public void write(final JsonWriter out, final UUID value) throws IOException {
-    // todo: feature flag to choose whether to emit as 4-int syntax
-    out.value(value.toString());
+    if (this.emitIntArray) {
+      final int msb0 = (int) (value.getMostSignificantBits() >> 32);
+      final int msb1 = (int) (value.getMostSignificantBits() & 0xffffffffl);
+      final int lsb0 = (int) (value.getLeastSignificantBits() >> 32);
+      final int lsb1 = (int) (value.getLeastSignificantBits() & 0xffffffffl);
+
+      out.beginArray()
+        .value(msb0)
+        .value(msb1)
+        .value(lsb0)
+        .value(lsb1)
+        .endArray();
+    } else {
+      out.value(value.toString());
+    }
   }
 
   @Override

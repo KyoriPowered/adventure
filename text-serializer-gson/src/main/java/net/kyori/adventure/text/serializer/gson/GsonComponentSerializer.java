@@ -33,6 +33,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.json.JSONComponentSerializer;
 import net.kyori.adventure.util.Buildable;
 import net.kyori.adventure.util.PlatformAPI;
+import net.kyori.adventure.util.flag.FeatureFlagSet;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -123,13 +124,37 @@ public interface GsonComponentSerializer extends JSONComponentSerializer, Builda
    */
   interface Builder extends AbstractBuilder<GsonComponentSerializer>, Buildable.Builder<GsonComponentSerializer>, JSONComponentSerializer.Builder {
     /**
+     * Set the feature flag set to apply on this serializer.
+     *
+     * <p>This controls how the serializer emits and interprets components.</p>
+     *
+     * @param flags the flag set to use
+     * @return this builder
+     * @see GsonFlags
+     * @since 4.15.0
+     */
+    @NotNull Builder featureFlags(final @NotNull FeatureFlagSet flags);
+
+    /**
+     * Edit the active set of feature flags.
+     *
+     * @param flagEditor the consumer operating on the existing flag set
+     * @return this builder
+     * @see GsonFlags
+     * @since  4.15.0
+     */
+    @NotNull Builder editFlags(final @NotNull Consumer<FeatureFlagSet.Builder> flagEditor);
+
+    /**
      * Sets that the serializer should downsample hex colors to named colors.
      *
      * @return this builder
      * @since 4.0.0
      */
     @Override
-    @NotNull Builder downsampleColors();
+    default @NotNull Builder downsampleColors() {
+      return this.editFlags(flags -> flags.value(GsonFlags.EMIT_RGB, false));
+    }
 
     /**
      * Sets a serializer that will be used to interpret legacy hover event {@code value} payloads.
@@ -155,7 +180,9 @@ public interface GsonComponentSerializer extends JSONComponentSerializer, Builda
      * @since 4.0.0
      */
     @Override
-    @NotNull Builder emitLegacyHoverEvent();
+    default @NotNull Builder emitLegacyHoverEvent() {
+      return this.editFlags(b -> b.value(GsonFlags.EMIT_LEGACY_HOVER_EVENT, true));
+    }
 
     /**
      * Builds the serializer.
