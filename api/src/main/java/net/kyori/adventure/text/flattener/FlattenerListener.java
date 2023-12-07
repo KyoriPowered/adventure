@@ -51,7 +51,7 @@ public interface FlattenerListener {
   void component(final @NotNull String text);
 
   /**
-   * Determine is the flattener should continue running
+   * Determine if the flattener should continue running.
    *
    * @return {@code true} if the flattener should continue or {@code false} if it should stop
    * @since 4.15.0

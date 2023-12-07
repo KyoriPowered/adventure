@@ -91,7 +91,7 @@ class ComponentFlattenerTest {
   static class CancellingFlattener extends TrackingFlattener {
     int maxCount;
 
-    public CancellingFlattener(int maxCount) {
+    CancellingFlattener(final int maxCount) {
       this.maxCount = maxCount;
     }
 
