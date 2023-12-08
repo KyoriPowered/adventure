@@ -259,9 +259,9 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
         out.name(TRANSLATE_FALLBACK);
         out.value(fallback);
       }
-      if (!translatable.args().isEmpty()) {
+      if (!translatable.arguments().isEmpty()) {
         out.name(TRANSLATE_WITH);
-        this.gson.toJson(translatable.args(), COMPONENT_LIST_TYPE, out);
+        this.gson.toJson(translatable.arguments(), COMPONENT_LIST_TYPE, out);
       }
     } else if (value instanceof ScoreComponent) {
       final ScoreComponent score = (ScoreComponent) value;

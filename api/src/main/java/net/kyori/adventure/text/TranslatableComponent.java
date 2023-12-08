@@ -97,14 +97,19 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    *
    * @return the unmodifiable list of translation arguments
    * @since 4.0.0
+   * @deprecated for removal since 4.15.0, use {@link #arguments()} instead.
    */
+  @Deprecated
   @NotNull List<Component> args();
 
   /**
    * Sets the translation arguments for this component.
    *
+   * <p>Non-{@link Component} arguments can be wrapped in {@link TranslationArgument}.</p>
+   *
    * @param args the translation arguments
    * @return a translatable component
+   * @see TranslationArgument
    * @since 4.0.0
    */
   @Contract(pure = true)
@@ -113,12 +118,22 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
   /**
    * Sets the translation arguments for this component.
    *
+   * <p>Non-{@link Component} arguments can be wrapped in {@link TranslationArgument}.</p>
+   *
    * @param args the translation arguments
    * @return a translatable component
    * @since 4.0.0
    */
   @Contract(pure = true)
   @NotNull TranslatableComponent args(final @NotNull List<? extends ComponentLike> args);
+
+  /**
+   * Gets the unmodifiable list of translation arguments.
+   *
+   * @return the unmodifiable list of translation arguments
+   * @since 4.0.0
+   */
+  @NotNull List<TranslationArgument> arguments();
 
   /**
    * Gets the translation fallback text for this component.
@@ -149,7 +164,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
     return Stream.concat(
       Stream.of(
         ExaminableProperty.of("key", this.key()),
-        ExaminableProperty.of("args", this.args()),
+        ExaminableProperty.of("arguments", this.arguments()),
         ExaminableProperty.of("fallback", this.fallback())
       ),
       BuildableComponent.super.examinableProperties()
@@ -218,6 +233,8 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
     /**
      * Sets the translation args.
      *
+     * <p>Non-{@link Component} arguments can be wrapped in {@link TranslationArgument}.</p>
+     *
      * @param args the translation args
      * @return this builder
      * @since 4.0.0
@@ -227,6 +244,8 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
 
     /**
      * Sets the translation args.
+     *
+     * <p>Non-{@link Component} arguments can be wrapped in {@link TranslationArgument}.</p>
      *
      * @param args the translation args
      * @return this builder
