@@ -33,6 +33,7 @@ import net.kyori.adventure.identity.Identified;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.pointer.Pointer;
+import net.kyori.adventure.resource.ResourcePackRequest;
 import net.kyori.adventure.resource.ResourcePackRequestLike;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
@@ -120,7 +121,19 @@ final class EmptyAudience implements Audience {
   }
 
   @Override
-  public void sendResourcePack(final @NotNull ResourcePackRequestLike request) {
+  public void sendResourcePack(final @NotNull ResourcePackRequestLike request, final @NotNull ResourcePackRequestLike@NotNull... others) {
+  }
+
+  @Override
+  public void setResourcePack(final @NotNull ResourcePackRequestLike request, final @NotNull ResourcePackRequestLike @NotNull ... others) {
+  }
+
+  @Override
+  public void removeResourcePack(final @NotNull ResourcePackRequestLike request, final @NotNull ResourcePackRequestLike@NotNull... others) {
+  }
+
+  @Override
+  public void removeResourcePack(final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest @NotNull ... others) {
   }
 
   @Override

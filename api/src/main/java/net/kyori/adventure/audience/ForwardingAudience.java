@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -201,8 +202,23 @@ public interface ForwardingAudience extends Audience {
   }
 
   @Override
-  default void sendResourcePack(final @NotNull ResourcePackRequest request) {
-    for (final Audience audience : this.audiences()) audience.sendResourcePack(request);
+  default void setResourcePack(final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest... others) {
+    for (final Audience audience : this.audiences()) audience.setResourcePack(request, others);
+  }
+
+  @Override
+  default void sendResourcePack(final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest@NotNull... others) {
+    for (final Audience audience : this.audiences()) audience.sendResourcePack(request, others);
+  }
+
+  @Override
+  default void removeResourcePack(final @NotNull UUID id, final @NotNull UUID @NotNull ... others) {
+    for (final Audience audience : this.audiences()) audience.removeResourcePack(id, others);
+  }
+
+  @Override
+  default void clearResourcePacks() {
+    for (final Audience audience : this.audiences()) audience.clearResourcePacks();
   }
 
   /**
@@ -369,8 +385,23 @@ public interface ForwardingAudience extends Audience {
     }
 
     @Override
-    default void sendResourcePack(final @NotNull ResourcePackRequest request) {
-      this.audience().sendResourcePack(request);
+    default void setResourcePack(final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest... others) {
+      this.audience().setResourcePack(request, others);
+    }
+
+    @Override
+    default void sendResourcePack(final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest@NotNull... others) {
+      this.audience().sendResourcePack(request, others);
+    }
+
+    @Override
+    default void removeResourcePack(final @NotNull UUID id, final @NotNull UUID @NotNull ... others) {
+      this.audience().removeResourcePack(id, others);
+    }
+
+    @Override
+    default void clearResourcePacks() {
+      this.audience().clearResourcePacks();
     }
   }
 }
