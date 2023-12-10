@@ -721,12 +721,12 @@ public interface Audience extends Pointered {
    */
   @SuppressWarnings("checkstyle:MethodName")
   @ForwardingAudienceOverrideNotRequired
-  default void setResourcePack(final @NotNull ResourcePackRequestLike request, final @NotNull ResourcePackRequestLike@NotNull... others) {
+  default void setResourcePacks(final @NotNull ResourcePackRequestLike request, final @NotNull ResourcePackRequestLike@NotNull... others) {
     final ResourcePackRequest[] otherReqs = new ResourcePackRequest[others.length];
     for (int i = 0; i < others.length; i++) {
       otherReqs[i] = others[i].asResourcePackRequest();
     }
-    this.setResourcePack(request.asResourcePackRequest(), otherReqs);
+    this.setResourcePacks(request.asResourcePackRequest(), otherReqs);
   }
 
   /**
@@ -740,7 +740,7 @@ public interface Audience extends Pointered {
    * @since 4.15.0
    */
   @SuppressWarnings("checkstyle:MethodName")
-  default void setResourcePack(final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest@NotNull... others) {
+  default void setResourcePacks(final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest@NotNull... others) {
   }
 
   /**
@@ -756,12 +756,12 @@ public interface Audience extends Pointered {
    */
   @SuppressWarnings("checkstyle:MethodName")
   @ForwardingAudienceOverrideNotRequired
-  default void setResourcePack(final @NotNull ResourcePackCallback cb, final @NotNull ResourcePackRequestLike request, final @NotNull ResourcePackRequestLike@NotNull... others) {
+  default void setResourcePacks(final @NotNull ResourcePackCallback cb, final @NotNull ResourcePackRequestLike request, final @NotNull ResourcePackRequestLike@NotNull... others) {
     final ResourcePackRequest[] otherReqs = new ResourcePackRequest[others.length];
     for (int i = 0; i < others.length; i++) {
       otherReqs[i] = others[i].asResourcePackRequest();
     }
-    this.setResourcePack(cb, request.asResourcePackRequest(), otherReqs);
+    this.setResourcePacks(cb, request.asResourcePackRequest(), otherReqs);
   }
 
   /**
@@ -776,13 +776,13 @@ public interface Audience extends Pointered {
    * @since 4.15.0
    */
   @SuppressWarnings("checkstyle:MethodName")
-  default void setResourcePack(final @NotNull ResourcePackCallback cb, final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest@NotNull... others) {
+  default void setResourcePacks(final @NotNull ResourcePackCallback cb, final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest@NotNull... others) {
   }
 
   /**
    * Sends resource pack requests to this audience, adding to any existing resource packs that might be present.
    *
-   * <p>Multiple resource packs are only supported since 1.20.3. On older versions, this behaves identically to {@link #setResourcePack(ResourcePackRequestLike, ResourcePackRequestLike...)}.</p>
+   * <p>Multiple resource packs are only supported since 1.20.3. On older versions, this behaves identically to {@link #setResourcePacks(ResourcePackRequestLike, ResourcePackRequestLike...)}.</p>
    *
    * @param request the resource pack request
    * @param others other requests
@@ -790,31 +790,31 @@ public interface Audience extends Pointered {
    * @since 4.15.0
    */
   @ForwardingAudienceOverrideNotRequired
-  default void sendResourcePack(final @NotNull ResourcePackRequestLike request, final @NotNull ResourcePackRequestLike@NotNull... others) {
+  default void sendResourcePacks(final @NotNull ResourcePackRequestLike request, final @NotNull ResourcePackRequestLike@NotNull... others) {
     final ResourcePackRequest[] otherReqs = new ResourcePackRequest[others.length];
     for (int i = 0; i < others.length; i++) {
       otherReqs[i] = others[i].asResourcePackRequest();
     }
-    this.sendResourcePack(request.asResourcePackRequest(), otherReqs);
+    this.sendResourcePacks(request.asResourcePackRequest(), otherReqs);
   }
 
   /**
    * Sends resource pack requests to this audience, adding to any existing resource packs that might be present.
    *
-   * <p>Multiple resource packs are only supported since 1.20.3. On older versions, this behaves identically to {@link #setResourcePack(ResourcePackRequest, ResourcePackRequest...)}.</p>
+   * <p>Multiple resource packs are only supported since 1.20.3. On older versions, this behaves identically to {@link #setResourcePacks(ResourcePackRequest, ResourcePackRequest...)}.</p>
    *
    * @param request the resource pack request
    * @param others other requests
    * @see ResourcePackRequest
    * @since 4.15.0
    */
-  default void sendResourcePack(final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest@NotNull... others) {
+  default void sendResourcePacks(final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest@NotNull... others) {
   }
 
   /**
    * Sends resource pack requests to this audience, adding to any existing resource packs that might be present.
    *
-   * <p>Multiple resource packs are only supported since 1.20.3. On older versions, this behaves identically to {@link #setResourcePack(ResourcePackRequestLike, ResourcePackRequestLike...)}.</p>
+   * <p>Multiple resource packs are only supported since 1.20.3. On older versions, this behaves identically to {@link #setResourcePacks(ResourcePackRequestLike, ResourcePackRequestLike...)}.</p>
    *
    * @param cb a callback to be executed when resource pack events associated with this application are received
    * @param request the resource pack request
@@ -823,18 +823,18 @@ public interface Audience extends Pointered {
    * @since 4.15.0
    */
   @ForwardingAudienceOverrideNotRequired
-  default void sendResourcePack(final @NotNull ResourcePackCallback cb, final @NotNull ResourcePackRequestLike request, final @NotNull ResourcePackRequestLike@NotNull... others) {
+  default void sendResourcePacks(final @NotNull ResourcePackCallback cb, final @NotNull ResourcePackRequestLike request, final @NotNull ResourcePackRequestLike@NotNull... others) {
     final ResourcePackRequest[] otherReqs = new ResourcePackRequest[others.length];
     for (int i = 0; i < others.length; i++) {
       otherReqs[i] = others[i].asResourcePackRequest();
     }
-    this.sendResourcePack(cb, request.asResourcePackRequest(), otherReqs);
+    this.sendResourcePacks(cb, request.asResourcePackRequest(), otherReqs);
   }
 
   /**
    * Sends resource pack requests to this audience, adding to any existing resource packs that might be present.
    *
-   * <p>Multiple resource packs are only supported since 1.20.3. On older versions, this behaves identically to {@link #setResourcePack(ResourcePackRequest, ResourcePackRequest...)}.</p>
+   * <p>Multiple resource packs are only supported since 1.20.3. On older versions, this behaves identically to {@link #setResourcePacks(ResourcePackRequest, ResourcePackRequest...)}.</p>
    *
    * @param cb a callback to be executed when resource pack events associated with this application are received
    * @param request the resource pack request
@@ -842,7 +842,7 @@ public interface Audience extends Pointered {
    * @see ResourcePackRequest
    * @since 4.15.0
    */
-  default void sendResourcePack(final @NotNull ResourcePackCallback cb, final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest@NotNull... others) {
+  default void sendResourcePacks(final @NotNull ResourcePackCallback cb, final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest@NotNull... others) {
   }
 
   /**
@@ -854,12 +854,12 @@ public interface Audience extends Pointered {
    * @sinceMinecraft 1.20.3
    */
   @ForwardingAudienceOverrideNotRequired
-  default void removeResourcePack(final @NotNull ResourcePackRequestLike request, final @NotNull ResourcePackRequestLike@NotNull... others) {
+  default void removeResourcePacks(final @NotNull ResourcePackRequestLike request, final @NotNull ResourcePackRequestLike@NotNull... others) {
     final ResourcePackRequest[] otherReqs = new ResourcePackRequest[others.length];
     for (int i = 0; i < others.length; i++) {
       otherReqs[i] = others[i].asResourcePackRequest();
     }
-    this.removeResourcePack(request.asResourcePackRequest(), otherReqs);
+    this.removeResourcePacks(request.asResourcePackRequest(), otherReqs);
   }
 
   /**
@@ -872,12 +872,12 @@ public interface Audience extends Pointered {
    * @sinceMinecraft 1.20.3
    */
   @ForwardingAudienceOverrideNotRequired
-  default void removeResourcePack(final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest@NotNull... others) {
+  default void removeResourcePacks(final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest@NotNull... others) {
     final UUID[] otherIds = new UUID[others.length];
     for (int i = 0; i < others.length; i++) {
       otherIds[i] = others[i].id();
     }
-    this.removeResourcePack(request.id(), otherIds);
+    this.removeResourcePacks(request.id(), otherIds);
   }
 
   /**
@@ -888,7 +888,7 @@ public interface Audience extends Pointered {
    * @since 4.15.0
    * @sinceMinecraft 1.20.3
    */
-  default void removeResourcePack(final @NotNull UUID id, final @NotNull UUID@NotNull... others) {
+  default void removeResourcePacks(final @NotNull UUID id, final @NotNull UUID@NotNull... others) {
   }
 
   /**

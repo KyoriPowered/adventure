@@ -203,28 +203,28 @@ public interface ForwardingAudience extends Audience {
   }
 
   @Override
-  default void setResourcePack(final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest@NotNull... others) {
-    for (final Audience audience : this.audiences()) audience.setResourcePack(request, others);
+  default void setResourcePacks(final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest@NotNull... others) {
+    for (final Audience audience : this.audiences()) audience.setResourcePacks(request, others);
   }
 
   @Override
-  default void setResourcePack(final @NotNull ResourcePackCallback cb, final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest @NotNull ... others) {
-    for (final Audience audience : this.audiences()) audience.setResourcePack(cb, request, others);
+  default void setResourcePacks(final @NotNull ResourcePackCallback cb, final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest @NotNull ... others) {
+    for (final Audience audience : this.audiences()) audience.setResourcePacks(cb, request, others);
   }
 
   @Override
-  default void sendResourcePack(final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest@NotNull... others) {
-    for (final Audience audience : this.audiences()) audience.sendResourcePack(request, others);
+  default void sendResourcePacks(final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest@NotNull... others) {
+    for (final Audience audience : this.audiences()) audience.sendResourcePacks(request, others);
   }
 
   @Override
-  default void sendResourcePack(final @NotNull ResourcePackCallback cb, final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest@NotNull ... others) {
-    for (final Audience audience : this.audiences()) audience.sendResourcePack(cb, request, others);
+  default void sendResourcePacks(final @NotNull ResourcePackCallback cb, final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest@NotNull ... others) {
+    for (final Audience audience : this.audiences()) audience.sendResourcePacks(cb, request, others);
   }
 
   @Override
-  default void removeResourcePack(final @NotNull UUID id, final @NotNull UUID @NotNull ... others) {
-    for (final Audience audience : this.audiences()) audience.removeResourcePack(id, others);
+  default void removeResourcePacks(final @NotNull UUID id, final @NotNull UUID @NotNull ... others) {
+    for (final Audience audience : this.audiences()) audience.removeResourcePacks(id, others);
   }
 
   @Override
@@ -396,28 +396,28 @@ public interface ForwardingAudience extends Audience {
     }
 
     @Override
-    default void setResourcePack(final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest... others) {
-      this.audience().setResourcePack(request, others);
+    default void setResourcePacks(final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest... others) {
+      this.audience().setResourcePacks(request, others);
     }
 
     @Override
-    default void setResourcePack(final @NotNull ResourcePackCallback cb, final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest @NotNull ... others) {
-      this.audience().setResourcePack((uuid, status, audience) -> cb.packEventReceived(uuid, status, this), request, others);
+    default void setResourcePacks(final @NotNull ResourcePackCallback cb, final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest @NotNull ... others) {
+      this.audience().setResourcePacks((uuid, status, audience) -> cb.packEventReceived(uuid, status, this), request, others);
     }
 
     @Override
-    default void sendResourcePack(final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest@NotNull... others) {
-      this.audience().sendResourcePack(request, others);
+    default void sendResourcePacks(final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest@NotNull... others) {
+      this.audience().sendResourcePacks(request, others);
     }
 
     @Override
-    default void sendResourcePack(final @NotNull ResourcePackCallback cb, final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest @NotNull ... others) {
-      this.audience().sendResourcePack((uuid, status, audience) -> cb.packEventReceived(uuid, status, this), request, others);
+    default void sendResourcePacks(final @NotNull ResourcePackCallback cb, final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest @NotNull ... others) {
+      this.audience().sendResourcePacks((uuid, status, audience) -> cb.packEventReceived(uuid, status, this), request, others);
     }
 
     @Override
-    default void removeResourcePack(final @NotNull UUID id, final @NotNull UUID @NotNull ... others) {
-      this.audience().removeResourcePack(id, others);
+    default void removeResourcePacks(final @NotNull UUID id, final @NotNull UUID @NotNull ... others) {
+      this.audience().removeResourcePacks(id, others);
     }
 
     @Override

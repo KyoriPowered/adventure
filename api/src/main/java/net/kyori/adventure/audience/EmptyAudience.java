@@ -121,19 +121,19 @@ final class EmptyAudience implements Audience {
   }
 
   @Override
-  public void sendResourcePack(final @NotNull ResourcePackRequestLike request, final @NotNull ResourcePackRequestLike@NotNull... others) {
+  public void sendResourcePacks(final @NotNull ResourcePackRequestLike request, final @NotNull ResourcePackRequestLike@NotNull... others) {
   }
 
   @Override
-  public void setResourcePack(final @NotNull ResourcePackRequestLike request, final @NotNull ResourcePackRequestLike @NotNull ... others) {
+  public void setResourcePacks(final @NotNull ResourcePackRequestLike request, final @NotNull ResourcePackRequestLike @NotNull ... others) {
   }
 
   @Override
-  public void removeResourcePack(final @NotNull ResourcePackRequestLike request, final @NotNull ResourcePackRequestLike@NotNull... others) {
+  public void removeResourcePacks(final @NotNull ResourcePackRequestLike request, final @NotNull ResourcePackRequestLike@NotNull... others) {
   }
 
   @Override
-  public void removeResourcePack(final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest @NotNull ... others) {
+  public void removeResourcePacks(final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest @NotNull ... others) {
   }
 
   @Override

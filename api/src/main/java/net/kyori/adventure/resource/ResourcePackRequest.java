@@ -39,7 +39,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Represents a resource pack request that can be sent to players.
  *
- * @see Audience#sendResourcePack(ResourcePackRequest, ResourcePackRequest...)
+ * @see Audience#sendResourcePacks(ResourcePackRequest, ResourcePackRequest...)
  * @since 4.15.0
  */
 public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike {
