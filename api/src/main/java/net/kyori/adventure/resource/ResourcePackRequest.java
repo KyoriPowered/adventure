@@ -23,59 +23,37 @@
  */
 package net.kyori.adventure.resource;
 
-import java.net.URI;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ForkJoinPool;
-import net.kyori.adventure.audience.Audience;
+import java.util.List;
 import net.kyori.adventure.builder.AbstractBuilder;
-import net.kyori.adventure.text.Component;
 import net.kyori.examination.Examinable;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import static java.util.Objects.requireNonNull;
 
 /**
- * Represents a resource pack request that can be sent to players.
+ * A request to apply one or more resource packs to a client.
  *
- * @see Audience#sendResourcePacks(ResourcePackRequest, ResourcePackRequest...)
+ * <p>Multiple packs are only supported since Minecraft 1.20.3.</p>
+ *
  * @since 4.15.0
  */
-public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike {
+public interface ResourcePackRequest extends Examinable {
   /**
-   * Creates a resource pack request.
+   * Create a basic request to apply the provided resource packs.
    *
-   * @param id the id
-   * @param uri the uri
-   * @param hash the sha-1 hash
-   * @param required whether the resource pack is required or not
-   * @return the resource pack request
+   * @param first the first pack
+   * @param others the other packs to apply
+   * @return the created request
    * @since 4.15.0
    */
-  static @NotNull ResourcePackRequest resourcePackRequest(final @NotNull UUID id, final @NotNull URI uri, final @NotNull String hash, final boolean required) {
-    return resourcePackRequest(id, uri, hash, required, null);
+  static @NotNull ResourcePackRequest addingRequest(final @NotNull ResourcePackInfoLike first, final @NotNull ResourcePackInfoLike@NotNull... others) {
+    return ResourcePackRequest.resourcePackRequest().packs(first, others).replace(false).build();
   }
 
   /**
-   * Creates a resource pack request.
+   * Create a builder for a resource pack request.
    *
-   * @param id the id
-   * @param uri the uri
-   * @param hash the sha-1 hash
-   * @param required whether the resource pack is required or not
-   * @param prompt the prompt
-   * @return the resource pack request
-   * @since 4.15.0
-   */
-  static @NotNull ResourcePackRequest resourcePackRequest(final @NotNull UUID id, final @NotNull URI uri, final @NotNull String hash, final boolean required, final @Nullable Component prompt) {
-    return new ResourcePackRequestImpl(id, uri, hash, required, prompt);
-  }
-
-  /**
-   * Create a new builder that will create a {@link ResourcePackRequest}.
-   *
-   * @return a builder
+   * @return the pack request builder
    * @since 4.15.0
    */
   static @NotNull Builder resourcePackRequest() {
@@ -83,147 +61,111 @@ public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike
   }
 
   /**
-   * Gets the id.
+   * Create a builder for a resource pack request, based on an existing request.
    *
-   * @return the id
+   * @param existing the existing request
+   * @return the pack request builder
    * @since 4.15.0
    */
-  @NotNull UUID id();
-
-  /**
-   * Gets the uri.
-   *
-   * @return the uri
-   * @since 4.15.0
-   */
-  @NotNull URI uri();
-
-  /**
-   * Gets the hash.
-   *
-   * @return the hash
-   * @since 4.15.0
-   */
-  @NotNull String hash();
-
-  /**
-   * Gets whether the resource pack is required
-   * or not.
-   *
-   * @return True if the resource pack is required,
-   *     false otherwise
-   * @since 4.15.0
-   */
-  boolean required();
-
-  /**
-   * Gets the prompt.
-   *
-   * @return the prompt
-   * @since 4.15.0
-   */
-  @Nullable Component prompt();
-
-  @Override
-  default @NotNull ResourcePackRequest asResourcePackRequest() {
-    return this;
+  static @NotNull Builder resourcePackRequest(final @NotNull ResourcePackRequest existing) {
+    return new ResourcePackRequestImpl.BuilderImpl(requireNonNull(existing, "existing"));
   }
+
+  /**
+   * The resource packs to apply.
+   *
+   * @return an unmodifiable list of packs to apply
+   * @since 4.15.0
+   */
+  @NotNull List<ResourcePackInfo> packs();
+
+  /**
+   * Set the resource packs to apply.
+   *
+   * @param packs the packs to apply
+   * @return an updated pack request
+   * @since 4.15.0
+   */
+  @NotNull ResourcePackRequest packs(final @NotNull Iterable<? extends ResourcePackInfoLike> packs);
+
+  /**
+   * A callback to respond to resource pack application status events.
+   *
+   * <p>This method will return {@link ResourcePackCallback#noOp()} if no callback has been set.</p>
+   *
+   * @return the callback
+   * @since 4.15.0
+   */
+  @NotNull ResourcePackCallback callback();
+
+  /**
+   * Set the callback to respond to resource pack application status events.
+   *
+   * @param cb the callback
+   * @return an updated pack request
+   * @since 4.15.0
+   */
+  @NotNull ResourcePackRequest callback(final @NotNull ResourcePackCallback cb);
+
+  /**
+   * Whether to replace or add to existing resource packs.
+   *
+   * @return whether to replace existing resource packs
+   * @since 4.15.0
+   * @sinceMinecraft 1.20.3
+   */
+  boolean replace();
+
+  /**
+   * Set whether to replace or add to existing resource packs.
+   *
+   * @param replace whether to replace existing server packs
+   * @return an updated pack request
+   * @since 4.15.0
+   */
+  @NotNull ResourcePackRequest replace(final boolean replace);
 
   /**
    * A builder for resource pack requests.
    *
    * @since 4.15.0
    */
-  interface Builder extends AbstractBuilder<ResourcePackRequest>, ResourcePackRequestLike {
+  interface Builder extends AbstractBuilder<ResourcePackRequest> {
     /**
-     * Sets the id.
+     * Set the resource packs to apply.
      *
-     * @param id the id
+     * @param first the first pack to apply
+     * @param others additional packs to apply
      * @return this builder
      * @since 4.15.0
      */
-    @Contract("_ -> this")
-    @NotNull Builder id(final @NotNull UUID id);
+    @NotNull Builder packs(final @NotNull ResourcePackInfoLike first, final @NotNull ResourcePackInfoLike@NotNull... others);
 
     /**
-     * Sets the uri.
+     * Set the resource packs to apply.
      *
-     * <p>If no UUID has been provided, setting a URL will set the ID to one based on the URL.</p>
-     *
-     * <p>This parameter is required.</p>
-     *
-     * @param uri the uri
+     * @param packs the packs to apply
      * @return this builder
      * @since 4.15.0
      */
-    @Contract("_ -> this")
-    @NotNull Builder uri(final @NotNull URI uri);
+    @NotNull Builder packs(final @NotNull Iterable<? extends ResourcePackInfoLike> packs);
 
     /**
-     * Sets the hash.
+     * Set the callback to respond to resource pack application status events.
      *
-     * @param hash the hash
+     * @param cb the callback
      * @return this builder
      * @since 4.15.0
      */
-    @Contract("_ -> this")
-    @NotNull Builder hash(final @NotNull String hash);
+    @NotNull Builder callback(final @NotNull ResourcePackCallback cb);
 
     /**
-     * Sets whether the resource pack is required or not.
+     * Set whether to replace or add to existing resource packs.
      *
-     * @param required whether the resource pack is required or not
+     * @param replace whether to replace existing server packs
      * @return this builder
      * @since 4.15.0
      */
-    @Contract("_ -> this")
-    @NotNull Builder required(final boolean required);
-
-    /**
-     * Sets the prompt.
-     *
-     * @param prompt the prompt
-     * @return this builder
-     * @since 4.15.0
-     */
-    @Contract("_ -> this")
-    @NotNull Builder prompt(final @Nullable Component prompt);
-
-    /**
-     * Builds.
-     *
-     * @return a new resource pack request
-     * @since 4.15.0
-     */
-    @Override
-    @NotNull ResourcePackRequest build();
-
-    /**
-     * Builds, computing a hash based on the provided URL.
-     *
-     * <p>The hash computation will perform a network request asynchronously, exposing the built request via the returned future.</p>
-     *
-     * @return a future providing the new resource pack request
-     * @since 4.15.0
-     */
-    default @NotNull CompletableFuture<ResourcePackRequest> computeHashAndBuild() {
-      return this.computeHashAndBuild(ForkJoinPool.commonPool());
-    }
-
-    /**
-     * Builds, computing a hash based on the provided URL.
-     *
-     * <p>The hash computation will perform a network request asynchronously, exposing the built request via the returned future.</p>
-     *
-     * @param executor the executor to perform the hash computation on
-     * @return a future providing the new resource pack request
-     * @since 4.15.0
-     */
-    @NotNull CompletableFuture<ResourcePackRequest> computeHashAndBuild(final @NotNull Executor executor);
-
-    @Override
-    default @NotNull ResourcePackRequest asResourcePackRequest() {
-      return this.build();
-    }
+    @NotNull Builder replace(final boolean replace);
   }
 }

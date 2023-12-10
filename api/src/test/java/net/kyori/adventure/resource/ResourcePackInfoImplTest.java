@@ -30,14 +30,14 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class ResourcePackRequestImplTest {
+class ResourcePackInfoImplTest {
   @Test
   void testHashComputation() throws NoSuchAlgorithmException {
     final MessageDigest md = MessageDigest.getInstance("SHA-1");
     final byte[] digest = md.digest("hello world\n".getBytes(StandardCharsets.UTF_8));
     assertEquals(
       "22596363b3de40b06f981fb85d82312e8c0ed511",
-      ResourcePackRequestImpl.bytesToString(digest)
+      ResourcePackInfoImpl.bytesToString(digest)
     );
   }
 }

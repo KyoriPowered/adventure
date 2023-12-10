@@ -39,7 +39,6 @@ import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.pointer.Pointer;
 import net.kyori.adventure.pointer.Pointers;
-import net.kyori.adventure.resource.ResourcePackCallback;
 import net.kyori.adventure.resource.ResourcePackRequest;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
@@ -203,13 +202,8 @@ public interface ForwardingAudience extends Audience {
   }
 
   @Override
-  default void setResourcePacks(final @NotNull ResourcePackCallback cb, final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest @NotNull ... others) {
-    for (final Audience audience : this.audiences()) audience.setResourcePacks(cb, request, others);
-  }
-
-  @Override
-  default void sendResourcePacks(final @NotNull ResourcePackCallback cb, final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest@NotNull ... others) {
-    for (final Audience audience : this.audiences()) audience.sendResourcePacks(cb, request, others);
+  default void sendResourcePacks(final @NotNull ResourcePackRequest request) {
+    for (final Audience audience : this.audiences()) audience.sendResourcePacks(request);
   }
 
   @Override
@@ -386,13 +380,8 @@ public interface ForwardingAudience extends Audience {
     }
 
     @Override
-    default void setResourcePacks(final @NotNull ResourcePackCallback cb, final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest @NotNull ... others) {
-      this.audience().setResourcePacks(Audiences.unwrapCallback(this, this.audience(), cb), request, others);
-    }
-
-    @Override
-    default void sendResourcePacks(final @NotNull ResourcePackCallback cb, final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest @NotNull ... others) {
-      this.audience().sendResourcePacks(Audiences.unwrapCallback(this, this.audience(), cb), request, others);
+    default void sendResourcePacks(final @NotNull ResourcePackRequest request) {
+      this.audience().sendResourcePacks(request.callback(Audiences.unwrapCallback(this, this.audience(), request.callback())));
     }
 
     @Override
