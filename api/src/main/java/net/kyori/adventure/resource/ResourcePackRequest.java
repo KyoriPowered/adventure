@@ -25,6 +25,7 @@ package net.kyori.adventure.resource;
 
 import java.net.URI;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
@@ -145,6 +146,10 @@ public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike
     /**
      * Sets the uri.
      *
+     * <p>If no UUID has been provided, setting a URL will set the ID to one based on the URL.</p>
+     *
+     * <p>This parameter is required.</p>
+     *
      * @param uri the uri
      * @return this builder
      * @since 4.15.0
@@ -190,6 +195,16 @@ public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike
      */
     @Override
     @NotNull ResourcePackRequest build();
+
+    /**
+     * Builds, computing a hash based on the provided URL.
+     *
+     * <p>The hash computation will perform a network request asynchronously, exposing the built request via the returned future.</p>
+     *
+     * @return a future providing the new resource pack request
+     * @since 4.15.0
+     */
+    @NotNull CompletableFuture<ResourcePackRequest> computeHashAndBuild();
 
     @Override
     default @NotNull ResourcePackRequest asResourcePackRequest() {

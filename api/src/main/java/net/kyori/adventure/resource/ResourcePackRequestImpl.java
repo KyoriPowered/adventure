@@ -23,9 +23,21 @@
  */
 package net.kyori.adventure.resource;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Formatter;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Stream;
 import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.Component;
@@ -132,6 +144,9 @@ final class ResourcePackRequestImpl implements ResourcePackRequest {
     @Override
     public @NotNull Builder uri(final @NotNull URI uri) {
       this.uri = requireNonNull(uri, "uri");
+      if (this.id == null) {
+        this.id = UUID.nameUUIDFromBytes(uri.toString().getBytes(StandardCharsets.UTF_8));
+      }
       return this;
     }
 
@@ -157,5 +172,48 @@ final class ResourcePackRequestImpl implements ResourcePackRequest {
     public @NotNull ResourcePackRequest build() {
       return new ResourcePackRequestImpl(this.id, this.uri, this.hash, this.required, this.prompt);
     }
+
+    @Override
+    public @NotNull CompletableFuture<ResourcePackRequest> computeHashAndBuild() {
+      return computeHash(requireNonNull(this.uri, "uri"), ForkJoinPool.commonPool())
+        .thenApply(hash -> {
+          this.hash(hash);
+          return this.build();
+        });
+    }
+  }
+
+  static CompletableFuture<String> computeHash(final URI uri, final Executor exec) {
+    final CompletableFuture<String> result = new CompletableFuture<>();
+
+    exec.execute(() -> {
+      try {
+        final URL url = uri.toURL();
+        final URLConnection conn = url.openConnection();
+        conn.addRequestProperty("User-Agent", "adventure/" + ResourcePackRequestImpl.class.getPackage().getSpecificationVersion() + " (pack-fetcher)");
+        try (final InputStream is = conn.getInputStream()) {
+          final MessageDigest digest = MessageDigest.getInstance("SHA-1");
+          final byte[] buf = new byte[8192];
+          int read;
+          while ((read = is.read(buf)) != -1) {
+            digest.update(buf, 0, read);
+          }
+          result.complete(bytesToString(digest.digest()));
+        }
+      } catch (final IOException | NoSuchAlgorithmException ex) {
+        result.completeExceptionally(ex);
+      }
+    });
+
+    return result;
+  }
+
+  static String bytesToString(final byte[] arr) {
+    final StringBuilder builder = new StringBuilder(arr.length * 2);
+    final Formatter fmt = new Formatter(builder, Locale.ROOT);
+    for (int i = 0; i < arr.length; i++) {
+      fmt.format("%02x", arr[i] & 0xff);
+    }
+    return builder.toString();
   }
 }
