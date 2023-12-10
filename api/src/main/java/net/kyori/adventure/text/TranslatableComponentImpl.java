@@ -222,6 +222,8 @@ final class TranslatableComponentImpl extends AbstractComponent implements Trans
       }
       if (like instanceof TranslationArgument) {
         ret.add((TranslationArgument) like);
+      } else if (like instanceof TranslationArgumentLike) {
+        ret.add(requireNonNull(((TranslationArgumentLike) like).asTranslationArgument(), "likes[" + i + "].asTranslationArgument()"));
       } else {
         ret.add(TranslationArgument.component(like));
       }

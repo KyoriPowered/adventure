@@ -105,7 +105,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
   /**
    * Sets the translation arguments for this component.
    *
-   * <p>Non-{@link Component} arguments can be wrapped in {@link TranslationArgument}.</p>
+   * <p>Non-{@link Component} arguments can be wrapped in {@link TranslationArgument}, or represented with a {@link TranslationArgumentLike}.</p>
    *
    * @param args the translation arguments
    * @return a translatable component
@@ -118,7 +118,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
   /**
    * Sets the translation arguments for this component.
    *
-   * <p>Non-{@link Component} arguments can be wrapped in {@link TranslationArgument}.</p>
+   * <p>Non-{@link Component} arguments can be wrapped in {@link TranslationArgument}, or represented with a {@link TranslationArgumentLike}.</p>
    *
    * @param args the translation arguments
    * @return a translatable component
@@ -233,7 +233,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
     /**
      * Sets the translation args.
      *
-     * <p>Non-{@link Component} arguments can be wrapped in {@link TranslationArgument}.</p>
+     * <p>Non-{@link Component} arguments can be wrapped in {@link TranslationArgument}, or represented with a {@link TranslationArgumentLike}.</p>
      *
      * @param args the translation args
      * @return this builder
@@ -245,7 +245,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
     /**
      * Sets the translation args.
      *
-     * <p>Non-{@link Component} arguments can be wrapped in {@link TranslationArgument}.</p>
+     * <p>Non-{@link Component} arguments can be wrapped in {@link TranslationArgument}, or represented with a {@link TranslationArgumentLike}.</p>
      *
      * @param args the translation args
      * @return this builder

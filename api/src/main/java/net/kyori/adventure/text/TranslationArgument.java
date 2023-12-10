@@ -35,16 +35,7 @@ import static java.util.Objects.requireNonNull;
  * @since 4.15.0
  */
 @ApiStatus.NonExtendable
-public interface TranslationArgument extends ComponentLike, Examinable {
-
-  /**
-   * The argument's value.
-   *
-   * @return the argument value
-   * @since 4.15.0
-   */
-  @NotNull Object value();
-
+public interface TranslationArgument extends TranslationArgumentLike, Examinable {
   /**
    * Create a boolean argument.
    *
@@ -78,6 +69,20 @@ public interface TranslationArgument extends ComponentLike, Examinable {
    * @sinceMinecraft 1.20.3
    */
   static @NotNull TranslationArgument component(final @NotNull ComponentLike value) {
+    if (value instanceof TranslationArgumentLike) return ((TranslationArgumentLike) value).asTranslationArgument();
     return new TranslationArgumentImpl(requireNonNull(requireNonNull(value, "value").asComponent(), "value.asComponent()"));
+  }
+
+  /**
+   * The argument's value.
+   *
+   * @return the argument value
+   * @since 4.15.0
+   */
+  @NotNull Object value();
+
+  @Override
+  default @NotNull TranslationArgument asTranslationArgument() {
+    return this;
   }
 }
