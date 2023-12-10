@@ -28,8 +28,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.format.Style;
 import org.jetbrains.annotations.NotNull;
@@ -87,12 +85,12 @@ final class TranslatableComponentImpl extends AbstractComponent implements Trans
   }
 
   @Override
-  public @NotNull TranslatableComponent args(final @NotNull ComponentLike@NotNull... args) {
+  public @NotNull TranslatableComponent arguments(final @NotNull ComponentLike@NotNull... args) {
     return create(this.children, this.style, this.key, this.fallback, args);
   }
 
   @Override
-  public @NotNull TranslatableComponent args(final @NotNull List<? extends ComponentLike> args) {
+  public @NotNull TranslatableComponent arguments(final @NotNull List<? extends ComponentLike> args) {
     return create(this.children, this.style, this.key, this.fallback, args);
   }
 
@@ -166,32 +164,14 @@ final class TranslatableComponentImpl extends AbstractComponent implements Trans
     }
 
     @Override
-    public @NotNull Builder args(final @NotNull ComponentBuilder<?, ?> arg) {
-      return this.args(Collections.singletonList(requireNonNull(arg, "arg").build()));
-    }
-
-    @Override
-    @SuppressWarnings("checkstyle:GenericWhitespace")
-    public @NotNull Builder args(final @NotNull ComponentBuilder<?, ?>@NotNull... args) {
+    public @NotNull Builder arguments(final @NotNull ComponentLike@NotNull... args) {
       requireNonNull(args, "args");
-      if (args.length == 0) return this.args(Collections.emptyList());
-      return this.args(Stream.of(args).map(ComponentBuilder::build).collect(Collectors.toList()));
+      if (args.length == 0) return this.arguments(Collections.emptyList());
+      return this.arguments(Arrays.asList(args));
     }
 
     @Override
-    public @NotNull Builder args(final @NotNull Component arg) {
-      return this.args(Collections.singletonList(requireNonNull(arg, "arg")));
-    }
-
-    @Override
-    public @NotNull Builder args(final @NotNull ComponentLike@NotNull... args) {
-      requireNonNull(args, "args");
-      if (args.length == 0) return this.args(Collections.emptyList());
-      return this.args(Arrays.asList(args));
-    }
-
-    @Override
-    public @NotNull Builder args(final @NotNull List<? extends ComponentLike> args) {
+    public @NotNull Builder arguments(final @NotNull List<? extends ComponentLike> args) {
       this.args = asArguments(requireNonNull(args, "args"));
       return this;
     }

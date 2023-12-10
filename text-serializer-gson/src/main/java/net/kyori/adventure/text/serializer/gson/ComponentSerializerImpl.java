@@ -189,7 +189,7 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
       builder = Component.text().content(text);
     } else if (translate != null) {
       if (translateWith != null) {
-        builder = Component.translatable().key(translate).fallback(translateFallback).args(translateWith);
+        builder = Component.translatable().key(translate).fallback(translateFallback).arguments(translateWith);
       } else {
         builder = Component.translatable().key(translate).fallback(translateFallback);
       }

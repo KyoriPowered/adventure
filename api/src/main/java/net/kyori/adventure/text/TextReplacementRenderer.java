@@ -149,7 +149,7 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
         }
       }
       if (newArgs != null) {
-        modified = ((TranslatableComponent) modified).args(newArgs);
+        modified = ((TranslatableComponent) modified).arguments(newArgs);
       }
     }
     // Only visit children if we're running

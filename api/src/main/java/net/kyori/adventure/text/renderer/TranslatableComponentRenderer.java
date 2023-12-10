@@ -193,7 +193,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
             args.set(i, TranslationArgument.component(this.render(((Component) arg.value()), context)));
           }
         }
-        builder.args(args);
+        builder.arguments(args);
       }
       return this.mergeStyleAndOptionallyDeepRender(component, builder, context);
     }

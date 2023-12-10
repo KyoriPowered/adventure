@@ -128,7 +128,7 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
           throw new SerializationException("Expected " + TRANSLATE_WITH + " to be a list");
         }
         final List<TranslationArgument> args = with.getList(TranslationArgument.class);
-        builder.args(args);
+        builder.arguments(args);
       }
 
       if (children.containsKey(TRANSLATE_FALLBACK)) {
