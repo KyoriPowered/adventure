@@ -28,6 +28,7 @@ import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslationArgument;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.Style;
@@ -99,6 +100,7 @@ final class ConfigurateComponentSerializerImpl implements ConfigurateComponentSe
       .register(Style.class, StyleSerializer.INSTANCE)
       .register(TextColorSerializer.INSTANCE)
       .register(BlockNBTPosSerializer.INSTANCE)
+      .register(TranslationArgument.class, TranslationArgumentTypeSerializer.INSTANCE)
       .registerExact(new IndexSerializer<>(TypeToken.get(ClickEvent.Action.class), ClickEvent.Action.NAMES))
       .registerExact(new IndexSerializer<>(new TypeToken<HoverEvent.Action<?>>() {}, HoverEvent.Action.NAMES))
       .registerExact(new IndexSerializer<>(TypeToken.get(Sound.Source.class), Sound.Source.NAMES))

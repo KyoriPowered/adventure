@@ -40,6 +40,7 @@ import net.kyori.adventure.text.SelectorComponent;
 import net.kyori.adventure.text.StorageNBTComponent;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.text.TranslationArgument;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import org.jetbrains.annotations.NotNull;
@@ -126,7 +127,7 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
         if (!with.isList()) {
           throw new SerializationException("Expected " + TRANSLATE_WITH + " to be a list");
         }
-        final List<Component> args = with.get(LIST_TYPE);
+        final List<TranslationArgument> args = with.getList(TranslationArgument.class);
         builder.args(args);
       }
 
@@ -205,10 +206,10 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
     } else if (src instanceof TranslatableComponent) {
       final TranslatableComponent tc = (TranslatableComponent) src;
       value.node(TRANSLATE).set(tc.key());
-      if (!tc.args().isEmpty()) {
+      if (!tc.arguments().isEmpty()) {
         final ConfigurationNode with = value.node(TRANSLATE_WITH);
-        for (final Component arg : tc.args()) {
-          with.appendListNode().set(Component.class, arg);
+        for (final TranslationArgument arg : tc.arguments()) {
+          with.appendListNode().set(TranslationArgument.class, arg);
         }
       }
       value.node(TRANSLATE_FALLBACK).set(tc.fallback());
