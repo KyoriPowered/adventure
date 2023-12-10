@@ -31,6 +31,7 @@ import java.util.UUID;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.BlockNBTComponent;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslationArgument;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.Style;
@@ -52,6 +53,7 @@ final class SerializerFactory implements TypeAdapterFactory {
   static final Class<TextDecoration> TEXT_DECORATION_TYPE = TextDecoration.class;
   static final Class<BlockNBTComponent.Pos> BLOCK_NBT_POS_TYPE = BlockNBTComponent.Pos.class;
   static final Class<UUID> UUID_TYPE = UUID.class;
+  static final Class<TranslationArgument> TRANSLATION_ARGUMENT_TYPE = TranslationArgument.class;
 
   private final boolean downsampleColors;
   private final net.kyori.adventure.text.serializer.json.LegacyHoverEventSerializer legacyHoverSerializer;
@@ -91,6 +93,8 @@ final class SerializerFactory implements TypeAdapterFactory {
       return (TypeAdapter<T>) BlockNBTComponentPosSerializer.INSTANCE;
     } else if (UUID_TYPE.isAssignableFrom(rawType)) {
       return (TypeAdapter<T>) UUIDSerializer.INSTANCE;
+    } else if (TRANSLATION_ARGUMENT_TYPE.isAssignableFrom(rawType)) {
+      return (TypeAdapter<T>) TranslationArgumentSerializer.create(gson);
     } else {
       return null;
     }
