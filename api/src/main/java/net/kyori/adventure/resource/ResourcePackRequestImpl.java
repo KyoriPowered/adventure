@@ -37,7 +37,6 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Stream;
 import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.Component;
@@ -174,8 +173,8 @@ final class ResourcePackRequestImpl implements ResourcePackRequest {
     }
 
     @Override
-    public @NotNull CompletableFuture<ResourcePackRequest> computeHashAndBuild() {
-      return computeHash(requireNonNull(this.uri, "uri"), ForkJoinPool.commonPool())
+    public @NotNull CompletableFuture<ResourcePackRequest> computeHashAndBuild(final @NotNull Executor executor) {
+      return computeHash(requireNonNull(this.uri, "uri"), executor)
         .thenApply(hash -> {
           this.hash(hash);
           return this.build();

@@ -26,6 +26,8 @@ package net.kyori.adventure.resource;
 import java.net.URI;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ForkJoinPool;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
@@ -204,7 +206,20 @@ public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike
      * @return a future providing the new resource pack request
      * @since 4.15.0
      */
-    @NotNull CompletableFuture<ResourcePackRequest> computeHashAndBuild();
+    default @NotNull CompletableFuture<ResourcePackRequest> computeHashAndBuild() {
+      return this.computeHashAndBuild(ForkJoinPool.commonPool());
+    }
+
+    /**
+     * Builds, computing a hash based on the provided URL.
+     *
+     * <p>The hash computation will perform a network request asynchronously, exposing the built request via the returned future.</p>
+     *
+     * @param executor the executor to perform the hash computation on
+     * @return a future providing the new resource pack request
+     * @since 4.15.0
+     */
+    @NotNull CompletableFuture<ResourcePackRequest> computeHashAndBuild(final @NotNull Executor executor);
 
     @Override
     default @NotNull ResourcePackRequest asResourcePackRequest() {
