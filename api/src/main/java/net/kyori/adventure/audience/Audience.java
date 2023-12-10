@@ -739,8 +739,10 @@ public interface Audience extends Pointered {
    * @see ResourcePackRequest
    * @since 4.15.0
    */
+  @ForwardingAudienceOverrideNotRequired
   @SuppressWarnings("checkstyle:MethodName")
   default void setResourcePacks(final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest@NotNull... others) {
+    this.setResourcePacks(ResourcePackCallback.noOp(), request, others);
   }
 
   /**
@@ -808,7 +810,9 @@ public interface Audience extends Pointered {
    * @see ResourcePackRequest
    * @since 4.15.0
    */
+  @ForwardingAudienceOverrideNotRequired
   default void sendResourcePacks(final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest@NotNull... others) {
+    this.sendResourcePacks(ResourcePackCallback.noOp(), request, others);
   }
 
   /**

@@ -203,18 +203,8 @@ public interface ForwardingAudience extends Audience {
   }
 
   @Override
-  default void setResourcePacks(final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest@NotNull... others) {
-    for (final Audience audience : this.audiences()) audience.setResourcePacks(request, others);
-  }
-
-  @Override
   default void setResourcePacks(final @NotNull ResourcePackCallback cb, final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest @NotNull ... others) {
     for (final Audience audience : this.audiences()) audience.setResourcePacks(cb, request, others);
-  }
-
-  @Override
-  default void sendResourcePacks(final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest@NotNull... others) {
-    for (final Audience audience : this.audiences()) audience.sendResourcePacks(request, others);
   }
 
   @Override
@@ -396,23 +386,13 @@ public interface ForwardingAudience extends Audience {
     }
 
     @Override
-    default void setResourcePacks(final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest... others) {
-      this.audience().setResourcePacks(request, others);
-    }
-
-    @Override
     default void setResourcePacks(final @NotNull ResourcePackCallback cb, final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest @NotNull ... others) {
-      this.audience().setResourcePacks((uuid, status, audience) -> cb.packEventReceived(uuid, status, this), request, others);
-    }
-
-    @Override
-    default void sendResourcePacks(final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest@NotNull... others) {
-      this.audience().sendResourcePacks(request, others);
+      this.audience().setResourcePacks(Audiences.unwrapCallback(this, this.audience(), cb), request, others);
     }
 
     @Override
     default void sendResourcePacks(final @NotNull ResourcePackCallback cb, final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest @NotNull ... others) {
-      this.audience().sendResourcePacks((uuid, status, audience) -> cb.packEventReceived(uuid, status, this), request, others);
+      this.audience().sendResourcePacks(Audiences.unwrapCallback(this, this.audience(), cb), request, others);
     }
 
     @Override

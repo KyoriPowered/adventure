@@ -36,6 +36,18 @@ import org.jetbrains.annotations.NotNull;
 @FunctionalInterface
 public interface ResourcePackCallback {
   /**
+   * Create a pack callback that performs no operation.
+   *
+   * <p>Multiple calls to this method are guaranteed to return callback functions with equal identity.</p>
+   *
+   * @return the no-op callback
+   * @since 4.15.0
+   */
+  static @NotNull ResourcePackCallback noOp() {
+    return ResourcePackCallbacks.NO_OP;
+  }
+
+  /**
    * Create a pack callback that will only execute the provided functions when the pack application has completed, discarding all intermediate events.
    *
    * @param success the success callback
