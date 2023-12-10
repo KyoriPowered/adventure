@@ -54,7 +54,7 @@ public interface TranslationArgument extends ComponentLike, Examinable {
    * @sinceMinecraft 1.20.3
    */
   static @NotNull TranslationArgument bool(final boolean value) {
-    return new TranslationArgumentImpl.BooleanImpl(value);
+    return new TranslationArgumentImpl(value);
   }
 
   /**
@@ -66,7 +66,7 @@ public interface TranslationArgument extends ComponentLike, Examinable {
    * @sinceMinecraft 1.20.3
    */
   static @NotNull TranslationArgument numeric(final @NotNull Number value) {
-    return new TranslationArgumentImpl.NumericImpl(requireNonNull(value, "value"));
+    return new TranslationArgumentImpl(requireNonNull(value, "value"));
   }
 
   /**
@@ -78,53 +78,6 @@ public interface TranslationArgument extends ComponentLike, Examinable {
    * @sinceMinecraft 1.20.3
    */
   static @NotNull TranslationArgument component(final @NotNull ComponentLike value) {
-    return new TranslationArgumentImpl.ComponentImpl(requireNonNull(requireNonNull(value, "value").asComponent(), "value.asComponent()"));
-  }
-
-  /**
-   * A boolean argument to translations.
-   *
-   * @since 4.15.0
-   * @sinceMinecraft 1.20.3
-   */
-  interface Boolean extends TranslationArgument {
-    /**
-     * The value of the argument.
-     *
-     * @return the raw argument value
-     * @since 4.15.0
-     */
-    java.lang.@NotNull Boolean value();
-  }
-
-  /**
-   * A numeric argument to translations.
-   *
-   * @since 4.15.0
-   * @sinceMinecraft 1.20.3
-   */
-  interface Numeric extends TranslationArgument {
-    /**
-     * The value of the argument.
-     *
-     * @return the raw argument value
-     * @since 4.15.0
-     */
-    @NotNull Number value();
-  }
-
-  /**
-   * A component argument to translations.
-   *
-   * @since 4.15.0
-   */
-  interface Component extends TranslationArgument {
-    /**
-     * The value of the argument.
-     *
-     * @return the raw argument value
-     * @since 4.15.0
-     */
-    net.kyori.adventure.text.@NotNull Component value();
+    return new TranslationArgumentImpl(requireNonNull(requireNonNull(value, "value").asComponent(), "value.asComponent()"));
   }
 }

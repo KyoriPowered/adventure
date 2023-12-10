@@ -30,139 +30,54 @@ import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-final class TranslationArgumentImpl {
+final class TranslationArgumentImpl implements TranslationArgument {
   private static final Component TRUE = Component.text("true");
   private static final Component FALSE = Component.text("false");
 
-  private TranslationArgumentImpl() {
+  private final Object value;
+
+  TranslationArgumentImpl(final Object value) {
+    this.value = value;
   }
 
-  static final class BooleanImpl implements TranslationArgument.Boolean {
-    private final boolean value;
+  @Override
+  public @NotNull Object value() {
+    return this.value;
+  }
 
-    BooleanImpl(final boolean value) {
-      this.value = value;
-    }
-
-    @Override
-    public java.lang.@NotNull Boolean value() {
-      return this.value;
-    }
-
-    @Override
-    public net.kyori.adventure.text.@NotNull Component asComponent() {
-      return this.value ? TRUE : FALSE;
-    }
-
-    @Override
-    public boolean equals(final @Nullable Object other) {
-      if (this == other) return true;
-      if (other == null || getClass() != other.getClass()) return false;
-      final BooleanImpl that = (BooleanImpl) other;
-      return this.value == that.value;
-    }
-
-    @Override
-    public int hashCode() {
-      return Objects.hash(this.value);
-    }
-
-    @Override
-    public String toString() {
-      return Internals.toString(this);
-    }
-
-    @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-      return Stream.of(
-        ExaminableProperty.of("value", this.value)
-      );
+  @Override
+  public @NotNull Component asComponent() {
+    if (this.value instanceof Component) {
+      return (Component) this.value;
+    } else if (this.value instanceof Boolean) {
+      return (Boolean) this.value ? TRUE : FALSE;
+    } else {
+      return Component.text(String.valueOf(this.value));
     }
   }
 
-  static final class NumericImpl implements TranslationArgument.Numeric {
-    private final Number value;
-
-    NumericImpl(final Number value) {
-      this.value = value;
-    }
-
-    @Override
-    public @NotNull Number value() {
-      return this.value;
-    }
-
-    @Override
-    public net.kyori.adventure.text.@NotNull Component asComponent() {
-      return net.kyori.adventure.text.Component.text(String.valueOf(this.value));
-    }
-
-    @Override
-    public boolean equals(final @Nullable Object other) {
-      if (this == other) return true;
-      if (other == null || getClass() != other.getClass()) return false;
-      final NumericImpl that = (NumericImpl) other;
-      return this.value.equals(that.value);
-    }
-
-    @Override
-    public int hashCode() {
-      return Objects.hash(this.value);
-    }
-
-    @Override
-    public String toString() {
-      return Internals.toString(this);
-    }
-
-    @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-      return Stream.of(
-        ExaminableProperty.of("value", this.value)
-      );
-    }
+  @Override
+  public boolean equals(final @Nullable Object other) {
+    if (this == other) return true;
+    if (other == null || getClass() != other.getClass()) return false;
+    final TranslationArgumentImpl that = (TranslationArgumentImpl) other;
+    return Objects.equals(this.value, that.value);
   }
 
-  static final class ComponentImpl implements TranslationArgument.Component {
-    private final net.kyori.adventure.text.Component value;
+  @Override
+  public int hashCode() {
+    return Objects.hash(this.value);
+  }
 
-    ComponentImpl(final net.kyori.adventure.text.Component value) {
-      this.value = value;
-    }
+  @Override
+  public String toString() {
+    return Internals.toString(this);
+  }
 
-    @Override
-    public net.kyori.adventure.text.@NotNull Component value() {
-      return this.value;
-    }
-
-    @Override
-    public net.kyori.adventure.text.@NotNull Component asComponent() {
-      return this.value;
-    }
-
-    @Override
-    public boolean equals(final @Nullable Object other) {
-      if (this == other) return true;
-      if (other == null || getClass() != other.getClass()) return false;
-      final ComponentImpl that = (ComponentImpl) other;
-      return this.value.equals(that.value);
-    }
-
-    @Override
-    public int hashCode() {
-      return Objects.hash(this.value);
-    }
-
-    @Override
-    public String toString() {
-      return Internals.toString(this);
-    }
-
-    @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-      return Stream.of(
-        ExaminableProperty.of("value", this.value)
-      );
-    }
+  @Override
+  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.of(
+      ExaminableProperty.of("value", this.value)
+    );
   }
 }

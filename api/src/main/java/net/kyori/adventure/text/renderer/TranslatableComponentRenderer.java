@@ -189,8 +189,8 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
         final List<TranslationArgument> args = new ArrayList<>(component.arguments());
         for (int i = 0, size = args.size(); i < size; i++) {
           final TranslationArgument arg = args.get(i);
-          if (arg instanceof TranslationArgument.Component) {
-            args.set(i, TranslationArgument.component(this.render(((TranslationArgument.Component) arg).value(), context)));
+          if (arg.value() instanceof Component) {
+            args.set(i, TranslationArgument.component(this.render(((Component) arg.value()), context)));
           }
         }
         builder.args(args);
@@ -218,7 +218,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
       final Integer index = (Integer) it.getAttribute(MessageFormat.Field.ARGUMENT);
       if (index != null) {
         final TranslationArgument arg = args.get(index);
-        if (arg instanceof TranslationArgument.Component) {
+        if (arg.value() instanceof Component) {
           builder.append(this.render(arg.asComponent(), context));
         } else {
           builder.append(arg.asComponent()); // todo: number rendering?
