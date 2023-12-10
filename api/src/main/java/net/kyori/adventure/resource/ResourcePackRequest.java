@@ -37,7 +37,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 4.15.0
  */
-public interface ResourcePackRequest extends Examinable {
+public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike {
   /**
    * Create a basic request to apply the provided resource packs.
    *
@@ -125,12 +125,17 @@ public interface ResourcePackRequest extends Examinable {
    */
   @NotNull ResourcePackRequest replace(final boolean replace);
 
+  @Override
+  default @NotNull ResourcePackRequest asResourcePackRequest() {
+    return this;
+  }
+
   /**
    * A builder for resource pack requests.
    *
    * @since 4.15.0
    */
-  interface Builder extends AbstractBuilder<ResourcePackRequest> {
+  interface Builder extends AbstractBuilder<ResourcePackRequest>, ResourcePackRequestLike {
     /**
      * Set the resource packs to apply.
      *
@@ -167,5 +172,10 @@ public interface ResourcePackRequest extends Examinable {
      * @since 4.15.0
      */
     @NotNull Builder replace(final boolean replace);
+
+    @Override
+    default @NotNull ResourcePackRequest asResourcePackRequest() {
+      return this.build();
+    }
   }
 }

@@ -41,6 +41,7 @@ import net.kyori.adventure.pointer.Pointered;
 import net.kyori.adventure.resource.ResourcePackInfo;
 import net.kyori.adventure.resource.ResourcePackInfoLike;
 import net.kyori.adventure.resource.ResourcePackRequest;
+import net.kyori.adventure.resource.ResourcePackRequestLike;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
@@ -734,7 +735,33 @@ public interface Audience extends Pointered {
    * @see ResourcePackInfo
    * @since 4.15.0
    */
+  @ForwardingAudienceOverrideNotRequired
+  default void sendResourcePacks(final @NotNull ResourcePackRequestLike request) {
+    this.sendResourcePacks(request.asResourcePackRequest());
+  }
+
+  /**
+   * Sends a request to apply resource packs to this audience.
+   *
+   * <p>Multiple resource packs are only supported since 1.20.3. On older versions, all requests behave as if {@link ResourcePackRequest#replace()} is set to {@code true}.</p>
+   *
+   * @param request the resource pack request
+   * @see ResourcePackInfo
+   * @since 4.15.0
+   */
   default void sendResourcePacks(final @NotNull ResourcePackRequest request) {
+  }
+
+  /**
+   * Clear resource packs with the IDs used in the provided requests if they are present.
+   *
+   * @param request the request used to originally apply the packs
+   * @since 4.15.0
+   * @sinceMinecraft 1.20.3
+   */
+  @ForwardingAudienceOverrideNotRequired
+  default void removeResourcePacks(final @NotNull ResourcePackRequestLike request) {
+    this.removeResourcePacks(request.asResourcePackRequest());
   }
 
   /**
