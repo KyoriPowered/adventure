@@ -37,6 +37,7 @@ import net.kyori.adventure.identity.Identified;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.pointer.Pointered;
+import net.kyori.adventure.resource.ResourcePackCallback;
 import net.kyori.adventure.resource.ResourcePackRequest;
 import net.kyori.adventure.resource.ResourcePackRequestLike;
 import net.kyori.adventure.sound.Sound;
@@ -743,6 +744,42 @@ public interface Audience extends Pointered {
   }
 
   /**
+   * Sends resource pack requests to this audience, replacing any existing resource packs that might be present.
+   *
+   * <p>Multiple resource packs are only supported since 1.20.3. On older versions, only the first pack will be sent.</p>
+   *
+   * @param cb a callback to be executed when resource pack events associated with this application are received
+   * @param request the first resource pack request
+   * @param others other requests
+   * @see ResourcePackRequest
+   * @since 4.15.0
+   */
+  @SuppressWarnings("checkstyle:MethodName")
+  @ForwardingAudienceOverrideNotRequired
+  default void setResourcePack(final @NotNull ResourcePackCallback cb, final @NotNull ResourcePackRequestLike request, final @NotNull ResourcePackRequestLike@NotNull... others) {
+    final ResourcePackRequest[] otherReqs = new ResourcePackRequest[others.length];
+    for (int i = 0; i < others.length; i++) {
+      otherReqs[i] = others[i].asResourcePackRequest();
+    }
+    this.setResourcePack(cb, request.asResourcePackRequest(), otherReqs);
+  }
+
+  /**
+   * Sends resource pack requests to this audience, replacing any resource packs that might be present.
+   *
+   * <p>Multiple resource packs are only supported since 1.20.3. On older versions, only the first pack will be sent.</p>
+   *
+   * @param cb a callback to be executed when resource pack events associated with this application are received
+   * @param request the resource pack request
+   * @param others other requests
+   * @see ResourcePackRequest
+   * @since 4.15.0
+   */
+  @SuppressWarnings("checkstyle:MethodName")
+  default void setResourcePack(final @NotNull ResourcePackCallback cb, final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest@NotNull... others) {
+  }
+
+  /**
    * Sends resource pack requests to this audience, adding to any existing resource packs that might be present.
    *
    * <p>Multiple resource packs are only supported since 1.20.3. On older versions, this behaves identically to {@link #setResourcePack(ResourcePackRequestLike, ResourcePackRequestLike...)}.</p>
@@ -772,6 +809,40 @@ public interface Audience extends Pointered {
    * @since 4.15.0
    */
   default void sendResourcePack(final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest@NotNull... others) {
+  }
+
+  /**
+   * Sends resource pack requests to this audience, adding to any existing resource packs that might be present.
+   *
+   * <p>Multiple resource packs are only supported since 1.20.3. On older versions, this behaves identically to {@link #setResourcePack(ResourcePackRequestLike, ResourcePackRequestLike...)}.</p>
+   *
+   * @param cb a callback to be executed when resource pack events associated with this application are received
+   * @param request the resource pack request
+   * @param others other requests
+   * @see ResourcePackRequest
+   * @since 4.15.0
+   */
+  @ForwardingAudienceOverrideNotRequired
+  default void sendResourcePack(final @NotNull ResourcePackCallback cb, final @NotNull ResourcePackRequestLike request, final @NotNull ResourcePackRequestLike@NotNull... others) {
+    final ResourcePackRequest[] otherReqs = new ResourcePackRequest[others.length];
+    for (int i = 0; i < others.length; i++) {
+      otherReqs[i] = others[i].asResourcePackRequest();
+    }
+    this.sendResourcePack(cb, request.asResourcePackRequest(), otherReqs);
+  }
+
+  /**
+   * Sends resource pack requests to this audience, adding to any existing resource packs that might be present.
+   *
+   * <p>Multiple resource packs are only supported since 1.20.3. On older versions, this behaves identically to {@link #setResourcePack(ResourcePackRequest, ResourcePackRequest...)}.</p>
+   *
+   * @param cb a callback to be executed when resource pack events associated with this application are received
+   * @param request the resource pack request
+   * @param others other requests
+   * @see ResourcePackRequest
+   * @since 4.15.0
+   */
+  default void sendResourcePack(final @NotNull ResourcePackCallback cb, final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest@NotNull... others) {
   }
 
   /**

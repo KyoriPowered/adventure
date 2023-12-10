@@ -39,6 +39,7 @@ import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.pointer.Pointer;
 import net.kyori.adventure.pointer.Pointers;
+import net.kyori.adventure.resource.ResourcePackCallback;
 import net.kyori.adventure.resource.ResourcePackRequest;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
@@ -202,13 +203,23 @@ public interface ForwardingAudience extends Audience {
   }
 
   @Override
-  default void setResourcePack(final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest... others) {
+  default void setResourcePack(final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest@NotNull... others) {
     for (final Audience audience : this.audiences()) audience.setResourcePack(request, others);
+  }
+
+  @Override
+  default void setResourcePack(final @NotNull ResourcePackCallback cb, final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest @NotNull ... others) {
+    for (final Audience audience : this.audiences()) audience.setResourcePack(cb, request, others);
   }
 
   @Override
   default void sendResourcePack(final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest@NotNull... others) {
     for (final Audience audience : this.audiences()) audience.sendResourcePack(request, others);
+  }
+
+  @Override
+  default void sendResourcePack(final @NotNull ResourcePackCallback cb, final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest@NotNull ... others) {
+    for (final Audience audience : this.audiences()) audience.sendResourcePack(cb, request, others);
   }
 
   @Override
@@ -390,8 +401,18 @@ public interface ForwardingAudience extends Audience {
     }
 
     @Override
+    default void setResourcePack(final @NotNull ResourcePackCallback cb, final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest @NotNull ... others) {
+      this.audience().setResourcePack((uuid, status, audience) -> cb.packEventReceived(uuid, status, this), request, others);
+    }
+
+    @Override
     default void sendResourcePack(final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest@NotNull... others) {
       this.audience().sendResourcePack(request, others);
+    }
+
+    @Override
+    default void sendResourcePack(final @NotNull ResourcePackCallback cb, final @NotNull ResourcePackRequest request, final @NotNull ResourcePackRequest @NotNull ... others) {
+      this.audience().sendResourcePack((uuid, status, audience) -> cb.packEventReceived(uuid, status, this), request, others);
     }
 
     @Override
