@@ -43,10 +43,10 @@ final class StorageNBTComponentTest extends SerializerTest {
   @Test
   void testWithInterpret() {
     this.testObject(
-      Component.storageNBT().nbtPath("abc").storage(Key.key("doom:apple")).build(),
+      Component.storageNBT().nbtPath("abc").storage(Key.key("doom:apple")).interpret(true).build(),
       json -> {
         json.addProperty(JSONComponentConstants.NBT, "abc");
-        json.addProperty(JSONComponentConstants.NBT_INTERPRET, false);
+        json.addProperty(JSONComponentConstants.NBT_INTERPRET, true);
         json.addProperty(JSONComponentConstants.NBT_STORAGE, "doom:apple");
       }
     );
