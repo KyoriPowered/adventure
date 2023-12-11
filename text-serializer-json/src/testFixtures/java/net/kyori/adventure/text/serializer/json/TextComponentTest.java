@@ -23,18 +23,23 @@
  */
 package net.kyori.adventure.text.serializer.json;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 final class TextComponentTest extends SerializerTest {
   @Test
   void testSimple() {
-    this.testObject(
-      Component.text("Hello, world."),
-      json -> json.addProperty(JSONComponentConstants.TEXT, "Hello, world.")
-    );
+    final Component input = Component.text("Hello, world.");
+    final JsonElement output = new JsonPrimitive("Hello, world.");
+
+    assertEquals(output, this.serialize(input));
+    assertEquals(input, this.deserialize(output));
   }
 
   @Test
@@ -96,10 +101,10 @@ final class TextComponentTest extends SerializerTest {
         json.addProperty(JSONComponentConstants.COLOR, name(NamedTextColor.DARK_PURPLE));
         json.add(JSONComponentConstants.HOVER_EVENT, object(event -> {
           event.addProperty(JSONComponentConstants.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_TEXT));
-          event.add(JSONComponentConstants.HOVER_EVENT_CONTENTS, object(value -> value.addProperty(JSONComponentConstants.TEXT, "A test.")));
+          event.addProperty(JSONComponentConstants.HOVER_EVENT_CONTENTS, "A test.");
         }));
         json.add(JSONComponentConstants.EXTRA, array(extra -> {
-          extra.add(object(item -> item.addProperty(JSONComponentConstants.TEXT, " ")));
+          extra.add(" ");
           extra.add(object(item -> {
             item.addProperty(JSONComponentConstants.TEXT, "A what?");
             item.addProperty(JSONComponentConstants.COLOR, name(NamedTextColor.DARK_AQUA));

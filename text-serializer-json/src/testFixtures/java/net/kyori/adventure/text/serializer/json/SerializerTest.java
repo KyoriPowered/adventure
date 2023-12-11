@@ -34,23 +34,46 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
+import org.junit.jupiter.api.BeforeEach;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public abstract class SerializerTest {
   private final Gson gson = new Gson();
-  private final JSONComponentSerializer serializer = JSONComponentSerializer.json();
+  private JSONComponentSerializer serializer;
+
+  @BeforeEach
+  @SuppressWarnings("checkstyle:MethodName")
+  void setUpSerializer() {
+    this.serializer = this.createSerializer();
+  }
+
+  protected JSONComponentSerializer createSerializer() {
+    return JSONComponentSerializer.json();
+  }
 
   final JsonElement serialize(final Component component) {
-    return this.gson.fromJson(this.serializer.serialize(component), JsonElement.class);
+    return this.serialize(this.serializer, component);
+  }
+
+  final JsonElement serialize(final JSONComponentSerializer cereal, final Component component) {
+    return this.gson.fromJson(cereal.serialize(component), JsonElement.class);
   }
 
   final Component deserialize(final JsonElement json) {
-    return this.serializer.deserialize(json.toString());
+    return this.deserialize(this.serializer, json);
+  }
+
+  final Component deserialize(final JSONComponentSerializer cereal, final JsonElement json) {
+    return cereal.deserialize(json.toString());
   }
 
   final void testStyle(final Style style, final Consumer<? super JsonObject> consumer) {
-    this.testObject(Component.text("", style), object -> {
+    this.testStyle(this.serializer, style, consumer);
+  }
+
+  final void testStyle(final JSONComponentSerializer serial, final Style style, final Consumer<? super JsonObject> consumer) {
+    this.testObject(serial, Component.text("", style), object -> {
       object.addProperty(JSONComponentConstants.TEXT, "");
       consumer.accept(object);
     });
@@ -64,10 +87,14 @@ public abstract class SerializerTest {
   }
 
   final void testObject(final Component component, final Consumer<? super JsonObject> consumer) {
+    this.testObject(this.serializer, component, consumer);
+  }
+
+  final void testObject(final JSONComponentSerializer serializer, final Component component, final Consumer<? super JsonObject> consumer) {
     final JsonObject json = object(consumer);
 
-    assertEquals(json, this.serialize(component));
-    assertEquals(component, this.deserialize(json));
+    assertEquals(json, this.serialize(serializer, component));
+    assertEquals(component, this.deserialize(serializer, json));
   }
 
   static JsonArray array(final Consumer<? super JsonArray> consumer) {

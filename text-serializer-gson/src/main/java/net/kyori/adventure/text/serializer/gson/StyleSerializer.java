@@ -43,7 +43,9 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.json.JSONFlags;
 import net.kyori.adventure.util.Codec;
+import net.kyori.adventure.util.flag.FeatureSet;
 import org.jetbrains.annotations.Nullable;
 
 import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.CLICK_EVENT;
@@ -80,17 +82,24 @@ final class StyleSerializer extends TypeAdapter<Style> {
     }
   }
 
-  static TypeAdapter<Style> create(final net.kyori.adventure.text.serializer.json.@Nullable LegacyHoverEventSerializer legacyHover, final boolean emitLegacyHover, final Gson gson) {
-    return new StyleSerializer(legacyHover, emitLegacyHover, gson).nullSafe();
+  static TypeAdapter<Style> create(final net.kyori.adventure.text.serializer.json.@Nullable LegacyHoverEventSerializer legacyHover, final FeatureSet features, final Gson gson) {
+    return new StyleSerializer(
+      legacyHover,
+      features.value(JSONFlags.EMIT_LEGACY_HOVER_EVENT),
+      features.value(JSONFlags.EMIT_MODERN_HOVER_EVENT),
+      gson
+    ).nullSafe();
   }
 
   private final net.kyori.adventure.text.serializer.json.LegacyHoverEventSerializer legacyHover;
   private final boolean emitLegacyHover;
+  private final boolean emitModernHover;
   private final Gson gson;
 
-  private StyleSerializer(final net.kyori.adventure.text.serializer.json.@Nullable LegacyHoverEventSerializer legacyHover, final boolean emitLegacyHover, final Gson gson) {
+  private StyleSerializer(final net.kyori.adventure.text.serializer.json.@Nullable LegacyHoverEventSerializer legacyHover, final boolean emitLegacyHover, final boolean emitModernHover, final Gson gson) {
     this.legacyHover = legacyHover;
     this.emitLegacyHover = emitLegacyHover;
+    this.emitModernHover = emitModernHover;
     this.gson = gson;
   }
 
@@ -253,13 +262,13 @@ final class StyleSerializer extends TypeAdapter<Style> {
     }
 
     final @Nullable HoverEvent<?> hoverEvent = value.hoverEvent();
-    if (hoverEvent != null && (hoverEvent.action() != HoverEvent.Action.SHOW_ACHIEVEMENT || this.emitLegacyHover)) {
+    if (hoverEvent != null && ((this.emitModernHover && hoverEvent.action() != HoverEvent.Action.SHOW_ACHIEVEMENT) || this.emitLegacyHover)) {
       out.name(HOVER_EVENT);
       out.beginObject();
       out.name(HOVER_EVENT_ACTION);
       final HoverEvent.Action<?> action = hoverEvent.action();
       this.gson.toJson(action, SerializerFactory.HOVER_ACTION_TYPE, out);
-      if (action != HoverEvent.Action.SHOW_ACHIEVEMENT) { // legacy action has no modern contents value
+      if (this.emitModernHover && action != HoverEvent.Action.SHOW_ACHIEVEMENT) { // legacy action has no modern contents value
         out.name(HOVER_EVENT_CONTENTS);
         if (action == HoverEvent.Action.SHOW_ITEM) {
           this.gson.toJson(hoverEvent.value(), SerializerFactory.SHOW_ITEM_TYPE, out);

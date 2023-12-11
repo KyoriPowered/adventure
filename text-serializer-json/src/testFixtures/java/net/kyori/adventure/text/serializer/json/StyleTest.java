@@ -41,6 +41,14 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class StyleTest extends SerializerTest {
+
+  @Override
+  protected JSONComponentSerializer createSerializer() {
+    return JSONComponentSerializer.builder()
+      .editFeatures(b -> b.value(JSONFlags.EMIT_COMPACT_TEXT_COMPONENT, false))
+      .build();
+  }
+
   @Test
   void testWithDecorationAsColor() {
     final Style s0 = deserialize(object(object -> {
@@ -139,7 +147,12 @@ class StyleTest extends SerializerTest {
           hoverEvent.addProperty(JSONComponentConstants.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ENTITY));
           hoverEvent.add(JSONComponentConstants.HOVER_EVENT_CONTENTS, object(contents -> {
             contents.addProperty(JSONComponentConstants.SHOW_ENTITY_TYPE, "minecraft:pig");
-            contents.addProperty(JSONComponentConstants.SHOW_ENTITY_ID, dolores.toString());
+            contents.add(JSONComponentConstants.SHOW_ENTITY_ID, array(arr -> {
+              arr.add(dolores.getMostSignificantBits() >> 32);
+              arr.add((int) (dolores.getMostSignificantBits() & 0xffffffffl));
+              arr.add(dolores.getLeastSignificantBits() >> 32);
+              arr.add((int) (dolores.getLeastSignificantBits() & 0xffffffffl));
+            }));
             contents.add(JSONComponentConstants.SHOW_ENTITY_NAME, object(name -> {
               name.addProperty(JSONComponentConstants.TEXT, "Dolores");
               name.addProperty(JSONComponentConstants.COLOR, "#0A1AB9");
