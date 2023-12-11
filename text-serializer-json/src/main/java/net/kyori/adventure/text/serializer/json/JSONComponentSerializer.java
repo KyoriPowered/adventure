@@ -23,10 +23,12 @@
  */
 package net.kyori.adventure.text.serializer.json;
 
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.PlatformAPI;
+import net.kyori.adventure.util.flag.FeatureSet;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -67,11 +69,35 @@ public interface JSONComponentSerializer extends ComponentSerializer<Component, 
    */
   interface Builder {
     /**
+     * Set the feature flag set to apply on this serializer.
+     *
+     * <p>This controls how the serializer emits and interprets components.</p>
+     *
+     * @param flags the flag set to use
+     * @return this builder
+     * @see JSONFlags
+     * @since 4.15.0
+     */
+    @NotNull Builder features(final @NotNull FeatureSet flags);
+
+    /**
+     * Edit the active set of feature flags.
+     *
+     * @param flagEditor the consumer operating on the existing flag set
+     * @return this builder
+     * @see JSONFlags
+     * @since  4.15.0
+     */
+    @NotNull Builder editFeatures(final @NotNull Consumer<FeatureSet.Builder> flagEditor);
+
+    /**
      * Sets that the serializer should downsample hex colors to named colors.
      *
      * @return this builder
      * @since 4.14.0
+     * @deprecated for removal since 4.15.0, change the {@link JSONFlags#EMIT_RGB} flag instead
      */
+    @Deprecated
     @NotNull Builder downsampleColors();
 
     /**
@@ -93,7 +119,9 @@ public interface JSONComponentSerializer extends ComponentSerializer<Component, 
      *
      * @return this builder
      * @since 4.14.0
+     * @deprecated for removal since 4.15.0, change the {@link JSONFlags#EMIT_LEGACY_HOVER_EVENT} flag instead
      */
+    @Deprecated
     @NotNull Builder emitLegacyHoverEvent();
 
     /**
@@ -102,7 +130,7 @@ public interface JSONComponentSerializer extends ComponentSerializer<Component, 
      * @return the new serializer
      * @since 4.14.0
      */
-    JSONComponentSerializer build();
+    @NotNull JSONComponentSerializer build();
   }
 
   /**

@@ -25,14 +25,14 @@ package net.kyori.adventure.util;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.util.flag.FeatureFlag;
-import net.kyori.adventure.util.flag.FeatureFlagSet;
+import net.kyori.adventure.util.flag.FeatureSet;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class FeatureFlagSetTest {
+class FeatureSetTest {
 
   enum TestEnum {
     ONE, TWO, THREE
@@ -44,14 +44,14 @@ class FeatureFlagSetTest {
 
   @Test
   void testEmpty() {
-    assertFalse(FeatureFlagSet.empty().has(ONE));
-    assertFalse(FeatureFlagSet.empty().has(TWO));
-    assertFalse(FeatureFlagSet.empty().has(ENUM_FLAG));
+    assertFalse(FeatureSet.empty().has(ONE));
+    assertFalse(FeatureSet.empty().has(TWO));
+    assertFalse(FeatureSet.empty().has(ENUM_FLAG));
   }
 
   @Test
   void testFixedValue() {
-    final FeatureFlagSet set = FeatureFlagSet.builder()
+    final FeatureSet set = FeatureSet.builder()
       .value(ONE, false)
       .build();
 
@@ -61,7 +61,7 @@ class FeatureFlagSetTest {
 
   @Test
   void testDefaultValues() {
-    final FeatureFlagSet set = FeatureFlagSet.builder()
+    final FeatureSet set = FeatureSet.builder()
       .build();
 
     assertFalse(set.has(ONE));

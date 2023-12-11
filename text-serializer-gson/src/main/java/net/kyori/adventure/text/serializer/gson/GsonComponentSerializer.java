@@ -30,10 +30,11 @@ import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.json.JSONFlags;
 import net.kyori.adventure.text.serializer.json.JSONComponentSerializer;
 import net.kyori.adventure.util.Buildable;
 import net.kyori.adventure.util.PlatformAPI;
-import net.kyori.adventure.util.flag.FeatureFlagSet;
+import net.kyori.adventure.util.flag.FeatureSet;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -123,27 +124,11 @@ public interface GsonComponentSerializer extends JSONComponentSerializer, Builda
    * @since 4.0.0
    */
   interface Builder extends AbstractBuilder<GsonComponentSerializer>, Buildable.Builder<GsonComponentSerializer>, JSONComponentSerializer.Builder {
-    /**
-     * Set the feature flag set to apply on this serializer.
-     *
-     * <p>This controls how the serializer emits and interprets components.</p>
-     *
-     * @param flags the flag set to use
-     * @return this builder
-     * @see GsonFlags
-     * @since 4.15.0
-     */
-    @NotNull Builder featureFlags(final @NotNull FeatureFlagSet flags);
+    @Override
+    @NotNull Builder features(final @NotNull FeatureSet flags);
 
-    /**
-     * Edit the active set of feature flags.
-     *
-     * @param flagEditor the consumer operating on the existing flag set
-     * @return this builder
-     * @see GsonFlags
-     * @since  4.15.0
-     */
-    @NotNull Builder editFlags(final @NotNull Consumer<FeatureFlagSet.Builder> flagEditor);
+    @Override
+    @NotNull Builder editFeatures(final @NotNull Consumer<FeatureSet.Builder> flagEditor);
 
     /**
      * Sets that the serializer should downsample hex colors to named colors.
@@ -153,7 +138,7 @@ public interface GsonComponentSerializer extends JSONComponentSerializer, Builda
      */
     @Override
     default @NotNull Builder downsampleColors() {
-      return this.editFlags(flags -> flags.value(GsonFlags.EMIT_RGB, false));
+      return this.editFeatures(features -> features.value(JSONFlags.EMIT_RGB, false));
     }
 
     /**
@@ -179,9 +164,10 @@ public interface GsonComponentSerializer extends JSONComponentSerializer, Builda
      *
      * @since 4.0.0
      */
+    @Deprecated
     @Override
     default @NotNull Builder emitLegacyHoverEvent() {
-      return this.editFlags(b -> b.value(GsonFlags.EMIT_LEGACY_HOVER_EVENT, true));
+      return this.editFeatures(b -> b.value(JSONFlags.EMIT_LEGACY_HOVER_EVENT, true));
     }
 
     /**

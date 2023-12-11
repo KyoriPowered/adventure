@@ -63,7 +63,7 @@ final class DummyJSONComponentSerializer implements JSONComponentSerializer {
     }
 
     @Override
-    public JSONComponentSerializer build() {
+    public @NotNull JSONComponentSerializer build() {
       return INSTANCE;
     }
   }

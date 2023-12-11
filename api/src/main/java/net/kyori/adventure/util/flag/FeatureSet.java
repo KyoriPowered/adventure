@@ -35,15 +35,15 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.15.0
  */
 @ApiStatus.NonExtendable
-public interface FeatureFlagSet {
+public interface FeatureSet {
   /**
    * Get an empty set of feature flags.
    *
    * @return the empty feature flag set
    * @since 4.15.0
    */
-  static FeatureFlagSet empty() {
-    return FeatureFlagSetImpl.EMPTY;
+  static FeatureSet empty() {
+    return FeatureSetImpl.EMPTY;
   }
 
   /**
@@ -53,7 +53,7 @@ public interface FeatureFlagSet {
    * @since 4.15.0
    */
   static @NotNull Builder builder() {
-    return new FeatureFlagSetImpl.BuilderImpl();
+    return new FeatureSetImpl.BuilderImpl();
   }
 
   /**
@@ -63,7 +63,7 @@ public interface FeatureFlagSet {
    * @since 4.15.0
    */
   static @NotNull VersionedBuilder versionedBuilder() {
-    return new FeatureFlagSetImpl.VersionedBuilderImpl();
+    return new FeatureSetImpl.VersionedBuilderImpl();
   }
 
 
@@ -94,14 +94,14 @@ public interface FeatureFlagSet {
    * @since 4.15.0
    */
   @ApiStatus.NonExtendable
-  interface Versioned extends FeatureFlagSet {
+  interface Versioned extends FeatureSet {
     /**
      * The individual changes in each supported version.
      *
      * @return the child sets that exist
      * @since 4.15.0
      */
-    @NotNull Map<Integer, FeatureFlagSet> childSets();
+    @NotNull Map<Integer, FeatureSet> childSets();
 
     /**
      * Request a view of this feature flag set showing only flags available at versions up to and including {@code version}.
@@ -119,7 +119,7 @@ public interface FeatureFlagSet {
    * @since 4.15.0
    */
   @ApiStatus.NonExtendable
-  interface Builder extends AbstractBuilder<FeatureFlagSet> {
+  interface Builder extends AbstractBuilder<FeatureSet> {
     /**
      * Set the value for a specific flag.
      *
@@ -138,7 +138,7 @@ public interface FeatureFlagSet {
      * @return this builder
      * @since 4.15.0
      */
-    @NotNull Builder values(final @NotNull FeatureFlagSet existing);
+    @NotNull Builder values(final @NotNull FeatureSet existing);
   }
 
   /**
@@ -147,7 +147,7 @@ public interface FeatureFlagSet {
    * @since 4.15.0
    */
   @ApiStatus.NonExtendable
-  interface VersionedBuilder extends AbstractBuilder<FeatureFlagSet.Versioned> {
+  interface VersionedBuilder extends AbstractBuilder<FeatureSet.Versioned> {
     /**
      * Register feature flags for a specific version.
      *

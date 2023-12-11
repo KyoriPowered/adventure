@@ -24,6 +24,8 @@
 package net.kyori.adventure.util.flag;
 
 import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.key.Key;
@@ -34,6 +36,8 @@ import org.jetbrains.annotations.Nullable;
 import static java.util.Objects.requireNonNull;
 
 final class FeatureFlagImpl<V> implements FeatureFlag<V> {
+  private static final Set<Key> KNOWN_KEYS = ConcurrentHashMap.newKeySet();
+
   private final Key id;
   private final Class<V> type;
   private final @Nullable V defaultValue; // excluded from equality comparisons, it does not form part of the flag identity
@@ -45,6 +49,10 @@ final class FeatureFlagImpl<V> implements FeatureFlag<V> {
   }
 
   static <T> FeatureFlag<T> flag(final Key id, final Class<T> type, final @Nullable T defaultValue) {
+    if (!KNOWN_KEYS.add(id)) {
+      throw new IllegalStateException("Key " + id + " has already been used. Feature flag keys must be unique.");
+    }
+
     return new FeatureFlagImpl<>(
       requireNonNull(id, "id"),
       requireNonNull(type, "type"),

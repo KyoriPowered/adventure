@@ -21,21 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.serializer.gson;
+package net.kyori.adventure.text.serializer.json;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.util.flag.FeatureFlag;
-import net.kyori.adventure.util.flag.FeatureFlagSet;
+import net.kyori.adventure.util.flag.FeatureSet;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Feature flags that apply to the Gson serializer.
+ * Feature flags that can apply to JSON serializers.
+ *
+ * <p>See serializer documentation for specific details on which flags are supported.</p>
  *
  * @since 4.15.0
  */
-public final class GsonFlags {
-  private GsonFlags() {
+public final class JSONFlags {
+  private JSONFlags() {
   }
+
+  private static final int VERSION_INITIAL = 0;
+  private static final int VERSION_1_16 = 716; // 20w16a
+  private static final int VERSION_1_20_3 = 765;
 
   /**
    * Whether to emit RGB text.
@@ -77,33 +83,33 @@ public final class GsonFlags {
   /**
    * Versioned by protocol version.
    */
-  private static final FeatureFlagSet.Versioned BY_PROTOCOL_VERSION = FeatureFlagSet.versionedBuilder()
+  private static final FeatureSet.Versioned BY_PROTOCOL_VERSION = FeatureSet.versionedBuilder()
     .version(
-      0 /* initial */,
+      VERSION_INITIAL,
       b -> b.value(EMIT_LEGACY_HOVER_EVENT, true)
         .value(EMIT_RGB, false)
         .value(EMIT_MODERN_HOVER_EVENT, false)
         .value(EMIT_HOVER_SHOW_ENTITY_ID_AS_INT_ARRAY, false)
     )
     .version(
-      713 /* 20w17a, for 1.16 */,
+      VERSION_1_16,
       b -> b.value(EMIT_LEGACY_HOVER_EVENT, false)
         .value(EMIT_RGB, true)
         .value(EMIT_MODERN_HOVER_EVENT, true)
     )
     .version(
-      765 /* 1.20.3 */,
+      VERSION_1_20_3,
       b -> b.value(EMIT_COMPACT_TEXT_COMPONENT, true)
         .value(EMIT_HOVER_SHOW_ENTITY_ID_AS_INT_ARRAY, true)
     )
     .build();
 
   /**
-   * The combination of flags that can be understood by modern clients, as well as as far back as possible.
+   * The combination of features that can be understood by modern clients, as well as as far back as possible.
    *
-   * <p>This may provide a less efficient representation of components</p>
+   * <p>This may provide a less efficient representation of components, but will not result in information being discarded.</p>
    */
-  private static final FeatureFlagSet MOST_COMPATIBLE = FeatureFlagSet.builder()
+  private static final FeatureSet MOST_COMPATIBLE = FeatureSet.builder()
     .value(EMIT_LEGACY_HOVER_EVENT, true)
     .value(EMIT_HOVER_SHOW_ENTITY_ID_AS_INT_ARRAY, false)
     .value(EMIT_COMPACT_TEXT_COMPONENT, false)
@@ -111,7 +117,7 @@ public final class GsonFlags {
 
   @SuppressWarnings("PatternValidation")
   private static Key key(final String value) {
-    return Key.key("adventure", "gson/" + value);
+    return Key.key("adventure", "json/" + value);
   }
 
   /**
@@ -120,19 +126,19 @@ public final class GsonFlags {
    * @return the versioned flag set
    * @since 4.15.0
    */
-  public static FeatureFlagSet.@NotNull Versioned byProtocolVersion() {
+  public static FeatureSet.@NotNull Versioned byProtocolVersion() {
     return BY_PROTOCOL_VERSION;
   }
 
   /**
    * The combination of flags that can be understood by modern clients, as well as as far back as possible.
    *
-   * <p>This may provide a less efficient representation of components</p>
+   * <p>This may provide a less efficient representation of components.</p>
    *
    * @return the most widely compatible feature flag set
    * @since 4.15.0
    */
-  public static @NotNull FeatureFlagSet compatibility() {
+  public static @NotNull FeatureSet compatibility() {
     return MOST_COMPATIBLE;
   }
 }

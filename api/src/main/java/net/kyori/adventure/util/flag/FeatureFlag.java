@@ -32,6 +32,8 @@ import org.jetbrains.annotations.Nullable;
 /**
  * A representation of a feature that can be toggled to one of several values.
  *
+ * <p>Keys must be unique among all feature flag instances.</p>
+ *
  * @param <V> the value type
  * @since 4.15.0
  */
