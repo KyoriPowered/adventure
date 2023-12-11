@@ -40,8 +40,8 @@ public final class JSONFlags {
   }
 
   private static final int VERSION_INITIAL = 0;
-  private static final int VERSION_1_16 = 716; // 20w16a
-  private static final int VERSION_1_20_3 = 765;
+  private static final int VERSION_1_16 = 2526; // 20w16a
+  private static final int VERSION_1_20_3 = 3679; // 23w40a
 
   /**
    * Whether to emit RGB text.
@@ -81,7 +81,7 @@ public final class JSONFlags {
   public static final FeatureFlag<Boolean> EMIT_HOVER_SHOW_ENTITY_ID_AS_INT_ARRAY = FeatureFlag.booleanFlag(key("emit/hover_show_entity_id_as_int_array"), true);
 
   /**
-   * Versioned by protocol version.
+   * Versioned by world data version.
    */
   private static final FeatureSet.Versioned BY_PROTOCOL_VERSION = FeatureSet.versionedBuilder()
     .version(
@@ -121,7 +121,7 @@ public final class JSONFlags {
   }
 
   /**
-   * Get Gson flags delineated by game protocol version.
+   * Get JSON flags delineated by world data version.
    *
    * @return the versioned flag set
    * @since 4.15.0
