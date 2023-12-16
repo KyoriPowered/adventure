@@ -37,14 +37,15 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Represents a resource pack request that can be sent to players.
+ * Represents information about a resource pack that can be sent to players.
  *
+ * @see ResourcePackRequest
  * @see Audience#sendResourcePacks(ResourcePackInfoLike, ResourcePackInfoLike...)
  * @since 4.15.0
  */
 public interface ResourcePackInfo extends Examinable, ResourcePackInfoLike {
   /**
-   * Creates a resource pack request.
+   * Creates information about a resource pack.
    *
    * @param id the id
    * @param uri the uri
@@ -53,12 +54,12 @@ public interface ResourcePackInfo extends Examinable, ResourcePackInfoLike {
    * @return the resource pack request
    * @since 4.15.0
    */
-  static @NotNull ResourcePackInfo resourcePackRequest(final @NotNull UUID id, final @NotNull URI uri, final @NotNull String hash, final boolean required) {
-    return resourcePackRequest(id, uri, hash, required, null);
+  static @NotNull ResourcePackInfo resourcePackInfo(final @NotNull UUID id, final @NotNull URI uri, final @NotNull String hash, final boolean required) {
+    return resourcePackInfo(id, uri, hash, required, null);
   }
 
   /**
-   * Creates a resource pack request.
+   * Creates information about a resource pack.
    *
    * @param id the id
    * @param uri the uri
@@ -68,7 +69,7 @@ public interface ResourcePackInfo extends Examinable, ResourcePackInfoLike {
    * @return the resource pack request
    * @since 4.15.0
    */
-  static @NotNull ResourcePackInfo resourcePackRequest(final @NotNull UUID id, final @NotNull URI uri, final @NotNull String hash, final boolean required, final @Nullable Component prompt) {
+  static @NotNull ResourcePackInfo resourcePackInfo(final @NotNull UUID id, final @NotNull URI uri, final @NotNull String hash, final boolean required, final @Nullable Component prompt) {
     return new ResourcePackInfoImpl(id, uri, hash, required, prompt);
   }
 
@@ -78,7 +79,7 @@ public interface ResourcePackInfo extends Examinable, ResourcePackInfoLike {
    * @return a builder
    * @since 4.15.0
    */
-  static @NotNull Builder resourcePackRequest() {
+  static @NotNull Builder resourcePackInfo() {
     return new ResourcePackInfoImpl.BuilderImpl();
   }
 
@@ -99,7 +100,7 @@ public interface ResourcePackInfo extends Examinable, ResourcePackInfoLike {
   @NotNull URI uri();
 
   /**
-   * Gets the hash.
+   * Gets the SHA-1 hash.
    *
    * @return the hash
    * @since 4.15.0
