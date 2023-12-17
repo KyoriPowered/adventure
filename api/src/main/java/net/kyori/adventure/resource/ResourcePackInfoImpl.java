@@ -33,13 +33,11 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Formatter;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.stream.Stream;
 import net.kyori.adventure.internal.Internals;
-import net.kyori.adventure.text.Component;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -50,15 +48,11 @@ final class ResourcePackInfoImpl implements ResourcePackInfo {
   private final UUID id;
   private final URI uri;
   private final String hash;
-  private final boolean required;
-  private final Component prompt;
 
-  ResourcePackInfoImpl(final @NotNull UUID id, final @NotNull URI uri, final @NotNull String hash, final boolean required, final @Nullable Component prompt) {
+  ResourcePackInfoImpl(final @NotNull UUID id, final @NotNull URI uri, final @NotNull String hash) {
     this.id = requireNonNull(id, "id");
     this.uri = requireNonNull(uri, "uri");
     this.hash = requireNonNull(hash, "hash");
-    this.required = required;
-    this.prompt = prompt;
   }
 
   @Override
@@ -77,23 +71,11 @@ final class ResourcePackInfoImpl implements ResourcePackInfo {
   }
 
   @Override
-  public boolean required() {
-    return this.required;
-  }
-
-  @Override
-  public @Nullable Component prompt() {
-    return this.prompt;
-  }
-
-  @Override
   public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("id", this.id),
       ExaminableProperty.of("uri", this.uri),
-      ExaminableProperty.of("hash", this.hash),
-      ExaminableProperty.of("required", this.required),
-      ExaminableProperty.of("prompt", this.prompt)
+      ExaminableProperty.of("hash", this.hash)
     );
   }
 
@@ -109,9 +91,7 @@ final class ResourcePackInfoImpl implements ResourcePackInfo {
     final ResourcePackInfoImpl that = (ResourcePackInfoImpl) other;
     return this.id.equals(that.id) &&
            this.uri.equals(that.uri) &&
-           this.hash.equals(that.hash) &&
-           this.required == that.required &&
-           Objects.equals(this.prompt, that.prompt);
+           this.hash.equals(that.hash);
   }
 
   @Override
@@ -119,8 +99,6 @@ final class ResourcePackInfoImpl implements ResourcePackInfo {
     int result = this.id.hashCode();
     result = 31 * result + this.uri.hashCode();
     result = 31 * result + this.hash.hashCode();
-    result = 31 * result + (this.required ? 1 : 0);
-    result = 31 * result + (this.prompt != null ? this.prompt.hashCode() : 0);
     return result;
   }
 
@@ -128,8 +106,6 @@ final class ResourcePackInfoImpl implements ResourcePackInfo {
     private UUID id;
     private URI uri;
     private String hash;
-    private boolean required;
-    private Component prompt;
 
     BuilderImpl() {
     }
@@ -156,20 +132,8 @@ final class ResourcePackInfoImpl implements ResourcePackInfo {
     }
 
     @Override
-    public @NotNull Builder required(final boolean required) {
-      this.required = required;
-      return this;
-    }
-
-    @Override
-    public @NotNull Builder prompt(final @Nullable Component prompt) {
-      this.prompt = prompt;
-      return this;
-    }
-
-    @Override
     public @NotNull ResourcePackInfo build() {
-      return new ResourcePackInfoImpl(this.id, this.uri, this.hash, this.required, this.prompt);
+      return new ResourcePackInfoImpl(this.id, this.uri, this.hash);
     }
 
     @Override

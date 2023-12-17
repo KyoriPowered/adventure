@@ -30,11 +30,9 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ForkJoinPool;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.builder.AbstractBuilder;
-import net.kyori.adventure.text.Component;
 import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents information about a resource pack that can be sent to players.
@@ -50,27 +48,11 @@ public interface ResourcePackInfo extends Examinable, ResourcePackInfoLike {
    * @param id the id
    * @param uri the uri
    * @param hash the sha-1 hash
-   * @param required whether the resource pack is required or not
    * @return the resource pack request
    * @since 4.15.0
    */
-  static @NotNull ResourcePackInfo resourcePackInfo(final @NotNull UUID id, final @NotNull URI uri, final @NotNull String hash, final boolean required) {
-    return resourcePackInfo(id, uri, hash, required, null);
-  }
-
-  /**
-   * Creates information about a resource pack.
-   *
-   * @param id the id
-   * @param uri the uri
-   * @param hash the sha-1 hash
-   * @param required whether the resource pack is required or not
-   * @param prompt the prompt
-   * @return the resource pack request
-   * @since 4.15.0
-   */
-  static @NotNull ResourcePackInfo resourcePackInfo(final @NotNull UUID id, final @NotNull URI uri, final @NotNull String hash, final boolean required, final @Nullable Component prompt) {
-    return new ResourcePackInfoImpl(id, uri, hash, required, prompt);
+  static @NotNull ResourcePackInfo resourcePackInfo(final @NotNull UUID id, final @NotNull URI uri, final @NotNull String hash) {
+    return new ResourcePackInfoImpl(id, uri, hash);
   }
 
   /**
@@ -106,24 +88,6 @@ public interface ResourcePackInfo extends Examinable, ResourcePackInfoLike {
    * @since 4.15.0
    */
   @NotNull String hash();
-
-  /**
-   * Gets whether the resource pack is required
-   * or not.
-   *
-   * @return True if the resource pack is required,
-   *     false otherwise
-   * @since 4.15.0
-   */
-  boolean required();
-
-  /**
-   * Gets the prompt.
-   *
-   * @return the prompt
-   * @since 4.15.0
-   */
-  @Nullable Component prompt();
 
   @Override
   default @NotNull ResourcePackInfo asResourcePackInfo() {
@@ -171,26 +135,6 @@ public interface ResourcePackInfo extends Examinable, ResourcePackInfoLike {
     @NotNull Builder hash(final @NotNull String hash);
 
     /**
-     * Sets whether the resource pack is required or not.
-     *
-     * @param required whether the resource pack is required or not
-     * @return this builder
-     * @since 4.15.0
-     */
-    @Contract("_ -> this")
-    @NotNull Builder required(final boolean required);
-
-    /**
-     * Sets the prompt.
-     *
-     * @param prompt the prompt
-     * @return this builder
-     * @since 4.15.0
-     */
-    @Contract("_ -> this")
-    @NotNull Builder prompt(final @Nullable Component prompt);
-
-    /**
      * Builds.
      *
      * @return a new resource pack request
@@ -202,7 +146,7 @@ public interface ResourcePackInfo extends Examinable, ResourcePackInfoLike {
     /**
      * Builds, computing a hash based on the provided URL.
      *
-     * <p>The hash computation will perform a network request asynchronously, exposing the built request via the returned future.</p>
+     * <p>The hash computation will perform a network request asynchronously, exposing the completed info via the returned future.</p>
      *
      * @return a future providing the new resource pack request
      * @since 4.15.0
@@ -214,7 +158,7 @@ public interface ResourcePackInfo extends Examinable, ResourcePackInfoLike {
     /**
      * Builds, computing a hash based on the provided URL.
      *
-     * <p>The hash computation will perform a network request asynchronously, exposing the built request via the returned future.</p>
+     * <p>The hash computation will perform a network request asynchronously, exposing the completed info via the returned future.</p>
      *
      * @param executor the executor to perform the hash computation on
      * @return a future providing the new resource pack request

@@ -25,8 +25,11 @@ package net.kyori.adventure.resource;
 
 import java.util.List;
 import net.kyori.adventure.builder.AbstractBuilder;
+import net.kyori.adventure.text.Component;
 import net.kyori.examination.Examinable;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -125,6 +128,23 @@ public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike
    */
   @NotNull ResourcePackRequest replace(final boolean replace);
 
+  /**
+   * Gets whether the resource packs in this request are required.
+   *
+   * @return True if the resource pack is required,
+   *     false otherwise
+   * @since 4.15.0
+   */
+  boolean required();
+
+  /**
+   * Gets the prompt that will be provided when requesting these packs.
+   *
+   * @return the prompt
+   * @since 4.15.0
+   */
+  @Nullable Component prompt();
+
   @Override
   default @NotNull ResourcePackRequest asResourcePackRequest() {
     return this;
@@ -144,6 +164,7 @@ public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike
      * @return this builder
      * @since 4.15.0
      */
+    @Contract("_, _ -> this")
     @NotNull Builder packs(final @NotNull ResourcePackInfoLike first, final @NotNull ResourcePackInfoLike@NotNull... others);
 
     /**
@@ -153,6 +174,7 @@ public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike
      * @return this builder
      * @since 4.15.0
      */
+    @Contract("_ -> this")
     @NotNull Builder packs(final @NotNull Iterable<? extends ResourcePackInfoLike> packs);
 
     /**
@@ -162,6 +184,7 @@ public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike
      * @return this builder
      * @since 4.15.0
      */
+    @Contract("_ -> this")
     @NotNull Builder callback(final @NotNull ResourcePackCallback cb);
 
     /**
@@ -171,7 +194,28 @@ public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike
      * @return this builder
      * @since 4.15.0
      */
+    @Contract("_ -> this")
     @NotNull Builder replace(final boolean replace);
+
+    /**
+     * Sets whether the resource pack is required or not.
+     *
+     * @param required whether the resource pack is required or not
+     * @return this builder
+     * @since 4.15.0
+     */
+    @Contract("_ -> this")
+    @NotNull Builder required(final boolean required);
+
+    /**
+     * Sets the prompt.
+     *
+     * @param prompt the prompt
+     * @return this builder
+     * @since 4.15.0
+     */
+    @Contract("_ -> this")
+    @NotNull Builder prompt(final @Nullable Component prompt);
 
     @Override
     default @NotNull ResourcePackRequest asResourcePackRequest() {

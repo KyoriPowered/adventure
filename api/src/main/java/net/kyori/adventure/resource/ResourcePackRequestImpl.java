@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 import net.kyori.adventure.internal.Internals;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.MonkeyBars;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
@@ -39,11 +40,15 @@ final class ResourcePackRequestImpl implements ResourcePackRequest {
   private final List<ResourcePackInfo> packs;
   private final ResourcePackCallback cb;
   private final boolean replace;
+  private final boolean required;
+  private final @Nullable Component prompt;
 
-  ResourcePackRequestImpl(final List<ResourcePackInfo> packs, final ResourcePackCallback cb, final boolean replace) {
+  ResourcePackRequestImpl(final List<ResourcePackInfo> packs, final ResourcePackCallback cb, final boolean replace, final boolean required, final @Nullable Component prompt) {
     this.packs = packs;
     this.cb = cb;
     this.replace = replace;
+    this.required = required;
+    this.prompt = prompt;
   }
 
   @Override
@@ -56,7 +61,13 @@ final class ResourcePackRequestImpl implements ResourcePackRequest {
   public @NotNull ResourcePackRequest packs(final@NotNull Iterable<? extends ResourcePackInfoLike> packs) {
     if (this.packs.equals(packs)) return this;
 
-    return new ResourcePackRequestImpl(MonkeyBars.toUnmodifiableList(ResourcePackInfoLike::asResourcePackInfo, packs), this.cb, this.replace);
+    return new ResourcePackRequestImpl(
+      MonkeyBars.toUnmodifiableList(ResourcePackInfoLike::asResourcePackInfo, packs),
+      this.cb,
+      this.replace,
+      this.required,
+      this.prompt
+    );
   }
 
   @Override
@@ -68,7 +79,13 @@ final class ResourcePackRequestImpl implements ResourcePackRequest {
   public @NotNull ResourcePackRequest callback(final @NotNull ResourcePackCallback cb) {
     if (cb == this.cb) return this;
 
-    return new ResourcePackRequestImpl(this.packs, requireNonNull(cb, "cb"), this.replace);
+    return new ResourcePackRequestImpl(
+      this.packs,
+      requireNonNull(cb, "cb"),
+      this.replace,
+      this.required,
+      this.prompt
+    );
   }
 
   @Override
@@ -77,10 +94,20 @@ final class ResourcePackRequestImpl implements ResourcePackRequest {
   }
 
   @Override
+  public boolean required() {
+    return this.required;
+  }
+
+  @Override
+  public @Nullable Component prompt() {
+    return this.prompt;
+  }
+
+  @Override
   public @NotNull ResourcePackRequest replace(final boolean replace) {
     if (replace == this.replace) return this;
 
-    return new ResourcePackRequestImpl(this.packs, this.cb, replace);
+    return new ResourcePackRequestImpl(this.packs, this.cb, replace, this.required, this.prompt);
   }
 
   @Override
@@ -90,12 +117,14 @@ final class ResourcePackRequestImpl implements ResourcePackRequest {
     final ResourcePackRequestImpl that = (ResourcePackRequestImpl) other;
     return this.replace == that.replace
       && Objects.equals(this.packs, that.packs)
-      && Objects.equals(this.cb, that.cb);
+      && Objects.equals(this.cb, that.cb)
+      && this.required == that.required
+      && Objects.equals(this.prompt, that.prompt);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.packs, this.cb, this.replace);
+    return Objects.hash(this.packs, this.cb, this.replace, this.required, this.prompt);
   }
 
   @Override
@@ -108,7 +137,9 @@ final class ResourcePackRequestImpl implements ResourcePackRequest {
     return Stream.of(
       ExaminableProperty.of("packs", this.packs),
       ExaminableProperty.of("callback", this.cb),
-      ExaminableProperty.of("replace", this.replace)
+      ExaminableProperty.of("replace", this.replace),
+      ExaminableProperty.of("required", this.required),
+      ExaminableProperty.of("prompt", this.prompt)
     );
   }
 
@@ -116,6 +147,8 @@ final class ResourcePackRequestImpl implements ResourcePackRequest {
     private List<ResourcePackInfo> packs;
     private ResourcePackCallback cb;
     private boolean replace;
+    private boolean required;
+    private @Nullable Component prompt;
 
     BuilderImpl() {
       this.packs = Collections.emptyList();
@@ -127,11 +160,8 @@ final class ResourcePackRequestImpl implements ResourcePackRequest {
       this.packs = req.packs();
       this.cb = req.callback();
       this.replace = req.replace();
-    }
-
-    @Override
-    public @NotNull ResourcePackRequest build() {
-      return new ResourcePackRequestImpl(this.packs, this.cb, this.replace);
+      this.required = req.required();
+      this.prompt = req.prompt();
     }
 
     @Override
@@ -156,6 +186,23 @@ final class ResourcePackRequestImpl implements ResourcePackRequest {
     public @NotNull Builder replace(final boolean replace) {
       this.replace = replace;
       return this;
+    }
+
+    @Override
+    public @NotNull Builder required(final boolean required) {
+      this.required = required;
+      return this;
+    }
+
+    @Override
+    public @NotNull Builder prompt(final @Nullable Component prompt) {
+      this.prompt = prompt;
+      return this;
+    }
+
+    @Override
+    public @NotNull ResourcePackRequest build() {
+      return new ResourcePackRequestImpl(this.packs, this.cb, this.replace, this.required, this.prompt);
     }
   }
 }
