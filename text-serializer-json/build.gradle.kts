@@ -40,6 +40,7 @@ configurations.register("jmh") {
 
 dependencies {
   api(projects.adventureApi)
+  api(libs.featureFlag)
   annotationProcessor(projects.adventureAnnotationProcessors)
 
   testFixturesApi(libs.junit.api)

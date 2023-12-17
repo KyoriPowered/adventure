@@ -23,9 +23,8 @@
  */
 package net.kyori.adventure.text.serializer.json;
 
-import net.kyori.adventure.key.Key;
-import net.kyori.adventure.util.flag.FeatureFlag;
-import net.kyori.adventure.util.flag.FeatureSet;
+import net.kyori.featureflag.FeatureFlag;
+import net.kyori.featureflag.FeatureFlagConfig;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -83,7 +82,7 @@ public final class JSONFlags {
   /**
    * Versioned by world data version.
    */
-  private static final FeatureSet.Versioned BY_PROTOCOL_VERSION = FeatureSet.versionedBuilder()
+  private static final FeatureFlagConfig.Versioned BY_DATA_VERSION = FeatureFlagConfig.versionedFeatureFlagConfig()
     .version(
       VERSION_INITIAL,
       b -> b.value(EMIT_LEGACY_HOVER_EVENT, true)
@@ -109,15 +108,14 @@ public final class JSONFlags {
    *
    * <p>This may provide a less efficient representation of components, but will not result in information being discarded.</p>
    */
-  private static final FeatureSet MOST_COMPATIBLE = FeatureSet.builder()
+  private static final FeatureFlagConfig MOST_COMPATIBLE = FeatureFlagConfig.featureFlagConfig()
     .value(EMIT_LEGACY_HOVER_EVENT, true)
     .value(EMIT_HOVER_SHOW_ENTITY_ID_AS_INT_ARRAY, false)
     .value(EMIT_COMPACT_TEXT_COMPONENT, false)
     .build();
 
-  @SuppressWarnings("PatternValidation")
-  private static Key key(final String value) {
-    return Key.key("adventure", "json/" + value);
+  private static String key(final String value) {
+    return "adventure:json/" + value;
   }
 
   /**
@@ -126,8 +124,8 @@ public final class JSONFlags {
    * @return the versioned flag set
    * @since 4.15.0
    */
-  public static FeatureSet.@NotNull Versioned byProtocolVersion() {
-    return BY_PROTOCOL_VERSION;
+  public static FeatureFlagConfig.@NotNull Versioned byDataVersion() {
+    return BY_DATA_VERSION;
   }
 
   /**
@@ -138,7 +136,7 @@ public final class JSONFlags {
    * @return the most widely compatible feature flag set
    * @since 4.15.0
    */
-  public static @NotNull FeatureSet compatibility() {
+  public static @NotNull FeatureFlagConfig compatibility() {
     return MOST_COMPATIBLE;
   }
 }

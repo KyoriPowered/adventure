@@ -38,7 +38,7 @@ import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.json.JSONFlags;
-import net.kyori.adventure.util.flag.FeatureSet;
+import net.kyori.featureflag.FeatureFlagConfig;
 import org.jetbrains.annotations.Nullable;
 
 final class SerializerFactory implements TypeAdapterFactory {
@@ -57,10 +57,10 @@ final class SerializerFactory implements TypeAdapterFactory {
   static final Class<UUID> UUID_TYPE = UUID.class;
   static final Class<TranslationArgument> TRANSLATION_ARGUMENT_TYPE = TranslationArgument.class;
 
-  private final FeatureSet features;
+  private final FeatureFlagConfig features;
   private final net.kyori.adventure.text.serializer.json.LegacyHoverEventSerializer legacyHoverSerializer;
 
-  SerializerFactory(final FeatureSet features, final net.kyori.adventure.text.serializer.json.@Nullable LegacyHoverEventSerializer legacyHoverSerializer) {
+  SerializerFactory(final FeatureFlagConfig features, final net.kyori.adventure.text.serializer.json.@Nullable LegacyHoverEventSerializer legacyHoverSerializer) {
     this.features = features;
     this.legacyHoverSerializer = legacyHoverSerializer;
   }

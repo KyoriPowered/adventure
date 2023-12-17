@@ -32,7 +32,7 @@ import java.util.function.UnaryOperator;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.json.JSONFlags;
 import net.kyori.adventure.util.Services;
-import net.kyori.adventure.util.flag.FeatureSet;
+import net.kyori.featureflag.FeatureFlagConfig;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -50,18 +50,18 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
   static final class Instances {
     static final GsonComponentSerializer INSTANCE = SERVICE
       .map(Provider::gson)
-      .orElseGet(() -> new GsonComponentSerializerImpl(JSONFlags.byProtocolVersion(), null));
+      .orElseGet(() -> new GsonComponentSerializerImpl(JSONFlags.byDataVersion(), null));
     static final GsonComponentSerializer LEGACY_INSTANCE = SERVICE
       .map(Provider::gsonLegacy)
-      .orElseGet(() -> new GsonComponentSerializerImpl(JSONFlags.byProtocolVersion().at(712 /* just before 1.16 */), null));
+      .orElseGet(() -> new GsonComponentSerializerImpl(JSONFlags.byDataVersion().at(2525 /* just before 1.16 */), null));
   }
 
   private final Gson serializer;
   private final UnaryOperator<GsonBuilder> populator;
   private final net.kyori.adventure.text.serializer.json.@Nullable LegacyHoverEventSerializer legacyHoverSerializer;
-  private final FeatureSet flags;
+  private final FeatureFlagConfig flags;
 
-  GsonComponentSerializerImpl(final FeatureSet flags, final net.kyori.adventure.text.serializer.json.@Nullable LegacyHoverEventSerializer legacyHoverSerializer) {
+  GsonComponentSerializerImpl(final FeatureFlagConfig flags, final net.kyori.adventure.text.serializer.json.@Nullable LegacyHoverEventSerializer legacyHoverSerializer) {
     this.flags = flags;
     this.legacyHoverSerializer = legacyHoverSerializer;
     this.populator = builder -> {
@@ -122,7 +122,7 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
   }
 
   static final class BuilderImpl implements Builder {
-    private FeatureSet flags = JSONFlags.byProtocolVersion(); // latest
+    private FeatureFlagConfig flags = JSONFlags.byDataVersion(); // latest
     private net.kyori.adventure.text.serializer.json.@Nullable LegacyHoverEventSerializer legacyHoverSerializer;
 
     BuilderImpl() {
@@ -136,14 +136,14 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
     }
 
     @Override
-    public @NotNull Builder features(final @NotNull FeatureSet flags) {
+    public @NotNull Builder features(final @NotNull FeatureFlagConfig flags) {
       this.flags = requireNonNull(flags, "flags");
       return this;
     }
 
     @Override
-    public @NotNull Builder editFeatures(final @NotNull Consumer<FeatureSet.Builder> flagEditor) {
-      final FeatureSet.Builder builder = FeatureSet.builder()
+    public @NotNull Builder editFeatures(final @NotNull Consumer<FeatureFlagConfig.Builder> flagEditor) {
+      final FeatureFlagConfig.Builder builder = FeatureFlagConfig.featureFlagConfig()
         .values(this.flags);
       requireNonNull(flagEditor, "flagEditor").accept(builder);
       this.flags = builder.build();

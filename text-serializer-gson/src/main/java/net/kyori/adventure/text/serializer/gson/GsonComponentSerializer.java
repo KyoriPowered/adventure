@@ -34,7 +34,7 @@ import net.kyori.adventure.text.serializer.json.JSONComponentSerializer;
 import net.kyori.adventure.text.serializer.json.JSONFlags;
 import net.kyori.adventure.util.Buildable;
 import net.kyori.adventure.util.PlatformAPI;
-import net.kyori.adventure.util.flag.FeatureSet;
+import net.kyori.featureflag.FeatureFlagConfig;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -125,10 +125,10 @@ public interface GsonComponentSerializer extends JSONComponentSerializer, Builda
    */
   interface Builder extends AbstractBuilder<GsonComponentSerializer>, Buildable.Builder<GsonComponentSerializer>, JSONComponentSerializer.Builder {
     @Override
-    @NotNull Builder features(final @NotNull FeatureSet flags);
+    @NotNull Builder features(final @NotNull FeatureFlagConfig flags);
 
     @Override
-    @NotNull Builder editFeatures(final @NotNull Consumer<FeatureSet.Builder> flagEditor);
+    @NotNull Builder editFeatures(final @NotNull Consumer<FeatureFlagConfig.Builder> flagEditor);
 
     /**
      * Sets that the serializer should downsample hex colors to named colors.

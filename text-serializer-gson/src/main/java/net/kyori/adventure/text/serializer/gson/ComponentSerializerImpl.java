@@ -53,7 +53,7 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.TranslationArgument;
 import net.kyori.adventure.text.serializer.json.JSONFlags;
-import net.kyori.adventure.util.flag.FeatureSet;
+import net.kyori.featureflag.FeatureFlagConfig;
 import org.jetbrains.annotations.Nullable;
 
 import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.EXTRA;
@@ -78,7 +78,7 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
   static final Type COMPONENT_LIST_TYPE = new TypeToken<List<Component>>() {}.getType();
   static final Type TRANSLATABLE_ARGUMENT_LIST_TYPE = new TypeToken<List<TranslationArgument>>() {}.getType();
 
-  static TypeAdapter<Component> create(final FeatureSet features, final Gson gson) {
+  static TypeAdapter<Component> create(final FeatureFlagConfig features, final Gson gson) {
     return new ComponentSerializerImpl(features.value(JSONFlags.EMIT_COMPACT_TEXT_COMPONENT), gson).nullSafe();
   }
 

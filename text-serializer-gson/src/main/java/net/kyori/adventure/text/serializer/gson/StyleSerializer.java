@@ -45,7 +45,7 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.json.JSONFlags;
 import net.kyori.adventure.util.Codec;
-import net.kyori.adventure.util.flag.FeatureSet;
+import net.kyori.featureflag.FeatureFlagConfig;
 import org.jetbrains.annotations.Nullable;
 
 import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.CLICK_EVENT;
@@ -82,7 +82,7 @@ final class StyleSerializer extends TypeAdapter<Style> {
     }
   }
 
-  static TypeAdapter<Style> create(final net.kyori.adventure.text.serializer.json.@Nullable LegacyHoverEventSerializer legacyHover, final FeatureSet features, final Gson gson) {
+  static TypeAdapter<Style> create(final net.kyori.adventure.text.serializer.json.@Nullable LegacyHoverEventSerializer legacyHover, final FeatureFlagConfig features, final Gson gson) {
     return new StyleSerializer(
       legacyHover,
       features.value(JSONFlags.EMIT_LEGACY_HOVER_EVENT),

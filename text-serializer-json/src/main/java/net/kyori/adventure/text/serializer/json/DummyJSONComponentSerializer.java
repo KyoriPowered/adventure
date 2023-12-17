@@ -25,7 +25,7 @@ package net.kyori.adventure.text.serializer.json;
 
 import java.util.function.Consumer;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.util.flag.FeatureSet;
+import net.kyori.featureflag.FeatureFlagConfig;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -50,16 +50,17 @@ final class DummyJSONComponentSerializer implements JSONComponentSerializer {
   // A no-op builder that just returns the unsupported instance.
   static final class BuilderImpl implements Builder {
     @Override
-    public @NotNull Builder features(final @NotNull FeatureSet flags) {
+    public @NotNull Builder features(final @NotNull FeatureFlagConfig flags) {
       return this;
     }
 
     @Override
-    public @NotNull Builder editFeatures(final @NotNull Consumer<FeatureSet.Builder> flagEditor) {
+    public @NotNull Builder editFeatures(final @NotNull Consumer<FeatureFlagConfig.Builder> flagEditor) {
       return this;
     }
 
     @Override
+    @Deprecated
     public @NotNull Builder downsampleColors() {
       return this;
     }
@@ -70,6 +71,7 @@ final class DummyJSONComponentSerializer implements JSONComponentSerializer {
     }
 
     @Override
+    @Deprecated
     public @NotNull Builder emitLegacyHoverEvent() {
       return this;
     }
