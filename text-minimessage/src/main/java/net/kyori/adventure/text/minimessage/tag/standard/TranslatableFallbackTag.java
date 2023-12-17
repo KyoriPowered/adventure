@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.text.TranslationArgument;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.internal.serializer.Emitable;
@@ -81,8 +82,8 @@ final class TranslatableFallbackTag {
       emit.tag(LANG_OR);
       emit.argument(tr.key());
       emit.argument(tr.fallback());
-      for (final Component with : tr.args()) {
-        emit.argument(with);
+      for (final TranslationArgument with : tr.arguments()) {
+        emit.argument(with.asComponent());
       }
     };
   }

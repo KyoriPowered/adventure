@@ -107,53 +107,53 @@ class TranslatableComponentTest extends AbstractComponentTest<TranslatableCompon
   void testArgs_array() {
     final TranslatableComponent c0 = Component.translatable("multiplayer.player.left");
     final Component a0 = Component.text("foo");
-    final TranslatableComponent c1 = c0.args(a0);
-    assertThat(c0.args()).isEmpty();
-    assertThat(c1.args()).containsExactly(a0).inOrder();
+    final TranslatableComponent c1 = c0.arguments(a0);
+    assertThat(c0.arguments()).isEmpty();
+    assertThat(c1.arguments()).containsExactly(TranslationArgument.component(a0)).inOrder();
   }
 
   @Test
   void testArgs_list() {
     final TranslatableComponent c0 = Component.translatable("multiplayer.player.left");
     final Component a0 = Component.text("foo");
-    final TranslatableComponent c1 = c0.args(Collections.singletonList(a0));
-    assertThat(c0.args()).isEmpty();
-    assertThat(c1.args()).containsExactly(a0).inOrder();
+    final TranslatableComponent c1 = c0.arguments(Collections.singletonList(a0));
+    assertThat(c0.arguments()).isEmpty();
+    assertThat(c1.arguments()).containsExactly(TranslationArgument.component(a0)).inOrder();
   }
 
   @Test
   void testBuilderArgs_singleBuilder() {
     final TranslatableComponent c0 = Component.translatable()
       .key("multiplayer.player.left")
-      .args(Component.text().content("kashike"))
+      .arguments(Component.text().content("kashike"))
       .build();
-    assertThat(c0.args()).hasSize(1);
-    assertThat(c0.args()).containsExactly(Component.text("kashike")).inOrder();
+    assertThat(c0.arguments()).hasSize(1);
+    assertThat(c0.arguments()).containsExactly(TranslationArgument.component(Component.text("kashike"))).inOrder();
   }
 
   @Test
   void testBuilderArgs_singleComponent() {
     final TranslatableComponent c0 = Component.translatable()
       .key("multiplayer.player.left")
-      .args(Component.text("kashike"))
+      .arguments(Component.text("kashike"))
       .build();
-    assertThat(c0.args()).hasSize(1);
-    assertThat(c0.args()).containsExactly(Component.text("kashike")).inOrder();
+    assertThat(c0.arguments()).hasSize(1);
+    assertThat(c0.arguments()).containsExactly(TranslationArgument.component(Component.text("kashike"))).inOrder();
   }
 
   @Test
   void testBuilderArgs_multiple() {
     final TranslatableComponent c0 = Component.translatable()
       .key("multiplayer.player.left")
-      .args(
+      .arguments(
         Component.text().content("kashike"),
         Component.text().content("lucko")
       )
       .build();
-    assertThat(c0.args()).hasSize(2);
-    assertThat(c0.args()).containsExactly(
-      Component.text("kashike"),
-      Component.text("lucko")
+    assertThat(c0.arguments()).hasSize(2);
+    assertThat(c0.arguments()).containsExactly(
+      TranslationArgument.component(Component.text("kashike")),
+      TranslationArgument.component(Component.text("lucko"))
     ).inOrder();
   }
 
@@ -162,15 +162,46 @@ class TranslatableComponentTest extends AbstractComponentTest<TranslatableCompon
   void testBuilderArgs_multipleWithEmpty() {
     final TranslatableComponent c0 = Component.translatable()
       .key("multiplayer.player.joined")
-      .args(
+      .arguments(
         Component.empty(),
         Component.text().content("kashike")
       )
       .build();
-    assertThat(c0.args()).hasSize(2);
-    assertThat(c0.args()).containsExactly(
-      Component.empty(),
-      Component.text("kashike")
+    assertThat(c0.arguments()).hasSize(2);
+    assertThat(c0.arguments()).containsExactly(
+      TranslationArgument.component(Component.empty()),
+      TranslationArgument.component(Component.text("kashike"))
     ).inOrder();
   }
+
+  @Test
+  void testArgs_nonComponent() {
+    final TranslatableComponent c0 = Component.translatable(
+      "some.key",
+      TranslationArgument.numeric(4),
+      TranslationArgument.bool(true)
+    );
+    assertThat(c0.arguments()).hasSize(2);
+    assertThat(c0.arguments()).containsExactly(
+      TranslationArgument.numeric(4),
+      TranslationArgument.bool(true)
+    ).inOrder();
+  }
+
+  @Test
+  void testBuilderArgs_nonComponent() {
+    final TranslatableComponent c0 = Component.translatable()
+      .key("some.key")
+      .arguments(
+        TranslationArgument.numeric(4.0f),
+        TranslationArgument.bool(true)
+      )
+      .build();
+    assertThat(c0.arguments()).hasSize(2);
+    assertThat(c0.arguments()).containsExactly(
+      TranslationArgument.numeric(4.0f),
+      TranslationArgument.bool(true)
+    ).inOrder();
+  }
+
 }

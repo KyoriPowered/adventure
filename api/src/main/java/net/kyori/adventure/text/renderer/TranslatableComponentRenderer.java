@@ -42,6 +42,7 @@ import net.kyori.adventure.text.SelectorComponent;
 import net.kyori.adventure.text.StorageNBTComponent;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.text.TranslationArgument;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.translation.Translator;
@@ -184,17 +185,20 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
 
       final TranslatableComponent.Builder builder = Component.translatable()
         .key(component.key()).fallback(component.fallback());
-      if (!component.args().isEmpty()) {
-        final List<Component> args = new ArrayList<>(component.args());
+      if (!component.arguments().isEmpty()) {
+        final List<TranslationArgument> args = new ArrayList<>(component.arguments());
         for (int i = 0, size = args.size(); i < size; i++) {
-          args.set(i, this.render(args.get(i), context));
+          final TranslationArgument arg = args.get(i);
+          if (arg.value() instanceof Component) {
+            args.set(i, TranslationArgument.component(this.render(((Component) arg.value()), context)));
+          }
         }
-        builder.args(args);
+        builder.arguments(args);
       }
       return this.mergeStyleAndOptionallyDeepRender(component, builder, context);
     }
 
-    final List<Component> args = component.args();
+    final List<TranslationArgument> args = component.arguments();
 
     final TextComponent.Builder builder = Component.text();
     this.mergeStyle(component, builder, context);
@@ -213,7 +217,12 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
       final int end = it.getRunLimit();
       final Integer index = (Integer) it.getAttribute(MessageFormat.Field.ARGUMENT);
       if (index != null) {
-        builder.append(this.render(args.get(index), context));
+        final TranslationArgument arg = args.get(index);
+        if (arg.value() instanceof Component) {
+          builder.append(this.render(arg.asComponent(), context));
+        } else {
+          builder.append(arg.asComponent()); // todo: number rendering?
+        }
       } else {
         builder.append(Component.text(sb.substring(it.getIndex(), end)));
       }

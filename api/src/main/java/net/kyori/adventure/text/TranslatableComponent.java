@@ -97,28 +97,76 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    *
    * @return the unmodifiable list of translation arguments
    * @since 4.0.0
+   * @deprecated for removal since 4.15.0, use {@link #arguments()} instead.
    */
+  @Deprecated
   @NotNull List<Component> args();
 
   /**
    * Sets the translation arguments for this component.
    *
+   * <p>Non-{@link Component} arguments can be wrapped in {@link TranslationArgument}, or represented with a {@link TranslationArgumentLike}.</p>
+   *
    * @param args the translation arguments
    * @return a translatable component
+   * @see TranslationArgument
    * @since 4.0.0
+   * @deprecated for removal since 4.15.0, use {@link #arguments(ComponentLike...)} instead
    */
+  @Deprecated
   @Contract(pure = true)
-  @NotNull TranslatableComponent args(final @NotNull ComponentLike@NotNull... args);
+  default @NotNull TranslatableComponent args(final @NotNull ComponentLike@NotNull... args) {
+    return this.arguments(args);
+  }
 
   /**
    * Sets the translation arguments for this component.
    *
+   * <p>Non-{@link Component} arguments can be wrapped in {@link TranslationArgument}, or represented with a {@link TranslationArgumentLike}.</p>
+   *
    * @param args the translation arguments
    * @return a translatable component
    * @since 4.0.0
+   * @deprecated for removal since 4.15.0, use {@link #arguments(List)} instead
+   */
+  @Deprecated
+  @Contract(pure = true)
+  default @NotNull TranslatableComponent args(final @NotNull List<? extends ComponentLike> args) {
+    return this.arguments(args);
+  }
+
+  /**
+   * Gets the unmodifiable list of translation arguments.
+   *
+   * @return the unmodifiable list of translation arguments
+   * @since 4.0.0
+   */
+  @NotNull List<TranslationArgument> arguments();
+
+  /**
+   * Sets the translation arguments for this component.
+   *
+   * <p>Non-{@link Component} arguments can be wrapped in {@link TranslationArgument}, or represented with a {@link TranslationArgumentLike}.</p>
+   *
+   * @param args the translation arguments
+   * @return a translatable component
+   * @see TranslationArgument
+   * @since 4.15.0
    */
   @Contract(pure = true)
-  @NotNull TranslatableComponent args(final @NotNull List<? extends ComponentLike> args);
+  @NotNull TranslatableComponent arguments(final @NotNull ComponentLike@NotNull... args);
+
+  /**
+   * Sets the translation arguments for this component.
+   *
+   * <p>Non-{@link Component} arguments can be wrapped in {@link TranslationArgument}, or represented with a {@link TranslationArgumentLike}.</p>
+   *
+   * @param args the translation arguments
+   * @return a translatable component
+   * @since 4.15.0
+   */
+  @Contract(pure = true)
+  @NotNull TranslatableComponent arguments(final @NotNull List<? extends ComponentLike> args);
 
   /**
    * Gets the translation fallback text for this component.
@@ -149,7 +197,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
     return Stream.concat(
       Stream.of(
         ExaminableProperty.of("key", this.key()),
-        ExaminableProperty.of("args", this.args()),
+        ExaminableProperty.of("arguments", this.arguments()),
         ExaminableProperty.of("fallback", this.fallback())
       ),
       BuildableComponent.super.examinableProperties()
@@ -190,9 +238,13 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      * @param arg the translation arg
      * @return this builder
      * @since 4.0.0
+     * @deprecated for removal since 4.15.0, use {@link #arguments(ComponentLike...)} instead
      */
+    @Deprecated
     @Contract("_ -> this")
-    @NotNull Builder args(final @NotNull ComponentBuilder<?, ?> arg);
+    default @NotNull Builder args(final @NotNull ComponentBuilder<?, ?> arg) {
+      return this.arguments(arg);
+    }
 
     /**
      * Sets the translation args.
@@ -200,10 +252,14 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      * @param args the translation args
      * @return this builder
      * @since 4.0.0
+     * @deprecated for removal since 4.15.0, use {@link #arguments(ComponentLike...)} instead
      */
+    @Deprecated
     @Contract("_ -> this")
     @SuppressWarnings("checkstyle:GenericWhitespace")
-    @NotNull Builder args(final @NotNull ComponentBuilder<?, ?>@NotNull... args);
+    default @NotNull Builder args(final @NotNull ComponentBuilder<?, ?>@NotNull... args) {
+      return this.arguments(args);
+    }
 
     /**
      * Sets the translation args.
@@ -211,29 +267,69 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      * @param arg the translation arg
      * @return this builder
      * @since 4.0.0
+     * @deprecated for removal since 4.15.0, use {@link #arguments(ComponentLike...)} instead
      */
+    @Deprecated
     @Contract("_ -> this")
-    @NotNull Builder args(final @NotNull Component arg);
+    default @NotNull Builder args(final @NotNull Component arg) {
+      return this.arguments(arg);
+    }
 
     /**
      * Sets the translation args.
      *
-     * @param args the translation args
-     * @return this builder
-     * @since 4.0.0
-     */
-    @Contract("_ -> this")
-    @NotNull Builder args(final @NotNull ComponentLike@NotNull... args);
-
-    /**
-     * Sets the translation args.
+     * <p>Non-{@link Component} arguments can be wrapped in {@link TranslationArgument}, or represented with a {@link TranslationArgumentLike}.</p>
      *
      * @param args the translation args
      * @return this builder
      * @since 4.0.0
+     * @deprecated for removal since 4.15.0, use {@link #arguments(ComponentLike...)} instead
+     */
+    @Deprecated
+    @Contract("_ -> this")
+    default @NotNull Builder args(final @NotNull ComponentLike@NotNull... args) {
+      return this.arguments(args);
+    }
+
+    /**
+     * Sets the translation args.
+     *
+     * <p>Non-{@link Component} arguments can be wrapped in {@link TranslationArgument}, or represented with a {@link TranslationArgumentLike}.</p>
+     *
+     * @param args the translation args
+     * @return this builder
+     * @since 4.0.0
+     * @deprecated for removal since 4.15.0, use {@link #arguments(List)} instead
+     */
+    @Deprecated
+    @Contract("_ -> this")
+    default @NotNull Builder args(final @NotNull List<? extends ComponentLike> args) {
+      return this.arguments(args);
+    }
+
+    /**
+     * Sets the translation args.
+     *
+     * <p>Non-{@link Component} arguments can be wrapped in {@link TranslationArgument}, or represented with a {@link TranslationArgumentLike}.</p>
+     *
+     * @param args the translation args
+     * @return this builder
+     * @since 4.15.0
      */
     @Contract("_ -> this")
-    @NotNull Builder args(final @NotNull List<? extends ComponentLike> args);
+    @NotNull Builder arguments(final @NotNull ComponentLike@NotNull... args);
+
+    /**
+     * Sets the translation args.
+     *
+     * <p>Non-{@link Component} arguments can be wrapped in {@link TranslationArgument}, or represented with a {@link TranslationArgumentLike}.</p>
+     *
+     * @param args the translation args
+     * @return this builder
+     * @since 4.15.0
+     */
+    @Contract("_ -> this")
+    @NotNull Builder arguments(final @NotNull List<? extends ComponentLike> args);
 
     /**
      * Sets the translation fallback text.

@@ -49,10 +49,10 @@ public interface ComponentIteratorType {
   ComponentIteratorType DEPTH_FIRST = (component, deque, flags) -> {
     if (flags.contains(ComponentIteratorFlag.INCLUDE_TRANSLATABLE_COMPONENT_ARGUMENTS) && component instanceof TranslatableComponent) {
       final TranslatableComponent translatable = (TranslatableComponent) component;
-      final List<Component> args = translatable.args();
+      final List<? extends ComponentLike> args = translatable.arguments();
 
       for (int i = args.size() - 1; i >= 0; i--) {
-        deque.addFirst(args.get(i));
+        deque.addFirst(args.get(i).asComponent());
       }
     }
 
@@ -79,7 +79,9 @@ public interface ComponentIteratorType {
    */
   ComponentIteratorType BREADTH_FIRST = (component, deque, flags) -> {
     if (flags.contains(ComponentIteratorFlag.INCLUDE_TRANSLATABLE_COMPONENT_ARGUMENTS) && component instanceof TranslatableComponent) {
-      deque.addAll(((TranslatableComponent) component).args());
+      for (final TranslationArgument argument : ((TranslatableComponent) component).arguments()) {
+        deque.add(argument.asComponent());
+      }
     }
 
     final HoverEvent<?> hoverEvent = component.hoverEvent();

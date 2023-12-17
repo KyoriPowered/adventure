@@ -52,7 +52,7 @@ class TranslatableFallbackTagTest extends AbstractTest {
     final Component translatable = Component.translatable()
       .key("some_key")
       .fallback("fallback")
-      .args(text(":arg' 1", NamedTextColor.RED), text("arg 2", NamedTextColor.BLUE))
+      .arguments(text(":arg' 1", NamedTextColor.RED), text("arg 2", NamedTextColor.BLUE))
       .build();
 
     this.assertSerializedEquals(expected, translatable);

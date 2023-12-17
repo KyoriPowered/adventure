@@ -123,7 +123,7 @@ class GlobalTranslatorTest {
       return (component.key().equals("otherDummy") && locale.equals(Locale.US))
         ? Component.text()
           .append(Component.text("Hello "))
-          .append(component.args().isEmpty() ? Component.text("{0}") : component.args().get(0))
+          .append(component.arguments().isEmpty() ? Component.text("{0}") : component.arguments().get(0))
           .append(Component.text("!"))
           .build()
         : null;

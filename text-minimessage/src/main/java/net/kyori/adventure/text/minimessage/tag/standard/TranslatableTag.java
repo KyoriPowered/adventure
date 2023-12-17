@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.text.TranslationArgument;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.internal.serializer.Emitable;
@@ -78,8 +79,8 @@ final class TranslatableTag {
     return emit -> {
       emit.tag(LANG);
       emit.argument(tr.key());
-      for (final Component with : tr.args()) {
-        emit.argument(with);
+      for (final TranslationArgument with : tr.arguments()) {
+        emit.argument(with.asComponent());
       }
     };
   }

@@ -112,7 +112,7 @@ class TranslationRegistryTest {
       RENDERER.render(
         Component.translatable()
           .key("cats")
-          .args(
+          .arguments(
             Component.text("kashike"),
             Component.text("lucko")
           )
@@ -153,7 +153,7 @@ class TranslationRegistryTest {
           .append(
             Component.translatable()
               .key("cats")
-              .args(
+              .arguments(
                 Component.text("kashike"),
                 Component.text("lucko")
               )
@@ -173,7 +173,7 @@ class TranslationRegistryTest {
   void testUnknownTranslatableWithKnownArgsAndChildren() {
     assertEquals(
       Component.translatable("some.unknown.key")
-        .args(
+        .arguments(
           Component.text("")
             .append(Component.text("kashike"))
             .append(Component.text(" and '"))
@@ -183,9 +183,9 @@ class TranslationRegistryTest {
         .append(Component.text("This is a test.")),
       RENDERER.render(
         Component.translatable("some.unknown.key")
-          .args(ImmutableList.of(
+          .arguments(ImmutableList.of(
             Component.translatable("cats")
-              .args(
+              .arguments(
                 Component.text("kashike"),
                 Component.text("lucko")
               )

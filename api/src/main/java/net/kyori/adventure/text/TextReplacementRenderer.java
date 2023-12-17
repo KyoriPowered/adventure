@@ -131,12 +131,12 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
         // otherwise, we haven't modified the component, so nothing to change
       }
     } else if (modified instanceof TranslatableComponent) { // get TranslatableComponent with() args
-      final List<Component> args = ((TranslatableComponent) modified).args();
-      List<Component> newArgs = null;
+      final List<TranslationArgument> args = ((TranslatableComponent) modified).arguments();
+      List<TranslationArgument> newArgs = null;
       for (int i = 0, size = args.size(); i < size; i++) {
-        final Component original = args.get(i);
-        final Component replaced = this.render(original, state);
-        if (replaced != component) {
+        final TranslationArgument original = args.get(i);
+        final TranslationArgument replaced = original.value() instanceof Component ? TranslationArgument.component(this.render((Component) original.value(), state)) : original;
+        if (replaced != original) {
           if (newArgs == null) {
             newArgs = new ArrayList<>(size);
             if (i > 0) {
@@ -149,7 +149,7 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
         }
       }
       if (newArgs != null) {
-        modified = ((TranslatableComponent) modified).args(newArgs);
+        modified = ((TranslatableComponent) modified).arguments(newArgs);
       }
     }
     // Only visit children if we're running
