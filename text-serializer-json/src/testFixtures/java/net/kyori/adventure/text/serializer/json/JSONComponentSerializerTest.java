@@ -88,15 +88,14 @@ final class JSONComponentSerializerTest extends SerializerTest {
   @SuppressWarnings("deprecation")
   void testFailOnInvalidHoverEvents() {
     assertThrows(JsonParseException.class, () -> {
-        deserialize(object(object -> {
-          object.addProperty(JSONComponentConstants.TEXT, "hello");
-          object.add(JSONComponentConstants.HOVER_EVENT, object(hover -> {
-            hover.addProperty(JSONComponentConstants.HOVER_EVENT_ACTION, "show_text");
-            hover.add(JSONComponentConstants.HOVER_EVENT_VALUE, new JsonArray());
-          }));
+      deserialize(object(object -> {
+        object.addProperty(JSONComponentConstants.TEXT, "hello");
+        object.add(JSONComponentConstants.HOVER_EVENT, object(hover -> {
+          hover.addProperty(JSONComponentConstants.HOVER_EVENT_ACTION, "show_text");
+          hover.add(JSONComponentConstants.HOVER_EVENT_VALUE, new JsonArray());
         }));
-      }
-    );
+      }));
+    });
   }
 
 }

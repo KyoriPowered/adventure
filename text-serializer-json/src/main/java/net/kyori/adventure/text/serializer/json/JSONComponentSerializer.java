@@ -28,7 +28,7 @@ import java.util.function.Supplier;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.PlatformAPI;
-import net.kyori.featureflag.FeatureFlagConfig;
+import net.kyori.option.OptionState;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -78,7 +78,7 @@ public interface JSONComponentSerializer extends ComponentSerializer<Component, 
      * @see JSONFlags
      * @since 4.15.0
      */
-    @NotNull Builder features(final @NotNull FeatureFlagConfig flags);
+    @NotNull Builder features(final @NotNull OptionState flags);
 
     /**
      * Edit the active set of feature flags.
@@ -88,7 +88,7 @@ public interface JSONComponentSerializer extends ComponentSerializer<Component, 
      * @see JSONFlags
      * @since  4.15.0
      */
-    @NotNull Builder editFeatures(final @NotNull Consumer<FeatureFlagConfig.Builder> flagEditor);
+    @NotNull Builder editFeatures(final @NotNull Consumer<OptionState.Builder> flagEditor);
 
     /**
      * Sets that the serializer should downsample hex colors to named colors.

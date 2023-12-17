@@ -32,7 +32,7 @@ import java.util.function.UnaryOperator;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.json.JSONFlags;
 import net.kyori.adventure.util.Services;
-import net.kyori.featureflag.FeatureFlagConfig;
+import net.kyori.option.OptionState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -59,9 +59,9 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
   private final Gson serializer;
   private final UnaryOperator<GsonBuilder> populator;
   private final net.kyori.adventure.text.serializer.json.@Nullable LegacyHoverEventSerializer legacyHoverSerializer;
-  private final FeatureFlagConfig flags;
+  private final OptionState flags;
 
-  GsonComponentSerializerImpl(final FeatureFlagConfig flags, final net.kyori.adventure.text.serializer.json.@Nullable LegacyHoverEventSerializer legacyHoverSerializer) {
+  GsonComponentSerializerImpl(final OptionState flags, final net.kyori.adventure.text.serializer.json.@Nullable LegacyHoverEventSerializer legacyHoverSerializer) {
     this.flags = flags;
     this.legacyHoverSerializer = legacyHoverSerializer;
     this.populator = builder -> {
@@ -122,7 +122,7 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
   }
 
   static final class BuilderImpl implements Builder {
-    private FeatureFlagConfig flags = JSONFlags.byDataVersion(); // latest
+    private OptionState flags = JSONFlags.byDataVersion(); // latest
     private net.kyori.adventure.text.serializer.json.@Nullable LegacyHoverEventSerializer legacyHoverSerializer;
 
     BuilderImpl() {
@@ -136,14 +136,14 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
     }
 
     @Override
-    public @NotNull Builder features(final @NotNull FeatureFlagConfig flags) {
+    public @NotNull Builder features(final @NotNull OptionState flags) {
       this.flags = requireNonNull(flags, "flags");
       return this;
     }
 
     @Override
-    public @NotNull Builder editFeatures(final @NotNull Consumer<FeatureFlagConfig.Builder> flagEditor) {
-      final FeatureFlagConfig.Builder builder = FeatureFlagConfig.featureFlagConfig()
+    public @NotNull Builder editFeatures(final @NotNull Consumer<OptionState.Builder> flagEditor) {
+      final OptionState.Builder builder = OptionState.optionState()
         .values(this.flags);
       requireNonNull(flagEditor, "flagEditor").accept(builder);
       this.flags = builder.build();

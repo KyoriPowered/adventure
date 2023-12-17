@@ -23,8 +23,8 @@
  */
 package net.kyori.adventure.text.serializer.json;
 
-import net.kyori.featureflag.FeatureFlag;
-import net.kyori.featureflag.FeatureFlagConfig;
+import net.kyori.option.Option;
+import net.kyori.option.OptionState;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -50,13 +50,13 @@ public final class JSONFlags {
    * @since 4.15.0
    * @sinceMinecraft 1.16
    */
-  public static final FeatureFlag<Boolean> EMIT_RGB = FeatureFlag.booleanFlag(key("emit/rgb"), true);
+  public static final Option<Boolean> EMIT_RGB = Option.booleanOption(key("emit/rgb"), true);
   /**
    * Control how hover event values should be emitted.
    *
    * @since 4.15.0
    */
-  public static final FeatureFlag<HoverEventValueMode> EMIT_HOVER_EVENT_TYPE = FeatureFlag.enumFlag(key("emit/hover_value_mode"), HoverEventValueMode.class, HoverEventValueMode.MODERN_ONLY);
+  public static final Option<HoverEventValueMode> EMIT_HOVER_EVENT_TYPE = Option.enumOption(key("emit/hover_value_mode"), HoverEventValueMode.class, HoverEventValueMode.MODERN_ONLY);
 
   /**
    * Whether to emit text components with no style and no children as plain text.
@@ -64,7 +64,7 @@ public final class JSONFlags {
    * @since 4.15.0
    * @sinceMinecraft 1.20.3
    */
-  public static final FeatureFlag<Boolean> EMIT_COMPACT_TEXT_COMPONENT = FeatureFlag.booleanFlag(key("emit/compact_text_component"), true);
+  public static final Option<Boolean> EMIT_COMPACT_TEXT_COMPONENT = Option.booleanOption(key("emit/compact_text_component"), true);
 
   /**
    * Whether to emit the hover event show entity action's entity UUID as an int array,
@@ -72,7 +72,7 @@ public final class JSONFlags {
    *
    * @since 4.15.0
    */
-  public static final FeatureFlag<Boolean> EMIT_HOVER_SHOW_ENTITY_ID_AS_INT_ARRAY = FeatureFlag.booleanFlag(key("emit/hover_show_entity_id_as_int_array"), true);
+  public static final Option<Boolean> EMIT_HOVER_SHOW_ENTITY_ID_AS_INT_ARRAY = Option.booleanOption(key("emit/hover_show_entity_id_as_int_array"), true);
 
   /**
    * Whether to be strict about accepting invalid hover/click events.
@@ -81,12 +81,12 @@ public final class JSONFlags {
    *
    * @since 4.15.0
    */
-  public static final FeatureFlag<Boolean> VALIDATE_STRICT_EVENTS = FeatureFlag.booleanFlag(key("validate/strict_events"), true);
+  public static final Option<Boolean> VALIDATE_STRICT_EVENTS = Option.booleanOption(key("validate/strict_events"), true);
 
   /**
    * Versioned by world data version.
    */
-  private static final FeatureFlagConfig.Versioned BY_DATA_VERSION = FeatureFlagConfig.versionedFeatureFlagConfig()
+  private static final OptionState.Versioned BY_DATA_VERSION = OptionState.versionedOptionState()
     .version(
       VERSION_INITIAL,
       b -> b.value(EMIT_HOVER_EVENT_TYPE, HoverEventValueMode.LEGACY_ONLY)
@@ -112,7 +112,7 @@ public final class JSONFlags {
    *
    * <p>This may provide a less efficient representation of components, but will not result in information being discarded.</p>
    */
-  private static final FeatureFlagConfig MOST_COMPATIBLE = FeatureFlagConfig.featureFlagConfig()
+  private static final OptionState MOST_COMPATIBLE = OptionState.optionState()
     .value(EMIT_HOVER_EVENT_TYPE, HoverEventValueMode.BOTH)
     .value(EMIT_HOVER_SHOW_ENTITY_ID_AS_INT_ARRAY, false)
     .value(EMIT_COMPACT_TEXT_COMPONENT, false)
@@ -129,7 +129,7 @@ public final class JSONFlags {
    * @return the versioned flag set
    * @since 4.15.0
    */
-  public static FeatureFlagConfig.@NotNull Versioned byDataVersion() {
+  public static OptionState.@NotNull Versioned byDataVersion() {
     return BY_DATA_VERSION;
   }
 
@@ -141,7 +141,7 @@ public final class JSONFlags {
    * @return the most widely compatible feature flag set
    * @since 4.15.0
    */
-  public static @NotNull FeatureFlagConfig compatibility() {
+  public static @NotNull OptionState compatibility() {
     return MOST_COMPATIBLE;
   }
 
