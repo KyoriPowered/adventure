@@ -131,6 +131,11 @@ public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike
   /**
    * Gets whether the resource packs in this request are required.
    *
+   * <p>Vanilla clients will disconnect themselves if their player
+   * rejects a required pack, but implementations will not necessarily
+   * perform any additional serverside validation. The {@link #callback()}
+   * can provide more information about the client's reaction.</p>
+   *
    * @return True if the resource pack is required,
    *     false otherwise
    * @since 4.15.0
@@ -199,6 +204,11 @@ public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike
 
     /**
      * Sets whether the resource pack is required or not.
+     *
+     * <p>Vanilla clients will disconnect themselves if their player
+     * rejects a required pack, but implementations will not necessarily
+     * perform any additional serverside validation. The {@link #callback()}
+     * can provide more information about the client's reaction.</p>
      *
      * @param required whether the resource pack is required or not
      * @return this builder
