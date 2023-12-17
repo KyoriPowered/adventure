@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -201,8 +202,18 @@ public interface ForwardingAudience extends Audience {
   }
 
   @Override
-  default void sendResourcePack(final @NotNull ResourcePackRequest request) {
-    for (final Audience audience : this.audiences()) audience.sendResourcePack(request);
+  default void sendResourcePacks(final @NotNull ResourcePackRequest request) {
+    for (final Audience audience : this.audiences()) audience.sendResourcePacks(request);
+  }
+
+  @Override
+  default void removeResourcePacks(final @NotNull UUID id, final @NotNull UUID @NotNull ... others) {
+    for (final Audience audience : this.audiences()) audience.removeResourcePacks(id, others);
+  }
+
+  @Override
+  default void clearResourcePacks() {
+    for (final Audience audience : this.audiences()) audience.clearResourcePacks();
   }
 
   /**
@@ -369,8 +380,18 @@ public interface ForwardingAudience extends Audience {
     }
 
     @Override
-    default void sendResourcePack(final @NotNull ResourcePackRequest request) {
-      this.audience().sendResourcePack(request);
+    default void sendResourcePacks(final @NotNull ResourcePackRequest request) {
+      this.audience().sendResourcePacks(request.callback(Audiences.unwrapCallback(this, this.audience(), request.callback())));
+    }
+
+    @Override
+    default void removeResourcePacks(final @NotNull UUID id, final @NotNull UUID @NotNull ... others) {
+      this.audience().removeResourcePacks(id, others);
+    }
+
+    @Override
+    default void clearResourcePacks() {
+      this.audience().clearResourcePacks();
     }
   }
 }

@@ -23,19 +23,9 @@
  */
 package net.kyori.adventure.resource;
 
-import org.jetbrains.annotations.NotNull;
+final class ResourcePackCallbacks {
+  private ResourcePackCallbacks() {
+  }
 
-/**
- * Something that can be represented as a {@link ResourcePackRequest}.
- *
- * @since 4.15.0
- */
-public interface ResourcePackRequestLike {
-  /**
-   * Get the pack request representation.
-   *
-   * @return the pack request representation of this object
-   * @since 4.15.0
-   */
-  @NotNull ResourcePackRequest asResourcePackRequest();
+  static final ResourcePackCallback NO_OP = (uuid, status, audience) -> {};
 }

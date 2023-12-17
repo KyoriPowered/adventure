@@ -23,19 +23,21 @@
  */
 package net.kyori.adventure.resource;
 
-import org.jetbrains.annotations.NotNull;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import org.junit.jupiter.api.Test;
 
-/**
- * Something that can be represented as a {@link ResourcePackRequest}.
- *
- * @since 4.15.0
- */
-public interface ResourcePackRequestLike {
-  /**
-   * Get the pack request representation.
-   *
-   * @return the pack request representation of this object
-   * @since 4.15.0
-   */
-  @NotNull ResourcePackRequest asResourcePackRequest();
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class ResourcePackInfoImplTest {
+  @Test
+  void testHashComputation() throws NoSuchAlgorithmException {
+    final MessageDigest md = MessageDigest.getInstance("SHA-1");
+    final byte[] digest = md.digest("hello world\n".getBytes(StandardCharsets.UTF_8));
+    assertEquals(
+      "22596363b3de40b06f981fb85d82312e8c0ed511",
+      ResourcePackInfoImpl.bytesToString(digest)
+    );
+  }
 }

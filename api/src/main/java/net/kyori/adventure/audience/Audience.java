@@ -24,7 +24,9 @@
 package net.kyori.adventure.audience;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collector;
@@ -36,6 +38,8 @@ import net.kyori.adventure.identity.Identified;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.pointer.Pointered;
+import net.kyori.adventure.resource.ResourcePackInfo;
+import net.kyori.adventure.resource.ResourcePackInfoLike;
 import net.kyori.adventure.resource.ResourcePackRequest;
 import net.kyori.adventure.resource.ResourcePackRequestLike;
 import net.kyori.adventure.sound.Sound;
@@ -708,24 +712,114 @@ public interface Audience extends Pointered {
   // ------------------------
 
   /**
-   * Sends a resource pack request to this audience.
+   * Sends a request to apply resource packs to this audience.
    *
-   * @param request the resource pack request
-   * @see ResourcePackRequest
+   * <p>Multiple resource packs are only supported since 1.20.3. On older versions, all requests behave as if {@link ResourcePackRequest#replace()} is set to {@code true}.</p>
+   *
+   * @param first the resource pack info
+   * @param others the other pack infos
+   * @see ResourcePackRequest#addingRequest(ResourcePackInfoLike, ResourcePackInfoLike...)
    * @since 4.15.0
    */
   @ForwardingAudienceOverrideNotRequired
-  default void sendResourcePack(final @NotNull ResourcePackRequestLike request) {
-    this.sendResourcePack(request.asResourcePackRequest());
+  default void sendResourcePacks(final @NotNull ResourcePackInfoLike first, final @NotNull ResourcePackInfoLike... others) {
+    this.sendResourcePacks(ResourcePackRequest.addingRequest(first, others));
   }
 
   /**
-   * Sends a resource pack request to this audience.
+   * Sends a request to apply resource packs to this audience.
+   *
+   * <p>Multiple resource packs are only supported since 1.20.3. On older versions, all requests behave as if {@link ResourcePackRequest#replace()} is set to {@code true}.</p>
    *
    * @param request the resource pack request
-   * @see ResourcePackRequest
+   * @see ResourcePackInfo
    * @since 4.15.0
    */
-  default void sendResourcePack(final @NotNull ResourcePackRequest request) {
+  @ForwardingAudienceOverrideNotRequired
+  default void sendResourcePacks(final @NotNull ResourcePackRequestLike request) {
+    this.sendResourcePacks(request.asResourcePackRequest());
+  }
+
+  /**
+   * Sends a request to apply resource packs to this audience.
+   *
+   * <p>Multiple resource packs are only supported since 1.20.3. On older versions, all requests behave as if {@link ResourcePackRequest#replace()} is set to {@code true}.</p>
+   *
+   * @param request the resource pack request
+   * @see ResourcePackInfo
+   * @since 4.15.0
+   */
+  default void sendResourcePacks(final @NotNull ResourcePackRequest request) {
+  }
+
+  /**
+   * Clear resource packs with the IDs used in the provided requests if they are present.
+   *
+   * @param request the request used to originally apply the packs
+   * @since 4.15.0
+   * @sinceMinecraft 1.20.3
+   */
+  @ForwardingAudienceOverrideNotRequired
+  default void removeResourcePacks(final @NotNull ResourcePackRequestLike request) {
+    this.removeResourcePacks(request.asResourcePackRequest());
+  }
+
+  /**
+   * Clear resource packs with the IDs used in the provided requests if they are present.
+   *
+   * @param request the request used to originally apply the packs
+   * @since 4.15.0
+   * @sinceMinecraft 1.20.3
+   */
+  @ForwardingAudienceOverrideNotRequired
+  default void removeResourcePacks(final @NotNull ResourcePackRequest request) {
+    final List<ResourcePackInfo> infos = request.packs();
+    if (infos.size() == 1) {
+      this.removeResourcePacks(infos.get(0).id());
+    } else if (infos.isEmpty()) {
+      return;
+    }
+
+    final UUID[] otherReqs = new UUID[infos.size() - 1];
+    for (int i = 0; i < otherReqs.length; i++) {
+      otherReqs[i] = infos.get(i + 1).id();
+    }
+    this.removeResourcePacks(infos.get(0).id(), otherReqs);
+  }
+
+  /**
+   * Clear resource packs with the IDs used in the provided requests if they are present.
+   *
+   * @param request the first request used to originally apply the pack
+   * @param others requests for other packs that should be removed
+   * @since 4.15.0
+   * @sinceMinecraft 1.20.3
+   */
+  @ForwardingAudienceOverrideNotRequired
+  default void removeResourcePacks(final @NotNull ResourcePackInfoLike request, final @NotNull ResourcePackInfoLike @NotNull... others) {
+    final UUID[] otherReqs = new UUID[others.length];
+    for (int i = 0; i < others.length; i++) {
+      otherReqs[i] = others[i].asResourcePackInfo().id();
+    }
+    this.removeResourcePacks(request.asResourcePackInfo().id(), otherReqs);
+  }
+
+  /**
+   * Clear resource packs with the provided ids if they are present.
+   *
+   * @param id the id
+   * @param others the ids of any additional resource packs
+   * @since 4.15.0
+   * @sinceMinecraft 1.20.3
+   */
+  default void removeResourcePacks(final @NotNull UUID id, final @NotNull UUID@NotNull... others) {
+  }
+
+  /**
+   * Clear all server-provided resource packs that have been sent to this user.
+   *
+   * @since 4.15.0
+   */
+  default void clearResourcePacks() {
   }
 }

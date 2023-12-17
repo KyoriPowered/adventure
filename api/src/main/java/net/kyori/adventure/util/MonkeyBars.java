@@ -29,7 +29,10 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 import org.jetbrains.annotations.NotNull;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * {@link Collection} related utilities.
@@ -74,5 +77,48 @@ public final class MonkeyBars {
     newList.addAll(oldList);
     newList.add(newElement);
     return Collections.unmodifiableList(newList);
+  }
+
+  /**
+   * Create a list based on a first element plus array of additional elements.
+   *
+   * <p>All elements must be non-null before and after mapping.</p>
+   *
+   * @param mapper a mapper to convert objects
+   * @param first the first element
+   * @param others any other elements
+   * @param <I> the input type
+   * @param <O> the output type
+   * @return an unmodifiable list based on the provided elements
+   * @since 4.15.0
+   */
+  @SafeVarargs
+  public static <I, O> @NotNull List<O> nonEmptyArrayToList(final @NotNull Function<I, O> mapper, final @NotNull I first, final @NotNull I@NotNull... others) {
+    final List<O> ret = new ArrayList<>(others.length + 1);
+    ret.add(mapper.apply(first));
+    for (final I other : others) {
+      ret.add(requireNonNull(mapper.apply(requireNonNull(other, "source[?]")), "mapper(source[?])"));
+    }
+    return Collections.unmodifiableList(ret);
+  }
+
+  /**
+   * Create a list eagerly mapping the source elements through the {@code mapper function}.
+   *
+   * <p>All elements must be non-null before and after mapping.</p>
+   *
+   * @param <I>    the input type
+   * @param <O>    the output type
+   * @param mapper element mapper
+   * @param source input elements
+   * @return a mapped list
+   * @since 4.15.0
+   */
+  public static <I, O> @NotNull List<O> toUnmodifiableList(final @NotNull Function<I, O> mapper, final @NotNull Iterable<? extends I> source) {
+    final ArrayList<O> ret = source instanceof Collection<?> ? new ArrayList<>(((Collection<?>) source).size()) : new ArrayList<>();
+    for (final I el : source) {
+      ret.add(requireNonNull(mapper.apply(requireNonNull(el, "source[?]")), "mapper(source[?])"));
+    }
+    return Collections.unmodifiableList(ret);
   }
 }

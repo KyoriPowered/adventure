@@ -23,9 +23,7 @@
  */
 package net.kyori.adventure.resource;
 
-import java.net.URI;
-import java.util.UUID;
-import net.kyori.adventure.audience.Audience;
+import java.util.List;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.examination.Examinable;
@@ -33,46 +31,32 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import static java.util.Objects.requireNonNull;
+
 /**
- * Represents a resource pack request that can be sent to players.
+ * A request to apply one or more resource packs to a client.
  *
- * @see Audience#sendResourcePack(ResourcePackRequest)
+ * <p>Multiple packs are only supported since Minecraft 1.20.3.</p>
+ *
  * @since 4.15.0
  */
 public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike {
   /**
-   * Creates a resource pack request.
+   * Create a basic request to apply the provided resource packs.
    *
-   * @param id the id
-   * @param uri the uri
-   * @param hash the sha-1 hash
-   * @param required whether the resource pack is required or not
-   * @return the resource pack request
+   * @param first the first pack
+   * @param others the other packs to apply
+   * @return the created request
    * @since 4.15.0
    */
-  static @NotNull ResourcePackRequest resourcePackRequest(final @NotNull UUID id, final @NotNull URI uri, final @NotNull String hash, final boolean required) {
-    return resourcePackRequest(id, uri, hash, required, null);
+  static @NotNull ResourcePackRequest addingRequest(final @NotNull ResourcePackInfoLike first, final @NotNull ResourcePackInfoLike@NotNull... others) {
+    return ResourcePackRequest.resourcePackRequest().packs(first, others).replace(false).build();
   }
 
   /**
-   * Creates a resource pack request.
+   * Create a builder for a resource pack request.
    *
-   * @param id the id
-   * @param uri the uri
-   * @param hash the sha-1 hash
-   * @param required whether the resource pack is required or not
-   * @param prompt the prompt
-   * @return the resource pack request
-   * @since 4.15.0
-   */
-  static @NotNull ResourcePackRequest resourcePackRequest(final @NotNull UUID id, final @NotNull URI uri, final @NotNull String hash, final boolean required, final @Nullable Component prompt) {
-    return new ResourcePackRequestImpl(id, uri, hash, required, prompt);
-  }
-
-  /**
-   * Create a new builder that will create a {@link ResourcePackRequest}.
-   *
-   * @return a builder
+   * @return the pack request builder
    * @since 4.15.0
    */
   static @NotNull Builder resourcePackRequest() {
@@ -80,32 +64,77 @@ public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike
   }
 
   /**
-   * Gets the id.
+   * Create a builder for a resource pack request, based on an existing request.
    *
-   * @return the id
+   * @param existing the existing request
+   * @return the pack request builder
    * @since 4.15.0
    */
-  @NotNull UUID id();
+  static @NotNull Builder resourcePackRequest(final @NotNull ResourcePackRequest existing) {
+    return new ResourcePackRequestImpl.BuilderImpl(requireNonNull(existing, "existing"));
+  }
 
   /**
-   * Gets the uri.
+   * The resource packs to apply.
    *
-   * @return the uri
+   * @return an unmodifiable list of packs to apply
    * @since 4.15.0
    */
-  @NotNull URI uri();
+  @NotNull List<ResourcePackInfo> packs();
 
   /**
-   * Gets the hash.
+   * Set the resource packs to apply.
    *
-   * @return the hash
+   * @param packs the packs to apply
+   * @return an updated pack request
    * @since 4.15.0
    */
-  @NotNull String hash();
+  @NotNull ResourcePackRequest packs(final @NotNull Iterable<? extends ResourcePackInfoLike> packs);
 
   /**
-   * Gets whether the resource pack is required
-   * or not.
+   * A callback to respond to resource pack application status events.
+   *
+   * <p>This method will return {@link ResourcePackCallback#noOp()} if no callback has been set.</p>
+   *
+   * @return the callback
+   * @since 4.15.0
+   */
+  @NotNull ResourcePackCallback callback();
+
+  /**
+   * Set the callback to respond to resource pack application status events.
+   *
+   * @param cb the callback
+   * @return an updated pack request
+   * @since 4.15.0
+   */
+  @NotNull ResourcePackRequest callback(final @NotNull ResourcePackCallback cb);
+
+  /**
+   * Whether to replace or add to existing resource packs.
+   *
+   * @return whether to replace existing resource packs
+   * @since 4.15.0
+   * @sinceMinecraft 1.20.3
+   */
+  boolean replace();
+
+  /**
+   * Set whether to replace or add to existing resource packs.
+   *
+   * @param replace whether to replace existing server packs
+   * @return an updated pack request
+   * @since 4.15.0
+   */
+  @NotNull ResourcePackRequest replace(final boolean replace);
+
+  /**
+   * Gets whether the resource packs in this request are required.
+   *
+   * <p>Vanilla clients will disconnect themselves if their player
+   * rejects a required pack, but implementations will not necessarily
+   * perform any additional serverside validation. The {@link #callback()}
+   * can provide more information about the client's reaction.</p>
    *
    * @return True if the resource pack is required,
    *     false otherwise
@@ -114,7 +143,7 @@ public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike
   boolean required();
 
   /**
-   * Gets the prompt.
+   * Gets the prompt that will be provided when requesting these packs.
    *
    * @return the prompt
    * @since 4.15.0
@@ -133,37 +162,53 @@ public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike
    */
   interface Builder extends AbstractBuilder<ResourcePackRequest>, ResourcePackRequestLike {
     /**
-     * Sets the id.
+     * Set the resource packs to apply.
      *
-     * @param id the id
+     * @param first the first pack to apply
+     * @param others additional packs to apply
      * @return this builder
      * @since 4.15.0
      */
-    @Contract("_ -> this")
-    @NotNull Builder id(final @NotNull UUID id);
+    @Contract("_, _ -> this")
+    @NotNull Builder packs(final @NotNull ResourcePackInfoLike first, final @NotNull ResourcePackInfoLike@NotNull... others);
 
     /**
-     * Sets the uri.
+     * Set the resource packs to apply.
      *
-     * @param uri the uri
+     * @param packs the packs to apply
      * @return this builder
      * @since 4.15.0
      */
     @Contract("_ -> this")
-    @NotNull Builder uri(final @NotNull URI uri);
+    @NotNull Builder packs(final @NotNull Iterable<? extends ResourcePackInfoLike> packs);
 
     /**
-     * Sets the hash.
+     * Set the callback to respond to resource pack application status events.
      *
-     * @param hash the hash
+     * @param cb the callback
      * @return this builder
      * @since 4.15.0
      */
     @Contract("_ -> this")
-    @NotNull Builder hash(final @NotNull String hash);
+    @NotNull Builder callback(final @NotNull ResourcePackCallback cb);
+
+    /**
+     * Set whether to replace or add to existing resource packs.
+     *
+     * @param replace whether to replace existing server packs
+     * @return this builder
+     * @since 4.15.0
+     */
+    @Contract("_ -> this")
+    @NotNull Builder replace(final boolean replace);
 
     /**
      * Sets whether the resource pack is required or not.
+     *
+     * <p>Vanilla clients will disconnect themselves if their player
+     * rejects a required pack, but implementations will not necessarily
+     * perform any additional serverside validation. The {@link #callback()}
+     * can provide more information about the client's reaction.</p>
      *
      * @param required whether the resource pack is required or not
      * @return this builder
@@ -181,15 +226,6 @@ public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike
      */
     @Contract("_ -> this")
     @NotNull Builder prompt(final @Nullable Component prompt);
-
-    /**
-     * Builds.
-     *
-     * @return a new resource pack request
-     * @since 4.15.0
-     */
-    @Override
-    @NotNull ResourcePackRequest build();
 
     @Override
     default @NotNull ResourcePackRequest asResourcePackRequest() {

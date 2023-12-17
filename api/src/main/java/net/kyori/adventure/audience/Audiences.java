@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.function.Consumer;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import net.kyori.adventure.resource.ResourcePackCallback;
 import net.kyori.adventure.text.ComponentLike;
 import org.jetbrains.annotations.NotNull;
 
@@ -54,5 +55,13 @@ public final class Audiences {
    */
   public static @NotNull Consumer<? super Audience> sendingMessage(final @NotNull ComponentLike message) {
     return audience -> audience.sendMessage(message);
+  }
+
+  static @NotNull ResourcePackCallback unwrapCallback(final Audience forwarding, final Audience dest, final @NotNull ResourcePackCallback cb) {
+    if (cb == ResourcePackCallback.noOp()) return cb;
+
+    return (uuid, status, audience) -> {
+      cb.packEventReceived(uuid, status, audience == dest ? forwarding : audience);
+    };
   }
 }

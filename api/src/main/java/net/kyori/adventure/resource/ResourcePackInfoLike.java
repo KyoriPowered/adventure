@@ -26,16 +26,16 @@ package net.kyori.adventure.resource;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Something that can be represented as a {@link ResourcePackRequest}.
+ * Something that can be represented as a {@link ResourcePackInfo}.
  *
  * @since 4.15.0
  */
-public interface ResourcePackRequestLike {
+public interface ResourcePackInfoLike {
   /**
-   * Get the pack request representation.
+   * Gets a {@link ResourcePackInfo} representation.
    *
-   * @return the pack request representation of this object
+   * @return a component
    * @since 4.15.0
    */
-  @NotNull ResourcePackRequest asResourcePackRequest();
+  @NotNull ResourcePackInfo asResourcePackInfo();
 }
