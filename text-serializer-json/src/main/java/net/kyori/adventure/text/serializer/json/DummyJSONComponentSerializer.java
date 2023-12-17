@@ -50,12 +50,12 @@ final class DummyJSONComponentSerializer implements JSONComponentSerializer {
   // A no-op builder that just returns the unsupported instance.
   static final class BuilderImpl implements Builder {
     @Override
-    public @NotNull Builder features(final @NotNull OptionState flags) {
+    public @NotNull Builder options(final @NotNull OptionState flags) {
       return this;
     }
 
     @Override
-    public @NotNull Builder editFeatures(final @NotNull Consumer<OptionState.Builder> flagEditor) {
+    public @NotNull Builder editOptions(final @NotNull Consumer<OptionState.Builder> optionEditor) {
       return this;
     }
 

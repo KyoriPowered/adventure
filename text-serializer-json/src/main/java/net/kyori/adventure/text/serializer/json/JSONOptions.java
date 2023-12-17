@@ -28,14 +28,14 @@ import net.kyori.option.OptionState;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Feature flags that can apply to JSON serializers.
+ * Options that can apply to JSON serializers.
  *
  * <p>See serializer documentation for specific details on which flags are supported.</p>
  *
  * @since 4.15.0
  */
-public final class JSONFlags {
-  private JSONFlags() {
+public final class JSONOptions {
+  private JSONOptions() {
   }
 
   private static final int VERSION_INITIAL = 0;

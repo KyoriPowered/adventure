@@ -30,7 +30,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.json.JSONFlags;
+import net.kyori.adventure.text.serializer.json.JSONOptions;
 import net.kyori.adventure.util.Services;
 import net.kyori.option.OptionState;
 import org.jetbrains.annotations.NotNull;
@@ -50,10 +50,10 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
   static final class Instances {
     static final GsonComponentSerializer INSTANCE = SERVICE
       .map(Provider::gson)
-      .orElseGet(() -> new GsonComponentSerializerImpl(JSONFlags.byDataVersion(), null));
+      .orElseGet(() -> new GsonComponentSerializerImpl(JSONOptions.byDataVersion(), null));
     static final GsonComponentSerializer LEGACY_INSTANCE = SERVICE
       .map(Provider::gsonLegacy)
-      .orElseGet(() -> new GsonComponentSerializerImpl(JSONFlags.byDataVersion().at(2525 /* just before 1.16 */), null));
+      .orElseGet(() -> new GsonComponentSerializerImpl(JSONOptions.byDataVersion().at(2525 /* just before 1.16 */), null));
   }
 
   private final Gson serializer;
@@ -122,7 +122,7 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
   }
 
   static final class BuilderImpl implements Builder {
-    private OptionState flags = JSONFlags.byDataVersion(); // latest
+    private OptionState flags = JSONOptions.byDataVersion(); // latest
     private net.kyori.adventure.text.serializer.json.@Nullable LegacyHoverEventSerializer legacyHoverSerializer;
 
     BuilderImpl() {
@@ -136,16 +136,16 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
     }
 
     @Override
-    public @NotNull Builder features(final @NotNull OptionState flags) {
+    public @NotNull Builder options(final @NotNull OptionState flags) {
       this.flags = requireNonNull(flags, "flags");
       return this;
     }
 
     @Override
-    public @NotNull Builder editFeatures(final @NotNull Consumer<OptionState.Builder> flagEditor) {
+    public @NotNull Builder editOptions(final @NotNull Consumer<OptionState.Builder> optionEditor) {
       final OptionState.Builder builder = OptionState.optionState()
         .values(this.flags);
-      requireNonNull(flagEditor, "flagEditor").accept(builder);
+      requireNonNull(optionEditor, "flagEditor").accept(builder);
       this.flags = builder.build();
       return this;
     }

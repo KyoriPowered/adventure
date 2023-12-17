@@ -34,7 +34,7 @@ final class ShowEntitySerializerTest extends SerializerTest {
   void testWithStringUuid() {
     final UUID id = UUID.randomUUID();
     final JSONComponentSerializer cereal = JSONComponentSerializer.builder()
-      .editFeatures(b -> b.value(JSONFlags.EMIT_HOVER_SHOW_ENTITY_ID_AS_INT_ARRAY, false))
+      .editOptions(b -> b.value(JSONOptions.EMIT_HOVER_SHOW_ENTITY_ID_AS_INT_ARRAY, false))
       .build();
 
     this.testStyle(cereal, Style.style().hoverEvent(HoverEvent.showEntity(Key.key("zombie"), id)).build(), json -> {

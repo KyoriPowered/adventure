@@ -31,7 +31,7 @@ import java.util.function.UnaryOperator;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.json.JSONComponentSerializer;
-import net.kyori.adventure.text.serializer.json.JSONFlags;
+import net.kyori.adventure.text.serializer.json.JSONOptions;
 import net.kyori.adventure.util.Buildable;
 import net.kyori.adventure.util.PlatformAPI;
 import net.kyori.option.OptionState;
@@ -125,10 +125,10 @@ public interface GsonComponentSerializer extends JSONComponentSerializer, Builda
    */
   interface Builder extends AbstractBuilder<GsonComponentSerializer>, Buildable.Builder<GsonComponentSerializer>, JSONComponentSerializer.Builder {
     @Override
-    @NotNull Builder features(final @NotNull OptionState flags);
+    @NotNull Builder options(final @NotNull OptionState flags);
 
     @Override
-    @NotNull Builder editFeatures(final @NotNull Consumer<OptionState.Builder> flagEditor);
+    @NotNull Builder editOptions(final @NotNull Consumer<OptionState.Builder> optionEditor);
 
     /**
      * Sets that the serializer should downsample hex colors to named colors.
@@ -138,7 +138,7 @@ public interface GsonComponentSerializer extends JSONComponentSerializer, Builda
      */
     @Override
     default @NotNull Builder downsampleColors() {
-      return this.editFeatures(features -> features.value(JSONFlags.EMIT_RGB, false));
+      return this.editOptions(features -> features.value(JSONOptions.EMIT_RGB, false));
     }
 
     /**
@@ -167,7 +167,7 @@ public interface GsonComponentSerializer extends JSONComponentSerializer, Builda
     @Deprecated
     @Override
     default @NotNull Builder emitLegacyHoverEvent() {
-      return this.editFeatures(b -> b.value(JSONFlags.EMIT_HOVER_EVENT_TYPE, JSONFlags.HoverEventValueMode.BOTH));
+      return this.editOptions(b -> b.value(JSONOptions.EMIT_HOVER_EVENT_TYPE, JSONOptions.HoverEventValueMode.BOTH));
     }
 
     /**

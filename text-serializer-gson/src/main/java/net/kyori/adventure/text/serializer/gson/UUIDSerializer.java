@@ -29,14 +29,14 @@ import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import java.util.UUID;
-import net.kyori.adventure.text.serializer.json.JSONFlags;
+import net.kyori.adventure.text.serializer.json.JSONOptions;
 import net.kyori.option.OptionState;
 
 final class UUIDSerializer extends TypeAdapter<UUID> {
   private final boolean emitIntArray;
 
   static TypeAdapter<UUID> uuidSerializer(final OptionState features) {
-    return new UUIDSerializer(features.value(JSONFlags.EMIT_HOVER_SHOW_ENTITY_ID_AS_INT_ARRAY)).nullSafe();
+    return new UUIDSerializer(features.value(JSONOptions.EMIT_HOVER_SHOW_ENTITY_ID_AS_INT_ARRAY)).nullSafe();
   }
 
   private UUIDSerializer(final boolean emitIntArray) {

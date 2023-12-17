@@ -43,7 +43,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.serializer.json.JSONFlags;
+import net.kyori.adventure.text.serializer.json.JSONOptions;
 import net.kyori.adventure.util.Codec;
 import net.kyori.option.OptionState;
 import org.jetbrains.annotations.Nullable;
@@ -83,12 +83,12 @@ final class StyleSerializer extends TypeAdapter<Style> {
   }
 
   static TypeAdapter<Style> create(final net.kyori.adventure.text.serializer.json.@Nullable LegacyHoverEventSerializer legacyHover, final OptionState features, final Gson gson) {
-    final JSONFlags.HoverEventValueMode hoverMode = features.value(JSONFlags.EMIT_HOVER_EVENT_TYPE);
+    final JSONOptions.HoverEventValueMode hoverMode = features.value(JSONOptions.EMIT_HOVER_EVENT_TYPE);
     return new StyleSerializer(
       legacyHover,
-      hoverMode == JSONFlags.HoverEventValueMode.LEGACY_ONLY || hoverMode == JSONFlags.HoverEventValueMode.BOTH,
-      hoverMode == JSONFlags.HoverEventValueMode.MODERN_ONLY || hoverMode == JSONFlags.HoverEventValueMode.BOTH,
-      features.value(JSONFlags.VALIDATE_STRICT_EVENTS),
+      hoverMode == JSONOptions.HoverEventValueMode.LEGACY_ONLY || hoverMode == JSONOptions.HoverEventValueMode.BOTH,
+      hoverMode == JSONOptions.HoverEventValueMode.MODERN_ONLY || hoverMode == JSONOptions.HoverEventValueMode.BOTH,
+      features.value(JSONOptions.VALIDATE_STRICT_EVENTS),
       gson
     ).nullSafe();
   }

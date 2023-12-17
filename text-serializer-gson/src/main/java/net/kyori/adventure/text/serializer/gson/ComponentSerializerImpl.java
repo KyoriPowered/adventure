@@ -52,7 +52,7 @@ import net.kyori.adventure.text.StorageNBTComponent;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.TranslationArgument;
-import net.kyori.adventure.text.serializer.json.JSONFlags;
+import net.kyori.adventure.text.serializer.json.JSONOptions;
 import net.kyori.option.OptionState;
 import org.jetbrains.annotations.Nullable;
 
@@ -79,7 +79,7 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
   static final Type TRANSLATABLE_ARGUMENT_LIST_TYPE = new TypeToken<List<TranslationArgument>>() {}.getType();
 
   static TypeAdapter<Component> create(final OptionState features, final Gson gson) {
-    return new ComponentSerializerImpl(features.value(JSONFlags.EMIT_COMPACT_TEXT_COMPONENT), gson).nullSafe();
+    return new ComponentSerializerImpl(features.value(JSONOptions.EMIT_COMPACT_TEXT_COMPONENT), gson).nullSafe();
   }
 
   private final boolean emitCompactTextComponent;

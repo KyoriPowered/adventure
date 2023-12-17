@@ -68,7 +68,7 @@ final class JSONComponentSerializerTest extends SerializerTest {
   @SuppressWarnings("deprecation")
   void testSkipInvalidHoverEventWhenLenient() {
     final JSONComponentSerializer serializer = JSONComponentSerializer.builder()
-      .editFeatures(b -> b.value(JSONFlags.VALIDATE_STRICT_EVENTS, false))
+      .editOptions(b -> b.value(JSONOptions.VALIDATE_STRICT_EVENTS, false))
       .build();
 
     final Component expected = Component.text("hello");

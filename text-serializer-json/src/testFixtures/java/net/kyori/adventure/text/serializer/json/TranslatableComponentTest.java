@@ -37,7 +37,7 @@ final class TranslatableComponentTest extends SerializerTest {
   @Override
   protected JSONComponentSerializer createSerializer() {
     return JSONComponentSerializer.builder()
-      .editFeatures(b -> b.value(JSONFlags.EMIT_COMPACT_TEXT_COMPONENT, false))
+      .editOptions(b -> b.value(JSONOptions.EMIT_COMPACT_TEXT_COMPONENT, false))
       .build();
   }
 

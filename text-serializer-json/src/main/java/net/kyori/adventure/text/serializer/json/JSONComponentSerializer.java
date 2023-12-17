@@ -69,33 +69,33 @@ public interface JSONComponentSerializer extends ComponentSerializer<Component, 
    */
   interface Builder {
     /**
-     * Set the feature flag set to apply on this serializer.
+     * Set the option state to apply on this serializer.
      *
      * <p>This controls how the serializer emits and interprets components.</p>
      *
      * @param flags the flag set to use
      * @return this builder
-     * @see JSONFlags
+     * @see JSONOptions
      * @since 4.15.0
      */
-    @NotNull Builder features(final @NotNull OptionState flags);
+    @NotNull Builder options(final @NotNull OptionState flags);
 
     /**
-     * Edit the active set of feature flags.
+     * Edit the active set of serializer options.
      *
-     * @param flagEditor the consumer operating on the existing flag set
+     * @param optionEditor the consumer operating on the existing flag set
      * @return this builder
-     * @see JSONFlags
+     * @see JSONOptions
      * @since  4.15.0
      */
-    @NotNull Builder editFeatures(final @NotNull Consumer<OptionState.Builder> flagEditor);
+    @NotNull Builder editOptions(final @NotNull Consumer<OptionState.Builder> optionEditor);
 
     /**
      * Sets that the serializer should downsample hex colors to named colors.
      *
      * @return this builder
      * @since 4.14.0
-     * @deprecated for removal since 4.15.0, change the {@link JSONFlags#EMIT_RGB} flag instead
+     * @deprecated for removal since 4.15.0, change the {@link JSONOptions#EMIT_RGB} flag instead
      */
     @Deprecated
     @NotNull Builder downsampleColors();
@@ -119,7 +119,7 @@ public interface JSONComponentSerializer extends ComponentSerializer<Component, 
      *
      * @return this builder
      * @since 4.14.0
-     * @deprecated for removal since 4.15.0, change the {@link JSONFlags#EMIT_HOVER_EVENT_TYPE} flag instead
+     * @deprecated for removal since 4.15.0, change the {@link JSONOptions#EMIT_HOVER_EVENT_TYPE} flag instead
      */
     @Deprecated
     @NotNull Builder emitLegacyHoverEvent();
