@@ -83,10 +83,12 @@ final class StyleSerializer extends TypeAdapter<Style> {
   }
 
   static TypeAdapter<Style> create(final net.kyori.adventure.text.serializer.json.@Nullable LegacyHoverEventSerializer legacyHover, final FeatureFlagConfig features, final Gson gson) {
+    final JSONFlags.HoverEventValueMode hoverMode = features.value(JSONFlags.EMIT_HOVER_EVENT_TYPE);
     return new StyleSerializer(
       legacyHover,
-      features.value(JSONFlags.EMIT_LEGACY_HOVER_EVENT),
-      features.value(JSONFlags.EMIT_MODERN_HOVER_EVENT),
+      hoverMode == JSONFlags.HoverEventValueMode.LEGACY_ONLY || hoverMode == JSONFlags.HoverEventValueMode.BOTH,
+      hoverMode == JSONFlags.HoverEventValueMode.MODERN_ONLY || hoverMode == JSONFlags.HoverEventValueMode.BOTH,
+      features.value(JSONFlags.VALIDATE_STRICT_EVENTS),
       gson
     ).nullSafe();
   }
@@ -94,12 +96,20 @@ final class StyleSerializer extends TypeAdapter<Style> {
   private final net.kyori.adventure.text.serializer.json.LegacyHoverEventSerializer legacyHover;
   private final boolean emitLegacyHover;
   private final boolean emitModernHover;
+  private final boolean strictEventValues;
   private final Gson gson;
 
-  private StyleSerializer(final net.kyori.adventure.text.serializer.json.@Nullable LegacyHoverEventSerializer legacyHover, final boolean emitLegacyHover, final boolean emitModernHover, final Gson gson) {
+  private StyleSerializer(
+    final net.kyori.adventure.text.serializer.json.@Nullable LegacyHoverEventSerializer legacyHover,
+    final boolean emitLegacyHover,
+    final boolean emitModernHover,
+    final boolean strictEventValues,
+    final Gson gson
+  ) {
     this.legacyHover = legacyHover;
     this.emitLegacyHover = emitLegacyHover;
     this.emitModernHover = emitModernHover;
+    this.strictEventValues = strictEventValues;
     this.gson = gson;
   }
 
@@ -132,6 +142,9 @@ final class StyleSerializer extends TypeAdapter<Style> {
           if (clickEventField.equals(CLICK_EVENT_ACTION)) {
             action = this.gson.fromJson(in, SerializerFactory.CLICK_ACTION_TYPE);
           } else if (clickEventField.equals(CLICK_EVENT_VALUE)) {
+            if (in.peek() == JsonToken.NULL && this.strictEventValues) {
+              throw ComponentSerializerImpl.notSureHowToDeserialize(CLICK_EVENT_VALUE);
+            }
             value = in.peek() == JsonToken.NULL ? null : in.nextString();
           } else {
             in.skipValue();
@@ -157,6 +170,9 @@ final class StyleSerializer extends TypeAdapter<Style> {
             if (hoverEventObject.has(HOVER_EVENT_CONTENTS)) {
               final @Nullable JsonElement rawValue = hoverEventObject.get(HOVER_EVENT_CONTENTS);
               if (GsonHacks.isNullOrEmpty(rawValue)) {
+                if (this.strictEventValues) {
+                  throw ComponentSerializerImpl.notSureHowToDeserialize(rawValue);
+                }
                 value = null;
               } else if (SerializerFactory.COMPONENT_TYPE.isAssignableFrom(actionType)) {
                 value = this.gson.fromJson(rawValue, SerializerFactory.COMPONENT_TYPE);
@@ -170,6 +186,9 @@ final class StyleSerializer extends TypeAdapter<Style> {
             } else if (hoverEventObject.has(HOVER_EVENT_VALUE)) {
               final JsonElement element = hoverEventObject.get(HOVER_EVENT_VALUE);
               if (GsonHacks.isNullOrEmpty(element)) {
+                if (this.strictEventValues) {
+                  throw ComponentSerializerImpl.notSureHowToDeserialize(element);
+                }
                 value = null;
               } else if (SerializerFactory.COMPONENT_TYPE.isAssignableFrom(actionType)) {
                 final Component rawValue = this.gson.fromJson(element, SerializerFactory.COMPONENT_TYPE);
@@ -180,6 +199,9 @@ final class StyleSerializer extends TypeAdapter<Style> {
                 value = null;
               }
             } else {
+              if (this.strictEventValues) {
+                throw ComponentSerializerImpl.notSureHowToDeserialize(hoverEventObject);
+              }
               value = null;
             }
 

@@ -119,7 +119,7 @@ public interface JSONComponentSerializer extends ComponentSerializer<Component, 
      *
      * @return this builder
      * @since 4.14.0
-     * @deprecated for removal since 4.15.0, change the {@link JSONFlags#EMIT_LEGACY_HOVER_EVENT} flag instead
+     * @deprecated for removal since 4.15.0, change the {@link JSONFlags#EMIT_HOVER_EVENT_TYPE} flag instead
      */
     @Deprecated
     @NotNull Builder emitLegacyHoverEvent();

@@ -52,18 +52,11 @@ public final class JSONFlags {
    */
   public static final FeatureFlag<Boolean> EMIT_RGB = FeatureFlag.booleanFlag(key("emit/rgb"), true);
   /**
-   * Whether to emit the legacy hover event style used before Minecraft 1.16.
+   * Control how hover event values should be emitted.
    *
    * @since 4.15.0
    */
-  public static final FeatureFlag<Boolean> EMIT_LEGACY_HOVER_EVENT = FeatureFlag.booleanFlag(key("emit/legacy_hover"), false);
-  /**
-   * Whether to emit the hover event contents as updated in 1.16.
-   *
-   * @since 4.15.0
-   * @sinceMinecraft 1.16
-   */
-  public static final FeatureFlag<Boolean> EMIT_MODERN_HOVER_EVENT = FeatureFlag.booleanFlag(key("emit/modern_hover"), true);
+  public static final FeatureFlag<HoverEventValueMode> EMIT_HOVER_EVENT_TYPE = FeatureFlag.enumFlag(key("emit/hover_value_mode"), HoverEventValueMode.class, HoverEventValueMode.MODERN_ONLY);
 
   /**
    * Whether to emit text components with no style and no children as plain text.
@@ -76,8 +69,19 @@ public final class JSONFlags {
   /**
    * Whether to emit the hover event show entity action's entity UUID as an int array,
    * as understood by 1.20.3+, or as a string as understood by previous versions.
+   *
+   * @since 4.15.0
    */
   public static final FeatureFlag<Boolean> EMIT_HOVER_SHOW_ENTITY_ID_AS_INT_ARRAY = FeatureFlag.booleanFlag(key("emit/hover_show_entity_id_as_int_array"), true);
+
+  /**
+   * Whether to be strict about accepting invalid hover/click events.
+   *
+   * <p>When enabled, this matches Vanilla as of 1.20.3.</p>
+   *
+   * @since 4.15.0
+   */
+  public static final FeatureFlag<Boolean> VALIDATE_STRICT_EVENTS = FeatureFlag.booleanFlag(key("validate/strict_events"), true);
 
   /**
    * Versioned by world data version.
@@ -85,21 +89,21 @@ public final class JSONFlags {
   private static final FeatureFlagConfig.Versioned BY_DATA_VERSION = FeatureFlagConfig.versionedFeatureFlagConfig()
     .version(
       VERSION_INITIAL,
-      b -> b.value(EMIT_LEGACY_HOVER_EVENT, true)
+      b -> b.value(EMIT_HOVER_EVENT_TYPE, HoverEventValueMode.LEGACY_ONLY)
         .value(EMIT_RGB, false)
-        .value(EMIT_MODERN_HOVER_EVENT, false)
         .value(EMIT_HOVER_SHOW_ENTITY_ID_AS_INT_ARRAY, false)
+        .value(VALIDATE_STRICT_EVENTS, false)
     )
     .version(
       VERSION_1_16,
-      b -> b.value(EMIT_LEGACY_HOVER_EVENT, false)
+      b -> b.value(EMIT_HOVER_EVENT_TYPE, HoverEventValueMode.MODERN_ONLY)
         .value(EMIT_RGB, true)
-        .value(EMIT_MODERN_HOVER_EVENT, true)
     )
     .version(
       VERSION_1_20_3,
       b -> b.value(EMIT_COMPACT_TEXT_COMPONENT, true)
         .value(EMIT_HOVER_SHOW_ENTITY_ID_AS_INT_ARRAY, true)
+        .value(VALIDATE_STRICT_EVENTS, true)
     )
     .build();
 
@@ -109,9 +113,10 @@ public final class JSONFlags {
    * <p>This may provide a less efficient representation of components, but will not result in information being discarded.</p>
    */
   private static final FeatureFlagConfig MOST_COMPATIBLE = FeatureFlagConfig.featureFlagConfig()
-    .value(EMIT_LEGACY_HOVER_EVENT, true)
+    .value(EMIT_HOVER_EVENT_TYPE, HoverEventValueMode.BOTH)
     .value(EMIT_HOVER_SHOW_ENTITY_ID_AS_INT_ARRAY, false)
     .value(EMIT_COMPACT_TEXT_COMPONENT, false)
+    .value(VALIDATE_STRICT_EVENTS, false)
     .build();
 
   private static String key(final String value) {
@@ -138,5 +143,31 @@ public final class JSONFlags {
    */
   public static @NotNull FeatureFlagConfig compatibility() {
     return MOST_COMPATIBLE;
+  }
+
+  /**
+   * Configure how to emit hover event values.
+   *
+   * @since 4.15.0
+   */
+  public enum HoverEventValueMode {
+    /**
+     * Only emit the 1.16+ modern hover events.
+     *
+     * @since 4.15.0
+     */
+    MODERN_ONLY,
+    /**
+     * Only emit the pre-1.16 hover event {@code value} field.
+     *
+     * @since 4.15.0
+     */
+    LEGACY_ONLY,
+    /**
+     * Include both modern and legacy hover event fields, for maximum compatibility.
+     *
+     * @since 4.15.0
+     */
+    BOTH,
   }
 }

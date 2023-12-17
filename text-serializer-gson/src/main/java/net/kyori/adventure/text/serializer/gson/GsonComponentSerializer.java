@@ -167,7 +167,7 @@ public interface GsonComponentSerializer extends JSONComponentSerializer, Builda
     @Deprecated
     @Override
     default @NotNull Builder emitLegacyHoverEvent() {
-      return this.editFeatures(b -> b.value(JSONFlags.EMIT_LEGACY_HOVER_EVENT, true));
+      return this.editFeatures(b -> b.value(JSONFlags.EMIT_HOVER_EVENT_TYPE, JSONFlags.HoverEventValueMode.BOTH));
     }
 
     /**
