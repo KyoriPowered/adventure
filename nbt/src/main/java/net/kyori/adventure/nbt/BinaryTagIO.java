@@ -250,6 +250,8 @@ public final class BinaryTagIO {
      *
      * <p>This is the equivalent of passing {@code Compression#NONE} as the second parameter to {@link #read(Path, Compression)}.</p>
      *
+     * <p>The root name field is discarded.</p>
+     *
      * @param path the path
      * @return a binary tag
      * @throws IOException if an exception was encountered while reading the tag
@@ -261,6 +263,8 @@ public final class BinaryTagIO {
 
     /**
      * Reads a binary tag from {@code path} with a {@code compression} type.
+     *
+     * <p>The root name field is discarded.</p>
      *
      * @param path the path
      * @param compression the compression type
@@ -275,6 +279,8 @@ public final class BinaryTagIO {
      *
      * <p>This is the equivalent of passing {@code Compression#NONE} as the second parameter to {@link #read(InputStream, Compression)}.</p>
      *
+     * <p>The root name field is discarded.</p>
+     *
      * @param input the input stream
      * @return a binary tag
      * @throws IOException if an exception was encountered while reading the tag
@@ -287,6 +293,8 @@ public final class BinaryTagIO {
     /**
      * Reads a binary tag from {@code input} with a {@code compression} type.
      *
+     * <p>The root name field is discarded.</p>
+     *
      * @param input the input stream
      * @param compression the compression type
      * @return a binary tag
@@ -298,12 +306,89 @@ public final class BinaryTagIO {
     /**
      * Reads a binary tag from {@code input}.
      *
+     * <p>The root name field is discarded.</p>
+     *
      * @param input the input stream
      * @return a binary tag
      * @throws IOException if an exception was encountered while reading the tag
      * @since 4.4.0
      */
     @NotNull CompoundBinaryTag read(final @NotNull DataInput input) throws IOException;
+
+    /**
+     * Reads a binary tag from {@code path}.
+     *
+     * <p>This is the equivalent of passing {@code Compression#NONE} as the second parameter to {@link #read(Path, Compression)}.</p>
+     *
+     * <p>Doesn't read a root name from the {@link Path} at all, to match the wire protocol in modern game versions.</p>
+     *
+     * @param path the path
+     * @return a binary tag
+     * @throws IOException if an exception was encountered while reading the tag
+     * @since 4.15.0
+     * @sinceMinecraft 1.20.2
+     */
+    default @NotNull CompoundBinaryTag readNameless(final @NotNull Path path) throws IOException {
+      return this.readNameless(path, Compression.NONE);
+    }
+
+    /**
+     * Reads a binary tag from {@code path} with a {@code compression} type.
+     *
+     * <p>Doesn't read a root name from the {@link Path} at all, to match the wire protocol in modern game versions.</p>
+     *
+     * @param path the path
+     * @param compression the compression type
+     * @return a binary tag
+     * @throws IOException if an exception was encountered while reading the tag
+     * @since 4.15.0
+     * @sinceMinecraft 1.20.2
+     */
+    @NotNull CompoundBinaryTag readNameless(final @NotNull Path path, final @NotNull Compression compression) throws IOException;
+
+    /**
+     * Reads a binary tag from {@code input}.
+     *
+     * <p>This is the equivalent of passing {@code Compression#NONE} as the second parameter to {@link #read(InputStream, Compression)}.</p>
+     *
+     * <p>Doesn't read a root name from the {@link InputStream} at all, to match the wire protocol in modern game versions.</p>
+     *
+     * @param input the input stream
+     * @return a binary tag
+     * @throws IOException if an exception was encountered while reading the tag
+     * @since 4.15.0
+     * @sinceMinecraft 1.20.2
+     */
+    default @NotNull CompoundBinaryTag readNameless(final @NotNull InputStream input) throws IOException {
+      return this.readNameless(input, Compression.NONE);
+    }
+
+    /**
+     * Reads a binary tag from {@code input} with a {@code compression} type.
+     *
+     * <p>Doesn't read a root name from the {@link InputStream} at all, to match the wire protocol in modern game versions.</p>
+     *
+     * @param input the input stream
+     * @param compression the compression type
+     * @return a binary tag
+     * @throws IOException if an exception was encountered while reading the tag
+     * @since 4.15.0
+     * @sinceMinecraft 1.20.2
+     */
+    @NotNull CompoundBinaryTag readNameless(final @NotNull InputStream input, final @NotNull Compression compression) throws IOException;
+
+    /**
+     * Reads a binary tag from {@code input}.
+     *
+     * <p>Doesn't read a root name from the {@link DataInput} at all, to match the wire protocol in modern game versions.</p>
+     *
+     * @param input the input stream
+     * @return a binary tag
+     * @throws IOException if an exception was encountered while reading the tag
+     * @since 4.15.0
+     * @sinceMinecraft 1.20.2
+     */
+    @NotNull CompoundBinaryTag readNameless(final @NotNull DataInput input) throws IOException;
 
     /**
      * Reads a binary tag, with a name, from {@code path}.
@@ -377,6 +462,8 @@ public final class BinaryTagIO {
      *
      * <p>This is the equivalent of passing {@code Compression#NONE} as the second parameter to {@link #write(CompoundBinaryTag, Path, Compression)}.</p>
      *
+     * <p>An empty root name is written.</p>
+     *
      * @param tag the tag to write
      * @param path the path
      * @throws IOException if an exception was encountered while reading the tag
@@ -388,6 +475,8 @@ public final class BinaryTagIO {
 
     /**
      * Writes a binary tag to {@code path} with a {@code compression} type.
+     *
+     * <p>An empty root name is written.</p>
      *
      * @param tag the tag to write
      * @param path the path
@@ -402,6 +491,8 @@ public final class BinaryTagIO {
      *
      * <p>This is the equivalent of passing {@link Compression#NONE} as the second parameter to {@link #write(CompoundBinaryTag, OutputStream, Compression)}.</p>
      *
+     * <p>An empty root name is written.</p>
+     *
      * @param tag the tag to write
      * @param output the output stream
      * @throws IOException if an exception was encountered while reading the tag
@@ -414,6 +505,8 @@ public final class BinaryTagIO {
     /**
      * Writes a binary tag to {@code output} with a {@code compression} type.
      *
+     * <p>An empty root name is written.</p>
+     *
      * @param tag the tag to write
      * @param output the output stream
      * @param compression the compression type
@@ -425,12 +518,89 @@ public final class BinaryTagIO {
     /**
      * Writes a binary tag to {@code output}.
      *
+     * <p>An empty root name is written.</p>
+     *
      * @param tag the tag to write
      * @param output the output
      * @throws IOException if an exception was encountered while reading the tag
      * @since 4.4.0
      */
     void write(final @NotNull CompoundBinaryTag tag, final @NotNull DataOutput output) throws IOException;
+
+    /**
+     * Writes a binary tag to {@code path} with a {@code compression} type.
+     *
+     * <p>This is the equivalent of passing {@code Compression#NONE} as the second parameter to {@link #write(CompoundBinaryTag, Path, Compression)}.</p>
+     *
+     * <p>Doesn't write a root name to the {@link Path} at all, to match the wire protocol in modern game versions.</p>
+     *
+     * @param tag the tag to write
+     * @param path the path
+     * @throws IOException if an exception was encountered while reading the tag
+     * @since 4.15.0
+     * @sinceMinecraft 1.20.2
+     */
+    default void writeNameless(final @NotNull CompoundBinaryTag tag, final @NotNull Path path) throws IOException {
+      this.writeNameless(tag, path, Compression.NONE);
+    }
+
+    /**
+     * Writes a binary tag to {@code path} with a {@code compression} type.
+     *
+     * <p>Doesn't write a root name to the {@link Path} at all, to match the wire protocol in modern game versions.</p>
+     *
+     * @param tag the tag to write
+     * @param path the path
+     * @param compression the compression type
+     * @throws IOException if an exception was encountered while reading the tag
+     * @since 4.15.0
+     * @sinceMinecraft 1.20.2
+     */
+    void writeNameless(final @NotNull CompoundBinaryTag tag, final @NotNull Path path, final @NotNull Compression compression) throws IOException;
+
+    /**
+     * Writes a binary tag to {@code output}.
+     *
+     * <p>This is the equivalent of passing {@link Compression#NONE} as the second parameter to {@link #write(CompoundBinaryTag, OutputStream, Compression)}.</p>
+     *
+     * <p>Doesn't write a root name to the {@link OutputStream} at all, to match the wire protocol in modern game versions.</p>
+     *
+     * @param tag the tag to write
+     * @param output the output stream
+     * @throws IOException if an exception was encountered while reading the tag
+     * @since 4.15.0
+     * @sinceMinecraft 1.20.2
+     */
+    default void writeNameless(final @NotNull CompoundBinaryTag tag, final @NotNull OutputStream output) throws IOException {
+      this.writeNameless(tag, output, Compression.NONE);
+    }
+
+    /**
+     * Writes a binary tag to {@code output} with a {@code compression} type.
+     *
+     * <p>Doesn't write a root name to the {@link OutputStream} at all, to match the wire protocol in modern game versions.</p>
+     *
+     * @param tag the tag to write
+     * @param output the output stream
+     * @param compression the compression type
+     * @throws IOException if an exception was encountered while reading the tag
+     * @since 4.15.0
+     * @sinceMinecraft 1.20.2
+     */
+    void writeNameless(final @NotNull CompoundBinaryTag tag, final @NotNull OutputStream output, final @NotNull Compression compression) throws IOException;
+
+    /**
+     * Writes a binary tag to {@code output}.
+     *
+     * <p>Doesn't write a root name to the {@link DataOutput} at all, to match the wire protocol in modern game versions.</p>
+     *
+     * @param tag the tag to write
+     * @param output the output
+     * @throws IOException if an exception was encountered while reading the tag
+     * @since 4.15.0
+     * @sinceMinecraft 1.20.2
+     */
+    void writeNameless(final @NotNull CompoundBinaryTag tag, final @NotNull DataOutput output) throws IOException;
 
     /**
      * Writes a binary tag, with a name, to {@code path}.

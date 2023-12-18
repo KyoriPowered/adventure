@@ -61,15 +61,40 @@ final class BinaryTagReaderImpl implements BinaryTagIO.Reader {
   }
 
   @Override
-  public @NotNull CompoundBinaryTag read(@NotNull DataInput input) throws IOException {
+  public @NotNull CompoundBinaryTag read(final @NotNull DataInput input) throws IOException {
+    return this.read(input, true);
+  }
+
+  private @NotNull CompoundBinaryTag read(@NotNull DataInput input, final boolean named) throws IOException {
     if (!(input instanceof TrackingDataInput)) {
       input = new TrackingDataInput(input, this.maxBytes);
     }
 
     final BinaryTagType<? extends BinaryTag> type = BinaryTagType.binaryTagType(input.readByte());
     requireCompound(type);
-    input.skipBytes(input.readUnsignedShort()); // read empty name
+    if (named) {
+      input.skipBytes(input.readUnsignedShort()); // read empty name
+    }
     return BinaryTagTypes.COMPOUND.read(input);
+  }
+
+  @Override
+  public @NotNull CompoundBinaryTag readNameless(final @NotNull Path path, final BinaryTagIO.@NotNull Compression compression) throws IOException {
+    try (final InputStream is = Files.newInputStream(path)) {
+      return this.readNameless(is, compression);
+    }
+  }
+
+  @Override
+  public @NotNull CompoundBinaryTag readNameless(final @NotNull InputStream input, final BinaryTagIO.@NotNull Compression compression) throws IOException {
+    try (final DataInputStream dis = new DataInputStream(new BufferedInputStream(compression.decompress(closeShield(input))))) {
+      return this.readNameless((DataInput) dis);
+    }
+  }
+
+  @Override
+  public @NotNull CompoundBinaryTag readNameless(final @NotNull DataInput input) throws IOException {
+    return this.read(input, false);
   }
 
   @Override

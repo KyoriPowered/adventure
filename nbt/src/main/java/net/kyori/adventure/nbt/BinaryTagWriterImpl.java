@@ -54,9 +54,34 @@ final class BinaryTagWriterImpl implements BinaryTagIO.Writer {
 
   @Override
   public void write(final @NotNull CompoundBinaryTag tag, final @NotNull DataOutput output) throws IOException {
+    this.write(tag, output, true);
+  }
+
+  private void write(final @NotNull CompoundBinaryTag tag, final @NotNull DataOutput output, final boolean named) throws IOException {
     output.writeByte(BinaryTagTypes.COMPOUND.id());
-    output.writeUTF(""); // write empty name
+    if (named) {
+      output.writeUTF(""); // write empty name
+    }
     BinaryTagTypes.COMPOUND.write(tag, output);
+  }
+
+  @Override
+  public void writeNameless(final @NotNull CompoundBinaryTag tag, final @NotNull Path path, final BinaryTagIO.@NotNull Compression compression) throws IOException {
+    try (final OutputStream os = Files.newOutputStream(path)) {
+      this.writeNameless(tag, os, compression);
+    }
+  }
+
+  @Override
+  public void writeNameless(final @NotNull CompoundBinaryTag tag, final @NotNull OutputStream output, final BinaryTagIO.@NotNull Compression compression) throws IOException {
+    try (final DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(compression.compress(closeShield(output))))) {
+      this.writeNameless(tag, (DataOutput) dos);
+    }
+  }
+
+  @Override
+  public void writeNameless(final @NotNull CompoundBinaryTag tag, final @NotNull DataOutput output) throws IOException {
+    this.write(tag, output, false);
   }
 
   @Override
