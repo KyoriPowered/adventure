@@ -54,12 +54,12 @@ final class BinaryTagWriterImpl implements BinaryTagIO.Writer {
 
   @Override
   public void write(final @NotNull CompoundBinaryTag tag, final @NotNull DataOutput output) throws IOException {
-    this.write(tag, output, false);
+    this.write(tag, output, true);
   }
 
-  private void write(final @NotNull CompoundBinaryTag tag, final @NotNull DataOutput output, final boolean nameless) throws IOException {
+  private void write(final @NotNull CompoundBinaryTag tag, final @NotNull DataOutput output, final boolean named) throws IOException {
     output.writeByte(BinaryTagTypes.COMPOUND.id());
-    if (!nameless) {
+    if (named) {
       output.writeUTF(""); // write empty name
     }
     BinaryTagTypes.COMPOUND.write(tag, output);
@@ -81,7 +81,7 @@ final class BinaryTagWriterImpl implements BinaryTagIO.Writer {
 
   @Override
   public void writeNameless(final @NotNull CompoundBinaryTag tag, final @NotNull DataOutput output) throws IOException {
-    this.write(tag, output, true);
+    this.write(tag, output, false);
   }
 
   @Override
