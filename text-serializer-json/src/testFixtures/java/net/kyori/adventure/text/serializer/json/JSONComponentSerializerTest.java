@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.serializer.json;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonParseException;
 import net.kyori.adventure.text.Component;
 import org.junit.jupiter.api.Test;
 
@@ -65,11 +66,15 @@ final class JSONComponentSerializerTest extends SerializerTest {
   // https://github.com/KyoriPowered/adventure/issues/414
   @Test
   @SuppressWarnings("deprecation")
-  void testSkipInvalidHoverEvent() {
+  void testSkipInvalidHoverEventWhenLenient() {
+    final JSONComponentSerializer serializer = JSONComponentSerializer.builder()
+      .editOptions(b -> b.value(JSONOptions.VALIDATE_STRICT_EVENTS, false))
+      .build();
+
     final Component expected = Component.text("hello");
     assertEquals(
       expected,
-      deserialize(object(object -> {
+      deserialize(serializer, object(object -> {
         object.addProperty(JSONComponentConstants.TEXT, "hello");
         object.add(JSONComponentConstants.HOVER_EVENT, object(hover -> {
           hover.addProperty(JSONComponentConstants.HOVER_EVENT_ACTION, "show_text");
@@ -77,6 +82,20 @@ final class JSONComponentSerializerTest extends SerializerTest {
         }));
       }))
     );
+  }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  void testFailOnInvalidHoverEvents() {
+    assertThrows(JsonParseException.class, () -> {
+      deserialize(object(object -> {
+        object.addProperty(JSONComponentConstants.TEXT, "hello");
+        object.add(JSONComponentConstants.HOVER_EVENT, object(hover -> {
+          hover.addProperty(JSONComponentConstants.HOVER_EVENT_ACTION, "show_text");
+          hover.add(JSONComponentConstants.HOVER_EVENT_VALUE, new JsonArray());
+        }));
+      }));
+    });
   }
 
 }

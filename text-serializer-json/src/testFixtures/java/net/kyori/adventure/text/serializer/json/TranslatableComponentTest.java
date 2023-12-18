@@ -34,6 +34,13 @@ import org.junit.jupiter.api.Test;
 final class TranslatableComponentTest extends SerializerTest {
   private static final String KEY = "multiplayer.player.left";
 
+  @Override
+  protected JSONComponentSerializer createSerializer() {
+    return JSONComponentSerializer.builder()
+      .editOptions(b -> b.value(JSONOptions.EMIT_COMPACT_TEXT_COMPONENT, false))
+      .build();
+  }
+
   @Test
   void testNoArgs() {
     this.testObject(
@@ -87,7 +94,12 @@ final class TranslatableComponentTest extends SerializerTest {
             event.addProperty(JSONComponentConstants.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ENTITY));
             event.add(JSONComponentConstants.HOVER_EVENT_CONTENTS, object(value -> {
               value.addProperty(JSONComponentConstants.SHOW_ENTITY_TYPE, "minecraft:player");
-              value.addProperty(JSONComponentConstants.SHOW_ENTITY_ID, id.toString());
+              value.add(JSONComponentConstants.SHOW_ENTITY_ID, array(arr -> {
+                arr.add(-351136121);
+                arr.add(-1961211580);
+                arr.add(-1118969688);
+                arr.add(416931810);
+              }));
               value.add(JSONComponentConstants.SHOW_ENTITY_NAME, object(namej -> {
                 namej.addProperty(JSONComponentConstants.TEXT, name);
               }));

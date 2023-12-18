@@ -30,9 +30,13 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.json.JSONOptions;
 import net.kyori.adventure.util.Services;
+import net.kyori.option.OptionState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import static java.util.Objects.requireNonNull;
 
 final class GsonComponentSerializerImpl implements GsonComponentSerializer {
   private static final Optional<Provider> SERVICE = Services.service(Provider.class);
@@ -46,24 +50,22 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
   static final class Instances {
     static final GsonComponentSerializer INSTANCE = SERVICE
       .map(Provider::gson)
-      .orElseGet(() -> new GsonComponentSerializerImpl(false, null, false));
+      .orElseGet(() -> new GsonComponentSerializerImpl(JSONOptions.byDataVersion(), null));
     static final GsonComponentSerializer LEGACY_INSTANCE = SERVICE
       .map(Provider::gsonLegacy)
-      .orElseGet(() -> new GsonComponentSerializerImpl(true, null, true));
+      .orElseGet(() -> new GsonComponentSerializerImpl(JSONOptions.byDataVersion().at(2525 /* just before 1.16 */), null));
   }
 
   private final Gson serializer;
   private final UnaryOperator<GsonBuilder> populator;
-  private final boolean downsampleColor;
   private final net.kyori.adventure.text.serializer.json.@Nullable LegacyHoverEventSerializer legacyHoverSerializer;
-  private final boolean emitLegacyHover;
+  private final OptionState flags;
 
-  GsonComponentSerializerImpl(final boolean downsampleColor, final net.kyori.adventure.text.serializer.json.@Nullable LegacyHoverEventSerializer legacyHoverSerializer, final boolean emitLegacyHover) {
-    this.downsampleColor = downsampleColor;
+  GsonComponentSerializerImpl(final OptionState flags, final net.kyori.adventure.text.serializer.json.@Nullable LegacyHoverEventSerializer legacyHoverSerializer) {
+    this.flags = flags;
     this.legacyHoverSerializer = legacyHoverSerializer;
-    this.emitLegacyHover = emitLegacyHover;
     this.populator = builder -> {
-      builder.registerTypeAdapterFactory(new SerializerFactory(downsampleColor, legacyHoverSerializer, emitLegacyHover));
+      builder.registerTypeAdapterFactory(new SerializerFactory(flags, legacyHoverSerializer));
       return builder;
     };
     this.serializer = this.populator.apply(
@@ -120,9 +122,8 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
   }
 
   static final class BuilderImpl implements Builder {
-    private boolean downsampleColor = false;
+    private OptionState flags = JSONOptions.byDataVersion(); // latest
     private net.kyori.adventure.text.serializer.json.@Nullable LegacyHoverEventSerializer legacyHoverSerializer;
-    private boolean emitLegacyHover = false;
 
     BuilderImpl() {
       BUILDER.accept(this); // let service provider touch the builder before anybody else touches it
@@ -130,14 +131,22 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
 
     BuilderImpl(final GsonComponentSerializerImpl serializer) {
       this();
-      this.downsampleColor = serializer.downsampleColor;
-      this.emitLegacyHover = serializer.emitLegacyHover;
+      this.flags = serializer.flags;
       this.legacyHoverSerializer = serializer.legacyHoverSerializer;
     }
 
     @Override
-    public @NotNull Builder downsampleColors() {
-      this.downsampleColor = true;
+    public @NotNull Builder options(final @NotNull OptionState flags) {
+      this.flags = requireNonNull(flags, "flags");
+      return this;
+    }
+
+    @Override
+    public @NotNull Builder editOptions(final @NotNull Consumer<OptionState.Builder> optionEditor) {
+      final OptionState.Builder builder = OptionState.optionState()
+        .values(this.flags);
+      requireNonNull(optionEditor, "flagEditor").accept(builder);
+      this.flags = builder.build();
       return this;
     }
 
@@ -148,18 +157,8 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
     }
 
     @Override
-    public @NotNull Builder emitLegacyHoverEvent() {
-      this.emitLegacyHover = true;
-      return this;
-    }
-
-    @Override
     public @NotNull GsonComponentSerializer build() {
-      if (this.legacyHoverSerializer == null) {
-        return this.downsampleColor ? Instances.LEGACY_INSTANCE : Instances.INSTANCE;
-      } else {
-        return new GsonComponentSerializerImpl(this.downsampleColor, this.legacyHoverSerializer, this.emitLegacyHover);
-      }
+      return new GsonComponentSerializerImpl(this.flags, this.legacyHoverSerializer);
     }
   }
 }

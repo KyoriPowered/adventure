@@ -87,7 +87,7 @@ final class ShowEntitySerializer extends TypeAdapter<HoverEvent.ShowEntity> {
     this.gson.toJson(value.type(), SerializerFactory.KEY_TYPE, out);
 
     out.name(SHOW_ENTITY_ID);
-    out.value(value.id().toString());
+    this.gson.toJson(value.id(), SerializerFactory.UUID_TYPE, out);
 
     final @Nullable Component name = value.name();
     if (name != null) {

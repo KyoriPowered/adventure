@@ -52,6 +52,8 @@ import net.kyori.adventure.text.StorageNBTComponent;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.TranslationArgument;
+import net.kyori.adventure.text.serializer.json.JSONOptions;
+import net.kyori.option.OptionState;
 import org.jetbrains.annotations.Nullable;
 
 import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.EXTRA;
@@ -76,13 +78,15 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
   static final Type COMPONENT_LIST_TYPE = new TypeToken<List<Component>>() {}.getType();
   static final Type TRANSLATABLE_ARGUMENT_LIST_TYPE = new TypeToken<List<TranslationArgument>>() {}.getType();
 
-  static TypeAdapter<Component> create(final Gson gson) {
-    return new ComponentSerializerImpl(gson).nullSafe();
+  static TypeAdapter<Component> create(final OptionState features, final Gson gson) {
+    return new ComponentSerializerImpl(features.value(JSONOptions.EMIT_COMPACT_TEXT_COMPONENT), gson).nullSafe();
   }
 
+  private final boolean emitCompactTextComponent;
   private final Gson gson;
 
-  private ComponentSerializerImpl(final Gson gson) {
+  private ComponentSerializerImpl(final boolean emitCompactTextComponent, final Gson gson) {
+    this.emitCompactTextComponent = emitCompactTextComponent;
     this.gson = gson;
   }
 
@@ -232,6 +236,16 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
 
   @Override
   public void write(final JsonWriter out, final Component value) throws IOException {
+    if (
+      value instanceof TextComponent
+        && value.children().isEmpty()
+        && !value.hasStyling()
+        && this.emitCompactTextComponent
+    ) {
+      out.value(((TextComponent) value).content());
+      return;
+    }
+
     out.beginObject();
 
     if (value.hasStyling()) {

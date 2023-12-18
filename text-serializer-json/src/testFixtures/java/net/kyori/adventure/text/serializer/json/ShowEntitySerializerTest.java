@@ -25,18 +25,19 @@ package net.kyori.adventure.text.serializer.json;
 
 import java.util.UUID;
 import net.kyori.adventure.key.Key;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.Style;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 final class ShowEntitySerializerTest extends SerializerTest {
   @Test
   void testWithStringUuid() {
     final UUID id = UUID.randomUUID();
-    this.testStyle(Style.style().hoverEvent(HoverEvent.showEntity(Key.key("zombie"), id)).build(), json -> {
+    final JSONComponentSerializer cereal = JSONComponentSerializer.builder()
+      .editOptions(b -> b.value(JSONOptions.EMIT_HOVER_SHOW_ENTITY_ID_AS_INT_ARRAY, false))
+      .build();
+
+    this.testStyle(cereal, Style.style().hoverEvent(HoverEvent.showEntity(Key.key("zombie"), id)).build(), json -> {
       json.add(JSONComponentConstants.HOVER_EVENT, object(hover -> {
         hover.addProperty(JSONComponentConstants.HOVER_EVENT_ACTION, "show_entity");
         hover.add(JSONComponentConstants.HOVER_EVENT_CONTENTS, object(contents -> {
@@ -50,10 +51,9 @@ final class ShowEntitySerializerTest extends SerializerTest {
   @Test
   void testWithIntArrayUuid() {
     final UUID id = UUID.randomUUID();
-    assertEquals(
-      Component.text("", Style.style().hoverEvent(HoverEvent.showEntity(Key.key("zombie"), id)).build()),
-      this.deserialize(object(comp -> {
-        comp.addProperty(JSONComponentConstants.TEXT, "");
+    this.testStyle(
+      Style.style().hoverEvent(HoverEvent.showEntity(Key.key("zombie"), id)).build(),
+      comp -> {
         comp.add(JSONComponentConstants.HOVER_EVENT, object(hover -> {
           hover.addProperty(JSONComponentConstants.HOVER_EVENT_ACTION, "show_entity");
           hover.add(JSONComponentConstants.HOVER_EVENT_CONTENTS, object(contents -> {
@@ -66,8 +66,7 @@ final class ShowEntitySerializerTest extends SerializerTest {
             }));
           }));
         }));
-      })
-      )
+      }
     );
   }
 }

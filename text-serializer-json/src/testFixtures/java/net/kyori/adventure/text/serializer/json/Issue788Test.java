@@ -44,7 +44,7 @@ final class Issue788Test extends SerializerTest {
             object.addProperty(JSONComponentConstants.COLOR, "#FF00FF");
             object.addProperty(JSONComponentConstants.TEXT, "PREPEND>");
           }));
-          extra.add(object(object -> object.addProperty(JSONComponentConstants.TEXT, "/sign test")));
+          extra.add("/sign test");
           extra.add(object(object -> {
             object.addProperty(JSONComponentConstants.COLOR, "#FF00FF");
             object.addProperty(JSONComponentConstants.TEXT, "<APPEND");
