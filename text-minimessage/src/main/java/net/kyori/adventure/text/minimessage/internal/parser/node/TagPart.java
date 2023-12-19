@@ -106,6 +106,11 @@ public final class TagPart implements Tag.Argument {
       endIndex--;
     }
 
+    if (startIndex > endIndex) {
+      // We were given only a single quote that doesn't terminate, we can't unescape it
+      return text.substring(start, end);
+    }
+
     return TokenParser.unescape(text, startIndex, endIndex, i -> i == firstChar || i == TokenParser.ESCAPE);
   }
 
