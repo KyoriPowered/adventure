@@ -544,4 +544,13 @@ public class MiniMessageParserTest extends AbstractTest {
 
     this.assertParsedEquals(expected, input, alwaysMatchingResolver);
   }
+
+  // https://github.com/KyoriPowered/adventure/issues/1011
+  @Test
+  void testNonTerminatingQuoteArgument() {
+    final String input = "<hover:show_text_:\">";
+    final Component expected = Component.text(input);
+
+    this.assertParsedEquals(expected, input);
+  }
 }
