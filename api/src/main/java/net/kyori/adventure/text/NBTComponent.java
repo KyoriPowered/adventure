@@ -37,7 +37,7 @@ import org.jetbrains.annotations.Nullable;
  * <p>This component consists of:</p>
  * <dl>
  *   <dt>nbtPath</dt>
- *   <dd>a path to specify which parts of the nbt you want displayed(<a href="https://minecraft.gamepedia.com/NBT_path_format#Examples">examples</a>).</dd>
+ *   <dd>a path to specify which parts of the nbt you want displayed(<a href="https://minecraft.wiki/w/NBT_path_format#Examples">examples</a>).</dd>
  *   <dt>interpret</dt>
  *   <dd>a boolean telling adventure if the fetched NBT value should be parsed as JSON</dd>
  * </dl>
