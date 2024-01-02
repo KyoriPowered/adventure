@@ -63,7 +63,7 @@ build-indra = { module = "net.kyori:indra-common", version.ref = "indra" }
 build-indra-crossdoc = { module = "net.kyori:indra-crossdoc", version.ref = "indra" }
 build-indra-sonatype = { module = "net.kyori:indra-publishing-sonatype", version.ref = "indra" }
 build-indra-spotless = { module = "net.kyori:indra-licenser-spotless", version.ref = "indra" }
-build-goomph = "com.diffplug.gradle:goomph:3.43.0"
+build-goomph = "com.diffplug.gradle:goomph:3.44.0"
 build-jmh = { module = "me.champeau.jmh:jmh-gradle-plugin", version.ref = "jmhPlugin" }
 build-testLogger = "com.adarshr:gradle-test-logger-plugin:4.0.0"
 
