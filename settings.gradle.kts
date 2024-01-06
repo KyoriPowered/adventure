@@ -37,7 +37,6 @@ sequenceOf(
   "extra-kotlin",
   "key",
   "nbt",
-  "serializer-configurate3",
   "serializer-configurate4",
   "text-logger-slf4j",
   "text-minimessage",
