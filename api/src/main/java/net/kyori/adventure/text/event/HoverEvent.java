@@ -900,6 +900,12 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
       return this.name;
     }
 
+    /**
+     * Type-specific renderer.
+     *
+     * @param <V> the value type
+     * @since 4.0.0
+     */
     @FunctionalInterface
     interface Renderer<V> {
       <C> @NotNull V render(final @NotNull ComponentRenderer<C> renderer, final @NotNull C context, final @NotNull V value);

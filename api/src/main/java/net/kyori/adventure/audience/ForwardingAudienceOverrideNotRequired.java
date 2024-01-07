@@ -29,6 +29,8 @@ import org.jetbrains.annotations.ApiStatus;
 
 /**
  * Marks a method in {@link Audience} that does not need to be overridden in {@link ForwardingAudience} or {@link ForwardingAudience.Single}.
+ *
+ * @since 4.0.0
  */
 @ApiStatus.Internal
 @Retention(RetentionPolicy.RUNTIME)

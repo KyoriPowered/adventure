@@ -25,6 +25,11 @@ package net.kyori.adventure.nbt;
 
 import java.io.IOException;
 
+/**
+ * A depth tracker for binary tags.
+ *
+ * @since 4.4.0
+ */
 interface BinaryTagScope extends AutoCloseable {
   @Override
   void close() throws IOException;
