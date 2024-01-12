@@ -29,6 +29,8 @@ import java.util.function.BiFunction;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.renderer.ComponentRenderer;
@@ -50,15 +52,15 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
     final boolean prevFirstMatch = state.firstMatch;
     state.firstMatch = true;
 
-    final List<Component> oldChildren = component.children();
-    final int oldChildrenSize = oldChildren.size();
-    Style oldStyle = component.style();
-    List<Component> children = null;
     Component modified = component;
-    // replace the component itself
+    Style oldStyle = component.style();
+    List<Component> oldChildren = component.children();
+    List<Component> children = new ArrayList<>();
+
     if (component instanceof TextComponent) {
-      final String content = ((TextComponent) component).content();
-      final Matcher matcher = state.pattern.matcher(content);
+      String content = ((TextComponent) component).content();
+      Matcher matcher = state.pattern.matcher(content);
+
       int replacedUntil = 0; // last index handled
       while (matcher.find()) {
         final PatternReplacementResult result = state.continuer.shouldReplace(matcher, ++state.matchCount, state.replaceCount);
@@ -86,8 +88,7 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
             // merge style of the match into this component to prevent unexpected loss of style
             modified = modified.style(modified.style().merge(component.style(), Style.Merge.Strategy.IF_ABSENT_ON_TARGET));
 
-            if (children == null) { // Prepare children
-              children = new ArrayList<>(oldChildrenSize + modified.children().size());
+            if (children.isEmpty()) { // Prepare children
               children.addAll(modified.children());
             }
           } else {
@@ -95,16 +96,10 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
             modified = Component.text("", component.style());
             final ComponentLike child = state.replacement.apply(matcher, Component.text().content(matcher.group()));
             if (child != null) {
-              if (children == null) {
-                children = new ArrayList<>(oldChildrenSize + 1);
-              }
               children.add(child.asComponent());
             }
           }
         } else {
-          if (children == null) {
-            children = new ArrayList<>(oldChildrenSize + 2);
-          }
           if (state.firstMatch) {
             // truncate parent to content before match
             modified = ((TextComponent) component).content(content.substring(0, matcher.start()));
@@ -123,77 +118,116 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
       if (replacedUntil < content.length()) {
         // append trailing content
         if (replacedUntil > 0) {
-          if (children == null) {
-            children = new ArrayList<>(oldChildrenSize);
-          }
           children.add(Component.text(content.substring(replacedUntil)));
         }
         // otherwise, we haven't modified the component, so nothing to change
       }
-    } else if (modified instanceof TranslatableComponent) { // get TranslatableComponent with() args
-      final List<TranslationArgument> args = ((TranslatableComponent) modified).arguments();
-      List<TranslationArgument> newArgs = null;
-      for (int i = 0, size = args.size(); i < size; i++) {
-        final TranslationArgument original = args.get(i);
-        final TranslationArgument replaced = original.value() instanceof Component ? TranslationArgument.component(this.render((Component) original.value(), state)) : original;
-        if (replaced != original) {
-          if (newArgs == null) {
-            newArgs = new ArrayList<>(size);
-            if (i > 0) {
-              newArgs.addAll(args.subList(0, i));
-            }
-          }
-        }
-        if (newArgs != null) {
-          newArgs.add(replaced);
-        }
-      }
-      if (newArgs != null) {
-        modified = ((TranslatableComponent) modified).arguments(newArgs);
-      }
+    } else if (component instanceof TranslatableComponent) {
+      modified = handleTranslatableComponent(modified, state);
     }
-    // Only visit children if we're running
+
     if (state.running) {
-      // hover event
-      final HoverEvent<?> event = oldStyle.hoverEvent();
-      if (event != null) {
-        final HoverEvent<?> rendered = event.withRenderedValue(this, state);
-        if (event != rendered) {
-          modified = modified.style(s -> s.hoverEvent(rendered));
-        }
-      }
-      // Children
-      boolean first = true;
-      for (int i = 0; i < oldChildrenSize; i++) {
-        final Component child = oldChildren.get(i);
-        final Component replaced = this.render(child, state);
-        if (replaced != child) {
-          if (children == null) {
-            children = new ArrayList<>(oldChildrenSize);
-          }
-          if (first) {
-            children.addAll(oldChildren.subList(0, i));
-          }
-          first = false;
-        }
-        if (children != null) {
-          children.add(replaced);
-          first = false;
-        }
-      }
+      modified = handleHoverEvent(modified, oldStyle, state);
+      modified = handleClickEvent(modified, oldStyle, state);
+      modified = handleChildren(modified, children, oldChildren, state);
     } else {
-      // we're not visiting children, re-add original children if necessary
-      if (children != null) {
-        children.addAll(oldChildren);
-      }
+      children.addAll(oldChildren);
     }
 
     state.firstMatch = prevFirstMatch;
-    // Update the modified component with new children
-    if (children != null) {
+
+    if (!children.isEmpty()) {
       return modified.children(children);
     }
+
     return modified;
+  }
+
+  private Component handleTranslatableComponent(Component component, State state) {
+    TranslatableComponent translatableComponent = (TranslatableComponent) component;
+    List<TranslationArgument> args = translatableComponent.arguments();
+    List<TranslationArgument> newArgs = null;
+
+    for (int i = 0, size = args.size(); i < size; i++) {
+      final TranslationArgument original = args.get(i);
+      final TranslationArgument replaced = original.value() instanceof Component ? TranslationArgument.component(this.render((Component) original.value(), state)) : original;
+
+      if (replaced != original) {
+        if (newArgs == null) {
+          newArgs = new ArrayList<>(size);
+          if (i > 0) {
+            newArgs.addAll(args.subList(0, i));
+          }
+        }
+      }
+      if (newArgs != null) {
+        newArgs.add(replaced);
+      }
+    }
+
+    if (newArgs != null) {
+      translatableComponent = translatableComponent.arguments(newArgs);
+    }
+
+    return translatableComponent;
+  }
+
+  private Component handleHoverEvent(Component component, Style oldStyle, State state) {
+    HoverEvent<?> event = oldStyle.hoverEvent();
+
+    if (event != null) {
+      final HoverEvent<?> rendered = event.withRenderedValue(this, state);
+      if (event != rendered) {
+        return component.style(s -> s.hoverEvent(rendered));
+      }
+    }
+
+    return component;
+  }
+
+  private Component handleClickEvent(Component component, Style oldStyle, State state) {
+    ClickEvent event = oldStyle.clickEvent();
+
+    if (event != null) {
+      String oldValue = event.value();
+      Component replacedValueComponent = this.render(Component.text(oldValue), state);
+      TextComponent replacedValueText = (TextComponent) replacedValueComponent;
+      StringBuilder finalValue = new StringBuilder(replacedValueText.content());
+
+      for (Component child : replacedValueText.children()) {
+        if (child instanceof TextComponent) {
+          finalValue.append(((TextComponent) child).content());
+        }
+      }
+
+      if (!oldValue.equalsIgnoreCase(finalValue.toString())) {
+        return component.style(s -> s.clickEvent(ClickEvent.clickEvent(event.action(), finalValue.toString())));
+      }
+    }
+
+    return component;
+  }
+
+  private Component handleChildren(Component component, List<Component> children, List<Component> oldChildren, State state) {
+    boolean first = true;
+
+    for (int i = 0; i < oldChildren.size(); i++) {
+      final Component child = oldChildren.get(i);
+      final Component replaced = this.render(child, state);
+      if (replaced != child) {
+        if (first) {
+          children.addAll(oldChildren.subList(0, i));
+          first = false;
+        }
+      }
+
+      if (!oldChildren.isEmpty()) {
+        children.add(replaced);
+        first = false;
+      }
+    }
+
+    return component.children(children);
   }
 
   static final class State {

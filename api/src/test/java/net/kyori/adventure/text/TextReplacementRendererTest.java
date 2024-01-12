@@ -24,6 +24,8 @@
 package net.kyori.adventure.text;
 
 import java.util.regex.Pattern;
+
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -245,6 +247,19 @@ class TextReplacementRendererTest {
       )
       .build();
     assertEquals(expected, replaced);
+  }
+
+  @Test
+  void testClickEventReplacement() {
+    final Component original = Component.text("Click on me!")
+      .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/server <server>"));
+
+    final Component replaced = original.replaceText(c -> c.match("<server>").replacement("lobby"));
+
+    final Component expected = Component.text("Click on me!")
+      .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/server lobby"));
+
+    TextAssertions.assertEquals(expected, replaced);
   }
 
   // https://github.com/KyoriPowered/adventure/issues/387
