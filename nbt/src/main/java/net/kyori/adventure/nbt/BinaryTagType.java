@@ -110,6 +110,7 @@ public abstract class BinaryTagType<T extends BinaryTag> implements Predicate<Bi
    * A binary tag reader.
    *
    * @param <T> the tag type
+   * @since 4.0.0
    */
   interface Reader<T extends BinaryTag> {
     @NotNull T read(final @NotNull DataInput input) throws IOException;
@@ -119,6 +120,7 @@ public abstract class BinaryTagType<T extends BinaryTag> implements Predicate<Bi
    * A binary tag writer.
    *
    * @param <T> the tag type
+   * @since 4.0.0
    */
   interface Writer<T extends BinaryTag> {
     void write(final @NotNull T tag, final @NotNull DataOutput output) throws IOException;

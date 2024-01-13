@@ -29,6 +29,8 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Marker interface for resolvers that may handle a fixed domain of tags.
+ *
+ * @since 4.10.0
  */
 interface MappableResolver {
   /**
