@@ -11,7 +11,7 @@ jmh = "1.37"
 jmhPlugin = "0.7.2"
 junit = "5.10.1"
 slf4j = "2.0.1"
-truth = "1.2.0"
+truth = "1.4.0"
 
 [libraries]
 # shared
