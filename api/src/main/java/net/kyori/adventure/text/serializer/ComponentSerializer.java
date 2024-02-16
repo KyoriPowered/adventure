@@ -37,7 +37,7 @@ import org.jetbrains.annotations.Nullable;
  * @param <R> the serialized type
  * @since 4.0.0
  */
-public interface ComponentSerializer<I extends Component, O extends Component, R> extends ComponentEncoder<I, R> {
+public interface ComponentSerializer<I extends Component, O extends Component, R> extends ComponentEncoder<I, R>, ComponentDecoder<R, O> {
   /**
    * Deserialize a component from input of type {@code R}.
    *
@@ -45,6 +45,7 @@ public interface ComponentSerializer<I extends Component, O extends Component, R
    * @return the component
    * @since 4.0.0
    */
+  @Override
   @NotNull O deserialize(final @NotNull R input);
 
   /**
@@ -61,7 +62,7 @@ public interface ComponentSerializer<I extends Component, O extends Component, R
   @Contract(value = "!null -> !null; null -> null", pure = true)
   @Deprecated
   default @Nullable O deseializeOrNull(final @Nullable R input) {
-    return this.deserializeOrNull(input);
+    return ComponentDecoder.super.deserializeOrNull(input);
   }
 
   /**
@@ -74,8 +75,9 @@ public interface ComponentSerializer<I extends Component, O extends Component, R
    * @since 4.8.0
    */
   @Contract(value = "!null -> !null; null -> null", pure = true)
+  @Override
   default @Nullable O deserializeOrNull(final @Nullable R input) {
-    return this.deserializeOr(input, null);
+    return ComponentDecoder.super.deserializeOr(input, null);
   }
 
   /**
@@ -89,10 +91,9 @@ public interface ComponentSerializer<I extends Component, O extends Component, R
    * @since 4.7.0
    */
   @Contract(value = "!null, _ -> !null; null, _ -> param2", pure = true)
+  @Override
   default @Nullable O deserializeOr(final @Nullable R input, final @Nullable O fallback) {
-    if (input == null) return fallback;
-
-    return this.deserialize(input);
+    return ComponentDecoder.super.deserializeOr(input, fallback);
   }
 
   /**
