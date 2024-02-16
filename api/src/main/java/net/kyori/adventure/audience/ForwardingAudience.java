@@ -207,6 +207,11 @@ public interface ForwardingAudience extends Audience {
   }
 
   @Override
+  default void removeResourcePacks(final @NotNull Iterable<UUID> ids) {
+    for (final Audience audience : this.audiences()) audience.removeResourcePacks(ids);
+  }
+
+  @Override
   default void removeResourcePacks(final @NotNull UUID id, final @NotNull UUID @NotNull ... others) {
     for (final Audience audience : this.audiences()) audience.removeResourcePacks(id, others);
   }
@@ -382,6 +387,11 @@ public interface ForwardingAudience extends Audience {
     @Override
     default void sendResourcePacks(final @NotNull ResourcePackRequest request) {
       this.audience().sendResourcePacks(request.callback(Audiences.unwrapCallback(this, this.audience(), request.callback())));
+    }
+
+    @Override
+    default void removeResourcePacks(final @NotNull Iterable<UUID> ids) {
+      this.audience().removeResourcePacks(ids);
     }
 
     @Override
