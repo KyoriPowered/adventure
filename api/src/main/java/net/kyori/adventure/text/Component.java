@@ -1270,7 +1270,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param contextType the context type
    * @param renderer the renderer
    * @return a virtual component
-   * @since 4.14.0
+   * @since 4.16.0
    */
   @Contract(value = "_, _ -> new", pure = true)
   static <C> @NotNull VirtualComponent virtual(final @NotNull Class<C> contextType, final @NotNull VirtualComponentRenderer<C> renderer) {
@@ -1287,7 +1287,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param renderer the renderer
    * @param style the style
    * @return a virtual component
-   * @since 4.14.0
+   * @since 4.16.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
   static <C> @NotNull VirtualComponent virtual(final @NotNull Class<C> contextType, final @NotNull VirtualComponentRenderer<C> renderer, final @NotNull Style style) {
@@ -1304,7 +1304,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param renderer the renderer
    * @param style the style elements
    * @return a virtual component
-   * @since 4.14.0
+   * @since 4.16.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
   static <C> @NotNull VirtualComponent virtual(final @NotNull Class<C> contextType, final @NotNull VirtualComponentRenderer<C> renderer, final @NotNull StyleBuilderApplicable... style) {
@@ -1321,7 +1321,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param renderer the renderer
    * @param style the style elements
    * @return a virtual component
-   * @since 4.14.0
+   * @since 4.16.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
   static <C> @NotNull VirtualComponent virtual(final @NotNull Class<C> contextType, final @NotNull VirtualComponentRenderer<C> renderer, final @NotNull Iterable<StyleBuilderApplicable> style) {

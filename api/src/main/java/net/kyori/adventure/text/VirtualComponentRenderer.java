@@ -30,7 +30,7 @@ import org.jetbrains.annotations.UnknownNullability;
  * A holder for a value.
  *
  * @param <C> the context type
- * @since 4.14.0
+ * @since 4.16.0
  */
 public interface VirtualComponentRenderer<C> {
   /**
@@ -38,7 +38,7 @@ public interface VirtualComponentRenderer<C> {
    *
    * @param context the context
    * @return the rendered value
-   * @since 4.14.0
+   * @since 4.16.0
    */
   @UnknownNullability ComponentLike apply(final @NotNull C context);
 
@@ -48,7 +48,7 @@ public interface VirtualComponentRenderer<C> {
    * <p>By default, this will be an empty string.</p>
    *
    * @return the fallback string
-   * @since 4.14.0
+   * @since 4.16.0
    */
   default @NotNull String fallbackString() {
     return "";

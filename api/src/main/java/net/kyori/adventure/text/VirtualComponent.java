@@ -30,14 +30,14 @@ import org.jetbrains.annotations.NotNull;
  *
  * <p>This component type is transient, and not guaranteed to survive during any sort of transformations or serialization.</p>
  *
- * @since 4.14.0
+ * @since 4.16.0
  */
 public interface VirtualComponent extends TextComponent {
   /**
    * Gets the renderer context type.
    *
    * @return the renderer context type
-   * @since 4.14.0
+   * @since 4.16.0
    */
   @NotNull Class<?> contextType();
 
@@ -45,7 +45,7 @@ public interface VirtualComponent extends TextComponent {
    * Gets the renderer.
    *
    * @return the renderer
-   * @since 4.14.0
+   * @since 4.16.0
    */
   @NotNull VirtualComponentRenderer<?> renderer();
 }
