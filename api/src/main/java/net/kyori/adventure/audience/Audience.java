@@ -23,7 +23,10 @@
  */
 package net.kyori.adventure.audience;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -802,6 +805,38 @@ public interface Audience extends Pointered {
       otherReqs[i] = others[i].asResourcePackInfo().id();
     }
     this.removeResourcePacks(request.asResourcePackInfo().id(), otherReqs);
+  }
+
+  /**
+   * Clear resource packs with the provided ids if they are present.
+   *
+   * @param ids the ids of resource packs to remove
+   * @since 4.16.0
+   * @sinceMinecraft 1.20.3
+   */
+  default void removeResourcePacks(final @NotNull Iterable<UUID> ids) {
+    // break these out to id + arrays
+    final Iterator<UUID> it = ids.iterator();
+    if (!it.hasNext()) return;
+
+    final UUID id = it.next();
+    final UUID[] others;
+    if (!it.hasNext()) {
+      others = new UUID[0];
+    } else if (ids instanceof Collection<?>) {
+      others = new UUID[((Collection<UUID>) ids).size() - 1];
+      for (int i = 0; i < others.length; i++) {
+        others[i] = it.next();
+      }
+    } else {
+      final List<UUID> othersList = new ArrayList<>();
+      while (it.hasNext()) {
+        othersList.add(it.next());
+      }
+      others = othersList.toArray(new UUID[0]);
+    }
+
+    this.removeResourcePacks(id, others);
   }
 
   /**
