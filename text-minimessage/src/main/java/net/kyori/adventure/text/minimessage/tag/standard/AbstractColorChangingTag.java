@@ -61,7 +61,6 @@ import org.jetbrains.annotations.UnknownNullability;
  * @since 4.10.0
  */
 abstract class AbstractColorChangingTag implements Modifying, Examinable {
-
   private static final ComponentFlattener LENGTH_CALCULATOR = ComponentFlattener.builder()
     .mapper(TextComponent.class, TextComponent::content)
     .unknownMapper(x -> "_") // every unknown component gets a single colour
@@ -104,7 +103,7 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
   public final Component apply(final @NotNull Component current, final int depth) {
     if (depth == 0) {
       // capture state into a virtual component, no other logic is needed in normal MM handling
-      return Component.virtual(Void.class, new TagInfoHolder(this.preserveData(), current));
+      return Component.virtual(Void.class, new TagInfoHolder(this.preserveData(), current), current.style());
     }
 
     if ((this.disableApplyingColorDepth != -1 && depth > this.disableApplyingColorDepth) || current.style().color() != null) {
