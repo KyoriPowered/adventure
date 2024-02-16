@@ -29,9 +29,10 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.VirtualComponent;
-import net.kyori.adventure.text.VirtualComponentHolder;
+import net.kyori.adventure.text.VirtualComponentRenderer;
 import net.kyori.adventure.text.flattener.ComponentFlattener;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.internal.parser.node.TagNode;
@@ -45,6 +46,7 @@ import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 /**
  * A transformation that applies a colour change.
@@ -102,7 +104,7 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
   public final Component apply(final @NotNull Component current, final int depth) {
     if (depth == 0) {
       // capture state into a virtual component, no other logic is needed in normal MM handling
-      return Component.virtual(new TagInfoHolder(new ComponentData(this.preserveData(), current)));
+      return Component.virtual(Void.class, new TagInfoHolder(this.preserveData(), current));
     }
 
     if ((this.disableApplyingColorDepth != -1 && depth > this.disableApplyingColorDepth) || current.style().color() != null) {
@@ -198,13 +200,23 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
   @Override
   public abstract int hashCode();
 
-  static final class ComponentData implements Emitable {
-    final Consumer<TokenEmitter> output;
-    final Component originalComp;
+  static final class TagInfoHolder implements VirtualComponentRenderer<Void>, Emitable {
+    private final Consumer<TokenEmitter> output;
+    private final Component originalComp;
 
-    ComponentData(final Consumer<TokenEmitter> output, final Component originalComp) {
+    TagInfoHolder(final Consumer<TokenEmitter> output, final Component originalComp) {
       this.output = output;
       this.originalComp = originalComp;
+    }
+
+    @Override
+    public @UnknownNullability ComponentLike apply(final @NotNull Void context) {
+      return this.originalComp;
+    }
+
+    @Override
+    public @NotNull String fallbackString() {
+      return ""; // only holds data for reserialization, not for display
     }
 
     @Override
@@ -213,26 +225,8 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
     }
 
     @Override
-    public Component substitute() {
+    public @Nullable Component substitute() {
       return this.originalComp;
-    }
-  }
-
-  static final class TagInfoHolder implements VirtualComponentHolder<ComponentData> {
-    private final ComponentData data;
-
-    TagInfoHolder(final ComponentData data) {
-      this.data = data;
-    }
-
-    @Override
-    public @NotNull ComponentData unbox() {
-      return this.data;
-    }
-
-    @Override
-    public @NotNull String fallbackString() {
-      return ""; // only holds data for reserialization, not for display
     }
   }
 
@@ -241,11 +235,11 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
       return null;
     }
 
-    final VirtualComponentHolder<?> holder = ((VirtualComponent) comp).holder();
+    final VirtualComponentRenderer<?> holder = ((VirtualComponent) comp).renderer();
     if (!(holder instanceof TagInfoHolder)) {
       return null;
     }
 
-    return ((TagInfoHolder) holder).unbox();
+    return (TagInfoHolder) holder;
   }
 }
