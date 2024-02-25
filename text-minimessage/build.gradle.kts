@@ -7,7 +7,8 @@ description = "A string-based, user-friendly format for representing Minecraft: 
 
 dependencies {
   api(projects.adventureApi)
-  testImplementation(project(":adventure-text-serializer-plain"))
+  testImplementation(projects.adventureTextSerializerPlain)
+  testImplementation(projects.adventureTextSerializerAnsi)
   annotationProcessor(projects.adventureAnnotationProcessors)
 }
 

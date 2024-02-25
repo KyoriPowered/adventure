@@ -31,6 +31,8 @@ import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.kyori.adventure.text.serializer.ansi.ANSIComponentSerializer;
+import net.kyori.ansi.ColorLevel;
 import net.kyori.examination.string.MultiLineStringExaminer;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,6 +40,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public abstract class AbstractTest {
   protected static final MiniMessage PARSER = MiniMessage.builder().debug(System.out::print).build();
+  protected static final ANSIComponentSerializer ANSI = ANSIComponentSerializer.builder()
+    .colorLevel(ColorLevel.TRUE_COLOR)
+    .build();
 
   protected void assertSerializedEquals(final @NotNull String expected, final @NotNull ComponentLike input) {
     final String string = PARSER.serialize(input.asComponent());
@@ -52,16 +57,14 @@ public abstract class AbstractTest {
     this.assertParsedEquals(PARSER, expected, input, args);
   }
 
-  protected void assertParsedEquals(final MiniMessage miniMessage, final Component expected, final String input) {
-    final String expectedSerialized = this.prettyPrint(expected.compact());
-    final String actual = this.prettyPrint(miniMessage.deserialize(input).compact());
-    assertEquals(expectedSerialized, actual);
-  }
-
   protected void assertParsedEquals(final MiniMessage miniMessage, final Component expected, final String input, final @NotNull TagResolver... args) {
-    final String expectedSerialized = this.prettyPrint(expected.compact());
-    final String actual = this.prettyPrint(miniMessage.deserialize(input, TagResolver.resolver(args)).compact());
-    assertEquals(expectedSerialized, actual);
+    final Component expectedCompacted = expected.compact();
+    final String expectedSerialized = this.prettyPrint(expectedCompacted);
+    final Component actualCompacted = miniMessage.deserialize(input, TagResolver.resolver(args)).compact();
+    final String actual = this.prettyPrint(actualCompacted);
+    assertEquals(expectedSerialized, actual, () -> "Expected parsed value did not match actual:\n"
+      + "  Expected: " + ANSI.serialize(expectedCompacted) + '\n'
+      + "  Actual:   " + ANSI.serialize(actualCompacted));
   }
 
   protected final String prettyPrint(final Component component) {
