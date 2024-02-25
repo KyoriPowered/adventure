@@ -47,7 +47,7 @@ final class RainbowTag extends AbstractColorChangingTag {
   static final TagResolver RESOLVER = TagResolver.resolver(RAINBOW, RainbowTag::create);
 
   private final boolean reversed;
-  private final int phase;
+  private final double dividedPhase;
 
   private int colorIndex = 0;
 
@@ -75,7 +75,7 @@ final class RainbowTag extends AbstractColorChangingTag {
 
   private RainbowTag(final boolean reversed, final int phase) {
     this.reversed = reversed;
-    this.phase = phase;
+    this.dividedPhase = ((double) phase) / 10d;
   }
 
   @Override
@@ -101,13 +101,13 @@ final class RainbowTag extends AbstractColorChangingTag {
   @Override
   protected TextColor color() {
     final float index = this.colorIndex;
-    final float hue = (index / this.size() + this.phase / 10f) % 1;
+    final float hue = (float) ((index / this.size() + this.dividedPhase) % 1f);
     return TextColor.color(HSVLike.hsvLike(hue, 1f, 1f));
   }
 
   @Override
   public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(ExaminableProperty.of("phase", this.phase));
+    return Stream.of(ExaminableProperty.of("phase", this.dividedPhase));
   }
 
   @Override
@@ -115,11 +115,11 @@ final class RainbowTag extends AbstractColorChangingTag {
     if (this == other) return true;
     if (other == null || this.getClass() != other.getClass()) return false;
     final RainbowTag that = (RainbowTag) other;
-    return this.colorIndex == that.colorIndex && this.phase == that.phase;
+    return this.colorIndex == that.colorIndex && this.dividedPhase == that.dividedPhase;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.colorIndex, this.phase);
+    return Objects.hash(this.colorIndex, this.dividedPhase);
   }
 }

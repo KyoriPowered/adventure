@@ -30,6 +30,7 @@ import org.junit.jupiter.api.Test;
 
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.Component.textOfChildren;
 import static net.kyori.adventure.text.event.ClickEvent.openUrl;
 import static net.kyori.adventure.text.format.NamedTextColor.BLACK;
 import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
@@ -351,5 +352,25 @@ class RainbowTagTest extends AbstractTest {
     final String input = "<rainbow><msg>";
     final Component expected1 = text().append(text("y", color(0xff0000)), text("o", color(0x00ffff))).build();
     this.assertParsedEquals(expected1, input, component("msg", text("yo")));
+  }
+
+  // https://github.com/KyoriPowered/adventure/issues/1040
+  @Test
+  void gh1040() {
+    final String input = "<rainbow:16777215>||||||||||";
+    final Component expected = textOfChildren(
+      text("|", color(0x00ffff)),
+      text("|", color(0x0065ff)),
+      text("|", color(0x3200ff)),
+      text("|", color(0xcc00ff)),
+      text("|", color(0xff0099)),
+      text("|", color(0xff0000)),
+      text("|", color(0xff9900)),
+      text("|", color(0xccff00)),
+      text("|", color(0x32ff00)),
+      text("|", color(0x00ff65))
+    );
+
+    this.assertParsedEquals(expected, input);
   }
 }
