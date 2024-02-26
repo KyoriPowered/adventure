@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.serializer.legacy;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -330,5 +331,28 @@ class LegacyComponentSerializerTest {
     final Component strikethough = Component.text("Hello World", Style.style(TextDecoration.STRIKETHROUGH));
     final String serialized = serializer.serialize(strikethough);
     assertEquals(serialized, "Hello World");
+  }
+
+  // https://github.com/KyoriPowered/adventure/issues/1043
+  @Test
+  void testCaseInsensitivity() {
+    final Component expected = Component.text("pop4959", NamedTextColor.YELLOW);
+    final Component lowercaseActual = LegacyComponentSerializer.legacyAmpersand().deserialize("&epop4959");
+    assertEquals(expected, lowercaseActual);
+
+    final Component uppercaseActual = LegacyComponentSerializer.legacyAmpersand().deserialize("&Epop4959");
+    assertEquals(expected, uppercaseActual);
+  }
+
+  @Test
+  void testCaseSensitivity() {
+    final Component expected = Component.text("&Epop4959");
+    final Component lowercaseActual = LegacyComponentSerializer
+      .legacyAmpersand()
+      .toBuilder()
+      .formats(Collections.singletonList(CharacterAndFormat.characterAndFormat('e', NamedTextColor.YELLOW)))
+      .build()
+      .deserialize("&Epop4959");
+    assertEquals(expected, lowercaseActual);
   }
 }
