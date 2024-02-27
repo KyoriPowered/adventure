@@ -36,10 +36,12 @@ import static java.util.Objects.requireNonNull;
 final class CharacterAndFormatImpl implements CharacterAndFormat {
   private final char character;
   private final TextFormat format;
+  private final boolean caseInsensitive;
 
-  CharacterAndFormatImpl(final char character, final @NotNull TextFormat format) {
+  CharacterAndFormatImpl(final char character, final @NotNull TextFormat format, final boolean caseInsensitive) {
     this.character = character;
     this.format = requireNonNull(format, "format");
+    this.caseInsensitive = caseInsensitive;
   }
 
   @Override
@@ -53,18 +55,25 @@ final class CharacterAndFormatImpl implements CharacterAndFormat {
   }
 
   @Override
+  public boolean caseInsensitive() {
+    return this.caseInsensitive;
+  }
+
+  @Override
   public boolean equals(final @Nullable Object other) {
     if (this == other) return true;
     if (!(other instanceof CharacterAndFormatImpl)) return false;
     final CharacterAndFormatImpl that = (CharacterAndFormatImpl) other;
     return this.character == that.character
-      && this.format.equals(that.format);
+      && this.format.equals(that.format)
+      && this.caseInsensitive == that.caseInsensitive;
   }
 
   @Override
   public int hashCode() {
     int result = this.character;
     result = 31 * result + this.format.hashCode();
+    result = 31 * result + Boolean.hashCode(this.caseInsensitive);
     return result;
   }
 
