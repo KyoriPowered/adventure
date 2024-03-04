@@ -27,6 +27,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
+import net.kyori.adventure.pointer.Pointered;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -76,22 +77,42 @@ final class MiniMessageImpl implements MiniMessage {
 
   @Override
   public @NotNull Component deserialize(final @NotNull String input) {
-    return this.parser.parseFormat(this.newContext(input, null));
+    return this.parser.parseFormat(this.newContext(input, null, null));
+  }
+
+  @Override
+  public @NotNull Component deserialize(final @NotNull String input, final @NotNull Pointered target) {
+    return this.parser.parseFormat(this.newContext(input, requireNonNull(target, "target"), null));
   }
 
   @Override
   public @NotNull Component deserialize(final @NotNull String input, final @NotNull TagResolver tagResolver) {
-    return this.parser.parseFormat(this.newContext(input, requireNonNull(tagResolver, "tagResolver")));
+    return this.parser.parseFormat(this.newContext(input, null, requireNonNull(tagResolver, "tagResolver")));
+  }
+
+  @Override
+  public @NotNull Component deserialize(final @NotNull String input, final @NotNull Pointered target, final @NotNull TagResolver tagResolver) {
+    return this.parser.parseFormat(this.newContext(input, requireNonNull(target, "target"), requireNonNull(tagResolver, "tagResolver")));
   }
 
   @Override
   public Node.@NotNull Root deserializeToTree(final @NotNull String input) {
-    return this.parser.parseToTree(this.newContext(input, null));
+    return this.parser.parseToTree(this.newContext(input, null, null));
+  }
+
+  @Override
+  public Node.@NotNull Root deserializeToTree(final @NotNull String input, final @NotNull Pointered target) {
+    return this.parser.parseToTree(this.newContext(input, requireNonNull(target, "target"), null));
   }
 
   @Override
   public Node.@NotNull Root deserializeToTree(final @NotNull String input, final @NotNull TagResolver tagResolver) {
-    return this.parser.parseToTree(this.newContext(input, requireNonNull(tagResolver, "tagResolver")));
+    return this.parser.parseToTree(this.newContext(input, null, requireNonNull(tagResolver, "tagResolver")));
+  }
+
+  @Override
+  public Node.@NotNull Root deserializeToTree(final @NotNull String input, final @NotNull Pointered target, final @NotNull TagResolver tagResolver) {
+    return this.parser.parseToTree(this.newContext(input, requireNonNull(target, "target"), requireNonNull(tagResolver, "tagResolver")));
   }
 
   @Override
@@ -116,22 +137,22 @@ final class MiniMessageImpl implements MiniMessage {
 
   @Override
   public @NotNull String escapeTags(final @NotNull String input) {
-    return this.parser.escapeTokens(this.newContext(input, null));
+    return this.parser.escapeTokens(this.newContext(input, null, null));
   }
 
   @Override
   public @NotNull String escapeTags(final @NotNull String input, final @NotNull TagResolver tagResolver) {
-    return this.parser.escapeTokens(this.newContext(input, tagResolver));
+    return this.parser.escapeTokens(this.newContext(input, null, tagResolver));
   }
 
   @Override
   public @NotNull String stripTags(final @NotNull String input) {
-    return this.parser.stripTokens(this.newContext(input, null));
+    return this.parser.stripTokens(this.newContext(input, null, null));
   }
 
   @Override
   public @NotNull String stripTags(final @NotNull String input, final @NotNull TagResolver tagResolver) {
-    return this.parser.stripTokens(this.newContext(input, tagResolver));
+    return this.parser.stripTokens(this.newContext(input, null, tagResolver));
   }
 
   @Override
@@ -144,13 +165,9 @@ final class MiniMessageImpl implements MiniMessage {
     return this.parser.tagResolver;
   }
 
-  private @NotNull ContextImpl newContext(final @NotNull String input, final @Nullable TagResolver resolver) {
+  private @NotNull ContextImpl newContext(final @NotNull String input, final @Nullable Pointered target, final @Nullable TagResolver resolver) {
     requireNonNull(input, "input");
-    if (resolver == null) {
-      return ContextImpl.of(this.strict, this.debugOutput, input, this, TagResolver.empty(), this.preProcessor, this.postProcessor);
-    } else {
-      return ContextImpl.of(this.strict, this.debugOutput, input, this, resolver, this.preProcessor, this.postProcessor);
-    }
+    return new ContextImpl(this.strict, this.debugOutput, input, this, target, resolver, this.preProcessor, this.postProcessor);
   }
 
   static final class BuilderImpl implements Builder {

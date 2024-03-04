@@ -26,6 +26,7 @@ package net.kyori.adventure.text.minimessage;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.builder.AbstractBuilder;
+import net.kyori.adventure.pointer.Pointered;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.minimessage.tree.Node;
@@ -133,6 +134,16 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
   }
 
   /**
+   * Deserializes a string into a component, with a target.
+   *
+   * @param input the input string
+   * @param target the target of the deserialization
+   * @return the output component
+   * @since 4.17.0
+   */
+  @NotNull Component deserialize(final @NotNull String input, final @NotNull Pointered target);
+
+  /**
    * Deserializes a string into a component, with a tag resolver to parse tags of the form {@code <key>}.
    *
    * <p>Tags will be resolved from the resolver parameter before the resolver provided in the builder is used.</p>
@@ -145,7 +156,20 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
   @NotNull Component deserialize(final @NotNull String input, final @NotNull TagResolver tagResolver);
 
   /**
-   * Deserializes a string into a component, with a tag resolver to parse tags of the form {@code <key>}.
+   * Deserializes a string into a component, with a tag resolver to parse tags of the form {@code <key>} and a target.
+   *
+   * <p>Tags will be resolved from the resolver parameter before the resolver provided in the builder is used.</p>
+   *
+   * @param input the input string
+   * @param target the target of the deserialization
+   * @param tagResolver the tag resolver for any additional tags to handle
+   * @return the output component
+   * @since 4.17.0
+   */
+  @NotNull Component deserialize(final @NotNull String input, final @NotNull Pointered target, final @NotNull TagResolver tagResolver);
+
+  /**
+   * Deserializes a string into a component, with tag resolvers to parse tags of the form {@code <key>}.
    *
    * <p>Tags will be resolved from the resolver parameters before the resolver provided in the builder is used.</p>
    *
@@ -159,7 +183,22 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
   }
 
   /**
-   * Deserializes a string into a tree of parsed elements,
+   * Deserializes a string into a component, with tag resolvers to parse tags of the form {@code <key>} and a target.
+   *
+   * <p>Tags will be resolved from the resolver parameters before the resolver provided in the builder is used.</p>
+   *
+   * @param input the input string
+   * @param target the target of the deserialization
+   * @param tagResolvers a series of tag resolvers to apply extra tags from, last specified taking priority
+   * @return the output component
+   * @since 4.17.0
+   */
+  default @NotNull Component deserialize(final @NotNull String input, final @NotNull Pointered target, final @NotNull TagResolver... tagResolvers) {
+    return this.deserialize(input, target, TagResolver.resolver(tagResolvers));
+  }
+
+  /**
+   * Deserializes a string into a tree of parsed elements.
    * This is intended for inspecting the output of the parser for debugging purposes.
    *
    * @param input the input string
@@ -167,6 +206,17 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * @since 4.10.0
    */
   Node.@NotNull Root deserializeToTree(final @NotNull String input);
+
+  /**
+   * Deserializes a string into a tree of parsed elements, with a target.
+   * This is intended for inspecting the output of the parser for debugging purposes.
+   *
+   * @param input the input string
+   * @param target the target of the deserialization
+   * @return the root of the resulting tree
+   * @since 4.17.0
+   */
+  Node.@NotNull Root deserializeToTree(final @NotNull String input, final @NotNull Pointered target);
 
   /**
    * Deserializes a string into a tree of parsed elements, with a tag resolver to parse tags of the form {@code <key>}.
@@ -182,6 +232,20 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
   Node.@NotNull Root deserializeToTree(final @NotNull String input, final @NotNull TagResolver tagResolver);
 
   /**
+   * Deserializes a string into a tree of parsed elements, with a tag resolver to parse tags of the form {@code <key>} and a target.
+   * This is intended for inspecting the output of the parser for debugging purposes.
+   *
+   * <p>Tags will be resolved from the resolver parameter before the resolver provided in the builder is used.</p>
+   *
+   * @param input the input string
+   * @param target the target of the deserialization
+   * @param tagResolver the tag resolver for any additional tags to handle
+   * @return the root of the resulting tree
+   * @since 4.17.0
+   */
+  Node.@NotNull Root deserializeToTree(final @NotNull String input, final @NotNull Pointered target, final @NotNull TagResolver tagResolver);
+
+  /**
    * Deserializes a string into a tree of parsed elements, with a tag resolver to parse tags of the form {@code <key>}.
    * This is intended for inspecting the output of the parser for debugging purposes.
    *
@@ -194,6 +258,22 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    */
   default Node.@NotNull Root deserializeToTree(final @NotNull String input, final @NotNull TagResolver... tagResolvers) {
     return this.deserializeToTree(input, TagResolver.resolver(tagResolvers));
+  }
+
+  /**
+   * Deserializes a string into a tree of parsed elements, with a tag resolver to parse tags of the form {@code <key>}.
+   * This is intended for inspecting the output of the parser for debugging purposes.
+   *
+   * <p>Tags will be resolved from the resolver parameter before the resolver provided in the builder is used.</p>
+   *
+   * @param input the input string
+   * @param target the target of the deserialization
+   * @param tagResolvers a series of tag resolvers to apply extra tags from, last specified taking priority
+   * @return the root of the resulting tree
+   * @since 4.17.0
+   */
+  default Node.@NotNull Root deserializeToTree(final @NotNull String input, final @NotNull Pointered target, final @NotNull TagResolver... tagResolvers) {
+    return this.deserializeToTree(input, target, TagResolver.resolver(tagResolvers));
   }
 
   /**
