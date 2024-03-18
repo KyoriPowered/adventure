@@ -41,6 +41,7 @@ public final class JSONOptions {
   private static final int VERSION_INITIAL = 0;
   private static final int VERSION_1_16 = 2526; // 20w16a
   private static final int VERSION_1_20_3 = 3679; // 23w40a
+  private static final int VERSION_1_20_5 = 3819; // 24w09a
 
   /**
    * Whether to emit RGB text.
@@ -82,6 +83,14 @@ public final class JSONOptions {
    * @since 4.15.0
    */
   public static final Option<Boolean> VALIDATE_STRICT_EVENTS = Option.booleanOption(key("validate/strict_events"), true);
+  /**
+   * Whether to emit the default hover event item stack quantity of {@code 1}.
+   *
+   * <p>When enabled, this matches Vanilla as of 1.20.5.</p>
+   *
+   * @since 4.17.0
+   */
+  public static final Option<Boolean> EMIT_DEFAULT_ITEM_HOVER_QUANTITY = Option.booleanOption(key("emit/default_item_hover_quantity"), true);
 
   /**
    * Versioned by world data version.
@@ -93,6 +102,7 @@ public final class JSONOptions {
         .value(EMIT_RGB, false)
         .value(EMIT_HOVER_SHOW_ENTITY_ID_AS_INT_ARRAY, false)
         .value(VALIDATE_STRICT_EVENTS, false)
+        .value(EMIT_DEFAULT_ITEM_HOVER_QUANTITY, false)
     )
     .version(
       VERSION_1_16,
@@ -104,6 +114,10 @@ public final class JSONOptions {
       b -> b.value(EMIT_COMPACT_TEXT_COMPONENT, true)
         .value(EMIT_HOVER_SHOW_ENTITY_ID_AS_INT_ARRAY, true)
         .value(VALIDATE_STRICT_EVENTS, true)
+    )
+    .version(
+      VERSION_1_20_5,
+      b -> b.value(EMIT_DEFAULT_ITEM_HOVER_QUANTITY, true)
     )
     .build();
 
