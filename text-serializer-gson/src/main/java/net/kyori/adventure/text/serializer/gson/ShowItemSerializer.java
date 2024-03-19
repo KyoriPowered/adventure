@@ -33,6 +33,8 @@ import java.io.IOException;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.serializer.json.JSONOptions;
+import net.kyori.option.OptionState;
 import org.jetbrains.annotations.Nullable;
 
 import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.SHOW_ITEM_COUNT;
@@ -40,14 +42,16 @@ import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.SH
 import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.SHOW_ITEM_TAG;
 
 final class ShowItemSerializer extends TypeAdapter<HoverEvent.ShowItem> {
-  static TypeAdapter<HoverEvent.ShowItem> create(final Gson gson) {
-    return new ShowItemSerializer(gson).nullSafe();
+  static TypeAdapter<HoverEvent.ShowItem> create(final Gson gson, final OptionState opt) {
+    return new ShowItemSerializer(gson, opt.value(JSONOptions.EMIT_DEFAULT_ITEM_HOVER_QUANTITY)).nullSafe();
   }
 
   private final Gson gson;
+  private final boolean emitDefaultQuantity;
 
-  private ShowItemSerializer(final Gson gson) {
+  private ShowItemSerializer(final Gson gson, final boolean emitDefaultQuantity) {
     this.gson = gson;
+    this.emitDefaultQuantity = emitDefaultQuantity;
   }
 
   @Override
@@ -96,7 +100,7 @@ final class ShowItemSerializer extends TypeAdapter<HoverEvent.ShowItem> {
     this.gson.toJson(value.item(), SerializerFactory.KEY_TYPE, out);
 
     final int count = value.count();
-    if (count != 1) {
+    if (count != 1 || this.emitDefaultQuantity) {
       out.name(SHOW_ITEM_COUNT);
       out.value(count);
     }

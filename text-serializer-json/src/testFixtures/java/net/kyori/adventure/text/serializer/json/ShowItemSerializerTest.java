@@ -107,6 +107,7 @@ final class ShowItemSerializerTest extends SerializerTest {
           hover.addProperty(JSONComponentConstants.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ITEM));
           hover.add(JSONComponentConstants.HOVER_EVENT_CONTENTS, object(contents -> {
             contents.addProperty(JSONComponentConstants.SHOW_ITEM_ID, "minecraft:diamond");
+            contents.addProperty(JSONComponentConstants.SHOW_ITEM_COUNT, 1);
             contents.addProperty(JSONComponentConstants.SHOW_ITEM_TAG, "{display:{Name:\"A test!\"}}");
           }));
         }));
