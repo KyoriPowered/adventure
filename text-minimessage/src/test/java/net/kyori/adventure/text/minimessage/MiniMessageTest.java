@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
+import net.kyori.adventure.pointer.Pointered;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -49,6 +50,7 @@ import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 import static net.kyori.adventure.text.format.TextDecoration.UNDERLINED;
 import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.component;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -435,6 +437,35 @@ public class MiniMessageTest extends AbstractTest {
     assertTrue(messages.contains("    }"));
     assertTrue(messages.contains("  }"));
     assertTrue(messages.contains("}"));
+  }
+
+  static class TestTarget1 implements Pointered {
+    public String data;
+  }
+
+  static class TestTarget2 implements Pointered {
+  }
+
+  @Test
+  void contextTargetUtilMethods() {
+    final TagResolver tagResolver0 = TagResolver.resolver("tag", (argumentQueue, context) -> {
+      assertThrows(ParsingException.class, () -> context.targetAsType(TestTarget2.class));
+      return Tag.inserting(Component.text(context.targetAsType(TestTarget1.class).data));
+    });
+    final TestTarget1 target = new TestTarget1();
+    target.data = "hello";
+    assertEquals(Component.text("hello"), MiniMessage.miniMessage().deserialize("<tag>", target, tagResolver0));
+
+    final TagResolver tagResolver1 = TagResolver.resolver("tag", (argumentQueue, context) -> {
+      assertThrows(ParsingException.class, () -> context.targetAsType(TestTarget1.class));
+      assertThrows(ParsingException.class, () -> context.targetAsType(TestTarget2.class));
+      assertThrows(ParsingException.class, context::targetOrThrow);
+      assertNull(context.target());
+
+      return Tag.inserting(Component.text("whoops"));
+    });
+    assertEquals(Component.text("whoops"), MiniMessage.miniMessage().deserialize("<tag>", tagResolver1));
+
   }
 
   private static <T> boolean anyMatch(final Collection<T> items, final Predicate<T> test) {

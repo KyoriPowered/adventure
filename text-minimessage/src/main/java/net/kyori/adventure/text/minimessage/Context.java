@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage;
 
+import net.kyori.adventure.pointer.Pointered;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -39,6 +40,40 @@ import org.jetbrains.annotations.Nullable;
  */
 @ApiStatus.NonExtendable
 public interface Context {
+
+  /**
+   * The target of the parse context, if provided.
+   * Can be used for tags that provide information relating to the target of the resulting message.
+   *
+   * @return the target, if provided
+   * @since 4.17.0
+   */
+  public @Nullable Pointered target();
+
+  /**
+   * The target of the parse context.
+   * Can be used for tags that provide information relating to the target of the resulting message.
+   *
+   * <p>If the caller did not provide a target, a parse exception is thrown with a default message.</p>
+   *
+   * @return the target, if provided
+   * @since 4.17.0
+   */
+  public @NotNull Pointered targetOrThrow();
+
+  /**
+   * The target of the parse context, casted to a provided type.
+   * Can be used for tags that provide information relating to the target of the resulting message.
+   *
+   * <p>If the caller did not provide a target, or the target is not of the provided type, a parse
+   * exception is thrown with a default message.</p>
+   *
+   * @param <T> the required type
+   * @param targetClass the class of the required type
+   * @return the target
+   * @since 4.17.0
+   */
+  public <T extends Pointered> @NotNull T targetAsType(final @NotNull Class<T> targetClass);
 
   /**
    * Deserializes a MiniMessage string using all the settings of this context.

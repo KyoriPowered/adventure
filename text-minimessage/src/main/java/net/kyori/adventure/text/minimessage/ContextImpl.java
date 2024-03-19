@@ -26,6 +26,7 @@ package net.kyori.adventure.text.minimessage;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
+import net.kyori.adventure.pointer.Pointered;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.internal.parser.ParsingExceptionImpl;
 import net.kyori.adventure.text.minimessage.internal.parser.Token;
@@ -51,6 +52,7 @@ class ContextImpl implements Context {
   private final Consumer<String> debugOutput;
   private String message;
   private final MiniMessage miniMessage;
+  private final @Nullable Pointered target;
   private final TagResolver tagResolver;
   private final UnaryOperator<String> preProcessor;
   private final UnaryOperator<Component> postProcessor;
@@ -60,29 +62,19 @@ class ContextImpl implements Context {
     final Consumer<String> debugOutput,
     final String message,
     final MiniMessage miniMessage,
-    final @NotNull TagResolver extraTags,
-    final UnaryOperator<String> preProcessor,
-    final UnaryOperator<Component> postProcessor
+    final @Nullable Pointered target,
+    final @Nullable TagResolver extraTags,
+    final @Nullable UnaryOperator<String> preProcessor,
+    final @Nullable UnaryOperator<Component> postProcessor
   ) {
     this.strict = strict;
     this.debugOutput = debugOutput;
     this.message = message;
     this.miniMessage = miniMessage;
-    this.tagResolver = extraTags;
+    this.target = target;
+    this.tagResolver = extraTags == null ? TagResolver.empty() : extraTags;
     this.preProcessor = preProcessor == null ? UnaryOperator.identity() : preProcessor;
     this.postProcessor = postProcessor == null ? UnaryOperator.identity() : postProcessor;
-  }
-
-  static ContextImpl of(
-    final boolean strict,
-    final Consumer<String> debugOutput,
-    final String input,
-    final MiniMessageImpl miniMessage,
-    final TagResolver extraTags,
-    final UnaryOperator<String> preProcessor,
-    final UnaryOperator<Component> postProcessor
-  ) {
-    return new ContextImpl(strict, debugOutput, input, miniMessage, extraTags, preProcessor, postProcessor);
   }
 
   public boolean strict() {
@@ -111,6 +103,29 @@ class ContextImpl implements Context {
 
   public UnaryOperator<String> preProcessor() {
     return this.preProcessor;
+  }
+
+  @Override
+  public @Nullable Pointered target() {
+    return this.target;
+  }
+
+  @Override
+  public @NotNull Pointered targetOrThrow() {
+    if (this.target == null) {
+      throw this.newException("A target is required for this deserialization attempt");
+    } else {
+      return this.target;
+    }
+  }
+
+  @Override
+  public <T extends Pointered> @NotNull T targetAsType(final @NotNull Class<T> targetClass) {
+    if (requireNonNull(targetClass, "targetClass").isInstance(this.target)) {
+      return targetClass.cast(this.target);
+    } else {
+      throw this.newException("A target with type " + targetClass.getSimpleName() + " is required for this deserialization attempt");
+    }
   }
 
   @Override

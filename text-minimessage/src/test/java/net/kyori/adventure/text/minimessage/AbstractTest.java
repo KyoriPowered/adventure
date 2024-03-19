@@ -72,7 +72,7 @@ public abstract class AbstractTest {
   }
 
   public static Context dummyContext(final String originalMessage) {
-    return ContextImpl.of(false, null, originalMessage, (MiniMessageImpl) PARSER, TagResolver.empty(), UnaryOperator.identity(), Component::compact);
+    return new ContextImpl(false, null, originalMessage, PARSER, null, TagResolver.empty(), UnaryOperator.identity(), Component::compact);
   }
 
   public static ArgumentQueue emptyArgumentQueue(final Context context) {
