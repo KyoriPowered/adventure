@@ -60,7 +60,7 @@ final class ComponentCompaction {
     }
 
     // if there is only one child, check if self a useless empty component
-    if (childrenSize == 1 && optimized instanceof TextComponent) {
+    if (childrenSize == 1 && isText(optimized)) {
       final TextComponent textComponent = (TextComponent) optimized;
 
       if (textComponent.content().isEmpty()) {
@@ -87,7 +87,7 @@ final class ComponentCompaction {
       child = compact(child, childParentStyle);
 
       // ignore useless empty children (regardless of its style)
-      if (child.children().isEmpty() && child instanceof TextComponent) {
+      if (child.children().isEmpty() && isText(child)) {
         final TextComponent textComponent = (TextComponent) child;
 
         if (textComponent.content().isEmpty()) {
@@ -99,12 +99,12 @@ final class ComponentCompaction {
     }
 
     // try to merge children into this parent component
-    if (optimized instanceof TextComponent) {
+    if (isText(optimized)) {
       while (!childrenToAppend.isEmpty()) {
         final Component child = childrenToAppend.get(0);
         final Style childStyle = child.style().merge(childParentStyle, Style.Merge.Strategy.IF_ABSENT_ON_TARGET);
 
-        if (child instanceof TextComponent && Objects.equals(childStyle, childParentStyle)) {
+        if (isText(child) && Objects.equals(childStyle, childParentStyle)) {
           // merge child components into the parent if they are a text component with the same effective style
           // in context of their parent style
           optimized = joinText((TextComponent) optimized, (TextComponent) child);
@@ -125,7 +125,7 @@ final class ComponentCompaction {
       final Component child = childrenToAppend.get(i);
       final Component neighbor = childrenToAppend.get(i + 1);
 
-      if (child.children().isEmpty() && child instanceof TextComponent && neighbor instanceof TextComponent) {
+      if (child.children().isEmpty() && isText(child) && isText(neighbor)) {
         // calculate the children's styles in context of their parent style
         final Style childStyle = child.style().merge(childParentStyle, Style.Merge.Strategy.IF_ABSENT_ON_TARGET);
         final Style neighborStyle = neighbor.style().merge(childParentStyle, Style.Merge.Strategy.IF_ABSENT_ON_TARGET);
@@ -162,7 +162,7 @@ final class ComponentCompaction {
   * @return true if the provided component is blank, false otherwise
   */
   private static boolean isBlank(final Component component) {
-    if (component instanceof TextComponent) {
+    if (isText(component)) {
       final TextComponent textComponent = (TextComponent) component;
 
       final String content = textComponent.content();
@@ -214,5 +214,9 @@ final class ComponentCompaction {
 
   private static TextComponent joinText(final TextComponent one, final TextComponent two) {
     return TextComponentImpl.create(two.children(), one.style(), one.content() + two.content());
+  }
+
+  private static boolean isText(final Component component) {
+    return component instanceof TextComponent && !(component instanceof VirtualComponent);
   }
 }

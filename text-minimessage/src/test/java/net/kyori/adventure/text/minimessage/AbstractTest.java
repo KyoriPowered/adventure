@@ -23,11 +23,13 @@
  */
 package net.kyori.adventure.text.minimessage;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
+import net.kyori.adventure.text.VirtualComponentRenderer;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -35,6 +37,7 @@ import net.kyori.adventure.text.serializer.ansi.ANSIComponentSerializer;
 import net.kyori.ansi.ColorLevel;
 import net.kyori.examination.string.MultiLineStringExaminer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.UnknownNullability;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -77,5 +80,15 @@ public abstract class AbstractTest {
 
   public static ArgumentQueue emptyArgumentQueue(final Context context) {
     return new ArgumentQueueImpl<>(context, Collections.<Tag.Argument>emptyList());
+  }
+
+  public static Component virtualOfChildren(final ComponentLike... children) {
+    return Component.virtual(Void.class, new VirtualComponentRenderer<Void>() {
+        @Override
+        public @UnknownNullability ComponentLike apply(final @NotNull Void context) {
+          return Component.empty();
+        }
+      }) // not part of equality... should it be?
+      .children(Arrays.asList(children));
   }
 }

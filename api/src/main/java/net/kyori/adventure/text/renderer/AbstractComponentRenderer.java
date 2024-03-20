@@ -33,6 +33,8 @@ import net.kyori.adventure.text.SelectorComponent;
 import net.kyori.adventure.text.StorageNBTComponent;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.text.VirtualComponent;
+import net.kyori.adventure.text.VirtualComponentRenderer;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -43,7 +45,10 @@ import org.jetbrains.annotations.NotNull;
  */
 public abstract class AbstractComponentRenderer<C> implements ComponentRenderer<C> {
   @Override
-  public @NotNull Component render(final @NotNull Component component, final @NotNull C context) {
+  public @NotNull Component render(@NotNull Component component, final @NotNull C context) {
+    if (component instanceof VirtualComponent) {
+      component = this.renderVirtual((VirtualComponent) component, context);
+    }
     if (component instanceof TextComponent) {
       return this.renderText((TextComponent) component, context);
     } else if (component instanceof TranslatableComponent) {
@@ -128,6 +133,22 @@ public abstract class AbstractComponentRenderer<C> implements ComponentRenderer<
    * @return the rendered component
    */
   protected abstract @NotNull Component renderText(final @NotNull TextComponent component, final @NotNull C context);
+
+  /**
+   * Renders a virtual component.
+   *
+   * @param component the component
+   * @param context the context
+   * @return the rendered component
+   * @since 4.14.0
+   */
+  @SuppressWarnings("unchecked")
+  protected @NotNull Component renderVirtual(final @NotNull VirtualComponent component, final @NotNull C context) {
+    if (component.contextType().isInstance(context)) {
+      return ((VirtualComponentRenderer<C>) component.renderer()).apply(context).asComponent();
+    }
+    return component; // will be processed as a TextComponent instead
+  }
 
   /**
    * Renders a translatable component.

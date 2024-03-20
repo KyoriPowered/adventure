@@ -21,36 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.internal.serializer;
+package net.kyori.adventure.text;
 
-import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
- * Something that holds data representable as MiniMessage tags.
+ * A virtual component.
  *
- * @since 4.10.0
+ * <p>This component type is transient, and not guaranteed to survive during any sort of transformations or serialization.</p>
+ *
+ * @since 4.16.0
  */
-@FunctionalInterface
-public interface Emitable {
+public interface VirtualComponent extends TextComponent {
   /**
-   * Emit tags based on this emitable's data.
+   * Gets the renderer context type.
    *
-   * @param emitter the target to emit to
-   * @since 4.10.0
+   * @return the renderer context type
+   * @since 4.16.0
    */
-  void emit(final @NotNull TokenEmitter emitter);
+  @NotNull Class<?> contextType();
 
   /**
-   * Provide a substitute for this component's actual children.
+   * Gets the renderer.
    *
-   * <p>This allows modifying tags to output original data while still transforming the created components.</p>
-   *
-   * @return a potential substitute
-   * @since 4.13.0
+   * @return the renderer
+   * @since 4.16.0
    */
-  default @Nullable Component substitute() { // TODO: maybe make this be only for component claims?
-    return null;
-  }
+  @NotNull VirtualComponentRenderer<?> renderer();
 }

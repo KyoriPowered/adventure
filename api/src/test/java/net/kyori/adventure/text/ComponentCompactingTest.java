@@ -38,6 +38,7 @@ import static net.kyori.adventure.key.Key.key;
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
+import static net.kyori.adventure.text.Component.virtual;
 import static net.kyori.adventure.text.JoinConfiguration.noSeparators;
 import static net.kyori.adventure.text.format.Style.style;
 import static net.kyori.adventure.text.format.TextColor.color;
@@ -413,6 +414,14 @@ class ComponentCompactingTest {
       .append(text(" ", NamedTextColor.GREEN))
       .append(text(" ", NamedTextColor.BLUE))
       .build();
+
+    assertEquals(expectedComponent, expectedComponent.compact());
+  }
+
+  @Test
+  void testVirtualComponentsPreserved() {
+    final Component expectedComponent = virtual(Object.class, context -> text("meow :3"))
+      .append(text("3"));
 
     assertEquals(expectedComponent, expectedComponent.compact());
   }

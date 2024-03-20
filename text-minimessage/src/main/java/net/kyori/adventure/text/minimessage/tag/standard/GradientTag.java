@@ -29,9 +29,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.OptionalDouble;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.Context;
+import net.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
+import net.kyori.adventure.text.minimessage.internal.serializer.TokenEmitter;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -47,8 +51,10 @@ import org.jetbrains.annotations.Range;
  */
 final class GradientTag extends AbstractColorChangingTag {
   private static final String GRADIENT = "gradient";
+  private static final TextColor DEFAULT_WHITE = TextColor.color(0xffffff);
+  private static final TextColor DEFAULT_BLACK = TextColor.color(0x000000);
 
-  static final TagResolver RESOLVER = TagResolver.resolver(GRADIENT, GradientTag::create);
+  static final TagResolver RESOLVER = SerializableResolver.claimingComponent(GRADIENT, GradientTag::create, AbstractColorChangingTag::claimComponent);
 
   private int index = 0;
 
@@ -56,6 +62,8 @@ final class GradientTag extends AbstractColorChangingTag {
 
   private final TextColor[] colors;
   private @Range(from = -1, to = 1) double phase;
+
+  private final boolean negativePhase;
 
   static Tag create(final ArgumentQueue args, final Context ctx) {
     double phase = 0;
@@ -92,15 +100,17 @@ final class GradientTag extends AbstractColorChangingTag {
 
   private GradientTag(final double phase, final List<TextColor> colors) {
     if (colors.isEmpty()) {
-      this.colors = new TextColor[]{TextColor.color(0xffffff), TextColor.color(0x000000)};
+      this.colors = new TextColor[]{DEFAULT_WHITE, DEFAULT_BLACK};
     } else {
       this.colors = colors.toArray(new TextColor[0]);
     }
 
     if (phase < 0) {
+      this.negativePhase = true;
       this.phase = 1 + phase; // [-1, 0) -> [0, 1)
       Collections.reverse(Arrays.asList(this.colors));
     } else {
+      this.negativePhase = false;
       this.phase = phase;
     }
   }
@@ -130,6 +140,38 @@ final class GradientTag extends AbstractColorChangingTag {
     final int low = lowUnclamped % this.colors.length;
 
     return TextColor.lerp((float) position - lowUnclamped, this.colors[low], this.colors[high]);
+  }
+
+  @Override
+  protected @NotNull Consumer<TokenEmitter> preserveData() {
+    final TextColor[] colors;
+    final double phase;
+
+    if (this.negativePhase) {
+      colors = Arrays.copyOf(this.colors, this.colors.length);
+      Collections.reverse(Arrays.asList(colors));
+      phase = this.phase - 1;
+    } else {
+      colors = this.colors;
+      phase = this.phase;
+    }
+
+    return emit -> {
+      emit.tag(GRADIENT);
+      if (colors.length != 2 || !colors[0].equals(DEFAULT_WHITE) || !colors[1].equals(DEFAULT_BLACK)) { // non-default params
+        for (final TextColor color : colors) {
+          if (color instanceof NamedTextColor) {
+            emit.argument(NamedTextColor.NAMES.keyOrThrow((NamedTextColor) color));
+          } else {
+            emit.argument(color.asHexString());
+          }
+        }
+      }
+
+      if (phase != 0) {
+        emit.argument(Double.toString(phase));
+      }
+    };
   }
 
   @Override
