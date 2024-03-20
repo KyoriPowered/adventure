@@ -5,11 +5,7 @@ plugins {
   id("adventure.common-conventions")
 }
 
-val sharedTests by configurations.registering {
-  isVisible = false
-  isCanBeResolved = false
-  isCanBeConsumed = false
-}
+val sharedTests = configurations.dependencyScope("sharedTests")
 
 val sharedTestDirs by configurations.registering {
   isVisible = false
