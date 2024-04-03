@@ -36,7 +36,7 @@ slf4jRuntime = { module = "org.slf4j:slf4j-api", version = "1.7.36"}
 slf4jtest = "com.github.valfirst:slf4j-test:3.0.1" # Specific versions are needed for different SLF4J versions
 
 # text-serializer-gson
-gson = "com.google.code.gson:gson:2.8.0"
+gson = "com.google.code.gson:gson:2.10.1"
 
 # text-serializer-ansi
 ansi = "net.kyori:ansi:1.0.3"
