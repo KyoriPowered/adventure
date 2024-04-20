@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.serializer.json;
 
 import java.io.IOException;
+import java.util.Collections;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.nbt.StringBinaryTag;
@@ -70,7 +71,7 @@ final class ShowItemSerializerTest extends SerializerTest {
         HoverEvent.showItem(
           Key.key("minecraft", "diamond"),
           2,
-          null
+          Collections.emptyMap()
         )
       ).build(),
       json -> {
