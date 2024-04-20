@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.nbt.api;
 
+import net.kyori.adventure.text.event.DataComponentValue;
 import net.kyori.adventure.util.Codec;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -37,7 +38,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 4.0.0
  */
-public interface BinaryTagHolder {
+public interface BinaryTagHolder extends DataComponentValue.TagSerializable {
   /**
    * Encodes {@code nbt} using {@code codec}.
    *
@@ -85,6 +86,11 @@ public interface BinaryTagHolder {
    * @since 4.0.0
    */
   @NotNull String string();
+
+  @Override
+  default @NotNull BinaryTagHolder asBinaryTag() {
+    return this;
+  }
 
   /**
    * Gets the held value as a binary tag.

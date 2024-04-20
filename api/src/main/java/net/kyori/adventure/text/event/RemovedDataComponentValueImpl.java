@@ -23,17 +23,6 @@
  */
 package net.kyori.adventure.text.event;
 
-import net.kyori.examination.Examinable;
-
-/**
- * A holder for the value of an item's data component.
- *
- * <p>The exact value is platform-specific. Serializers may provide their
- * own implementations as well, and any logic to serialize or deserialize
- * should be done per-serializer.</p>
- *
- * @since 4.17.0
- * @sinceMinecraft 1.20.5
- */
-public interface ItemDataHolder extends Examinable {
+enum RemovedDataComponentValueImpl implements DataComponentValue.Removed {
+  REMOVED
 }

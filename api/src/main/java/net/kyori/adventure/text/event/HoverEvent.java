@@ -143,7 +143,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
    * @return a hover event
    * @since 4.17.0
    */
-  public static @NotNull HoverEvent<ShowItem> showItem(final @NotNull Keyed item, final @Range(from = 0, to = Integer.MAX_VALUE) int count, final @NotNull Map<Key, ItemDataHolder> dataComponents) {
+  public static @NotNull HoverEvent<ShowItem> showItem(final @NotNull Keyed item, final @Range(from = 0, to = Integer.MAX_VALUE) int count, final @NotNull Map<Key, DataComponentValue> dataComponents) {
     return showItem(ShowItem.showItem(item, count, dataComponents));
   }
 
@@ -363,7 +363,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
     private final Key item;
     private final int count;
     private final @Nullable BinaryTagHolder nbt;
-    private final Map<Key, ItemDataHolder> dataComponents;
+    private final Map<Key, DataComponentValue> dataComponents;
 
     /**
      * Creates.
@@ -491,11 +491,11 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      * @since 4.17.0
      * @sinceMinecraft 1.20.5
      */
-    public static @NotNull ShowItem showItem(final @NotNull Keyed item, final @Range(from = 0, to = Integer.MAX_VALUE) int count, final @NotNull Map<Key, ItemDataHolder> dataComponents) {
+    public static @NotNull ShowItem showItem(final @NotNull Keyed item, final @Range(from = 0, to = Integer.MAX_VALUE) int count, final @NotNull Map<Key, DataComponentValue> dataComponents) {
       return new ShowItem(requireNonNull(item, "item").key(), count, null, dataComponents);
     }
 
-    private ShowItem(final @NotNull Key item, final @Range(from = 0, to = Integer.MAX_VALUE) int count, final @Nullable BinaryTagHolder nbt, final @NotNull Map<Key, ItemDataHolder> dataComponents) {
+    private ShowItem(final @NotNull Key item, final @Range(from = 0, to = Integer.MAX_VALUE) int count, final @Nullable BinaryTagHolder nbt, final @NotNull Map<Key, DataComponentValue> dataComponents) {
       this.item = item;
       this.count = count;
       this.nbt = nbt;
@@ -585,7 +585,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      * @since 4.17.0
      * @sinceMinecraft 1.20.5
      */
-    public @NotNull Map<Key, ItemDataHolder> dataComponents() {
+    public @NotNull Map<Key, DataComponentValue> dataComponents() {
       return this.dataComponents;
     }
 
@@ -599,9 +599,31 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      * @since 4.17.0
      * @sinceMinecraft 1.20.5
      */
-    public @NotNull ShowItem dataComponents(final @NotNull Map<Key, ItemDataHolder> holder) {
+    public @NotNull ShowItem dataComponents(final @NotNull Map<Key, DataComponentValue> holder) {
       if (Objects.equals(this.dataComponents, holder)) return this;
       return new ShowItem(this.item, this.count, null, holder.isEmpty() ? Collections.emptyMap() : Collections.unmodifiableMap(new HashMap<>(holder)));
+    }
+
+    /**
+     * Return an unmodifiable map of data components coerced to the target type.
+     *
+     * <p>If there is no converter registered with the {@link DataComponentValueConverterRegistry} for the conversion of a value, a {@link IllegalArgumentException} will be thrown.</p>
+     *
+     * @param targetType the expected target type
+     * @param <V> the new data component value type
+     * @return the unmodifiable map
+     * @since 4.17.0
+     */
+    public <V extends DataComponentValue> @NotNull Map<Key, V> dataComponentsConvertedTo(final @NotNull Class<V> targetType) {
+      if (this.dataComponents.isEmpty()) {
+        return Collections.emptyMap();
+      } else {
+        final Map<Key, V> results = new HashMap<>(this.dataComponents.size());
+        for (final Map.Entry<Key, DataComponentValue> entry : this.dataComponents.entrySet()) {
+          results.put(entry.getKey(), DataComponentValueConverterRegistry.convert(targetType, entry.getKey(), entry.getValue()));
+        }
+        return Collections.unmodifiableMap(results);
+      }
     }
 
     @Override
