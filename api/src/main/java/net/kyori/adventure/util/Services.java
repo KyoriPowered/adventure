@@ -23,9 +23,13 @@
  */
 package net.kyori.adventure.util;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Optional;
+import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
+import java.util.Set;
 import net.kyori.adventure.internal.properties.AdventureProperties;
 import org.jetbrains.annotations.NotNull;
 
@@ -120,5 +124,32 @@ public final class Services {
     }
 
     return Optional.ofNullable(firstFallback);
+  }
+
+  /**
+   * Locates all providers for a certain service and initializes them.
+   *
+   * @param clazz the service interface
+   * @param <P> the service interface type
+   * @return an unmodifiable set of all known providers of the service
+   * @since 4.17.0
+   */
+  public static <P> Set<P> services(final Class<? extends P> clazz) {
+    final ServiceLoader<? extends P> loader = Services0.loader(clazz);
+    final Set<P> providers = new HashSet<>();
+    for (final Iterator<? extends P> it = loader.iterator(); it.hasNext();) {
+      final P instance;
+      try {
+        instance = it.next();
+      } catch (final ServiceConfigurationError ex) {
+        if (SERVICE_LOAD_FAILURES_ARE_FATAL) {
+          throw new IllegalStateException("Encountered an exception loading a provider for " + clazz + ": ", ex);
+        } else {
+          continue;
+        }
+      }
+      providers.add(instance);
+    }
+    return Collections.unmodifiableSet(providers);
   }
 }
