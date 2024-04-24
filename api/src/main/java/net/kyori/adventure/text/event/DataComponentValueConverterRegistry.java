@@ -33,6 +33,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.util.Services;
 import net.kyori.examination.Examinable;
@@ -54,6 +55,18 @@ public final class DataComponentValueConverterRegistry {
   private static final Set<Provider> PROVIDERS = Services.services(Provider.class);
 
   private DataComponentValueConverterRegistry() {
+  }
+
+  /**
+   * Get the id's of all registered conversion providers.
+   *
+   * @return an unmodifiable set of the known provider ids
+   * @since 4.1.7.0
+   */
+  public static Set<Key> knownProviders() {
+    return Collections.unmodifiableSet(PROVIDERS.stream()
+      .map(Provider::id)
+      .collect(Collectors.toSet()));
   }
 
   /**
