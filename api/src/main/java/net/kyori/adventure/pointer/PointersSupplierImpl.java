@@ -47,7 +47,7 @@ final class PointersSupplierImpl<T> implements PointersSupplier<T> {
   }
 
   @Override
-  public <P> boolean supports(@NotNull Pointer<P> pointer) {
+  public <P> boolean supports(final @NotNull Pointer<P> pointer) {
     if (this.resolvers.containsKey(Objects.requireNonNull(pointer, "pointer"))) {
       return true;
     } else if (this.parent == null) {
@@ -59,8 +59,8 @@ final class PointersSupplierImpl<T> implements PointersSupplier<T> {
 
   @Override
   @SuppressWarnings("unchecked") // all values are checked on entry
-  public @Nullable <P> Function<? super T, P> resolver(@NotNull Pointer<P> pointer) {
-    Function<? super T, ?> resolver = this.resolvers.get(Objects.requireNonNull(pointer, "pointer"));
+  public @Nullable <P> Function<? super T, P> resolver(final @NotNull Pointer<P> pointer) {
+    final Function<? super T, ?> resolver = this.resolvers.get(Objects.requireNonNull(pointer, "pointer"));
 
     if (resolver != null) {
       return (Function<? super T, P>) resolver;
@@ -104,8 +104,8 @@ final class PointersSupplierImpl<T> implements PointersSupplier<T> {
     }
 
     @Override
-    @SuppressWarnings("unchecked") // all values are checked on entry
-    public @NotNull Pointers.Builder toBuilder() {
+    @SuppressWarnings({"unchecked", "rawtypes"}) // all values are checked on entry
+    public Pointers.@NotNull Builder toBuilder() {
       final Pointers.Builder builder = this.supplier.parent == null ? Pointers.builder() : this.supplier.parent.view(this.instance).toBuilder();
 
       for (final Map.Entry<Pointer<?>, Function<U, ?>> entry : this.supplier.resolvers.entrySet()) {
