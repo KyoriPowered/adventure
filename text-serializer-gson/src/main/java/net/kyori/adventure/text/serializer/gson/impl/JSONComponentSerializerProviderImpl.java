@@ -21,9 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.serializer.gson;
+package net.kyori.adventure.text.serializer.gson.impl;
 
+import com.google.auto.service.AutoService;
 import java.util.function.Supplier;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.json.JSONComponentSerializer;
 import net.kyori.adventure.util.Services;
 import org.jetbrains.annotations.ApiStatus;
@@ -35,6 +37,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.14.0
  */
 @ApiStatus.Internal
+@AutoService(JSONComponentSerializer.Provider.class)
 public final class JSONComponentSerializerProviderImpl implements JSONComponentSerializer.Provider, Services.Fallback {
   @Override
   public @NotNull JSONComponentSerializer instance() {

@@ -2,6 +2,7 @@
 version = "1.0"
 
 [versions]
+autoService = "1.1.1"
 checkstyle = "10.14.0"
 errorprone = "2.25.0"
 examination = "1.3.0"
@@ -15,6 +16,8 @@ truth = "1.4.2"
 
 [libraries]
 # shared
+autoService = { module = "com.google.auto.service:auto-service", version.ref = "autoService" }
+autoService-annotations = { module = "com.google.auto.service:auto-service-annotations", version.ref = "autoService" }
 examination-api = { module = "net.kyori:examination-api", version.ref = "examination" }
 examination-string = { module = "net.kyori:examination-string", version.ref = "examination" }
 option = { module = "net.kyori:option", version = "1.0.0" }
@@ -55,8 +58,6 @@ truth-java8 = { module = "com.google.truth.extensions:truth-java8-extension", ve
 contractValidator = "ca.stellardrift:contract-validator:1.0.1"
 errorprone = { module = "com.google.errorprone:error_prone_core", version.ref = "errorprone" }
 stylecheck = "ca.stellardrift:stylecheck:0.2.1"
-autoService-annotations = "com.google.auto.service:auto-service-annotations:1.1.1"
-autoService-processor = "com.google.auto.service:auto-service:1.1.1"
 
 build-errorpronePlugin = "net.ltgt.gradle:gradle-errorprone-plugin:3.1.0"
 build-indra = { module = "net.kyori:indra-common", version.ref = "indra" }

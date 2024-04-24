@@ -170,7 +170,7 @@ final class HoverTag {
         if (hasLegacy(event)) {
           emitLegacyHover(event, emit);
         } else {
-          for (final Map.Entry<Key, DataComponentValue.TagSerializable> entry : event.dataComponentsConvertedTo(DataComponentValue.TagSerializable.class).entrySet()) {
+          for (final Map.Entry<Key, DataComponentValue.TagSerializable> entry : event.dataComponentsAs(DataComponentValue.TagSerializable.class).entrySet()) {
             emit.argument(entry.getKey().asMinimalString());
             emit.argument(entry.getValue().asBinaryTag().string());
           }

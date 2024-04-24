@@ -5,6 +5,8 @@ plugins {
 
 dependencies {
   api(libs.gson)
+  compileOnlyApi(libs.autoService.annotations)
+  annotationProcessor(libs.autoService)
 }
 
 applyJarMetadata("net.kyori.adventure.text.serializer.gson")
