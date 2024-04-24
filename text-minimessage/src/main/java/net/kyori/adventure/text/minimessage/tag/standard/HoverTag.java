@@ -23,11 +23,14 @@
  */
 package net.kyori.adventure.text.minimessage.tag.standard;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import net.kyori.adventure.key.InvalidKeyException;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.DataComponentValue;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.minimessage.Context;
@@ -123,10 +126,27 @@ final class HoverTag {
     @Override
     public HoverEvent.@NotNull ShowItem parse(final @NotNull ArgumentQueue args, final @NotNull Context ctx) throws ParsingException {
       try {
+        @SuppressWarnings("PatternValidation")
         final Key key = Key.key(args.popOr("Show item hover needs at least an item ID").value());
         final int count = args.hasNext() ? args.pop().asInt().orElseThrow(() -> ctx.newException("The count argument was not a valid integer")) : 1;
         if (args.hasNext()) {
-          return HoverEvent.ShowItem.showItem(key, count, BinaryTagHolder.binaryTagHolder(args.pop().value()));
+          // Compatibility with legacy versions:
+          // if the value starts with a '{' we assume it's SNBT, and parse it as such to create a legacy holder
+          // otherwise, we'll parse argument pairs as a map of ResourceLocation -> SNBT value
+          final String value = args.peek().value();
+          if (value.startsWith("{")) {
+            args.pop();
+            return legacyShowItem(key, count, value);
+          }
+
+          final Map<Key, DataComponentValue> datas = new HashMap<>();
+          while (args.hasNext()) {
+            @SuppressWarnings("PatternValidation")
+            final Key dataKey = Key.key(args.pop().value());
+            final String dataVal = args.popOr("a value was expected for key " + dataKey).value();
+            datas.put(dataKey, BinaryTagHolder.binaryTagHolder(dataVal));
+          }
+          return HoverEvent.ShowItem.showItem(key, count, datas);
         } else {
           return HoverEvent.ShowItem.showItem(key, count);
         }
@@ -135,16 +155,38 @@ final class HoverTag {
       }
     }
 
+    @SuppressWarnings("deprecation")
+    private static HoverEvent.@NotNull ShowItem legacyShowItem(final Key id, final int count, final String value) {
+      return HoverEvent.ShowItem.showItem(id, count, BinaryTagHolder.binaryTagHolder(value));
+    }
+
     @Override
     public void emit(final HoverEvent.ShowItem event, final TokenEmitter emit) {
       emit.argument(compactAsString(event.item()));
 
-      if (event.count() != 1 || event.nbt() != null) {
+      if (event.count() != 1 || hasLegacy(event) || !event.dataComponents().isEmpty()) {
         emit.argument(Integer.toString(event.count()));
 
-        if (event.nbt() != null) {
-          emit.argument(event.nbt().string());
+        if (hasLegacy(event)) {
+          emitLegacyHover(event, emit);
+        } else {
+          for (final Map.Entry<Key, DataComponentValue.TagSerializable> entry : event.dataComponentsAs(DataComponentValue.TagSerializable.class).entrySet()) {
+            emit.argument(entry.getKey().asMinimalString());
+            emit.argument(entry.getValue().asBinaryTag().string());
+          }
         }
+      }
+    }
+
+    @SuppressWarnings("deprecation")
+    static boolean hasLegacy(final HoverEvent.ShowItem event) {
+      return event.nbt() != null;
+    }
+
+    @SuppressWarnings("deprecation")
+    static void emitLegacyHover(final HoverEvent.ShowItem event, final TokenEmitter emit) {
+      if (event.nbt() != null) {
+        emit.argument(event.nbt().string());
       }
     }
   }

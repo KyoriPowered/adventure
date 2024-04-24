@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-  annotationProcessor(libs.autoService.processor)
+  annotationProcessor(libs.autoService)
   compileOnlyApi(libs.autoService.annotations)
   api(libs.jetbrainsAnnotations)
 }

@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.serializer.json;
 
 import java.io.IOException;
+import java.util.Collections;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.nbt.StringBinaryTag;
@@ -36,7 +37,12 @@ import org.junit.jupiter.api.Test;
 final class ShowItemSerializerTest extends SerializerTest {
   @Test
   void testDeserializeWithPopulatedTag() throws IOException {
+    final JSONComponentSerializer serializer = JSONComponentSerializer.builder()
+      .editOptions(opts -> opts.value(JSONOptions.SHOW_ITEM_HOVER_DATA_MODE, JSONOptions.ShowItemHoverDataMode.EMIT_EITHER))
+      .build();
+
     this.testObject(
+      serializer,
       Component.text().hoverEvent(
         HoverEvent.showItem(
           Key.key("minecraft", "diamond"),
@@ -70,7 +76,7 @@ final class ShowItemSerializerTest extends SerializerTest {
         HoverEvent.showItem(
           Key.key("minecraft", "diamond"),
           2,
-          null
+          Collections.emptyMap()
         )
       ).build(),
       json -> {
@@ -88,7 +94,11 @@ final class ShowItemSerializerTest extends SerializerTest {
 
   @Test
   void testDeserializeWithCountOfOne() throws IOException {
+    final JSONComponentSerializer serializer = JSONComponentSerializer.builder()
+      .editOptions(opts -> opts.value(JSONOptions.SHOW_ITEM_HOVER_DATA_MODE, JSONOptions.ShowItemHoverDataMode.EMIT_EITHER))
+      .build();
     this.testObject(
+      serializer,
       Component.text().hoverEvent(
         HoverEvent.showItem(
           Key.key("minecraft", "diamond"),
@@ -107,6 +117,7 @@ final class ShowItemSerializerTest extends SerializerTest {
           hover.addProperty(JSONComponentConstants.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ITEM));
           hover.add(JSONComponentConstants.HOVER_EVENT_CONTENTS, object(contents -> {
             contents.addProperty(JSONComponentConstants.SHOW_ITEM_ID, "minecraft:diamond");
+            contents.addProperty(JSONComponentConstants.SHOW_ITEM_COUNT, 1);
             contents.addProperty(JSONComponentConstants.SHOW_ITEM_TAG, "{display:{Name:\"A test!\"}}");
           }));
         }));

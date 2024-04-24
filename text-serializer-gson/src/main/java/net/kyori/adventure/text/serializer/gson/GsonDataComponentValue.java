@@ -23,31 +23,43 @@
  */
 package net.kyori.adventure.text.serializer.gson;
 
-import java.util.function.Supplier;
-import net.kyori.adventure.text.serializer.json.JSONComponentSerializer;
-import net.kyori.adventure.util.Services;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
+import net.kyori.adventure.text.event.DataComponentValue;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
+import static java.util.Objects.requireNonNull;
+
 /**
- * Implementation of the JSON component serializer provider.
+ * An {@link DataComponentValue} implementation that holds a JsonElement.
  *
- * @since 4.14.0
+ * <p>This holder is exposed to allow conversions to/from gson data holders.</p>
+ *
+ * @since 4.17.0
  */
-@ApiStatus.Internal
-public final class JSONComponentSerializerProviderImpl implements JSONComponentSerializer.Provider, Services.Fallback {
-  @Override
-  public @NotNull JSONComponentSerializer instance() {
-    return GsonComponentSerializer.gson();
+@ApiStatus.NonExtendable
+public interface GsonDataComponentValue extends DataComponentValue {
+  /**
+   * Create a box for item data that can be understood by the gson serializer.
+   *
+   * @param data the item data to hold
+   * @return a newly created item data holder instance
+   * @since 4.17.0
+   */
+  static GsonDataComponentValue gsonDatacomponentValue(final @NotNull JsonElement data) {
+    if (data instanceof JsonNull) {
+      return GsonDataComponentValueImpl.RemovedGsonComponentValueImpl.INSTANCE;
+    } else {
+      return new GsonDataComponentValueImpl(requireNonNull(data, "data"));
+    }
   }
 
-  @Override
-  public @NotNull Supplier<JSONComponentSerializer.@NotNull Builder> builder() {
-    return GsonComponentSerializer::builder;
-  }
-
-  @Override
-  public String toString() {
-    return "JSONComponentSerializerProviderImpl[GsonComponentSerializer]";
-  }
+  /**
+   * The contained element, intended for read-only use.
+   *
+   * @return a copy of the contained element
+   * @since 4.17.0
+   */
+  @NotNull JsonElement element();
 }

@@ -23,11 +23,6 @@
  */
 package net.kyori.adventure.text.flattener;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -38,6 +33,7 @@ import net.kyori.adventure.text.SelectorComponent;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.util.InheritanceAwareMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -66,14 +62,11 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
 
   private static final int MAX_DEPTH = 512;
 
-  private final Map<Class<?>, Function<?, String>> flatteners;
-  private final Map<Class<?>, BiConsumer<?, Consumer<Component>>> complexFlatteners;
-  private final ConcurrentMap<Class<?>, Handler> propagatedFlatteners = new ConcurrentHashMap<>();
+  private final InheritanceAwareMap<Component, Handler> flatteners;
   private final Function<Component, String> unknownHandler;
 
-  ComponentFlattenerImpl(final Map<Class<?>, Function<?, String>> flatteners, final Map<Class<?>, BiConsumer<?, Consumer<Component>>> complexFlatteners, final @Nullable Function<Component, String> unknownHandler) {
-    this.flatteners = Collections.unmodifiableMap(new HashMap<>(flatteners));
-    this.complexFlatteners = Collections.unmodifiableMap(new HashMap<>(complexFlatteners));
+  ComponentFlattenerImpl(final InheritanceAwareMap<Component, Handler> flatteners, final @Nullable Function<Component, String> unknownHandler) {
+    this.flatteners = flatteners;
     this.unknownHandler = unknownHandler;
   }
 
@@ -96,7 +89,7 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
     listener.pushStyle(inputStyle);
     try {
       if (flattener != null) {
-        flattener.handle(input, listener, depth + 1);
+        flattener.handle(this, input, listener, depth + 1);
       }
 
       if (!input.children().isEmpty() && listener.shouldContinue()) {
@@ -109,34 +102,11 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
     }
   }
 
-  @SuppressWarnings("unchecked")
   private <T extends Component> @Nullable Handler flattener(final T test) {
-    final Handler flattener = this.propagatedFlatteners.computeIfAbsent(test.getClass(), key -> {
-      // direct flatteners (just return strings)
-      final @Nullable Function<Component, String> value = (Function<Component, String>) this.flatteners.get(key);
-      if (value != null) return (component, listener, depth) -> listener.component(value.apply(component));
+    final Handler flattener = this.flatteners.get(test.getClass());
 
-      for (final Map.Entry<Class<?>, Function<?, String>> entry : this.flatteners.entrySet()) {
-        if (entry.getKey().isAssignableFrom(key)) {
-          return (component, listener, depth) -> listener.component(((Function<Component, String>) entry.getValue()).apply(component));
-        }
-      }
-
-      // complex flatteners (these provide extra components)
-      final @Nullable BiConsumer<Component, Consumer<Component>> complexValue = (BiConsumer<Component, Consumer<Component>>) this.complexFlatteners.get(key);
-      if (complexValue != null) return (component, listener, depth) -> complexValue.accept(component, c -> this.flatten0(c, listener, depth));
-
-      for (final Map.Entry<Class<?>, BiConsumer<?, Consumer<Component>>> entry : this.complexFlatteners.entrySet()) {
-        if (entry.getKey().isAssignableFrom(key)) {
-          return (component, listener, depth) -> ((BiConsumer<Component, Consumer<Component>>) entry.getValue()).accept(component, c -> this.flatten0(c, listener, depth));
-        }
-      }
-
-      return Handler.NONE;
-    });
-
-    if (flattener == Handler.NONE) {
-      return this.unknownHandler == null ? null : (component, listener, depth) -> listener.component(this.unknownHandler.apply(component));
+    if (flattener == null && this.unknownHandler != null) {
+      return (self, component, listener, depth) -> listener.component(this.unknownHandler.apply(component));
     } else {
       return flattener;
     }
@@ -144,75 +114,45 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
 
   @Override
   public ComponentFlattener.@NotNull Builder toBuilder() {
-    return new BuilderImpl(this.flatteners, this.complexFlatteners, this.unknownHandler);
+    return new BuilderImpl(this.flatteners, this.unknownHandler);
   }
 
   // A function that allows nesting other flatten operations
   @FunctionalInterface
   interface Handler {
-    Handler NONE = (input, listener, depth) -> {};
-
-    void handle(final Component input, final FlattenerListener listener, final int depth);
+    void handle(final ComponentFlattenerImpl self, final Component input, final FlattenerListener listener, final int depth);
   }
 
   static final class BuilderImpl implements Builder {
-    private final Map<Class<?>, Function<?, String>> flatteners;
-    private final Map<Class<?>, BiConsumer<?, Consumer<Component>>> complexFlatteners;
+    private final InheritanceAwareMap.Builder<Component, Handler> flatteners;
     private @Nullable Function<Component, String> unknownHandler;
 
     BuilderImpl() {
-      this.flatteners = new HashMap<>();
-      this.complexFlatteners = new HashMap<>();
+      this.flatteners = InheritanceAwareMap.<Component, Handler>builder().strict(true);
     }
 
-    BuilderImpl(final Map<Class<?>, Function<?, String>> flatteners, final Map<Class<?>, BiConsumer<?, Consumer<Component>>> complexFlatteners, final @Nullable Function<Component, String> unknownHandler) {
-      this.flatteners = new HashMap<>(flatteners);
-      this.complexFlatteners = new HashMap<>(complexFlatteners);
+    BuilderImpl(final InheritanceAwareMap<Component, Handler> flatteners, final @Nullable Function<Component, String> unknownHandler) {
+      this.flatteners = InheritanceAwareMap.builder(flatteners).strict(true);
       this.unknownHandler = unknownHandler;
     }
 
     @Override
     public @NotNull ComponentFlattener build() {
-      return new ComponentFlattenerImpl(this.flatteners, this.complexFlatteners, this.unknownHandler);
+      return new ComponentFlattenerImpl(this.flatteners.build(), this.unknownHandler);
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T extends Component> ComponentFlattener.@NotNull Builder mapper(final @NotNull Class<T> type, final @NotNull Function<T, String> converter) {
-      this.validateNoneInHierarchy(requireNonNull(type, "type"));
-      this.flatteners.put(
-        type,
-        requireNonNull(converter, "converter")
-      );
-      this.complexFlatteners.remove(type);
+      this.flatteners.put(type, (self, component, listener, depth) -> listener.component(converter.apply((T) component)));
       return this;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T extends Component> ComponentFlattener.@NotNull Builder complexMapper(final @NotNull Class<T> type, final @NotNull BiConsumer<T, Consumer<Component>> converter) {
-      this.validateNoneInHierarchy(requireNonNull(type, "type"));
-      this.complexFlatteners.put(
-        type,
-        requireNonNull(converter, "converter")
-      );
-      this.flatteners.remove(type);
+      this.flatteners.put(type, (self, component, listener, depth) -> converter.accept((T) component, c -> self.flatten0(c, listener, depth)));
       return this;
-    }
-
-    private void validateNoneInHierarchy(final Class<? extends Component> beingRegistered) {
-      for (final Class<?> clazz : this.flatteners.keySet()) {
-        testHierarchy(clazz, beingRegistered);
-      }
-
-      for (final Class<?> clazz : this.complexFlatteners.keySet()) {
-        testHierarchy(clazz, beingRegistered);
-      }
-    }
-
-    private static void testHierarchy(final Class<?> existing, final Class<?> beingRegistered) {
-      if (!existing.equals(beingRegistered) && (existing.isAssignableFrom(beingRegistered) || beingRegistered.isAssignableFrom(existing))) {
-        throw new IllegalArgumentException("Conflict detected between already registered type " + existing
-          + " and newly registered type " + beingRegistered + "! Types in a component flattener must not share a common hierarchy!");
-      }
     }
 
     @Override

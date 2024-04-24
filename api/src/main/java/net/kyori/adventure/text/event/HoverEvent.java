@@ -23,6 +23,9 @@
  */
 package net.kyori.adventure.text.event;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.UnaryOperator;
@@ -87,7 +90,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
    * @since 4.0.0
    */
   public static @NotNull HoverEvent<ShowItem> showItem(final @NotNull Key item, final @Range(from = 0, to = Integer.MAX_VALUE) int count) {
-    return showItem(item, count, null);
+    return showItem(item, count, Collections.emptyMap());
   }
 
   /**
@@ -99,7 +102,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
    * @since 4.6.0
    */
   public static @NotNull HoverEvent<ShowItem> showItem(final @NotNull Keyed item, final @Range(from = 0, to = Integer.MAX_VALUE) int count) {
-    return showItem(item, count, null);
+    return showItem(item, count, Collections.emptyMap());
   }
 
   /**
@@ -111,8 +114,9 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
    * @return a hover event
    * @since 4.0.0
    */
+  @Deprecated
   public static @NotNull HoverEvent<ShowItem> showItem(final @NotNull Key item, final @Range(from = 0, to = Integer.MAX_VALUE) int count, final @Nullable BinaryTagHolder nbt) {
-    return showItem(ShowItem.of(item, count, nbt));
+    return showItem(ShowItem.showItem(item, count, nbt));
   }
 
   /**
@@ -123,9 +127,24 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
    * @param nbt the nbt
    * @return a hover event
    * @since 4.6.0
+   * @deprecated since Minecraft 1.20.5 and replaced with data components, not scheduled for removal
    */
+  @Deprecated
   public static @NotNull HoverEvent<ShowItem> showItem(final @NotNull Keyed item, final @Range(from = 0, to = Integer.MAX_VALUE) int count, final @Nullable BinaryTagHolder nbt) {
-    return showItem(ShowItem.of(item, count, nbt));
+    return showItem(ShowItem.showItem(item, count, nbt));
+  }
+
+  /**
+   * Creates a hover event that shows an item on hover.
+   *
+   * @param item the item
+   * @param count the count
+   * @param dataComponents the data components
+   * @return a hover event
+   * @since 4.17.0
+   */
+  public static @NotNull HoverEvent<ShowItem> showItem(final @NotNull Keyed item, final @Range(from = 0, to = Integer.MAX_VALUE) int count, final @NotNull Map<Key, ? extends DataComponentValue> dataComponents) {
+    return showItem(ShowItem.showItem(item, count, dataComponents));
   }
 
   /**
@@ -216,7 +235,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
    * @param value the achievement value
    * @return a hover event
    * @since 4.14.0
-   * @deprecated Removed in Vanilla 1.12, but we keep it for backwards compat
+   * @deprecated Removed in Vanilla 1.12, but we keep it for backwards compatibility
    */
   @Deprecated
   public static @NotNull HoverEvent<String> showAchievement(final @NotNull String value) {
@@ -344,6 +363,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
     private final Key item;
     private final int count;
     private final @Nullable BinaryTagHolder nbt;
+    private final Map<Key, DataComponentValue> dataComponents;
 
     /**
      * Creates.
@@ -354,7 +374,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      * @since 4.14.0
      */
     public static @NotNull ShowItem showItem(final @NotNull Key item, final @Range(from = 0, to = Integer.MAX_VALUE) int count) {
-      return showItem(item, count, null);
+      return showItem(item, count, Collections.emptyMap());
     }
 
     /**
@@ -369,7 +389,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
     @Deprecated
     @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
     public static @NotNull ShowItem of(final @NotNull Key item, final @Range(from = 0, to = Integer.MAX_VALUE) int count) {
-      return of(item, count, null);
+      return showItem(item, count, Collections.emptyMap());
     }
 
     /**
@@ -381,7 +401,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      * @since 4.14.0
      */
     public static @NotNull ShowItem showItem(final @NotNull Keyed item, final @Range(from = 0, to = Integer.MAX_VALUE) int count) {
-      return showItem(item, count, null);
+      return showItem(item, count, Collections.emptyMap());
     }
 
     /**
@@ -407,9 +427,11 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      * @param nbt the nbt
      * @return a {@code ShowItem}
      * @since 4.14.0
+     * @deprecated since Minecraft 1.20.5 and replaced with data components, not scheduled for removal
      */
+    @Deprecated
     public static @NotNull ShowItem showItem(final @NotNull Key item, final @Range(from = 0, to = Integer.MAX_VALUE) int count, final @Nullable BinaryTagHolder nbt) {
-      return new ShowItem(requireNonNull(item, "item"), count, nbt);
+      return new ShowItem(requireNonNull(item, "item"), count, nbt, Collections.emptyMap());
     }
 
     /**
@@ -425,7 +447,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
     @Deprecated
     @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
     public static @NotNull ShowItem of(final @NotNull Key item, final @Range(from = 0, to = Integer.MAX_VALUE) int count, final @Nullable BinaryTagHolder nbt) {
-      return new ShowItem(requireNonNull(item, "item"), count, nbt);
+      return new ShowItem(requireNonNull(item, "item"), count, nbt, Collections.emptyMap());
     }
 
     /**
@@ -436,9 +458,11 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      * @param nbt the nbt
      * @return a {@code ShowItem}
      * @since 4.14.0
+     * @deprecated since Minecraft 1.20.5 and replaced with data components, not scheduled for removal
      */
+    @Deprecated
     public static @NotNull ShowItem showItem(final @NotNull Keyed item, final @Range(from = 0, to = Integer.MAX_VALUE) int count, final @Nullable BinaryTagHolder nbt) {
-      return new ShowItem(requireNonNull(item, "item").key(), count, nbt);
+      return new ShowItem(requireNonNull(item, "item").key(), count, nbt, Collections.emptyMap());
     }
 
     /**
@@ -454,13 +478,28 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
     @Deprecated
     @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
     public static @NotNull ShowItem of(final @NotNull Keyed item, final @Range(from = 0, to = Integer.MAX_VALUE) int count, final @Nullable BinaryTagHolder nbt) {
-      return new ShowItem(requireNonNull(item, "item").key(), count, nbt);
+      return new ShowItem(requireNonNull(item, "item").key(), count, nbt, Collections.emptyMap());
     }
 
-    private ShowItem(final @NotNull Key item, final @Range(from = 0, to = Integer.MAX_VALUE) int count, final @Nullable BinaryTagHolder nbt) {
+    /**
+     * Creates.
+     *
+     * @param item the item
+     * @param count the count
+     * @param dataComponents the data components
+     * @return a {@code ShowItem}
+     * @since 4.17.0
+     * @sinceMinecraft 1.20.5
+     */
+    public static @NotNull ShowItem showItem(final @NotNull Keyed item, final @Range(from = 0, to = Integer.MAX_VALUE) int count, final @NotNull Map<Key, ? extends DataComponentValue> dataComponents) {
+      return new ShowItem(requireNonNull(item, "item").key(), count, null, dataComponents);
+    }
+
+    private ShowItem(final @NotNull Key item, final @Range(from = 0, to = Integer.MAX_VALUE) int count, final @Nullable BinaryTagHolder nbt, final @NotNull Map<Key, ? extends DataComponentValue> dataComponents) {
       this.item = item;
       this.count = count;
       this.nbt = nbt;
+      this.dataComponents = Collections.unmodifiableMap(new HashMap<>(dataComponents));
     }
 
     /**
@@ -482,7 +521,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      */
     public @NotNull ShowItem item(final @NotNull Key item) {
       if (requireNonNull(item, "item").equals(this.item)) return this;
-      return new ShowItem(item, this.count, this.nbt);
+      return new ShowItem(item, this.count, this.nbt, this.dataComponents);
     }
 
     /**
@@ -504,15 +543,19 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      */
     public @NotNull ShowItem count(final @Range(from = 0, to = Integer.MAX_VALUE) int count) {
       if (count == this.count) return this;
-      return new ShowItem(this.item, count, this.nbt);
+      return new ShowItem(this.item, count, this.nbt, this.dataComponents);
     }
 
     /**
      * Gets the nbt.
      *
+     * <p>If there are data components on this item, it will never have NBT data.</p>
+     *
      * @return the nbt
      * @since 4.0.0
+     * @deprecated since Minecraft 1.20.5 and replaced with data components, not scheduled for removal
      */
+    @Deprecated
     public @Nullable BinaryTagHolder nbt() {
       return this.nbt;
     }
@@ -520,13 +563,67 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
     /**
      * Sets the nbt.
      *
+     * <p>This will clear any modern data components set on the item.</p>
+     *
      * @param nbt the nbt
      * @return a {@code ShowItem}
      * @since 4.0.0
+     * @deprecated since Minecraft 1.20.5 and replaced with data components, not scheduled for removal
      */
+    @Deprecated
     public @NotNull ShowItem nbt(final @Nullable BinaryTagHolder nbt) {
       if (Objects.equals(nbt, this.nbt)) return this;
-      return new ShowItem(this.item, this.count, nbt);
+      return new ShowItem(this.item, this.count, nbt, Collections.emptyMap());
+    }
+
+    /**
+     * Get the data components used for this item.
+     *
+     * <p>If there is NBT data on this item, it will never have any data components set.</p>
+     *
+     * @return an unmodifiable map of data components
+     * @since 4.17.0
+     * @sinceMinecraft 1.20.5
+     */
+    public @NotNull Map<Key, DataComponentValue> dataComponents() {
+      return this.dataComponents;
+    }
+
+    /**
+     * Set the data components used on this item.
+     *
+     * <p>This will clear any legacy NBT-format data on the item.</p>
+     *
+     * @param holder the new data components to set
+     * @return a show item data object that has the provided components
+     * @since 4.17.0
+     * @sinceMinecraft 1.20.5
+     */
+    public @NotNull ShowItem dataComponents(final @NotNull Map<Key, DataComponentValue> holder) {
+      if (Objects.equals(this.dataComponents, holder)) return this;
+      return new ShowItem(this.item, this.count, null, holder.isEmpty() ? Collections.emptyMap() : Collections.unmodifiableMap(new HashMap<>(holder)));
+    }
+
+    /**
+     * Return an unmodifiable map of data components coerced to the target type.
+     *
+     * <p>If there is no converter registered with the {@link DataComponentValueConverterRegistry} for the conversion of a value, a {@link IllegalArgumentException} will be thrown.</p>
+     *
+     * @param targetType the expected target type
+     * @param <V> the new data component value type
+     * @return the unmodifiable map
+     * @since 4.17.0
+     */
+    public <V extends DataComponentValue> @NotNull Map<Key, V> dataComponentsAs(final @NotNull Class<V> targetType) {
+      if (this.dataComponents.isEmpty()) {
+        return Collections.emptyMap();
+      } else {
+        final Map<Key, V> results = new HashMap<>(this.dataComponents.size());
+        for (final Map.Entry<Key, DataComponentValue> entry : this.dataComponents.entrySet()) {
+          results.put(entry.getKey(), DataComponentValueConverterRegistry.convert(targetType, entry.getKey(), entry.getValue()));
+        }
+        return Collections.unmodifiableMap(results);
+      }
     }
 
     @Override
@@ -534,7 +631,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
       if (this == other) return true;
       if (other == null || this.getClass() != other.getClass()) return false;
       final ShowItem that = (ShowItem) other;
-      return this.item.equals(that.item) && this.count == that.count && Objects.equals(this.nbt, that.nbt);
+      return this.item.equals(that.item) && this.count == that.count && Objects.equals(this.nbt, that.nbt) && Objects.equals(this.dataComponents, that.dataComponents);
     }
 
     @Override
@@ -542,6 +639,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
       int result = this.item.hashCode();
       result = (31 * result) + Integer.hashCode(this.count);
       result = (31 * result) + Objects.hashCode(this.nbt);
+      result = (31 * result) + Objects.hashCode(this.dataComponents);
       return result;
     }
 
@@ -550,7 +648,8 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
       return Stream.of(
         ExaminableProperty.of("item", this.item),
         ExaminableProperty.of("count", this.count),
-        ExaminableProperty.of("nbt", this.nbt)
+        ExaminableProperty.of("nbt", this.nbt),
+        ExaminableProperty.of("dataComponents", this.dataComponents)
       );
     }
 
