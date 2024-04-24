@@ -35,20 +35,20 @@ import org.jetbrains.annotations.Nullable;
  * each instance of a given type.
  *
  * <p>An example of how this could be implemented is as follows:</p>
- * <pre>{@code
+ * <pre>
  * public class MyPointeredObject extends SomePointeredParent implements Pointered {
- *   private static final PointersSupplier<MyPointeredObject> POINTERS = PointersSupplier.builder()
+ *   private static final PointersSupplier&lt;MyPointeredObject&gt; POINTERS = PointersSupplier.builder()
  *     .parent(SomePointeredParent.POINTERS) // Fallback to the parent to get pointers from.
  *     .resolving(Identity.UUID, MyPointeredObject::getUniqueId)
  *     .resolving(Identity.DISPLAY_NAME, MyPointeredObject::getDisplayName)
  *     .build();
  *
- *   @Override
+ *   &#64;Override
  *   public Pointers pointers() {
  *     return POINTERS.view(this);
  *   }
  * }
- * }</pre>
+ * </pre>
  *
  * @param <T> the type
  * @since 4.17.0
