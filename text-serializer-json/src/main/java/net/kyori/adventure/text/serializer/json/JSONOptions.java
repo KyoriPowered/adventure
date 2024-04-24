@@ -93,6 +93,13 @@ public final class JSONOptions {
   public static final Option<Boolean> EMIT_DEFAULT_ITEM_HOVER_QUANTITY = Option.booleanOption(key("emit/default_item_hover_quantity"), true);
 
   /**
+   * How to emit the item data on {@code show_item} hover events.
+   *
+   * @since 4.17.0
+   */
+  public static final Option<ShowItemHoverDataMode> SHOW_ITEM_HOVER_DATA_MODE = Option.enumOption(key("emit/show_item_hover_data"), ShowItemHoverDataMode.class, ShowItemHoverDataMode.EMIT_EITHER);
+
+  /**
    * Versioned by world data version.
    */
   private static final OptionState.Versioned BY_DATA_VERSION = OptionState.versionedOptionState()
@@ -103,6 +110,7 @@ public final class JSONOptions {
         .value(EMIT_HOVER_SHOW_ENTITY_ID_AS_INT_ARRAY, false)
         .value(VALIDATE_STRICT_EVENTS, false)
         .value(EMIT_DEFAULT_ITEM_HOVER_QUANTITY, false)
+        .value(SHOW_ITEM_HOVER_DATA_MODE, ShowItemHoverDataMode.EMIT_LEGACY_NBT)
     )
     .version(
       VERSION_1_16,
@@ -118,6 +126,7 @@ public final class JSONOptions {
     .version(
       VERSION_1_20_5,
       b -> b.value(EMIT_DEFAULT_ITEM_HOVER_QUANTITY, true)
+        .value(SHOW_ITEM_HOVER_DATA_MODE, ShowItemHoverDataMode.EMIT_DATA_COMPONENTS)
     )
     .build();
 
@@ -131,6 +140,7 @@ public final class JSONOptions {
     .value(EMIT_HOVER_SHOW_ENTITY_ID_AS_INT_ARRAY, false)
     .value(EMIT_COMPACT_TEXT_COMPONENT, false)
     .value(VALIDATE_STRICT_EVENTS, false)
+    .value(SHOW_ITEM_HOVER_DATA_MODE, ShowItemHoverDataMode.EMIT_EITHER)
     .build();
 
   private static String key(final String value) {
@@ -183,5 +193,31 @@ public final class JSONOptions {
      * @since 4.15.0
      */
     BOTH,
+  }
+
+  /**
+   * Configure how to emit show_item hovers.
+   *
+   * @since 4.17.0
+   */
+  public enum ShowItemHoverDataMode {
+    /**
+     * Only emit the pre-1.20.5 item nbt.
+     *
+     * @since 4.17.0
+     */
+    EMIT_LEGACY_NBT,
+    /**
+     * Only emit modern data components.
+     *
+     * @since 4.17.0
+     */
+    EMIT_DATA_COMPONENTS,
+    /**
+     * Emit whichever of legacy or modern data the item has.
+     *
+     * @since 4.17.0
+     */
+    EMIT_EITHER,
   }
 }

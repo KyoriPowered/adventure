@@ -37,7 +37,12 @@ import org.junit.jupiter.api.Test;
 final class ShowItemSerializerTest extends SerializerTest {
   @Test
   void testDeserializeWithPopulatedTag() throws IOException {
+    final JSONComponentSerializer serializer = JSONComponentSerializer.builder()
+      .editOptions(opts -> opts.value(JSONOptions.SHOW_ITEM_HOVER_DATA_MODE, JSONOptions.ShowItemHoverDataMode.EMIT_EITHER))
+      .build();
+
     this.testObject(
+      serializer,
       Component.text().hoverEvent(
         HoverEvent.showItem(
           Key.key("minecraft", "diamond"),
@@ -89,7 +94,11 @@ final class ShowItemSerializerTest extends SerializerTest {
 
   @Test
   void testDeserializeWithCountOfOne() throws IOException {
+    final JSONComponentSerializer serializer = JSONComponentSerializer.builder()
+      .editOptions(opts -> opts.value(JSONOptions.SHOW_ITEM_HOVER_DATA_MODE, JSONOptions.ShowItemHoverDataMode.EMIT_EITHER))
+      .build();
     this.testObject(
+      serializer,
       Component.text().hoverEvent(
         HoverEvent.showItem(
           Key.key("minecraft", "diamond"),

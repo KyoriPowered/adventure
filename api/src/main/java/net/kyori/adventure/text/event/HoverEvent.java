@@ -614,7 +614,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      * @return the unmodifiable map
      * @since 4.17.0
      */
-    public <V extends DataComponentValue> @NotNull Map<Key, V> dataComponentsConvertedTo(final @NotNull Class<V> targetType) {
+    public <V extends DataComponentValue> @NotNull Map<Key, V> dataComponentsAs(final @NotNull Class<V> targetType) {
       if (this.dataComponents.isEmpty()) {
         return Collections.emptyMap();
       } else {

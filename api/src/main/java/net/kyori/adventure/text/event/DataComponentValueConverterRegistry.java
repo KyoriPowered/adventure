@@ -72,12 +72,16 @@ public final class DataComponentValueConverterRegistry {
       return target.cast(in);
     }
 
-    final @Nullable Conversion<?, ? extends O> converter = ConversionCache.converter(in.getClass(), target);
+    final @Nullable RegisteredConversion converter = ConversionCache.converter(in.getClass(), target);
     if (converter == null) {
       throw new IllegalArgumentException("There is no data holder converter registered to convert from a " + in.getClass() + " instance to a " + target + " (on field " + key + ")");
     }
 
-    return (O) ((Conversion) converter).convert(key, in);
+    try {
+      return (O) ((Conversion) converter.conversion).convert(key, in);
+    } catch (final Exception ex) {
+      throw new IllegalStateException("Failed to convert data component value of type " + in.getClass() + " to type " + target + " due to an error in a converter provided by " + converter.provider.asString() + "!", ex);
+    }
   }
 
   /**
@@ -221,12 +225,11 @@ public final class DataComponentValueConverterRegistry {
       queue.addAll(Arrays.asList(clazz.getInterfaces()));
     }
 
-    @SuppressWarnings("unchecked")
-    static <I extends DataComponentValue, O extends DataComponentValue> @Nullable Conversion<? super I, ? extends O> converter(final Class<I> src, final Class<O> dst) {
+    static @Nullable RegisteredConversion converter(final Class<? extends DataComponentValue> src, final Class<? extends DataComponentValue> dst) {
       final RegisteredConversion result = CACHE.computeIfAbsent(src, $ -> new ConcurrentHashMap<>()).computeIfAbsent(dst, $$ -> compute(src, dst));
       if (result == RegisteredConversion.NONE) return null;
 
-      return (Conversion<? super I, ? extends O>) result.conversion;
+      return result;
     }
   }
 
