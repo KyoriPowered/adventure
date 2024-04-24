@@ -107,6 +107,7 @@ final class ConfigurateComponentSerializerImpl implements ConfigurateComponentSe
       .registerExact(new IndexSerializer<>(TypeToken.get(TextDecoration.class), TextDecoration.NAMES))
       .registerExact(HoverEvent.ShowEntity.class, HoverEventShowEntitySerializer.INSTANCE)
       .registerExact(HoverEvent.ShowItem.class, HoverEventShowItemSerializer.INSTANCE)
+      .register(ConfigurateDataComponentValue.class, ConfigurateDataComponentValueTypeSerializer.INSTANCE)
       .build();
   }
 
