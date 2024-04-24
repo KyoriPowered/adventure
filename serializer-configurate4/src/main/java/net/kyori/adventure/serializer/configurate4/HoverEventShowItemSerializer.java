@@ -23,7 +23,10 @@
  */
 package net.kyori.adventure.serializer.configurate4;
 
+import io.leangen.geantyref.TypeToken;
 import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -36,9 +39,13 @@ import org.spongepowered.configurate.serialize.TypeSerializer;
 final class HoverEventShowItemSerializer implements TypeSerializer<HoverEvent.ShowItem> {
   static final HoverEventShowItemSerializer INSTANCE = new HoverEventShowItemSerializer();
 
+  private static final TypeToken<Map<Key, ConfigurateDataComponentValue>> COMPONENT_MAP_TYPE = new TypeToken<Map<Key, ConfigurateDataComponentValue>>() {
+  };
+
   static final String ID = "id";
   static final String COUNT = "count";
   static final String TAG = "tag";
+  static final String COMPONENTS = "components";
 
   private HoverEventShowItemSerializer() {
   }
@@ -50,9 +57,16 @@ final class HoverEventShowItemSerializer implements TypeSerializer<HoverEvent.Sh
       throw new SerializationException("An id is required to deserialize the show_item hover event");
     }
     final int count = value.node(COUNT).getInt(1);
-    final String tag = value.node(TAG).getString();
+    final ConfigurationNode components = value.node(COMPONENTS);
+    if (!components.virtual()) {
+      final Map<Key, ConfigurateDataComponentValue> componentsMap = components.require(COMPONENT_MAP_TYPE);
 
-    return HoverEvent.ShowItem.showItem(id, count, tag == null ? null : BinaryTagHolder.binaryTagHolder(tag));
+      return HoverEvent.ShowItem.showItem(id, count, new HashMap<>(componentsMap));
+    } else {
+      // legacy (pre-1.20.5)
+      final String tag = value.node(TAG).getString();
+      return HoverEvent.ShowItem.showItem(id, count, tag == null ? null : BinaryTagHolder.binaryTagHolder(tag));
+    }
   }
 
   @Override
@@ -65,10 +79,15 @@ final class HoverEventShowItemSerializer implements TypeSerializer<HoverEvent.Sh
     value.node(ID).set(Key.class, obj.item());
     value.node(COUNT).set(obj.count());
 
-    if (obj.nbt() == null) {
+    if (!obj.dataComponents().isEmpty()) {
       value.node(TAG).set(null);
-    } else {
+      value.node(COMPONENTS).set(COMPONENT_MAP_TYPE, obj.dataComponentsAs(ConfigurateDataComponentValue.class));
+    } else if (obj.nbt() != null) {
+      // legacy (pre-1.20.5)
+      value.node(COMPONENTS).set(null);
       value.node(TAG).set(obj.nbt().string());
+    } else {
+      value.node(COMPONENTS).set(null);
     }
   }
 }
