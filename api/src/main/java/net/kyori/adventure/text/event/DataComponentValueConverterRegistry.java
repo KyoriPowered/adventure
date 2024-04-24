@@ -46,7 +46,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A registry for conversions between different data component value holder classes.
  *
- * <p>Conversions are discovered by {@link ServiceLoader} lookup of implementations of the {@link Provider} interface (using the loading thread's context classloader).</p>
+ * <p>Conversions are discovered by {@link ServiceLoader} lookup of implementations of the {@link Provider} interface (on the classloader which loaded Adventure).</p>
  *
  * @since 4.17.0
  */
