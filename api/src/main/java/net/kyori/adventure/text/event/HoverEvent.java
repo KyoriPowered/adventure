@@ -143,7 +143,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
    * @return a hover event
    * @since 4.17.0
    */
-  public static @NotNull HoverEvent<ShowItem> showItem(final @NotNull Keyed item, final @Range(from = 0, to = Integer.MAX_VALUE) int count, final @NotNull Map<Key, DataComponentValue> dataComponents) {
+  public static @NotNull HoverEvent<ShowItem> showItem(final @NotNull Keyed item, final @Range(from = 0, to = Integer.MAX_VALUE) int count, final @NotNull Map<Key, ? extends DataComponentValue> dataComponents) {
     return showItem(ShowItem.showItem(item, count, dataComponents));
   }
 
@@ -491,11 +491,11 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      * @since 4.17.0
      * @sinceMinecraft 1.20.5
      */
-    public static @NotNull ShowItem showItem(final @NotNull Keyed item, final @Range(from = 0, to = Integer.MAX_VALUE) int count, final @NotNull Map<Key, DataComponentValue> dataComponents) {
+    public static @NotNull ShowItem showItem(final @NotNull Keyed item, final @Range(from = 0, to = Integer.MAX_VALUE) int count, final @NotNull Map<Key, ? extends DataComponentValue> dataComponents) {
       return new ShowItem(requireNonNull(item, "item").key(), count, null, dataComponents);
     }
 
-    private ShowItem(final @NotNull Key item, final @Range(from = 0, to = Integer.MAX_VALUE) int count, final @Nullable BinaryTagHolder nbt, final @NotNull Map<Key, DataComponentValue> dataComponents) {
+    private ShowItem(final @NotNull Key item, final @Range(from = 0, to = Integer.MAX_VALUE) int count, final @Nullable BinaryTagHolder nbt, final @NotNull Map<Key, ? extends DataComponentValue> dataComponents) {
       this.item = item;
       this.count = count;
       this.nbt = nbt;
@@ -592,7 +592,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
     /**
      * Set the data components used on this item.
      *
-     * <p>This will clear any legacy nbt-format data on the item.</p>
+     * <p>This will clear any legacy NBT-format data on the item.</p>
      *
      * @param holder the new data components to set
      * @return a show item data object that has the provided components
