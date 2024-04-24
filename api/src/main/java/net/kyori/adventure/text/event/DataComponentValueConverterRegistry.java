@@ -27,16 +27,14 @@ import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Deque;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.BiFunction;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.util.Services;
 import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
@@ -53,20 +51,7 @@ import static java.util.Objects.requireNonNull;
  * @since 4.17.0
  */
 public final class DataComponentValueConverterRegistry {
-  private static final Set<Provider> PROVIDERS;
-
-  static {
-    final ServiceLoader<Provider> providerLoader = ServiceLoader.load(Provider.class);
-    final Set<Provider> providers = new HashSet<>();
-    for (final Iterator<Provider> it = providerLoader.iterator(); it.hasNext();) {
-      try {
-        providers.add(it.next());
-      } catch (final ServiceConfigurationError ex) {
-        throw new RuntimeException("Failed to load data holder service provider: " + ex);
-      }
-    }
-    PROVIDERS = Collections.unmodifiableSet(providers);
-  }
+  private static final Set<Provider> PROVIDERS = Services.services(Provider.class);
 
   private DataComponentValueConverterRegistry() {
   }
@@ -100,7 +85,7 @@ public final class DataComponentValueConverterRegistry {
    *
    * @since 4.17.0
    */
-  interface Provider {
+  public interface Provider {
     /**
      * An identifier for this provider.
      *
@@ -128,7 +113,7 @@ public final class DataComponentValueConverterRegistry {
    * @since 4.17.0
    */
   @ApiStatus.NonExtendable
-  interface Conversion<I, O> extends Examinable {
+  public interface Conversion<I, O> extends Examinable {
     /**
      * Create a new conversion.
      *
