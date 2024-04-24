@@ -125,8 +125,12 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    * @since 4.0.0
    */
   default boolean getBoolean(final @NotNull String key, final boolean defaultValue) {
-    // != 0 might look weird, but it is what vanilla does
-    return this.getByte(key) != 0 || defaultValue;
+    final BinaryTag tag = this.get(key);
+    if (tag instanceof ByteBinaryTag) {
+      // != 0 might look weird, but it is what vanilla does
+      return ((ByteBinaryTag) tag).value() != 0;
+    }
+    return defaultValue;
   }
 
   /**
