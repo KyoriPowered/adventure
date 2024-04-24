@@ -162,7 +162,7 @@ final class BossBarImpl extends HackyBossBarPlatformBridge implements BossBar {
 
   @Override
   public @NotNull BossBar flags(final @NotNull Set<Flag> newFlags) {
-    if (newFlags.isEmpty()) {
+    if (newFlags.isEmpty() && !this.flags.isEmpty()) {
       final Set<Flag> oldFlags = EnumSet.copyOf(this.flags);
       this.flags.clear();
       this.forEachListener(listener -> listener.bossBarFlagsChanged(this, Collections.emptySet(), oldFlags));
