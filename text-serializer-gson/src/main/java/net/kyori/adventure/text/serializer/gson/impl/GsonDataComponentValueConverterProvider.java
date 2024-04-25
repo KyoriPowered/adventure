@@ -56,7 +56,7 @@ public final class GsonDataComponentValueConverterProvider implements DataCompon
       DataComponentValueConverterRegistry.Conversion.convert(
         DataComponentValue.Removed.class,
         GsonDataComponentValue.class,
-        (k, removed) -> GsonDataComponentValue.gsonDatacomponentValue(JsonNull.INSTANCE)
+        (k, removed) -> GsonDataComponentValue.gsonDataComponentValue(JsonNull.INSTANCE)
       )
     );
   }

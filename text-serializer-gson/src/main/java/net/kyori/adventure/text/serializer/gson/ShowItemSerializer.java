@@ -99,7 +99,7 @@ final class ShowItemSerializer extends TypeAdapter<HoverEvent.ShowItem> {
           if (dataComponents == null) {
             dataComponents = new HashMap<>();
           }
-          dataComponents.put(id, GsonDataComponentValue.gsonDatacomponentValue(tree));
+          dataComponents.put(id, GsonDataComponentValue.gsonDataComponentValue(tree));
         }
         in.endObject();
       } else {

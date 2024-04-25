@@ -47,7 +47,7 @@ public interface GsonDataComponentValue extends DataComponentValue {
    * @return a newly created item data holder instance
    * @since 4.17.0
    */
-  static GsonDataComponentValue gsonDatacomponentValue(final @NotNull JsonElement data) {
+  static GsonDataComponentValue gsonDataComponentValue(final @NotNull JsonElement data) {
     if (data instanceof JsonNull) {
       return GsonDataComponentValueImpl.RemovedGsonComponentValueImpl.INSTANCE;
     } else {
