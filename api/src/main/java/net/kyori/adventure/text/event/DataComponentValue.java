@@ -25,7 +25,6 @@ package net.kyori.adventure.text.event;
 
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.examination.Examinable;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -74,7 +73,6 @@ public interface DataComponentValue extends Examinable {
    * @since 4.17.0
    * @sinceMinecraft 1.20.5
    */
-  @ApiStatus.NonExtendable
   interface Removed extends DataComponentValue {
   }
 }

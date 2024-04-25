@@ -26,6 +26,7 @@ package net.kyori.adventure.text.serializer.gson.impl;
 import com.google.auto.service.AutoService;
 import com.google.gson.JsonNull;
 import java.util.Collections;
+import net.kyori.adventure.Adventure;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.event.DataComponentValue;
 import net.kyori.adventure.text.event.DataComponentValueConverterRegistry;
@@ -43,7 +44,7 @@ import org.jetbrains.annotations.NotNull;
 @AutoService(DataComponentValueConverterRegistry.Provider.class)
 @ApiStatus.Internal
 public final class GsonDataComponentValueConverterProvider implements DataComponentValueConverterRegistry.Provider {
-  private static final Key ID = Key.key("adventure", "serializer/gson");
+  private static final Key ID = Key.key(Adventure.NAMESPACE, "serializer/gson");
 
   @Override
   public @NotNull Key id() {
