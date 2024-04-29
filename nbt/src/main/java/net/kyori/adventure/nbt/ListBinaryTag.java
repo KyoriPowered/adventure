@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.nbt;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -99,7 +100,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
   static @NotNull ListBinaryTag listBinaryTag(final @NotNull BinaryTagType<? extends BinaryTag> type, final @NotNull List<BinaryTag> tags) {
     if (tags.isEmpty()) return empty();
     if (type == BinaryTagTypes.END) throw new IllegalArgumentException("Cannot create a list of " + BinaryTagTypes.END);
-    return new ListBinaryTagImpl(type, tags);
+    return new ListBinaryTagImpl(type, new ArrayList<>(tags)); // explicitly copy
   }
 
   /**

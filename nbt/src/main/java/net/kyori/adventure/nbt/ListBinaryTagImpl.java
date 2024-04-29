@@ -143,7 +143,7 @@ final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag
     if (maybeElementType != null && elementType == BinaryTagTypes.END) {
       elementType = maybeElementType;
     }
-    return new ListBinaryTagImpl(elementType, tags);
+    return new ListBinaryTagImpl(elementType, new ArrayList<>(tags)); // explicitly copy
   }
 
   @Override

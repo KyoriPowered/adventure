@@ -67,6 +67,6 @@ final class ListTagBuilder<T extends BinaryTag> implements ListBinaryTag.Builder
   @Override
   public @NotNull ListBinaryTag build() {
     if (this.tags == null) return ListBinaryTag.empty();
-    return new ListBinaryTagImpl(this.elementType, new ArrayList<>(this.tags));
+    return new ListBinaryTagImpl(this.elementType, new ArrayList<>(this.tags)); // explicitly copy
   }
 }

@@ -234,7 +234,7 @@ final class CompoundBinaryTagImpl extends AbstractBinaryTag implements CompoundB
   private CompoundBinaryTag edit(final Consumer<Map<String, BinaryTag>> consumer) {
     final Map<String, BinaryTag> tags = new HashMap<>(this.tags);
     consumer.accept(tags);
-    return new CompoundBinaryTagImpl(tags);
+    return new CompoundBinaryTagImpl(new HashMap<>(tags)); // explicitly copy
   }
 
   @Override
