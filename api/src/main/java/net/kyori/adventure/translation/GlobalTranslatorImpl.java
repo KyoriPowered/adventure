@@ -108,9 +108,9 @@ final class GlobalTranslatorImpl implements GlobalTranslator {
       final Component translation = source.translate(component, locale);
       if (translation != null) {
         final List<Component> newChildren = new ArrayList<>();
-        for (Component child : translation.children()) {
+        for (final Component child : translation.children()) {
           if (child instanceof TranslatableComponent) {
-            Component childTranslation = this.translate((TranslatableComponent) child, locale, depth + 1);
+            final Component childTranslation = this.translate((TranslatableComponent) child, locale, depth + 1);
             newChildren.add(childTranslation != null ? childTranslation : child);
           } else {
             newChildren.add(child);
