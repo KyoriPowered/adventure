@@ -103,6 +103,21 @@ class GlobalTranslatorTest {
     );
   }
 
+  @Test
+  void testTranslate2() {
+    assertNull(GlobalTranslator.translator().translate("dummy", Locale.US));
+    GlobalTranslator.translator().addSource(DummyTranslator2.INSTANCE);
+    assertEquals(new MessageFormat("Hello {0}!"), GlobalTranslator.translator().translate("dummy", Locale.US));
+    assertEquals(
+      Component.text()
+        .append(Component.text("Hello "))
+        .append(Component.text("{0}"))
+        .append(Component.text("!"))
+        .build(),
+      GlobalTranslator.translator().translate(Component.translatable("dummy"), Locale.US)
+    );
+  }
+
   static class DummyTranslator implements Translator {
     static final DummyTranslator INSTANCE = new DummyTranslator();
 
@@ -127,6 +142,38 @@ class GlobalTranslatorTest {
           .append(Component.text("!"))
           .build()
         : null;
+    }
+  }
+
+  static class DummyTranslator2 implements Translator {
+    static final Translator INSTANCE = new DummyTranslator2();
+
+    @Override
+    public @NotNull Key name() {
+      return Key.key("adventure", "test_dummy");
+    }
+
+    @Override
+    public @Nullable MessageFormat translate(final @NotNull String key, final @NotNull Locale locale) {
+      return (key.equals("dummy") && locale.equals(Locale.US))
+        ? new MessageFormat("Hello {0}!")
+        : null;
+    }
+
+    @Override
+    public @Nullable Component translate(final @NotNull TranslatableComponent component, final @NotNull Locale locale) {
+      if (!locale.equals(Locale.US))
+        return null;
+      if (component.key().equals("dummy"))
+        return Component.text()
+          .append(Component.text("Hello "))
+          .append(Component.translatable("otherDummy"))
+          .append(Component.text("!"))
+          .build();
+      if (component.key().equals("otherDummy"))
+        return Component.text("{0}");
+
+      return null;
     }
   }
 }
