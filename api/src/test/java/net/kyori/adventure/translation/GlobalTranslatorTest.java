@@ -46,6 +46,7 @@ class GlobalTranslatorTest {
   @BeforeEach
   void removeDummySourceBeforeEachTest() {
     GlobalTranslator.translator().removeSource(DummyTranslator.INSTANCE);
+    GlobalTranslator.translator().removeSource(DummyTranslatorRecursive.INSTANCE);
   }
 
   @ParameterizedTest
@@ -104,17 +105,41 @@ class GlobalTranslatorTest {
   }
 
   @Test
-  void testTranslate2() {
+  void testRecursiveTranslateInitial() {
     assertNull(GlobalTranslator.translator().translate("dummy", Locale.US));
-    GlobalTranslator.translator().addSource(DummyTranslator2.INSTANCE);
+    GlobalTranslator.translator().addSource(DummyTranslatorRecursive.INSTANCE);
     assertEquals(new MessageFormat("Hello {0}!"), GlobalTranslator.translator().translate("dummy", Locale.US));
     assertEquals(
-      Component.text()
+      Component.text("{0}")
         .append(Component.text("Hello "))
-        .append(Component.text("{0}"))
-        .append(Component.text("!"))
-        .build(),
+        .append(Component.text("!")),
       GlobalTranslator.translator().translate(Component.translatable("dummy"), Locale.US)
+    );
+  }
+
+  @Test
+  void testRecursiveTranslateMiddle() {
+    assertNull(GlobalTranslator.translator().translate("dummy", Locale.US));
+    GlobalTranslator.translator().addSource(DummyTranslatorRecursive.INSTANCE);
+    assertEquals(new MessageFormat("Hello {0}!"), GlobalTranslator.translator().translate("dummy", Locale.US));
+    assertEquals(
+        Component.text("Hello ")
+        .append(Component.text("{0}"))
+        .append(Component.text("!")),
+      GlobalTranslator.translator().translate(Component.translatable("dummy2"), Locale.US)
+    );
+  }
+
+  @Test
+  void testRecursiveTranslateEnd() {
+    assertNull(GlobalTranslator.translator().translate("dummy", Locale.US));
+    GlobalTranslator.translator().addSource(DummyTranslatorRecursive.INSTANCE);
+    assertEquals(new MessageFormat("Hello {0}!"), GlobalTranslator.translator().translate("dummy", Locale.US));
+    assertEquals(
+        Component.text("Hello ")
+        .append(Component.text("!"))
+        .append(Component.text("{0}")),
+      GlobalTranslator.translator().translate(Component.translatable("dummy3"), Locale.US)
     );
   }
 
@@ -145,8 +170,8 @@ class GlobalTranslatorTest {
     }
   }
 
-  static class DummyTranslator2 implements Translator {
-    static final Translator INSTANCE = new DummyTranslator2();
+  static class DummyTranslatorRecursive implements Translator {
+    static final Translator INSTANCE = new DummyTranslatorRecursive();
 
     @Override
     public @NotNull Key name() {
@@ -165,11 +190,17 @@ class GlobalTranslatorTest {
       if (!locale.equals(Locale.US))
         return null;
       if (component.key().equals("dummy"))
-        return Component.text()
+        return Component.translatable("otherDummy")
           .append(Component.text("Hello "))
+          .append(Component.text("!"));
+      if (component.key().equals("dummy2"))
+        return Component.text("Hello ")
           .append(Component.translatable("otherDummy"))
+          .append(Component.text("!"));
+      if (component.key().equals("dummy3"))
+        return Component.text("Hello ")
           .append(Component.text("!"))
-          .build();
+          .append(Component.translatable("otherDummy"));
       if (component.key().equals("otherDummy"))
         return Component.text("{0}");
 
