@@ -259,6 +259,11 @@ public final class NamedTextColor implements TextColor {
   }
 
   @Override
+  public int hashCode() {
+    return this.value;
+  }
+
+  @Override
   public @NotNull String toString() {
     return this.name;
   }
