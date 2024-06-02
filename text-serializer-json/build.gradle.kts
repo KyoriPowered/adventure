@@ -14,25 +14,27 @@ val jmhJar by tasks.registering(Jar::class) {
   from(jmh.map { it.output })
 }
 
-configurations.register("jmh") {
-  attributes {
-    attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category.LIBRARY))
-    attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage.JAVA_RUNTIME))
-    attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling.EXTERNAL))
-    attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements.JAR))
-  }
+configurations {
+  consumable("jmh") {
+    attributes {
+      attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category.LIBRARY))
+      attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage.JAVA_RUNTIME))
+      attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling.EXTERNAL))
+      attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements.JAR))
+    }
 
-  outgoing {
-    capabilities.clear()
-    capability("${project.group}:${project.name}-benchmarks:${project.version}")
+    outgoing {
+      capabilities.clear()
+      capability("${project.group}:${project.name}-benchmarks:${project.version}")
 
-    artifact(jmhJar.flatMap { it.archiveFile })
-    variants.create("classes") {
-      attributes {
-        attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements.CLASSES))
-      }
-      artifact(jmh.map { it.output.classesDirs.singleFile }) {
-        type = "directory"
+      artifact(jmhJar.flatMap { it.archiveFile })
+      variants.create("classes") {
+        attributes {
+          attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements.CLASSES))
+        }
+        artifact(jmh.map { it.output.classesDirs.singleFile }) {
+          type = "directory"
+        }
       }
     }
   }
