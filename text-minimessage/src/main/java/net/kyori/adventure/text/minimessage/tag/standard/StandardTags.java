@@ -63,7 +63,8 @@ public final class StandardTags {
         TransitionTag.RESOLVER,
         SelectorTag.RESOLVER,
         ScoreTag.RESOLVER,
-        NbtTag.RESOLVER
+        NbtTag.RESOLVER,
+        PrideTag.RESOLVER
       )
       .build();
 
@@ -262,6 +263,16 @@ public final class StandardTags {
    */
   public static @NotNull TagResolver nbt() {
     return NbtTag.RESOLVER;
+  }
+
+  /**
+   * Get a resolver for the {@value PrideTag#PRIDE} tag.
+   *
+   * @return a resolver for the {@value PrideTag#PRIDE} tag
+   * @since 4.18.0
+   */
+  public static @NotNull TagResolver pride() {
+    return PrideTag.RESOLVER;
   }
 
   /**

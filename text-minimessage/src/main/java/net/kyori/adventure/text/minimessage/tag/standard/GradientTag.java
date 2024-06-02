@@ -45,7 +45,7 @@ import org.jetbrains.annotations.Range;
  *
  * @since 4.10.0
  */
-final class GradientTag extends AbstractColorChangingTag {
+class GradientTag extends AbstractColorChangingTag {
   private static final String GRADIENT = "gradient";
 
   static final TagResolver RESOLVER = TagResolver.resolver(GRADIENT, GradientTag::create);
@@ -55,7 +55,7 @@ final class GradientTag extends AbstractColorChangingTag {
   private double multiplier = 1;
 
   private final TextColor[] colors;
-  private @Range(from = -1, to = 1) double phase;
+  @Range(from = -1, to = 1) double phase;
 
   static Tag create(final ArgumentQueue args, final Context ctx) {
     double phase = 0;
@@ -90,7 +90,7 @@ final class GradientTag extends AbstractColorChangingTag {
     return new GradientTag(phase, textColors);
   }
 
-  private GradientTag(final double phase, final List<TextColor> colors) {
+  GradientTag(final double phase, final List<TextColor> colors) {
     if (colors.isEmpty()) {
       this.colors = new TextColor[]{TextColor.color(0xffffff), TextColor.color(0x000000)};
     } else {
