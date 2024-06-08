@@ -23,6 +23,17 @@ import java.util.List;
 
 final class NBTComponentSerializerImpl implements NBTComponentSerializer {
 
+  private static final String TYPE = "type";
+
+  private static final String TYPE_TEXT = "text";
+  private static final String TYPE_TRANSLATABLE = "translatable";
+  private static final String TYPE_KEYBIND = "keybind";
+  private static final String TYPE_SCORE = "score";
+  private static final String TYPE_SELECTOR = "selector";
+  private static final String TYPE_NBT = "nbt";
+
+  private static final String EXTRA = "extra";
+
   private static final String TEXT = "text";
 
   private static final String TRANSLATE_KEY = "translate";
@@ -49,6 +60,10 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
 
   private final OptionState flags;
 
+  NBTComponentSerializerImpl(@NotNull OptionState flags) {
+    this.flags = flags;
+  }
+
   @Override
   public @NotNull Component deserialize(@NotNull BinaryTag input) {
     return null;
@@ -64,8 +79,11 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
     CompoundBinaryTag.Builder builder = CompoundBinaryTag.builder();
 
     if (component instanceof TextComponent) {
+      this.writeComponentType(TYPE_TEXT, builder);
       builder.putString(TEXT, ((TextComponent) component).content());
     } else if (component instanceof TranslatableComponent) {
+      this.writeComponentType(TYPE_TRANSLATABLE, builder);
+
       TranslatableComponent translatable = (TranslatableComponent) component;
       builder.putString(TRANSLATE_KEY, translatable.key());
 
@@ -87,8 +105,10 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
         builder.putString(TRANSLATE_FALLBACK, fallback);
       }
     } else if (component instanceof KeybindComponent) {
+      this.writeComponentType(TYPE_KEYBIND, builder);
       builder.putString(KEYBIND, ((KeybindComponent) component).keybind());
     } else if (component instanceof ScoreComponent) {
+      this.writeComponentType(TYPE_SCORE, builder);
       ScoreComponent score = (ScoreComponent) component;
 
       CompoundBinaryTag.Builder scoreBuilder = CompoundBinaryTag.builder()
@@ -102,6 +122,8 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
 
       builder.put(SCORE, scoreBuilder.build());
     } else if (component instanceof SelectorComponent) {
+      this.writeComponentType(TYPE_SELECTOR, builder);
+
       SelectorComponent selector = (SelectorComponent) component;
       builder.putString(SELECTOR, selector.pattern());
 
@@ -110,6 +132,8 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
         builder.put(SELECTOR_SEPARATOR, serialize(separator));
       }
     } else if (component instanceof NBTComponent) {
+      this.writeComponentType(TYPE_NBT, builder);
+
       NBTComponent<?, ?> nbt = (NBTComponent<?, ?>) component;
       builder.putString(NBT, nbt.nbtPath());
       builder.putBoolean(NBT_INTERPRET, nbt.interpret());
@@ -132,8 +156,25 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
       throw notSureHowToSerialize(component);
     }
 
+    List<Component> children = component.children();
+
+    if (!children.isEmpty()) {
+      List<BinaryTag> serializedChildren = new ArrayList<>();
+
+      for (Component child : children) {
+        serializedChildren.add(this.serialize(child));
+      }
+
+      builder.put(EXTRA, ListBinaryTag.from(serializedChildren));
+    }
 
     return builder.build();
+  }
+
+  private void writeComponentType(final String componentType, final CompoundBinaryTag.Builder builder) {
+    if (this.flags.value(NBTSerializerOptions.SERIALIZE_COMPONENT_TYPES)) {
+      builder.putString(TYPE, componentType);
+    }
   }
 
   private static IllegalArgumentException notSureHowToSerialize(final Component component) {
