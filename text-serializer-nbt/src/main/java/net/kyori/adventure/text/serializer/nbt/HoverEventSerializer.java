@@ -6,10 +6,13 @@ import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.nbt.StringBinaryTag;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.DataComponentValue;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 final class HoverEventSerializer {
 
@@ -35,14 +38,73 @@ final class HoverEventSerializer {
   private HoverEventSerializer() {
   }
 
+  static @NotNull HoverEvent<?> deserialize(@NotNull CompoundBinaryTag compound, @NotNull NBTComponentSerializerImpl serializer) {
+    String actionString = compound.getString(HOVER_EVENT_ACTION);
+    HoverEvent.Action<?> action = HoverEvent.Action.NAMES.valueOrThrow(actionString);
+    Class<?> actionType = action.type();
+
+    BinaryTag contents = compound.get(HOVER_EVENT_CONTENTS);
+    if (contents == null) {
+      throw new IllegalArgumentException("The hover event doesn't contain any contents");
+    }
+
+    if (Component.class.isAssignableFrom(actionType)) {
+      return HoverEvent.showText(serializer.deserialize(contents));
+    } else if (HoverEvent.ShowItem.class.isAssignableFrom(actionType)) {
+      CompoundBinaryTag showItemContents = (CompoundBinaryTag) contents;
+
+      Key itemId = Key.key(showItemContents.getString(SHOW_ITEM_ID));
+      int itemCount = showItemContents.getInt(SHOW_ITEM_COUNT);
+
+      BinaryTag components = showItemContents.get(SHOW_ITEM_COMPONENTS);
+      BinaryTag tag = showItemContents.get(SHOW_ITEM_TAG);
+
+      if (components != null) {
+        CompoundBinaryTag componentsCompound = (CompoundBinaryTag) components;
+        Map<Key, DataComponentValue> componentValues = new HashMap<>();
+
+        for (String string : componentsCompound.keySet()) {
+          BinaryTag value = componentsCompound.get(string);
+          if (value == null) continue;
+          componentValues.put(Key.key(string), NBTDataComponentValue.nbtDataComponentValue(value));
+        }
+
+        return HoverEvent.showItem(itemId, itemCount, componentValues);
+      } else if (tag != null) {
+        BinaryTagHolder holder = BinaryTagHolder.binaryTagHolder(((StringBinaryTag) tag).value());
+        return HoverEvent.showItem(itemId, itemCount, holder);
+      } else {
+        return HoverEvent.showItem(itemId, itemCount);
+      }
+    } else if (HoverEvent.ShowEntity.class.isAssignableFrom(actionType)) {
+      CompoundBinaryTag showEntityContents = (CompoundBinaryTag) contents;
+
+      Key entityType = Key.key(showEntityContents.getString(SHOW_ENTITY_TYPE));
+      UUID entityId = UUID.fromString(showEntityContents.getString(SHOW_ENTITY_ID));
+
+      BinaryTag entityName = showEntityContents.get(SHOW_ENTITY_NAME);
+
+      if (entityName != null) {
+        return HoverEvent.showEntity(entityType, entityId, serializer.deserialize(entityName));
+      } else {
+        return HoverEvent.showEntity(entityType, entityId);
+      }
+    } else if (String.class.isAssignableFrom(actionType)) {
+      return HoverEvent.showAchievement(((StringBinaryTag) contents).value());
+    } else {
+      // Never called, but needed for proper compilation
+      throw new IllegalArgumentException("Unknown hover event");
+    }
+  }
+
   static <V> @NotNull CompoundBinaryTag serialize(@NotNull HoverEvent<V> event, @NotNull NBTComponentSerializerImpl serializer) {
     HoverEvent.Action<V> action = event.action();
 
-    BinaryTag tag;
+    BinaryTag contents;
     String actionString;
 
     if (action == HoverEvent.Action.SHOW_TEXT) {
-      tag = serializer.serialize((Component) event.value());
+      contents = serializer.serialize((Component) event.value());
       actionString = HOVER_EVENT_SHOW_TEXT;
     } else if (action == HoverEvent.Action.SHOW_ITEM) {
       HoverEvent.ShowItem item = (HoverEvent.ShowItem) event.value();
@@ -69,7 +131,7 @@ final class HoverEventSerializer {
         }
       }
 
-      tag = builder.build();
+      contents = builder.build();
       actionString = HOVER_EVENT_SHOW_ITEM;
     } else if (action == HoverEvent.Action.SHOW_ENTITY) {
       HoverEvent.ShowEntity item = (HoverEvent.ShowEntity) event.value();
@@ -83,10 +145,10 @@ final class HoverEventSerializer {
         builder.put(SHOW_ENTITY_NAME, serializer.serialize(customName));
       }
 
-      tag = builder.build();
+      contents = builder.build();
       actionString = HOVER_EVENT_SHOW_ENTITY;
     } else if (action == HoverEvent.Action.SHOW_ACHIEVEMENT) {
-      tag = StringBinaryTag.stringBinaryTag((String) event.value());
+      contents = StringBinaryTag.stringBinaryTag((String) event.value());
       actionString = HOVER_EVENT_SHOW_ACHIEVEMENT;
     } else {
       throw new IllegalArgumentException("Don't know how to serialize " + event + " as a HoverEvent");
@@ -94,7 +156,7 @@ final class HoverEventSerializer {
 
     return CompoundBinaryTag.builder()
       .putString(HOVER_EVENT_ACTION, actionString)
-      .put(HOVER_EVENT_CONTENTS, tag)
+      .put(HOVER_EVENT_CONTENTS, contents)
       .build();
   }
 }
