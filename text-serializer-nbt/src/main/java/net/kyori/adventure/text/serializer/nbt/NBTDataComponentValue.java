@@ -8,4 +8,8 @@ import org.jetbrains.annotations.NotNull;
 @ApiStatus.NonExtendable
 public interface NBTDataComponentValue extends DataComponentValue {
   @NotNull BinaryTag binaryTag();
+
+  static @NotNull NBTDataComponentValue nbtDataComponentValue(@NotNull BinaryTag binaryTag) {
+    return new NBTDataComponentValueImpl(binaryTag);
+  }
 }
