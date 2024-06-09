@@ -1,5 +1,6 @@
 package net.kyori.adventure.text.serializer.nbt;
 
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.BinaryTag;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.nbt.ListBinaryTag;
@@ -15,6 +16,11 @@ import net.kyori.adventure.text.StorageNBTComponent;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.TranslationArgument;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.option.OptionState;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,6 +39,17 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
   private static final String TYPE_NBT = "nbt";
 
   private static final String EXTRA = "extra";
+
+  private static final String COLOR = "color";
+  private static final String BOLD = "bold";
+  private static final String ITALIC = "italic";
+  private static final String UNDERLINED = "underlined";
+  private static final String STRIKETHROUGH = "strikethrough";
+  private static final String OBFUSCATED = "obfuscated";
+  private static final String FONT = "font";
+  private static final String INSERTION = "insertion";
+  private static final String CLICK_EVENT = "clickEvent";
+  private static final String HOVER_EVENT = "hoverEvent";
 
   private static final String TEXT = "text";
 
@@ -75,8 +92,74 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
       && !component.hasStyling()) {
       return StringBinaryTag.stringBinaryTag(((TextComponent) component).content());
     }
+    return writeCompoundComponent(component);
+  }
 
+  private @NotNull CompoundBinaryTag writeCompoundComponent(@NotNull Component component) {
     CompoundBinaryTag.Builder builder = CompoundBinaryTag.builder();
+
+    TextColor color = component.color();
+
+    if (color != null) {
+      if (color instanceof NamedTextColor) {
+        builder.putString(COLOR, color.toString());
+      } else {
+        builder.putString(COLOR, color.asHexString());
+      }
+    }
+
+    component.decorations().forEach((decoration, state) -> {
+      if (state != TextDecoration.State.NOT_SET) {
+        String decorationName;
+
+        switch (decoration) {
+          case OBFUSCATED:
+            decorationName = OBFUSCATED;
+            break;
+          case BOLD:
+            decorationName = BOLD;
+            break;
+          case STRIKETHROUGH:
+            decorationName = STRIKETHROUGH;
+            break;
+          case UNDERLINED:
+            decorationName = UNDERLINED;
+            break;
+          case ITALIC:
+            decorationName = ITALIC;
+            break;
+          default:
+            // Never called, but needed for proper compilation
+            throw new IllegalStateException("Unknown text decoration: " + decoration);
+        }
+
+        builder.putBoolean(decorationName, state == TextDecoration.State.TRUE);
+      }
+    });
+
+    Key font = component.font();
+
+    if (font != null) {
+      builder.putString(FONT, font.asString());
+    }
+
+    String insertion = component.insertion();
+
+    if (insertion != null) {
+      builder.putString(INSERTION, insertion);
+    }
+
+    ClickEvent clickEvent = component.clickEvent();
+
+    if (clickEvent != null) {
+      builder.put(CLICK_EVENT, ClickEventSerializer.serialize(clickEvent));
+    }
+
+    HoverEvent<?> hoverEvent = component.hoverEvent();
+
+    if (hoverEvent != null) {
+      builder.put(HOVER_EVENT, HoverEventSerializer.serialize(hoverEvent, this));
+    }
 
     if (component instanceof TextComponent) {
       this.writeComponentType(TYPE_TEXT, builder);
@@ -93,7 +176,7 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
         List<BinaryTag> argumentsTags = new ArrayList<>();
 
         for (TranslationArgument argument : arguments) {
-          argumentsTags.add(this.serialize(argument.asComponent()));
+          argumentsTags.add(this.writeCompoundComponent(argument.asComponent()));
         }
 
         builder.put(TRANSLATE_WITH, ListBinaryTag.from(argumentsTags));
@@ -148,7 +231,7 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
       } else if (nbt instanceof EntityNBTComponent) {
         builder.putString(NBT_ENTITY, ((EntityNBTComponent) nbt).selector());
       } else if (nbt instanceof StorageNBTComponent) {
-        builder.putString(NBT_STORAGE, ((StorageNBTComponent) nbt).storage().asString())
+        builder.putString(NBT_STORAGE, ((StorageNBTComponent) nbt).storage().asString());
       } else {
         throw notSureHowToSerialize(component);
       }
