@@ -4,6 +4,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.BinaryTag;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.nbt.StringBinaryTag;
+import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.jetbrains.annotations.NotNull;
@@ -24,6 +25,8 @@ final class HoverEventSerializer {
   private static final String SHOW_ITEM_ID = "id";
   private static final String SHOW_ITEM_COUNT = "count";
   private static final String SHOW_ITEM_COMPONENTS = "components";
+  @Deprecated
+  private static final String SHOW_ITEM_TAG = "tag";
 
   private static final String SHOW_ENTITY_TYPE = "type";
   private static final String SHOW_ENTITY_ID = "id";
@@ -49,8 +52,9 @@ final class HoverEventSerializer {
         .putInt(SHOW_ITEM_COUNT, item.count());
 
       Map<Key, NBTDataComponentValue> components = item.dataComponentsAs(NBTDataComponentValue.class);
+      NBTSerializerOptions.ShowItemHoverDataMode dataMode = serializer.flags().value(NBTSerializerOptions.SHOW_ITEM_HOVER_DATA_MODE);
 
-      if (!components.isEmpty()) {
+      if (!components.isEmpty() && dataMode != NBTSerializerOptions.ShowItemHoverDataMode.EMIT_LEGACY_NBT) {
         CompoundBinaryTag.Builder dataComponentsBuilder = CompoundBinaryTag.builder();
 
         for (Map.Entry<Key, NBTDataComponentValue> entry : components.entrySet()) {
@@ -58,6 +62,11 @@ final class HoverEventSerializer {
         }
 
         builder.put(SHOW_ITEM_COMPONENTS, dataComponentsBuilder.build());
+      } else if (dataMode != NBTSerializerOptions.ShowItemHoverDataMode.EMIT_DATA_COMPONENTS) {
+        BinaryTagHolder holder = item.nbt();
+        if (holder != null) {
+          builder.putString(SHOW_ITEM_TAG, holder.string());
+        }
       }
 
       tag = builder.build();

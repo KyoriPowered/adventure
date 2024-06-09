@@ -254,6 +254,10 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
     return builder.build();
   }
 
+  @NotNull OptionState flags() {
+    return this.flags;
+  }
+
   private void writeComponentType(final String componentType, final CompoundBinaryTag.Builder builder) {
     if (this.flags.value(NBTSerializerOptions.SERIALIZE_COMPONENT_TYPES)) {
       builder.putString(TYPE, componentType);
