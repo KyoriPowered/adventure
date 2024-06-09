@@ -2,7 +2,6 @@ package net.kyori.adventure.text.serializer.nbt;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.BinaryTag;
-import net.kyori.adventure.nbt.BinaryTagTypes;
 import net.kyori.adventure.nbt.ByteBinaryTag;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.nbt.ListBinaryTag;
@@ -167,7 +166,7 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
           .append(children)
           .build();
       case TYPE_TRANSLATABLE:
-        ListBinaryTag binaryArguments = compound.getList(TRANSLATE_WITH, BinaryTagTypes.STRING);
+        ListBinaryTag binaryArguments = compound.getList(TRANSLATE_WITH);
         String fallback = compound.getString(TRANSLATE_FALLBACK);
 
         if (fallback.isEmpty()) {
@@ -370,7 +369,6 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
 
         builder.put(TRANSLATE_WITH, ListBinaryTag.from(argumentsTags));
       }
-
 
       String fallback = translatable.fallback();
       if (fallback != null) {
