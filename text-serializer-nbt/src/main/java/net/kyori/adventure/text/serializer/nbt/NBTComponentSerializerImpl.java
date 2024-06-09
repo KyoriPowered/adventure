@@ -2,6 +2,8 @@ package net.kyori.adventure.text.serializer.nbt;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.BinaryTag;
+import net.kyori.adventure.nbt.BinaryTagTypes;
+import net.kyori.adventure.nbt.ByteBinaryTag;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.nbt.ListBinaryTag;
 import net.kyori.adventure.nbt.StringBinaryTag;
@@ -19,6 +21,7 @@ import net.kyori.adventure.text.TranslationArgument;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.option.OptionState;
@@ -83,13 +86,199 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
 
   @Override
   public @NotNull Component deserialize(@NotNull BinaryTag input) {
-    return null;
+    if (input instanceof StringBinaryTag) {
+      return Component.text(((StringBinaryTag) input).value());
+    }
+
+    if (!(input instanceof CompoundBinaryTag)) {
+      throw new IllegalArgumentException("The input isn't a compound or string binary tag");
+    }
+
+    CompoundBinaryTag compound = (CompoundBinaryTag) input;
+    String type = compound.getString(TYPE);
+
+    if (type.isEmpty()) {
+      if (compound.get(TEXT) != null) {
+        type = TYPE_TEXT;
+      } else if (compound.get(TRANSLATE_KEY) != null) {
+        type = TYPE_TRANSLATABLE;
+      } else if (compound.get(KEYBIND) != null) {
+        type = TYPE_KEYBIND;
+      } else if (compound.get(SCORE) != null) {
+        type = TYPE_SCORE;
+      } else if (compound.get(SELECTOR) != null) {
+        type = TYPE_SELECTOR;
+      } else if (compound.get(NBT) != null && (compound.get(NBT_BLOCK) != null
+        || compound.get(NBT_STORAGE) != null || compound.get(NBT_ENTITY) != null)) {
+        type = TYPE_NBT;
+      } else {
+        throw new IllegalArgumentException("Could not guess type of the component");
+      }
+    }
+
+    Style.Builder styleBuilder = Style.style();
+
+    String colorString = compound.getString(COLOR);
+    if (!colorString.isEmpty()) {
+      if (colorString.startsWith(TextColor.HEX_PREFIX)) {
+        styleBuilder.color(TextColor.fromHexString(colorString));
+      } else {
+        styleBuilder.color(NamedTextColor.NAMES.value(colorString));
+      }
+    }
+
+    styleBuilder.decoration(TextDecoration.BOLD, readOptionalState(BOLD, compound))
+      .decoration(TextDecoration.ITALIC, readOptionalState(ITALIC, compound))
+      .decoration(TextDecoration.UNDERLINED, readOptionalState(UNDERLINED, compound))
+      .decoration(TextDecoration.STRIKETHROUGH, readOptionalState(STRIKETHROUGH, compound))
+      .decoration(TextDecoration.OBFUSCATED, readOptionalState(OBFUSCATED, compound));
+
+    String fontString = compound.getString(FONT);
+    if (!fontString.isEmpty()) {
+      styleBuilder.font(Key.key(fontString));
+    }
+
+    BinaryTag binaryInsertion = compound.get(INSERTION);
+    if (binaryInsertion != null) {
+      styleBuilder.insertion(((StringBinaryTag) binaryInsertion).value());
+    }
+
+    BinaryTag binaryClickEvent = compound.get(CLICK_EVENT);
+    if (binaryClickEvent != null) {
+      styleBuilder.clickEvent(ClickEventSerializer.deserialize((CompoundBinaryTag) binaryClickEvent));
+    }
+
+    BinaryTag binaryHoverEvent = compound.get(HOVER_EVENT);
+    if (binaryHoverEvent != null) {
+      styleBuilder.hoverEvent(HoverEventSerializer.deserialize((CompoundBinaryTag) binaryHoverEvent, this));
+    }
+
+    Style style = styleBuilder.build();
+
+    List<Component> children = new ArrayList<>();
+    ListBinaryTag binaryChildren = compound.getList(EXTRA);
+    binaryChildren.forEach(child -> children.add(this.deserialize(child)));
+
+    switch (type) {
+      case TYPE_TEXT:
+        return Component.text()
+          .content(compound.getString(TEXT))
+          .style(style)
+          .append(children)
+          .build();
+      case TYPE_TRANSLATABLE:
+        ListBinaryTag binaryArguments = compound.getList(TRANSLATE_WITH, BinaryTagTypes.STRING);
+        String fallback = compound.getString(TRANSLATE_FALLBACK);
+
+        if (fallback.isEmpty()) {
+          fallback = null;
+        }
+
+        List<Component> arguments = new ArrayList<>();
+        for (BinaryTag argument : binaryArguments) {
+          arguments.add(this.deserialize(argument));
+        }
+
+        return Component.translatable()
+          .key(compound.getString(TRANSLATE_KEY))
+          .fallback(fallback)
+          .arguments(arguments)
+          .style(style)
+          .append(children)
+          .build();
+      case TYPE_KEYBIND:
+        return Component.keybind()
+          .keybind(compound.getString(KEYBIND))
+          .style(style)
+          .append(children)
+          .build();
+      case TYPE_SCORE:
+        CompoundBinaryTag binaryScore = compound.getCompound(SCORE);
+
+        String scoreName = binaryScore.getString(SCORE_NAME);
+        String scoreObjective = binaryScore.getString(SCORE_OBJECTIVE);
+
+        String scoreValue = null;
+        BinaryTag binaryScoreValue = binaryScore.get(SCORE_VALUE);
+
+        if (binaryScoreValue != null) {
+          scoreValue = ((StringBinaryTag) binaryScoreValue).value();
+        }
+
+        return Component.score()
+          .name(scoreName)
+          .objective(scoreObjective)
+          .value(scoreValue)
+          .style(style)
+          .append(children)
+          .build();
+      case TYPE_SELECTOR:
+        String selector = compound.getString(SELECTOR);
+        Component selectorSeparator = null;
+
+        BinaryTag binarySelectorSeparator = compound.get(SELECTOR_SEPARATOR);
+        if (binarySelectorSeparator != null) {
+          selectorSeparator = this.deserialize(binarySelectorSeparator);
+        }
+
+        return Component.selector()
+          .pattern(selector)
+          .separator(selectorSeparator)
+          .style(style)
+          .append(children)
+          .build();
+      case TYPE_NBT:
+        String nbtPath = compound.getString(NBT);
+        boolean nbtInterpret = compound.getBoolean(NBT_INTERPRET);
+        Component nbtSeparator = null;
+
+        BinaryTag binaryNbtSeparator = compound.get(NBT_SEPARATOR);
+        if (binaryNbtSeparator != null) {
+          nbtSeparator = this.deserialize(binaryNbtSeparator);
+        }
+
+        BinaryTag binaryBlock = compound.get(NBT_BLOCK);
+        BinaryTag binaryEntity = compound.get(NBT_ENTITY);
+        BinaryTag binaryStorage = compound.get(NBT_STORAGE);
+
+        if (binaryBlock != null) {
+          BlockNBTComponent.Pos pos = BlockNBTComponent.Pos.fromString(((StringBinaryTag) binaryBlock).value());
+          return Component.blockNBT()
+            .nbtPath(nbtPath)
+            .interpret(nbtInterpret)
+            .separator(nbtSeparator)
+            .pos(pos)
+            .style(style)
+            .append(children)
+            .build();
+        } else if (binaryEntity != null) {
+          return Component.entityNBT()
+            .nbtPath(nbtPath)
+            .interpret(nbtInterpret)
+            .separator(nbtSeparator)
+            .selector(((StringBinaryTag) binaryEntity).value())
+            .style(style)
+            .append(children)
+            .build();
+        } else if (binaryStorage != null) {
+          return Component.storageNBT()
+            .nbtPath(nbtPath)
+            .interpret(nbtInterpret)
+            .separator(nbtSeparator)
+            .storage(Key.key(((StringBinaryTag) binaryStorage).value()))
+            .style(style)
+            .append(children)
+            .build();
+        }
+      default:
+        throw new IllegalArgumentException("Unknown component type " + type);
+    }
   }
 
   @Override
   public @NotNull BinaryTag serialize(@NotNull Component component) {
     if (this.flags.value(NBTSerializerOptions.EMIT_COMPACT_TEXT_COMPONENT) && component instanceof TextComponent
-      && !component.hasStyling()) {
+      && !component.hasStyling() && component.children().isEmpty()) {
       return StringBinaryTag.stringBinaryTag(((TextComponent) component).content());
     }
     return writeCompoundComponent(component);
@@ -245,7 +434,7 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
       List<BinaryTag> serializedChildren = new ArrayList<>();
 
       for (Component child : children) {
-        serializedChildren.add(this.serialize(child));
+        serializedChildren.add(this.writeCompoundComponent(child));
       }
 
       builder.put(EXTRA, ListBinaryTag.from(serializedChildren));
@@ -266,5 +455,13 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
 
   private static IllegalArgumentException notSureHowToSerialize(final Component component) {
     return new IllegalArgumentException("Don't know how to serialize " + component + " as a Component");
+  }
+
+  private static TextDecoration.@NotNull State readOptionalState(@NotNull String key, @NotNull CompoundBinaryTag compound) {
+    BinaryTag tag = compound.get(key);
+    if (tag == null) {
+      return TextDecoration.State.NOT_SET;
+    }
+    return TextDecoration.State.byBoolean(((ByteBinaryTag) tag).value() != 0);
   }
 }
