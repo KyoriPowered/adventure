@@ -154,7 +154,11 @@ final class HoverEventSerializer {
 
       contents = builder.build();
       actionString = HOVER_EVENT_SHOW_ITEM;
-    } else if (action == HoverEvent.Action.SHOW_ENTITY && emitsModern) {
+    } else if (action == HoverEvent.Action.SHOW_ENTITY) {
+      if (!emitsModern) {
+        return null;
+      }
+
       HoverEvent.ShowEntity item = (HoverEvent.ShowEntity) event.value();
 
       CompoundBinaryTag.Builder builder = CompoundBinaryTag.builder()
