@@ -346,7 +346,10 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
     HoverEvent<?> hoverEvent = component.hoverEvent();
 
     if (hoverEvent != null) {
-      builder.put(HOVER_EVENT, HoverEventSerializer.serialize(hoverEvent, this));
+      CompoundBinaryTag binaryHoverEvent = HoverEventSerializer.serialize(hoverEvent, this);
+      if (binaryHoverEvent != null) {
+        builder.put(HOVER_EVENT, binaryHoverEvent);
+      }
     }
 
     if (component instanceof TextComponent) {
