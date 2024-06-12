@@ -8,7 +8,9 @@ import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.DataComponentValue;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.option.OptionState;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +20,8 @@ final class HoverEventSerializer {
 
   private static final String HOVER_EVENT_ACTION = "action";
   private static final String HOVER_EVENT_CONTENTS = "contents";
+  @Deprecated
+  private static final String HOVER_EVENT_VALUE = "value";
 
   private static final String HOVER_EVENT_SHOW_TEXT = "show_text";
   private static final String HOVER_EVENT_SHOW_ITEM = "show_item";
@@ -45,7 +49,10 @@ final class HoverEventSerializer {
 
     BinaryTag contents = compound.get(HOVER_EVENT_CONTENTS);
     if (contents == null) {
-      throw new IllegalArgumentException("The hover event doesn't contain any contents");
+      contents = compound.get(HOVER_EVENT_VALUE);
+      if (contents == null) {
+        throw new IllegalArgumentException("The hover event doesn't contain any contents");
+      }
     }
 
     if (Component.class.isAssignableFrom(actionType)) {
@@ -97,11 +104,25 @@ final class HoverEventSerializer {
     }
   }
 
-  static <V> @NotNull CompoundBinaryTag serialize(@NotNull HoverEvent<V> event, @NotNull NBTComponentSerializerImpl serializer) {
+  static <V> @Nullable CompoundBinaryTag serialize(@NotNull HoverEvent<V> event, @NotNull NBTComponentSerializerImpl serializer) {
+    OptionState flags = serializer.flags();
     HoverEvent.Action<V> action = event.action();
+
+    if (action == HoverEvent.Action.SHOW_ACHIEVEMENT) {
+      if (!flags.value(NBTSerializerOptions.EMIT_LEGACY_HOVER)) {
+        return null;
+      }
+
+      return CompoundBinaryTag.builder()
+        .putString(HOVER_EVENT_ACTION, HOVER_EVENT_SHOW_ACHIEVEMENT)
+        .putString(HOVER_EVENT_VALUE, (String) event.value())
+        .build();
+    }
 
     BinaryTag contents;
     String actionString;
+
+    boolean emitsModern = flags.value(NBTSerializerOptions.EMIT_MODERN_HOVER);
 
     if (action == HoverEvent.Action.SHOW_TEXT) {
       contents = serializer.serialize((Component) event.value());
@@ -114,7 +135,7 @@ final class HoverEventSerializer {
         .putInt(SHOW_ITEM_COUNT, item.count());
 
       Map<Key, NBTDataComponentValue> components = item.dataComponentsAs(NBTDataComponentValue.class);
-      NBTSerializerOptions.ShowItemHoverDataMode dataMode = serializer.flags().value(NBTSerializerOptions.SHOW_ITEM_HOVER_DATA_MODE);
+      NBTSerializerOptions.ShowItemHoverDataMode dataMode = flags.value(NBTSerializerOptions.SHOW_ITEM_HOVER_DATA_MODE);
 
       if (!components.isEmpty() && dataMode != NBTSerializerOptions.ShowItemHoverDataMode.EMIT_LEGACY_NBT) {
         CompoundBinaryTag.Builder dataComponentsBuilder = CompoundBinaryTag.builder();
@@ -133,7 +154,7 @@ final class HoverEventSerializer {
 
       contents = builder.build();
       actionString = HOVER_EVENT_SHOW_ITEM;
-    } else if (action == HoverEvent.Action.SHOW_ENTITY) {
+    } else if (action == HoverEvent.Action.SHOW_ENTITY && emitsModern) {
       HoverEvent.ShowEntity item = (HoverEvent.ShowEntity) event.value();
 
       CompoundBinaryTag.Builder builder = CompoundBinaryTag.builder()
@@ -147,16 +168,13 @@ final class HoverEventSerializer {
 
       contents = builder.build();
       actionString = HOVER_EVENT_SHOW_ENTITY;
-    } else if (action == HoverEvent.Action.SHOW_ACHIEVEMENT) {
-      contents = StringBinaryTag.stringBinaryTag((String) event.value());
-      actionString = HOVER_EVENT_SHOW_ACHIEVEMENT;
     } else {
       throw new IllegalArgumentException("Don't know how to serialize " + event + " as a HoverEvent");
     }
 
     return CompoundBinaryTag.builder()
       .putString(HOVER_EVENT_ACTION, actionString)
-      .put(HOVER_EVENT_CONTENTS, contents)
+      .put(emitsModern ? HOVER_EVENT_CONTENTS : HOVER_EVENT_VALUE, contents)
       .build();
   }
 }

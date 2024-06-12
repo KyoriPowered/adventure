@@ -13,6 +13,9 @@ public final class NBTSerializerOptions {
    */
   public static final Option<ShowItemHoverDataMode> SHOW_ITEM_HOVER_DATA_MODE = Option.enumOption(key("emit/show_item_hover_data"), ShowItemHoverDataMode.class, ShowItemHoverDataMode.EMIT_EITHER);
 
+  public static final Option<Boolean> EMIT_MODERN_HOVER = Option.booleanOption(key("emit/modern_hover"), true);
+  public static final Option<Boolean> EMIT_LEGACY_HOVER = Option.booleanOption(key("emit/legacy_hover"), false);
+
   public static final Option<Boolean> SERIALIZE_COMPONENT_TYPES = Option.booleanOption(key("serialize/component-types"), true);
 
   private NBTSerializerOptions() {
