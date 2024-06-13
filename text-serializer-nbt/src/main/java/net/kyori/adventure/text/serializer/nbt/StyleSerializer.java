@@ -77,7 +77,7 @@ final class StyleSerializer {
     if (color != null) {
       if (color instanceof NamedTextColor) {
         builder.putString(COLOR, color.toString());
-      } else {
+      } else if (serializer.flags().value(NBTSerializerOptions.EMIT_RGB)) {
         builder.putString(COLOR, color.asHexString());
       }
     }
