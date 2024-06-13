@@ -22,6 +22,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
+
+import static java.util.Objects.requireNonNull;
 
 final class NBTComponentSerializerImpl implements NBTComponentSerializer {
 
@@ -337,5 +340,30 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
 
   private static IllegalArgumentException notSureHowToSerialize(final Component component) {
     return new IllegalArgumentException("Don't know how to serialize " + component + " as a Component");
+  }
+
+  static final class BuilderImpl implements NBTComponentSerializer.Builder {
+
+    private OptionState flags = OptionState.emptyOptionState();
+
+    @Override
+    public @NotNull Builder options(@NotNull OptionState flags) {
+      this.flags = flags;
+      return this;
+    }
+
+    @Override
+    public @NotNull Builder editOptions(@NotNull Consumer<OptionState.Builder> optionEditor) {
+      final OptionState.Builder builder = OptionState.optionState()
+        .values(this.flags);
+      requireNonNull(optionEditor, "optionEditor").accept(builder);
+      this.flags = builder.build();
+      return this;
+    }
+
+    @Override
+    public @NotNull NBTComponentSerializer build() {
+      return new NBTComponentSerializerImpl(this.flags);
+    }
   }
 }
