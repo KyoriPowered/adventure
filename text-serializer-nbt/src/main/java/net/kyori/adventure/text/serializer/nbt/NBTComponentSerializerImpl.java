@@ -348,7 +348,7 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
 
     @Override
     public @NotNull Builder options(@NotNull OptionState flags) {
-      this.flags = flags;
+      this.flags = requireNonNull(flags, "flags");
       return this;
     }
 
