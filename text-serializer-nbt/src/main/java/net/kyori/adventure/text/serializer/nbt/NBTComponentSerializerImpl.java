@@ -17,16 +17,32 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.TranslationArgument;
 import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.util.Services;
 import net.kyori.option.OptionState;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
 final class NBTComponentSerializerImpl implements NBTComponentSerializer {
+
+  private static final Optional<Provider> SERVICE = Services.service(Provider.class);
+  private static final Consumer<Builder> BUILDER = SERVICE
+    .map(Provider::builder)
+    .orElse(builder -> {
+      // NOOP
+    });
+
+  // We cannot store these fields in NBTComponentSerializerImpl directly due to class initialisation issues.
+  static final class Instances {
+    static final NBTComponentSerializer INSTANCE = SERVICE
+      .map(Provider::nbt)
+      .orElseGet(() -> new NBTComponentSerializerImpl(OptionState.emptyOptionState()));
+  }
 
   private static final String TYPE = "type";
 
@@ -345,6 +361,10 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
   static final class BuilderImpl implements NBTComponentSerializer.Builder {
 
     private OptionState flags = OptionState.emptyOptionState();
+
+    BuilderImpl() {
+      BUILDER.accept(this); // let service provider touch the builder before anybody else touches it
+    }
 
     @Override
     public @NotNull Builder options(@NotNull OptionState flags) {
