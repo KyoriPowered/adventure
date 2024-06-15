@@ -25,8 +25,8 @@ public interface NBTComponentSerializer extends ComponentSerializer<Component, C
     @NotNull Builder options(final @NotNull OptionState flags);
     @NotNull Builder editOptions(final @NotNull Consumer<OptionState.Builder> optionEditor);
 
-    default @NotNull Builder downsampleColors(final boolean downsampleColors) {
-      return this.editOptions(builder -> builder.value(NBTSerializerOptions.EMIT_RGB, downsampleColors));
+    default @NotNull Builder emitRgb(final boolean emit) {
+      return this.editOptions(builder -> builder.value(NBTSerializerOptions.EMIT_RGB, emit));
     }
 
     default @NotNull Builder emitModernHoverEvent(final boolean emit) {
@@ -39,6 +39,14 @@ public interface NBTComponentSerializer extends ComponentSerializer<Component, C
 
     default @NotNull Builder serializeComponentTypes(final boolean serialize) {
       return this.editOptions(builder -> builder.value(NBTSerializerOptions.SERIALIZE_COMPONENT_TYPES, serialize));
+    }
+
+    default @NotNull Builder showItemHoverDataMode(final @NotNull NBTSerializerOptions.ShowItemHoverDataMode mode) {
+      return this.editOptions(builder -> builder.value(NBTSerializerOptions.SHOW_ITEM_HOVER_DATA_MODE, mode));
+    }
+
+    default @NotNull Builder emitCompactTextComponent(final boolean emit) {
+      return this.editOptions(builder -> builder.value(NBTSerializerOptions.EMIT_COMPACT_TEXT_COMPONENT, emit));
     }
 
     @Override
