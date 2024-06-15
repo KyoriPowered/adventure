@@ -302,7 +302,7 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
 
       Component separator = selector.separator();
       if (separator != null) {
-        builder.put(SELECTOR_SEPARATOR, serialize(separator));
+        builder.put(SELECTOR_SEPARATOR, this.serialize(separator));
       }
     } else if (component instanceof NBTComponent) {
       this.writeComponentType(TYPE_NBT, builder);
@@ -313,7 +313,7 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
 
       Component separator = nbt.separator();
       if (separator != null) {
-        builder.put(NBT_SEPARATOR, serialize(separator));
+        builder.put(NBT_SEPARATOR, this.serialize(separator));
       }
 
       if (nbt instanceof BlockNBTComponent) {
