@@ -1,3 +1,26 @@
+/*
+ * This file is part of adventure, licensed under the MIT License.
+ *
+ * Copyright (c) 2017-2024 KyoriPowered
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package net.kyori.adventure.text.serializer.nbt;
 
 import net.kyori.adventure.key.Key;
@@ -108,8 +131,10 @@ final class HoverEventSerializer {
     OptionState flags = serializer.flags();
     HoverEvent.Action<V> action = event.action();
 
+    NBTSerializerOptions.HoverEventValueMode hoverMode = flags.value(NBTSerializerOptions.EMIT_HOVER_EVENT_TYPE);
+
     if (action == HoverEvent.Action.SHOW_ACHIEVEMENT) {
-      if (!flags.value(NBTSerializerOptions.EMIT_LEGACY_HOVER)) {
+      if (hoverMode == NBTSerializerOptions.HoverEventValueMode.MODERN_ONLY) {
         return null;
       }
 
@@ -121,8 +146,6 @@ final class HoverEventSerializer {
 
     BinaryTag contents;
     String actionString;
-
-    boolean emitsModern = flags.value(NBTSerializerOptions.EMIT_MODERN_HOVER);
 
     if (action == HoverEvent.Action.SHOW_TEXT) {
       contents = serializer.serialize((Component) event.value());
@@ -155,7 +178,7 @@ final class HoverEventSerializer {
       contents = builder.build();
       actionString = HOVER_EVENT_SHOW_ITEM;
     } else if (action == HoverEvent.Action.SHOW_ENTITY) {
-      if (!emitsModern) {
+      if (hoverMode != NBTSerializerOptions.HoverEventValueMode.LEGACY_ONLY) {
         return null;
       }
 
@@ -178,7 +201,7 @@ final class HoverEventSerializer {
 
     return CompoundBinaryTag.builder()
       .putString(HOVER_EVENT_ACTION, actionString)
-      .put(emitsModern ? HOVER_EVENT_CONTENTS : HOVER_EVENT_VALUE, contents)
+      .put(hoverMode == NBTSerializerOptions.HoverEventValueMode.LEGACY_ONLY ? HOVER_EVENT_VALUE : HOVER_EVENT_CONTENTS, contents)
       .build();
   }
 }
