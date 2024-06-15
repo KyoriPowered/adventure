@@ -34,40 +34,127 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
+/**
+ * A NBT component serializer.
+ *
+ * <p>Use {@link Builder#emitRgb(boolean)} to support platforms
+ * that do not understand hex colors that were introduced in Minecraft 1.16.</p>
+ *
+ * @since 4.18.0
+ */
 public interface NBTComponentSerializer extends ComponentSerializer<Component, Component, BinaryTag> {
-
+  /**
+   * Gets a component serializer for NBT serialization and deserialization.
+   *
+   * @return a NBT component serializer
+   * @since 4.18.0
+   */
   static @NotNull NBTComponentSerializer nbt() {
     return NBTComponentSerializerImpl.Instances.INSTANCE;
   }
 
+  /**
+   * Creates a new {@link NBTComponentSerializer.Builder}.
+   *
+   * @return a builder
+   * @since 4.18.0
+   */
   static @NotNull Builder builder() {
     return new NBTComponentSerializerImpl.BuilderImpl();
   }
 
+  /**
+   * A builder for {@link NBTComponentSerializer}.
+   *
+   * @since 4.18.0
+   */
   interface Builder extends AbstractBuilder<NBTComponentSerializer> {
+    /**
+     * Set the option state to apply on this serializer.
+     *
+     * <p>This controls how the serializer emits and interprets components.</p>
+     *
+     * @param flags the flag set to use
+     * @return this builder
+     * @see NBTSerializerOptions
+     * @since 4.18.0
+     */
     @NotNull Builder options(final @NotNull OptionState flags);
+
+    /**
+     * Edit the active set of serializer options.
+     *
+     * @param optionEditor the consumer operating on the existing flag set
+     * @return this builder
+     * @see NBTSerializerOptions
+     * @since 4.18.0
+     */
     @NotNull Builder editOptions(final @NotNull Consumer<OptionState.Builder> optionEditor);
 
+    /**
+     * Sets whether the serializer should downsample hex colors to named colors.
+     *
+     * @param emit true if the serializer should downsample hex colors to named colors, false otherwise
+     * @return this builder
+     * @since 4.18.0
+     */
     default @NotNull Builder emitRgb(final boolean emit) {
       return this.editOptions(builder -> builder.value(NBTSerializerOptions.EMIT_RGB, emit));
     }
 
-    default @NotNull Builder emitHoverEventValueMode(final NBTSerializerOptions.HoverEventValueMode mode) {
+    /**
+     * Sets a {@linkplain NBTSerializerOptions.HoverEventValueMode hover event value mode} of the serializer.
+     *
+     * @param mode the mode
+     * @return this builder
+     * @since 4.18.0
+     */
+    default @NotNull Builder emitHoverEventValueMode(final @NotNull NBTSerializerOptions.HoverEventValueMode mode) {
       return this.editOptions(builder -> builder.value(NBTSerializerOptions.EMIT_HOVER_EVENT_TYPE, mode));
     }
 
+    /**
+     * Sets whether the serializer should serialize types of the components.
+     *
+     * @param serialize true if the serializer should serialize types of the components, false otherwise
+     * @return this builder
+     * @since 4.18.0
+     */
     default @NotNull Builder serializeComponentTypes(final boolean serialize) {
       return this.editOptions(builder -> builder.value(NBTSerializerOptions.SERIALIZE_COMPONENT_TYPES, serialize));
     }
 
+    /**
+     * Sets a {@linkplain NBTSerializerOptions.ShowItemHoverDataMode show item hover data mode} of the serializer.
+     *
+     * @param mode the mode
+     * @return this builder
+     * @since 4.18.0
+     */
     default @NotNull Builder showItemHoverDataMode(final @NotNull NBTSerializerOptions.ShowItemHoverDataMode mode) {
       return this.editOptions(builder -> builder.value(NBTSerializerOptions.SHOW_ITEM_HOVER_DATA_MODE, mode));
     }
 
+    /**
+     * Sets whether the serializer should serialize text components without styling as
+     * {@linkplain net.kyori.adventure.nbt.StringBinaryTag string binary tags} instead of
+     * {@linkplain net.kyori.adventure.nbt.CompoundBinaryTag compound binary tags}.
+     *
+     * @param emit true if the serializer should serialize text components without styling
+     *             as string binary tags, false otherwise
+     * @return this builder
+     * @since 4.18.0
+     */
     default @NotNull Builder emitCompactTextComponent(final boolean emit) {
       return this.editOptions(builder -> builder.value(NBTSerializerOptions.EMIT_COMPACT_TEXT_COMPONENT, emit));
     }
 
+    /**
+     * Builds the serializer.
+     *
+     * @return the built serializer
+     * @since 4.18.0
+     */
     @Override
     @NotNull NBTComponentSerializer build();
   }
