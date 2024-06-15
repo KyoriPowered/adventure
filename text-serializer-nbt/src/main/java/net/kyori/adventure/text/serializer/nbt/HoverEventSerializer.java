@@ -178,7 +178,7 @@ final class HoverEventSerializer {
       contents = builder.build();
       actionString = HOVER_EVENT_SHOW_ITEM;
     } else if (action == HoverEvent.Action.SHOW_ENTITY) {
-      if (hoverMode != NBTSerializerOptions.HoverEventValueMode.LEGACY_ONLY) {
+      if (hoverMode == NBTSerializerOptions.HoverEventValueMode.LEGACY_ONLY) {
         return null;
       }
 
