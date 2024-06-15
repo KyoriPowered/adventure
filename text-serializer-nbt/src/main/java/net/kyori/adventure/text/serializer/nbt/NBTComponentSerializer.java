@@ -1,3 +1,26 @@
+/*
+ * This file is part of adventure, licensed under the MIT License.
+ *
+ * Copyright (c) 2017-2024 KyoriPowered
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package net.kyori.adventure.text.serializer.nbt;
 
 import net.kyori.adventure.builder.AbstractBuilder;
@@ -29,12 +52,8 @@ public interface NBTComponentSerializer extends ComponentSerializer<Component, C
       return this.editOptions(builder -> builder.value(NBTSerializerOptions.EMIT_RGB, emit));
     }
 
-    default @NotNull Builder emitModernHoverEvent(final boolean emit) {
-      return this.editOptions(builder -> builder.value(NBTSerializerOptions.EMIT_MODERN_HOVER, emit));
-    }
-
-    default @NotNull Builder emitLegacyHoverEvent(final boolean emit) {
-      return this.editOptions(builder -> builder.value(NBTSerializerOptions.EMIT_LEGACY_HOVER, emit));
+    default @NotNull Builder emitHoverEventValueMode(final NBTSerializerOptions.HoverEventValueMode mode) {
+      return this.editOptions(builder -> builder.value(NBTSerializerOptions.EMIT_HOVER_EVENT_TYPE, mode));
     }
 
     default @NotNull Builder serializeComponentTypes(final boolean serialize) {
