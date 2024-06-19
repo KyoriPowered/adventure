@@ -24,16 +24,20 @@
 package net.kyori.adventure.text.serializer.nbt;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;
 
 final class ScoreComponentTest implements NBTComponentTest {
   @Test
   public void testNoStyling() {
-    this.test(Component.score("a-score", "dummy", "idk-what-to-put-here"));
+    this.test(Component.score("a-score", "dummy"));
   }
 
   @Test
   public void testWithStyling() {
-    this.test(Component.score("some-score", "another-dummy-objective", "a-value"));
+    this.test(Component.score("some-score", "another-dummy-objective")
+      .decorate(TextDecoration.BOLD)
+      .color(NamedTextColor.RED));
   }
 }

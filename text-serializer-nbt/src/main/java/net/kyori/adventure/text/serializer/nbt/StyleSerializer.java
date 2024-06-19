@@ -98,11 +98,7 @@ final class StyleSerializer {
     TextColor color = style.color();
 
     if (color != null) {
-      if (color instanceof NamedTextColor) {
-        builder.putString(COLOR, color.toString());
-      } else if (serializer.flags().value(NBTSerializerOptions.EMIT_RGB)) {
-        builder.putString(COLOR, color.asHexString());
-      }
+      builder.putString(COLOR, color instanceof NamedTextColor ? color.toString() : color.asHexString());
     }
 
     style.decorations().forEach((decoration, state) -> {
@@ -153,12 +149,8 @@ final class StyleSerializer {
     }
 
     HoverEvent<?> hoverEvent = style.hoverEvent();
-
     if (hoverEvent != null) {
-      CompoundBinaryTag binaryHoverEvent = HoverEventSerializer.serialize(hoverEvent, serializer);
-      if (binaryHoverEvent != null) {
-        builder.put(HOVER_EVENT, binaryHoverEvent);
-      }
+      builder.put(HOVER_EVENT, HoverEventSerializer.serialize(hoverEvent, serializer));
     }
   }
 

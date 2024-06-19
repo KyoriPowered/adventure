@@ -89,8 +89,6 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
   private static final String SCORE = "score";
   private static final String SCORE_NAME = "name";
   private static final String SCORE_OBJECTIVE = "objective";
-  @Deprecated
-  private static final String SCORE_VALUE = "value";
 
   private static final String SELECTOR = "selector";
   private static final String SELECTOR_SEPARATOR = "separator";
@@ -185,17 +183,9 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
         String scoreName = binaryScore.getString(SCORE_NAME);
         String scoreObjective = binaryScore.getString(SCORE_OBJECTIVE);
 
-        String scoreValue = null;
-        BinaryTag binaryScoreValue = binaryScore.get(SCORE_VALUE);
-
-        if (binaryScoreValue != null) {
-          scoreValue = ((StringBinaryTag) binaryScoreValue).value();
-        }
-
         return Component.score()
           .name(scoreName)
           .objective(scoreObjective)
-          .value(scoreValue)
           .style(style)
           .append(children)
           .build();
@@ -310,11 +300,6 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
       CompoundBinaryTag.Builder scoreBuilder = CompoundBinaryTag.builder()
         .putString(SCORE_NAME, score.name())
         .putString(SCORE_OBJECTIVE, score.objective());
-
-      String value = score.value();
-      if (value != null) {
-        scoreBuilder.putString(SCORE_VALUE, value);
-      }
 
       builder.put(SCORE, scoreBuilder.build());
     } else if (component instanceof SelectorComponent) {
