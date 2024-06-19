@@ -60,6 +60,18 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
       // NOOP
     });
 
+  @Override
+  public @NotNull Style deserializeStyle(@NotNull CompoundBinaryTag tag) {
+    return StyleSerializer.deserialize(tag, this);
+  }
+
+  @Override
+  public @NotNull CompoundBinaryTag serializeStyle(@NotNull Style style) {
+    CompoundBinaryTag.Builder builder = CompoundBinaryTag.builder();
+    StyleSerializer.serialize(style, builder, this);
+    return builder.build();
+  }
+
   // We cannot store these fields in NBTComponentSerializerImpl directly due to class initialisation issues.
   static final class Instances {
     static final NBTComponentSerializer INSTANCE = SERVICE

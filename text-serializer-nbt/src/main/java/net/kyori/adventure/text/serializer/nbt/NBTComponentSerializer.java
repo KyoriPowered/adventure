@@ -25,7 +25,9 @@ package net.kyori.adventure.text.serializer.nbt;
 
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.nbt.BinaryTag;
+import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.PlatformAPI;
 import net.kyori.option.OptionState;
@@ -40,6 +42,24 @@ import java.util.function.Consumer;
  * @since 4.18.0
  */
 public interface NBTComponentSerializer extends ComponentSerializer<Component, Component, BinaryTag> {
+  /**
+   * Deserializes a {@linkplain Style style} from a {@linkplain BinaryTag binary tag}.
+   *
+   * @param tag the binary tag
+   * @return the style
+   * @since 4.18.0
+   */
+  @NotNull Style deserializeStyle(@NotNull CompoundBinaryTag tag);
+
+  /**
+   * Serializes a {@linkplain Style style} to a {@linkplain BinaryTag binary tag}.
+   *
+   * @param style the style
+   * @return the binary tag
+   * @since 4.18.0
+   */
+  @NotNull CompoundBinaryTag serializeStyle(@NotNull Style style);
+
   /**
    * Gets a component serializer for NBT serialization and deserialization.
    *
