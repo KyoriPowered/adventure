@@ -42,6 +42,8 @@ final class StorageNBTComponentTest implements NBTComponentTest {
       .interpret(false)
       .separator(Component.text("another-separator", NamedTextColor.RED, TextDecoration.OBFUSCATED))
       .storage(Key.key("dummy", "storage"))
+      .color(NamedTextColor.YELLOW)
+      .decorate(TextDecoration.BOLD)
       .build());
   }
 }

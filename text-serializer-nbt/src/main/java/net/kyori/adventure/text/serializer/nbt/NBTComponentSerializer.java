@@ -37,9 +37,6 @@ import java.util.function.Consumer;
 /**
  * A NBT component serializer.
  *
- * <p>Use {@link Builder#emitRgb(boolean)} to support platforms
- * that do not understand hex colors that were introduced in Minecraft 1.16.</p>
- *
  * @since 4.18.0
  */
 public interface NBTComponentSerializer extends ComponentSerializer<Component, Component, BinaryTag> {
@@ -90,64 +87,6 @@ public interface NBTComponentSerializer extends ComponentSerializer<Component, C
      * @since 4.18.0
      */
     @NotNull Builder editOptions(final @NotNull Consumer<OptionState.Builder> optionEditor);
-
-    /**
-     * Sets whether the serializer should downsample hex colors to named colors.
-     *
-     * @param emit true if the serializer should downsample hex colors to named colors, false otherwise
-     * @return this builder
-     * @since 4.18.0
-     */
-    default @NotNull Builder emitRgb(final boolean emit) {
-      return this.editOptions(builder -> builder.value(NBTSerializerOptions.EMIT_RGB, emit));
-    }
-
-    /**
-     * Sets a {@linkplain NBTSerializerOptions.HoverEventValueMode hover event value mode} of the serializer.
-     *
-     * @param mode the mode
-     * @return this builder
-     * @since 4.18.0
-     */
-    default @NotNull Builder emitHoverEventValueMode(final @NotNull NBTSerializerOptions.HoverEventValueMode mode) {
-      return this.editOptions(builder -> builder.value(NBTSerializerOptions.EMIT_HOVER_EVENT_TYPE, mode));
-    }
-
-    /**
-     * Sets whether the serializer should serialize types of the components.
-     *
-     * @param serialize true if the serializer should serialize types of the components, false otherwise
-     * @return this builder
-     * @since 4.18.0
-     */
-    default @NotNull Builder serializeComponentTypes(final boolean serialize) {
-      return this.editOptions(builder -> builder.value(NBTSerializerOptions.SERIALIZE_COMPONENT_TYPES, serialize));
-    }
-
-    /**
-     * Sets a {@linkplain NBTSerializerOptions.ShowItemHoverDataMode show item hover data mode} of the serializer.
-     *
-     * @param mode the mode
-     * @return this builder
-     * @since 4.18.0
-     */
-    default @NotNull Builder showItemHoverDataMode(final @NotNull NBTSerializerOptions.ShowItemHoverDataMode mode) {
-      return this.editOptions(builder -> builder.value(NBTSerializerOptions.SHOW_ITEM_HOVER_DATA_MODE, mode));
-    }
-
-    /**
-     * Sets whether the serializer should serialize text components without styling as
-     * {@linkplain net.kyori.adventure.nbt.StringBinaryTag string binary tags} instead of
-     * {@linkplain net.kyori.adventure.nbt.CompoundBinaryTag compound binary tags}.
-     *
-     * @param emit true if the serializer should serialize text components without styling
-     *             as string binary tags, false otherwise
-     * @return this builder
-     * @since 4.18.0
-     */
-    default @NotNull Builder emitCompactTextComponent(final boolean emit) {
-      return this.editOptions(builder -> builder.value(NBTSerializerOptions.EMIT_COMPACT_TEXT_COMPONENT, emit));
-    }
 
     /**
      * Builds the serializer.
