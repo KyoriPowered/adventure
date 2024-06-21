@@ -96,9 +96,8 @@ final class StyleSerializer {
   static void serialize(@NotNull Style style, CompoundBinaryTag.@NotNull Builder builder,
                         @NotNull NBTComponentSerializerImpl serializer) {
     TextColor color = style.color();
-
     if (color != null) {
-      builder.putString(COLOR, color instanceof NamedTextColor ? color.toString() : color.asHexString());
+      builder.putString(COLOR, color.toString());
     }
 
     style.decorations().forEach((decoration, state) -> {
