@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+
 plugins {
   id("adventure.common-conventions")
   alias(libs.plugins.kotlin)
@@ -6,13 +9,10 @@ plugins {
 kotlin {
   explicitApi()
   coreLibrariesVersion = "1.4.32"
-  target {
-    compilations.configureEach {
-      kotlinOptions {
-        jvmTarget = "1.8"
-        languageVersion = "1.4"
-      }
-    }
+  compilerOptions {
+    jvmTarget = JvmTarget.JVM_1_8
+    @Suppress("DEPRECATION")
+    languageVersion = KotlinVersion.KOTLIN_1_4
   }
 }
 
