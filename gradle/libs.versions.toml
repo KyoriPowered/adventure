@@ -75,5 +75,5 @@ zJmh = { module = "org.openjdk.jmh:jmh-core", version.ref = "jmh" }
 [plugins]
 indra-sonatype = { id = "net.kyori.indra.publishing.sonatype", version.ref = "indra" }
 jmh = { id = "me.champeau.jmh", version.ref = "jmhPlugin" }
-kotlin = "org.jetbrains.kotlin.jvm:1.9.24"
+kotlin = "org.jetbrains.kotlin.jvm:2.0.0"
 nexusPublish = { id = "io.github.gradle-nexus.publish-plugin", version = "2.0.0" }
