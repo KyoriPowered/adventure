@@ -155,6 +155,14 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
   int size();
 
   /**
+   * Returns whether the list has elements or not.
+   *
+   * @return false if the list has elements
+   * @since 4.18.0
+   */
+  boolean isEmpty();
+
+  /**
    * Gets a tag.
    *
    * @param index the index

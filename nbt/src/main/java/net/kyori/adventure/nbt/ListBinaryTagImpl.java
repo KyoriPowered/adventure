@@ -62,6 +62,11 @@ final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag
   }
 
   @Override
+  public boolean isEmpty() {
+    return this.tags.isEmpty();
+  }
+
+  @Override
   public @NotNull BinaryTag get(@Range(from = 0, to = Integer.MAX_VALUE) final int index) {
     return this.tags.get(index);
   }
