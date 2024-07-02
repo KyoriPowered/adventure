@@ -42,7 +42,7 @@ slf4jtest = "com.github.valfirst:slf4j-test:3.0.1" # Specific versions are neede
 gson = "com.google.code.gson:gson:2.8.0"
 
 # text-serializer-ansi
-ansi = "net.kyori:ansi:1.0.3"
+ansi = "net.kyori:ansi:1.1.0"
 
 # tests
 junit-api = { module = "org.junit.jupiter:junit-jupiter-api" }
