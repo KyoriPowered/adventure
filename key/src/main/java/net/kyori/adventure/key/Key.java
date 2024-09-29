@@ -248,8 +248,9 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
    * @return the namespace
    * @since 4.0.0
    */
+  @KeyPattern.Namespace
   @Override
-  @NotNull @KeyPattern.Namespace String namespace();
+  @NotNull String namespace();
 
   /**
    * Gets the value.
@@ -257,7 +258,8 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
    * @return the value
    * @since 4.0.0
    */
-  @NotNull @KeyPattern.Value String value();
+  @KeyPattern.Value
+  @NotNull String value();
 
   /**
    * Returns the string representation of this key.
