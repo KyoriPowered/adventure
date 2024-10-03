@@ -275,7 +275,7 @@
 
     <!-- https://gitlab.com/stellardrift/stylecheck/-/blob/trunk/src/main/java/ca/stellardrift/stylecheck/AnnotationsCloseToType.java -->
     <module name="AnnotationsCloseToType">
-      <property name="typeUseAnnotations" value="NotNull, Nullable, Pattern, RegExp, KeyPattern, KeyPattern.Namespace, KeyPattern.Value"/>
+      <property name="typeUseAnnotations" value="NotNull, Nullable, RegExp"/>
     </module>
 
     <!-- https://checkstyle.org/config_javadoc.html#WriteTag -->

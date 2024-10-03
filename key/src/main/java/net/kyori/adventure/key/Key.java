@@ -84,7 +84,7 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
    * @throws InvalidKeyException if the namespace or value contains an invalid character
    * @since 4.0.0
    */
-  static @NotNull Key key(final @NotNull @KeyPattern String string) {
+  static @NotNull Key key(@KeyPattern final @NotNull String string) {
     return key(string, DEFAULT_SEPARATOR);
   }
 
@@ -120,7 +120,7 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
    * @throws InvalidKeyException if the namespace or value contains an invalid character
    * @since 4.4.0
    */
-  static @NotNull Key key(final @NotNull Namespaced namespaced, final @NotNull @KeyPattern.Value String value) {
+  static @NotNull Key key(final @NotNull Namespaced namespaced, @KeyPattern.Value final @NotNull String value) {
     return key(namespaced.namespace(), value);
   }
 
@@ -133,7 +133,7 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
    * @throws InvalidKeyException if the namespace or value contains an invalid character
    * @since 4.0.0
    */
-  static @NotNull Key key(final @NotNull @KeyPattern.Namespace String namespace, final @NotNull @KeyPattern.Value String value) {
+  static @NotNull Key key(@KeyPattern.Namespace final @NotNull String namespace, @KeyPattern.Value final @NotNull String value) {
     return new KeyImpl(namespace, value);
   }
 

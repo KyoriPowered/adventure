@@ -37,5 +37,6 @@ public interface Namespaced {
    * @return the namespace
    * @since 4.4.0
    */
-  @NotNull @KeyPattern.Namespace String namespace();
+  @KeyPattern.Namespace
+  @NotNull String namespace();
 }
