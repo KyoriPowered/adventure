@@ -100,6 +100,14 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
   int size();
 
   /**
+   * Returns whether the compound has tags or not.
+   *
+   * @return false if the compound has tags
+   * @since 4.18.0
+   */
+  boolean isEmpty();
+
+  /**
    * Gets a boolean.
    *
    * <p>Booleans are stored as a {@link ByteBinaryTag} with a value of {@code 0} for {@code false} and {@code 1} for {@code true}.</p>
