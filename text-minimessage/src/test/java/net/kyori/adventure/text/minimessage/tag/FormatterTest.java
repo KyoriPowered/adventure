@@ -25,7 +25,9 @@ package net.kyori.adventure.text.minimessage.tag;
 
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.Arrays;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.AbstractTest;
 import org.junit.jupiter.api.Test;
@@ -34,6 +36,7 @@ import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.minimessage.tag.resolver.Formatter.booleanChoice;
 import static net.kyori.adventure.text.minimessage.tag.resolver.Formatter.choice;
 import static net.kyori.adventure.text.minimessage.tag.resolver.Formatter.date;
+import static net.kyori.adventure.text.minimessage.tag.resolver.Formatter.joining;
 import static net.kyori.adventure.text.minimessage.tag.resolver.Formatter.number;
 
 public class FormatterTest extends AbstractTest {
@@ -125,4 +128,37 @@ public class FormatterTest extends AbstractTest {
     final Component expected = text("bah");
     this.assertParsedEquals(expected, input, booleanChoice("first", true), booleanChoice("second", true), booleanChoice("third", true));
   }
+
+  @Test
+  void testJoinSeparator() {
+    final String input = "<list:, >";
+    final Iterable<? extends Component> components = Arrays.asList(text("one"), text("two"), text("three"));
+    final Component expected = Component.join(JoinConfiguration.separator(text(", ")), components);
+    this.assertParsedEquals(expected, input, joining("list", components));
+  }
+
+  @Test
+  void testJoinSeparatorWithLastSeparator() {
+    final String input = "<list:, : and >";
+    final Iterable<? extends Component> components = Arrays.asList(text("one"), text("two"), text("three"));
+    final Component expected = Component.join(JoinConfiguration.separators(text(", "), text(" and ")), components);
+    this.assertParsedEquals(expected, input, joining("list", components));
+  }
+
+  @Test
+  void testJoinSeparatorWithLastSeparatorIfSerialAndManyComponents() {
+    final String input = "<list:, : and :, and >";
+    final Iterable<? extends Component> components = Arrays.asList(text("one"), text("two"), text("three"));
+    final Component expected = Component.join(JoinConfiguration.builder().separator(text(", ")).lastSeparator(text(" and ")).lastSeparatorIfSerial(text(", and ")), components);
+    this.assertParsedEquals(expected, input, joining("list", components));
+  }
+
+  @Test
+  void testJoinSeparatorWithLastSeparatorIfSerialAndTwoComponents() {
+    final String input = "<list:, : and :, and >";
+    final Iterable<? extends Component> components = Arrays.asList(text("one"), text("two"));
+    final Component expected = Component.join(JoinConfiguration.builder().separator(text(", ")).lastSeparator(text(" and ")).lastSeparatorIfSerial(text(", and ")), components);
+    this.assertParsedEquals(expected, input, joining("list", components));
+  }
+
 }
