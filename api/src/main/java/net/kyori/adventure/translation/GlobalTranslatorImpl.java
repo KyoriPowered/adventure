@@ -24,7 +24,9 @@
 package net.kyori.adventure.translation;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -95,9 +97,31 @@ final class GlobalTranslatorImpl implements GlobalTranslator {
   public @Nullable Component translate(final @NotNull TranslatableComponent component, final @NotNull Locale locale) {
     requireNonNull(component, "component");
     requireNonNull(locale, "locale");
+    return this.translate(component, locale, 0);
+  }
+
+  private @Nullable Component translate(final @NotNull TranslatableComponent component, final @NotNull Locale locale, final int depth) {
+    if (depth >= 128) {
+      return null;
+    }
     for (final Translator source : this.sources) {
-      final Component translation = source.translate(component, locale);
-      if (translation != null) return translation;
+      Component translation = source.translate(component, locale);
+      if (translation != null) {
+        final List<Component> children = translation.children();
+        if (translation instanceof TranslatableComponent) {
+          translation = this.translate((TranslatableComponent) translation, locale, depth + 1);
+        }
+        final List<Component> newChildren = new ArrayList<>();
+        for (final Component child : children) {
+          if (child instanceof TranslatableComponent) {
+            final Component childTranslation = this.translate((TranslatableComponent) child, locale, depth + 1);
+            newChildren.add(childTranslation != null ? childTranslation : child);
+          } else {
+            newChildren.add(child);
+          }
+        }
+        return translation.children(newChildren);
+      }
     }
     return null;
   }
