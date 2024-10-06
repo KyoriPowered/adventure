@@ -95,7 +95,7 @@ class StyleTest extends SerializerTest {
       object.addProperty(JSONComponentConstants.TEXT, "");
       object.addProperty(name(TextDecoration.BOLD), 1);
     })).style();
-    assertFalse(s0.hasDecoration(TextDecoration.BOLD));
+    assertTrue(s0.hasDecoration(TextDecoration.BOLD));
 
     assertThrows(RuntimeException.class, () -> {
       deserialize(object(object -> {

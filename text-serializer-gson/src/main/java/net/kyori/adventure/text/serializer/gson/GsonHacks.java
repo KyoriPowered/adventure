@@ -45,8 +45,10 @@ final class GsonHacks {
     final JsonToken peek = in.peek();
     if (peek == JsonToken.BOOLEAN) {
       return in.nextBoolean();
-    } else if (peek == JsonToken.STRING || peek == JsonToken.NUMBER) {
+    } else if (peek == JsonToken.STRING) {
       return Boolean.parseBoolean(in.nextString());
+    } else if (peek == JsonToken.NUMBER) {
+      return in.nextString().equals("1");
     } else {
       throw new JsonParseException("Token of type " + peek + " cannot be interpreted as a boolean");
     }
