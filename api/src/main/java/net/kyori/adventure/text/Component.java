@@ -2674,6 +2674,19 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
     return this.replaceText(b -> b.match(pattern).replacement(replacement).condition(fn));
   }
 
+  /**
+   * Split an existing Component into multiple Components based on a separator.
+   *
+   * <p>This will return a list of Components</p>
+   *
+   * @param separator a separator
+   * @return a list of components
+   * @since 4.15.0
+   */
+  default @NotNull List<Component> split(final @NotNull Component separator) {
+    return ComponentSplit.split(this, separator);
+  }
+
   @Override
   default void componentBuilderApply(final @NotNull ComponentBuilder<?, ?> component) {
     component.append(this);
