@@ -25,14 +25,20 @@ package net.kyori.adventure.text.minimessage.tag.standard;
 
 import java.util.Collections;
 import java.util.PrimitiveIterator;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.VirtualComponent;
+import net.kyori.adventure.text.VirtualComponentRenderer;
 import net.kyori.adventure.text.flattener.ComponentFlattener;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.internal.parser.node.TagNode;
 import net.kyori.adventure.text.minimessage.internal.parser.node.ValueNode;
+import net.kyori.adventure.text.minimessage.internal.serializer.Emitable;
+import net.kyori.adventure.text.minimessage.internal.serializer.TokenEmitter;
 import net.kyori.adventure.text.minimessage.tag.Inserting;
 import net.kyori.adventure.text.minimessage.tag.Modifying;
 import net.kyori.adventure.text.minimessage.tree.Node;
@@ -40,6 +46,7 @@ import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 /**
  * A transformation that applies a colour change.
@@ -54,7 +61,6 @@ import org.jetbrains.annotations.Nullable;
  * @since 4.10.0
  */
 abstract class AbstractColorChangingTag implements Modifying, Examinable {
-
   private static final ComponentFlattener LENGTH_CALCULATOR = ComponentFlattener.builder()
     .mapper(TextComponent.class, TextComponent::content)
     .unknownMapper(x -> "_") // every unknown component gets a single colour
@@ -95,6 +101,11 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
 
   @Override
   public final Component apply(final @NotNull Component current, final int depth) {
+    if (depth == 0) {
+      // capture state into a virtual component, no other logic is needed in normal MM handling
+      return Component.virtual(Void.class, new TagInfoHolder(this.preserveData(), current), current.style());
+    }
+
     if ((this.disableApplyingColorDepth != -1 && depth > this.disableApplyingColorDepth) || current.style().color() != null) {
       if (this.disableApplyingColorDepth == -1 || depth < this.disableApplyingColorDepth) {
         this.disableApplyingColorDepth = depth;
@@ -102,18 +113,19 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
       // This component has its own color applied, which overrides ours
       // We still want to keep track of where we are though if this is text
       if (current instanceof TextComponent) {
-        final String content = ((TextComponent) current).content();
-        final int len = content.codePointCount(0, content.length());
-        for (int i = 0; i < len; i++) {
-          // increment our color index
-          this.advanceColor();
-        }
+        this.skipColorForLengthOf(((TextComponent) current).content());
       }
       return current.children(Collections.emptyList());
     }
 
     this.disableApplyingColorDepth = -1;
-    if (current instanceof TextComponent && ((TextComponent) current).content().length() > 0) {
+    if (current instanceof VirtualComponent) {
+      // this component has its own information, so we can't rainbowify direct content -- we can process children tho
+      // basically treat as if it's a non-text component
+      this.skipColorForLengthOf(((VirtualComponent) current).content());
+
+      return current.children(Collections.emptyList());
+    } else if (current instanceof TextComponent && ((TextComponent) current).content().length() > 0) {
       final TextComponent textComponent = (TextComponent) current;
       final String content = textComponent.content();
 
@@ -138,6 +150,14 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
     return Component.empty().mergeStyle(current);
   }
 
+  private void skipColorForLengthOf(final String content) {
+    final int len = content.codePointCount(0, content.length());
+    for (int i = 0; i < len; i++) {
+      // increment our color index
+      this.advanceColor();
+    }
+  }
+
   // The lifecycle
 
   protected abstract void init();
@@ -155,6 +175,14 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
    */
   protected abstract TextColor color();
 
+  /**
+   * Return an emitable that will accurately reserialize the provided input data.
+   *
+   * @return the emitable for this tag
+   * @since 4.13.0
+   */
+  protected abstract @NotNull Consumer<TokenEmitter> preserveData();
+
   // misc
 
   @Override
@@ -170,4 +198,47 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
 
   @Override
   public abstract int hashCode();
+
+  static final class TagInfoHolder implements VirtualComponentRenderer<Void>, Emitable {
+    private final Consumer<TokenEmitter> output;
+    private final Component originalComp;
+
+    TagInfoHolder(final Consumer<TokenEmitter> output, final Component originalComp) {
+      this.output = output;
+      this.originalComp = originalComp;
+    }
+
+    @Override
+    public @UnknownNullability ComponentLike apply(final @NotNull Void context) {
+      return this.originalComp;
+    }
+
+    @Override
+    public @NotNull String fallbackString() {
+      return ""; // only holds data for reserialization, not for display
+    }
+
+    @Override
+    public void emit(final @NotNull TokenEmitter emitter) {
+      this.output.accept(emitter);
+    }
+
+    @Override
+    public @Nullable Component substitute() {
+      return this.originalComp;
+    }
+  }
+
+  static @Nullable Emitable claimComponent(final Component comp) {
+    if (!(comp instanceof VirtualComponent)) {
+      return null;
+    }
+
+    final VirtualComponentRenderer<?> holder = ((VirtualComponent) comp).renderer();
+    if (!(holder instanceof TagInfoHolder)) {
+      return null;
+    }
+
+    return (TagInfoHolder) holder;
+  }
 }

@@ -21,36 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.internal.serializer;
+package net.kyori.adventure.text;
 
-import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 /**
- * Something that holds data representable as MiniMessage tags.
+ * A holder for a value.
  *
- * @since 4.10.0
+ * @param <C> the context type
+ * @since 4.16.0
  */
-@FunctionalInterface
-public interface Emitable {
+public interface VirtualComponentRenderer<C> {
   /**
-   * Emit tags based on this emitable's data.
+   * Gets the value by rendering using {@code context}.
    *
-   * @param emitter the target to emit to
-   * @since 4.10.0
+   * @param context the context
+   * @return the rendered value
+   * @since 4.16.0
    */
-  void emit(final @NotNull TokenEmitter emitter);
+  @UnknownNullability ComponentLike apply(final @NotNull C context);
 
   /**
-   * Provide a substitute for this component's actual children.
+   * Get a fallback value for when this component has been serialized without being rendered.
    *
-   * <p>This allows modifying tags to output original data while still transforming the created components.</p>
+   * <p>By default, this will be an empty string.</p>
    *
-   * @return a potential substitute
-   * @since 4.13.0
+   * @return the fallback string
+   * @since 4.16.0
    */
-  default @Nullable Component substitute() { // TODO: maybe make this be only for component claims?
-    return null;
+  default @NotNull String fallbackString() {
+    return "";
   }
 }

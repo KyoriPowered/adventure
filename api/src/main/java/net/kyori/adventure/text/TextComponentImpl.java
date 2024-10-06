@@ -36,7 +36,7 @@ import org.jetbrains.annotations.VisibleForTesting;
 
 import static java.util.Objects.requireNonNull;
 
-final class TextComponentImpl extends AbstractComponent implements TextComponent {
+class TextComponentImpl extends AbstractComponent implements TextComponent {
   private static final boolean WARN_WHEN_LEGACY_FORMATTING_DETECTED = Boolean.TRUE.equals(AdventureProperties.TEXT_WARN_WHEN_LEGACY_FORMATTING_DETECTED.value());
   @VisibleForTesting
   static final char SECTION_CHAR = '§';
@@ -54,6 +54,10 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
       requireNonNull(style, "style"),
       requireNonNull(content, "content")
     );
+  }
+
+  TextComponent create0(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final @NotNull String content) {
+    return create(children, style, content);
   }
 
   private static @NotNull TextComponent createDirect(final @NotNull String content) {
@@ -90,17 +94,17 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
   @Override
   public @NotNull TextComponent content(final @NotNull String content) {
     if (Objects.equals(this.content, content)) return this;
-    return create(this.children, this.style, content);
+    return this.create0(this.children, this.style, content);
   }
 
   @Override
   public @NotNull TextComponent children(final @NotNull List<? extends ComponentLike> children) {
-    return create(children, this.style, this.content);
+    return this.create0(children, this.style, this.content);
   }
 
   @Override
   public @NotNull TextComponent style(final @NotNull Style style) {
-    return create(this.children, style, this.content);
+    return this.create0(this.children, style, this.content);
   }
 
   @Override
@@ -129,7 +133,7 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
     return new BuilderImpl(this);
   }
 
-  static final class BuilderImpl extends AbstractComponentBuilder<TextComponent, Builder> implements TextComponent.Builder {
+  static class BuilderImpl extends AbstractComponentBuilder<TextComponent, Builder> implements TextComponent.Builder {
     /*
      * We default to an empty string to avoid needing to manually set the
      * content of a newly-created builder when we only want to append other
