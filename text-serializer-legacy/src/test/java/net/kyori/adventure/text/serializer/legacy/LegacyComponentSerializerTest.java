@@ -26,6 +26,7 @@ package net.kyori.adventure.text.serializer.legacy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -73,7 +74,11 @@ class LegacyComponentSerializerTest {
 
   @Test
   void testJustColor() {
-    assertEquals(Component.text("", TextColor.color(0xabcdef)), LegacyComponentSerializer.legacyAmpersand().deserialize("&#abcdef"));
+    assertEquals(Component.text("", TextColor.color(0xabcdef)), LegacyComponentSerializer.builder()
+      .character(LegacyComponentSerializer.AMPERSAND_CHAR)
+      .hexColors()
+      .build()
+      .deserialize("&#abcdef"));
   }
 
   @Test
@@ -191,6 +196,12 @@ class LegacyComponentSerializerTest {
   @Test
   void testFromLegacyWithHexColorTerribleFormat() {
     final TextComponent expected = Component.text("Kittens!", TextColor.color(0xffefd5));
+    assertEquals(expected, LegacyComponentSerializer.builder().hexColors().useUnusualXRepeatedCharacterHexFormat().build().deserialize("§x§f§f§e§f§d§5Kittens!"));
+  }
+
+  @Test
+  void testFromLegacyWithoutHexColorTerribleFormat() {
+    final TextComponent expected = Component.text("§x").append(Component.text("Kittens!", NamedTextColor.DARK_PURPLE));
     assertEquals(expected, LegacyComponentSerializer.builder().hexColors().build().deserialize("§x§f§f§e§f§d§5Kittens!"));
   }
 
@@ -200,7 +211,7 @@ class LegacyComponentSerializerTest {
       .append(Component.text("Hugs and ", NamedTextColor.RED))
       .append(Component.text("Kittens!", TextColor.color(0xffefd5)))
       .build();
-    assertEquals(expected, LegacyComponentSerializer.builder().hexColors().build().deserialize("§cHugs and §x§f§f§e§f§d§5Kittens!"));
+    assertEquals(expected, LegacyComponentSerializer.builder().hexColors().useUnusualXRepeatedCharacterHexFormat().build().deserialize("§cHugs and §x§f§f§e§f§d§5Kittens!"));
   }
 
   @Test
@@ -218,7 +229,7 @@ class LegacyComponentSerializerTest {
       .append(Component.text("Lavender and ", TextColor.color(0x6b4668)))
       .append(Component.text("Cyan!", TextColor.color(0xffefd5)))
       .build();
-    assertEquals(expected, LegacyComponentSerializer.builder().hexColors().build().deserialize("Happy with §x§6§b§4§6§6§8Lavender and §x§f§f§e§f§d§5Cyan!"));
+    assertEquals(expected, LegacyComponentSerializer.builder().hexColors().useUnusualXRepeatedCharacterHexFormat().build().deserialize("Happy with §x§6§b§4§6§6§8Lavender and §x§f§f§e§f§d§5Cyan!"));
   }
 
   @Test

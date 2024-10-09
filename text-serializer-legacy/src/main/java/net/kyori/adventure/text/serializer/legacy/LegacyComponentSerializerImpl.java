@@ -98,11 +98,11 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
       // in the string if it is indeed a BungeeCord-style RGB color.
       final int expectedCharacterPosition = pos - 14;
       final int expectedIndicatorPosition = pos - 13;
-      if (input.charAt(expectedCharacterPosition) == this.character && input.charAt(expectedIndicatorPosition) == LEGACY_BUNGEE_HEX_CHAR) {
+      if (useTerriblyStupidHexFormat && input.charAt(expectedCharacterPosition) == this.character && input.charAt(expectedIndicatorPosition) == LEGACY_BUNGEE_HEX_CHAR) {
         return FormatCodeType.BUNGEECORD_UNUSUAL_HEX;
       }
     }
-    if (legacy == this.hexCharacter && input.length() - pos >= 6) {
+    if (hexColours && legacy == this.hexCharacter && input.length() - pos >= 6) {
       return FormatCodeType.KYORI_HEX;
     } else if (this.formats.characters.indexOf(legacy) != -1) {
       return FormatCodeType.MOJANG_LEGACY;
