@@ -172,6 +172,12 @@ class LegacyComponentSerializerTest {
   }
 
   @Test
+  void testToLegacyWithoutHexColor() {
+    final TextComponent c0 = Component.text("§#ffefd5Kittens!");
+    assertEquals("§#ffefd5Kittens!", LegacyComponentSerializer.builder().build().serialize(c0));
+  }
+
+  @Test
   void testToLegacyWithHexColorDownsampling() {
     final TextComponent comp = Component.text("purr", TextColor.color(0xff0000));
     assertEquals("§4purr", LegacyComponentSerializer.builder().build().serialize(comp));
