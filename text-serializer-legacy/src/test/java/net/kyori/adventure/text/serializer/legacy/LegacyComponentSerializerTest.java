@@ -26,7 +26,6 @@ package net.kyori.adventure.text.serializer.legacy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -74,11 +73,7 @@ class LegacyComponentSerializerTest {
 
   @Test
   void testJustColor() {
-    assertEquals(Component.text("", TextColor.color(0xabcdef)), LegacyComponentSerializer.builder()
-      .character(LegacyComponentSerializer.AMPERSAND_CHAR)
-      .hexColors()
-      .build()
-      .deserialize("&#abcdef"));
+    assertEquals(Component.text("", TextColor.color(0xabcdef)), LegacyComponentSerializer.legacyAmpersand().deserialize("&#abcdef"));
   }
 
   @Test
