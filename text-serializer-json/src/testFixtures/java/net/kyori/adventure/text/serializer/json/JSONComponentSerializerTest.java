@@ -26,6 +26,7 @@ package net.kyori.adventure.text.serializer.json;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParseException;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -98,4 +99,66 @@ final class JSONComponentSerializerTest extends SerializerTest {
     });
   }
 
+  @Test
+  void testComponentType() {
+    final JSONComponentSerializer serializer = JSONComponentSerializer
+      .builder()
+      .editOptions((builder) -> builder.value(JSONOptions.EMIT_COMPONENT_TYPE, true))
+      .build();
+
+    // Emit-compact text is on by default, so this should not include the type.
+    assertEquals("\"hi\"", serializer.serialize(Component.text("hi")));
+    this.testObject(
+      serializer,
+      Component.text("hi", NamedTextColor.RED),
+      object -> {
+        object.addProperty(JSONComponentConstants.TEXT, "hi");
+        object.addProperty(JSONComponentConstants.COLOR, NamedTextColor.RED.toString());
+        object.addProperty(JSONComponentConstants.TYPE, JSONComponentConstants.TEXT);
+      }
+    );
+    this.testObject(
+      serializer,
+      Component.translatable("hi"),
+      object -> {
+        object.addProperty(JSONComponentConstants.TRANSLATE, "hi");
+        object.addProperty(JSONComponentConstants.TYPE, JSONComponentConstants.TRANSLATABLE);
+      }
+    );
+    this.testObject(
+      serializer,
+      Component.score("me", "ow"),
+      object -> {
+        object.add(JSONComponentConstants.SCORE, object(inner -> {
+          inner.addProperty(JSONComponentConstants.SCORE_NAME, "me");
+          inner.addProperty(JSONComponentConstants.SCORE_OBJECTIVE, "ow");
+        }));
+        object.addProperty(JSONComponentConstants.TYPE, JSONComponentConstants.SCORE);
+      }
+    );
+    this.testObject(
+      serializer,
+      Component.selector("hi"),
+      object -> {
+        object.addProperty(JSONComponentConstants.SELECTOR, "hi");
+        object.addProperty(JSONComponentConstants.TYPE, JSONComponentConstants.SELECTOR);
+      }
+    );
+    this.testObject(
+      serializer,
+      Component.selector("hi"),
+      object -> {
+        object.addProperty(JSONComponentConstants.SELECTOR, "hi");
+        object.addProperty(JSONComponentConstants.TYPE, JSONComponentConstants.SELECTOR);
+      }
+    );
+    this.testObject(
+      serializer,
+      Component.keybind("hi"),
+      object -> {
+        object.addProperty(JSONComponentConstants.KEYBIND, "hi");
+        object.addProperty(JSONComponentConstants.TYPE, JSONComponentConstants.KEYBIND);
+      }
+    );
+  }
 }
