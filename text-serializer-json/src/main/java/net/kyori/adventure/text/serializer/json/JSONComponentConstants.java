@@ -66,6 +66,8 @@ public final class JSONComponentConstants {
   public static final String SHOW_ITEM_COUNT = "count";
   public static final @Deprecated String SHOW_ITEM_TAG = "tag";
   public static final String SHOW_ITEM_COMPONENTS = "components";
+  public static final String TYPE = "type";
+  public static final String TRANSLATABLE = "translatable";
 
   private JSONComponentConstants() {
     throw new IllegalStateException("Cannot instantiate");

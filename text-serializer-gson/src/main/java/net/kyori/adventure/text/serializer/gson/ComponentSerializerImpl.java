@@ -70,23 +70,31 @@ import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.SC
 import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.SELECTOR;
 import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.SEPARATOR;
 import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.TEXT;
+import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.TRANSLATABLE;
 import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.TRANSLATE;
 import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.TRANSLATE_FALLBACK;
 import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.TRANSLATE_WITH;
+import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.TYPE;
 
 final class ComponentSerializerImpl extends TypeAdapter<Component> {
   static final Type COMPONENT_LIST_TYPE = new TypeToken<List<Component>>() {}.getType();
   static final Type TRANSLATABLE_ARGUMENT_LIST_TYPE = new TypeToken<List<TranslationArgument>>() {}.getType();
 
   static TypeAdapter<Component> create(final OptionState features, final Gson gson) {
-    return new ComponentSerializerImpl(features.value(JSONOptions.EMIT_COMPACT_TEXT_COMPONENT), gson).nullSafe();
+    return new ComponentSerializerImpl(
+      features.value(JSONOptions.EMIT_COMPACT_TEXT_COMPONENT),
+      features.value(JSONOptions.EMIT_COMPONENT_TYPE),
+      gson
+    ).nullSafe();
   }
 
   private final boolean emitCompactTextComponent;
+  private final boolean emitComponentType;
   private final Gson gson;
 
-  private ComponentSerializerImpl(final boolean emitCompactTextComponent, final Gson gson) {
+  private ComponentSerializerImpl(final boolean emitCompactTextComponent, final boolean emitComponentType, final Gson gson) {
     this.emitCompactTextComponent = emitCompactTextComponent;
+    this.emitComponentType = emitComponentType;
     this.gson = gson;
   }
 
@@ -264,9 +272,11 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
     }
 
     if (value instanceof TextComponent) {
+      this.optionallyAddTypeName(out, TEXT);
       out.name(TEXT);
       out.value(((TextComponent) value).content());
     } else if (value instanceof TranslatableComponent) {
+      this.optionallyAddTypeName(out, TRANSLATABLE);
       final TranslatableComponent translatable = (TranslatableComponent) value;
       out.name(TRANSLATE);
       out.value(translatable.key());
@@ -280,6 +290,7 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
         this.gson.toJson(translatable.arguments(), TRANSLATABLE_ARGUMENT_LIST_TYPE, out);
       }
     } else if (value instanceof ScoreComponent) {
+      this.optionallyAddTypeName(out, SCORE);
       final ScoreComponent score = (ScoreComponent) value;
       out.name(SCORE);
       out.beginObject();
@@ -293,14 +304,17 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
       }
       out.endObject();
     } else if (value instanceof SelectorComponent) {
+      this.optionallyAddTypeName(out, SELECTOR);
       final SelectorComponent selector = (SelectorComponent) value;
       out.name(SELECTOR);
       out.value(selector.pattern());
       this.serializeSeparator(out, selector.separator());
     } else if (value instanceof KeybindComponent) {
+      this.optionallyAddTypeName(out, KEYBIND);
       out.name(KEYBIND);
       out.value(((KeybindComponent) value).keybind());
     } else if (value instanceof NBTComponent) {
+      this.optionallyAddTypeName(out, NBT);
       final NBTComponent<?, ?> nbt = (NBTComponent<?, ?>) value;
       out.name(NBT);
       out.value(nbt.nbtPath());
@@ -324,6 +338,13 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
     }
 
     out.endObject();
+  }
+
+  private void optionallyAddTypeName(final JsonWriter out, final String name) throws IOException {
+    if (this.emitComponentType) {
+      out.name(TYPE);
+      out.value(name);
+    }
   }
 
   private void serializeSeparator(final JsonWriter out, final @Nullable Component separator) throws IOException {

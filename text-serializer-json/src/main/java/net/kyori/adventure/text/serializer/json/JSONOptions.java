@@ -52,6 +52,7 @@ public final class JSONOptions {
    * @sinceMinecraft 1.16
    */
   public static final Option<Boolean> EMIT_RGB = Option.booleanOption(key("emit/rgb"), true);
+
   /**
    * Control how hover event values should be emitted.
    *
@@ -83,6 +84,7 @@ public final class JSONOptions {
    * @since 4.15.0
    */
   public static final Option<Boolean> VALIDATE_STRICT_EVENTS = Option.booleanOption(key("validate/strict_events"), true);
+
   /**
    * Whether to emit the default hover event item stack quantity of {@code 1}.
    *
@@ -98,6 +100,18 @@ public final class JSONOptions {
    * @since 4.17.0
    */
   public static final Option<ShowItemHoverDataMode> SHOW_ITEM_HOVER_DATA_MODE = Option.enumOption(key("emit/show_item_hover_data"), ShowItemHoverDataMode.class, ShowItemHoverDataMode.EMIT_EITHER);
+
+  /**
+   * Whether to emit the type of the component.
+   *
+   * <p>If {@link #EMIT_COMPACT_TEXT_COMPONENT} is `true`, the component type will not be emitted for compact text components.</p>
+   *
+   * <p>The client does not require the type field.</p>
+   *
+   * @since 4.18.0
+   * @sinceMinecraft 1.20.3
+   */
+  public static final Option<Boolean> EMIT_COMPONENT_TYPE = Option.booleanOption(key("emit/component_type"), false);
 
   /**
    * Versioned by world data version.
