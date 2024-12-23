@@ -34,6 +34,9 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.VirtualComponent;
 import net.kyori.adventure.text.VirtualComponentRenderer;
 import net.kyori.adventure.text.flattener.ComponentFlattener;
+import net.kyori.adventure.text.format.ShadowColor;
+import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.format.StyleSetter;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.internal.parser.node.TagNode;
 import net.kyori.adventure.text.minimessage.internal.parser.node.ValueNode;
@@ -58,9 +61,10 @@ import org.jetbrains.annotations.UnknownNullability;
  * <li>(color()? advanceColor())*</li>
  * </ol>
  *
+ * @param <S> the style attribute type
  * @since 4.10.0
  */
-abstract class AbstractColorChangingTag implements Modifying, Examinable {
+abstract class AbstractAttributeChangingTag<S> implements Modifying, Examinable {
   private static final ComponentFlattener LENGTH_CALCULATOR = ComponentFlattener.builder()
     .mapper(TextComponent.class, TextComponent::content)
     .unknownMapper(x -> "_") // every unknown component gets a single colour
@@ -106,7 +110,7 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
       return Component.virtual(Void.class, new TagInfoHolder(this.preserveData(), current), current.style());
     }
 
-    if ((this.disableApplyingColorDepth != -1 && depth > this.disableApplyingColorDepth) || current.style().color() != null) {
+    if ((this.disableApplyingColorDepth != -1 && depth > this.disableApplyingColorDepth) || this.query(current.style()) != null) {
       if (this.disableApplyingColorDepth == -1 || depth < this.disableApplyingColorDepth) {
         this.disableApplyingColorDepth = depth;
       }
@@ -135,15 +139,15 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
       final int[] holder = new int[1];
       for (final PrimitiveIterator.OfInt it = content.codePoints().iterator(); it.hasNext();) {
         holder[0] = it.nextInt();
-        final Component comp = Component.text(new String(holder, 0, 1), current.style().color(this.color()));
-        this.advanceColor();
+        final Component comp = Component.text(new String(holder, 0, 1), this.apply(current.style(), this.attribute()));
+        this.advanceAttribute();
         parent.append(comp);
       }
 
       return parent.build();
     } else if (!(current instanceof TextComponent)) {
-      final Component ret = current.children(Collections.emptyList()).colorIfAbsent(this.color());
-      this.advanceColor();
+      final Component ret = this.applyIfAbsent(current.children(Collections.emptyList()), this.attribute());
+      this.advanceAttribute();
       return ret;
     }
 
@@ -154,7 +158,7 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
     final int len = content.codePointCount(0, content.length());
     for (int i = 0; i < len; i++) {
       // increment our color index
-      this.advanceColor();
+      this.advanceAttribute();
     }
   }
 
@@ -165,7 +169,7 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
   /**
    * Advance the active color.
    */
-  protected abstract void advanceColor();
+  protected abstract void advanceAttribute();
 
   /**
    * Get the current color, without side-effects.
@@ -173,7 +177,13 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
    * @return the current color
    * @since 4.10.0
    */
-  protected abstract TextColor color();
+  protected abstract S attribute();
+
+  protected abstract <T extends StyleSetter<T>> T apply(final T style, final S attribute);
+
+  protected abstract <T extends StyleSetter<T>> T applyIfAbsent(final T style, final S attribute);
+
+  protected abstract @Nullable S query(final Style style);
 
   /**
    * Return an emitable that will accurately reserialize the provided input data.
@@ -240,5 +250,39 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
     }
 
     return (TagInfoHolder) holder;
+  }
+
+  static abstract class OfColor extends AbstractAttributeChangingTag<TextColor> {
+    @Override
+    protected <T extends StyleSetter<T>> T apply(final T style, final TextColor attribute) {
+      return style.color(attribute);
+    }
+
+    @Override
+    protected <T extends StyleSetter<T>> T applyIfAbsent(final T style, final TextColor attribute) {
+      return style.colorIfAbsent(attribute);
+    }
+
+    @Override
+    protected @Nullable TextColor query(final Style style) {
+      return style.color();
+    }
+  }
+
+  static abstract class OfShadowColor extends AbstractAttributeChangingTag<ShadowColor> {
+    @Override
+    protected <T extends StyleSetter<T>> T apply(final T style, final ShadowColor attribute) {
+      return style.shadowColor(attribute);
+    }
+
+    @Override
+    protected <T extends StyleSetter<T>> T applyIfAbsent(final T style, final ShadowColor attribute) {
+      return style.shadowColorIfAbsent(attribute);
+    }
+
+    @Override
+    protected @Nullable ShadowColor query(final Style style) {
+      return style.shadowColor();
+    }
   }
 }

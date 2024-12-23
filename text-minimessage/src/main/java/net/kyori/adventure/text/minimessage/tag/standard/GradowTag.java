@@ -32,6 +32,7 @@ import java.util.OptionalDouble;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.ShadowColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
@@ -47,44 +48,45 @@ import org.jetbrains.annotations.Range;
 /**
  * A transformation that applies a colour gradient.
  *
- * @since 4.10.0
+ * @since 4.19.0
  */
-class GradientTag extends AbstractAttributeChangingTag.OfColor {
-  private static final String GRADIENT = "gradient";
-  private static final TextColor DEFAULT_WHITE = TextColor.color(0xffffff);
-  private static final TextColor DEFAULT_BLACK = TextColor.color(0x000000);
+class GradowTag extends AbstractAttributeChangingTag.OfShadowColor {
+  private static final String GRADOW = "gradow";
+  private static final int SHADOW_ALPHA = 0xcc;
+  private static final ShadowColor DEFAULT_WHITE = ShadowColor.shadowColor(0xccffffff);
+  private static final ShadowColor DEFAULT_BLACK = ShadowColor.shadowColor(0xcc000000);
 
-  static final TagResolver RESOLVER = SerializableResolver.claimingComponent(GRADIENT, GradientTag::create, AbstractAttributeChangingTag::claimComponent);
+  static final TagResolver RESOLVER = SerializableResolver.claimingComponent(GRADOW, GradowTag::create, AbstractAttributeChangingTag::claimComponent);
 
   private int index = 0;
 
   private double multiplier = 1;
 
-  private final TextColor[] colors;
+  private final ShadowColor[] colors;
   @Range(from = -1, to = 1) double phase;
 
   private final boolean negativePhase;
 
   static Tag create(final ArgumentQueue args, final Context ctx) {
     double phase = 0;
-    final List<TextColor> textColors;
+    final List<ShadowColor> textColors;
     if (args.hasNext()) {
       textColors = new ArrayList<>();
       while (args.hasNext()) {
-        final Tag.Argument arg = args.pop();
+        final Argument arg = args.pop();
         // last argument? maybe this is the phase?
         if (!args.hasNext()) {
           final OptionalDouble possiblePhase = arg.asDouble();
           if (possiblePhase.isPresent()) {
             phase = possiblePhase.getAsDouble();
             if (phase < -1d || phase > 1d) {
-              throw ctx.newException(String.format("Gradient phase is out of range (%s). Must be in the range [-1.0, 1.0] (inclusive).", phase), args);
+              throw ctx.newException(String.format("Shadow gradient phase is out of range (%s). Must be in the range [-1.0, 1.0] (inclusive).", phase), args);
             }
             break;
           }
         }
 
-        final TextColor parsedColor = ColorTagResolver.resolveColor(arg.value(), ctx);
+        final ShadowColor parsedColor = ShadowColor.shadowColor(ColorTagResolver.resolveColor(arg.value(), ctx), SHADOW_ALPHA);
         textColors.add(parsedColor);
       }
 
@@ -95,14 +97,14 @@ class GradientTag extends AbstractAttributeChangingTag.OfColor {
       textColors = Collections.emptyList();
     }
 
-    return new GradientTag(phase, textColors);
+    return new GradowTag(phase, textColors);
   }
 
-  GradientTag(final double phase, final List<TextColor> colors) {
+  GradowTag(final double phase, final List<ShadowColor> colors) {
     if (colors.isEmpty()) {
-      this.colors = new TextColor[]{DEFAULT_WHITE, DEFAULT_BLACK};
+      this.colors = new ShadowColor[]{DEFAULT_WHITE, DEFAULT_BLACK};
     } else {
-      this.colors = colors.toArray(new TextColor[0]);
+      this.colors = colors.toArray(new ShadowColor[0]);
     }
 
     if (phase < 0) {
@@ -130,7 +132,7 @@ class GradientTag extends AbstractAttributeChangingTag.OfColor {
   }
 
   @Override
-  protected TextColor attribute() {
+  protected ShadowColor attribute() {
     // from [0, this.colors.length - 1], select the position in the gradient
     // we will wrap around in order to preserve an even cycle as would be seen with non-zero phases
     final double position = ((this.index * this.multiplier) + this.phase);
@@ -139,12 +141,12 @@ class GradientTag extends AbstractAttributeChangingTag.OfColor {
     final int high = (int) Math.ceil(position) % this.colors.length;
     final int low = lowUnclamped % this.colors.length;
 
-    return TextColor.lerp((float) position - lowUnclamped, this.colors[low], this.colors[high]);
+    return ShadowColor.lerp((float) position - lowUnclamped, this.colors[low], this.colors[high]);
   }
 
   @Override
   protected @NotNull Consumer<TokenEmitter> preserveData() {
-    final TextColor[] colors;
+    final ShadowColor[] colors;
     final double phase;
 
     if (this.negativePhase) {
@@ -157,9 +159,10 @@ class GradientTag extends AbstractAttributeChangingTag.OfColor {
     }
 
     return emit -> {
-      emit.tag(GRADIENT);
+      emit.tag(GRADOW);
       if (colors.length != 2 || !colors[0].equals(DEFAULT_WHITE) || !colors[1].equals(DEFAULT_BLACK)) { // non-default params
-        for (final TextColor color : colors) {
+        for (final ShadowColor shadow : colors) {
+          final TextColor color = TextColor.color(shadow);
           if (color instanceof NamedTextColor) {
             emit.argument(NamedTextColor.NAMES.keyOrThrow((NamedTextColor) color));
           } else {
@@ -186,7 +189,7 @@ class GradientTag extends AbstractAttributeChangingTag.OfColor {
   public boolean equals(final @Nullable Object other) {
     if (this == other) return true;
     if (other == null || this.getClass() != other.getClass()) return false;
-    final GradientTag that = (GradientTag) other;
+    final GradowTag that = (GradowTag) other;
     return this.index == that.index
       && this.phase == that.phase
       && Arrays.equals(this.colors, that.colors);
