@@ -26,6 +26,7 @@ package net.kyori.adventure.text.minimessage.tag.standard;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
+import net.kyori.adventure.text.format.ShadowColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
@@ -41,13 +42,14 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Applies rainbow color to a component.
  *
- * @since 4.10.0
+ * @since 4.19.0
  */
-final class RainbowTag extends AbstractAttributeChangingTag.OfColor {
+final class ShainbowTag extends AbstractAttributeChangingTag.OfShadowColor {
   private static final String REVERSE = "!";
-  private static final String RAINBOW = "rainbow";
+  private static final String RAINBOW = "shainbow";
+  private static final int SHADOW_ALPHA = 0xcc;
 
-  static final TagResolver RESOLVER = SerializableResolver.claimingComponent(RAINBOW, RainbowTag::create, AbstractAttributeChangingTag::claimComponent);
+  static final TagResolver RESOLVER = SerializableResolver.claimingComponent(RAINBOW, ShainbowTag::create, AbstractAttributeChangingTag::claimComponent);
 
   private final boolean reversed;
   private final double dividedPhase;
@@ -73,10 +75,10 @@ final class RainbowTag extends AbstractAttributeChangingTag.OfColor {
       }
     }
 
-    return new RainbowTag(reversed, phase);
+    return new ShainbowTag(reversed, phase);
   }
 
-  private RainbowTag(final boolean reversed, final int phase) {
+  private ShainbowTag(final boolean reversed, final int phase) {
     this.reversed = reversed;
     this.dividedPhase = ((double) phase) / 10d;
   }
@@ -102,10 +104,10 @@ final class RainbowTag extends AbstractAttributeChangingTag.OfColor {
   }
 
   @Override
-  protected TextColor attribute() {
+  protected ShadowColor attribute() {
     final float index = this.colorIndex;
     final float hue = (float) ((index / this.size() + this.dividedPhase) % 1f);
-    return TextColor.color(HSVLike.hsvLike(hue, 1f, 1f));
+    return ShadowColor.shadowColor(TextColor.color(HSVLike.hsvLike(hue, 1f, 1f)), SHADOW_ALPHA);
   }
 
   @Override
@@ -133,7 +135,7 @@ final class RainbowTag extends AbstractAttributeChangingTag.OfColor {
   public boolean equals(final @Nullable Object other) {
     if (this == other) return true;
     if (other == null || this.getClass() != other.getClass()) return false;
-    final RainbowTag that = (RainbowTag) other;
+    final ShainbowTag that = (ShainbowTag) other;
     return this.colorIndex == that.colorIndex && this.dividedPhase == that.dividedPhase;
   }
 

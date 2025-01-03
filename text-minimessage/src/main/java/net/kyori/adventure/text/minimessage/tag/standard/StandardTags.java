@@ -65,7 +65,9 @@ public final class StandardTags {
         ScoreTag.RESOLVER,
         NbtTag.RESOLVER,
         PrideTag.RESOLVER,
-        ShadowColorTag.RESOLVER
+        ShadowColorTag.RESOLVER,
+        GradowTag.RESOLVER,
+        ShainbowTag.RESOLVER
       )
       .build();
 
@@ -286,6 +288,26 @@ public final class StandardTags {
    */
   public static @NotNull TagResolver shadowColor() {
     return ShadowColorTag.RESOLVER;
+  }
+
+  /**
+   * Get a resolver for the {@value ShainbowTag#RAINBOW} tags.
+   *
+   * @return a resolver for the {@value ShainbowTag#RAINBOW} tags
+   * @since 4.18.0
+   */
+  public static @NotNull TagResolver shainhow() {
+    return ShainbowTag.RESOLVER;
+  }
+
+  /**
+   * Get a resolver for the {@value GradowTag#GRADOW} tags.
+   *
+   * @return a resolver for the {@value GradowTag#GRADOW} tags
+   * @since 4.18.0
+   */
+  public static @NotNull TagResolver gradow() {
+    return GradowTag.RESOLVER;
   }
 
   /**
