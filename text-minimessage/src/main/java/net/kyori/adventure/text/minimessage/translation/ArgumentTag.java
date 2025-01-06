@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import net.kyori.adventure.text.ComponentLike;
+import net.kyori.adventure.text.VirtualComponent;
+import net.kyori.adventure.text.VirtualComponentRenderer;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.tag.Tag;
@@ -43,16 +45,20 @@ final class ArgumentTag implements TagResolver {
   private static final String NAME_1 = "arg";
 
   private final List<? extends ComponentLike> argumentComponents;
-  private final Map<String, NamedTranslationArgument> namedArguments;
+  private final Map<String, ComponentLike> namedArguments;
 
   ArgumentTag(final @NotNull List<? extends ComponentLike> argumentComponents) {
     this.argumentComponents = new ArrayList<>(Objects.requireNonNull(argumentComponents, "argumentComponents"));
 
-    final Map<String, NamedTranslationArgument> namedArgumentMap = new HashMap<>(this.argumentComponents.size());
+    final Map<String, ComponentLike> namedArgumentMap = new HashMap<>(this.argumentComponents.size());
     for (final ComponentLike argument : this.argumentComponents) {
-      if (argument instanceof NamedTranslationArgument) {
-        final NamedTranslationArgument namedArgument = (NamedTranslationArgument) argument;
-        namedArgumentMap.put(namedArgument.name(), namedArgument);
+      if (argument instanceof VirtualComponent) {
+        final VirtualComponentRenderer<?> renderer = ((VirtualComponent) argument).renderer();
+
+        if (renderer instanceof NamedTranslationArgument) {
+          final NamedTranslationArgument namedArgument = (NamedTranslationArgument) argument;
+          namedArgumentMap.put(namedArgument.name(), namedArgument.translationArgument());
+        }
       }
     }
 
@@ -70,7 +76,7 @@ final class ArgumentTag implements TagResolver {
 
       return Tag.inserting(this.argumentComponents.get(index));
     } else {
-      final NamedTranslationArgument namedArgument = this.namedArguments.get(name);
+      final ComponentLike namedArgument = this.namedArguments.get(name);
 
       if (namedArgument != null) {
         return Tag.inserting(namedArgument);

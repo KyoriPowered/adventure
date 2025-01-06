@@ -23,11 +23,14 @@
  */
 package net.kyori.adventure.text.minimessage.translation;
 
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.TranslationArgument;
 import net.kyori.adventure.text.TranslationArgumentLike;
+import net.kyori.adventure.text.VirtualComponent;
 import net.kyori.adventure.text.minimessage.tag.TagPattern;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import static java.util.Objects.requireNonNull;
@@ -38,9 +41,18 @@ import static java.util.Objects.requireNonNull;
  * <p>This is intended for use with {@link TranslatableComponent translatable components}
  * used with a {@link MiniMessageTranslator} instance to allow {@code <name>} tags.</p>
  *
+ * <p>Static methods on this class work by creating
+ * {@link VirtualComponent virtual components} that store instances of this class.
+ * The MiniMessage translator instance detects these virtual components to use the name
+ * provided as tag names to replace the {@code <arg>} tag.</p>
+ *
+ * <p>As the names provided to all static methods in this class are used to create tags,
+ * they must be valid tag names.</p>
+ *
  * @since 4.19.0
  */
-public interface NamedTranslationArgument extends TranslationArgumentLike {
+@ApiStatus.NonExtendable
+public interface NamedTranslationArgument {
   /**
    * Create a named boolean argument.
    *
@@ -49,7 +61,7 @@ public interface NamedTranslationArgument extends TranslationArgumentLike {
    * @return the named argument
    * @since 4.19.0
    */
-  static @NotNull NamedTranslationArgument bool(final @TagPattern @NotNull String name, final boolean value) {
+  static @NotNull ComponentLike bool(final @TagPattern @NotNull String name, final boolean value) {
     return argument(name, TranslationArgument.bool(value));
   }
 
@@ -61,7 +73,7 @@ public interface NamedTranslationArgument extends TranslationArgumentLike {
    * @return the named argument
    * @since 4.19.0
    */
-  static @NotNull NamedTranslationArgument numeric(final @TagPattern @NotNull String name, final @NotNull Number value) {
+  static @NotNull ComponentLike numeric(final @TagPattern @NotNull String name, final @NotNull Number value) {
     return argument(name, TranslationArgument.numeric(value));
   }
 
@@ -73,7 +85,7 @@ public interface NamedTranslationArgument extends TranslationArgumentLike {
    * @return the named argument
    * @since 4.19.0
    */
-  static @NotNull NamedTranslationArgument component(final @TagPattern @NotNull String name, final @NotNull ComponentLike value) {
+  static @NotNull ComponentLike component(final @TagPattern @NotNull String name, final @NotNull ComponentLike value) {
     return argument(name, TranslationArgument.component(value));
   }
 
@@ -85,7 +97,7 @@ public interface NamedTranslationArgument extends TranslationArgumentLike {
    * @return the named argument
    * @since 4.19.0
    */
-  static @NotNull NamedTranslationArgument argument(final @TagPattern @NotNull String name, final @NotNull TranslationArgumentLike argument) {
+  static @NotNull ComponentLike argument(final @TagPattern @NotNull String name, final @NotNull TranslationArgumentLike argument) {
     return argument(name, requireNonNull(argument, "argument").asTranslationArgument());
   }
 
@@ -97,8 +109,8 @@ public interface NamedTranslationArgument extends TranslationArgumentLike {
    * @return the named argument
    * @since 4.19.0
    */
-  static @NotNull NamedTranslationArgument argument(final @TagPattern @NotNull String name, final @NotNull TranslationArgument argument) {
-    return new NamedTranslationArgumentImpl(name, argument);
+  static @NotNull ComponentLike argument(final @TagPattern @NotNull String name, final @NotNull TranslationArgument argument) {
+    return Component.virtual(Void.class, new NamedTranslationArgumentImpl(name, argument));
   }
 
   /**
@@ -108,4 +120,12 @@ public interface NamedTranslationArgument extends TranslationArgumentLike {
    * @since 4.19.0
    */
   @TagPattern @NotNull String name();
+
+  /**
+   * The backing translation argument.
+   *
+   * @return the translation argument
+   * @since 4.19.0
+   **/
+  @NotNull TranslationArgument translationArgument();
 }
