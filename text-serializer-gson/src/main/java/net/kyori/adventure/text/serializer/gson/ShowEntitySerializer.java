@@ -33,21 +33,26 @@ import java.util.UUID;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.serializer.json.JSONOptions;
+import net.kyori.option.OptionState;
 import org.jetbrains.annotations.Nullable;
 
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SHOW_ENTITY_ID;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SHOW_ENTITY_NAME;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SHOW_ENTITY_TYPE;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SHOW_ENTITY_UUID;
 
 final class ShowEntitySerializer extends TypeAdapter<HoverEvent.ShowEntity> {
-  static TypeAdapter<HoverEvent.ShowEntity> create(final Gson gson) {
-    return new ShowEntitySerializer(gson).nullSafe();
+  static TypeAdapter<HoverEvent.ShowEntity> create(final Gson gson, final OptionState opt) {
+    return new ShowEntitySerializer(gson, opt.value(JSONOptions.EMIT_HOVER_SHOW_ENTITY_KEY_AS_TYPE_AND_UUID_AS_ID)).nullSafe();
   }
 
   private final Gson gson;
+  private final boolean emitKeyAsTypeAndUuidAsId;
 
-  private ShowEntitySerializer(final Gson gson) {
+  private ShowEntitySerializer(final Gson gson, final boolean emitKeyAsTypeAndUuidAsId) {
     this.gson = gson;
+    this.emitKeyAsTypeAndUuidAsId = emitKeyAsTypeAndUuidAsId;
   }
 
   @Override
@@ -60,9 +65,10 @@ final class ShowEntitySerializer extends TypeAdapter<HoverEvent.ShowEntity> {
 
     while (in.hasNext()) {
       final String fieldName = in.nextName();
-      if (fieldName.equals(SHOW_ENTITY_TYPE)) {
+      // TODO make this more flexible
+      if ((!this.emitKeyAsTypeAndUuidAsId && fieldName.equals(SHOW_ENTITY_ID)) || fieldName.equals(SHOW_ENTITY_TYPE)) {
         type = this.gson.fromJson(in, SerializerFactory.KEY_TYPE);
-      } else if (fieldName.equals(SHOW_ENTITY_ID)) {
+      } else if (fieldName.equals(SHOW_ENTITY_UUID) || (this.emitKeyAsTypeAndUuidAsId && fieldName.equals(SHOW_ENTITY_ID))) {
         id = this.gson.fromJson(in, SerializerFactory.UUID_TYPE);
       } else if (fieldName.equals(SHOW_ENTITY_NAME)) {
         name = this.gson.fromJson(in, SerializerFactory.COMPONENT_TYPE);
@@ -83,10 +89,10 @@ final class ShowEntitySerializer extends TypeAdapter<HoverEvent.ShowEntity> {
   public void write(final JsonWriter out, final HoverEvent.ShowEntity value) throws IOException {
     out.beginObject();
 
-    out.name(SHOW_ENTITY_TYPE);
+    out.name(this.emitKeyAsTypeAndUuidAsId ? SHOW_ENTITY_TYPE : SHOW_ENTITY_ID);
     this.gson.toJson(value.type(), SerializerFactory.KEY_TYPE, out);
 
-    out.name(SHOW_ENTITY_ID);
+    out.name(this.emitKeyAsTypeAndUuidAsId ? SHOW_ENTITY_ID : SHOW_ENTITY_UUID);
     this.gson.toJson(value.id(), SerializerFactory.UUID_TYPE, out);
 
     final @Nullable Component name = value.name();

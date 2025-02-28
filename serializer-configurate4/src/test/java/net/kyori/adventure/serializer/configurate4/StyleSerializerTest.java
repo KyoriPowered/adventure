@@ -111,7 +111,7 @@ class StyleSerializerTest implements ConfigurateTestBase {
   @Test
   void testSerializeClickEvent() {
     final ConfigurationNode node = this.node(n -> {
-      n.node(ComponentTreeConstants.CLICK_EVENT).act(event -> {
+      n.node(ComponentTreeConstants.CLICK_EVENT_CAMEL).act(event -> {
         event.node(ComponentTreeConstants.CLICK_EVENT_ACTION).raw("open_url");
         event.node(ComponentTreeConstants.CLICK_EVENT_VALUE).raw("https://kyori.net");
       });

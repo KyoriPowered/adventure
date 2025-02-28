@@ -84,7 +84,7 @@ final class SerializerFactory implements TypeAdapterFactory {
     } else if (SHOW_ITEM_TYPE.isAssignableFrom(rawType)) {
       return (TypeAdapter<T>) ShowItemSerializer.create(gson, this.features);
     } else if (SHOW_ENTITY_TYPE.isAssignableFrom(rawType)) {
-      return (TypeAdapter<T>) ShowEntitySerializer.create(gson);
+      return (TypeAdapter<T>) ShowEntitySerializer.create(gson, this.features);
     } else if (COLOR_WRAPPER_TYPE.isAssignableFrom(rawType)) {
       return (TypeAdapter<T>) TextColorWrapper.Serializer.INSTANCE;
     } else if (COLOR_TYPE.isAssignableFrom(rawType)) {

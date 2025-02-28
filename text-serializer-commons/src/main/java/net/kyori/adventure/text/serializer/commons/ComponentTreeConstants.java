@@ -51,16 +51,27 @@ public final class ComponentTreeConstants {
   public static final String COLOR = "color";
   public static final String SHADOW_COLOR = "shadow_color";
   public static final String INSERTION = "insertion";
-  public static final String CLICK_EVENT = "clickEvent";
+  @Deprecated
+  public static final String CLICK_EVENT_CAMEL = "clickEvent";
+  public static final String CLICK_EVENT_SNAKE = "click_event";
   public static final String CLICK_EVENT_ACTION = "action";
   public static final String CLICK_EVENT_VALUE = "value";
-  public static final String HOVER_EVENT = "hoverEvent";
+  public static final String CLICK_EVENT_URL = "url";
+  public static final String CLICK_EVENT_PATH = "path";
+  public static final String CLICK_EVENT_COMMAND = "command";
+  public static final String CLICK_EVENT_PAGE = "page";
+  @Deprecated
+  public static final String HOVER_EVENT_CAMEL = "hoverEvent";
+  public static final String HOVER_EVENT_SNAKE = "hover_event";
   public static final String HOVER_EVENT_ACTION = "action";
+  @Deprecated
   public static final String HOVER_EVENT_CONTENTS = "contents";
   @Deprecated
   public static final String HOVER_EVENT_VALUE = "value";
+  @Deprecated
   public static final String SHOW_ENTITY_TYPE = "type";
   public static final String SHOW_ENTITY_ID = "id";
+  public static final String SHOW_ENTITY_UUID = "uuid";
   public static final String SHOW_ENTITY_NAME = "name";
   public static final String SHOW_ITEM_ID = "id";
   public static final String SHOW_ITEM_COUNT = "count";

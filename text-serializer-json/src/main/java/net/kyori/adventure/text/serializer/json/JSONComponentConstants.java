@@ -57,10 +57,10 @@ public final class JSONComponentConstants {
   public static final String COLOR = ComponentTreeConstants.COLOR;
   public static final String SHADOW_COLOR = ComponentTreeConstants.SHADOW_COLOR;
   public static final String INSERTION = ComponentTreeConstants.INSERTION;
-  public static final String CLICK_EVENT = ComponentTreeConstants.CLICK_EVENT;
+  public static final String CLICK_EVENT = ComponentTreeConstants.CLICK_EVENT_CAMEL;
   public static final String CLICK_EVENT_ACTION = ComponentTreeConstants.CLICK_EVENT_ACTION;
   public static final String CLICK_EVENT_VALUE = ComponentTreeConstants.CLICK_EVENT_VALUE;
-  public static final String HOVER_EVENT = ComponentTreeConstants.HOVER_EVENT;
+  public static final String HOVER_EVENT = ComponentTreeConstants.HOVER_EVENT_CAMEL;
   public static final String HOVER_EVENT_ACTION = ComponentTreeConstants.HOVER_EVENT_ACTION;
   public static final String HOVER_EVENT_CONTENTS = ComponentTreeConstants.HOVER_EVENT_CONTENTS;
   public static final @Deprecated String HOVER_EVENT_VALUE = ComponentTreeConstants.HOVER_EVENT_VALUE;
