@@ -25,6 +25,8 @@ package net.kyori.adventure.text.minimessage.benchmark;
 
 import java.util.concurrent.TimeUnit;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -37,6 +39,13 @@ import org.openjdk.jmh.annotations.OutputTimeUnit;
 @BenchmarkMode(Mode.SampleTime)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 public class MiniMessageBenchmark {
+  private static final Component MANY_COLORS = Component.textOfChildren(
+    Component.text("red", NamedTextColor.RED),
+    Component.text("another", TextColor.color(0xa1b2c3)),
+    Component.text("another", TextColor.color(0x001122)),
+    Component.text("another", TextColor.color(0xb1b2b3)),
+    Component.text("another", TextColor.color(0xf6a6a6))
+  );
 
   @Benchmark
   public Component testNiceMix() {
@@ -60,8 +69,7 @@ public class MiniMessageBenchmark {
   }
 
   @Benchmark
-  public Component testRainbow() {
-    final String input = "<rainbow>COLORS ARE COOL";
-    return MiniMessage.miniMessage().deserialize(input);
+  public String testManyColorsSerializing() {
+    return MiniMessage.miniMessage().serialize(MANY_COLORS);
   }
 }
