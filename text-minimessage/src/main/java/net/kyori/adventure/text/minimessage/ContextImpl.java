@@ -138,19 +138,34 @@ class ContextImpl implements Context {
 
   @Override
   public @NotNull Component deserialize(final @NotNull String message) {
-    return this.miniMessage.deserialize(requireNonNull(message, "message"), this.tagResolver);
+    requireNonNull(message, "message");
+    if (this.target != null) {
+      return this.miniMessage.deserialize(message, this.target, this.tagResolver);
+    } else {
+      return this.miniMessage.deserialize(message, this.tagResolver);
+    }
   }
 
   @Override
   public @NotNull Component deserialize(final @NotNull String message, final @NotNull TagResolver resolver) {
-    return this.miniMessage.deserialize(requireNonNull(message, "message"),
-      TagResolver.builder().resolver(this.tagResolver).resolver(requireNonNull(resolver, "resolver")).build());
+    requireNonNull(message, "message");
+    final TagResolver combinedResolver = TagResolver.builder().resolver(this.tagResolver).resolver(requireNonNull(resolver, "resolver")).build();
+    if (this.target != null) {
+      return this.miniMessage.deserialize(message, this.target, combinedResolver);
+    } else {
+      return this.miniMessage.deserialize(message, combinedResolver);
+    }
   }
 
   @Override
   public @NotNull Component deserialize(final @NotNull String message, final @NotNull TagResolver@NotNull... resolvers) {
-    return this.miniMessage.deserialize(requireNonNull(message, "message"),
-      TagResolver.builder().resolver(this.tagResolver).resolvers(requireNonNull(resolvers, "resolvers")).build());
+    requireNonNull(message, "message");
+    final TagResolver combinedResolver = TagResolver.builder().resolver(this.tagResolver).resolvers(requireNonNull(resolvers, "resolvers")).build();
+    if (this.target != null) {
+      return this.miniMessage.deserialize(message, this.target, combinedResolver);
+    } else {
+      return this.miniMessage.deserialize(message, combinedResolver);
+    }
   }
 
   @Override
