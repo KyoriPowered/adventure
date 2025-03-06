@@ -28,8 +28,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import net.kyori.adventure.text.ComponentLike;
+import net.kyori.adventure.text.TranslationArgumentLike;
 import net.kyori.adventure.text.VirtualComponent;
 import net.kyori.adventure.text.VirtualComponentRenderer;
 import net.kyori.adventure.text.minimessage.Context;
@@ -44,25 +44,43 @@ final class ArgumentTag implements TagResolver {
   private static final String NAME = "argument";
   private static final String NAME_1 = "arg";
 
-  private final List<? extends ComponentLike> argumentComponents;
-  private final Map<String, ComponentLike> namedArguments;
+  private final List<Tag> arguments;
+  private final Map<String, Tag> namedArguments;
+  private final TagResolver fallbackTagResolver;
 
   ArgumentTag(final @NotNull List<? extends ComponentLike> argumentComponents) {
-    this.argumentComponents = new ArrayList<>(Objects.requireNonNull(argumentComponents, "argumentComponents"));
+    final List<Tag> argumentTags = new ArrayList<>(argumentComponents.size());
+    final Map<String, Tag> namedArgumentMap = new HashMap<>(argumentComponents.size());
+    final TagResolver.Builder tagResolverBuilder = TagResolver.builder();
 
-    final Map<String, ComponentLike> namedArgumentMap = new HashMap<>(this.argumentComponents.size());
-    for (final ComponentLike argument : this.argumentComponents) {
+    for (final ComponentLike argument : argumentComponents) {
       if (argument instanceof VirtualComponent) {
         final VirtualComponentRenderer<?> renderer = ((VirtualComponent) argument).renderer();
 
-        if (renderer instanceof NamedTranslationArgument) {
-          final NamedTranslationArgument namedArgument = (NamedTranslationArgument) argument;
-          namedArgumentMap.put(namedArgument.name(), namedArgument.translationArgument());
+        if (renderer instanceof MiniMessageTranslatorArgument) {
+          final MiniMessageTranslatorArgument<?> translatorArgument = (MiniMessageTranslatorArgument<?>) renderer;
+          final Object data = translatorArgument.data();
+
+          if (data instanceof TranslationArgumentLike) {
+            final Tag tag = Tag.selfClosingInserting((TranslationArgumentLike) data);
+            namedArgumentMap.put(translatorArgument.name(), tag);
+            argumentTags.add(tag);
+          } else if (data instanceof Tag) {
+            final Tag tag = (Tag) data;
+            namedArgumentMap.put(translatorArgument.name(), tag);
+            argumentTags.add(tag);
+          } else if (data instanceof TagResolver) {
+            tagResolverBuilder.resolvers((TagResolver) data);
+          }
         }
+      } else {
+        argumentTags.add(Tag.selfClosingInserting(argument));
       }
     }
 
+    this.arguments = Collections.unmodifiableList(argumentTags);
     this.namedArguments = Collections.unmodifiableMap(namedArgumentMap);
+    this.fallbackTagResolver = tagResolverBuilder.build();
   }
 
   @Override
@@ -70,24 +88,25 @@ final class ArgumentTag implements TagResolver {
     if (name.equals(NAME) || name.equals(NAME_1)) {
       final int index = arguments.popOr("No argument number provided").asInt().orElseThrow(() -> ctx.newException("Invalid argument number", arguments));
 
-      if (index < 0 || index >= this.argumentComponents.size()) {
+      if (index < 0 || index >= this.arguments.size()) {
         throw ctx.newException("Invalid argument number", arguments);
       }
 
-      return Tag.inserting(this.argumentComponents.get(index));
+      return this.arguments.get(index);
     } else {
-      final ComponentLike namedArgument = this.namedArguments.get(name);
+      final Tag tag = this.namedArguments.get(name);
 
-      if (namedArgument != null) {
-        return Tag.inserting(namedArgument);
-      } else {
-        return null;
+      if (tag != null) {
+        return tag;
       }
     }
+
+    // Fallback to user-provided tags.
+    return this.fallbackTagResolver.resolve(name, arguments, ctx);
   }
 
   @Override
   public boolean has(final @NotNull String name) {
-    return name.equals(NAME) || name.equals(NAME_1) || this.namedArguments.containsKey(name);
+    return name.equals(NAME) || name.equals(NAME_1) || this.namedArguments.containsKey(name) || this.fallbackTagResolver.has(name);
   }
 }

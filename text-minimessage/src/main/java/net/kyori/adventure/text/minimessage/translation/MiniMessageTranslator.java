@@ -29,6 +29,7 @@ import java.util.Objects;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.translation.GlobalTranslator;
 import net.kyori.adventure.translation.Translator;
 import org.jetbrains.annotations.NotNull;
@@ -47,14 +48,40 @@ import org.jetbrains.annotations.Nullable;
  * <p>This system supports arguments using {@code <arg:0>} tags (or {@code argument},
  * where {@code 0} is the index of the argument to use).
  * Alternatively, you can use named arguments by creating the translatable component
- * with {@link NamedTranslationArgument} as the arguments.
- * The provided {@link NamedTranslationArgument#name() name} will be available for use in
- * a tag as {@code <name>}, in addition to the index-based {@code arg} tag.</p>
+ * using returned {@code ComponentLike} instances provided by the methods available
+ * in the {@link Argument} utility class.
+ * The provided name will be available for use in a tag as {@code <name>}, in addition
+ * to the index-based {@code arg} tag.
+ * These tags will all use a
+ * {@link net.kyori.adventure.text.minimessage.tag.Tag#selfClosingInserting(Component) self-closing inserting tag}.
+ * This can also be used to add tag instances using {@link Argument#tag(String, Tag)}.</p>
  *
+ * <p>You can also make arbitrary
+ * {@link net.kyori.adventure.text.minimessage.tag.resolver.TagResolver tag resolvers}
+ * available to the deserialization process by using the {@code tagResolver} family of
+ * methods on {@link Argument}.
+ * Note that these tag resolvers will not be available using the {@code <arg:0>}
+ * index-based standard tag and will not cause the index to be incremented.
+ * It is therefore recommended that you put these last in the translatable component
+ * arguments to avoid potential confusion.</p>
+ *
+ * <p>An example of how you might construct a translatable component would be:
+ * <pre>{@code
+ * Component.translatable(
+ *   "my.translation.key", // the translation key, you'd return the MiniMessage string by implementing getMiniMessageString
+ *   Component.text("hello"), // available as <arg:0> or <argument:0>
+ *   Argument.string("today", "monday"), // available as <arg:1>, <argument:1> or <today>
+ *   Argument.tag("danger", Tag.styling(NamedTextColor.RED)), // available as <arg:1>, <argument:1> or <red>, can be closed if needed
+ *   Argument.tagResolver(StandardTags.pride()) // you can even add arbitrary tag resolvers!
+ * );
+ * }</pre></p>
+ *
+ *
+ *
+ * @see Argument
  * @see Translator
  * @see GlobalTranslator
- * @see NamedTranslationArgument
- * @since 4.19.0
+ * @since 4.20.0
  */
 public abstract class MiniMessageTranslator implements Translator {
   private final MiniMessage miniMessage;
@@ -63,7 +90,7 @@ public abstract class MiniMessageTranslator implements Translator {
    * Constructor for a MiniMessageTranslator using the default MiniMessage instance.
    *
    * @see MiniMessage#miniMessage()
-   * @since 4.19.0
+   * @since 4.20.0
    */
   public MiniMessageTranslator() {
     this(MiniMessage.miniMessage());
@@ -74,7 +101,7 @@ public abstract class MiniMessageTranslator implements Translator {
    *
    * @param miniMessage the MiniMessage instance
    * @see MiniMessage#miniMessage()
-   * @since 4.19.0
+   * @since 4.20.0
    */
   public MiniMessageTranslator(final @NotNull MiniMessage miniMessage) {
     this.miniMessage = Objects.requireNonNull(miniMessage, "miniMessage");
@@ -90,7 +117,7 @@ public abstract class MiniMessageTranslator implements Translator {
    * @param key the key
    * @param locale the locale
    * @return the resulting MiniMessage string
-   * @since 4.19.0
+   * @since 4.20.0
    */
   @SuppressWarnings("checkstyle:MethodName")
   protected abstract @Nullable String getMiniMessageString(final @NotNull String key, final @NotNull Locale locale);
