@@ -90,7 +90,7 @@ final class ColorTagResolver implements TagResolver, SerializableResolver.Single
     return Tag.styling(color);
   }
 
-  static @NotNull TextColor resolveColor(final @NotNull String colorName, final @NotNull Context ctx) throws ParsingException {
+  static @Nullable TextColor resolveColorOrNull(final String colorName) {
     final TextColor color;
     if (COLOR_ALIASES.containsKey(colorName)) {
       color = COLOR_ALIASES.get(colorName);
@@ -100,6 +100,11 @@ final class ColorTagResolver implements TagResolver, SerializableResolver.Single
       color = NamedTextColor.NAMES.value(colorName);
     }
 
+    return color;
+  }
+
+  static @NotNull TextColor resolveColor(final @NotNull String colorName, final @NotNull Context ctx) throws ParsingException {
+    final TextColor color = resolveColorOrNull(colorName);
     if (color == null) {
       throw ctx.newException(String.format("Unable to parse a color from '%s'. Please use named colours or hex (#RRGGBB) colors.", colorName));
     }
