@@ -30,6 +30,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.translation.GlobalTranslator;
 import net.kyori.adventure.translation.Translator;
 import org.jetbrains.annotations.NotNull;
@@ -52,20 +53,18 @@ import org.jetbrains.annotations.Nullable;
  * in the {@link Argument} utility class.
  * The provided name will be available for use in a tag as {@code <name>}, in addition
  * to the index-based {@code arg} tag.
- * These tags will all use a
- * {@link net.kyori.adventure.text.minimessage.tag.Tag#selfClosingInserting(Component) self-closing inserting tag}.
+ * These tags will use {@link Tag#selfClosingInserting(Component)} to create self-closing
+ * tags that insert a component representation of the argument.
  * This can also be used to add tag instances using {@link Argument#tag(String, Tag)}.</p>
  *
- * <p>You can also make arbitrary
- * {@link net.kyori.adventure.text.minimessage.tag.resolver.TagResolver tag resolvers}
- * available to the deserialization process by using the {@code tagResolver} family of
- * methods on {@link Argument}.
+ * <p>You can also make arbitrary {@link TagResolver tag resolvers} available to the
+ * deserialization process by using the {@code tagResolver} methods on {@link Argument}.
  * Note that these tag resolvers will not be available using the {@code <arg:0>}
  * index-based standard tag and will not cause the index to be incremented.
  * It is therefore recommended that you put these last in the translatable component
  * arguments to avoid potential confusion.</p>
  *
- * <p>An example of how you might construct a translatable component would be:
+ * <p>An example of how you might construct a translatable component would be:</p>
  * <pre>{@code
  * Component.translatable(
  *   "my.translation.key", // the translation key, you'd return the MiniMessage string by implementing getMiniMessageString
@@ -74,11 +73,11 @@ import org.jetbrains.annotations.Nullable;
  *   Argument.tag("danger", Tag.styling(NamedTextColor.RED)), // available as <arg:1>, <argument:1> or <red>, can be closed if needed
  *   Argument.tagResolver(StandardTags.pride()) // you can even add arbitrary tag resolvers!
  * );
- * }</pre></p>
- *
- *
+ * }</pre>
  *
  * @see Argument
+ * @see Tag
+ * @see TagResolver
  * @see Translator
  * @see GlobalTranslator
  * @since 4.20.0
