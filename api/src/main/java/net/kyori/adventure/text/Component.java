@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
@@ -2106,6 +2107,41 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   @Contract(pure = true)
   default @NotNull Component appendSpace() {
     return this.append(space());
+  }
+
+  /**
+   * Appends components to this component.
+   *
+   * @param components the children to add
+   * @return a component with the children added to the existing children
+   * @since 4.20.0
+   */
+  @Contract(pure = true)
+  default @NotNull Component append(final @NotNull ComponentLike @NotNull... components) {
+    if (components.length == 0) return this;
+
+    final List<ComponentLike> newChildren = new ArrayList<>(components.length + this.children().size());
+    newChildren.addAll(this.children());
+    Collections.addAll(newChildren, components);
+    return this.children(newChildren);
+  }
+
+  /**
+   * Appends a list of components to this component.
+   *
+   * @param components the children to add
+   * @return a component with the children added to the existing children
+   * @since 4.20.0
+   */
+  @Contract(pure = true)
+  default @NotNull Component append(final @NotNull List<? extends ComponentLike> components) {
+    if (components.isEmpty()) return this;
+    if (this.children().isEmpty()) return this.children(components);
+
+    final List<ComponentLike> newChildren = new ArrayList<>(components.size() + this.children().size());
+    newChildren.addAll(this.children());
+    newChildren.addAll(components);
+    return this.children(newChildren);
   }
 
   /**
