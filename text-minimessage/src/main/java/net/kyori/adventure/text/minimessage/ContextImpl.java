@@ -174,7 +174,7 @@ class ContextImpl implements Context {
     if (this.target != null) {
       return this.miniMessage.deserialize(message, this.target, tagResolver);
     } else {
-      return this.miniMessage.deserialize(message, this.tagResolver);
+      return this.miniMessage.deserialize(message, tagResolver);
     }
   }
 
