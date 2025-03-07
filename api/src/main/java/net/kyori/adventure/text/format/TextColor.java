@@ -215,7 +215,14 @@ public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, S
    * @since 4.0.0
    */
   default @NotNull String asHexString() {
-    return String.format("%c%06x", HEX_CHARACTER, this.value());
+    final StringBuilder result = new StringBuilder();
+    result.append(HEX_PREFIX);
+    final String hex = Integer.toHexString(this.value());
+    for (int i = 0; i < 6 - hex.length(); i++) {
+      result.append('0');
+    }
+    result.append(hex);
+    return result.toString();
   }
 
   /**

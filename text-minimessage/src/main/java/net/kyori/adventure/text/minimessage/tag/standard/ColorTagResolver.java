@@ -114,9 +114,9 @@ final class ColorTagResolver implements TagResolver, SerializableResolver.Single
   @Override
   public boolean has(final @NotNull String name) {
     return isColorOrAbbreviation(name)
-      || TextColor.fromHexString(name) != null
       || NamedTextColor.NAMES.value(name) != null
-      || COLOR_ALIASES.containsKey(name);
+      || COLOR_ALIASES.containsKey(name)
+      || TextColor.fromHexString(name) != null;
   }
 
   @Override
