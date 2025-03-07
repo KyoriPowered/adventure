@@ -79,7 +79,17 @@ public interface TranslationStore<T> extends Translator {
    * @return whether the registry contains a value for the translation key
    * @since 4.20.0
    */
-  boolean contains(@NotNull String key);
+  boolean contains(final @NotNull String key);
+
+  /**
+   * Checks if any translations are explicitly registered for the specified key and locale.
+   *
+   * @param key a translation key
+   * @param locale the locale
+   * @return whether the registry contains a value for the translation key and locale
+   * @since 4.20.0
+   */
+  boolean contains(final @NotNull String key, final @NotNull Locale locale);
 
   /**
    * Sets the default locale used by this registry.
@@ -87,7 +97,7 @@ public interface TranslationStore<T> extends Translator {
    * @param locale the locale to use a default
    * @since 4.20.0
    */
-  void defaultLocale(@NotNull Locale locale);
+  void defaultLocale(final @NotNull Locale locale);
 
   /**
    * Registers a translation.
@@ -98,7 +108,7 @@ public interface TranslationStore<T> extends Translator {
    * @throws IllegalArgumentException if the translation key already exists
    * @since 4.20.0
    */
-  void register(@NotNull String key, @NotNull Locale locale, T translation);
+  void register(final @NotNull String key, final @NotNull Locale locale, final T translation);
 
   /**
    * Registers a map of translations.
@@ -109,7 +119,7 @@ public interface TranslationStore<T> extends Translator {
    * @see #register(String, Locale, T)
    * @since 4.20.0
    */
-  void registerAll(@NotNull Locale locale, @NotNull Map<String, T> translations);
+  void registerAll(final @NotNull Locale locale, final @NotNull Map<String, T> translations);
 
   /**
    * Registers translations with a set of keys and a mapping function to produce the translation from the key.
@@ -120,7 +130,7 @@ public interface TranslationStore<T> extends Translator {
    * @throws IllegalArgumentException if a translation key already exists
    * @since 4.20.0
    */
-  void registerAll(@NotNull Locale locale, @NotNull Set<String> keys, Function<String, T> function);
+  void registerAll(final @NotNull Locale locale, final @NotNull Set<String> keys, Function<String, T> function);
 
   /**
    * Unregisters a translation key.
@@ -128,7 +138,7 @@ public interface TranslationStore<T> extends Translator {
    * @param key a translation key
    * @since 4.0.0
    */
-  void unregister(@NotNull String key);
+  void unregister(final @NotNull String key);
 
   /**
    * An abstract, string-based translation store.

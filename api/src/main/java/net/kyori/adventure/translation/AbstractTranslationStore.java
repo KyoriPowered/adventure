@@ -89,6 +89,13 @@ public abstract class AbstractTranslationStore<T> implements Examinable, Transla
   }
 
   @Override
+  public final boolean contains(final @NotNull String key, final @NotNull Locale locale) {
+    final Translation translation = this.translations.get(requireNonNull(key, "key"));
+    if (translation == null) return false;
+    return translation.translations.get(requireNonNull(locale, "locale")) != null;
+  }
+
+  @Override
   public final void defaultLocale(final @NotNull Locale locale) {
     this.defaultLocale = requireNonNull(locale, "locale");
   }
