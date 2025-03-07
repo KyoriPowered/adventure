@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.serializer.json;
 
 import net.kyori.option.Option;
+import net.kyori.option.OptionSchema;
 import net.kyori.option.OptionState;
 import org.jetbrains.annotations.NotNull;
 
@@ -44,6 +45,9 @@ public final class JSONOptions {
   private static final int VERSION_1_20_5 = 3819; // 24w09a
   private static final int VERSION_1_21_4 = 4174; // 24w44a
 
+  // todo(5.0): move these options out of the global schema
+  private static final OptionSchema.Mutable UNSAFE_SCHEMA = OptionSchema.globalSchema();
+
   /**
    * Whether to emit RGB text.
    *
@@ -52,13 +56,13 @@ public final class JSONOptions {
    * @since 4.15.0
    * @sinceMinecraft 1.16
    */
-  public static final Option<Boolean> EMIT_RGB = Option.booleanOption(key("emit/rgb"), true);
+  public static final Option<Boolean> EMIT_RGB = UNSAFE_SCHEMA.booleanOption(key("emit/rgb"), true);
   /**
    * Control how hover event values should be emitted.
    *
    * @since 4.15.0
    */
-  public static final Option<HoverEventValueMode> EMIT_HOVER_EVENT_TYPE = Option.enumOption(key("emit/hover_value_mode"), HoverEventValueMode.class, HoverEventValueMode.MODERN_ONLY);
+  public static final Option<HoverEventValueMode> EMIT_HOVER_EVENT_TYPE = UNSAFE_SCHEMA.enumOption(key("emit/hover_value_mode"), HoverEventValueMode.class, HoverEventValueMode.MODERN_ONLY);
 
   /**
    * Whether to emit text components with no style and no children as plain text.
@@ -66,7 +70,7 @@ public final class JSONOptions {
    * @since 4.15.0
    * @sinceMinecraft 1.20.3
    */
-  public static final Option<Boolean> EMIT_COMPACT_TEXT_COMPONENT = Option.booleanOption(key("emit/compact_text_component"), true);
+  public static final Option<Boolean> EMIT_COMPACT_TEXT_COMPONENT = UNSAFE_SCHEMA.booleanOption(key("emit/compact_text_component"), true);
 
   /**
    * Whether to emit the hover event show entity action's entity UUID as an int array,
@@ -74,7 +78,7 @@ public final class JSONOptions {
    *
    * @since 4.15.0
    */
-  public static final Option<Boolean> EMIT_HOVER_SHOW_ENTITY_ID_AS_INT_ARRAY = Option.booleanOption(key("emit/hover_show_entity_id_as_int_array"), true);
+  public static final Option<Boolean> EMIT_HOVER_SHOW_ENTITY_ID_AS_INT_ARRAY = UNSAFE_SCHEMA.booleanOption(key("emit/hover_show_entity_id_as_int_array"), true);
 
   /**
    * Whether to be strict about accepting invalid hover/click events.
@@ -83,7 +87,7 @@ public final class JSONOptions {
    *
    * @since 4.15.0
    */
-  public static final Option<Boolean> VALIDATE_STRICT_EVENTS = Option.booleanOption(key("validate/strict_events"), true);
+  public static final Option<Boolean> VALIDATE_STRICT_EVENTS = UNSAFE_SCHEMA.booleanOption(key("validate/strict_events"), true);
   /**
    * Whether to emit the default hover event item stack quantity of {@code 1}.
    *
@@ -91,26 +95,29 @@ public final class JSONOptions {
    *
    * @since 4.17.0
    */
-  public static final Option<Boolean> EMIT_DEFAULT_ITEM_HOVER_QUANTITY = Option.booleanOption(key("emit/default_item_hover_quantity"), true);
+  public static final Option<Boolean> EMIT_DEFAULT_ITEM_HOVER_QUANTITY = UNSAFE_SCHEMA.booleanOption(key("emit/default_item_hover_quantity"), true);
 
   /**
    * How to emit the item data on {@code show_item} hover events.
    *
    * @since 4.17.0
    */
-  public static final Option<ShowItemHoverDataMode> SHOW_ITEM_HOVER_DATA_MODE = Option.enumOption(key("emit/show_item_hover_data"), ShowItemHoverDataMode.class, ShowItemHoverDataMode.EMIT_EITHER);
+  public static final Option<ShowItemHoverDataMode> SHOW_ITEM_HOVER_DATA_MODE = UNSAFE_SCHEMA.enumOption(key("emit/show_item_hover_data"), ShowItemHoverDataMode.class, ShowItemHoverDataMode.EMIT_EITHER);
 
   /**
    * How to emit shadow colour data.
    *
    * @since 4.18.0
    */
-  public static final Option<ShadowColorEmitMode> SHADOW_COLOR_MODE = Option.enumOption(key("emit/shadow_color"), ShadowColorEmitMode.class, ShadowColorEmitMode.EMIT_INTEGER);
+  public static final Option<ShadowColorEmitMode> SHADOW_COLOR_MODE = UNSAFE_SCHEMA.enumOption(key("emit/shadow_color"), ShadowColorEmitMode.class, ShadowColorEmitMode.EMIT_INTEGER);
+
+  // aim for compatibility? or something
+  private static final OptionSchema SCHEMA = OptionSchema.childSchema(UNSAFE_SCHEMA).frozenView();
 
   /**
    * Versioned by world data version.
    */
-  private static final OptionState.Versioned BY_DATA_VERSION = OptionState.versionedOptionState()
+  private static final OptionState.Versioned BY_DATA_VERSION = SCHEMA.versionedStateBuilder()
     .version(
       VERSION_INITIAL,
       b -> b.value(EMIT_HOVER_EVENT_TYPE, HoverEventValueMode.LEGACY_ONLY)
@@ -148,7 +155,7 @@ public final class JSONOptions {
    *
    * <p>This may provide a less efficient representation of components, but will not result in information being discarded.</p>
    */
-  private static final OptionState MOST_COMPATIBLE = OptionState.optionState()
+  private static final OptionState MOST_COMPATIBLE = SCHEMA.stateBuilder()
     .value(EMIT_HOVER_EVENT_TYPE, HoverEventValueMode.BOTH)
     .value(EMIT_HOVER_SHOW_ENTITY_ID_AS_INT_ARRAY, false)
     .value(EMIT_COMPACT_TEXT_COMPONENT, false)
@@ -159,6 +166,16 @@ public final class JSONOptions {
 
   private static String key(final String value) {
     return "adventure:json/" + value;
+  }
+
+  /**
+   * A schema of available options.
+   *
+   * @return the schema of known json options
+   * @since 4.20.0
+   */
+  public static @NotNull OptionSchema schema() {
+    return SCHEMA;
   }
 
   /**

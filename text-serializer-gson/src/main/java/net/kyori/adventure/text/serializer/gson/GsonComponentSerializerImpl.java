@@ -143,7 +143,7 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
 
     @Override
     public @NotNull Builder editOptions(final @NotNull Consumer<OptionState.Builder> optionEditor) {
-      final OptionState.Builder builder = OptionState.optionState()
+      final OptionState.Builder builder = JSONOptions.schema().stateBuilder()
         .values(this.flags);
       requireNonNull(optionEditor, "flagEditor").accept(builder);
       this.flags = builder.build();
