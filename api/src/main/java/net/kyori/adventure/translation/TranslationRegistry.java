@@ -23,15 +23,10 @@
  */
 package net.kyori.adventure.translation;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.Map;
-import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Function;
@@ -49,14 +44,21 @@ import static java.util.Objects.requireNonNull;
  *
  * <p>The recommended way to register translations is through {@link #registerAll(Locale, ResourceBundle, boolean)}</p>
  *
+ * <p>This translation registry deals solely with {@link MessageFormat} translations.
+ * If you want component-based translations, see {@link ComponentTranslationStore}.</p>
+ *
  * @since 4.0.0
+ * @deprecated For removal since 4.20.0. Use {@link TranslationStore#messageFormat(Key)} instead.
  */
-public interface TranslationRegistry extends Translator {
+@Deprecated
+public interface TranslationRegistry extends Translator, TranslationStore<MessageFormat> {
   /**
    * A pattern which matches a single quote.
    *
    * @since 4.0.0
+   * @deprecated For removal, since 4.20.0, with no replacement.
    */
+  @Deprecated
   Pattern SINGLE_QUOTE_PATTERN = Pattern.compile("'");
 
   /**
@@ -65,9 +67,11 @@ public interface TranslationRegistry extends Translator {
    * @param name the registry id
    * @return a translation registry
    * @since 4.0.0
+   * @deprecated For removal since 4.20.0. Use {@link TranslationStore#messageFormat(Key)} instead.
    */
+  @Deprecated
   static @NotNull TranslationRegistry create(final Key name) {
-    return new TranslationRegistryImpl(requireNonNull(name, "name"));
+    return new MessageFormatTranslationStore(requireNonNull(name, "name"));
   }
 
   /**
@@ -76,7 +80,9 @@ public interface TranslationRegistry extends Translator {
    * @param key a translation key
    * @return whether the registry contains a value for the translation key
    * @since 4.7.0
+   * @deprecated For removal since 4.20.0. Use {@link TranslationStore#messageFormat(Key)} instead.
    */
+  @Deprecated
   boolean contains(final @NotNull String key);
 
   /**
@@ -88,7 +94,9 @@ public interface TranslationRegistry extends Translator {
    * @param key a translation key
    * @return a message format or {@code null} to skip translation
    * @since 4.0.0
+   * @deprecated For removal since 4.20.0. Use {@link TranslationStore#messageFormat(Key)} instead.
    */
+  @Deprecated
   @Override
   @Nullable MessageFormat translate(final @NotNull String key, final @NotNull Locale locale);
 
@@ -97,7 +105,9 @@ public interface TranslationRegistry extends Translator {
    *
    * @param locale the locale to use a default
    * @since 4.0.0
+   * @deprecated For removal since 4.20.0. Use {@link TranslationStore#messageFormat(Key)} instead.
    */
+  @Deprecated
   void defaultLocale(final @NotNull Locale locale);
 
   /**
@@ -113,7 +123,9 @@ public interface TranslationRegistry extends Translator {
    * @param format a translation format
    * @throws IllegalArgumentException if the translation key is already exists
    * @since 4.0.0
+   * @deprecated For removal since 4.20.0. Use {@link TranslationStore#messageFormat(Key)} instead.
    */
+  @Deprecated
   void register(final @NotNull String key, final @NotNull Locale locale, final @NotNull MessageFormat format);
 
   /**
@@ -131,13 +143,13 @@ public interface TranslationRegistry extends Translator {
    *
    * @param locale a locale
    * @param formats a map of translation keys to formats
-   * @throws IllegalArgumentException if a translation key is already exists
+   * @throws IllegalArgumentException if a translation key already exists
    * @see #register(String, Locale, MessageFormat)
    * @since 4.0.0
+   * @deprecated For removal since 4.20.0. Use {@link TranslationStore#messageFormat(Key)} instead.
    */
-  default void registerAll(final @NotNull Locale locale, final @NotNull Map<String, MessageFormat> formats) {
-    this.registerAll(locale, formats.keySet(), formats::get);
-  }
+  @Deprecated
+  void registerAll(final @NotNull Locale locale, final @NotNull Map<String, MessageFormat> formats);
 
   /**
    * Registers a resource bundle of translations.
@@ -145,17 +157,13 @@ public interface TranslationRegistry extends Translator {
    * @param locale a locale
    * @param path a path to the resource bundle
    * @param escapeSingleQuotes whether to escape single quotes
-   * @throws IllegalArgumentException if a translation key is already exists
+   * @throws IllegalArgumentException if a translation key already exists
    * @see #registerAll(Locale, ResourceBundle, boolean)
    * @since 4.0.0
+   * @deprecated For removal since 4.20.0. Use {@link TranslationStore#messageFormat(Key)} instead.
    */
-  default void registerAll(final @NotNull Locale locale, final @NotNull Path path, final boolean escapeSingleQuotes) {
-    try (final BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
-      this.registerAll(locale, new PropertyResourceBundle(reader), escapeSingleQuotes);
-    } catch (final IOException e) {
-      // ignored
-    }
-  }
+  @Deprecated
+  void registerAll(final @NotNull Locale locale, final @NotNull Path path, final boolean escapeSingleQuotes);
 
   /**
    * Registers a resource bundle of translations.
@@ -170,21 +178,13 @@ public interface TranslationRegistry extends Translator {
    * @param locale a locale
    * @param bundle a resource bundle
    * @param escapeSingleQuotes whether to escape single quotes
-   * @throws IllegalArgumentException if a translation key is already exists
+   * @throws IllegalArgumentException if a translation key already exists
    * @see UTF8ResourceBundleControl
    * @since 4.0.0
+   * @deprecated For removal since 4.20.0. Use {@link TranslationStore#messageFormat(Key)} instead.
    */
-  default void registerAll(final @NotNull Locale locale, final @NotNull ResourceBundle bundle, final boolean escapeSingleQuotes) {
-    this.registerAll(locale, bundle.keySet(), key -> {
-      final String format = bundle.getString(key);
-      return new MessageFormat(
-        escapeSingleQuotes
-          ? SINGLE_QUOTE_PATTERN.matcher(format).replaceAll("''")
-          : format,
-        locale
-      );
-    });
-  }
+  @Deprecated
+  void registerAll(final @NotNull Locale locale, final @NotNull ResourceBundle bundle, final boolean escapeSingleQuotes);
 
   /**
    * Registers a resource bundle of translations.
@@ -192,36 +192,20 @@ public interface TranslationRegistry extends Translator {
    * @param locale a locale
    * @param keys the translation keys to register
    * @param function a function to transform a key into a message format
-   * @throws IllegalArgumentException if a translation key is already exists
+   * @throws IllegalArgumentException if a translation key already exists
    * @since 4.0.0
+   * @deprecated For removal since 4.20.0. Use {@link TranslationStore#messageFormat(Key)} instead.
    */
-  default void registerAll(final @NotNull Locale locale, final @NotNull Set<String> keys, final Function<String, MessageFormat> function) {
-    IllegalArgumentException firstError = null;
-    int errorCount = 0;
-    for (final String key : keys) {
-      try {
-        this.register(key, locale, function.apply(key));
-      } catch (final IllegalArgumentException e) {
-        if (firstError == null) {
-          firstError = e;
-        }
-        errorCount++;
-      }
-    }
-    if (firstError != null) {
-      if (errorCount == 1) {
-        throw firstError;
-      } else if (errorCount > 1) {
-        throw new IllegalArgumentException(String.format("Invalid key (and %d more)", errorCount - 1), firstError);
-      }
-    }
-  }
+  @Deprecated
+  void registerAll(final @NotNull Locale locale, final @NotNull Set<String> keys, final Function<String, MessageFormat> function);
 
   /**
    * Unregisters a translation key.
    *
    * @param key a translation key
    * @since 4.0.0
+   * @deprecated For removal since 4.20.0. Use {@link TranslationStore#messageFormat(Key)} instead.
    */
+  @Deprecated
   void unregister(final @NotNull String key);
 }
