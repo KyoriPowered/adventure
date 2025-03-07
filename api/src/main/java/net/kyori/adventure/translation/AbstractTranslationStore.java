@@ -137,17 +137,17 @@ public abstract class AbstractTranslationStore<T> implements Examinable, Transla
   }
 
   @Override
-  public @NotNull TriState hasAnyTranslations() {
+  public final @NotNull TriState hasAnyTranslations() {
     return TriState.byBoolean(!this.translations.isEmpty());
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public final @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(ExaminableProperty.of("translations", this.translations));
   }
 
   @Override
-  public boolean equals(final Object other) {
+  public final boolean equals(final Object other) {
     if (this == other) return true;
     if (!(other instanceof AbstractTranslationStore)) return false;
 
@@ -159,12 +159,12 @@ public abstract class AbstractTranslationStore<T> implements Examinable, Transla
   }
 
   @Override
-  public int hashCode() {
+  public final int hashCode() {
     return Objects.hash(this.name, this.translations, this.defaultLocale);
   }
 
   @Override
-  public String toString() {
+  public final String toString() {
     return Internals.toString(this);
   }
 
@@ -173,7 +173,7 @@ public abstract class AbstractTranslationStore<T> implements Examinable, Transla
     private final Map<Locale, T> translations;
 
     private Translation(final @NotNull String key) {
-      this.key = requireNonNull(key, "translation key");
+      this.key = requireNonNull(key, "key");
       this.translations = new ConcurrentHashMap<>();
     }
 
@@ -201,7 +201,7 @@ public abstract class AbstractTranslationStore<T> implements Examinable, Transla
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
       return Stream.of(
         ExaminableProperty.of("key", this.key),
-        ExaminableProperty.of("formats", this.translations)
+        ExaminableProperty.of("translations", this.translations)
       );
     }
 
