@@ -72,20 +72,29 @@ class GradientTag extends AbstractColorChangingTag {
       textColors = new ArrayList<>();
       while (args.hasNext()) {
         final Tag.Argument arg = args.pop();
-        // last argument? maybe this is the phase?
-        if (!args.hasNext()) {
-          final OptionalDouble possiblePhase = arg.asDouble();
-          if (possiblePhase.isPresent()) {
-            phase = possiblePhase.getAsDouble();
-            if (phase < -1d || phase > 1d) {
-              throw ctx.newException(String.format("Gradient phase is out of range (%s). Must be in the range [-1.0, 1.0] (inclusive).", phase), args);
-            }
-            break;
-          }
-        }
 
-        final TextColor parsedColor = ColorTagResolver.resolveColor(arg.value(), ctx);
-        textColors.add(parsedColor);
+        // Determine if this is a color first. Double#parseDouble is "slow" in cases where we hit a string.
+        final String argValue = arg.value();
+        final TextColor color = ColorTagResolver.resolveColorOrNull(argValue);
+
+        if (color != null) {
+          textColors.add(color);
+        } else {
+          // last argument? maybe this is the phase?
+          if (!args.hasNext()) {
+            final OptionalDouble possiblePhase = arg.asDouble();
+            if (possiblePhase.isPresent()) {
+              phase = possiblePhase.getAsDouble();
+              if (phase < -1d || phase > 1d) {
+                throw ctx.newException(String.format("Gradient phase is out of range (%s). Must be in the range [-1.0, 1.0] (inclusive).", phase), args);
+              }
+              break;
+            }
+          }
+
+          // We hit an invalid color.
+          throw ctx.newException(String.format("Unable to parse a color from '%s'. Please use named colors or hex (#RRGGBB) colors.", argValue), args);
+        }
       }
 
       if (textColors.size() == 1) {

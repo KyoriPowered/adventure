@@ -31,7 +31,6 @@ import java.util.Objects;
 import java.util.OptionalDouble;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.tag.Inserting;
@@ -63,29 +62,29 @@ public final class TransitionTag implements Inserting, Examinable {
       textColors = new ArrayList<>();
       while (args.hasNext()) {
         final Tag.Argument arg = args.pop();
-        // last argument? maybe this is the phase?
-        if (!args.hasNext()) {
-          final OptionalDouble possiblePhase = arg.asDouble();
-          if (possiblePhase.isPresent()) {
-            phase = (float) possiblePhase.getAsDouble();
-            if (phase < -1f || phase > 1f) {
-              throw ctx.newException(String.format("Gradient phase is out of range (%s). Must be in the range [-1.0f, 1.0f] (inclusive).", phase), args);
-            }
-            break;
-          }
-        }
 
+        // Determine if this is a color first. Double#parseDouble is "slow" in cases where we hit a string.
         final String argValue = arg.value();
-        final TextColor parsedColor;
-        if (argValue.charAt(0) == TextColor.HEX_CHARACTER) {
-          parsedColor = TextColor.fromHexString(argValue);
+        final TextColor color = ColorTagResolver.resolveColorOrNull(argValue);
+
+        if (color != null) {
+          textColors.add(color);
         } else {
-          parsedColor = NamedTextColor.NAMES.value(arg.lowerValue());
-        }
-        if (parsedColor == null) {
+          // last argument? maybe this is the phase?
+          if (!args.hasNext()) {
+            final OptionalDouble possiblePhase = arg.asDouble();
+            if (possiblePhase.isPresent()) {
+              phase = (float) possiblePhase.getAsDouble();
+              if (phase < -1f || phase > 1f) {
+                throw ctx.newException(String.format("Gradient phase is out of range (%s). Must be in the range [-1.0f, 1.0f] (inclusive).", phase), args);
+              }
+              break;
+            }
+          }
+
+          // We hit an invalid argument here!
           throw ctx.newException(String.format("Unable to parse a color from '%s'. Please use named colors or hex (#RRGGBB) colors.", argValue), args);
         }
-        textColors.add(parsedColor);
       }
 
       if (textColors.size() < 2) {
