@@ -44,9 +44,6 @@ import static java.util.Objects.requireNonNull;
  *
  * <p>The recommended way to register translations is through {@link #registerAll(Locale, ResourceBundle, boolean)}</p>
  *
- * <p>This translation registry deals solely with {@link MessageFormat} translations.
- * If you want component-based translations, see {@link ComponentTranslationStore}.</p>
- *
  * @since 4.0.0
  * @deprecated For removal since 4.20.0. Use {@link TranslationStore#messageFormat(Key)} instead.
  */

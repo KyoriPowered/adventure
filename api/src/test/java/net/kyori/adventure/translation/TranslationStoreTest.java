@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class TranslationRegistryTest {
+class TranslationStoreTest {
   static final TranslationStore.StringBased<MessageFormat> REGISTRY = TranslationStore.messageFormat(Key.key("adventure", "test"));
   static final TranslatableComponentRenderer<Locale> RENDERER = TranslatableComponentRenderer.usingTranslationSource(REGISTRY);
 

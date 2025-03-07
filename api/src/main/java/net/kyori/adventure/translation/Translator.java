@@ -37,7 +37,7 @@ import org.jetbrains.annotations.Nullable;
  * A message translator.
  *
  * <p>To see how to create a {@link Translator} with a {@link ResourceBundle}
- * see {@link TranslationRegistry#registerAll(Locale, ResourceBundle, boolean)}</p>
+ * see {@link TranslationStore.StringBased#registerAll(Locale, ResourceBundle, boolean)}</p>
  *
  * <p>To bypass vanilla's {@link MessageFormat}-based translation system,
  * see {@link #translate(TranslatableComponent, Locale)}</p>
@@ -45,7 +45,7 @@ import org.jetbrains.annotations.Nullable;
  * <p>After creating a {@link Translator} you can add it to the {@link GlobalTranslator}
  * to enable automatic translations by the platforms.</p>
  *
- * @see TranslationRegistry
+ * @see TranslationStore
  * @since 4.0.0
  */
 public interface Translator {
