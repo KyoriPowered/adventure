@@ -196,4 +196,12 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
       Component.text("").children(Collections.emptyList())
     );
   }
+
+  @Test
+  void testAddingMultipleChildren() {
+    final Component c0 = Component.text("1").append(Component.text("2"));
+    final Component c1 = c0.append(Component.text("3")).append(Component.text("4"));
+
+    assertEquals(c1, c0.append(Component.text("3"), Component.text("4")));
+  }
 }

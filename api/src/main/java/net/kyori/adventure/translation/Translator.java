@@ -105,6 +105,14 @@ public interface Translator {
   /**
    * Gets a translated component from a translatable component and locale.
    *
+   * <p>Care should be taken to ensure you do not unintentionally remove the children of {@code component}.
+   * This can be avoided by copying over the children using the following code as an example:</p>
+   *
+   * <pre>{@code
+   * final Component myNewComponent = ...; // get your component here
+   * return myNewComponent.append(component.children()); // ensure it has the original components children as well
+   * }</pre>
+   *
    * @param locale a locale
    * @param component a translatable component
    * @return a translated component or {@code null} to use {@link #translate(String, Locale)} instead (if available)

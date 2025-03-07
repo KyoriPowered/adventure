@@ -107,6 +107,18 @@ public interface ScopedComponent<C extends Component> extends Component {
 
   @Override
   @SuppressWarnings("unchecked")
+  default @NotNull C append(final @NotNull List<? extends ComponentLike> components) {
+    return (C) Component.super.append(components);
+  }
+
+  @Override
+  @SuppressWarnings("unchecked")
+  default @NotNull C append(final @NotNull ComponentLike @NotNull... components) {
+    return (C) Component.super.append(components);
+  }
+
+  @Override
+  @SuppressWarnings("unchecked")
   default @NotNull C appendNewline() {
     return (C) Component.super.appendNewline();
   }
