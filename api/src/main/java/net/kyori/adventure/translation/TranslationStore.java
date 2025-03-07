@@ -76,7 +76,7 @@ public interface TranslationStore<T> extends Translator {
    * Checks if any translations are explicitly registered for the specified key.
    *
    * @param key a translation key
-   * @return whether the registry contains a value for the translation key
+   * @return whether the store contains a value for the translation key
    * @since 4.20.0
    */
   boolean contains(final @NotNull String key);
@@ -86,13 +86,13 @@ public interface TranslationStore<T> extends Translator {
    *
    * @param key a translation key
    * @param locale the locale
-   * @return whether the registry contains a value for the translation key and locale
+   * @return whether the store contains a value for the translation key and locale
    * @since 4.20.0
    */
   boolean contains(final @NotNull String key, final @NotNull Locale locale);
 
   /**
-   * Sets the default locale used by this registry.
+   * Sets the default locale used by this store.
    *
    * @param locale the locale to use a default
    * @since 4.20.0
@@ -167,10 +167,11 @@ public interface TranslationStore<T> extends Translator {
      *
      * <p>It is highly recommended to create your bundle using {@link UTF8ResourceBundleControl} as your bundle control for UTF-8 support - for example:</p>
      *
-     * <pre>
+     * <pre>{@code
+     *   final TranslationStore store = ...;
      *   final ResourceBundle bundle = ResourceBundle.getBundle("my_bundle", Locale.GERMANY, UTF8ResourceBundleControl.get());
-     *   registry.registerAll(Locale.GERMANY, bundle, false);
-     * </pre>
+     *   store.registerAll(Locale.GERMANY, bundle, false);
+     * }</pre>
      *
      * @param locale a locale
      * @param bundle a resource bundle

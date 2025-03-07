@@ -49,9 +49,9 @@ import org.jetbrains.annotations.Nullable;
 import static java.util.Objects.requireNonNull;
 
 /**
- * An abstraction to ease the construction of translation registries with generic values.
+ * An abstraction to ease the construction of translation stores with generic values.
  *
- * @param <T> the value of the translation registry
+ * @param <T> the value of the translation store
  * @since 4.20.0
  */
 public abstract class AbstractTranslationStore<T> implements Examinable, TranslationStore<T> {
@@ -60,7 +60,7 @@ public abstract class AbstractTranslationStore<T> implements Examinable, Transla
   private volatile @NotNull Locale defaultLocale = Locale.US;
 
   /**
-   * Creates a new abstract translation registry with a given name.
+   * Creates a new abstract translation store with a given name.
    *
    * @param name the name
    * @since 4.20.0
@@ -233,9 +233,9 @@ public abstract class AbstractTranslationStore<T> implements Examinable, Transla
   }
 
   /**
-   * An abstract, string-based translation registry.
+   * An abstract, string-based translation store.
    *
-   * <p>This class extends upon the standard abstract translation registry by adding
+   * <p>This class extends upon the standard abstract translation store by adding
    * support for reading from resource bundles.</p>
    *
    * @param <T> the type of the translation
@@ -245,7 +245,7 @@ public abstract class AbstractTranslationStore<T> implements Examinable, Transla
     private static final Pattern SINGLE_QUOTE_PATTERN = Pattern.compile("'");
 
     /**
-     * Creates a new abstract, string-based translation registry with a given name.
+     * Creates a new abstract, string-based translation store with a given name.
      *
      * @param name the name
      * @since 4.20.0
@@ -255,7 +255,7 @@ public abstract class AbstractTranslationStore<T> implements Examinable, Transla
     }
 
     /**
-     * Parses a string into the format required for this translation registry.
+     * Parses a string into the format required for this translation store.
      *
      * @param string the string
      * @param locale the locale for the string, if needed
