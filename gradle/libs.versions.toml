@@ -20,7 +20,7 @@ autoService = { module = "com.google.auto.service:auto-service", version.ref = "
 autoService-annotations = { module = "com.google.auto.service:auto-service-annotations", version.ref = "autoService" }
 examination-api = { module = "net.kyori:examination-api", version.ref = "examination" }
 examination-string = { module = "net.kyori:examination-string", version.ref = "examination" }
-option = { module = "net.kyori:option", version = "1.0.0" }
+option = { module = "net.kyori:option", version = "1.1.0" }
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
 guava-testlib = { module = "com.google.guava:guava-testlib", version.ref = "guava" }
 jetbrainsAnnotations = "org.jetbrains:annotations:26.0.2"
