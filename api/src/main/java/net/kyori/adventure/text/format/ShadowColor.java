@@ -170,7 +170,7 @@ public interface ShadowColor extends StyleBuilderApplicable, ARGBLike {
       final int b = Integer.parseInt(hex.substring(5, 7), 16);
       final int a = Integer.parseInt(hex.substring(7, 9), 16);
       return new ShadowColorImpl((a << 24) | (r << 16) | (g << 8) | b);
-    } catch (NumberFormatException ignored) {
+    } catch (final NumberFormatException ignored) {
       return null;
     }
   }
