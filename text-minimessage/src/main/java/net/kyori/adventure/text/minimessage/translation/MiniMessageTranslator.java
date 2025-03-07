@@ -142,10 +142,6 @@ public abstract class MiniMessageTranslator implements Translator {
       resultingComponent = this.miniMessage.deserialize(miniMessageString, new ArgumentTag(component.arguments()));
     }
 
-    if (component.children().isEmpty()) {
-      return resultingComponent;
-    } else {
-      return resultingComponent.children(component.children());
-    }
+    return resultingComponent.append(component.children());
   }
 }
