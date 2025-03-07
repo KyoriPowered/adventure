@@ -24,10 +24,17 @@
 package net.kyori.adventure.text.minimessage.translation;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import net.kyori.adventure.pointer.Pointered;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.text.TranslationArgument;
+import net.kyori.adventure.text.TranslationArgumentLike;
+import net.kyori.adventure.text.VirtualComponent;
+import net.kyori.adventure.text.VirtualComponentRenderer;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -136,10 +143,60 @@ public abstract class MiniMessageTranslator implements Translator {
 
     final Component resultingComponent;
 
-    if (component.arguments().isEmpty()) {
+    final List<TranslationArgument> translationArguments = component.arguments();
+
+    if (translationArguments.isEmpty()) {
       resultingComponent = this.miniMessage.deserialize(miniMessageString);
     } else {
-      resultingComponent = this.miniMessage.deserialize(miniMessageString, new ArgumentTag(component.arguments()));
+      final TagResolver.Builder tagResolverBuilder = TagResolver.builder();
+      final List<Tag> indexedArguments = new ArrayList<>(translationArguments.size());
+      Pointered target = null;
+
+      for (final TranslationArgument argument : translationArguments) {
+        final Object value = argument.value();
+
+        if (value instanceof VirtualComponent) {
+          final VirtualComponentRenderer<?> renderer = ((VirtualComponent) value).renderer();
+
+          if (renderer instanceof MiniMessageTranslatorTarget) {
+            if (target != null) {
+              throw new IllegalArgumentException("Multiple Argument.target() translation arguments have been set!");
+            }
+
+            target = ((MiniMessageTranslatorTarget) renderer).pointered();
+            continue;
+          } else if (renderer instanceof MiniMessageTranslatorArgument<?>) {
+            final MiniMessageTranslatorArgument<?> translatorArgument = (MiniMessageTranslatorArgument<?>) renderer;
+            final Object data = translatorArgument.data();
+
+            if (data instanceof TranslationArgumentLike) {
+              final Tag tag = Tag.selfClosingInserting((TranslationArgumentLike) data);
+              tagResolverBuilder.tag(translatorArgument.name(), tag);
+              indexedArguments.add(tag);
+              continue;
+            } else if (data instanceof Tag) {
+              final Tag tag = (Tag) data;
+              tagResolverBuilder.tag(translatorArgument.name(), tag);
+              indexedArguments.add(tag);
+              continue;
+            } else if (data instanceof TagResolver) {
+              tagResolverBuilder.resolvers((TagResolver) data);
+            } else {
+              throw new IllegalArgumentException("Unknown translator argument type: " + data.getClass());
+            }
+          }
+        }
+
+        indexedArguments.add(Tag.selfClosingInserting(argument));
+      }
+
+      final ArgumentTag argumentTag = new ArgumentTag(indexedArguments, tagResolverBuilder.build());
+
+      if (target == null) {
+        resultingComponent = this.miniMessage.deserialize(miniMessageString, argumentTag);
+      } else {
+        resultingComponent = this.miniMessage.deserialize(miniMessageString, target, argumentTag);
+      }
     }
 
     return resultingComponent.append(component.children());
