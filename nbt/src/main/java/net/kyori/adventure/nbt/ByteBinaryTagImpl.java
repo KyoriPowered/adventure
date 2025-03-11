@@ -73,6 +73,11 @@ final class ByteBinaryTagImpl extends AbstractBinaryTag implements ByteBinaryTag
   }
 
   @Override
+  public Number numberValue() {
+    return this.value;
+  }
+
+  @Override
   public boolean equals(final @Nullable Object other) {
     if (this == other) return true;
     if (other == null || this.getClass() != other.getClass()) return false;
