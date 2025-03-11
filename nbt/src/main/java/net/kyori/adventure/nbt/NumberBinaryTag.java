@@ -83,7 +83,7 @@ public interface NumberBinaryTag extends BinaryTag {
   short shortValue();
 
   /**
-   * Gets the value as a {@code Number}
+   * Gets the value as a {@code Number}.
    *
    * @return the value as a {@code Number}
    * @since 4.20.0
