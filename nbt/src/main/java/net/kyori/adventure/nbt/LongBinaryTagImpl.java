@@ -73,7 +73,7 @@ final class LongBinaryTagImpl extends AbstractBinaryTag implements LongBinaryTag
   }
 
   @Override
-  public Number numberValue() {
+  public @NotNull Number numberValue() {
     return this.value;
   }
 

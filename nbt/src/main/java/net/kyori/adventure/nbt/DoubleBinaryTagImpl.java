@@ -73,7 +73,7 @@ final class DoubleBinaryTagImpl extends AbstractBinaryTag implements DoubleBinar
   }
 
   @Override
-  public Number numberValue() {
+  public @NotNull Number numberValue() {
     return this.value;
   }
 

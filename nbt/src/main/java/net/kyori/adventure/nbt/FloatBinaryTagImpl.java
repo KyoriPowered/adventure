@@ -73,7 +73,7 @@ final class FloatBinaryTagImpl extends AbstractBinaryTag implements FloatBinaryT
   }
 
   @Override
-  public Number numberValue() {
+  public @NotNull Number numberValue() {
     return this.value;
   }
 

@@ -73,7 +73,7 @@ final class ShortBinaryTagImpl extends AbstractBinaryTag implements ShortBinaryT
   }
 
   @Override
-  public Number numberValue() {
+  public @NotNull Number numberValue() {
     return this.value;
   }
 
