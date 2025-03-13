@@ -84,12 +84,40 @@ public interface TranslationStore<T> extends Translator {
   /**
    * Checks if any translations are explicitly registered for the specified key and locale.
    *
+   * <p>Note that this method is different from {@link #canTranslate(String, Locale)} as
+   * this method does not check for translations in other locales (e.g., the default
+   * locale).
+   * This means that if a translation exists in the default locale for a given key (but
+   * not the provided locale), {@link #canTranslate(String, Locale)} would return
+   * {@code true} but this method would return {@code false}.</p>
+   *
    * @param key a translation key
    * @param locale the locale
    * @return whether the store contains a value for the translation key and locale
+   * @see #canTranslate(String, Locale)
    * @since 4.20.0
    */
   boolean contains(final @NotNull String key, final @NotNull Locale locale);
+
+  /**
+   * {@inheritDoc}
+   *
+   * <p>Note that this method is different from {@link #contains(String, Locale)} as
+   * this method checks for translations in other locales (e.g., the default locale).
+   * This means that if a translation exists in the default locale for a given key (but
+   * not the provided locale), {@link #contains(String, Locale)} would return
+   * {@code false} but this method would return {@code true}.</p>
+   *
+   * @param key {@inheritDoc}
+   * @param locale {@inheritDoc}
+   * @return {@inheritDoc}
+   * @see #contains(String, Locale)
+   * @since 4.20.0
+   */
+  @Override
+  default boolean canTranslate(final @NotNull String key, final @NotNull Locale locale) {
+    return Translator.super.canTranslate(key, locale);
+  }
 
   /**
    * Sets the default locale used by this store.

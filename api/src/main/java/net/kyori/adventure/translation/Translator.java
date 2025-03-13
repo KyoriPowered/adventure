@@ -25,6 +25,7 @@ package net.kyori.adventure.translation;
 
 import java.text.MessageFormat;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
@@ -87,6 +88,21 @@ public interface Translator {
    */
   default @NotNull TriState hasAnyTranslations() {
     return TriState.NOT_SET;
+  }
+
+  /**
+   * Checks if this translator can translate the given key and locale pair.
+   *
+   * @param key the key
+   * @param locale the locale
+   * @return {@code true} if this translator will return a non-null value for either of
+   *     the two {@code translate} methods
+   * @since 4.20.0
+   */
+  default boolean canTranslate(final @NotNull String key, final @NotNull Locale locale) {
+    final Component translatedValue = this.translate(Component.translatable(Objects.requireNonNull(key, "key")), Objects.requireNonNull(locale, "locale"));
+    if (translatedValue != null) return true;
+    return this.translate(key, locale) != null;
   }
 
   /**
