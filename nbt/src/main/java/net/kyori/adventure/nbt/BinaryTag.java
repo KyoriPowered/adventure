@@ -40,6 +40,14 @@ public interface BinaryTag extends BinaryTagLike, Examinable {
    */
   @NotNull BinaryTagType<? extends BinaryTag> type();
 
+  /**
+   * Gets the binary tag in SNBT format.
+   *
+   * @return the binary tag in SNBT format
+   * @since 4.20.0
+   */
+  @NotNull String getAsString();
+
   @Override
   default @NotNull BinaryTag asBinaryTag() {
     return this;

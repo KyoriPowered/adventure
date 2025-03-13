@@ -59,4 +59,9 @@ final class StringBinaryTagImpl extends AbstractBinaryTag implements StringBinar
   public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(ExaminableProperty.of("value", this.value));
   }
+
+  @Override
+  public @NotNull String getAsString() {
+    return this.value;
+  }
 }

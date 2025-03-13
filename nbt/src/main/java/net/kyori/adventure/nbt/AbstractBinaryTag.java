@@ -26,6 +26,8 @@ package net.kyori.adventure.nbt;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+
 abstract class AbstractBinaryTag implements BinaryTag {
   @Override
   public final @NotNull String examinableName() {
@@ -35,5 +37,18 @@ abstract class AbstractBinaryTag implements BinaryTag {
   @Override
   public final String toString() {
     return this.examine(StringExaminer.simpleEscaping());
+  }
+
+  @Override
+  public @NotNull String getAsString() {
+    StringBuilder builder = new StringBuilder();
+
+    try (TagStringWriter writer = new TagStringWriter(builder, "")) {
+      writer.writeTag(this);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+
+    return builder.toString();
   }
 }
