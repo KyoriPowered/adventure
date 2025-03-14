@@ -23,6 +23,12 @@ dependencyResolutionManagement {
   repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
   repositories {
     mavenCentral()
+    maven(url = "https://libraries.minecraft.net") {
+      mavenContent {
+        includeGroup("com.mojang")
+        releasesOnly()
+      }
+    }
   }
 }
 
@@ -34,6 +40,8 @@ sequenceOf(
   "api",
   "annotation-processors",
   "bom",
+  "dfu",
+  "nbt-dfu",
   "extra-kotlin",
   "key",
   "nbt",
