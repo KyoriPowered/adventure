@@ -14,9 +14,11 @@ dependencies {
     sequenceOf(
       "api",
       "annotation-processors",
+      "dfu",
       "extra-kotlin",
       "key",
       "nbt",
+      "nbt-dfu",
       "serializer-configurate4",
       "text-logger-slf4j",
       "text-minimessage",
