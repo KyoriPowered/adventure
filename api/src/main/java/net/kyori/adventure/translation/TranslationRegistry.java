@@ -23,10 +23,15 @@
  */
 package net.kyori.adventure.translation;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.Map;
+import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Function;
@@ -48,7 +53,7 @@ import static java.util.Objects.requireNonNull;
  * @deprecated For removal since 4.20.0. Use {@link TranslationStore#messageFormat(Key)} instead.
  */
 @Deprecated
-public interface TranslationRegistry extends Translator, TranslationStore<MessageFormat> {
+public interface TranslationRegistry extends Translator, TranslationStore.StringBased<MessageFormat> {
   /**
    * A pattern which matches a single quote.
    *
@@ -146,7 +151,9 @@ public interface TranslationRegistry extends Translator, TranslationStore<Messag
    * @deprecated For removal since 4.20.0. Use {@link TranslationStore#messageFormat(Key)} instead.
    */
   @Deprecated
-  void registerAll(final @NotNull Locale locale, final @NotNull Map<String, MessageFormat> formats);
+  default void registerAll(final @NotNull Locale locale, final @NotNull Map<String, MessageFormat> formats) {
+    this.registerAll(locale, formats.keySet(), formats::get);
+  }
 
   /**
    * Registers a resource bundle of translations.
@@ -160,7 +167,13 @@ public interface TranslationRegistry extends Translator, TranslationStore<Messag
    * @deprecated For removal since 4.20.0. Use {@link TranslationStore#messageFormat(Key)} instead.
    */
   @Deprecated
-  void registerAll(final @NotNull Locale locale, final @NotNull Path path, final boolean escapeSingleQuotes);
+  default void registerAll(final @NotNull Locale locale, final @NotNull Path path, final boolean escapeSingleQuotes) {
+    try (final BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
+      this.registerAll(locale, new PropertyResourceBundle(reader), escapeSingleQuotes);
+    } catch (final IOException e) {
+      // ignored
+    }
+  }
 
   /**
    * Registers a resource bundle of translations.
@@ -181,7 +194,17 @@ public interface TranslationRegistry extends Translator, TranslationStore<Messag
    * @deprecated For removal since 4.20.0. Use {@link TranslationStore#messageFormat(Key)} instead.
    */
   @Deprecated
-  void registerAll(final @NotNull Locale locale, final @NotNull ResourceBundle bundle, final boolean escapeSingleQuotes);
+  default void registerAll(final @NotNull Locale locale, final @NotNull ResourceBundle bundle, final boolean escapeSingleQuotes) {
+    this.registerAll(locale, bundle.keySet(), key -> {
+      final String format = bundle.getString(key);
+      return new MessageFormat(
+        escapeSingleQuotes
+          ? SINGLE_QUOTE_PATTERN.matcher(format).replaceAll("''")
+          : format,
+        locale
+      );
+    });
+  }
 
   /**
    * Registers a resource bundle of translations.
@@ -194,7 +217,27 @@ public interface TranslationRegistry extends Translator, TranslationStore<Messag
    * @deprecated For removal since 4.20.0. Use {@link TranslationStore#messageFormat(Key)} instead.
    */
   @Deprecated
-  void registerAll(final @NotNull Locale locale, final @NotNull Set<String> keys, final Function<String, MessageFormat> function);
+  default void registerAll(final @NotNull Locale locale, final @NotNull Set<String> keys, final Function<String, MessageFormat> function) {
+    IllegalArgumentException firstError = null;
+    int errorCount = 0;
+    for (final String key : keys) {
+      try {
+        this.register(key, locale, function.apply(key));
+      } catch (final IllegalArgumentException e) {
+        if (firstError == null) {
+          firstError = e;
+        }
+        errorCount++;
+      }
+    }
+    if (firstError != null) {
+      if (errorCount == 1) {
+        throw firstError;
+      } else if (errorCount > 1) {
+        throw new IllegalArgumentException(String.format("Invalid key (and %d more)", errorCount - 1), firstError);
+      }
+    }
+  }
 
   /**
    * Unregisters a translation key.
