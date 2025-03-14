@@ -3,6 +3,7 @@
 /build/
 /*/build/
 /*/out/
+/*/bin/
 /*/run/
 /.idea/
 /*.iml
