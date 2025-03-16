@@ -101,7 +101,7 @@ public final class TagStringIO {
    * @since 4.0.0
    */
   public String asString(final CompoundBinaryTag input) throws IOException {
-    return asString((BinaryTag) input);
+    return this.asString((BinaryTag) input);
   }
 
   /**
