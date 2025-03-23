@@ -23,41 +23,25 @@
  */
 package net.kyori.adventure.text.minimessage.translation;
 
-import java.util.Objects;
+import net.kyori.adventure.pointer.Pointered;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.VirtualComponentRenderer;
-import net.kyori.adventure.text.minimessage.internal.TagInternals;
-import net.kyori.adventure.text.minimessage.tag.TagPattern;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
-final class MiniMessageTranslatorArgument<T> implements VirtualComponentRenderer<Void> {
-  private final @NotNull String name;
-  private final @NotNull T data;
+final class MiniMessageTranslatorTarget implements VirtualComponentRenderer<Void> {
+  private final Pointered pointered;
 
-  MiniMessageTranslatorArgument(final @TagPattern @NotNull String name, final @NotNull T data) {
-    Objects.requireNonNull(name, "name");
-    Objects.requireNonNull(data, "data");
-    TagInternals.assertValidTagName(name);
-
-    this.name = name;
-    this.data = data;
+  MiniMessageTranslatorTarget(final @NotNull Pointered pointered) {
+    this.pointered = pointered;
   }
 
-  public @NotNull String name() {
-    return this.name;
-  }
-
-  public @NotNull T data() {
-    return this.data;
+  @NotNull Pointered pointered() {
+    return this.pointered;
   }
 
   @Override
   public @UnknownNullability ComponentLike apply(final @NotNull Void context) {
-    if (this.data instanceof ComponentLike) {
-      return (ComponentLike) this.data;
-    } else {
-      return null;
-    }
+    return null;
   }
 }

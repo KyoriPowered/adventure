@@ -23,15 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage.translation;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import net.kyori.adventure.text.ComponentLike;
-import net.kyori.adventure.text.TranslationArgumentLike;
-import net.kyori.adventure.text.VirtualComponent;
-import net.kyori.adventure.text.VirtualComponentRenderer;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.tag.Tag;
@@ -45,42 +37,11 @@ final class ArgumentTag implements TagResolver {
   private static final String NAME_1 = "arg";
 
   private final List<Tag> arguments;
-  private final Map<String, Tag> namedArguments;
-  private final TagResolver fallbackTagResolver;
+  private final TagResolver tagResolver;
 
-  ArgumentTag(final @NotNull List<? extends ComponentLike> argumentComponents) {
-    final List<Tag> argumentTags = new ArrayList<>(argumentComponents.size());
-    final Map<String, Tag> namedArgumentMap = new HashMap<>(argumentComponents.size());
-    final TagResolver.Builder tagResolverBuilder = TagResolver.builder();
-
-    for (final ComponentLike argument : argumentComponents) {
-      if (argument instanceof VirtualComponent) {
-        final VirtualComponentRenderer<?> renderer = ((VirtualComponent) argument).renderer();
-
-        if (renderer instanceof MiniMessageTranslatorArgument) {
-          final MiniMessageTranslatorArgument<?> translatorArgument = (MiniMessageTranslatorArgument<?>) renderer;
-          final Object data = translatorArgument.data();
-
-          if (data instanceof TranslationArgumentLike) {
-            final Tag tag = Tag.selfClosingInserting((TranslationArgumentLike) data);
-            namedArgumentMap.put(translatorArgument.name(), tag);
-            argumentTags.add(tag);
-          } else if (data instanceof Tag) {
-            final Tag tag = (Tag) data;
-            namedArgumentMap.put(translatorArgument.name(), tag);
-            argumentTags.add(tag);
-          } else if (data instanceof TagResolver) {
-            tagResolverBuilder.resolvers((TagResolver) data);
-          }
-        }
-      } else {
-        argumentTags.add(Tag.selfClosingInserting(argument));
-      }
-    }
-
-    this.arguments = Collections.unmodifiableList(argumentTags);
-    this.namedArguments = Collections.unmodifiableMap(namedArgumentMap);
-    this.fallbackTagResolver = tagResolverBuilder.build();
+  ArgumentTag(final @NotNull List<Tag> arguments, final @NotNull TagResolver tagResolver) {
+    this.arguments = arguments;
+    this.tagResolver = tagResolver;
   }
 
   @Override
@@ -94,19 +55,12 @@ final class ArgumentTag implements TagResolver {
 
       return this.arguments.get(index);
     } else {
-      final Tag tag = this.namedArguments.get(name);
-
-      if (tag != null) {
-        return tag;
-      }
+      return this.tagResolver.resolve(name, arguments, ctx);
     }
-
-    // Fallback to user-provided tags.
-    return this.fallbackTagResolver.resolve(name, arguments, ctx);
   }
 
   @Override
   public boolean has(final @NotNull String name) {
-    return name.equals(NAME) || name.equals(NAME_1) || this.namedArguments.containsKey(name) || this.fallbackTagResolver.has(name);
+    return name.equals(NAME) || name.equals(NAME_1) || this.tagResolver.has(name);
   }
 }
