@@ -82,6 +82,8 @@ import org.jetbrains.annotations.Nullable;
  * );
  * }</pre>
  *
+ * <p>For an easier way to create a MiniMessage translator, see {@link MiniMessageTranslationStore}.</p>
+ *
  * @see Argument
  * @see Tag
  * @see TagResolver

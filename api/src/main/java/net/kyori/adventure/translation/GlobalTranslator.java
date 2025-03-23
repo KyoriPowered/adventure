@@ -37,7 +37,7 @@ import org.jetbrains.annotations.NotNull;
  * when rendering a {@link TranslatableComponent} to an {@link Audience}.
  *
  * <p>To add your translations to this source, use {@code GlobalTranslator#get()#addSource(Translator)}
- * with a {@link TranslationRegistry} or your own implementation of a {@link Translator}.</p>
+ * with a {@link TranslationStore} or your own implementation of a {@link Translator}.</p>
  *
  * @since 4.0.0
  */

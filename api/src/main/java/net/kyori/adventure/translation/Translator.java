@@ -25,6 +25,7 @@ package net.kyori.adventure.translation;
 
 import java.text.MessageFormat;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
@@ -37,7 +38,7 @@ import org.jetbrains.annotations.Nullable;
  * A message translator.
  *
  * <p>To see how to create a {@link Translator} with a {@link ResourceBundle}
- * see {@link TranslationRegistry#registerAll(Locale, ResourceBundle, boolean)}</p>
+ * see {@link TranslationStore.StringBased#registerAll(Locale, ResourceBundle, boolean)}</p>
  *
  * <p>To bypass vanilla's {@link MessageFormat}-based translation system,
  * see {@link #translate(TranslatableComponent, Locale)}</p>
@@ -45,7 +46,7 @@ import org.jetbrains.annotations.Nullable;
  * <p>After creating a {@link Translator} you can add it to the {@link GlobalTranslator}
  * to enable automatic translations by the platforms.</p>
  *
- * @see TranslationRegistry
+ * @see TranslationStore
  * @since 4.0.0
  */
 public interface Translator {
@@ -87,6 +88,21 @@ public interface Translator {
    */
   default @NotNull TriState hasAnyTranslations() {
     return TriState.NOT_SET;
+  }
+
+  /**
+   * Checks if this translator can translate the given key and locale pair.
+   *
+   * @param key the key
+   * @param locale the locale
+   * @return {@code true} if this translator will return a non-null value for either of
+   *     the two {@code translate} methods
+   * @since 4.20.0
+   */
+  default boolean canTranslate(final @NotNull String key, final @NotNull Locale locale) {
+    final Component translatedValue = this.translate(Component.translatable(Objects.requireNonNull(key, "key")), Objects.requireNonNull(locale, "locale"));
+    if (translatedValue != null) return true;
+    return this.translate(key, locale) != null;
   }
 
   /**
