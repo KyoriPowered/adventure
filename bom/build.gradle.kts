@@ -20,6 +20,7 @@ dependencies {
       "serializer-configurate4",
       "text-logger-slf4j",
       "text-minimessage",
+      "text-serializer-constant",
       "text-serializer-ansi",
       "text-serializer-gson",
       "text-serializer-json",
