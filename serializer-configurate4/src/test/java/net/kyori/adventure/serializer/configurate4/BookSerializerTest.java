@@ -28,6 +28,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.serializer.constant.ComponentTreeConstants;
 import org.junit.jupiter.api.Test;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
@@ -38,18 +39,18 @@ class BookSerializerTest implements ConfigurateTestBase {
   @Test
   void testBook() {
     final ConfigurationNode node = this.node(n -> {
-      n.node(BookTypeSerializer.TITLE, ComponentTypeSerializer.TEXT).raw("My book");
+      n.node(BookTypeSerializer.TITLE, ComponentTreeConstants.TEXT).raw("My book");
       n.node(BookTypeSerializer.AUTHOR).act(author -> {
-        author.node(StyleSerializer.FONT).raw("minecraft:uniform");
-        author.node(ComponentTypeSerializer.TEXT).raw("myself");
+        author.node(ComponentTreeConstants.FONT).raw("minecraft:uniform");
+        author.node(ComponentTreeConstants.TEXT).raw("myself");
       });
       n.node(BookTypeSerializer.PAGES).act(pages -> {
-        pages.appendListNode().node(ComponentTypeSerializer.TEXT).raw("Page 1");
+        pages.appendListNode().node(ComponentTreeConstants.TEXT).raw("Page 1");
         pages.appendListNode().act(page -> {
-          page.node(StyleSerializer.COLOR).raw("dark_red");
-          page.node(ComponentTypeSerializer.TEXT).raw("Page 2");
+          page.node(ComponentTreeConstants.COLOR).raw("dark_red");
+          page.node(ComponentTreeConstants.TEXT).raw("Page 2");
         });
-        pages.appendListNode().node(ComponentTypeSerializer.TEXT).raw("Page 3");
+        pages.appendListNode().node(ComponentTreeConstants.TEXT).raw("Page 3");
       });
     });
     final Book deserialized = Book.builder().title(Component.text("My book"))
@@ -66,10 +67,10 @@ class BookSerializerTest implements ConfigurateTestBase {
   void testNoTitleFails() {
     final ConfigurationNode node = this.node(n -> {
       n.node(BookTypeSerializer.AUTHOR).act(author -> {
-        author.node(StyleSerializer.FONT).raw("minecraft:uniform");
-        author.node(ComponentTypeSerializer.TEXT).raw("myself");
+        author.node(ComponentTreeConstants.FONT).raw("minecraft:uniform");
+        author.node(ComponentTreeConstants.TEXT).raw("myself");
       });
-      n.node(BookTypeSerializer.PAGES).appendListNode().node(ComponentTypeSerializer.TEXT).raw("Page 1");
+      n.node(BookTypeSerializer.PAGES).appendListNode().node(ComponentTreeConstants.TEXT).raw("Page 1");
     });
 
     assertThrows(SerializationException.class, () -> node.get(Book.class));
@@ -78,8 +79,8 @@ class BookSerializerTest implements ConfigurateTestBase {
   @Test
   void testNoAuthorFails() {
     final ConfigurationNode node = this.node(n -> {
-      n.node(BookTypeSerializer.TITLE, ComponentTypeSerializer.TEXT).raw("My book");
-      n.node(BookTypeSerializer.PAGES).appendListNode().node(ComponentTypeSerializer.TEXT).raw("Page 1");
+      n.node(BookTypeSerializer.TITLE, ComponentTreeConstants.TEXT).raw("My book");
+      n.node(BookTypeSerializer.PAGES).appendListNode().node(ComponentTreeConstants.TEXT).raw("Page 1");
     });
 
     assertThrows(SerializationException.class, () -> node.get(Book.class));

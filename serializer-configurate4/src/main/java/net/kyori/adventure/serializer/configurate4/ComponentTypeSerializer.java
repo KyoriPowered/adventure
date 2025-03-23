@@ -49,24 +49,25 @@ import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
 
+import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.EXTRA;
+import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.KEYBIND;
+import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.NBT;
+import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.NBT_BLOCK;
+import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.NBT_ENTITY;
+import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.NBT_INTERPRET;
+import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.NBT_STORAGE;
+import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.SCORE;
+import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.SCORE_NAME;
+import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.SCORE_OBJECTIVE;
+import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.SCORE_VALUE;
+import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.SELECTOR;
+import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.TEXT;
+import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.TRANSLATE;
+import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.TRANSLATE_FALLBACK;
+import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.TRANSLATE_WITH;
+
 final class ComponentTypeSerializer implements TypeSerializer<Component> {
   static final TypeToken<List<Component>> LIST_TYPE = new TypeToken<List<Component>>() {};
-  static final String TEXT = "text";
-  static final String TRANSLATE = "translate";
-  static final String TRANSLATE_WITH = "with";
-  static final String TRANSLATE_FALLBACK = "fallback";
-  static final String SCORE = "score";
-  static final String SCORE_NAME = "name";
-  static final String SCORE_OBJECTIVE = "objective";
-  static final String SCORE_VALUE = "value";
-  static final String SELECTOR = "selector";
-  static final String KEYBIND = "keybind";
-  static final String EXTRA = "extra";
-  static final String NBT = "nbt";
-  static final String NBT_INTERPRET = "interpret";
-  static final String NBT_BLOCK = "block";
-  static final String NBT_ENTITY = "entity";
-  static final String NBT_STORAGE = "storage";
 
   private final @Nullable ComponentSerializer<Component, ? extends Component, String> stringSerial;
   private final boolean preferString;

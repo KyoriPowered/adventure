@@ -28,6 +28,7 @@ import java.util.UUID;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.serializer.constant.ComponentTreeConstants;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.ConfigurationNode;
@@ -37,21 +38,17 @@ import org.spongepowered.configurate.serialize.TypeSerializer;
 final class HoverEventShowEntitySerializer implements TypeSerializer<HoverEvent.ShowEntity> {
   static final HoverEventShowEntitySerializer INSTANCE = new HoverEventShowEntitySerializer();
 
-  static final String ENTITY_TYPE = "type";
-  static final String ID = "id";
-  static final String NAME = "name";
-
   private HoverEventShowEntitySerializer() {
   }
 
   @Override
   public HoverEvent.ShowEntity deserialize(final @NotNull Type type, final @NotNull ConfigurationNode value) throws SerializationException {
-    final Key typeId = value.node(ENTITY_TYPE).get(Key.class);
-    final UUID id = value.node(ID).get(UUID.class);
+    final Key typeId = value.node(ComponentTreeConstants.SHOW_ENTITY_TYPE).get(Key.class);
+    final UUID id = value.node(ComponentTreeConstants.SHOW_ENTITY_ID).get(UUID.class);
     if (typeId == null || id == null) {
       throw new SerializationException("A show entity hover event needs type and id fields to be deserialized");
     }
-    final @Nullable Component name = value.node(NAME).get(Component.class);
+    final @Nullable Component name = value.node(ComponentTreeConstants.SHOW_ENTITY_NAME).get(Component.class);
 
     return HoverEvent.ShowEntity.showEntity(typeId, id, name);
   }
@@ -63,8 +60,8 @@ final class HoverEventShowEntitySerializer implements TypeSerializer<HoverEvent.
       return;
     }
 
-    value.node(ENTITY_TYPE).set(Key.class, obj.type());
-    value.node(ID).set(UUID.class, obj.id());
-    value.node(NAME).set(Component.class, obj.name());
+    value.node(ComponentTreeConstants.SHOW_ENTITY_TYPE).set(Key.class, obj.type());
+    value.node(ComponentTreeConstants.SHOW_ENTITY_ID).set(UUID.class, obj.id());
+    value.node(ComponentTreeConstants.SHOW_ENTITY_NAME).set(Component.class, obj.name());
   }
 }
