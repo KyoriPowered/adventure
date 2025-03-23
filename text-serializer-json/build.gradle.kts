@@ -43,6 +43,7 @@ configurations {
 dependencies {
   api(projects.adventureApi)
   api(libs.option)
+  api(projects.adventureTextSerializerConstant)
   annotationProcessor(projects.adventureAnnotationProcessors)
 
   testFixturesApi(libs.junit.api)

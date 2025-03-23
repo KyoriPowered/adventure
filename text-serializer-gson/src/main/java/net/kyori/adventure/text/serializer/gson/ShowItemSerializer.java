@@ -43,13 +43,13 @@ import net.kyori.option.OptionState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.SHOW_ITEM_COMPONENTS;
-import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.SHOW_ITEM_COUNT;
-import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.SHOW_ITEM_ID;
+import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.SHOW_ITEM_COMPONENTS;
+import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.SHOW_ITEM_COUNT;
+import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.SHOW_ITEM_ID;
 
 final class ShowItemSerializer extends TypeAdapter<HoverEvent.ShowItem> {
   @SuppressWarnings("deprecation")
-  private static final String LEGACY_SHOW_ITEM_TAG = net.kyori.adventure.text.serializer.json.JSONComponentConstants.SHOW_ITEM_TAG;
+  private static final String LEGACY_SHOW_ITEM_TAG = net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.SHOW_ITEM_TAG;
   private static final String DATA_COMPONENT_REMOVAL_PREFIX = "!";
 
   private final Gson gson;
