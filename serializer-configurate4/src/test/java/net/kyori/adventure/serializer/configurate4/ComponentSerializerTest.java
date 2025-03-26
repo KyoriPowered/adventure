@@ -28,7 +28,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.serializer.constant.ComponentTreeConstants;
+import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.junit.jupiter.api.Test;
 import org.spongepowered.configurate.ConfigurationNode;

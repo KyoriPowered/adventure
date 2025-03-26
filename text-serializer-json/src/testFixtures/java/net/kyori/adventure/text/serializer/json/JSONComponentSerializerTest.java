@@ -26,7 +26,7 @@ package net.kyori.adventure.text.serializer.json;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParseException;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.constant.ComponentTreeConstants;
+import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

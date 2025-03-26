@@ -26,7 +26,7 @@ package net.kyori.adventure.serializer.configurate4;
 import java.time.Duration;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.serializer.constant.ComponentTreeConstants;
+import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import net.kyori.adventure.title.Title;
 import org.junit.jupiter.api.Test;
 import org.spongepowered.configurate.ConfigurationNode;

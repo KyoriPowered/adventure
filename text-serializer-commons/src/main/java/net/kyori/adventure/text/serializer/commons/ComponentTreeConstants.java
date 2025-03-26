@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.serializer.constant;
+package net.kyori.adventure.text.serializer.commons;
 
 /**
  * Constants to aid in the creation and testing of tree-based component serializers.

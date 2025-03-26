@@ -49,22 +49,22 @@ import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
 
-import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.EXTRA;
-import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.KEYBIND;
-import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.NBT;
-import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.NBT_BLOCK;
-import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.NBT_ENTITY;
-import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.NBT_INTERPRET;
-import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.NBT_STORAGE;
-import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.SCORE;
-import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.SCORE_NAME;
-import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.SCORE_OBJECTIVE;
-import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.SCORE_VALUE;
-import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.SELECTOR;
-import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.TEXT;
-import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.TRANSLATE;
-import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.TRANSLATE_FALLBACK;
-import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.TRANSLATE_WITH;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.EXTRA;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.KEYBIND;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NBT;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NBT_BLOCK;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NBT_ENTITY;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NBT_INTERPRET;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NBT_STORAGE;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SCORE;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SCORE_NAME;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SCORE_OBJECTIVE;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SCORE_VALUE;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SELECTOR;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.TEXT;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.TRANSLATE;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.TRANSLATE_FALLBACK;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.TRANSLATE_WITH;
 
 final class ComponentTypeSerializer implements TypeSerializer<Component> {
   static final TypeToken<List<Component>> LIST_TYPE = new TypeToken<List<Component>>() {};

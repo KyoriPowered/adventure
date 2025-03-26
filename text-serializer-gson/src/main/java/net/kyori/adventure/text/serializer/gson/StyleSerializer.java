@@ -49,17 +49,17 @@ import net.kyori.adventure.util.Codec;
 import net.kyori.option.OptionState;
 import org.jetbrains.annotations.Nullable;
 
-import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.CLICK_EVENT;
-import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.CLICK_EVENT_ACTION;
-import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.CLICK_EVENT_VALUE;
-import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.COLOR;
-import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.FONT;
-import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.HOVER_EVENT;
-import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.HOVER_EVENT_ACTION;
-import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.HOVER_EVENT_CONTENTS;
-import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.HOVER_EVENT_VALUE;
-import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.INSERTION;
-import static net.kyori.adventure.text.serializer.constant.ComponentTreeConstants.SHADOW_COLOR;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_ACTION;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_VALUE;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.COLOR;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.FONT;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.HOVER_EVENT;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.HOVER_EVENT_ACTION;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.HOVER_EVENT_CONTENTS;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.HOVER_EVENT_VALUE;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.INSERTION;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SHADOW_COLOR;
 
 final class StyleSerializer extends TypeAdapter<Style> {
   @SuppressWarnings("checkstyle:NoWhitespaceAfter")

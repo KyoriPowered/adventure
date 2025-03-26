@@ -23,7 +23,7 @@
  */
 package net.kyori.adventure.text.serializer.json;
 
-import net.kyori.adventure.text.serializer.constant.ComponentTreeConstants;
+import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import org.jetbrains.annotations.ApiStatus;
 
 /**

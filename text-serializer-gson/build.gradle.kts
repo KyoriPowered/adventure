@@ -5,6 +5,7 @@ plugins {
 
 dependencies {
   api(libs.gson)
+  implementation(projects.adventureTextSerializerCommons)
   compileOnlyApi(libs.autoService.annotations)
   annotationProcessor(libs.autoService)
 }
