@@ -265,7 +265,6 @@ public final class StandardTags {
   }
 
   /**
-<<<<<<< HEAD
    * Get a resolver for the {@value PrideTag#PRIDE} tag.
    *
    * @return a resolver for the {@value PrideTag#PRIDE} tag
@@ -288,8 +287,6 @@ public final class StandardTags {
   }
 
   /**
-=======
->>>>>>> parent of d938822a (Merge pull request #1079 from KyoriPowered/feature/pride)
    * Get a resolver that handles all default standard tags.
    *
    * <p>This will currently return all standard tags, but in the future MiniMessage
