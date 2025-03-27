@@ -49,7 +49,7 @@ import org.jetbrains.annotations.Range;
  *
  * @since 4.10.0
  */
-class GradientTag extends AbstractColorChangingTag {
+final class GradientTag extends AbstractColorChangingTag {
   private static final String GRADIENT = "gradient";
   private static final TextColor DEFAULT_WHITE = TextColor.color(0xffffff);
   private static final TextColor DEFAULT_BLACK = TextColor.color(0x000000);
@@ -61,7 +61,7 @@ class GradientTag extends AbstractColorChangingTag {
   private double multiplier = 1;
 
   private final TextColor[] colors;
-  @Range(from = -1, to = 1) double phase;
+  private @Range(from = -1, to = 1) double phase;
 
   private final boolean negativePhase;
 
@@ -107,8 +107,12 @@ class GradientTag extends AbstractColorChangingTag {
     return new GradientTag(phase, textColors, ctx);
   }
 
-  GradientTag(final double phase, final List<TextColor> colors, final Context ctx) {
-    super(ctx);
+private GradientTag(final double phase, final List<TextColor> colors) {
+    if (colors.isEmpty()) {
+      this.colors = new TextColor[]{DEFAULT_WHITE, DEFAULT_BLACK};
+    } else {
+      this.colors = colors.toArray(new TextColor[0]);
+    }
     if (colors.isEmpty()) {
       this.colors = new TextColor[]{DEFAULT_WHITE, DEFAULT_BLACK};
     } else {
