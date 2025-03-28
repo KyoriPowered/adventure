@@ -364,6 +364,22 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
     @NotNull Builder emitVirtuals(final boolean emitVirtuals);
 
     /**
+     * Configures if MiniMessage should escape tags in component content. (enabled by default)
+     *
+     * <p>
+     * By default, MiniMessage escapes all tags found in a components content when serializing a component.
+     * If a component has the raw text of {@code <italic>my text is italic</italic>} in the content,
+     * it will get escaped to {@code \<italic>my text is italic\</italic>}.
+     * Setting this value to false will prevent that.
+     * </p>
+     *
+     * @param escapeContent if component content should be escaped.
+     * @return this builder.
+     * @since 4.20.0
+     */
+    @NotNull Builder escapeContent(final boolean escapeContent);
+
+    /**
      * Print debug information to the given output (disabled by default).
      *
      * <p>Debug output includes detailed information about the parsing process to help debug parser behavior.</p>

@@ -55,7 +55,7 @@ final class MiniMessageImpl implements MiniMessage {
   static final class Instances {
     static final MiniMessage INSTANCE = SERVICE
       .map(Provider::miniMessage)
-      .orElseGet(() -> new MiniMessageImpl(TagResolver.standard(), false, true, null, DEFAULT_NO_OP, DEFAULT_COMPACTING_METHOD));
+      .orElseGet(() -> new MiniMessageImpl(TagResolver.standard(), false, true, true, null, DEFAULT_NO_OP, DEFAULT_COMPACTING_METHOD));
   }
 
   static final UnaryOperator<String> DEFAULT_NO_OP = UnaryOperator.identity();
@@ -63,15 +63,18 @@ final class MiniMessageImpl implements MiniMessage {
 
   private final boolean strict;
   private final boolean emitVirtuals;
+  private final boolean escapeContent;
   private final @Nullable Consumer<String> debugOutput;
   private final UnaryOperator<Component> postProcessor;
   private final UnaryOperator<String> preProcessor;
   final MiniMessageParser parser;
 
-  MiniMessageImpl(final @NotNull TagResolver resolver, final boolean strict, final boolean emitVirtuals, final @Nullable Consumer<String> debugOutput, final @NotNull UnaryOperator<String> preProcessor, final @NotNull UnaryOperator<Component> postProcessor) {
+  MiniMessageImpl(final @NotNull TagResolver resolver, final boolean strict, final boolean emitVirtuals, final boolean escapeContent,
+                  final @Nullable Consumer<String> debugOutput, final @NotNull UnaryOperator<String> preProcessor, final @NotNull UnaryOperator<Component> postProcessor) {
     this.parser = new MiniMessageParser(resolver);
     this.strict = strict;
     this.emitVirtuals = emitVirtuals;
+    this.escapeContent = escapeContent;
     this.debugOutput = debugOutput;
     this.preProcessor = preProcessor;
     this.postProcessor = postProcessor;
@@ -119,7 +122,7 @@ final class MiniMessageImpl implements MiniMessage {
 
   @Override
   public @NotNull String serialize(final @NotNull Component component) {
-    return MiniMessageSerializer.serialize(component, this.serialResolver(null), this.strict);
+    return MiniMessageSerializer.serialize(component, this.serialResolver(null), this.strict, this.escapeContent);
   }
 
   private SerializableResolver serialResolver(final @Nullable TagResolver extraResolver) {
@@ -176,6 +179,7 @@ final class MiniMessageImpl implements MiniMessage {
     private TagResolver tagResolver = TagResolver.standard();
     private boolean strict = false;
     private boolean emitVirtuals = true;
+    private boolean escapeContent = true;
     private Consumer<String> debug = null;
     private UnaryOperator<Component> postProcessor = DEFAULT_COMPACTING_METHOD;
     private UnaryOperator<String> preProcessor = DEFAULT_NO_OP;
@@ -221,6 +225,12 @@ final class MiniMessageImpl implements MiniMessage {
     }
 
     @Override
+    public @NotNull Builder escapeContent(boolean escapeContent) {
+      this.escapeContent = escapeContent;
+      return this;
+    }
+
+    @Override
     public @NotNull Builder debug(final @Nullable Consumer<String> debugOutput) {
       this.debug = debugOutput;
       return this;
@@ -240,7 +250,7 @@ final class MiniMessageImpl implements MiniMessage {
 
     @Override
     public @NotNull MiniMessage build() {
-      return new MiniMessageImpl(this.tagResolver, this.strict, this.emitVirtuals, this.debug, this.preProcessor, this.postProcessor);
+      return new MiniMessageImpl(this.tagResolver, this.strict, this.emitVirtuals, this.escapeContent, this.debug, this.preProcessor, this.postProcessor);
     }
   }
 }

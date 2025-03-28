@@ -49,9 +49,9 @@ final class MiniMessageSerializer {
   // - abbreviated vs long tag names (tag-specific option)
   //
 
-  static @NotNull String serialize(final @NotNull Component component, final @NotNull SerializableResolver resolver, final boolean strict) {
+  static @NotNull String serialize(final @NotNull Component component, final @NotNull SerializableResolver resolver, final boolean strict, final boolean escapeContent) {
     final StringBuilder sb = new StringBuilder();
-    final Collector emitter = new Collector(resolver, strict, sb);
+    final Collector emitter = new Collector(resolver, strict, escapeContent, sb);
 
     emitter.mark();
     visit(component, emitter, resolver, true);
@@ -108,14 +108,16 @@ final class MiniMessageSerializer {
 
     private final SerializableResolver resolver;
     private final boolean strict;
+    private final boolean escapeContent;
     private final StringBuilder consumer;
     private String[] activeTags = new String[4];
     private int tagLevel = 0;
     private TagState tagState = TagState.TEXT;
 
-    Collector(final SerializableResolver resolver, final boolean strict, final StringBuilder consumer) {
+    Collector(final SerializableResolver resolver, final boolean strict, final boolean escapeContent, final StringBuilder consumer) {
       this.resolver = resolver;
       this.strict = strict;
+      this.escapeContent = escapeContent;
       this.consumer = consumer;
     }
 
@@ -211,7 +213,7 @@ final class MiniMessageSerializer {
 
     @Override
     public @NotNull TokenEmitter argument(final @NotNull Component arg) {
-      final String serialized = MiniMessageSerializer.serialize(arg, this.resolver, this.strict);
+      final String serialized = MiniMessageSerializer.serialize(arg, this.resolver, this.strict, this.escapeContent);
       return this.argument(serialized, QuotingOverride.QUOTED); // always quote tokens
     }
 
@@ -219,7 +221,7 @@ final class MiniMessageSerializer {
     public @NotNull Collector text(final @NotNull String text) {
       this.completeTag();
       // escape '\' and '<'
-      appendEscaping(this.consumer, text, TEXT_ESCAPES, true);
+      appendEscaping(this.consumer, text, TEXT_ESCAPES, true, this.escapeContent);
       return this;
     }
 
@@ -244,19 +246,19 @@ final class MiniMessageSerializer {
 
       if (hasSingleQuote) { // double-quoted
         this.consumer.append('"');
-        appendEscaping(this.consumer, content, DOUBLE_QUOTED_ESCAPES, true);
+        appendEscaping(this.consumer, content, DOUBLE_QUOTED_ESCAPES, true, this.escapeContent);
         this.consumer.append('"');
       } else if (hasDoubleQuote || mustBeQuoted) {
         // single-quoted
         this.consumer.append('\'');
-        appendEscaping(this.consumer, content, SINGLE_QUOTED_ESCAPES, true);
+        appendEscaping(this.consumer, content, SINGLE_QUOTED_ESCAPES, true, this.escapeContent);
         this.consumer.append('\'');
       } else { // unquoted
-        appendEscaping(this.consumer, content, TAG_TOKENS, false);
+        appendEscaping(this.consumer, content, TAG_TOKENS, false, this.escapeContent);
       }
     }
 
-    static void appendEscaping(final StringBuilder builder, final String text, final char[] escapeChars, final boolean allowEscapes) {
+    static void appendEscaping(final StringBuilder builder, final String text, final char[] escapeChars, final boolean allowEscapes, final boolean doEscape) {
       int startIdx = 0;
       boolean unescapedFound = false;
 
@@ -273,7 +275,7 @@ final class MiniMessageSerializer {
           }
         }
 
-        if (escaped) {
+        if (escaped && doEscape) {
           if (unescapedFound) builder.append(text, startIdx, i);
           startIdx = i + 1;
           builder.append(TokenParser.ESCAPE).append(test);

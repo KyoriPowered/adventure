@@ -27,6 +27,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.junit.jupiter.api.Test;
 
 import static net.kyori.adventure.text.Component.text;
@@ -78,4 +79,19 @@ public class MiniMessageSerializerTest extends AbstractTest {
     this.assertParsedEquals(component, expected);
   }
 
+  @Test
+  void testEscapeContentOption() {
+    final MiniMessage serializer = MiniMessage.builder().escapeContent(false).build();
+    final LegacyComponentSerializer legacy = LegacyComponentSerializer.legacyAmpersand();
+
+    final String input = "<aqua>&l a";
+
+    final String expectedEscaped = "\\<aqua><bold> a";
+    final String expectedNotEscaped = "<aqua><bold> a";
+
+    final Component component = legacy.deserialize(input);
+
+    this.assertSerializedEquals(expectedEscaped, component);
+    assertEquals(expectedNotEscaped, serializer.serialize(component));
+  }
 }

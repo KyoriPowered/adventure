@@ -9,6 +9,7 @@ dependencies {
   api(projects.adventureApi)
   testImplementation(projects.adventureTextSerializerPlain)
   testImplementation(projects.adventureTextSerializerAnsi)
+  testImplementation(projects.adventureTextSerializerLegacy)
   annotationProcessor(projects.adventureAnnotationProcessors)
 }
 
