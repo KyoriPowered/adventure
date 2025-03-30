@@ -26,6 +26,7 @@ package net.kyori.adventure.text.minimessage.translation;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.translation.TranslationStore;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -36,7 +37,8 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 4.20.0
  */
-public interface MiniMessageTranslationStore extends TranslationStore<String> {
+@ApiStatus.NonExtendable
+public interface MiniMessageTranslationStore extends TranslationStore.StringBased<String> {
 
   /**
    * Creates a MiniMessage translation store, backed by the default MiniMessage instance.
