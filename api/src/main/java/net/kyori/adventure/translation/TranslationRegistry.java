@@ -84,6 +84,7 @@ public interface TranslationRegistry extends Translator, TranslationStore.String
    * @since 4.7.0
    * @deprecated For removal since 4.20.0. Use {@link TranslationStore#messageFormat(Key)} instead.
    */
+  @Override
   @Deprecated
   boolean contains(final @NotNull String key);
 
@@ -109,6 +110,7 @@ public interface TranslationRegistry extends Translator, TranslationStore.String
    * @since 4.0.0
    * @deprecated For removal since 4.20.0. Use {@link TranslationStore#messageFormat(Key)} instead.
    */
+  @Override
   @Deprecated
   void defaultLocale(final @NotNull Locale locale);
 
@@ -127,6 +129,7 @@ public interface TranslationRegistry extends Translator, TranslationStore.String
    * @since 4.0.0
    * @deprecated For removal since 4.20.0. Use {@link TranslationStore#messageFormat(Key)} instead.
    */
+  @Override
   @Deprecated
   void register(final @NotNull String key, final @NotNull Locale locale, final @NotNull MessageFormat format);
 
@@ -150,6 +153,7 @@ public interface TranslationRegistry extends Translator, TranslationStore.String
    * @since 4.0.0
    * @deprecated For removal since 4.20.0. Use {@link TranslationStore#messageFormat(Key)} instead.
    */
+  @Override
   @Deprecated
   default void registerAll(final @NotNull Locale locale, final @NotNull Map<String, MessageFormat> formats) {
     this.registerAll(locale, formats.keySet(), formats::get);
@@ -166,6 +170,7 @@ public interface TranslationRegistry extends Translator, TranslationStore.String
    * @since 4.0.0
    * @deprecated For removal since 4.20.0. Use {@link TranslationStore#messageFormat(Key)} instead.
    */
+  @Override
   @Deprecated
   default void registerAll(final @NotNull Locale locale, final @NotNull Path path, final boolean escapeSingleQuotes) {
     try (final BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
@@ -193,6 +198,7 @@ public interface TranslationRegistry extends Translator, TranslationStore.String
    * @since 4.0.0
    * @deprecated For removal since 4.20.0. Use {@link TranslationStore#messageFormat(Key)} instead.
    */
+  @Override
   @Deprecated
   default void registerAll(final @NotNull Locale locale, final @NotNull ResourceBundle bundle, final boolean escapeSingleQuotes) {
     this.registerAll(locale, bundle.keySet(), key -> {
@@ -216,7 +222,9 @@ public interface TranslationRegistry extends Translator, TranslationStore.String
    * @since 4.0.0
    * @deprecated For removal since 4.20.0. Use {@link TranslationStore#messageFormat(Key)} instead.
    */
+  @Override
   @Deprecated
+  @SuppressWarnings("DuplicatedCode") // We need a default impl here - will be removed in 5.x
   default void registerAll(final @NotNull Locale locale, final @NotNull Set<String> keys, final Function<String, MessageFormat> function) {
     IllegalArgumentException firstError = null;
     int errorCount = 0;
@@ -246,6 +254,7 @@ public interface TranslationRegistry extends Translator, TranslationStore.String
    * @since 4.0.0
    * @deprecated For removal since 4.20.0. Use {@link TranslationStore#messageFormat(Key)} instead.
    */
+  @Override
   @Deprecated
   void unregister(final @NotNull String key);
 }

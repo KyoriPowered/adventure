@@ -121,12 +121,14 @@ public interface Translator {
   /**
    * Gets a translated component from a translatable component and locale.
    *
-   * <p>Care should be taken to ensure you do not unintentionally remove the children of {@code component}.
-   * This can be avoided by copying over the children using the following code as an example:</p>
+   * <p>Care should be taken to ensure you do not unintentionally remove the children or style of {@code component}.
+   * This can be avoided by copying over the children/style using the following code as an example:</p>
    *
    * <pre>{@code
    * final Component myNewComponent = ...; // get your component here
-   * return myNewComponent.append(component.children()); // ensure it has the original components children as well
+   * return myNewComponent
+   *   .append(component.children()) // ensure it has the original components children as well
+   *   .applyFallbackStyle(component.style()); // apply a "fallback" style
    * }</pre>
    *
    * @param locale a locale

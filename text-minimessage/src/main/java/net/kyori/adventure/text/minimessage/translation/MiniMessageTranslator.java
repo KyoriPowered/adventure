@@ -35,6 +35,7 @@ import net.kyori.adventure.text.TranslationArgument;
 import net.kyori.adventure.text.TranslationArgumentLike;
 import net.kyori.adventure.text.VirtualComponent;
 import net.kyori.adventure.text.VirtualComponentRenderer;
+import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -143,7 +144,7 @@ public abstract class MiniMessageTranslator implements Translator {
       return null;
     }
 
-    final Component resultingComponent;
+    Component resultingComponent;
 
     final List<TranslationArgument> translationArguments = component.arguments();
 
@@ -199,6 +200,11 @@ public abstract class MiniMessageTranslator implements Translator {
       } else {
         resultingComponent = this.miniMessage.deserialize(miniMessageString, target, argumentTag);
       }
+    }
+
+    final Style style = component.style();
+    if (!style.isEmpty()) {
+      resultingComponent = resultingComponent.applyFallbackStyle(style);
     }
 
     return resultingComponent.append(component.children());
