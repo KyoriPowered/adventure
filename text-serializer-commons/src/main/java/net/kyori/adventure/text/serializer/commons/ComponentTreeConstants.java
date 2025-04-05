@@ -36,7 +36,8 @@ public final class ComponentTreeConstants {
   public static final String SCORE = "score";
   public static final String SCORE_NAME = "name";
   public static final String SCORE_OBJECTIVE = "objective";
-  public static final @Deprecated String SCORE_VALUE = "value";
+  @Deprecated
+  public static final String SCORE_VALUE = "value";
   public static final String SELECTOR = "selector";
   public static final String KEYBIND = "keybind";
   public static final String EXTRA = "extra";
@@ -56,13 +57,15 @@ public final class ComponentTreeConstants {
   public static final String HOVER_EVENT = "hoverEvent";
   public static final String HOVER_EVENT_ACTION = "action";
   public static final String HOVER_EVENT_CONTENTS = "contents";
-  public static final @Deprecated String HOVER_EVENT_VALUE = "value";
+  @Deprecated
+  public static final String HOVER_EVENT_VALUE = "value";
   public static final String SHOW_ENTITY_TYPE = "type";
   public static final String SHOW_ENTITY_ID = "id";
   public static final String SHOW_ENTITY_NAME = "name";
   public static final String SHOW_ITEM_ID = "id";
   public static final String SHOW_ITEM_COUNT = "count";
-  public static final @Deprecated String SHOW_ITEM_TAG = "tag";
+  @Deprecated
+  public static final String SHOW_ITEM_TAG = "tag";
   public static final String SHOW_ITEM_COMPONENTS = "components";
 
   private ComponentTreeConstants() {
