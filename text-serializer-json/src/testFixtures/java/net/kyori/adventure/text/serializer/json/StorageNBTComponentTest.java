@@ -25,6 +25,7 @@ package net.kyori.adventure.text.serializer.json;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import org.junit.jupiter.api.Test;
 
 final class StorageNBTComponentTest extends SerializerTest {
@@ -33,9 +34,9 @@ final class StorageNBTComponentTest extends SerializerTest {
     this.testObject(
       Component.storageNBT().nbtPath("abc").storage(Key.key("doom:apple")).build(),
       json -> {
-        json.addProperty(JSONComponentConstants.NBT, "abc");
-        json.addProperty(JSONComponentConstants.NBT_INTERPRET, false);
-        json.addProperty(JSONComponentConstants.NBT_STORAGE, "doom:apple");
+        json.addProperty(ComponentTreeConstants.NBT, "abc");
+        json.addProperty(ComponentTreeConstants.NBT_INTERPRET, false);
+        json.addProperty(ComponentTreeConstants.NBT_STORAGE, "doom:apple");
       }
     );
   }
@@ -45,9 +46,9 @@ final class StorageNBTComponentTest extends SerializerTest {
     this.testObject(
       Component.storageNBT().nbtPath("abc").storage(Key.key("doom:apple")).interpret(true).build(),
       json -> {
-        json.addProperty(JSONComponentConstants.NBT, "abc");
-        json.addProperty(JSONComponentConstants.NBT_INTERPRET, true);
-        json.addProperty(JSONComponentConstants.NBT_STORAGE, "doom:apple");
+        json.addProperty(ComponentTreeConstants.NBT, "abc");
+        json.addProperty(ComponentTreeConstants.NBT_INTERPRET, true);
+        json.addProperty(ComponentTreeConstants.NBT_STORAGE, "doom:apple");
       }
     );
   }

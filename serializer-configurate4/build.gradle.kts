@@ -4,6 +4,7 @@ plugins {
 
 dependencies {
   api(projects.adventureApi)
+  implementation(projects.adventureTextSerializerCommons)
   api(libs.configurate.v4)
   testImplementation(projects.adventureTextSerializerGson)
 }

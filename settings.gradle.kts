@@ -40,6 +40,7 @@ sequenceOf(
   "serializer-configurate4",
   "text-logger-slf4j",
   "text-minimessage",
+  "text-serializer-commons",
   "text-serializer-gson",
   "text-serializer-gson-legacy-impl",
   "text-serializer-json",

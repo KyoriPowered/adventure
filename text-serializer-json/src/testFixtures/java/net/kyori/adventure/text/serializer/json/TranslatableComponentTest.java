@@ -29,6 +29,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import org.junit.jupiter.api.Test;
 
 final class TranslatableComponentTest extends SerializerTest {
@@ -45,7 +46,7 @@ final class TranslatableComponentTest extends SerializerTest {
   void testNoArgs() {
     this.testObject(
       Component.translatable(KEY),
-      json -> json.addProperty(JSONComponentConstants.TRANSLATE, KEY)
+      json -> json.addProperty(ComponentTreeConstants.TRANSLATE, KEY)
     );
   }
 
@@ -57,8 +58,8 @@ final class TranslatableComponentTest extends SerializerTest {
         .fallback("This is a test.")
         .build(),
       json -> {
-        json.addProperty(JSONComponentConstants.TRANSLATE, "thisIsA");
-        json.addProperty(JSONComponentConstants.TRANSLATE_FALLBACK, "This is a test.");
+        json.addProperty(ComponentTreeConstants.TRANSLATE, "thisIsA");
+        json.addProperty(ComponentTreeConstants.TRANSLATE_FALLBACK, "This is a test.");
       }
     );
   }
@@ -82,26 +83,26 @@ final class TranslatableComponentTest extends SerializerTest {
           .build()
       ).color(NamedTextColor.YELLOW),
       json -> {
-        json.addProperty(JSONComponentConstants.TRANSLATE, KEY);
-        json.addProperty(JSONComponentConstants.COLOR, name(NamedTextColor.YELLOW));
-        json.add(JSONComponentConstants.TRANSLATE_WITH, array(with -> with.add(object(item -> {
-          item.addProperty(JSONComponentConstants.TEXT, name);
-          item.add(JSONComponentConstants.CLICK_EVENT, object(event -> {
-            event.addProperty(JSONComponentConstants.CLICK_EVENT_ACTION, name(ClickEvent.Action.SUGGEST_COMMAND));
-            event.addProperty(JSONComponentConstants.CLICK_EVENT_VALUE, command);
+        json.addProperty(ComponentTreeConstants.TRANSLATE, KEY);
+        json.addProperty(ComponentTreeConstants.COLOR, name(NamedTextColor.YELLOW));
+        json.add(ComponentTreeConstants.TRANSLATE_WITH, array(with -> with.add(object(item -> {
+          item.addProperty(ComponentTreeConstants.TEXT, name);
+          item.add(ComponentTreeConstants.CLICK_EVENT, object(event -> {
+            event.addProperty(ComponentTreeConstants.CLICK_EVENT_ACTION, name(ClickEvent.Action.SUGGEST_COMMAND));
+            event.addProperty(ComponentTreeConstants.CLICK_EVENT_VALUE, command);
           }));
-          item.add(JSONComponentConstants.HOVER_EVENT, object(event -> {
-            event.addProperty(JSONComponentConstants.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ENTITY));
-            event.add(JSONComponentConstants.HOVER_EVENT_CONTENTS, object(value -> {
-              value.addProperty(JSONComponentConstants.SHOW_ENTITY_TYPE, "minecraft:player");
-              value.add(JSONComponentConstants.SHOW_ENTITY_ID, array(arr -> {
+          item.add(ComponentTreeConstants.HOVER_EVENT, object(event -> {
+            event.addProperty(ComponentTreeConstants.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ENTITY));
+            event.add(ComponentTreeConstants.HOVER_EVENT_CONTENTS, object(value -> {
+              value.addProperty(ComponentTreeConstants.SHOW_ENTITY_TYPE, "minecraft:player");
+              value.add(ComponentTreeConstants.SHOW_ENTITY_ID, array(arr -> {
                 arr.add(-351136121);
                 arr.add(-1961211580);
                 arr.add(-1118969688);
                 arr.add(416931810);
               }));
-              value.add(JSONComponentConstants.SHOW_ENTITY_NAME, object(namej -> {
-                namej.addProperty(JSONComponentConstants.TEXT, name);
+              value.add(ComponentTreeConstants.SHOW_ENTITY_NAME, object(namej -> {
+                namej.addProperty(ComponentTreeConstants.TEXT, name);
               }));
             }));
           }));

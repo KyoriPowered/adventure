@@ -23,50 +23,54 @@
  */
 package net.kyori.adventure.text.serializer.json;
 
+import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import org.jetbrains.annotations.ApiStatus;
 
 /**
  * Constants to aid in the creation and testing of JSON component serializers.
  *
  * @since 4.14.0
+ * @deprecated for removal since 4.20.0, use {@link ComponentTreeConstants} instead.
  */
+@Deprecated
 @ApiStatus.Internal
+@SuppressWarnings("deprecation")
 public final class JSONComponentConstants {
-  public static final String TEXT = "text";
-  public static final String TRANSLATE = "translate";
-  public static final String TRANSLATE_FALLBACK = "fallback";
-  public static final String TRANSLATE_WITH = "with";
-  public static final String SCORE = "score";
-  public static final String SCORE_NAME = "name";
-  public static final String SCORE_OBJECTIVE = "objective";
-  public static final @Deprecated String SCORE_VALUE = "value";
-  public static final String SELECTOR = "selector";
-  public static final String KEYBIND = "keybind";
-  public static final String EXTRA = "extra";
-  public static final String NBT = "nbt";
-  public static final String NBT_INTERPRET = "interpret";
-  public static final String NBT_BLOCK = "block";
-  public static final String NBT_ENTITY = "entity";
-  public static final String NBT_STORAGE = "storage";
-  public static final String SEPARATOR = "separator";
-  public static final String FONT = "font";
-  public static final String COLOR = "color";
-  public static final String SHADOW_COLOR = "shadow_color";
-  public static final String INSERTION = "insertion";
-  public static final String CLICK_EVENT = "clickEvent";
-  public static final String CLICK_EVENT_ACTION = "action";
-  public static final String CLICK_EVENT_VALUE = "value";
-  public static final String HOVER_EVENT = "hoverEvent";
-  public static final String HOVER_EVENT_ACTION = "action";
-  public static final String HOVER_EVENT_CONTENTS = "contents";
-  public static final @Deprecated String HOVER_EVENT_VALUE = "value";
-  public static final String SHOW_ENTITY_TYPE = "type";
-  public static final String SHOW_ENTITY_ID = "id";
-  public static final String SHOW_ENTITY_NAME = "name";
-  public static final String SHOW_ITEM_ID = "id";
-  public static final String SHOW_ITEM_COUNT = "count";
-  public static final @Deprecated String SHOW_ITEM_TAG = "tag";
-  public static final String SHOW_ITEM_COMPONENTS = "components";
+  public static final String TEXT = ComponentTreeConstants.TEXT;
+  public static final String TRANSLATE = ComponentTreeConstants.TRANSLATE;
+  public static final String TRANSLATE_FALLBACK = ComponentTreeConstants.TRANSLATE_FALLBACK;
+  public static final String TRANSLATE_WITH = ComponentTreeConstants.TRANSLATE_WITH;
+  public static final String SCORE = ComponentTreeConstants.SCORE;
+  public static final String SCORE_NAME = ComponentTreeConstants.SCORE_NAME;
+  public static final String SCORE_OBJECTIVE = ComponentTreeConstants.SCORE_OBJECTIVE;
+  public static final @Deprecated String SCORE_VALUE = ComponentTreeConstants.SCORE_VALUE;
+  public static final String SELECTOR = ComponentTreeConstants.SELECTOR;
+  public static final String KEYBIND = ComponentTreeConstants.KEYBIND;
+  public static final String EXTRA = ComponentTreeConstants.EXTRA;
+  public static final String NBT = ComponentTreeConstants.NBT;
+  public static final String NBT_INTERPRET = ComponentTreeConstants.NBT_INTERPRET;
+  public static final String NBT_BLOCK = ComponentTreeConstants.NBT_BLOCK;
+  public static final String NBT_ENTITY = ComponentTreeConstants.NBT_ENTITY;
+  public static final String NBT_STORAGE = ComponentTreeConstants.NBT_STORAGE;
+  public static final String SEPARATOR = ComponentTreeConstants.SEPARATOR;
+  public static final String FONT = ComponentTreeConstants.FONT;
+  public static final String COLOR = ComponentTreeConstants.COLOR;
+  public static final String SHADOW_COLOR = ComponentTreeConstants.SHADOW_COLOR;
+  public static final String INSERTION = ComponentTreeConstants.INSERTION;
+  public static final String CLICK_EVENT = ComponentTreeConstants.CLICK_EVENT;
+  public static final String CLICK_EVENT_ACTION = ComponentTreeConstants.CLICK_EVENT_ACTION;
+  public static final String CLICK_EVENT_VALUE = ComponentTreeConstants.CLICK_EVENT_VALUE;
+  public static final String HOVER_EVENT = ComponentTreeConstants.HOVER_EVENT;
+  public static final String HOVER_EVENT_ACTION = ComponentTreeConstants.HOVER_EVENT_ACTION;
+  public static final String HOVER_EVENT_CONTENTS = ComponentTreeConstants.HOVER_EVENT_CONTENTS;
+  public static final @Deprecated String HOVER_EVENT_VALUE = ComponentTreeConstants.HOVER_EVENT_VALUE;
+  public static final String SHOW_ENTITY_TYPE = ComponentTreeConstants.SHOW_ENTITY_TYPE;
+  public static final String SHOW_ENTITY_ID = ComponentTreeConstants.SHOW_ENTITY_ID;
+  public static final String SHOW_ENTITY_NAME = ComponentTreeConstants.SHOW_ENTITY_NAME;
+  public static final String SHOW_ITEM_ID = ComponentTreeConstants.SHOW_ITEM_ID;
+  public static final String SHOW_ITEM_COUNT = ComponentTreeConstants.SHOW_ITEM_COUNT;
+  public static final @Deprecated String SHOW_ITEM_TAG = ComponentTreeConstants.SHOW_ITEM_TAG;
+  public static final String SHOW_ITEM_COMPONENTS = ComponentTreeConstants.SHOW_ITEM_COMPONENTS;
 
   private JSONComponentConstants() {
     throw new IllegalStateException("Cannot instantiate");

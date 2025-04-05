@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.serializer.json;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import org.junit.jupiter.api.Test;
 
 final class SelectorComponentTest extends SerializerTest {
@@ -33,7 +34,7 @@ final class SelectorComponentTest extends SerializerTest {
   void test() {
     this.testObject(
       Component.selector(SELECTOR),
-      json -> json.addProperty(JSONComponentConstants.SELECTOR, SELECTOR)
+      json -> json.addProperty(ComponentTreeConstants.SELECTOR, SELECTOR)
     );
   }
 
@@ -43,8 +44,8 @@ final class SelectorComponentTest extends SerializerTest {
     this.testObject(
       Component.selector(SELECTOR, separator),
       json -> {
-        json.addProperty(JSONComponentConstants.SELECTOR, SELECTOR);
-        json.add(JSONComponentConstants.SEPARATOR, this.serialize(separator));
+        json.addProperty(ComponentTreeConstants.SELECTOR, SELECTOR);
+        json.add(ComponentTreeConstants.SEPARATOR, this.serialize(separator));
       }
     );
   }

@@ -25,6 +25,7 @@ package net.kyori.adventure.text.serializer.json;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import org.junit.jupiter.api.Test;
 
 // https://github.com/KyoriPowered/adventure/issues/788
@@ -38,16 +39,16 @@ final class Issue788Test extends SerializerTest {
         .append(Component.text("<APPEND", TextColor.color(0xFF00FF)))
         .build(),
       json -> {
-        json.addProperty(JSONComponentConstants.TEXT, "");
-        json.add(JSONComponentConstants.EXTRA, array(extra -> {
+        json.addProperty(ComponentTreeConstants.TEXT, "");
+        json.add(ComponentTreeConstants.EXTRA, array(extra -> {
           extra.add(object(object -> {
-            object.addProperty(JSONComponentConstants.COLOR, "#FF00FF");
-            object.addProperty(JSONComponentConstants.TEXT, "PREPEND>");
+            object.addProperty(ComponentTreeConstants.COLOR, "#FF00FF");
+            object.addProperty(ComponentTreeConstants.TEXT, "PREPEND>");
           }));
           extra.add("/sign test");
           extra.add(object(object -> {
-            object.addProperty(JSONComponentConstants.COLOR, "#FF00FF");
-            object.addProperty(JSONComponentConstants.TEXT, "<APPEND");
+            object.addProperty(ComponentTreeConstants.COLOR, "#FF00FF");
+            object.addProperty(ComponentTreeConstants.TEXT, "<APPEND");
           }));
         }));
       }

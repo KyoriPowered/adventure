@@ -40,23 +40,24 @@ import org.spongepowered.configurate.ConfigurationOptions;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
 
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_ACTION;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_VALUE;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.COLOR;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.FONT;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.HOVER_EVENT;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.HOVER_EVENT_ACTION;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.HOVER_EVENT_CONTENTS;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.HOVER_EVENT_VALUE;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.INSERTION;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SHADOW_COLOR;
+
 final class StyleSerializer implements TypeSerializer<Style> {
   static final StyleSerializer INSTANCE = new StyleSerializer();
 
   private static final TextDecoration[] DECORATIONS = TextDecoration.values();
 
-  static final String FONT = "font";
-  static final String COLOR = "color";
-  static final String SHADOW_COLOR = "shadow_color";
-  static final String INSERTION = "insertion";
-  static final String CLICK_EVENT = "clickEvent";
-  static final String CLICK_EVENT_ACTION = "action";
-  static final String CLICK_EVENT_VALUE = "value";
-  static final String HOVER_EVENT = "hoverEvent";
-  static final String HOVER_EVENT_ACTION = "action";
   static final TypeToken<HoverEvent.Action<?>> HOVER_EVENT_ACTION_TYPE = new TypeToken<HoverEvent.Action<?>>() {};
-  static final String HOVER_EVENT_CONTENTS = "contents";
-  static final @Deprecated String HOVER_EVENT_VALUE = "value";
 
   private StyleSerializer() {
   }

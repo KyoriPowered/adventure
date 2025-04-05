@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.serializer.json;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -37,9 +38,9 @@ final class ScoreComponentTest extends SerializerTest {
   void test() {
     this.testObject(
       Component.score(NAME, OBJECTIVE),
-      json -> json.add(JSONComponentConstants.SCORE, object(score -> {
-        score.addProperty(JSONComponentConstants.SCORE_NAME, NAME);
-        score.addProperty(JSONComponentConstants.SCORE_OBJECTIVE, OBJECTIVE);
+      json -> json.add(ComponentTreeConstants.SCORE, object(score -> {
+        score.addProperty(ComponentTreeConstants.SCORE_NAME, NAME);
+        score.addProperty(ComponentTreeConstants.SCORE_OBJECTIVE, OBJECTIVE);
       }))
     );
   }
@@ -48,10 +49,10 @@ final class ScoreComponentTest extends SerializerTest {
   void testWithValue() {
     this.testObject(
       Component.score(NAME, OBJECTIVE, VALUE),
-      json -> json.add(JSONComponentConstants.SCORE, object(score -> {
-        score.addProperty(JSONComponentConstants.SCORE_NAME, NAME);
-        score.addProperty(JSONComponentConstants.SCORE_OBJECTIVE, OBJECTIVE);
-        score.addProperty(JSONComponentConstants.SCORE_VALUE, VALUE);
+      json -> json.add(ComponentTreeConstants.SCORE, object(score -> {
+        score.addProperty(ComponentTreeConstants.SCORE_NAME, NAME);
+        score.addProperty(ComponentTreeConstants.SCORE_OBJECTIVE, OBJECTIVE);
+        score.addProperty(ComponentTreeConstants.SCORE_VALUE, VALUE);
       }))
     );
   }
@@ -62,8 +63,8 @@ final class ScoreComponentTest extends SerializerTest {
       RuntimeException.class,
       () -> this.deserialize(object(json ->
         json.add(
-          JSONComponentConstants.SCORE,
-          object(score -> score.addProperty(JSONComponentConstants.SCORE_NAME, NAME))
+          ComponentTreeConstants.SCORE,
+          object(score -> score.addProperty(ComponentTreeConstants.SCORE_NAME, NAME))
         )
       ))
     );

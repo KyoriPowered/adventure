@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.serializer.json;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import org.junit.jupiter.api.Test;
 
 final class KeybindComponentTest extends SerializerTest {
@@ -33,7 +34,7 @@ final class KeybindComponentTest extends SerializerTest {
   void test() {
     this.testObject(
       Component.keybind(KEY),
-      json -> json.addProperty(JSONComponentConstants.KEYBIND, KEY)
+      json -> json.addProperty(ComponentTreeConstants.KEYBIND, KEY)
     );
   }
 }
