@@ -26,6 +26,7 @@ package net.kyori.adventure.nbt;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -434,6 +435,14 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    * @since 4.0.0
    */
   long@NotNull[] getLongArray(final @NotNull String key, final long@NotNull[] defaultValue);
+
+  /**
+   * Gets a stream of entries in this compound tag.
+   *
+   * @return a new entry stream
+   * @since 4.21.0
+   */
+  Stream<Map.Entry<String, ? extends BinaryTag>> stream();
 
   /**
    * A compound tag builder.
