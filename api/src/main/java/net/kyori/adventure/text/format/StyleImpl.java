@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.text.format;
 
-import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -317,19 +316,19 @@ final class StyleImpl implements Style {
     @Nullable Key font;
     @Nullable TextColor color;
     @Nullable ShadowColor shadowColor;
-    final Map<TextDecoration, TextDecoration.State> decorations;
+    DecorationMap decorations;
     @Nullable ClickEvent clickEvent;
     @Nullable HoverEvent<?> hoverEvent;
     @Nullable String insertion;
 
     BuilderImpl() {
-      this.decorations = new EnumMap<>(DecorationMap.EMPTY);
+      this.decorations = DecorationMap.EMPTY;
     }
 
     BuilderImpl(final @NotNull StyleImpl style) {
       this.color = style.color;
       this.shadowColor = style.shadowColor;
-      this.decorations = new EnumMap<>(style.decorations);
+      this.decorations = style.decorations;
       this.clickEvent = style.clickEvent;
       this.hoverEvent = style.hoverEvent;
       this.insertion = style.insertion;
@@ -374,7 +373,7 @@ final class StyleImpl implements Style {
     public @NotNull Builder decoration(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state) {
       requireNonNull(state, "state");
       requireNonNull(decoration, "decoration");
-      this.decorations.put(decoration, state);
+      this.decorations = this.decorations.with(decoration, state);
       return this;
     }
 
@@ -383,7 +382,7 @@ final class StyleImpl implements Style {
       requireNonNull(state, "state");
       final TextDecoration.@Nullable State oldState = this.decorations.get(decoration);
       if (oldState == TextDecoration.State.NOT_SET) {
-        this.decorations.put(decoration, state);
+        this.decorations = this.decorations.with(decoration, state);
       }
       if (oldState != null) {
         return this;
@@ -499,7 +498,7 @@ final class StyleImpl implements Style {
     private boolean isEmpty() {
       return this.color == null
         && this.shadowColor == null
-        && this.decorations.values().stream().allMatch(state -> state == TextDecoration.State.NOT_SET)
+        && this.decorations == DecorationMap.EMPTY
         && this.clickEvent == null
         && this.hoverEvent == null
         && this.insertion == null
