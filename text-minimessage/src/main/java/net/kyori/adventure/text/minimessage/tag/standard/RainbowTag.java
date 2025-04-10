@@ -86,7 +86,7 @@ final class RainbowTag extends AbstractColorChangingTag {
           }
         }
       }
-     }
+    }
     return new RainbowTag(reversed, phase, saturation, ctx);
   }
 
