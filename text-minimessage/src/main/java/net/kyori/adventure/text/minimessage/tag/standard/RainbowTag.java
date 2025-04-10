@@ -67,31 +67,24 @@ final class RainbowTag extends AbstractColorChangingTag {
         value = value.substring(REVERSE.length());
       }
       if (value.length() > 0) {
-        // Check if the value is a float or an int
-        if (value.endsWith("f") || value.endsWith("F") || value.contains(".")) {
-          try {
-            saturation = Float.parseFloat(value);
-          } catch (final NumberFormatException ex) {
-            throw ctx.newException("Expected saturation, got " + value);
-          }
-        } else {
-          try {
-            phase = Integer.parseInt(value);
-          } catch (final NumberFormatException ex) {
-            throw ctx.newException("Expected phase, got " + value);
-          }
-          if (args.hasNext()) {
-            final String saturationValue = args.pop().value();
-            try {
-              saturation = Float.parseFloat(saturationValue);
-            } catch (final NumberFormatException ex) {
-              throw ctx.newException("Expected saturation, got " + saturationValue);
-            }
-          }
+        try {
+          phase = Integer.parseInt(value);
+        } catch (final NumberFormatException ex) {
+          throw ctx.newException("Expected phase, got " + value);
         }
       }
-      if (saturation < 0f || saturation > 1f) {
-        throw ctx.newException(String.format("Rainbow saturation is out of range (%s). Must be in the range [0.0, 1.0] (inclusive).", saturation));
+      if (args.hasNext()) {
+        final String saturationValue = args.pop().value();
+        if (!saturationValue.isEmpty()) {
+          try {
+            saturation = Float.parseFloat(saturationValue);
+          } catch (final NumberFormatException ex) {
+            throw ctx.newException("Expected saturation, got " + saturationValue);
+          }
+          if (saturation < 0f || saturation > 1f) {
+            throw ctx.newException(String.format("Rainbow saturation is out of range (%s). Must be in the range [0.0, 1.0] (inclusive).", saturation));
+          }
+        }
       }
      }
     return new RainbowTag(reversed, phase, saturation, ctx);
