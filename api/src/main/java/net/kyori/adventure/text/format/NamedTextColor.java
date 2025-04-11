@@ -270,4 +270,28 @@ public final class NamedTextColor implements TextColor {
       TextColor.super.examinableProperties()
     );
   }
+
+  public static @Nullable NamedTextColor fromString(String name) {
+    if (local == null) return null;
+    
+    switch (name.toUpperCase()) {
+      case "BLACK": return NamedTextColor.BLACK;
+      case "DARK_BLUE": return NamedTextColor.DARK_BLUE;
+      case "DARK_GREEN": return NamedTextColor.DARK_GREEN;
+      case "DARK_AQUA": return NamedTextColor.DARK_AQUA;
+      case "DARK_RED": return NamedTextColor.DARK_RED;
+      case "DARK_PURPLE": return NamedTextColor.DARK_PURPLE;
+      case "GOLD": return NamedTextColor.GOLD;
+      case "GRAY": return NamedTextColor.GRAY;
+      case "DARK_GRAY": return NamedTextColor.DARK_GRAY;
+      case "BLUE": return NamedTextColor.BLUE;
+      case "GREEN": return NamedTextColor.GREEN;
+      case "AQUA": return NamedTextColor.AQUA;
+      case "RED": return NamedTextColor.RED;
+      case "LIGHT_PURPLE": return NamedTextColor.LIGHT_PURPLE;
+      case "YELLOW": return NamedTextColor.YELLOW;
+      case "WHITE": return NamedTextColor.WHITE;
+      default: return null;
+    }
+  }
 }
