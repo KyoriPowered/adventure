@@ -272,7 +272,7 @@ public final class NamedTextColor implements TextColor {
   }
 
   public static @Nullable NamedTextColor fromString(String name) {
-    if (local == null) return null;
+    if (name == null) return null;
     
     switch (name.toUpperCase()) {
       case "BLACK": return NamedTextColor.BLACK;
