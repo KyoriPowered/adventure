@@ -86,7 +86,7 @@ public interface NumberBinaryTag extends BinaryTag {
    * Gets the value as a {@link Number}.
    *
    * @return the value as a {@link Number}
-   * @since 4.20.0
+   * @since 4.21.0
    */
   @NotNull Number numberValue();
 }
