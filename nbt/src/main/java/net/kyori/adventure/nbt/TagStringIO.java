@@ -93,6 +93,77 @@ public final class TagStringIO {
   }
 
   /**
+   * Read the string into a tag.
+   *
+   * <p>When working with untrusted input (such as from the network), users should be careful
+   * to validate that the {@code input} string is of a reasonable size.</p>
+   *
+   * @param input Input data
+   * @return the parsed tag
+   * @throws IOException on any syntax errors
+   * @since 4.22.0
+   */
+  public BinaryTag asTag(final String input) throws IOException {
+    try {
+      final CharBuffer buffer = new CharBuffer(input);
+      final TagStringReader parser = new TagStringReader(buffer);
+      parser.legacy(this.acceptLegacy);
+      final BinaryTag tag = parser.tag();
+      if (buffer.skipWhitespace().hasMore()) {
+        throw new IOException("Document had trailing content after first Tag");
+      }
+      return tag;
+    } catch (final StringTagParseException ex) {
+      throw new IOException(ex);
+    }
+  }
+
+  /**
+   * Read the string into an embedded tag, returning the remainder of the input.
+   *
+   * @param input the input string
+   * @param remainder the appendable to write the remainder to
+   * @return the parsed tag with the remainder
+   * @throws IOException on any syntax errors
+   * @since 4.22.0
+   */
+  public CompoundBinaryTag asCompound(final String input, final Appendable remainder) throws IOException {
+    try {
+      final CharBuffer buffer = new CharBuffer(input);
+      final TagStringReader parser = new TagStringReader(buffer);
+      parser.legacy(this.acceptLegacy);
+      final CompoundBinaryTag tag = parser.compound();
+      remainder.append(buffer.takeRest());
+      return tag;
+    } catch (final StringTagParseException ex) {
+      throw new IOException(ex);
+    }
+  }
+
+
+  /**
+   * Read the string into an embedded tag, returning the remainder of the input.
+   *
+   * @param input the input string
+   * @param remainder the appendable to write the remainder to
+   * @return the parsed tag with the remainder
+   * @throws IOException on any syntax errors
+   * @since 4.22.0
+   */
+  public BinaryTag asTag(final String input, final Appendable remainder) throws IOException {
+    try {
+      final CharBuffer buffer = new CharBuffer(input);
+      final TagStringReader parser = new TagStringReader(buffer);
+      parser.legacy(this.acceptLegacy);
+      final BinaryTag tag = parser.tag();
+      remainder.append(buffer.takeRest());
+      return tag;
+    } catch (final StringTagParseException ex) {
+      throw new IOException(ex);
+    }
+  }
+
+  /**
    * Get a string representation of the provided tag.
    *
    * @param input tag to serialize
@@ -122,7 +193,7 @@ public final class TagStringIO {
   }
 
   /**
-   * Writes a tag to in string format.
+   * Writes a compound tag to in string format.
    *
    * <p>The provided {@link Writer} will remain open after reading a tag.</p>
    *
@@ -132,6 +203,20 @@ public final class TagStringIO {
    * @since 4.0.0
    */
   public void toWriter(final CompoundBinaryTag input, final Writer dest) throws IOException {
+    this.toWriter((BinaryTag) input, dest);
+  }
+
+  /**
+   * Writes a tag to in string format.
+   *
+   * <p>The provided {@link Writer} will remain open after reading a tag.</p>
+   *
+   * @param input Tag to write
+   * @param dest Writer to write to
+   * @throws IOException if any IO or syntax errors occur while parsing
+   * @since 4.22.0
+   */
+  public void toWriter(final BinaryTag input, final Writer dest) throws IOException {
     try (final TagStringWriter emit = new TagStringWriter(dest, this.indent)) {
       emit.legacy(this.emitLegacy);
       emit.writeTag(input);

@@ -97,6 +97,18 @@ final class CharBuffer {
   }
 
   /**
+   * Takes the remaining characters and advances the index to the end of the buffer.
+   *
+   * @return the remaining string from the current index to the length of the sequence.
+   */
+  public CharSequence takeRest() {
+    final int length = this.sequence.length();
+    final CharSequence result = this.sequence.subSequence(this.index, length);
+    this.index = length;
+    return result;
+  }
+
+  /**
    * Assert that the next non-whitespace character is the provided parameter.
    *
    * <p>If the assertion is successful, the token will be consumed.</p>
