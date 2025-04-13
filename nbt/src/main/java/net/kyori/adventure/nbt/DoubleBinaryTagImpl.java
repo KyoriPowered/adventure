@@ -73,6 +73,11 @@ final class DoubleBinaryTagImpl extends AbstractBinaryTag implements DoubleBinar
   }
 
   @Override
+  public @NotNull Number numberValue() {
+    return this.value;
+  }
+
+  @Override
   public boolean equals(final @Nullable Object other) {
     if (this == other) return true;
     if (other == null || this.getClass() != other.getClass()) return false;

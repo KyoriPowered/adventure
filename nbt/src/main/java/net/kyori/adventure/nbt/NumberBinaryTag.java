@@ -81,4 +81,12 @@ public interface NumberBinaryTag extends BinaryTag {
    * @since 4.0.0
    */
   short shortValue();
+
+  /**
+   * Gets the value as a {@link Number}.
+   *
+   * @return the value as a {@link Number}
+   * @since 4.21.0
+   */
+  @NotNull Number numberValue();
 }
