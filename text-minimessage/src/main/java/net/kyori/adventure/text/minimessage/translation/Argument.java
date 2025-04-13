@@ -92,7 +92,7 @@ public final class Argument {
    */
   @Deprecated
   public static @NotNull ComponentLike numeric(final @TagPattern @NotNull String name, final @NotNull String value) {
-    return argument(name, TranslationArgument.component(Component.text(value)));
+    return string(name, value);
   }
 
   /**
