@@ -26,8 +26,13 @@ package net.kyori.adventure.nbt;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collector;
+import java.util.stream.Stream;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Binary tag holding a mapping of string keys to {@link BinaryTag} values.
@@ -57,6 +62,81 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
   static @NotNull CompoundBinaryTag from(final @NotNull Map<String, ? extends BinaryTag> tags) {
     if (tags.isEmpty()) return empty();
     return new CompoundBinaryTagImpl(new HashMap<>(tags)); // explicitly copy
+  }
+
+  /**
+   * Create a {@link Collector} to consume streams of map entries.
+   *
+   * <p>In the event of duplicate entries, the last seen entry will be preserved.</p>
+   *
+   * @return a collector for map entries
+   * @since 4.21.0
+   */
+  static @NotNull Collector<Map.Entry<String, ? extends BinaryTag>, ?, CompoundBinaryTag> toCompoundTag() {
+    return toCompoundTag(Map.Entry::getKey, Map.Entry::getValue);
+  }
+
+  /**
+   * Create a {@link Collector} to consume streams of a user-chosen type.
+   *
+   * <p>In the event of duplicate keys, the last seen entry will be preserved.</p>
+   *
+   * @param <T> the stream value type
+   * @param keyLens a function to extract a key from the target object
+   * @param valueLens a function to extract a tag value from the target object
+   * @return a collector creating compound tags
+   * @since 4.21.0
+   */
+  static <T> @NotNull Collector<T, ?, CompoundBinaryTag> toCompoundTag(final @NotNull Function<T, String> keyLens, final @NotNull Function<T, ? extends BinaryTag> valueLens) {
+    requireNonNull(keyLens, "keyLens");
+    requireNonNull(valueLens, "valueLens");
+
+    return Collector.of(
+      CompoundBinaryTag::builder,
+      (b, ent) -> b.put(keyLens.apply(ent), valueLens.apply(ent)),
+      (l, r) -> l.put(r.build()),
+      CompoundBinaryTag.Builder::build,
+      Collector.Characteristics.UNORDERED
+    );
+  }
+
+  /**
+   * Create a {@link Collector} to consume streams of map entries, with initial contents.
+   *
+   * <p>In the event of duplicate entries, the last seen entry will be preserved.</p>
+   *
+   * @param initial an existing tag that will initialize the builder
+   * @return a collector for map entries
+   * @since 4.21.0
+   */
+  static @NotNull Collector<Map.Entry<String, ? extends BinaryTag>, ?, CompoundBinaryTag> toCompoundTag(final @NotNull CompoundBinaryTag initial) {
+    return toCompoundTag(initial, Map.Entry::getKey, Map.Entry::getValue);
+  }
+
+  /**
+   * Create a {@link Collector} to consume streams of a user-chosen type, with initial contents.
+   *
+   * <p>In the event of duplicate keys, the last seen entry will be preserved.</p>
+   *
+   * @param <T> the stream value type
+   * @param initial an existing tag that will initialize the builder
+   * @param keyLens a function to extract a key from the target object
+   * @param valueLens a function to extract a tag value from the target object
+   * @return a collector creating compound tags
+   * @since 4.21.0
+   */
+  static <T> @NotNull Collector<T, ?, CompoundBinaryTag> toCompoundTag(final @NotNull CompoundBinaryTag initial, final @NotNull Function<T, String> keyLens, final @NotNull Function<T, ? extends BinaryTag> valueLens) {
+    requireNonNull(initial, "initial");
+    requireNonNull(keyLens, "keyLens");
+    requireNonNull(valueLens, "valueLens");
+
+    return Collector.of(
+      () -> CompoundBinaryTag.builder().put(initial),
+      (b, ent) -> b.put(keyLens.apply(ent), valueLens.apply(ent)),
+      (l, r) -> l.put(r.build()),
+      CompoundBinaryTag.Builder::build,
+      Collector.Characteristics.UNORDERED
+    );
   }
 
   /**
@@ -434,6 +514,14 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    * @since 4.0.0
    */
   long@NotNull[] getLongArray(final @NotNull String key, final long@NotNull[] defaultValue);
+
+  /**
+   * Gets a stream of entries in this compound tag.
+   *
+   * @return a new entry stream
+   * @since 4.21.0
+   */
+  Stream<Map.Entry<String, ? extends BinaryTag>> stream();
 
   /**
    * A compound tag builder.

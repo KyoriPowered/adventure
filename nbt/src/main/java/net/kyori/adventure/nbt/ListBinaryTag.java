@@ -26,6 +26,7 @@ package net.kyori.adventure.nbt;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collector;
 import java.util.stream.Stream;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -119,6 +120,34 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
   @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   static @NotNull ListBinaryTag of(final @NotNull BinaryTagType<? extends BinaryTag> type, final @NotNull List<BinaryTag> tags) {
     return listBinaryTag(type, tags);
+  }
+
+  /**
+   * Create a {@link Collector} to consume streams of list tags.
+   *
+   * @return a collector of tags
+   * @since 4.21.0
+   */
+  static @NotNull Collector<BinaryTag, ?, ListBinaryTag> toListTag() {
+    return toListTag(null);
+  }
+
+  /**
+   * Create a {@link Collector} to consume streams of map entries, with initial contents.
+   *
+   * <p>In the event of duplicate entries, the last seen entry will be preserved.</p>
+   *
+   * @param initial an existing tag that will initialize the builder
+   * @return a collector for map entries
+   * @since 4.21.0
+   */
+  static @NotNull Collector<BinaryTag, ?, ListBinaryTag> toListTag(final @Nullable ListBinaryTag initial) {
+    return Collector.of(
+      initial == null ? ListBinaryTag::builder : () -> ListBinaryTag.builder().add((Iterable<? extends BinaryTag>) initial),
+      ListTagSetter::add,
+      (l, r) -> l.add((Iterable<? extends BinaryTag>) r.build()),
+      ListBinaryTag.Builder::build
+    );
   }
 
   @Override
