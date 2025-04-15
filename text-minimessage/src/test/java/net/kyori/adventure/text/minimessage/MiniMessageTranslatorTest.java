@@ -25,6 +25,7 @@ package net.kyori.adventure.text.minimessage;
 
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
+import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.pointer.Pointered;
 import net.kyori.adventure.text.Component;
@@ -58,6 +59,7 @@ public class MiniMessageTranslatorTest extends AbstractTest {
       return Key.key("mini:trans");
     }
   };
+  private static final Locale LOCALE = Locale.UK;
 
   @BeforeAll
   public static void beforeAll() {
@@ -72,24 +74,27 @@ public class MiniMessageTranslatorTest extends AbstractTest {
         "<test>",
         Argument.target(TARGET),
         Argument.tagResolver(TagResolver.resolver("test", (argumentQueue, context) -> {
-          if (context.target() != null) targetFound.set(true);
+          if (context.target() == TARGET) targetFound.set(true);
           return Tag.preProcessParsed("");
         }))
       )
     );
     assertTrue(targetFound.get(), "target was not found");
 
-    final AtomicBoolean targetMissing = new AtomicBoolean(false);
+    final AtomicBoolean targetSetToDefault = new AtomicBoolean(false);
     this.translate(
       Component.translatable(
         "<test>",
         Argument.tagResolver(TagResolver.resolver("test", (argumentQueue, context) -> {
-          if (context.target() == null) targetMissing.set(true);
+          final Pointered target = context.target();
+          if (target != null && LOCALE.equals(target.getOrDefault(Identity.LOCALE, null))) {
+            targetSetToDefault.set(true);
+          }
           return Tag.preProcessParsed("");
         }))
       )
     );
-    assertTrue(targetMissing.get(), "target was missing");
+    assertTrue(targetSetToDefault.get(), "target was not set to the default");
   }
 
   @Test
@@ -150,6 +155,6 @@ public class MiniMessageTranslatorTest extends AbstractTest {
   }
 
   private Component translate(final TranslatableComponent component) {
-    return GlobalTranslator.translator().translate(component, Locale.US);
+    return GlobalTranslator.translator().translate(component, LOCALE);
   }
 }
