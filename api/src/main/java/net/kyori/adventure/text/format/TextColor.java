@@ -133,7 +133,7 @@ public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, S
    * @since 4.0.0
    */
   static @NotNull TextColor color(final @Range(from = 0x0, to = 0xff) int r, final @Range(from = 0x0, to = 0xff) int g, final @Range(from = 0x0, to = 0xff) int b) {
-    return color((r & 0xff) << 16 | (g & 0xff) << 8 | (b & 0xff));
+    return color(((int) r & 0xff) << 16 | ((int) g & 0xff) << 8 | ((int) b & 0xff));
   }
 
   /**
