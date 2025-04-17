@@ -69,7 +69,17 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @since 4.0.0
    */
   static @NotNull Builder<BinaryTag> builder() {
-    return new ListTagBuilder<>();
+    return new ListTagBuilder<>(false);
+  }
+
+  /**
+   * Creates a builder that can accept elements of multiple types.
+   *
+   * @return a new builder
+   * @since 4.21.0
+   */
+  static @NotNull Builder<BinaryTag> heterogeneousListBinaryTag() {
+    return new ListTagBuilder<>(true);
   }
 
   /**
@@ -83,7 +93,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    */
   static <T extends BinaryTag> @NotNull Builder<T> builder(final @NotNull BinaryTagType<T> type) {
     if (type == BinaryTagTypes.END) throw new IllegalArgumentException("Cannot create a list of " + BinaryTagTypes.END);
-    return new ListTagBuilder<>(type);
+    return new ListTagBuilder<>(false, type);
   }
 
   /**
@@ -94,13 +104,14 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @param type the element type
    * @param tags the elements
    * @return a tag
-   * @throws IllegalArgumentException if {@code type} is {@link BinaryTagTypes#END}
+   * @throws IllegalArgumentException if {@code type} is {@link BinaryTagTypes#END}, or if elements are of different types
    * @since 4.14.0
    */
   static @NotNull ListBinaryTag listBinaryTag(final @NotNull BinaryTagType<? extends BinaryTag> type, final @NotNull List<BinaryTag> tags) {
     if (tags.isEmpty()) return empty();
     if (type == BinaryTagTypes.END) throw new IllegalArgumentException("Cannot create a list of " + BinaryTagTypes.END);
-    return new ListBinaryTagImpl(type, new ArrayList<>(tags)); // explicitly copy
+    ListBinaryTagImpl.validateTagType(tags, type == BinaryTagTypes.LIST_WILDCARD);
+    return new ListBinaryTagImpl(type, type == BinaryTagTypes.LIST_WILDCARD, new ArrayList<>(tags)); // explicitly copy
   }
 
   /**
@@ -566,6 +577,22 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @since 4.2.0
    */
   @NotNull Stream<BinaryTag> stream();
+
+  /**
+   * Unwrap any compound-boxed heterogeneous values in this tag.
+   *
+   * @return a list tag that permits heterogeneity
+   * @since 4.21.0
+   */
+  @NotNull ListBinaryTag unwrapHeterogeneity();
+
+  /**
+   * Wrap any heterogeneous values in this tag into compound-tag boxes.
+   *
+   * @return a list tag that does not permit heterogeneity, with any heterogeneous values boxed if necessary
+   * @since 4.21.0
+   */
+  @NotNull ListBinaryTag wrapHeterogeneity();
 
   /**
    * A list tag builder.

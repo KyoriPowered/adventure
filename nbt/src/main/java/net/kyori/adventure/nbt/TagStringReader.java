@@ -36,6 +36,7 @@ final class TagStringReader {
 
   private final CharBuffer buffer;
   private boolean acceptLegacy;
+  private boolean acceptHeterogenousLists;
   private int depth;
 
   TagStringReader(final CharBuffer buffer) {
