@@ -27,9 +27,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import java.util.UUID;
+import net.kyori.adventure.key.InvalidKeyException;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -65,15 +67,45 @@ final class ShowEntitySerializer extends TypeAdapter<HoverEvent.ShowEntity> {
 
     while (in.hasNext()) {
       final String fieldName = in.nextName();
-      // TODO make this more flexible
-      if ((!this.emitKeyAsTypeAndUuidAsId && fieldName.equals(SHOW_ENTITY_ID)) || fieldName.equals(SHOW_ENTITY_TYPE)) {
-        type = this.gson.fromJson(in, SerializerFactory.KEY_TYPE);
-      } else if (fieldName.equals(SHOW_ENTITY_UUID) || (this.emitKeyAsTypeAndUuidAsId && fieldName.equals(SHOW_ENTITY_ID))) {
-        id = this.gson.fromJson(in, SerializerFactory.UUID_TYPE);
-      } else if (fieldName.equals(SHOW_ENTITY_NAME)) {
-        name = this.gson.fromJson(in, SerializerFactory.COMPONENT_TYPE);
-      } else {
-        in.skipValue();
+
+      switch (fieldName) {
+        case SHOW_ENTITY_ID:
+          if (in.peek() == JsonToken.BEGIN_ARRAY) {
+            // If it is an array, we know this is a UUID encoded.
+            id = this.gson.fromJson(in, UUID.class);
+          } else {
+            // If it is a string, it might be a key or a UUID.
+            final String string = in.nextString();
+
+            // We can use some "hints" here.
+            if (string.contains(Key.DEFAULT_SEPARATOR + "")) {
+              type = Key.key(string);
+            }
+
+            // Otherwise, let's try and parse it as a UUID.
+            try {
+              id = UUID.fromString(string);
+            } catch (final IllegalArgumentException ignored) {
+              try {
+                type = Key.key(string);
+              } catch (final InvalidKeyException ignored2) {
+                // Skip value.
+              }
+            }
+          }
+          break;
+        case SHOW_ENTITY_TYPE:
+          type = this.gson.fromJson(in, Key.class);
+          break;
+        case SHOW_ENTITY_UUID:
+          id = this.gson.fromJson(in, UUID.class);
+          break;
+        case SHOW_ENTITY_NAME:
+          name = this.gson.fromJson(in, SerializerFactory.COMPONENT_TYPE);
+          break;
+        default:
+          in.skipValue();
+          break;
       }
     }
 
