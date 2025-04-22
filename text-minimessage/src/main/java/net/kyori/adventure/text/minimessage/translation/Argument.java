@@ -88,8 +88,22 @@ public final class Argument {
    * @param value the value
    * @return the named argument
    * @since 4.20.0
+   * @deprecated for removal since 4.21.0, use {@link #string(String, String)} instead.
    */
+  @Deprecated
   public static @NotNull ComponentLike numeric(final @TagPattern @NotNull String name, final @NotNull String value) {
+    return string(name, value);
+  }
+
+  /**
+   * Creates a named string argument.
+   *
+   * @param name the name
+   * @param value the value
+   * @return the named argument
+   * @since 4.21.0
+   */
+  public static @NotNull ComponentLike string(final @TagPattern @NotNull String name, final @NotNull String value) {
     return argument(name, TranslationArgument.component(Component.text(value)));
   }
 
