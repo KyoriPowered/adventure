@@ -291,11 +291,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
   public @NotNull B mergeStyle(final @NotNull Component that, final @NotNull Set<Style.Merge> merges) {
     final Style thatStyle = requireNonNull(that, "that").style();
     if (thatStyle.isEmpty() && merges.isEmpty()) return (B) this;
-    if (!this.hasStyle()) {
-      this.style = thatStyle;
-    } else {
-      this.styleBuilder().merge(thatStyle, merges);
-    }
+    this.styleBuilder().merge(thatStyle, merges);
     return (B) this;
   }
 
