@@ -36,6 +36,7 @@ import net.kyori.adventure.text.TranslationArgumentLike;
 import net.kyori.adventure.text.VirtualComponent;
 import net.kyori.adventure.text.VirtualComponentRenderer;
 import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -64,6 +65,11 @@ import org.jetbrains.annotations.Nullable;
  * These tags will use {@link Tag#selfClosingInserting(Component)} to create self-closing
  * tags that insert a component representation of the argument.
  * This can also be used to add tag instances using {@link Argument#tag(String, Tag)}.</p>
+ *
+ * <p>By default, the {@link Context#target() target} will be a {@link Pointered}
+ * instance that solely contains the {@link Locale} of the translation.
+ * The locale can be obtained from the target using the {@link net.kyori.adventure.identity.Identity#LOCALE} pointer.
+ * You can override the target by using {@link Argument#target(Pointered)}.</p>
  *
  * <p>You can also make arbitrary {@link TagResolver tag resolvers} available to the
  * deserialization process by using the {@code tagResolver} methods on {@link Argument}.
@@ -145,15 +151,16 @@ public abstract class MiniMessageTranslator implements Translator {
     }
 
     Component resultingComponent;
+    Pointered target = new LocalePointered(locale);
 
     final List<TranslationArgument> translationArguments = component.arguments();
 
     if (translationArguments.isEmpty()) {
-      resultingComponent = this.miniMessage.deserialize(miniMessageString);
+      resultingComponent = this.miniMessage.deserialize(miniMessageString, target);
     } else {
       final TagResolver.Builder tagResolverBuilder = TagResolver.builder();
       final List<Tag> indexedArguments = new ArrayList<>(translationArguments.size());
-      Pointered target = null;
+      boolean targetAlreadyOverridden = false;
 
       for (final TranslationArgument argument : translationArguments) {
         final Object value = argument.value();
@@ -162,11 +169,12 @@ public abstract class MiniMessageTranslator implements Translator {
           final VirtualComponentRenderer<?> renderer = ((VirtualComponent) value).renderer();
 
           if (renderer instanceof MiniMessageTranslatorTarget) {
-            if (target != null) {
+            if (targetAlreadyOverridden) {
               throw new IllegalArgumentException("Multiple Argument.target() translation arguments have been set!");
             }
 
             target = ((MiniMessageTranslatorTarget) renderer).pointered();
+            targetAlreadyOverridden = true;
             continue;
           } else if (renderer instanceof MiniMessageTranslatorArgument<?>) {
             final MiniMessageTranslatorArgument<?> translatorArgument = (MiniMessageTranslatorArgument<?>) renderer;
@@ -193,13 +201,7 @@ public abstract class MiniMessageTranslator implements Translator {
         indexedArguments.add(Tag.selfClosingInserting(argument));
       }
 
-      final ArgumentTag argumentTag = new ArgumentTag(indexedArguments, tagResolverBuilder.build());
-
-      if (target == null) {
-        resultingComponent = this.miniMessage.deserialize(miniMessageString, argumentTag);
-      } else {
-        resultingComponent = this.miniMessage.deserialize(miniMessageString, target, argumentTag);
-      }
+      resultingComponent = this.miniMessage.deserialize(miniMessageString, target, new ArgumentTag(indexedArguments, tagResolverBuilder.build()));
     }
 
     final Style style = component.style();
