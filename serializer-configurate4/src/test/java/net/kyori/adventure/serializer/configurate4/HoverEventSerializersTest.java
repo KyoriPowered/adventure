@@ -39,7 +39,7 @@ class HoverEventSerializersTest implements ConfigurateTestBase {
   void testShowEntity() {
     final ConfigurationNode node = this.node(n -> {
       n.node(ComponentTreeConstants.TEXT).raw("kashike");
-      n.node(ComponentTreeConstants.HOVER_EVENT).act(event -> {
+      n.node(ComponentTreeConstants.HOVER_EVENT_CAMEL).act(event -> {
         event.node(ComponentTreeConstants.HOVER_EVENT_ACTION).raw("show_entity");
         event.node(ComponentTreeConstants.HOVER_EVENT_CONTENTS).act(entity -> {
           entity.node(ComponentTreeConstants.SHOW_ENTITY_TYPE).raw("minecraft:cat");
@@ -58,7 +58,7 @@ class HoverEventSerializersTest implements ConfigurateTestBase {
   void testShowEntityCustomName() {
     final ConfigurationNode node = this.node(n -> {
       n.node(ComponentTreeConstants.TEXT).raw("kashike");
-      n.node(ComponentTreeConstants.HOVER_EVENT).act(event -> {
+      n.node(ComponentTreeConstants.HOVER_EVENT_CAMEL).act(event -> {
         event.node(ComponentTreeConstants.HOVER_EVENT_ACTION).raw("show_entity");
         event.node(ComponentTreeConstants.HOVER_EVENT_CONTENTS).act(entity -> {
           entity.node(ComponentTreeConstants.SHOW_ENTITY_TYPE).raw("minecraft:cat");
@@ -83,7 +83,7 @@ class HoverEventSerializersTest implements ConfigurateTestBase {
         extra.appendListNode().node(ComponentTreeConstants.TRANSLATE).raw("item.minecraft.purple_wool");
         extra.appendListNode().node(ComponentTreeConstants.TEXT).raw("]");
       });
-      n.node(ComponentTreeConstants.HOVER_EVENT).act(hover -> {
+      n.node(ComponentTreeConstants.HOVER_EVENT_CAMEL).act(hover -> {
         hover.node(ComponentTreeConstants.HOVER_EVENT_ACTION).raw("show_item");
         hover.node(ComponentTreeConstants.HOVER_EVENT_CONTENTS).act(action -> {
           action.node(ComponentTreeConstants.SHOW_ITEM_ID).raw("minecraft:purple_wool");
@@ -111,7 +111,7 @@ class HoverEventSerializersTest implements ConfigurateTestBase {
         extra.appendListNode().node(ComponentTreeConstants.TRANSLATE).raw("item.minecraft.purple_wool");
         extra.appendListNode().node(ComponentTreeConstants.TEXT).raw("]");
       });
-      n.node(ComponentTreeConstants.HOVER_EVENT).act(hover -> {
+      n.node(ComponentTreeConstants.HOVER_EVENT_CAMEL).act(hover -> {
         hover.node(ComponentTreeConstants.HOVER_EVENT_ACTION).raw("show_item");
         hover.node(ComponentTreeConstants.HOVER_EVENT_CONTENTS).act(action -> {
           action.node(ComponentTreeConstants.SHOW_ITEM_ID).raw("minecraft:purple_wool");
@@ -132,7 +132,7 @@ class HoverEventSerializersTest implements ConfigurateTestBase {
   @Test
   void testShowText() {
     final ConfigurationNode node = this.node(n -> {
-      n.node(ComponentTreeConstants.HOVER_EVENT).act(event -> {
+      n.node(ComponentTreeConstants.HOVER_EVENT_CAMEL).act(event -> {
         event.node(ComponentTreeConstants.HOVER_EVENT_ACTION).raw("show_text");
         event.node(ComponentTreeConstants.HOVER_EVENT_CONTENTS, ComponentTreeConstants.TEXT).raw("i'm hovering");
       });

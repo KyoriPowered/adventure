@@ -87,23 +87,21 @@ final class TranslatableComponentTest extends SerializerTest {
         json.addProperty(ComponentTreeConstants.COLOR, name(NamedTextColor.YELLOW));
         json.add(ComponentTreeConstants.TRANSLATE_WITH, array(with -> with.add(object(item -> {
           item.addProperty(ComponentTreeConstants.TEXT, name);
-          item.add(ComponentTreeConstants.CLICK_EVENT, object(event -> {
+          item.add(ComponentTreeConstants.CLICK_EVENT_SNAKE, object(event -> {
             event.addProperty(ComponentTreeConstants.CLICK_EVENT_ACTION, name(ClickEvent.Action.SUGGEST_COMMAND));
-            event.addProperty(ComponentTreeConstants.CLICK_EVENT_VALUE, command);
+            event.addProperty(ComponentTreeConstants.CLICK_EVENT_COMMAND, command);
           }));
-          item.add(ComponentTreeConstants.HOVER_EVENT, object(event -> {
+          item.add(ComponentTreeConstants.HOVER_EVENT_SNAKE, object(event -> {
             event.addProperty(ComponentTreeConstants.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ENTITY));
-            event.add(ComponentTreeConstants.HOVER_EVENT_CONTENTS, object(value -> {
-              value.addProperty(ComponentTreeConstants.SHOW_ENTITY_TYPE, "minecraft:player");
-              value.add(ComponentTreeConstants.SHOW_ENTITY_ID, array(arr -> {
-                arr.add(-351136121);
-                arr.add(-1961211580);
-                arr.add(-1118969688);
-                arr.add(416931810);
-              }));
-              value.add(ComponentTreeConstants.SHOW_ENTITY_NAME, object(namej -> {
-                namej.addProperty(ComponentTreeConstants.TEXT, name);
-              }));
+            event.addProperty(ComponentTreeConstants.SHOW_ENTITY_ID, "minecraft:player");
+            event.add(ComponentTreeConstants.SHOW_ENTITY_UUID, array(arr -> {
+              arr.add(-351136121);
+              arr.add(-1961211580);
+              arr.add(-1118969688);
+              arr.add(416931810);
+            }));
+            event.add(ComponentTreeConstants.SHOW_ENTITY_NAME, object(namej -> {
+              namej.addProperty(ComponentTreeConstants.TEXT, name);
             }));
           }));
         }))));

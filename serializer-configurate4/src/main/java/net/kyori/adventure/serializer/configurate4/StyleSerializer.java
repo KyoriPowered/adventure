@@ -40,13 +40,13 @@ import org.spongepowered.configurate.ConfigurationOptions;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
 
-import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_ACTION;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_CAMEL;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_VALUE;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.COLOR;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.FONT;
-import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.HOVER_EVENT;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.HOVER_EVENT_ACTION;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.HOVER_EVENT_CAMEL;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.HOVER_EVENT_CONTENTS;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.HOVER_EVENT_VALUE;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.INSERTION;
@@ -95,13 +95,13 @@ final class StyleSerializer implements TypeSerializer<Style> {
       builder.insertion(insertion);
     }
 
-    final ConfigurationNode clickEvent = value.node(CLICK_EVENT);
+    final ConfigurationNode clickEvent = value.node(CLICK_EVENT_CAMEL);
     if (!clickEvent.virtual()) {
       final ClickEvent.Action action = nonNull(clickEvent.node(CLICK_EVENT_ACTION).get(ClickEvent.Action.class), "click event action");
       builder.clickEvent(ClickEvent.clickEvent(action, nonNull(clickEvent.node(CLICK_EVENT_VALUE).getString(), "click event value")));
     }
 
-    final ConfigurationNode hoverEvent = value.node(HOVER_EVENT);
+    final ConfigurationNode hoverEvent = value.node(HOVER_EVENT_CAMEL);
     if (!hoverEvent.virtual()) {
       final HoverEvent.Action<?> action = hoverEvent.node(HOVER_EVENT_ACTION).get(HOVER_EVENT_ACTION_TYPE);
       final ConfigurationNode contents = hoverEvent.node(HOVER_EVENT_CONTENTS);
@@ -151,7 +151,7 @@ final class StyleSerializer implements TypeSerializer<Style> {
     }
     value.node(INSERTION).set(obj.insertion());
 
-    final ConfigurationNode clickNode = value.node(CLICK_EVENT);
+    final ConfigurationNode clickNode = value.node(CLICK_EVENT_CAMEL);
     final ClickEvent clickEvent = obj.clickEvent();
     if (clickEvent == null) {
       clickNode.set(null);
@@ -160,7 +160,7 @@ final class StyleSerializer implements TypeSerializer<Style> {
       clickNode.node(CLICK_EVENT_VALUE).set(clickEvent.value());
     }
 
-    final ConfigurationNode hoverNode = value.node(HOVER_EVENT);
+    final ConfigurationNode hoverNode = value.node(HOVER_EVENT_CAMEL);
     if (obj.hoverEvent() == null) {
       hoverNode.set(null);
     } else {

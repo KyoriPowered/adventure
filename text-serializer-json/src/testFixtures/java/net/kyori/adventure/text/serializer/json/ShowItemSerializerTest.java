@@ -60,13 +60,11 @@ final class ShowItemSerializerTest extends SerializerTest {
         ).build(),
       json -> {
         json.addProperty(ComponentTreeConstants.TEXT, "");
-        json.add(ComponentTreeConstants.HOVER_EVENT, object(hover -> {
+        json.add(ComponentTreeConstants.HOVER_EVENT_SNAKE, object(hover -> {
           hover.addProperty(ComponentTreeConstants.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ITEM));
-          hover.add(ComponentTreeConstants.HOVER_EVENT_CONTENTS, object(contents -> {
-            contents.addProperty(ComponentTreeConstants.SHOW_ITEM_ID, "minecraft:diamond");
-            contents.addProperty(ComponentTreeConstants.SHOW_ITEM_COUNT, 2);
-            contents.addProperty(ComponentTreeConstants.SHOW_ITEM_TAG, "{display:{Name:\"A test!\"}}");
-          }));
+          hover.addProperty(ComponentTreeConstants.SHOW_ITEM_ID, "minecraft:diamond");
+          hover.addProperty(ComponentTreeConstants.SHOW_ITEM_COUNT, 2);
+          hover.addProperty(ComponentTreeConstants.SHOW_ITEM_TAG, "{display:{Name:\"A test!\"}}");
         }));
       }
     );
@@ -84,12 +82,10 @@ final class ShowItemSerializerTest extends SerializerTest {
       ).build(),
       json -> {
         json.addProperty(ComponentTreeConstants.TEXT, "");
-        json.add(ComponentTreeConstants.HOVER_EVENT, object(hover -> {
+        json.add(ComponentTreeConstants.HOVER_EVENT_SNAKE, object(hover -> {
           hover.addProperty(ComponentTreeConstants.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ITEM));
-          hover.add(ComponentTreeConstants.HOVER_EVENT_CONTENTS, object(contents -> {
-            contents.addProperty(ComponentTreeConstants.SHOW_ITEM_ID, "minecraft:diamond");
-            contents.addProperty(ComponentTreeConstants.SHOW_ITEM_COUNT, 2);
-          }));
+          hover.addProperty(ComponentTreeConstants.SHOW_ITEM_ID, "minecraft:diamond");
+          hover.addProperty(ComponentTreeConstants.SHOW_ITEM_COUNT, 2);
         }));
       }
     );
@@ -116,13 +112,11 @@ final class ShowItemSerializerTest extends SerializerTest {
       ).build(),
       json -> {
         json.addProperty(ComponentTreeConstants.TEXT, "");
-        json.add(ComponentTreeConstants.HOVER_EVENT, object(hover -> {
+        json.add(ComponentTreeConstants.HOVER_EVENT_SNAKE, object(hover -> {
           hover.addProperty(ComponentTreeConstants.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ITEM));
-          hover.add(ComponentTreeConstants.HOVER_EVENT_CONTENTS, object(contents -> {
-            contents.addProperty(ComponentTreeConstants.SHOW_ITEM_ID, "minecraft:diamond");
-            contents.addProperty(ComponentTreeConstants.SHOW_ITEM_COUNT, 1);
-            contents.addProperty(ComponentTreeConstants.SHOW_ITEM_TAG, "{display:{Name:\"A test!\"}}");
-          }));
+          hover.addProperty(ComponentTreeConstants.SHOW_ITEM_ID, "minecraft:diamond");
+          hover.addProperty(ComponentTreeConstants.SHOW_ITEM_COUNT, 1);
+          hover.addProperty(ComponentTreeConstants.SHOW_ITEM_TAG, "{display:{Name:\"A test!\"}}");
         }));
       }
     );
@@ -140,14 +134,12 @@ final class ShowItemSerializerTest extends SerializerTest {
       ).build(),
       json -> {
         json.addProperty(ComponentTreeConstants.TEXT, "");
-        json.add(ComponentTreeConstants.HOVER_EVENT, object(hover -> {
+        json.add(ComponentTreeConstants.HOVER_EVENT_SNAKE, object(hover -> {
           hover.addProperty(ComponentTreeConstants.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ITEM));
-          hover.add(ComponentTreeConstants.HOVER_EVENT_CONTENTS, object(contents -> {
-            contents.addProperty(ComponentTreeConstants.SHOW_ITEM_ID, "minecraft:diamond");
-            contents.addProperty(ComponentTreeConstants.SHOW_ITEM_COUNT, 2);
-            contents.add(ComponentTreeConstants.SHOW_ITEM_COMPONENTS, object(comps -> {
-              comps.add("!minecraft:damage", new JsonObject());
-            }));
+          hover.addProperty(ComponentTreeConstants.SHOW_ITEM_ID, "minecraft:diamond");
+          hover.addProperty(ComponentTreeConstants.SHOW_ITEM_COUNT, 2);
+          hover.add(ComponentTreeConstants.SHOW_ITEM_COMPONENTS, object(comps -> {
+            comps.add("!minecraft:damage", new JsonObject());
           }));
         }));
       }
