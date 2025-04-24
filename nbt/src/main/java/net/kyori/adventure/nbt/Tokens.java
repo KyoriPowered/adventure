@@ -47,6 +47,9 @@ final class Tokens {
   static final char TYPE_FLOAT = 'f';
   static final char TYPE_DOUBLE = 'd';
 
+  static final char TYPE_SIGNED = 's';
+  static final char TYPE_UNSIGNED = 'u';
+
   static final String LITERAL_TRUE = "true";
   static final String LITERAL_FALSE = "false";
 
@@ -73,17 +76,18 @@ final class Tokens {
   }
 
   /**
-   * Return whether a character could be at some position in a number.
-   *
-   * <p>A string passing this check does not necessarily mean it is syntactically valid.</p>
+   * Return whether a character is a numeric type identifier.
    *
    * @param c character to check
-   * @return if possibly part of a number
+   * @return if a numeric type identifier
    */
-  static boolean numeric(final char c) {
-    return (c >= '0' && c <= '9') // digit
-      || c == '+' || c == '-' // positive or negative
-      || c == 'e' || c == 'E' // exponent
-      || c == '.'; // decimal
+  static boolean numericType(char c) {
+    c = Character.toLowerCase(c);
+    return c == TYPE_BYTE
+      || c == TYPE_SHORT
+      || c == TYPE_INT
+      || c == TYPE_LONG
+      || c == TYPE_FLOAT
+      || c == TYPE_DOUBLE;
   }
 }
