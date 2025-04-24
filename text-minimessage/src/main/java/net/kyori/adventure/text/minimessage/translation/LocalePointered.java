@@ -29,7 +29,7 @@ import net.kyori.adventure.pointer.Pointered;
 import net.kyori.adventure.pointer.Pointers;
 import org.jetbrains.annotations.NotNull;
 
-class LocalePointered implements Pointered {
+final class LocalePointered implements Pointered {
   private final Pointers pointers;
 
   LocalePointered(final @NotNull Locale locale) {
