@@ -26,9 +26,14 @@ package net.kyori.adventure.translation;
 import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.audience.ForwardingAudience;
+import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
@@ -45,6 +50,7 @@ final class GlobalTranslatorImpl implements GlobalTranslator {
   static final GlobalTranslatorImpl INSTANCE = new GlobalTranslatorImpl();
   final TranslatableComponentRenderer<Locale> renderer = TranslatableComponentRenderer.usingTranslationSource(this);
   private final Set<Translator> sources = Collections.newSetFromMap(new ConcurrentHashMap<>());
+  private final Map<UUID, Locale> localeOverrides = new ConcurrentHashMap<>();
 
   private GlobalTranslatorImpl() {
   }
@@ -81,6 +87,14 @@ final class GlobalTranslatorImpl implements GlobalTranslator {
   }
 
   @Override
+  public boolean canTranslate(final @NotNull String key, final @NotNull Locale locale) {
+    for (final Translator source : this.sources) {
+      if (source.canTranslate(key, locale)) return true;
+    }
+    return false;
+  }
+
+  @Override
   public @Nullable MessageFormat translate(final @NotNull String key, final @NotNull Locale locale) {
     requireNonNull(key, "key");
     requireNonNull(locale, "locale");
@@ -100,6 +114,30 @@ final class GlobalTranslatorImpl implements GlobalTranslator {
       if (translation != null) return translation;
     }
     return null;
+  }
+
+  @Override
+  public void overrideLocale(final @NotNull Audience audience, final @Nullable Locale locale) {
+    if (requireNonNull(audience, "audience") instanceof ForwardingAudience) {
+      for (final Audience single : ((ForwardingAudience) audience).audiences()) {
+        this.overrideLocale(single, locale);
+      }
+    } else {
+      audience.get(Identity.UUID).ifPresent(uuid -> {
+        if (locale == null) {
+          this.localeOverrides.remove(uuid);
+        } else {
+          this.localeOverrides.put(uuid, locale);
+        }
+      });
+    }
+  }
+
+  @Override
+  public @Nullable Locale localeOverride(final @NotNull Audience audience) {
+    final UUID uuid = requireNonNull(audience, "audience").getOrDefault(Identity.UUID, null);
+    if (uuid == null) return null;
+    return this.localeOverrides.get(uuid);
   }
 
   @Override
