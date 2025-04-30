@@ -24,8 +24,12 @@
 package net.kyori.adventure.nbt;
 
 import com.google.common.collect.ImmutableList;
+import java.util.Arrays;
+import java.util.Collections;
 import org.junit.jupiter.api.Test;
 
+import static net.kyori.adventure.nbt.LongBinaryTag.longBinaryTag;
+import static net.kyori.adventure.nbt.StringBinaryTag.stringBinaryTag;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -93,5 +97,41 @@ class ListBinaryTagTest {
     assertEquals(i0, l3.get(0));
     assertEquals(i1, l3.get(1));
     assertEquals(i2, l3.get(2));
+  }
+
+  @Test
+  void testCreateHeterogeneous() {
+    final IntBinaryTag first = IntBinaryTag.intBinaryTag(4);
+    final StringBinaryTag second = stringBinaryTag("hello");
+    final ListBinaryTag heteroTag = ListBinaryTag.heterogeneousListBinaryTag()
+      .add(first)
+      .add(second)
+      .build();
+
+    assertEquals(first, heteroTag.get(0));
+    assertEquals(second, heteroTag.get(1));
+  }
+
+  @Test
+  void testBoxHeterogeneous() {
+    final ListBinaryTag input = ListBinaryTag.listBinaryTag(
+      BinaryTagTypes.LIST_WILDCARD,
+      Arrays.asList(longBinaryTag(5), stringBinaryTag("five"))
+    );
+    final ListBinaryTag expected = ListBinaryTag.builder()
+      .add(CompoundBinaryTag.from(Collections.singletonMap("", longBinaryTag(5))))
+      .add(CompoundBinaryTag.from(Collections.singletonMap("", stringBinaryTag("five"))))
+      .build();
+
+    assertEquals(expected, input.wrapHeterogeneity());
+  }
+
+  @Test
+  void testBoxingReversible() {
+    final ListBinaryTag input = ListBinaryTag.listBinaryTag(
+      BinaryTagTypes.LIST_WILDCARD,
+      Arrays.asList(longBinaryTag(5), stringBinaryTag("five"))
+    );
+    assertEquals(input, input.wrapHeterogeneity().unwrapHeterogeneity());
   }
 }

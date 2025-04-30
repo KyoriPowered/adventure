@@ -246,7 +246,7 @@ class StringIOTest {
     }
     assertEquals(legacyInput, output.toString());
 
-    final ListTagBuilder<BinaryTag> builder = new ListTagBuilder<>();
+    final ListTagBuilder<BinaryTag> builder = new ListTagBuilder<>(false);
     builder.add(StringBinaryTag.stringBinaryTag("Tag #1"));
     builder.add(StringBinaryTag.stringBinaryTag("Tag #2"));
     assertEquals(builder.build(), tag);
