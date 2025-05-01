@@ -42,7 +42,7 @@ final class KeyImpl implements Key {
   static final @RegExp String NAMESPACE_PATTERN = "[a-z0-9_\\-.]+";
   static final @RegExp String VALUE_PATTERN = "[a-z0-9_\\-./]+";
 
-  static final AdventureProperties.KeyInternStrategy INTERN_STRATEGY = AdventureProperties.KEY_INTERN_STRATEGY.value();
+  static final AdventureProperties.@Nullable KeyInternStrategy INTERN_STRATEGY = AdventureProperties.KEY_INTERN_STRATEGY.value();
 
   private final String namespace;
   private final String value;
