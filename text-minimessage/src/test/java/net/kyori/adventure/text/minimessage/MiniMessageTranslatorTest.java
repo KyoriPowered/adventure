@@ -149,12 +149,52 @@ public class MiniMessageTranslatorTest extends AbstractTest {
     );
   }
 
+  @Test
+  public void testRecursiveArguments() {
+    assertEquals(
+      Component.text("Kezz is cool!"),
+      this.translate(
+        Component.translatable(
+          "<arg:0> is <arg:1>!",
+          Component.translatable(
+            "<arg:0>",
+            Component.text("Kezz")
+          ),
+          Component.translatable(
+            "<arg:0>",
+            Component.translatable(
+              "<arg:0>",
+              Component.text("cool")
+            )
+          )
+        )
+      )
+    );
+  }
+
+  @Test
+  public void testChildren() {
+    assertEquals(
+      Component.text()
+        .content("Kezz is ")
+        .append(Component.text("cool!"))
+        .build(),
+      this.translate(
+        Component.translatable()
+          .key("<arg:0> is ")
+          .arguments(Component.text("Kezz"))
+          .append(Component.translatable("<arg:0>", Component.text("cool!")))
+          .build()
+      )
+    );
+  }
+
   @AfterAll
   public static void afterAll() {
     GlobalTranslator.translator().removeSource(TRANSLATOR);
   }
 
   private Component translate(final TranslatableComponent component) {
-    return GlobalTranslator.translator().translate(component, LOCALE);
+    return GlobalTranslator.render(component, LOCALE);
   }
 }

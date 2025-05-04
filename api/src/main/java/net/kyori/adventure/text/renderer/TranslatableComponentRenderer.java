@@ -45,6 +45,7 @@ import net.kyori.adventure.text.StorageNBTComponent;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.TranslationArgument;
+import net.kyori.adventure.text.VirtualComponent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.translation.Translator;
@@ -91,9 +92,29 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
       protected @NotNull Component renderTranslatable(final @NotNull TranslatableComponent component, final @NotNull Locale context) {
         final TriState anyTranslations = source.hasAnyTranslations();
         if (anyTranslations == TriState.TRUE || anyTranslations == TriState.NOT_SET) {
-          final @Nullable Component translated = source.translate(component, context);
-          if (translated != null) return translated;
-          return super.renderTranslatable(component, context);
+          final List<TranslationArgument> arguments = component.arguments();
+          if (arguments.isEmpty()) {
+            final @Nullable Component translated = source.translate(component, context);
+            if (translated == null) return super.renderTranslatable(component, context);
+
+            return this.optionallyRenderChildren(translated, context);
+          }
+
+          final TranslatableComponent.Builder builder = component.toBuilder();
+          final List<TranslationArgument> translatedArguments = new ArrayList<>(arguments);
+          for (int i = 0; i < translatedArguments.size(); i++) {
+            final TranslationArgument arg = translatedArguments.get(i);
+            if (arg.value() instanceof Component && !(arg.value() instanceof VirtualComponent)) {
+              translatedArguments.set(i, TranslationArgument.component(this.render((Component) arg.value(), context)));
+            }
+          }
+
+          builder.arguments(translatedArguments);
+
+          final @Nullable Component translated = source.translate(builder.build(), context);
+          if (translated == null) return super.renderTranslatable(component, context);
+
+          return this.optionallyRenderChildren(translated, context);
         }
         return component;
       }
@@ -238,6 +259,16 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
     }
 
     return this.optionallyRenderChildrenAppendAndBuild(component.children(), builder, context);
+  }
+
+  protected Component optionallyRenderChildren(final Component component, final C context) {
+    final List<Component> children = component.children();
+    if (children.isEmpty()) return component;
+
+    final List<Component> rendered = new ArrayList<>(children.size());
+    children.forEach(child -> rendered.add(this.render(child, context)));
+
+    return component.children(rendered);
   }
 
   protected <O extends BuildableComponent<O, B>, B extends ComponentBuilder<O, B>> O mergeStyleAndOptionallyDeepRender(final Component component, final B builder, final C context) {
