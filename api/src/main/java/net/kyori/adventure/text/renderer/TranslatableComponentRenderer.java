@@ -89,34 +89,12 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
       }
 
       @Override
-      protected @NotNull Component renderTranslatable(final @NotNull TranslatableComponent component, final @NotNull Locale context) {
+      protected @NotNull Component renderTranslatableInner(final @NotNull TranslatableComponent component, final @NotNull Locale context) {
         final TriState anyTranslations = source.hasAnyTranslations();
-        if (anyTranslations == TriState.TRUE || anyTranslations == TriState.NOT_SET) {
-          final List<TranslationArgument> arguments = component.arguments();
-          if (arguments.isEmpty()) {
-            final @Nullable Component translated = source.translate(component, context);
-            if (translated == null) return super.renderTranslatable(component, context);
+        if (anyTranslations == TriState.FALSE) return component;
 
-            return this.optionallyRenderChildren(translated, context);
-          }
-
-          final TranslatableComponent.Builder builder = component.toBuilder();
-          final List<TranslationArgument> translatedArguments = new ArrayList<>(arguments);
-          for (int i = 0; i < translatedArguments.size(); i++) {
-            final TranslationArgument arg = translatedArguments.get(i);
-            if (arg.value() instanceof Component && !(arg.value() instanceof VirtualComponent)) {
-              translatedArguments.set(i, TranslationArgument.component(this.render((Component) arg.value(), context)));
-            }
-          }
-
-          builder.arguments(translatedArguments);
-
-          final @Nullable Component translated = source.translate(builder.build(), context);
-          if (translated == null) return super.renderTranslatable(component, context);
-
-          return this.optionallyRenderChildren(translated, context);
-        }
-        return component;
+        final @Nullable Component translated = source.translate(component, context);
+        return translated == null ? super.renderTranslatableInner(component, context) : translated;
       }
     };
   }
@@ -205,27 +183,37 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
   }
 
   @Override
-  @SuppressWarnings("JdkObsolete") // MessageFormat requires StringBuffer in its api
-  protected @NotNull Component renderTranslatable(final @NotNull TranslatableComponent component, final @NotNull C context) {
-    final @Nullable MessageFormat format = this.translate(component.key(), component.fallback(), context);
-    if (format == null) {
-      // we don't have a translation for this component, but the arguments or children
-      // of this component might need additional rendering
+  protected @NotNull Component renderTranslatable(@NotNull TranslatableComponent component, final @NotNull C context) {
+    final List<TranslationArgument> arguments = component.arguments();
+    final List<Component> children = component.children();
 
+    if (!arguments.isEmpty() || !children.isEmpty()) {
       final TranslatableComponent.Builder builder = Component.translatable()
-        .key(component.key()).fallback(component.fallback());
-      if (!component.arguments().isEmpty()) {
-        final List<TranslationArgument> args = new ArrayList<>(component.arguments());
-        for (int i = 0, size = args.size(); i < size; i++) {
-          final TranslationArgument arg = args.get(i);
-          if (arg.value() instanceof Component) {
-            args.set(i, TranslationArgument.component(this.render(((Component) arg.value()), context)));
+        .key(component.key())
+        .fallback(component.fallback());
+
+      if (!arguments.isEmpty()) {
+        final List<TranslationArgument> translatedArguments = new ArrayList<>(arguments);
+        for (int i = 0; i < translatedArguments.size(); i++) {
+          final TranslationArgument arg = translatedArguments.get(i);
+          if (arg.value() instanceof Component && !(arg.value() instanceof VirtualComponent)) {
+            translatedArguments.set(i, TranslationArgument.component(this.render((Component) arg.value(), context)));
           }
         }
-        builder.arguments(args);
+
+        builder.arguments(translatedArguments);
       }
-      return this.mergeStyleAndOptionallyDeepRender(component, builder, context);
+
+      component = this.mergeStyleAndOptionallyDeepRender(component, builder, context);
     }
+
+    return this.renderTranslatableInner(component, context);
+  }
+
+  @SuppressWarnings("JdkObsolete") // MessageFormat requires StringBuffer in its api
+  protected @NotNull Component renderTranslatableInner(final @NotNull TranslatableComponent component, final @NotNull C context) {
+    final @Nullable MessageFormat format = this.translate(component.key(), component.fallback(), context);
+    if (format == null) return component;
 
     final List<TranslationArgument> args = component.arguments();
 
@@ -235,7 +223,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
     // no arguments makes this render very simple
     if (args.isEmpty()) {
       builder.content(format.format(null, new StringBuffer(), null).toString());
-      return this.optionallyRenderChildrenAppendAndBuild(component.children(), builder, context);
+      return builder.append(component.children()).build();
     }
 
     final Object[] nulls = new Object[args.size()];
@@ -247,28 +235,14 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
       final Integer index = (Integer) it.getAttribute(MessageFormat.Field.ARGUMENT);
       if (index != null) {
         final TranslationArgument arg = args.get(index);
-        if (arg.value() instanceof Component) {
-          builder.append(this.render(arg.asComponent(), context));
-        } else {
-          builder.append(arg.asComponent()); // todo: number rendering?
-        }
+        builder.append(arg.asComponent()); // todo: number rendering?
       } else {
         builder.append(Component.text(sb.substring(it.getIndex(), end)));
       }
       it.setIndex(end);
     }
 
-    return this.optionallyRenderChildrenAppendAndBuild(component.children(), builder, context);
-  }
-
-  protected Component optionallyRenderChildren(final Component component, final C context) {
-    final List<Component> children = component.children();
-    if (children.isEmpty()) return component;
-
-    final List<Component> rendered = new ArrayList<>(children.size());
-    children.forEach(child -> rendered.add(this.render(child, context)));
-
-    return component.children(rendered);
+    return builder.append(component.children()).build();
   }
 
   protected <O extends BuildableComponent<O, B>, B extends ComponentBuilder<O, B>> O mergeStyleAndOptionallyDeepRender(final Component component, final B builder, final C context) {
