@@ -156,16 +156,10 @@ public class MiniMessageTranslatorTest extends AbstractTest {
       this.translate(
         Component.translatable(
           "<arg:0> is <arg:1>!",
+          Component.translatable("<arg:0>", Component.text("Kezz")),
           Component.translatable(
             "<arg:0>",
-            Component.text("Kezz")
-          ),
-          Component.translatable(
-            "<arg:0>",
-            Component.translatable(
-              "<arg:0>",
-              Component.text("cool")
-            )
+            Component.translatable("<arg:0>", Component.text("cool"))
           )
         )
       )
