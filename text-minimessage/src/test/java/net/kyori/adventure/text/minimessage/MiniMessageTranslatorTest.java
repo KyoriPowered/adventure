@@ -183,6 +183,19 @@ public class MiniMessageTranslatorTest extends AbstractTest {
     );
   }
 
+  @Test
+  public void testLangTag() {
+    assertEquals(
+      Component.text("Kezz is cool!"),
+      this.translate(
+        Component.translatable(
+          "<lang:'<arg:0>':'<name>'> is <lang:'cool'>!",
+          Argument.tagResolver(Placeholder.component("name", Component.text("Kezz")))
+        )
+      ).compact()
+    );
+  }
+
   @AfterAll
   public static void afterAll() {
     GlobalTranslator.translator().removeSource(TRANSLATOR);
