@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -116,7 +116,8 @@ public final class BinaryTagTypes {
       }
       return ListBinaryTag.listBinaryTag(type, tags);
     }
-  }, (tag, output) -> {
+  }, (rawTag, output) -> {
+    final ListBinaryTag tag = rawTag.wrapHeterogeneity();
     output.writeByte(tag.elementType().id());
     final int size = tag.size();
     output.writeInt(size);
@@ -202,6 +203,18 @@ public final class BinaryTagTypes {
     for (int i = 0; i < length; i++) {
       output.writeLong(value[i]);
     }
+  });
+  /**
+   * Synthetic tag type used as a list's element type to indicate it contains elements of multiple types.
+   *
+   * <p>This tag type cannot be read or written. List tag serialization will auto-box lists with this element type.</p>
+   *
+   * @since 4.21.0
+   */
+  public static final BinaryTagType<BinaryTag> LIST_WILDCARD = new BinaryTagType.Impl<>(BinaryTag.class, Byte.MAX_VALUE, input -> {
+    throw new IllegalArgumentException("Unable to read values of placeholder type. This tag type exists only to indicate heterogeneous lists");
+  }, (tag, output) -> {
+    throw new IllegalArgumentException("Unable to write values of placeholder type. This tag type exists only to indicate heterogeneous lists");
   });
 
   private BinaryTagTypes() {

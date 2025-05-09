@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -57,6 +57,14 @@ public interface StyleGetter {
    * @since 4.10.0
    */
   @Nullable TextColor color();
+
+  /**
+   * Gets the shadow color.
+   *
+   * @return the shadow color
+   * @since 4.18.0
+   */
+  @Nullable ShadowColor shadowColor();
 
   /**
    * Tests if this stylable has a decoration.

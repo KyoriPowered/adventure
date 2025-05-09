@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
   `kotlin-dsl`
 }
@@ -24,10 +26,8 @@ java {
 
 kotlin {
   target {
-    compilations.configureEach {
-      kotlinOptions {
-        jvmTarget = "11"
-      }
+    compilerOptions {
+      jvmTarget = JvmTarget.JVM_11
     }
   }
 }

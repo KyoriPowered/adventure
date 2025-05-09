@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -43,7 +43,6 @@ import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ComponentFlattenerTest {
-
   static class TrackingFlattener implements FlattenerListener {
     int pushCount;
     int popCount;
@@ -209,6 +208,14 @@ class ComponentFlattenerTest {
       .assertPushesAndPops(1)
       .assertStyles(Style.empty())
       .assertContents();
+  }
+
+  @Test
+  void testVirtualComponent() {
+    this.testFlatten(ComponentFlattener.basic(), Component.virtual(Object.class, context -> Component.text("test123")))
+      .assertBalanced()
+      .assertPushesAndPops(1)
+      .assertContents(""); // cannot get rendered value as we don't have a context available
   }
 
   @Test

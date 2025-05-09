@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,11 +38,13 @@ final class TextReplacementConfigImpl implements TextReplacementConfig {
   private final Pattern matchPattern;
   private final BiFunction<MatchResult, TextComponent.Builder, @Nullable ComponentLike> replacement;
   private final Condition continuer;
+  private final boolean replaceInsideHoverEvents;
 
   TextReplacementConfigImpl(final Builder builder) {
     this.matchPattern = builder.matchPattern;
     this.replacement = builder.replacement;
     this.continuer = builder.continuer;
+    this.replaceInsideHoverEvents = builder.replaceInsideHoverEvents;
   }
 
   @Override
@@ -51,7 +53,7 @@ final class TextReplacementConfigImpl implements TextReplacementConfig {
   }
 
   TextReplacementRenderer.State createState() {
-    return new TextReplacementRenderer.State(this.matchPattern, this.replacement, this.continuer);
+    return new TextReplacementRenderer.State(this.matchPattern, this.replacement, this.continuer, this.replaceInsideHoverEvents);
   }
 
   @Override
@@ -77,6 +79,7 @@ final class TextReplacementConfigImpl implements TextReplacementConfig {
     @Nullable Pattern matchPattern;
     @Nullable BiFunction<MatchResult, TextComponent.Builder, @Nullable ComponentLike> replacement;
     TextReplacementConfig.Condition continuer = (matchResult, index, replacement) -> PatternReplacementResult.REPLACE;
+    boolean replaceInsideHoverEvents = true;
 
     Builder() {
     }
@@ -102,6 +105,12 @@ final class TextReplacementConfigImpl implements TextReplacementConfig {
     @Override
     public @NotNull Builder replacement(final @NotNull BiFunction<MatchResult, TextComponent.Builder, @Nullable ComponentLike> replacement) {
       this.replacement = requireNonNull(replacement, "replacement");
+      return this;
+    }
+
+    @Override
+    public TextReplacementConfig.@NotNull Builder replaceInsideHoverEvents(final boolean replace) {
+      this.replaceInsideHoverEvents = replace;
       return this;
     }
 

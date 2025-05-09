@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -81,4 +81,12 @@ public interface NumberBinaryTag extends BinaryTag {
    * @since 4.0.0
    */
   short shortValue();
+
+  /**
+   * Gets the value as a {@link Number}.
+   *
+   * @return the value as a {@link Number}
+   * @since 4.21.0
+   */
+  @NotNull Number numberValue();
 }

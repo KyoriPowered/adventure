@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,7 +37,7 @@ import org.jetbrains.annotations.NotNull;
  * when rendering a {@link TranslatableComponent} to an {@link Audience}.
  *
  * <p>To add your translations to this source, use {@code GlobalTranslator#get()#addSource(Translator)}
- * with a {@link TranslationRegistry} or your own implementation of a {@link Translator}.</p>
+ * with a {@link TranslationStore} or your own implementation of a {@link Translator}.</p>
  *
  * @since 4.0.0
  */

@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,32 +21,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.audience;
+package net.kyori.test;
 
 import com.google.common.collect.Sets;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import java.util.stream.Stream;
+import org.jetbrains.annotations.Nullable;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
-class AudienceOverrides {
-  @ParameterizedTest
-  @ValueSource(classes = {
-    ForwardingAudience.class,
-    ForwardingAudience.Single.class
-  })
-  void ensureForwardingAudiencesOverrideRequiredMethods(final Class<?> audience) {
-    final Set<MethodInfo> missing = Sets.difference(methods(Audience.class), methods(audience));
+public final class Overrides {
+  private Overrides() {
+  }
+
+  private static Stream<MethodInfo> methodStream(final Method[] methods, final @Nullable Class<? extends Annotation> exclusionAnno) {
+    return Arrays.stream(methods)
+      .filter(method -> exclusionAnno == null || !method.isAnnotationPresent(exclusionAnno)) // there are some that truly are default methods
+      .filter(method -> !Modifier.isStatic(method.getModifiers())) // unlikely to exist, but best we exclude them just in case
+      .map(MethodInfo::new);
+  }
+
+  public static Set<MethodInfo> methods(final Class<?> in, final Class<? extends Annotation> exclusionAnno) {
+    return methodStream(in.getDeclaredMethods(), exclusionAnno)
+      .collect(Collectors.toSet());
+  }
+
+  public static Stream<MethodInfo> inheritedMethodStream(final Class<?> in, final Class<? extends Annotation> exclusionAnno) {
+    return methodStream(in.getMethods(), exclusionAnno);
+  }
+
+  public static void failIfMissing(final Class<?> parent, final Set<MethodInfo> parentMethods, final Class<?> child, final Set<MethodInfo> childMethods) {
+    final Set<Overrides.MethodInfo> missing = Sets.difference(parentMethods, childMethods);
     if (!missing.isEmpty()) {
       final StringBuilder error = new StringBuilder();
-      error.append(audience.getSimpleName()).append(" is missing override for ").append(Audience.class.getSimpleName()).append(" methods:");
-      for (final MethodInfo method : missing) {
+      error.append(child.getSimpleName()).append(" is missing override for ").append(parent.getSimpleName()).append(" methods:");
+      for (final Overrides.MethodInfo method : missing) {
         error.append('\n').append("- ").append(method);
       }
       error.append('\n');
@@ -54,24 +69,18 @@ class AudienceOverrides {
     }
   }
 
-  private static Set<MethodInfo> methods(final Class<?> in) {
-    return Arrays.stream(in.getDeclaredMethods())
-      .filter(method -> !method.isAnnotationPresent(ForwardingAudienceOverrideNotRequired.class)) // there are some that truly are default methods
-      .filter(method -> !Modifier.isStatic(method.getModifiers())) // unlikely to exist, but best we exclude them just in case
-      .map(MethodInfo::new)
-      .collect(Collectors.toSet());
-  }
-
   // todo(kashike): this can be a record once we have a Java 16 source-set
-  static final class MethodInfo {
-    final String name;
-    final Class<?> returnType;
-    final Class<?>[] paramTypes;
+  public static final class MethodInfo {
+    public final String name;
+    public final Class<?> returnType;
+    public final Class<?>[] paramTypes;
+    public final boolean isDeprecated;
 
     MethodInfo(final Method method) {
       this.name = method.getName();
       this.returnType = method.getReturnType();
       this.paramTypes = method.getParameterTypes();
+      this.isDeprecated = method.isAnnotationPresent(Deprecated.class);
     }
 
     @Override

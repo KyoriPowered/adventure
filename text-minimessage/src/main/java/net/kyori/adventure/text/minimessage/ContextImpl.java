@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -49,6 +49,7 @@ class ContextImpl implements Context {
   private static final Token[] EMPTY_TOKEN_ARRAY = new Token[0];
 
   private final boolean strict;
+  private final boolean emitVirtuals;
   private final Consumer<String> debugOutput;
   private String message;
   private final MiniMessage miniMessage;
@@ -59,6 +60,7 @@ class ContextImpl implements Context {
 
   ContextImpl(
     final boolean strict,
+    final boolean emitVirtuals,
     final Consumer<String> debugOutput,
     final String message,
     final MiniMessage miniMessage,
@@ -68,6 +70,7 @@ class ContextImpl implements Context {
     final @Nullable UnaryOperator<Component> postProcessor
   ) {
     this.strict = strict;
+    this.emitVirtuals = emitVirtuals;
     this.debugOutput = debugOutput;
     this.message = message;
     this.miniMessage = miniMessage;
@@ -79,6 +82,11 @@ class ContextImpl implements Context {
 
   public boolean strict() {
     return this.strict;
+  }
+
+  @Override
+  public boolean emitVirtuals() {
+    return this.emitVirtuals;
   }
 
   public Consumer<String> debugOutput() {
@@ -130,19 +138,21 @@ class ContextImpl implements Context {
 
   @Override
   public @NotNull Component deserialize(final @NotNull String message) {
-    return this.miniMessage.deserialize(requireNonNull(message, "message"), this.tagResolver);
+    return this.deserializeWithOptionalTarget(requireNonNull(message, "message"), this.tagResolver);
   }
 
   @Override
   public @NotNull Component deserialize(final @NotNull String message, final @NotNull TagResolver resolver) {
-    return this.miniMessage.deserialize(requireNonNull(message, "message"),
-      TagResolver.builder().resolver(this.tagResolver).resolver(requireNonNull(resolver, "resolver")).build());
+    requireNonNull(message, "message");
+    final TagResolver combinedResolver = TagResolver.builder().resolver(this.tagResolver).resolver(resolver).build();
+    return this.deserializeWithOptionalTarget(message, combinedResolver);
   }
 
   @Override
   public @NotNull Component deserialize(final @NotNull String message, final @NotNull TagResolver@NotNull... resolvers) {
-    return this.miniMessage.deserialize(requireNonNull(message, "message"),
-      TagResolver.builder().resolver(this.tagResolver).resolvers(requireNonNull(resolvers, "resolvers")).build());
+    requireNonNull(message, "message");
+    final TagResolver combinedResolver = TagResolver.builder().resolver(this.tagResolver).resolvers(resolvers).build();
+    return this.deserializeWithOptionalTarget(message, combinedResolver);
   }
 
   @Override
@@ -158,6 +168,14 @@ class ContextImpl implements Context {
   @Override
   public @NotNull ParsingException newException(final @NotNull String message, final @Nullable Throwable cause, final @NotNull ArgumentQueue tags) {
     return new ParsingExceptionImpl(message, this.message, cause, false, tagsToTokens(((ArgumentQueueImpl<?>) tags).args));
+  }
+
+  private @NotNull Component deserializeWithOptionalTarget(final @NotNull String message, final @NotNull TagResolver tagResolver) {
+    if (this.target != null) {
+      return this.miniMessage.deserialize(message, this.target, tagResolver);
+    } else {
+      return this.miniMessage.deserialize(message, tagResolver);
+    }
   }
 
   private static Token[] tagsToTokens(final List<? extends Tag.Argument> tags) {

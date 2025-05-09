@@ -14,7 +14,7 @@ pluginManagement {
 }
 
 plugins {
-  id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
+  id("org.gradle.toolchains.foojay-resolver-convention") version "0.9.0"
 }
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
@@ -40,6 +40,7 @@ sequenceOf(
   "serializer-configurate4",
   "text-logger-slf4j",
   "text-minimessage",
+  "text-serializer-commons",
   "text-serializer-gson",
   "text-serializer-gson-legacy-impl",
   "text-serializer-json",

@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -567,6 +567,12 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
      * @since 4.0.0
      */
     COLOR,
+    /**
+     * Merges {@link Style#shadowColor()}.
+     *
+     * @since 4.18.0
+     */
+    SHADOW_COLOR,
     /**
      * Merges {@link Style#decorations()}.
      *

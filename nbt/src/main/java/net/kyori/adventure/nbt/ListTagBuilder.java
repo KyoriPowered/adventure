@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,25 +30,22 @@ import org.jetbrains.annotations.Nullable;
 
 final class ListTagBuilder<T extends BinaryTag> implements ListBinaryTag.Builder<T> {
   private @Nullable List<BinaryTag> tags;
+  private final boolean permitsHeterogeneity;
   private BinaryTagType<? extends BinaryTag> elementType;
 
-  ListTagBuilder() {
-    this(BinaryTagTypes.END);
+  ListTagBuilder(final boolean permitsHeterogeneity) {
+    this(permitsHeterogeneity, BinaryTagTypes.END);
   }
 
-  ListTagBuilder(final BinaryTagType<? extends BinaryTag> type) {
+  ListTagBuilder(final boolean permitsHeterogeneity, final BinaryTagType<? extends BinaryTag> type) {
+    this.permitsHeterogeneity = permitsHeterogeneity;
     this.elementType = type;
   }
 
   @Override
   public ListBinaryTag.@NotNull Builder<T> add(final BinaryTag tag) {
-    ListBinaryTagImpl.noAddEnd(tag);
-    // set the type if it has not yet been set
-    if (this.elementType == BinaryTagTypes.END) {
-      this.elementType = tag.type();
-    }
     // check after changing from an empty tag
-    ListBinaryTagImpl.mustBeSameType(tag, this.elementType);
+    this.elementType = ListBinaryTagImpl.validateTagType(tag, this.elementType, this.permitsHeterogeneity);
     if (this.tags == null) {
       this.tags = new ArrayList<>();
     }
@@ -67,6 +64,6 @@ final class ListTagBuilder<T extends BinaryTag> implements ListBinaryTag.Builder
   @Override
   public @NotNull ListBinaryTag build() {
     if (this.tags == null) return ListBinaryTag.empty();
-    return new ListBinaryTagImpl(this.elementType, new ArrayList<>(this.tags)); // explicitly copy
+    return new ListBinaryTagImpl(this.elementType, this.permitsHeterogeneity, new ArrayList<>(this.tags)); // explicitly copy
   }
 }

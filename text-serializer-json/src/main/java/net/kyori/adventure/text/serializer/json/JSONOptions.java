@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.serializer.json;
 
 import net.kyori.option.Option;
+import net.kyori.option.OptionSchema;
 import net.kyori.option.OptionState;
 import org.jetbrains.annotations.NotNull;
 
@@ -42,6 +43,11 @@ public final class JSONOptions {
   private static final int VERSION_1_16 = 2526; // 20w16a
   private static final int VERSION_1_20_3 = 3679; // 23w40a
   private static final int VERSION_1_20_5 = 3819; // 24w09a
+  private static final int VERSION_1_21_4 = 4174; // 24w44a
+  private static final int VERSION_1_21_5 = 4298; // 25w02a
+
+  // todo(5.0): move these options out of the global schema
+  private static final OptionSchema.Mutable UNSAFE_SCHEMA = OptionSchema.globalSchema();
 
   /**
    * Whether to emit RGB text.
@@ -52,12 +58,20 @@ public final class JSONOptions {
    * @sinceMinecraft 1.16
    */
   public static final Option<Boolean> EMIT_RGB = Option.booleanOption(key("emit/rgb"), true);
+
   /**
    * Control how hover event values should be emitted.
    *
    * @since 4.15.0
    */
-  public static final Option<HoverEventValueMode> EMIT_HOVER_EVENT_TYPE = Option.enumOption(key("emit/hover_value_mode"), HoverEventValueMode.class, HoverEventValueMode.MODERN_ONLY);
+  public static final Option<HoverEventValueMode> EMIT_HOVER_EVENT_TYPE = UNSAFE_SCHEMA.enumOption(key("emit/hover_value_mode"), HoverEventValueMode.class, HoverEventValueMode.SNAKE_CASE);
+
+  /**
+   * Control how click event values should be emitted.
+   *
+   * @since 4.20.0
+   */
+  public static final Option<ClickEventValueMode> EMIT_CLICK_EVENT_TYPE = Option.enumOption(key("emit/click_value_mode"), ClickEventValueMode.class, ClickEventValueMode.SNAKE_CASE);
 
   /**
    * Whether to emit text components with no style and no children as plain text.
@@ -65,7 +79,7 @@ public final class JSONOptions {
    * @since 4.15.0
    * @sinceMinecraft 1.20.3
    */
-  public static final Option<Boolean> EMIT_COMPACT_TEXT_COMPONENT = Option.booleanOption(key("emit/compact_text_component"), true);
+  public static final Option<Boolean> EMIT_COMPACT_TEXT_COMPONENT = UNSAFE_SCHEMA.booleanOption(key("emit/compact_text_component"), true);
 
   /**
    * Whether to emit the hover event show entity action's entity UUID as an int array,
@@ -73,7 +87,14 @@ public final class JSONOptions {
    *
    * @since 4.15.0
    */
-  public static final Option<Boolean> EMIT_HOVER_SHOW_ENTITY_ID_AS_INT_ARRAY = Option.booleanOption(key("emit/hover_show_entity_id_as_int_array"), true);
+  public static final Option<Boolean> EMIT_HOVER_SHOW_ENTITY_ID_AS_INT_ARRAY = UNSAFE_SCHEMA.booleanOption(key("emit/hover_show_entity_id_as_int_array"), true);
+
+  /**
+   * Whether to emit the hover event show entity action's entity type key as a {@code type} and UUID as an {@code id}, as it was before 1.21.5.
+   *
+   * @since 4.20.0
+   */
+  public static final Option<Boolean> EMIT_HOVER_SHOW_ENTITY_KEY_AS_TYPE_AND_UUID_AS_ID = UNSAFE_SCHEMA.booleanOption(key("emit/hover_show_entity_key_as_type_and_uuid_as_id"), false);
 
   /**
    * Whether to be strict about accepting invalid hover/click events.
@@ -82,7 +103,7 @@ public final class JSONOptions {
    *
    * @since 4.15.0
    */
-  public static final Option<Boolean> VALIDATE_STRICT_EVENTS = Option.booleanOption(key("validate/strict_events"), true);
+  public static final Option<Boolean> VALIDATE_STRICT_EVENTS = UNSAFE_SCHEMA.booleanOption(key("validate/strict_events"), true);
   /**
    * Whether to emit the default hover event item stack quantity of {@code 1}.
    *
@@ -90,31 +111,44 @@ public final class JSONOptions {
    *
    * @since 4.17.0
    */
-  public static final Option<Boolean> EMIT_DEFAULT_ITEM_HOVER_QUANTITY = Option.booleanOption(key("emit/default_item_hover_quantity"), true);
+  public static final Option<Boolean> EMIT_DEFAULT_ITEM_HOVER_QUANTITY = UNSAFE_SCHEMA.booleanOption(key("emit/default_item_hover_quantity"), true);
 
   /**
    * How to emit the item data on {@code show_item} hover events.
    *
    * @since 4.17.0
    */
-  public static final Option<ShowItemHoverDataMode> SHOW_ITEM_HOVER_DATA_MODE = Option.enumOption(key("emit/show_item_hover_data"), ShowItemHoverDataMode.class, ShowItemHoverDataMode.EMIT_EITHER);
+  public static final Option<ShowItemHoverDataMode> SHOW_ITEM_HOVER_DATA_MODE = UNSAFE_SCHEMA.enumOption(key("emit/show_item_hover_data"), ShowItemHoverDataMode.class, ShowItemHoverDataMode.EMIT_EITHER);
+
+  /**
+   * How to emit shadow colour data.
+   *
+   * @since 4.18.0
+   */
+  public static final Option<ShadowColorEmitMode> SHADOW_COLOR_MODE = UNSAFE_SCHEMA.enumOption(key("emit/shadow_color"), ShadowColorEmitMode.class, ShadowColorEmitMode.EMIT_INTEGER);
+
+  // aim for compatibility? or something
+  private static final OptionSchema SCHEMA = OptionSchema.childSchema(UNSAFE_SCHEMA).frozenView();
 
   /**
    * Versioned by world data version.
    */
-  private static final OptionState.Versioned BY_DATA_VERSION = OptionState.versionedOptionState()
+  private static final OptionState.Versioned BY_DATA_VERSION = SCHEMA.versionedStateBuilder()
     .version(
       VERSION_INITIAL,
-      b -> b.value(EMIT_HOVER_EVENT_TYPE, HoverEventValueMode.LEGACY_ONLY)
+      b -> b.value(EMIT_HOVER_EVENT_TYPE, HoverEventValueMode.VALUE_FIELD)
+        .value(EMIT_CLICK_EVENT_TYPE, ClickEventValueMode.CAMEL_CASE)
         .value(EMIT_RGB, false)
         .value(EMIT_HOVER_SHOW_ENTITY_ID_AS_INT_ARRAY, false)
+        .value(EMIT_HOVER_SHOW_ENTITY_KEY_AS_TYPE_AND_UUID_AS_ID, true)
         .value(VALIDATE_STRICT_EVENTS, false)
         .value(EMIT_DEFAULT_ITEM_HOVER_QUANTITY, false)
         .value(SHOW_ITEM_HOVER_DATA_MODE, ShowItemHoverDataMode.EMIT_LEGACY_NBT)
+        .value(SHADOW_COLOR_MODE, ShadowColorEmitMode.NONE)
     )
     .version(
       VERSION_1_16,
-      b -> b.value(EMIT_HOVER_EVENT_TYPE, HoverEventValueMode.MODERN_ONLY)
+      b -> b.value(EMIT_HOVER_EVENT_TYPE, HoverEventValueMode.CAMEL_CASE)
         .value(EMIT_RGB, true)
     )
     .version(
@@ -128,6 +162,16 @@ public final class JSONOptions {
       b -> b.value(EMIT_DEFAULT_ITEM_HOVER_QUANTITY, true)
         .value(SHOW_ITEM_HOVER_DATA_MODE, ShowItemHoverDataMode.EMIT_DATA_COMPONENTS)
     )
+    .version(
+      VERSION_1_21_4,
+      b -> b.value(SHADOW_COLOR_MODE, ShadowColorEmitMode.EMIT_INTEGER)
+    )
+    .version(
+      VERSION_1_21_5,
+      b -> b.value(EMIT_HOVER_EVENT_TYPE, HoverEventValueMode.SNAKE_CASE)
+        .value(EMIT_CLICK_EVENT_TYPE, ClickEventValueMode.SNAKE_CASE)
+        .value(EMIT_HOVER_SHOW_ENTITY_KEY_AS_TYPE_AND_UUID_AS_ID, false)
+    )
     .build();
 
   /**
@@ -135,16 +179,28 @@ public final class JSONOptions {
    *
    * <p>This may provide a less efficient representation of components, but will not result in information being discarded.</p>
    */
-  private static final OptionState MOST_COMPATIBLE = OptionState.optionState()
-    .value(EMIT_HOVER_EVENT_TYPE, HoverEventValueMode.BOTH)
+  private static final OptionState MOST_COMPATIBLE = SCHEMA.stateBuilder()
+    .value(EMIT_HOVER_EVENT_TYPE, HoverEventValueMode.ALL)
+    .value(EMIT_CLICK_EVENT_TYPE, ClickEventValueMode.BOTH)
     .value(EMIT_HOVER_SHOW_ENTITY_ID_AS_INT_ARRAY, false)
     .value(EMIT_COMPACT_TEXT_COMPONENT, false)
     .value(VALIDATE_STRICT_EVENTS, false)
     .value(SHOW_ITEM_HOVER_DATA_MODE, ShowItemHoverDataMode.EMIT_EITHER)
+    .value(SHADOW_COLOR_MODE, ShadowColorEmitMode.EMIT_INTEGER)
     .build();
 
   private static String key(final String value) {
     return "adventure:json/" + value;
+  }
+
+  /**
+   * A schema of available options.
+   *
+   * @return the schema of known json options
+   * @since 4.20.0
+   */
+  public static @NotNull OptionSchema schema() {
+    return SCHEMA;
   }
 
   /**
@@ -176,21 +232,72 @@ public final class JSONOptions {
    */
   public enum HoverEventValueMode {
     /**
-     * Only emit the 1.16+ modern hover events.
+     * Only emit the 1.21.5+ hover events using the {@code hover_event} field.
+     *
+     * @since 4.20.0
+     */
+    SNAKE_CASE,
+    /**
+     * Only emit the 1.16+ hover events using the {@code hoverEvent} field.
      *
      * @since 4.15.0
      */
-    MODERN_ONLY,
+    CAMEL_CASE,
     /**
      * Only emit the pre-1.16 hover event {@code value} field.
      *
      * @since 4.15.0
      */
-    LEGACY_ONLY,
+    VALUE_FIELD,
     /**
-     * Include both modern and legacy hover event fields, for maximum compatibility.
+     * Include all hover event fields, for maximum compatibility.
      *
      * @since 4.15.0
+     */
+    ALL;
+
+    /**
+     * Only emit the 1.16+ hover events using the {@code hoverEvent} field.
+     *
+     * @deprecated use {@link #CAMEL_CASE} instead
+     */
+    public static final @Deprecated HoverEventValueMode MODERN_ONLY = CAMEL_CASE;
+    /**
+     * Only emit the pre-1.16 hover event {@code value} field.
+     *
+     * @deprecated use {@link #VALUE_FIELD} instead
+     */
+    public static final @Deprecated HoverEventValueMode LEGACY_ONLY = VALUE_FIELD;
+    /**
+     * Include all hover event fields, for maximum compatibility.
+     *
+     * @deprecated use {@link #ALL} instead
+     */
+    public static final @Deprecated HoverEventValueMode BOTH = ALL;
+  }
+
+  /**
+   * Configure how to emit click event values.
+   *
+   * @since 4.20.0
+   */
+  public enum ClickEventValueMode {
+    /**
+     * Only emit the 1.21.5+ click events using the {@code click_event} field.
+     *
+     * @since 4.20.0
+     */
+    SNAKE_CASE,
+    /**
+     * Only emit the pre-1.21.5 click events using the {@code clickEvent} field.
+     *
+     * @since 4.20.0
+     */
+    CAMEL_CASE,
+    /**
+     * Include both camel and snake case click event fields, for maximum compatibility.
+     *
+     * @since 4.20.0
      */
     BOTH,
   }
@@ -219,5 +326,31 @@ public final class JSONOptions {
      * @since 4.17.0
      */
     EMIT_EITHER,
+  }
+
+  /**
+   * How text shadow colors should be emitted.
+   *
+   * @since 4.18.0
+   * @sinceMinecraft 1.21.4
+   */
+  public enum ShadowColorEmitMode {
+    /**
+     * Do not emit shadow colours.
+     */
+    NONE,
+    /**
+     * Emit as a single packed integer value containing, in order, ARGB bytes.
+     *
+     * @since 4.18.0
+     */
+    EMIT_INTEGER,
+    /**
+     * Emit a colour as 4-element float array of the RGBA components of the colour.
+     *
+     * @since 4.18.0
+     */
+    EMIT_ARRAY
+
   }
 }

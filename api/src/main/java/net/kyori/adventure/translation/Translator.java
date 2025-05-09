@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@ package net.kyori.adventure.translation;
 
 import java.text.MessageFormat;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
@@ -37,7 +38,7 @@ import org.jetbrains.annotations.Nullable;
  * A message translator.
  *
  * <p>To see how to create a {@link Translator} with a {@link ResourceBundle}
- * see {@link TranslationRegistry#registerAll(Locale, ResourceBundle, boolean)}</p>
+ * see {@link TranslationStore.StringBased#registerAll(Locale, ResourceBundle, boolean)}</p>
  *
  * <p>To bypass vanilla's {@link MessageFormat}-based translation system,
  * see {@link #translate(TranslatableComponent, Locale)}</p>
@@ -45,7 +46,7 @@ import org.jetbrains.annotations.Nullable;
  * <p>After creating a {@link Translator} you can add it to the {@link GlobalTranslator}
  * to enable automatic translations by the platforms.</p>
  *
- * @see TranslationRegistry
+ * @see TranslationStore
  * @since 4.0.0
  */
 public interface Translator {
@@ -90,6 +91,21 @@ public interface Translator {
   }
 
   /**
+   * Checks if this translator can translate the given key and locale pair.
+   *
+   * @param key the key
+   * @param locale the locale
+   * @return {@code true} if this translator will return a non-null value for either of
+   *     the two {@code translate} methods
+   * @since 4.20.0
+   */
+  default boolean canTranslate(final @NotNull String key, final @NotNull Locale locale) {
+    final Component translatedValue = this.translate(Component.translatable(Objects.requireNonNull(key, "key")), Objects.requireNonNull(locale, "locale"));
+    if (translatedValue != null) return true;
+    return this.translate(key, locale) != null;
+  }
+
+  /**
    * Gets a message format from a key and locale.
    *
    * <p>When used in the {@link GlobalTranslator}, this method is called only if
@@ -104,6 +120,16 @@ public interface Translator {
 
   /**
    * Gets a translated component from a translatable component and locale.
+   *
+   * <p>Care should be taken to ensure you do not unintentionally remove the children or style of {@code component}.
+   * This can be avoided by copying over the children/style using the following code as an example:</p>
+   *
+   * <pre>{@code
+   * final Component myNewComponent = ...; // get your component here
+   * return myNewComponent
+   *   .append(component.children()) // ensure it has the original components children as well
+   *   .applyFallbackStyle(component.style()); // apply a "fallback" style
+   * }</pre>
    *
    * @param locale a locale
    * @param component a translatable component

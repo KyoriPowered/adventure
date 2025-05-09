@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -347,6 +347,23 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
     @NotNull Builder strict(final boolean strict);
 
     /**
+     * Configures if MiniMessage should emit virtual components (enabled by default).
+     *
+     * <p>
+     * Emitting virtual components may enable MiniMessage to more accurately reconstruct
+     * the source string representation when serializing a component by inserting virtual components
+     * during deserialization.
+     * Emitting virtual components will, however, break equality to components deserialized from
+     * MiniMessage instances that do not emit virtual components.
+     * </p>
+     *
+     * @param emitVirtuals if virtual components should be emitted.
+     * @return this builder.
+     * @since 4.19.0
+     */
+    @NotNull Builder emitVirtuals(final boolean emitVirtuals);
+
+    /**
      * Print debug information to the given output (disabled by default).
      *
      * <p>Debug output includes detailed information about the parsing process to help debug parser behavior.</p>
@@ -362,6 +379,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
 
     /**
      * Specify a function that takes the component at the end of the parser process.
+     *
      * <p>By default, this compacts the resulting component with {@link Component#compact()}.</p>
      *
      * @param postProcessor method run at the end of parsing
@@ -372,6 +390,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
 
     /**
      * Specify a function that takes the string at the start of the parser process.
+     *
      * <p>By default, this does absolutely nothing.</p>
      *
      * @param preProcessor method run at the start of parsing

@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -45,8 +45,10 @@ final class GsonHacks {
     final JsonToken peek = in.peek();
     if (peek == JsonToken.BOOLEAN) {
       return in.nextBoolean();
-    } else if (peek == JsonToken.STRING || peek == JsonToken.NUMBER) {
+    } else if (peek == JsonToken.STRING) {
       return Boolean.parseBoolean(in.nextString());
+    } else if (peek == JsonToken.NUMBER) {
+      return in.nextString().equals("1");
     } else {
       throw new JsonParseException("Token of type " + peek + " cannot be interpreted as a boolean");
     }

@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,6 +26,7 @@ package net.kyori.adventure.serializer.configurate4;
 import java.time.Duration;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import net.kyori.adventure.title.Title;
 import org.junit.jupiter.api.Test;
 import org.spongepowered.configurate.ConfigurationNode;
@@ -34,10 +35,10 @@ class TitleSerializerTest implements ConfigurateTestBase {
   @Test
   void testTitleNoTimes() {
     final ConfigurationNode node = this.node(n -> {
-      n.node(TitleSerializer.TITLE, ComponentTypeSerializer.TEXT).raw("Title");
+      n.node(TitleSerializer.TITLE, ComponentTreeConstants.TEXT).raw("Title");
       n.node(TitleSerializer.SUBTITLE).act(sub -> {
-        sub.node(ComponentTypeSerializer.TEXT).raw("Subtitle");
-        sub.node(StyleSerializer.COLOR).raw("dark_purple");
+        sub.node(ComponentTreeConstants.TEXT).raw("Subtitle");
+        sub.node(ComponentTreeConstants.COLOR).raw("dark_purple");
       });
     });
 
@@ -49,10 +50,10 @@ class TitleSerializerTest implements ConfigurateTestBase {
   @Test
   void testTitleWithTimes() {
     final ConfigurationNode node = this.node(n -> {
-      n.node(TitleSerializer.TITLE, ComponentTypeSerializer.TEXT).raw("Title");
+      n.node(TitleSerializer.TITLE, ComponentTreeConstants.TEXT).raw("Title");
       n.node(TitleSerializer.SUBTITLE).act(sub -> {
-        sub.node(ComponentTypeSerializer.TEXT).raw("Subtitle");
-        sub.node(StyleSerializer.COLOR).raw("dark_purple");
+        sub.node(ComponentTreeConstants.TEXT).raw("Subtitle");
+        sub.node(ComponentTreeConstants.COLOR).raw("dark_purple");
       });
       n.node(TitleSerializer.TIMES).act(times -> {
         times.node(TitleSerializer.FADE_IN).raw("PT50S");

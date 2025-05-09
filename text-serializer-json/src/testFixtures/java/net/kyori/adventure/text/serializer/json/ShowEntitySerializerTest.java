@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,6 +27,7 @@ import java.util.UUID;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import org.junit.jupiter.api.Test;
 
 final class ShowEntitySerializerTest extends SerializerTest {
@@ -38,12 +39,10 @@ final class ShowEntitySerializerTest extends SerializerTest {
       .build();
 
     this.testStyle(cereal, Style.style().hoverEvent(HoverEvent.showEntity(Key.key("zombie"), id)).build(), json -> {
-      json.add(JSONComponentConstants.HOVER_EVENT, object(hover -> {
-        hover.addProperty(JSONComponentConstants.HOVER_EVENT_ACTION, "show_entity");
-        hover.add(JSONComponentConstants.HOVER_EVENT_CONTENTS, object(contents -> {
-          contents.addProperty(JSONComponentConstants.SHOW_ENTITY_TYPE, "minecraft:zombie");
-          contents.addProperty(JSONComponentConstants.SHOW_ENTITY_ID, id.toString());
-        }));
+      json.add(ComponentTreeConstants.HOVER_EVENT_SNAKE, object(hover -> {
+        hover.addProperty(ComponentTreeConstants.HOVER_EVENT_ACTION, "show_entity");
+        hover.addProperty(ComponentTreeConstants.SHOW_ENTITY_ID, "minecraft:zombie");
+        hover.addProperty(ComponentTreeConstants.SHOW_ENTITY_UUID, id.toString());
       }));
     });
   }
@@ -54,16 +53,14 @@ final class ShowEntitySerializerTest extends SerializerTest {
     this.testStyle(
       Style.style().hoverEvent(HoverEvent.showEntity(Key.key("zombie"), id)).build(),
       comp -> {
-        comp.add(JSONComponentConstants.HOVER_EVENT, object(hover -> {
-          hover.addProperty(JSONComponentConstants.HOVER_EVENT_ACTION, "show_entity");
-          hover.add(JSONComponentConstants.HOVER_EVENT_CONTENTS, object(contents -> {
-            contents.addProperty(JSONComponentConstants.SHOW_ENTITY_TYPE, "minecraft:zombie");
-            contents.add(JSONComponentConstants.SHOW_ENTITY_ID, array(idArray -> {
-              idArray.add((int) (id.getMostSignificantBits() >> 32));
-              idArray.add((int) (id.getMostSignificantBits() & 0xffffffffl));
-              idArray.add((int) (id.getLeastSignificantBits() >> 32));
-              idArray.add((int) (id.getLeastSignificantBits() & 0xffffffffl));
-            }));
+        comp.add(ComponentTreeConstants.HOVER_EVENT_SNAKE, object(hover -> {
+          hover.addProperty(ComponentTreeConstants.HOVER_EVENT_ACTION, "show_entity");
+          hover.addProperty(ComponentTreeConstants.SHOW_ENTITY_ID, "minecraft:zombie");
+          hover.add(ComponentTreeConstants.SHOW_ENTITY_UUID, array(idArray -> {
+            idArray.add((int) (id.getMostSignificantBits() >> 32));
+            idArray.add((int) (id.getMostSignificantBits() & 0xffffffffl));
+            idArray.add((int) (id.getLeastSignificantBits() >> 32));
+            idArray.add((int) (id.getLeastSignificantBits() & 0xffffffffl));
           }));
         }));
       }

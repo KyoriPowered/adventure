@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,9 @@
  */
 package net.kyori.adventure.text.minimessage.internal.serializer;
 
+import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Something that holds data representable as MiniMessage tags.
@@ -39,4 +41,16 @@ public interface Emitable {
    * @since 4.10.0
    */
   void emit(final @NotNull TokenEmitter emitter);
+
+  /**
+   * Provide a substitute for this component's actual children.
+   *
+   * <p>This allows modifying tags to output original data while still transforming the created components.</p>
+   *
+   * @return a potential substitute
+   * @since 4.13.0
+   */
+  default @Nullable Component substitute() { // TODO: maybe make this be only for component claims?
+    return null;
+  }
 }

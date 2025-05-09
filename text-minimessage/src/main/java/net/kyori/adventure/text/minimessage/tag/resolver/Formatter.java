@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,11 @@ import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
+import java.util.Arrays;
 import java.util.Locale;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
+import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.TagPattern;
 import org.jetbrains.annotations.NotNull;
@@ -139,4 +143,63 @@ public final class Formatter {
       return Tag.inserting(context.deserialize(value ? trueCase : falseCase));
     });
   }
+
+  /**
+   * Creates a replacement that inserts a list of components. These components are joined together by {@link Component#join(JoinConfiguration.Builder, ComponentLike...)}.
+   *
+   * <p>This tag has three optional arguments; a separator, a last separator, and a last separator if serial.
+   * Each argument must be provided in order, with all preceding arguments present.
+   * The exact use of these three separators is documented in {@link JoinConfiguration}.</p>
+   *
+   * <p>This replacement is auto-closing, so its style will not influence the style of following components.</p>
+   *
+   * @param key the key
+   * @param components the components to join
+   * @return the placeholder
+   * @see JoinConfiguration
+   * @since 4.18.0
+   */
+  public static TagResolver joining(@TagPattern final @NotNull String key, final @NotNull Iterable<? extends ComponentLike> components) {
+    return TagResolver.resolver(key, (argumentQueue, context) -> {
+      if (!argumentQueue.hasNext()) {
+        return Tag.inserting(Component.join(JoinConfiguration.noSeparators(), components));
+      }
+
+      final String separator = argumentQueue.pop().value();
+      final JoinConfiguration.Builder configBuilder = JoinConfiguration.builder().separator(context.deserialize(separator));
+
+      if (argumentQueue.hasNext()) {
+        final String lastSeparator = argumentQueue.pop().value();
+        configBuilder.lastSeparator(context.deserialize(lastSeparator));
+      }
+
+      if (argumentQueue.hasNext()) {
+        final String lastSeparatorIfSerial = argumentQueue.pop().value();
+        configBuilder.lastSeparatorIfSerial(context.deserialize(lastSeparatorIfSerial));
+      }
+
+      final JoinConfiguration config = configBuilder.build();
+      return Tag.inserting(Component.join(config, components));
+    });
+  }
+
+  /**
+   * Creates a replacement that inserts a list of components. These components are joined together by {@link Component#join(JoinConfiguration.Builder, ComponentLike...)}.
+   *
+   * <p>This tag has three optional arguments; a separator, a last separator, and a last separator if serial.
+   * Each argument must be provided in order, with all preceding arguments present.
+   * The exact use of these three separators is documented in {@link JoinConfiguration}.</p>
+   *
+   * <p>This replacement is auto-closing, so its style will not influence the style of following components.</p>
+   *
+   * @param key the key
+   * @param components the components to join
+   * @return the placeholder
+   * @see JoinConfiguration
+   * @since 4.18.0
+   */
+  public static TagResolver joining(@TagPattern final @NotNull String key, final @NotNull ComponentLike@NotNull... components) {
+    return joining(key, Arrays.asList(components));
+  }
+
 }

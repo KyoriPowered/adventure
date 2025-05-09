@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.serializer.json;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import org.junit.jupiter.api.Test;
 
 final class SelectorComponentTest extends SerializerTest {
@@ -33,7 +34,7 @@ final class SelectorComponentTest extends SerializerTest {
   void test() {
     this.testObject(
       Component.selector(SELECTOR),
-      json -> json.addProperty(JSONComponentConstants.SELECTOR, SELECTOR)
+      json -> json.addProperty(ComponentTreeConstants.SELECTOR, SELECTOR)
     );
   }
 
@@ -43,8 +44,8 @@ final class SelectorComponentTest extends SerializerTest {
     this.testObject(
       Component.selector(SELECTOR, separator),
       json -> {
-        json.addProperty(JSONComponentConstants.SELECTOR, SELECTOR);
-        json.add(JSONComponentConstants.SEPARATOR, this.serialize(separator));
+        json.addProperty(ComponentTreeConstants.SELECTOR, SELECTOR);
+        json.add(ComponentTreeConstants.SEPARATOR, this.serialize(separator));
       }
     );
   }

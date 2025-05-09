@@ -43,11 +43,13 @@ configurations {
 dependencies {
   api(projects.adventureApi)
   api(libs.option)
+  implementation(projects.adventureTextSerializerCommons)
   annotationProcessor(projects.adventureAnnotationProcessors)
 
   testFixturesApi(libs.junit.api)
   testFixturesApi(platform(libs.junit.bom))
   testFixturesImplementation(projects.adventureNbt)
+  testFixturesApi(projects.adventureTextSerializerCommons)
   testFixturesImplementation(libs.gson)
 
   "jmhImplementation"(sourceSets.main.map { it.output })

@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,8 +26,10 @@ package net.kyori.adventure.serializer.configurate4;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.ShadowColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import org.junit.jupiter.api.Test;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
@@ -38,7 +40,7 @@ class StyleSerializerTest implements ConfigurateTestBase {
   @Test
   void testSerializeFont() {
     final ConfigurationNode node = this.node(n -> {
-      n.node(StyleSerializer.FONT).raw("adventure:meow");
+      n.node(ComponentTreeConstants.FONT).raw("adventure:meow");
     });
     final Style style = Style.style()
       .font(Key.key("adventure", "meow"))
@@ -50,7 +52,7 @@ class StyleSerializerTest implements ConfigurateTestBase {
   @Test
   void testSerializeHexColor() {
     final ConfigurationNode node = this.node(n -> {
-      n.node(StyleSerializer.COLOR).raw("#123456");
+      n.node(ComponentTreeConstants.COLOR).raw("#123456");
     });
     final Style style = Style.style()
       .color(TextColor.color(0x123456))
@@ -62,7 +64,7 @@ class StyleSerializerTest implements ConfigurateTestBase {
   @Test
   void testSerializeNumericColor() throws SerializationException {
     final ConfigurationNode node = this.node(n -> {
-      n.node(StyleSerializer.COLOR).raw(0x123456);
+      n.node(ComponentTreeConstants.COLOR).raw(0x123456);
     });
     final Style style = Style.style()
       .color(TextColor.color(0x123456))
@@ -75,7 +77,7 @@ class StyleSerializerTest implements ConfigurateTestBase {
   @Test
   void testSerializeNamedColor() {
     final ConfigurationNode node = this.node(n -> {
-      n.node(StyleSerializer.COLOR).raw("dark_red");
+      n.node(ComponentTreeConstants.COLOR).raw("dark_red");
     });
     final Style style = Style.style()
       .color(NamedTextColor.DARK_RED)
@@ -85,9 +87,19 @@ class StyleSerializerTest implements ConfigurateTestBase {
   }
 
   @Test
+  void testSerializeShadowColor() {
+    final ConfigurationNode node = this.node(n -> {
+      n.node(ComponentTreeConstants.SHADOW_COLOR).raw(0xCCFF0022);
+    });
+    final Style style = Style.style(ShadowColor.shadowColor(0xFF, 0x00, 0x22, 0xCC));
+
+    this.assertRoundtrippable(Style.class, style, node);
+  }
+
+  @Test
   void testSerializeInsertion() {
     final ConfigurationNode node = this.node(n -> {
-      n.node(StyleSerializer.INSERTION).raw("i'd like to get a cat!");
+      n.node(ComponentTreeConstants.INSERTION).raw("i'd like to get a cat!");
     });
     final Style style = Style.style()
       .insertion("i'd like to get a cat!")
@@ -99,9 +111,9 @@ class StyleSerializerTest implements ConfigurateTestBase {
   @Test
   void testSerializeClickEvent() {
     final ConfigurationNode node = this.node(n -> {
-      n.node(StyleSerializer.CLICK_EVENT).act(event -> {
-        event.node(StyleSerializer.CLICK_EVENT_ACTION).raw("open_url");
-        event.node(StyleSerializer.CLICK_EVENT_VALUE).raw("https://kyori.net");
+      n.node(ComponentTreeConstants.CLICK_EVENT_CAMEL).act(event -> {
+        event.node(ComponentTreeConstants.CLICK_EVENT_ACTION).raw("open_url");
+        event.node(ComponentTreeConstants.CLICK_EVENT_VALUE).raw("https://kyori.net");
       });
     });
     final Style style = Style.style()

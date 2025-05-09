@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,6 +33,7 @@ import net.kyori.adventure.text.SelectorComponent;
 import net.kyori.adventure.text.StorageNBTComponent;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.text.VirtualComponent;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -43,7 +44,10 @@ import org.jetbrains.annotations.NotNull;
  */
 public abstract class AbstractComponentRenderer<C> implements ComponentRenderer<C> {
   @Override
-  public @NotNull Component render(final @NotNull Component component, final @NotNull C context) {
+  public @NotNull Component render(@NotNull Component component, final @NotNull C context) {
+    if (component instanceof VirtualComponent) {
+      component = this.renderVirtual((VirtualComponent) component, context);
+    }
     if (component instanceof TextComponent) {
       return this.renderText((TextComponent) component, context);
     } else if (component instanceof TranslatableComponent) {
@@ -128,6 +132,18 @@ public abstract class AbstractComponentRenderer<C> implements ComponentRenderer<
    * @return the rendered component
    */
   protected abstract @NotNull Component renderText(final @NotNull TextComponent component, final @NotNull C context);
+
+  /**
+   * Renders a virtual component.
+   *
+   * @param component the component
+   * @param context the context
+   * @return the rendered component
+   * @since 4.18.0
+   */
+  protected @NotNull Component renderVirtual(final @NotNull VirtualComponent component, final @NotNull C context) {
+    return component;
+  }
 
   /**
    * Renders a translatable component.

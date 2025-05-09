@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -143,7 +143,7 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
 
     @Override
     public @NotNull Builder editOptions(final @NotNull Consumer<OptionState.Builder> optionEditor) {
-      final OptionState.Builder builder = OptionState.optionState()
+      final OptionState.Builder builder = JSONOptions.schema().stateBuilder()
         .values(this.flags);
       requireNonNull(optionEditor, "flagEditor").accept(builder);
       this.flags = builder.build();

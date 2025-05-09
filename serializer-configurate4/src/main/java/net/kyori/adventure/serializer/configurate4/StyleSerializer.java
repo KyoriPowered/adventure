@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,6 +29,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.ShadowColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -39,22 +40,24 @@ import org.spongepowered.configurate.ConfigurationOptions;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
 
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_ACTION;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_CAMEL;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_VALUE;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.COLOR;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.FONT;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.HOVER_EVENT_ACTION;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.HOVER_EVENT_CAMEL;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.HOVER_EVENT_CONTENTS;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.HOVER_EVENT_VALUE;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.INSERTION;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SHADOW_COLOR;
+
 final class StyleSerializer implements TypeSerializer<Style> {
   static final StyleSerializer INSTANCE = new StyleSerializer();
 
   private static final TextDecoration[] DECORATIONS = TextDecoration.values();
 
-  static final String FONT = "font";
-  static final String COLOR = "color";
-  static final String INSERTION = "insertion";
-  static final String CLICK_EVENT = "clickEvent";
-  static final String CLICK_EVENT_ACTION = "action";
-  static final String CLICK_EVENT_VALUE = "value";
-  static final String HOVER_EVENT = "hoverEvent";
-  static final String HOVER_EVENT_ACTION = "action";
   static final TypeToken<HoverEvent.Action<?>> HOVER_EVENT_ACTION_TYPE = new TypeToken<HoverEvent.Action<?>>() {};
-  static final String HOVER_EVENT_CONTENTS = "contents";
-  static final @Deprecated String HOVER_EVENT_VALUE = "value";
 
   private StyleSerializer() {
   }
@@ -75,6 +78,10 @@ final class StyleSerializer implements TypeSerializer<Style> {
     if (color != null) {
       builder.color(color);
     }
+    final @Nullable ShadowColor shadowColor = value.node(SHADOW_COLOR).get(ShadowColor.class);
+    if (shadowColor != null) {
+      builder.shadowColor(shadowColor);
+    }
 
     for (final TextDecoration decoration : DECORATIONS) {
       final TextDecoration.State state = value.node(nonNull(TextDecoration.NAMES.key(decoration), "decoration")).get(TextDecoration.State.class);
@@ -88,13 +95,13 @@ final class StyleSerializer implements TypeSerializer<Style> {
       builder.insertion(insertion);
     }
 
-    final ConfigurationNode clickEvent = value.node(CLICK_EVENT);
+    final ConfigurationNode clickEvent = value.node(CLICK_EVENT_CAMEL);
     if (!clickEvent.virtual()) {
       final ClickEvent.Action action = nonNull(clickEvent.node(CLICK_EVENT_ACTION).get(ClickEvent.Action.class), "click event action");
       builder.clickEvent(ClickEvent.clickEvent(action, nonNull(clickEvent.node(CLICK_EVENT_VALUE).getString(), "click event value")));
     }
 
-    final ConfigurationNode hoverEvent = value.node(HOVER_EVENT);
+    final ConfigurationNode hoverEvent = value.node(HOVER_EVENT_CAMEL);
     if (!hoverEvent.virtual()) {
       final HoverEvent.Action<?> action = hoverEvent.node(HOVER_EVENT_ACTION).get(HOVER_EVENT_ACTION_TYPE);
       final ConfigurationNode contents = hoverEvent.node(HOVER_EVENT_CONTENTS);
@@ -132,6 +139,7 @@ final class StyleSerializer implements TypeSerializer<Style> {
     }
     value.node(FONT).set(Key.class, obj.font());
     value.node(COLOR).set(TextColor.class, obj.color());
+    value.node(SHADOW_COLOR).set(ShadowColor.class, obj.shadowColor());
     for (final TextDecoration decoration : DECORATIONS) {
       final ConfigurationNode decorationNode = value.node(nonNull(TextDecoration.NAMES.key(decoration), "decoration"));
       final TextDecoration.State state = obj.decoration(decoration);
@@ -143,7 +151,7 @@ final class StyleSerializer implements TypeSerializer<Style> {
     }
     value.node(INSERTION).set(obj.insertion());
 
-    final ConfigurationNode clickNode = value.node(CLICK_EVENT);
+    final ConfigurationNode clickNode = value.node(CLICK_EVENT_CAMEL);
     final ClickEvent clickEvent = obj.clickEvent();
     if (clickEvent == null) {
       clickNode.set(null);
@@ -152,7 +160,7 @@ final class StyleSerializer implements TypeSerializer<Style> {
       clickNode.node(CLICK_EVENT_VALUE).set(clickEvent.value());
     }
 
-    final ConfigurationNode hoverNode = value.node(HOVER_EVENT);
+    final ConfigurationNode hoverNode = value.node(HOVER_EVENT_CAMEL);
     if (obj.hoverEvent() == null) {
       hoverNode.set(null);
     } else {

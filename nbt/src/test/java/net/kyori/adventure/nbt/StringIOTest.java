@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -153,7 +153,17 @@ class StringIOTest {
     assertEquals("448228", this.tagToString(IntBinaryTag.intBinaryTag(448228)));
 
     assertEquals(IntBinaryTag.intBinaryTag(4482828), this.stringToTag("4482828"));
+    assertEquals(IntBinaryTag.intBinaryTag(4482828), this.stringToTag("4_4_8______2_8_2_8"));
     assertEquals(IntBinaryTag.intBinaryTag(-24), this.stringToTag("-24"));
+    assertEquals(IntBinaryTag.intBinaryTag(0xABC), this.stringToTag("0xABC"));
+    assertEquals(IntBinaryTag.intBinaryTag(0b1001), this.stringToTag("0b1001"));
+  }
+
+  @Test
+  void testNumberSign() throws IOException {
+    assertEquals(ByteBinaryTag.byteBinaryTag((byte) -16), this.stringToTag("240ub"));
+    assertEquals(ByteBinaryTag.byteBinaryTag((byte) -16), this.stringToTag("-16sb"));
+    assertEquals(IntBinaryTag.intBinaryTag(-0xABC), this.stringToTag("-0xABCsI"));
   }
 
   @Test
@@ -180,6 +190,7 @@ class StringIOTest {
     assertEquals(FloatBinaryTag.floatBinaryTag(-4.3e-4f), this.stringToTag("-4.3e-4F"));
     assertEquals(FloatBinaryTag.floatBinaryTag(4.3e-4f), this.stringToTag("+4.3e-4F"));
     assertEquals(FloatBinaryTag.floatBinaryTag(0.3f), this.stringToTag(".3F"));
+    assertEquals(FloatBinaryTag.floatBinaryTag(3.0f), this.stringToTag("3.F"));
   }
 
   @Test
@@ -190,6 +201,8 @@ class StringIOTest {
     assertEquals(DoubleBinaryTag.doubleBinaryTag(4.3e-4d), this.stringToTag("4.3e-4d"));
     assertEquals(DoubleBinaryTag.doubleBinaryTag(-4.3e-4d), this.stringToTag("-4.3e-4D"));
     assertEquals(DoubleBinaryTag.doubleBinaryTag(4.3e-4d), this.stringToTag("+4.3e-4D"));
+    assertEquals(DoubleBinaryTag.doubleBinaryTag(3.0d), this.stringToTag("3."));
+    assertEquals(DoubleBinaryTag.doubleBinaryTag(0.3d), this.stringToTag(".3"));
   }
 
   @Test
@@ -233,7 +246,7 @@ class StringIOTest {
     }
     assertEquals(legacyInput, output.toString());
 
-    final ListTagBuilder<BinaryTag> builder = new ListTagBuilder<>();
+    final ListTagBuilder<BinaryTag> builder = new ListTagBuilder<>(false);
     builder.add(StringBinaryTag.stringBinaryTag("Tag #1"));
     builder.add(StringBinaryTag.stringBinaryTag("Tag #2"));
     assertEquals(builder.build(), tag);

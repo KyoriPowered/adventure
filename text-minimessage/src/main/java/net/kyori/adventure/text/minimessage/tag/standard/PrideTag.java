@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -104,13 +104,13 @@ final class PrideTag extends GradientTag {
       }
     }
 
-    return new PrideTag(phase, FLAGS.get(flag), flag);
+    return new PrideTag(phase, FLAGS.get(flag), flag, ctx);
   }
 
   private final String flag;
 
-  PrideTag(final double phase, final @NotNull List<@NotNull TextColor> colors, final @NotNull String flag) {
-    super(phase, colors);
+  PrideTag(final double phase, final @NotNull List<@NotNull TextColor> colors, final @NotNull String flag, final Context ctx) {
+    super(phase, colors, ctx);
     this.flag = flag;
   }
 

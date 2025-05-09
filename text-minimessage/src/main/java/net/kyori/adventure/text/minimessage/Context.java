@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -140,4 +140,13 @@ public interface Context {
     final @Nullable Throwable cause,
     final @NotNull ArgumentQueue args
   );
+
+  /**
+   * Dictates if transformations may emit virtual components or not.
+   *
+   * @return the boolean flag, {@code true} if transformations may
+   *     emit virtuals, {@code false} otherwise.
+   * @since 4.19.0
+   */
+  boolean emitVirtuals();
 }

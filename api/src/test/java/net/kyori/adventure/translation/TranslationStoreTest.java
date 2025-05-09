@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -42,8 +42,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class TranslationRegistryTest {
-  static final TranslationRegistry REGISTRY = TranslationRegistry.create(Key.key("adventure", "test"));
+class TranslationStoreTest {
+  static final TranslationStore.StringBased<MessageFormat> REGISTRY = TranslationStore.messageFormat(Key.key("adventure", "test"));
   static final TranslatableComponentRenderer<Locale> RENDERER = TranslatableComponentRenderer.usingTranslationSource(REGISTRY);
 
   @BeforeAll

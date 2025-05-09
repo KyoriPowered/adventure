@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
@@ -45,6 +46,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
+import net.kyori.adventure.text.format.ShadowColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.StyleBuilderApplicable;
 import net.kyori.adventure.text.format.StyleGetter;
@@ -53,6 +55,7 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.translation.Translatable;
+import net.kyori.adventure.util.ARGBLike;
 import net.kyori.adventure.util.ForwardingIterator;
 import net.kyori.adventure.util.IntFunction2;
 import net.kyori.adventure.util.MonkeyBars;
@@ -1258,6 +1261,79 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   }
 
   /*
+   * --------------------------
+   * ---- VirtualComponent ----
+   * --------------------------
+   */
+
+  /**
+   * Creates a virtual component.
+   *
+   * @param <C> the context type
+   * @param contextType the context type
+   * @param renderer the renderer
+   * @return a virtual component
+   * @since 4.18.0
+   */
+  @Contract(value = "_, _ -> new", pure = true)
+  static <C> @NotNull VirtualComponent virtual(final @NotNull Class<C> contextType, final @NotNull VirtualComponentRenderer<C> renderer) {
+    requireNonNull(contextType, "context type");
+    requireNonNull(renderer, "renderer");
+    return VirtualComponentImpl.createVirtual(contextType, renderer);
+  }
+
+  /**
+   * Creates a virtual component with a value.
+   *
+   * @param <C> the context type
+   * @param contextType the context type
+   * @param renderer the renderer
+   * @param style the style
+   * @return a virtual component
+   * @since 4.18.0
+   */
+  @Contract(value = "_, _, _ -> new", pure = true)
+  static <C> @NotNull VirtualComponent virtual(final @NotNull Class<C> contextType, final @NotNull VirtualComponentRenderer<C> renderer, final @NotNull Style style) {
+    requireNonNull(contextType, "context type");
+    requireNonNull(renderer, "renderer");
+    return VirtualComponentImpl.createVirtual(contextType, renderer, Collections.emptyList(), style);
+  }
+
+  /**
+   * Creates a virtual component with a value.
+   *
+   * @param <C> the context type
+   * @param contextType the context type
+   * @param renderer the renderer
+   * @param style the style elements
+   * @return a virtual component
+   * @since 4.18.0
+   */
+  @Contract(value = "_, _, _ -> new", pure = true)
+  static <C> @NotNull VirtualComponent virtual(final @NotNull Class<C> contextType, final @NotNull VirtualComponentRenderer<C> renderer, final @NotNull StyleBuilderApplicable... style) {
+    requireNonNull(contextType, "context type");
+    requireNonNull(renderer, "renderer");
+    return VirtualComponentImpl.createVirtual(contextType, renderer, Collections.emptyList(), Style.style(style));
+  }
+
+  /**
+   * Creates a virtual component with a value.
+   *
+   * @param <C> the context type
+   * @param contextType the context type
+   * @param renderer the renderer
+   * @param style the style elements
+   * @return a virtual component
+   * @since 4.18.0
+   */
+  @Contract(value = "_, _, _ -> new", pure = true)
+  static <C> @NotNull VirtualComponent virtual(final @NotNull Class<C> contextType, final @NotNull VirtualComponentRenderer<C> renderer, final @NotNull Iterable<StyleBuilderApplicable> style) {
+    requireNonNull(contextType, "context type");
+    requireNonNull(renderer, "renderer");
+    return VirtualComponentImpl.createVirtual(contextType, renderer, Collections.emptyList(), Style.style(style));
+  }
+
+  /*
    * -------------------------------
    * ---- TranslatableComponent ----
    * -------------------------------
@@ -2034,6 +2110,41 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   }
 
   /**
+   * Appends components to this component.
+   *
+   * @param components the children to add
+   * @return a component with the children added to the existing children
+   * @since 4.20.0
+   */
+  @Contract(pure = true)
+  default @NotNull Component append(final @NotNull ComponentLike @NotNull... components) {
+    if (components.length == 0) return this;
+
+    final List<ComponentLike> newChildren = new ArrayList<>(components.length + this.children().size());
+    newChildren.addAll(this.children());
+    Collections.addAll(newChildren, components);
+    return this.children(newChildren);
+  }
+
+  /**
+   * Appends a list of components to this component.
+   *
+   * @param components the children to add
+   * @return a component with the children added to the existing children
+   * @since 4.20.0
+   */
+  @Contract(pure = true)
+  default @NotNull Component append(final @NotNull List<? extends ComponentLike> components) {
+    if (components.isEmpty()) return this;
+    if (this.children().isEmpty()) return this.children(components);
+
+    final List<ComponentLike> newChildren = new ArrayList<>(components.size() + this.children().size());
+    newChildren.addAll(this.children());
+    newChildren.addAll(components);
+    return this.children(newChildren);
+  }
+
+  /**
    * Apply a fallback style for this component and its children.
    *
    * <p>This method can be used to set the "default" style for a component, whilst still allowing children of the component to override the style.</p>
@@ -2189,6 +2300,11 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
     return this.style().color();
   }
 
+  @Override
+  default @Nullable ShadowColor shadowColor() {
+    return this.style().shadowColor();
+  }
+
   /**
    * Sets the color of this component.
    *
@@ -2213,6 +2329,33 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   @Override
   default @NotNull Component colorIfAbsent(final @Nullable TextColor color) {
     if (this.color() == null) return this.color(color);
+    return this;
+  }
+
+  /**
+   * Sets the shadow color of this component.
+   *
+   * @param argb the color
+   * @return a component
+   * @since 4.18.0
+   */
+  @Contract(pure = true)
+  @Override
+  default @NotNull Component shadowColor(final @Nullable ARGBLike argb) {
+    return this.style(this.style().shadowColor(argb));
+  }
+
+  /**
+   * Sets the shadow color if there isn't one set already.
+   *
+   * @param argb the color
+   * @return a component
+   * @since 4.18.0
+   */
+  @Contract(pure = true)
+  @Override
+  default @NotNull Component shadowColorIfAbsent(final @Nullable ARGBLike argb) {
+    if (this.shadowColor() == null) return this.shadowColor(argb);
     return this;
   }
 
@@ -2425,6 +2568,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.2.0
    */
   @Contract(pure = true)
+  @ScopedComponentOverrideNotRequired
   default @NotNull Component replaceText(final @NotNull Consumer<TextReplacementConfig.Builder> configurer) {
     requireNonNull(configurer, "configurer");
     return this.replaceText(AbstractBuilder.configureAndBuild(TextReplacementConfig.builder(), configurer));
@@ -2438,6 +2582,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.2.0
    */
   @Contract(pure = true)
+  @ScopedComponentOverrideNotRequired
   default @NotNull Component replaceText(final @NotNull TextReplacementConfig config) {
     requireNonNull(config, "replacement");
     if (!(config instanceof TextReplacementConfigImpl)) {
@@ -2452,6 +2597,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return the optimized component
    * @since 4.9.0
    */
+  @ScopedComponentOverrideNotRequired
   default @NotNull Component compact() {
     return ComponentCompaction.compact(this, null);
   }

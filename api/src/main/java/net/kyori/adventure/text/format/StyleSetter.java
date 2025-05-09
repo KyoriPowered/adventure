@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,6 +32,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
+import net.kyori.adventure.util.ARGBLike;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -72,6 +73,30 @@ public interface StyleSetter<T extends StyleSetter<?>> {
    * @since 4.10.0
    */
   @NotNull T colorIfAbsent(final @Nullable TextColor color);
+
+  /**
+   * Sets the shadow color.
+   *
+   * <p>Setting the color to {@code null} will reset the shadow color to default.
+   * To remove the shadow entirely, use {@link ShadowColor#none()}.</p>
+   *
+   * @param argb the color
+   * @return an object ({@code T})
+   * @since 4.18.0
+   */
+  @NotNull T shadowColor(final @Nullable ARGBLike argb);
+
+  /**
+   * Sets the shadow color if there isn't one set already.
+   *
+   * <p>Setting the color to {@code null} will reset the shadow color to default.
+   * To remove the shadow entirely, use {@link ShadowColor#none()}.</p>
+   *
+   * @param argb the color
+   * @return an object ({@code T})
+   * @since 4.18.0
+   */
+  @NotNull T shadowColorIfAbsent(final @Nullable ARGBLike argb);
 
   /**
    * Sets the state of {@code decoration} to {@link TextDecoration.State#TRUE}.

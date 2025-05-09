@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,5 +37,6 @@ public interface Namespaced {
    * @return the namespace
    * @since 4.4.0
    */
-  @NotNull @KeyPattern.Namespace String namespace();
+  @KeyPattern.Namespace
+  @NotNull String namespace();
 }

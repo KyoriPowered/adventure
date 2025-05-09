@@ -8,9 +8,13 @@
   ],
   "packageRules": [
     {
-      "matchUpdateTypes": ["major"],
-      "matchPackagePrefixes": ["org.spongepowered:configurate-"],
-      "enabled": false
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "enabled": false,
+      "matchPackageNames": [
+        "org.spongepowered:configurate-{/,}**"
+      ]
     }
   ]
 }

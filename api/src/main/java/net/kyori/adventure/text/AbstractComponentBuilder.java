@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -36,6 +36,7 @@ import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.util.ARGBLike;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -238,6 +239,20 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
 
   @Override
   @SuppressWarnings("unchecked")
+  public @NotNull B shadowColor(final @Nullable ARGBLike argb) {
+    this.styleBuilder().shadowColor(argb);
+    return (B) this;
+  }
+
+  @Override
+  @SuppressWarnings("unchecked")
+  public @NotNull B shadowColorIfAbsent(final @Nullable ARGBLike argb) {
+    this.styleBuilder().shadowColorIfAbsent(argb);
+    return (B) this;
+  }
+
+  @Override
+  @SuppressWarnings("unchecked")
   public @NotNull B decoration(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state) {
     this.styleBuilder().decoration(decoration, state);
     return (B) this;
@@ -274,7 +289,9 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
   @Override
   @SuppressWarnings("unchecked")
   public @NotNull B mergeStyle(final @NotNull Component that, final @NotNull Set<Style.Merge> merges) {
-    this.styleBuilder().merge(requireNonNull(that, "component").style(), merges);
+    final Style thatStyle = requireNonNull(that, "that").style();
+    if (thatStyle.isEmpty() && merges.isEmpty()) return (B) this;
+    this.styleBuilder().merge(thatStyle, merges);
     return (B) this;
   }
 
@@ -298,6 +315,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
     return this.styleBuilder;
   }
 
+  @SuppressWarnings("BooleanMethodIsAlwaysInverted")
   protected final boolean hasStyle() {
     return this.styleBuilder != null || this.style != null;
   }

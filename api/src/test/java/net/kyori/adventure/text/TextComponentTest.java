@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -195,5 +195,13 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
       Component.empty(),
       Component.text("").children(Collections.emptyList())
     );
+  }
+
+  @Test
+  void testAddingMultipleChildren() {
+    final Component c0 = Component.text("1").append(Component.text("2"));
+    final Component c1 = c0.append(Component.text("3")).append(Component.text("4"));
+
+    assertEquals(c1, c0.append(Component.text("3"), Component.text("4")));
   }
 }

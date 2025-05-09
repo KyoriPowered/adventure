@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import org.junit.jupiter.api.Test;
 import org.spongepowered.configurate.ConfigurationNode;
 
@@ -37,12 +38,12 @@ class HoverEventSerializersTest implements ConfigurateTestBase {
   @Test
   void testShowEntity() {
     final ConfigurationNode node = this.node(n -> {
-      n.node(ComponentTypeSerializer.TEXT).raw("kashike");
-      n.node(StyleSerializer.HOVER_EVENT).act(event -> {
-        event.node(StyleSerializer.HOVER_EVENT_ACTION).raw("show_entity");
-        event.node(StyleSerializer.HOVER_EVENT_CONTENTS).act(entity -> {
-          entity.node(HoverEventShowEntitySerializer.ENTITY_TYPE).raw("minecraft:cat");
-          entity.node(HoverEventShowEntitySerializer.ID).raw("eb121687-8b1a-4944-bd4d-e0a818d9dfe2");
+      n.node(ComponentTreeConstants.TEXT).raw("kashike");
+      n.node(ComponentTreeConstants.HOVER_EVENT_CAMEL).act(event -> {
+        event.node(ComponentTreeConstants.HOVER_EVENT_ACTION).raw("show_entity");
+        event.node(ComponentTreeConstants.HOVER_EVENT_CONTENTS).act(entity -> {
+          entity.node(ComponentTreeConstants.SHOW_ENTITY_TYPE).raw("minecraft:cat");
+          entity.node(ComponentTreeConstants.SHOW_ENTITY_ID).raw("eb121687-8b1a-4944-bd4d-e0a818d9dfe2");
         });
       });
     });
@@ -56,13 +57,13 @@ class HoverEventSerializersTest implements ConfigurateTestBase {
   @Test
   void testShowEntityCustomName() {
     final ConfigurationNode node = this.node(n -> {
-      n.node(ComponentTypeSerializer.TEXT).raw("kashike");
-      n.node(StyleSerializer.HOVER_EVENT).act(event -> {
-        event.node(StyleSerializer.HOVER_EVENT_ACTION).raw("show_entity");
-        event.node(StyleSerializer.HOVER_EVENT_CONTENTS).act(entity -> {
-          entity.node(HoverEventShowEntitySerializer.ENTITY_TYPE).raw("minecraft:cat");
-          entity.node(HoverEventShowEntitySerializer.ID).raw("eb121687-8b1a-4944-bd4d-e0a818d9dfe2");
-          entity.node(HoverEventShowEntitySerializer.NAME, ComponentTypeSerializer.TEXT).raw("meow");
+      n.node(ComponentTreeConstants.TEXT).raw("kashike");
+      n.node(ComponentTreeConstants.HOVER_EVENT_CAMEL).act(event -> {
+        event.node(ComponentTreeConstants.HOVER_EVENT_ACTION).raw("show_entity");
+        event.node(ComponentTreeConstants.HOVER_EVENT_CONTENTS).act(entity -> {
+          entity.node(ComponentTreeConstants.SHOW_ENTITY_TYPE).raw("minecraft:cat");
+          entity.node(ComponentTreeConstants.SHOW_ENTITY_ID).raw("eb121687-8b1a-4944-bd4d-e0a818d9dfe2");
+          entity.node(ComponentTreeConstants.SHOW_ENTITY_NAME, ComponentTreeConstants.TEXT).raw("meow");
         });
       });
     });
@@ -76,18 +77,18 @@ class HoverEventSerializersTest implements ConfigurateTestBase {
   @Test
   void testShowItem() {
     final ConfigurationNode node = this.node(n -> {
-      n.node(ComponentTypeSerializer.TEXT).raw("[");
-      n.node(StyleSerializer.COLOR).raw("aqua");
-      n.node(ComponentTypeSerializer.EXTRA).act(extra -> {
-        extra.appendListNode().node(ComponentTypeSerializer.TRANSLATE).raw("item.minecraft.purple_wool");
-        extra.appendListNode().node(ComponentTypeSerializer.TEXT).raw("]");
+      n.node(ComponentTreeConstants.TEXT).raw("[");
+      n.node(ComponentTreeConstants.COLOR).raw("aqua");
+      n.node(ComponentTreeConstants.EXTRA).act(extra -> {
+        extra.appendListNode().node(ComponentTreeConstants.TRANSLATE).raw("item.minecraft.purple_wool");
+        extra.appendListNode().node(ComponentTreeConstants.TEXT).raw("]");
       });
-      n.node(StyleSerializer.HOVER_EVENT).act(hover -> {
-        hover.node(StyleSerializer.HOVER_EVENT_ACTION).raw("show_item");
-        hover.node(StyleSerializer.HOVER_EVENT_CONTENTS).act(action -> {
-          action.node(HoverEventShowItemSerializer.ID).raw("minecraft:purple_wool");
-          action.node(HoverEventShowItemSerializer.COUNT).raw(2);
-          action.node(HoverEventShowItemSerializer.TAG).raw("{Damage: 5b}");
+      n.node(ComponentTreeConstants.HOVER_EVENT_CAMEL).act(hover -> {
+        hover.node(ComponentTreeConstants.HOVER_EVENT_ACTION).raw("show_item");
+        hover.node(ComponentTreeConstants.HOVER_EVENT_CONTENTS).act(action -> {
+          action.node(ComponentTreeConstants.SHOW_ITEM_ID).raw("minecraft:purple_wool");
+          action.node(ComponentTreeConstants.SHOW_ITEM_COUNT).raw(2);
+          action.node(ComponentTreeConstants.SHOW_ITEM_TAG).raw("{Damage: 5b}");
         });
       });
     });
@@ -104,17 +105,17 @@ class HoverEventSerializersTest implements ConfigurateTestBase {
   @Test
   void testShowItemNoTag() {
     final ConfigurationNode node = this.node(n -> {
-      n.node(ComponentTypeSerializer.TEXT).raw("[");
-      n.node(StyleSerializer.COLOR).raw("aqua");
-      n.node(ComponentTypeSerializer.EXTRA).act(extra -> {
-        extra.appendListNode().node(ComponentTypeSerializer.TRANSLATE).raw("item.minecraft.purple_wool");
-        extra.appendListNode().node(ComponentTypeSerializer.TEXT).raw("]");
+      n.node(ComponentTreeConstants.TEXT).raw("[");
+      n.node(ComponentTreeConstants.COLOR).raw("aqua");
+      n.node(ComponentTreeConstants.EXTRA).act(extra -> {
+        extra.appendListNode().node(ComponentTreeConstants.TRANSLATE).raw("item.minecraft.purple_wool");
+        extra.appendListNode().node(ComponentTreeConstants.TEXT).raw("]");
       });
-      n.node(StyleSerializer.HOVER_EVENT).act(hover -> {
-        hover.node(StyleSerializer.HOVER_EVENT_ACTION).raw("show_item");
-        hover.node(StyleSerializer.HOVER_EVENT_CONTENTS).act(action -> {
-          action.node(HoverEventShowItemSerializer.ID).raw("minecraft:purple_wool");
-          action.node(HoverEventShowItemSerializer.COUNT).raw(1);
+      n.node(ComponentTreeConstants.HOVER_EVENT_CAMEL).act(hover -> {
+        hover.node(ComponentTreeConstants.HOVER_EVENT_ACTION).raw("show_item");
+        hover.node(ComponentTreeConstants.HOVER_EVENT_CONTENTS).act(action -> {
+          action.node(ComponentTreeConstants.SHOW_ITEM_ID).raw("minecraft:purple_wool");
+          action.node(ComponentTreeConstants.SHOW_ITEM_COUNT).raw(1);
         });
       });
     });
@@ -131,11 +132,11 @@ class HoverEventSerializersTest implements ConfigurateTestBase {
   @Test
   void testShowText() {
     final ConfigurationNode node = this.node(n -> {
-      n.node(StyleSerializer.HOVER_EVENT).act(event -> {
-        event.node(StyleSerializer.HOVER_EVENT_ACTION).raw("show_text");
-        event.node(StyleSerializer.HOVER_EVENT_CONTENTS, ComponentTypeSerializer.TEXT).raw("i'm hovering");
+      n.node(ComponentTreeConstants.HOVER_EVENT_CAMEL).act(event -> {
+        event.node(ComponentTreeConstants.HOVER_EVENT_ACTION).raw("show_text");
+        event.node(ComponentTreeConstants.HOVER_EVENT_CONTENTS, ComponentTreeConstants.TEXT).raw("i'm hovering");
       });
-      n.node(ComponentTypeSerializer.TRANSLATE).raw("look.at.me");
+      n.node(ComponentTreeConstants.TRANSLATE).raw("look.at.me");
     });
     final Component component = Component.translatable("look.at.me", Style.style(HoverEvent.showText(Component.text("i'm hovering"))));
 

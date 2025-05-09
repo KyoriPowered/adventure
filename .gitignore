@@ -3,6 +3,7 @@
 /build/
 /*/build/
 /*/out/
+/*/bin/
 /*/run/
 /.idea/
 /*.iml
@@ -11,3 +12,5 @@
 /*/.classpath
 /*/.apt_generated/
 /*/.apt_generated_tests/
+/.kotlin/
+/*/.kotlin/

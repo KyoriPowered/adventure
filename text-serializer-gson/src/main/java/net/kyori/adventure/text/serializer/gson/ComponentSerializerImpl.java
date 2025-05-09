@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -56,23 +56,23 @@ import net.kyori.adventure.text.serializer.json.JSONOptions;
 import net.kyori.option.OptionState;
 import org.jetbrains.annotations.Nullable;
 
-import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.EXTRA;
-import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.KEYBIND;
-import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.NBT;
-import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.NBT_BLOCK;
-import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.NBT_ENTITY;
-import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.NBT_INTERPRET;
-import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.NBT_STORAGE;
-import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.SCORE;
-import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.SCORE_NAME;
-import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.SCORE_OBJECTIVE;
-import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.SCORE_VALUE;
-import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.SELECTOR;
-import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.SEPARATOR;
-import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.TEXT;
-import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.TRANSLATE;
-import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.TRANSLATE_FALLBACK;
-import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.TRANSLATE_WITH;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.EXTRA;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.KEYBIND;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NBT;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NBT_BLOCK;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NBT_ENTITY;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NBT_INTERPRET;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NBT_STORAGE;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SCORE;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SCORE_NAME;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SCORE_OBJECTIVE;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SCORE_VALUE;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SELECTOR;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SEPARATOR;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.TEXT;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.TRANSLATE;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.TRANSLATE_FALLBACK;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.TRANSLATE_WITH;
 
 final class ComponentSerializerImpl extends TypeAdapter<Component> {
   static final Type COMPONENT_LIST_TYPE = new TypeToken<List<Component>>() {}.getType();

@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -155,11 +155,13 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
     // Only visit children if we're running
     if (state.running) {
       // hover event
-      final HoverEvent<?> event = oldStyle.hoverEvent();
-      if (event != null) {
-        final HoverEvent<?> rendered = event.withRenderedValue(this, state);
-        if (event != rendered) {
-          modified = modified.style(s -> s.hoverEvent(rendered));
+      if (state.replaceInsideHoverEvents) {
+        final HoverEvent<?> event = oldStyle.hoverEvent();
+        if (event != null) {
+          final HoverEvent<?> rendered = event.withRenderedValue(this, state);
+          if (event != rendered) {
+            modified = modified.style(s -> s.hoverEvent(rendered));
+          }
         }
       }
       // Children
@@ -200,15 +202,17 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
     final Pattern pattern;
     final BiFunction<MatchResult, TextComponent.Builder, @Nullable ComponentLike> replacement;
     final TextReplacementConfig.Condition continuer;
+    final boolean replaceInsideHoverEvents;
     boolean running = true;
     int matchCount = 0;
     int replaceCount = 0;
     boolean firstMatch = true;
 
-    State(final @NotNull Pattern pattern, final @NotNull BiFunction<MatchResult, TextComponent.Builder, @Nullable ComponentLike> replacement, final TextReplacementConfig.@NotNull Condition continuer) {
+    State(final @NotNull Pattern pattern, final @NotNull BiFunction<MatchResult, TextComponent.Builder, @Nullable ComponentLike> replacement, final TextReplacementConfig.@NotNull Condition continuer, final boolean replaceInsideHoverEvents) {
       this.pattern = pattern;
       this.replacement = replacement;
       this.continuer = continuer;
+      this.replaceInsideHoverEvents = replaceInsideHoverEvents;
     }
   }
 }

@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -90,7 +90,7 @@ final class ColorTagResolver implements TagResolver, SerializableResolver.Single
     return Tag.styling(color);
   }
 
-  static @NotNull TextColor resolveColor(final @NotNull String colorName, final @NotNull Context ctx) throws ParsingException {
+  static @Nullable TextColor resolveColorOrNull(final String colorName) {
     final TextColor color;
     if (COLOR_ALIASES.containsKey(colorName)) {
       color = COLOR_ALIASES.get(colorName);
@@ -100,6 +100,11 @@ final class ColorTagResolver implements TagResolver, SerializableResolver.Single
       color = NamedTextColor.NAMES.value(colorName);
     }
 
+    return color;
+  }
+
+  static @NotNull TextColor resolveColor(final @NotNull String colorName, final @NotNull Context ctx) throws ParsingException {
+    final TextColor color = resolveColorOrNull(colorName);
     if (color == null) {
       throw ctx.newException(String.format("Unable to parse a color from '%s'. Please use named colours or hex (#RRGGBB) colors.", colorName));
     }
@@ -109,9 +114,9 @@ final class ColorTagResolver implements TagResolver, SerializableResolver.Single
   @Override
   public boolean has(final @NotNull String name) {
     return isColorOrAbbreviation(name)
-      || TextColor.fromHexString(name) != null
       || NamedTextColor.NAMES.value(name) != null
-      || COLOR_ALIASES.containsKey(name);
+      || COLOR_ALIASES.containsKey(name)
+      || TextColor.fromHexString(name) != null;
   }
 
   @Override

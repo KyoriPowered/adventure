@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,6 +28,7 @@ import java.util.function.Function;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 import net.kyori.adventure.builder.AbstractBuilder;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.util.Buildable;
 import net.kyori.adventure.util.IntFunction2;
 import net.kyori.examination.Examinable;
@@ -220,6 +221,18 @@ public interface TextReplacementConfig extends Buildable<TextReplacementConfig, 
      */
     @Contract("_ -> this")
     @NotNull Builder replacement(final @NotNull BiFunction<MatchResult, TextComponent.Builder, @Nullable ComponentLike> replacement);
+
+    /**
+     * Set if the replacement should replace inside {@link HoverEvent hover events}.
+     *
+     * <p>This defaults to {@code true}.</p>
+     *
+     * @param replace if it should replace inside hover events
+     * @return this builder
+     * @since 4.19.0
+     */
+    @Contract("_ -> this")
+    @NotNull Builder replaceInsideHoverEvents(final boolean replace);
   }
 
   /**

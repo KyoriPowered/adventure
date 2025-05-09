@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,9 +24,12 @@
 package net.kyori.adventure.text.minimessage.tag.standard;
 
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.Context;
+import net.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
+import net.kyori.adventure.text.minimessage.internal.serializer.TokenEmitter;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -44,7 +47,7 @@ final class RainbowTag extends AbstractColorChangingTag {
   private static final String REVERSE = "!";
   private static final String RAINBOW = "rainbow";
 
-  static final TagResolver RESOLVER = TagResolver.resolver(RAINBOW, RainbowTag::create);
+  static final TagResolver RESOLVER = SerializableResolver.claimingComponent(RAINBOW, RainbowTag::create, AbstractColorChangingTag::claimComponent);
 
   private final boolean reversed;
   private final double dividedPhase;
@@ -70,10 +73,11 @@ final class RainbowTag extends AbstractColorChangingTag {
       }
     }
 
-    return new RainbowTag(reversed, phase);
+    return new RainbowTag(reversed, phase, ctx);
   }
 
-  private RainbowTag(final boolean reversed, final int phase) {
+  private RainbowTag(final boolean reversed, final int phase, final Context ctx) {
+    super(ctx);
     this.reversed = reversed;
     this.dividedPhase = ((double) phase) / 10d;
   }
@@ -103,6 +107,22 @@ final class RainbowTag extends AbstractColorChangingTag {
     final float index = this.colorIndex;
     final float hue = (float) ((index / this.size() + this.dividedPhase) % 1f);
     return TextColor.color(HSVLike.hsvLike(hue, 1f, 1f));
+  }
+
+  @Override
+  protected @NotNull Consumer<TokenEmitter> preserveData() {
+    final boolean reversed = this.reversed;
+    final int phase = (int) Math.round(this.dividedPhase * 10);
+    return emit -> {
+      emit.tag(RAINBOW);
+      if (reversed && phase != 0) {
+        emit.argument(REVERSE + phase);
+      } else if (reversed) {
+        emit.argument(REVERSE);
+      } else if (phase != 0) {
+        emit.argument(Integer.toString(phase));
+      }
+    };
   }
 
   @Override

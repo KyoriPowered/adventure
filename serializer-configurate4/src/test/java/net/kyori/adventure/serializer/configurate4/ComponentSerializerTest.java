@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,6 +28,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.junit.jupiter.api.Test;
 import org.spongepowered.configurate.ConfigurationNode;
@@ -49,7 +50,7 @@ class ComponentSerializerTest implements ConfigurateTestBase {
   @Test
   void testTextComponent() {
     final ConfigurationNode serialized = this.node(n -> {
-      n.node(ComponentTypeSerializer.TEXT).raw("Hello world");
+      n.node(ComponentTreeConstants.TEXT).raw("Hello world");
     });
     final Component component = Component.text("Hello world");
 
@@ -59,10 +60,10 @@ class ComponentSerializerTest implements ConfigurateTestBase {
   @Test
   void testTranslatableComponent() {
     final ConfigurationNode serialized = this.node(n -> {
-      n.node(ComponentTypeSerializer.TRANSLATE).raw("translation.string");
-      n.node(ComponentTypeSerializer.TRANSLATE_WITH).act(w -> {
-        w.appendListNode().node(ComponentTypeSerializer.TEXT).raw("test1");
-        w.appendListNode().node(ComponentTypeSerializer.TEXT).raw("test2");
+      n.node(ComponentTreeConstants.TRANSLATE).raw("translation.string");
+      n.node(ComponentTreeConstants.TRANSLATE_WITH).act(w -> {
+        w.appendListNode().node(ComponentTreeConstants.TEXT).raw("test1");
+        w.appendListNode().node(ComponentTreeConstants.TEXT).raw("test2");
       });
     });
     final Component component = Component.translatable("translation.string", Component.text("test1"), Component.text("test2"));
@@ -73,10 +74,10 @@ class ComponentSerializerTest implements ConfigurateTestBase {
   @Test
   void testScoreComponent() {
     final ConfigurationNode serialized = this.node(n -> {
-      n.node(ComponentTypeSerializer.SCORE).act(s -> {
-        s.node(ComponentTypeSerializer.SCORE_NAME).raw("Holder");
-        s.node(ComponentTypeSerializer.SCORE_OBJECTIVE).raw("some.objective");
-        s.node(ComponentTypeSerializer.SCORE_VALUE).raw("Override");
+      n.node(ComponentTreeConstants.SCORE).act(s -> {
+        s.node(ComponentTreeConstants.SCORE_NAME).raw("Holder");
+        s.node(ComponentTreeConstants.SCORE_OBJECTIVE).raw("some.objective");
+        s.node(ComponentTreeConstants.SCORE_VALUE).raw("Override");
       });
     });
     final Component component = Component.score("Holder", "some.objective", "Override");
@@ -87,9 +88,9 @@ class ComponentSerializerTest implements ConfigurateTestBase {
   @Test
   void testScoreComponentNoValue() {
     final ConfigurationNode serialized = this.node(n -> {
-      n.node(ComponentTypeSerializer.SCORE).act(s -> {
-        s.node(ComponentTypeSerializer.SCORE_NAME).raw("Holder");
-        s.node(ComponentTypeSerializer.SCORE_OBJECTIVE).raw("some.objective");
+      n.node(ComponentTreeConstants.SCORE).act(s -> {
+        s.node(ComponentTreeConstants.SCORE_NAME).raw("Holder");
+        s.node(ComponentTreeConstants.SCORE_OBJECTIVE).raw("some.objective");
       });
     });
 
@@ -101,7 +102,7 @@ class ComponentSerializerTest implements ConfigurateTestBase {
   @Test
   void testKeybindComponent() {
     final ConfigurationNode serialized = this.node(n -> {
-      n.node(ComponentTypeSerializer.KEYBIND).raw("key.worldeditcui.toggle");
+      n.node(ComponentTreeConstants.KEYBIND).raw("key.worldeditcui.toggle");
     });
     final Component component = Component.keybind("key.worldeditcui.toggle");
 
@@ -111,7 +112,7 @@ class ComponentSerializerTest implements ConfigurateTestBase {
   @Test
   void testSelectorComponent() {
     final ConfigurationNode serialized = this.node(n -> {
-      n.node(ComponentTypeSerializer.SELECTOR).raw("@e[limit=1]");
+      n.node(ComponentTreeConstants.SELECTOR).raw("@e[limit=1]");
     });
     final Component component = Component.selector("@e[limit=1]");
 
@@ -121,9 +122,9 @@ class ComponentSerializerTest implements ConfigurateTestBase {
   @Test
   void testBlockNBTComponent() {
     final ConfigurationNode serialized = this.node(n -> {
-      n.node(ComponentTypeSerializer.NBT).raw("Something[1].CustomName");
-      n.node(ComponentTypeSerializer.NBT_INTERPRET).raw(true);
-      n.node(ComponentTypeSerializer.NBT_BLOCK).raw("^0.0 ^0.0 ^0.0");
+      n.node(ComponentTreeConstants.NBT).raw("Something[1].CustomName");
+      n.node(ComponentTreeConstants.NBT_INTERPRET).raw(true);
+      n.node(ComponentTreeConstants.NBT_BLOCK).raw("^0.0 ^0.0 ^0.0");
     });
     final Component component = Component.blockNBT()
       .nbtPath("Something[1].CustomName")
@@ -137,9 +138,9 @@ class ComponentSerializerTest implements ConfigurateTestBase {
   @Test
   void testEntityNBTComponent() {
     final ConfigurationNode serialized = this.node(n -> {
-      n.node(ComponentTypeSerializer.NBT).raw("Something[1].CustomName");
-      n.node(ComponentTypeSerializer.NBT_INTERPRET).raw(false);
-      n.node(ComponentTypeSerializer.NBT_ENTITY).raw("@e[limit=1]");
+      n.node(ComponentTreeConstants.NBT).raw("Something[1].CustomName");
+      n.node(ComponentTreeConstants.NBT_INTERPRET).raw(false);
+      n.node(ComponentTreeConstants.NBT_ENTITY).raw("@e[limit=1]");
     });
     final Component component = Component.entityNBT()
       .nbtPath("Something[1].CustomName")
@@ -153,9 +154,9 @@ class ComponentSerializerTest implements ConfigurateTestBase {
   @Test
   void testStorageNBTComponent() {
     final ConfigurationNode serialized = this.node(n -> {
-      n.node(ComponentTypeSerializer.NBT).raw("Kittens.Toes[0]");
-      n.node(ComponentTypeSerializer.NBT_INTERPRET).raw(false);
-      n.node(ComponentTypeSerializer.NBT_STORAGE).raw("adventure:purr");
+      n.node(ComponentTreeConstants.NBT).raw("Kittens.Toes[0]");
+      n.node(ComponentTreeConstants.NBT_INTERPRET).raw(false);
+      n.node(ComponentTreeConstants.NBT_STORAGE).raw("adventure:purr");
     });
     final Component component = Component.storageNBT()
       .nbtPath("Kittens.Toes[0]")
@@ -169,10 +170,10 @@ class ComponentSerializerTest implements ConfigurateTestBase {
   @Test
   void testComponentWithChildren() {
     final ConfigurationNode serialized = this.node(n -> {
-      n.node(ComponentTypeSerializer.TEXT).raw("Hello");
-      n.node(ComponentTypeSerializer.EXTRA).act(extra -> {
-        extra.appendListNode().node(ComponentTypeSerializer.TRANSLATE).raw("adventure.world");
-        extra.appendListNode().node(ComponentTypeSerializer.KEYBIND).raw("minecraft.key.jump");
+      n.node(ComponentTreeConstants.TEXT).raw("Hello");
+      n.node(ComponentTreeConstants.EXTRA).act(extra -> {
+        extra.appendListNode().node(ComponentTreeConstants.TRANSLATE).raw("adventure.world");
+        extra.appendListNode().node(ComponentTreeConstants.KEYBIND).raw("minecraft.key.jump");
       });
     });
     final Component component = Component.text().content("Hello")
@@ -186,10 +187,10 @@ class ComponentSerializerTest implements ConfigurateTestBase {
   @Test
   void testArrayChildren() {
     final ConfigurationNode serialized = this.node(n -> {
-      n.appendListNode().node(ComponentTypeSerializer.TEXT).raw("first");
+      n.appendListNode().node(ComponentTreeConstants.TEXT).raw("first");
       n.appendListNode().act(child -> {
-        child.node(ComponentTypeSerializer.TRANSLATE).raw("keys.second");
-        child.node(StyleSerializer.COLOR).raw("#deadca");
+        child.node(ComponentTreeConstants.TRANSLATE).raw("keys.second");
+        child.node(ComponentTreeConstants.COLOR).raw("#deadca");
       });
     });
     final Component deserialized = Component.text("first")

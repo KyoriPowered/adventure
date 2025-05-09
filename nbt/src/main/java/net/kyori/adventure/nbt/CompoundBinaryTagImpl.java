@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -66,6 +66,11 @@ final class CompoundBinaryTagImpl extends AbstractBinaryTag implements CompoundB
   @Override
   public int size() {
     return this.tags.size();
+  }
+
+  @Override
+  public boolean isEmpty() {
+    return this.tags.isEmpty();
   }
 
   @Override
@@ -229,6 +234,12 @@ final class CompoundBinaryTagImpl extends AbstractBinaryTag implements CompoundB
       return ((LongArrayBinaryTag) this.tags.get(key)).value();
     }
     return defaultValue;
+  }
+
+  @Override
+  @SuppressWarnings({"unchecked", "rawtypes"})
+  public Stream<Map.Entry<String, ? extends BinaryTag>> stream() {
+    return (Stream) this.tags.entrySet().stream();
   }
 
   private CompoundBinaryTag edit(final Consumer<Map<String, BinaryTag>> consumer) {

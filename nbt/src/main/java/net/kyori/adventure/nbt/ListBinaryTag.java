@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,6 +26,7 @@ package net.kyori.adventure.nbt;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collector;
 import java.util.stream.Stream;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -69,7 +70,17 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @since 4.0.0
    */
   static @NotNull Builder<BinaryTag> builder() {
-    return new ListTagBuilder<>();
+    return new ListTagBuilder<>(false);
+  }
+
+  /**
+   * Creates a builder that can accept elements of multiple types.
+   *
+   * @return a new builder
+   * @since 4.21.0
+   */
+  static @NotNull Builder<BinaryTag> heterogeneousListBinaryTag() {
+    return new ListTagBuilder<>(true);
   }
 
   /**
@@ -83,7 +94,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    */
   static <T extends BinaryTag> @NotNull Builder<T> builder(final @NotNull BinaryTagType<T> type) {
     if (type == BinaryTagTypes.END) throw new IllegalArgumentException("Cannot create a list of " + BinaryTagTypes.END);
-    return new ListTagBuilder<>(type);
+    return new ListTagBuilder<>(false, type);
   }
 
   /**
@@ -94,13 +105,14 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @param type the element type
    * @param tags the elements
    * @return a tag
-   * @throws IllegalArgumentException if {@code type} is {@link BinaryTagTypes#END}
+   * @throws IllegalArgumentException if {@code type} is {@link BinaryTagTypes#END}, or if elements are of different types
    * @since 4.14.0
    */
   static @NotNull ListBinaryTag listBinaryTag(final @NotNull BinaryTagType<? extends BinaryTag> type, final @NotNull List<BinaryTag> tags) {
     if (tags.isEmpty()) return empty();
     if (type == BinaryTagTypes.END) throw new IllegalArgumentException("Cannot create a list of " + BinaryTagTypes.END);
-    return new ListBinaryTagImpl(type, new ArrayList<>(tags)); // explicitly copy
+    ListBinaryTagImpl.validateTagType(tags, type == BinaryTagTypes.LIST_WILDCARD);
+    return new ListBinaryTagImpl(type, type == BinaryTagTypes.LIST_WILDCARD, new ArrayList<>(tags)); // explicitly copy
   }
 
   /**
@@ -119,6 +131,34 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
   @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   static @NotNull ListBinaryTag of(final @NotNull BinaryTagType<? extends BinaryTag> type, final @NotNull List<BinaryTag> tags) {
     return listBinaryTag(type, tags);
+  }
+
+  /**
+   * Create a {@link Collector} to consume streams of list tags.
+   *
+   * @return a collector of tags
+   * @since 4.21.0
+   */
+  static @NotNull Collector<BinaryTag, ?, ListBinaryTag> toListTag() {
+    return toListTag(null);
+  }
+
+  /**
+   * Create a {@link Collector} to consume streams of map entries, with initial contents.
+   *
+   * <p>In the event of duplicate entries, the last seen entry will be preserved.</p>
+   *
+   * @param initial an existing tag that will initialize the builder
+   * @return a collector for map entries
+   * @since 4.21.0
+   */
+  static @NotNull Collector<BinaryTag, ?, ListBinaryTag> toListTag(final @Nullable ListBinaryTag initial) {
+    return Collector.of(
+      initial == null ? ListBinaryTag::builder : () -> ListBinaryTag.builder().add((Iterable<? extends BinaryTag>) initial),
+      ListTagSetter::add,
+      (l, r) -> l.add((Iterable<? extends BinaryTag>) r.build()),
+      ListBinaryTag.Builder::build
+    );
   }
 
   @Override
@@ -153,6 +193,14 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @since 4.0.0
    */
   int size();
+
+  /**
+   * Returns whether the list has elements or not.
+   *
+   * @return false if the list has elements
+   * @since 4.18.0
+   */
+  boolean isEmpty();
 
   /**
    * Gets a tag.
@@ -558,6 +606,22 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @since 4.2.0
    */
   @NotNull Stream<BinaryTag> stream();
+
+  /**
+   * Unwrap any compound-boxed heterogeneous values in this tag.
+   *
+   * @return a list tag that permits heterogeneity
+   * @since 4.21.0
+   */
+  @NotNull ListBinaryTag unwrapHeterogeneity();
+
+  /**
+   * Wrap any heterogeneous values in this tag into compound-tag boxes.
+   *
+   * @return a list tag that does not permit heterogeneity, with any heterogeneous values boxed if necessary
+   * @since 4.21.0
+   */
+  @NotNull ListBinaryTag wrapHeterogeneity();
 
   /**
    * A list tag builder.

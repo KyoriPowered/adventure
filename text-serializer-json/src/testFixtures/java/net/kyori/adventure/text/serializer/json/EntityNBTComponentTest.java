@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.serializer.json;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import org.junit.jupiter.api.Test;
 
 final class EntityNBTComponentTest extends SerializerTest {
@@ -32,9 +33,9 @@ final class EntityNBTComponentTest extends SerializerTest {
     this.testObject(
       Component.entityNBT().nbtPath("abc").selector("test").build(),
       json -> {
-        json.addProperty(JSONComponentConstants.NBT, "abc");
-        json.addProperty(JSONComponentConstants.NBT_INTERPRET, false);
-        json.addProperty(JSONComponentConstants.NBT_ENTITY, "test");
+        json.addProperty(ComponentTreeConstants.NBT, "abc");
+        json.addProperty(ComponentTreeConstants.NBT_INTERPRET, false);
+        json.addProperty(ComponentTreeConstants.NBT_ENTITY, "test");
       }
     );
   }
@@ -44,9 +45,9 @@ final class EntityNBTComponentTest extends SerializerTest {
     this.testObject(
       Component.entityNBT().nbtPath("abc").selector("test").interpret(true).build(),
       json -> {
-        json.addProperty(JSONComponentConstants.NBT, "abc");
-        json.addProperty(JSONComponentConstants.NBT_INTERPRET, true);
-        json.addProperty(JSONComponentConstants.NBT_ENTITY, "test");
+        json.addProperty(ComponentTreeConstants.NBT, "abc");
+        json.addProperty(ComponentTreeConstants.NBT_INTERPRET, true);
+        json.addProperty(ComponentTreeConstants.NBT_ENTITY, "test");
       }
     );
   }

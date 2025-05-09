@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,6 +34,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import org.junit.jupiter.api.BeforeEach;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -74,7 +75,7 @@ public abstract class SerializerTest {
 
   final void testStyle(final JSONComponentSerializer serial, final Style style, final Consumer<? super JsonObject> consumer) {
     this.testObject(serial, Component.text("", style), object -> {
-      object.addProperty(JSONComponentConstants.TEXT, "");
+      object.addProperty(ComponentTreeConstants.TEXT, "");
       consumer.accept(object);
     });
   }

@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2024 KyoriPowered
+ * Copyright (c) 2017-2025 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -55,21 +55,23 @@ final class MiniMessageImpl implements MiniMessage {
   static final class Instances {
     static final MiniMessage INSTANCE = SERVICE
       .map(Provider::miniMessage)
-      .orElseGet(() -> new MiniMessageImpl(TagResolver.standard(), false, null, DEFAULT_NO_OP, DEFAULT_COMPACTING_METHOD));
+      .orElseGet(() -> new MiniMessageImpl(TagResolver.standard(), false, true, null, DEFAULT_NO_OP, DEFAULT_COMPACTING_METHOD));
   }
 
   static final UnaryOperator<String> DEFAULT_NO_OP = UnaryOperator.identity();
   static final UnaryOperator<Component> DEFAULT_COMPACTING_METHOD = Component::compact;
 
   private final boolean strict;
+  private final boolean emitVirtuals;
   private final @Nullable Consumer<String> debugOutput;
   private final UnaryOperator<Component> postProcessor;
   private final UnaryOperator<String> preProcessor;
   final MiniMessageParser parser;
 
-  MiniMessageImpl(final @NotNull TagResolver resolver, final boolean strict, final @Nullable Consumer<String> debugOutput, final @NotNull UnaryOperator<String> preProcessor, final @NotNull UnaryOperator<Component> postProcessor) {
+  MiniMessageImpl(final @NotNull TagResolver resolver, final boolean strict, final boolean emitVirtuals, final @Nullable Consumer<String> debugOutput, final @NotNull UnaryOperator<String> preProcessor, final @NotNull UnaryOperator<Component> postProcessor) {
     this.parser = new MiniMessageParser(resolver);
     this.strict = strict;
+    this.emitVirtuals = emitVirtuals;
     this.debugOutput = debugOutput;
     this.preProcessor = preProcessor;
     this.postProcessor = postProcessor;
@@ -167,12 +169,13 @@ final class MiniMessageImpl implements MiniMessage {
 
   private @NotNull ContextImpl newContext(final @NotNull String input, final @Nullable Pointered target, final @Nullable TagResolver resolver) {
     requireNonNull(input, "input");
-    return new ContextImpl(this.strict, this.debugOutput, input, this, target, resolver, this.preProcessor, this.postProcessor);
+    return new ContextImpl(this.strict, this.emitVirtuals, this.debugOutput, input, this, target, resolver, this.preProcessor, this.postProcessor);
   }
 
   static final class BuilderImpl implements Builder {
     private TagResolver tagResolver = TagResolver.standard();
     private boolean strict = false;
+    private boolean emitVirtuals = true;
     private Consumer<String> debug = null;
     private UnaryOperator<Component> postProcessor = DEFAULT_COMPACTING_METHOD;
     private UnaryOperator<String> preProcessor = DEFAULT_NO_OP;
@@ -212,6 +215,12 @@ final class MiniMessageImpl implements MiniMessage {
     }
 
     @Override
+    public @NotNull Builder emitVirtuals(final boolean emitVirtuals) {
+      this.emitVirtuals = emitVirtuals;
+      return this;
+    }
+
+    @Override
     public @NotNull Builder debug(final @Nullable Consumer<String> debugOutput) {
       this.debug = debugOutput;
       return this;
@@ -231,7 +240,7 @@ final class MiniMessageImpl implements MiniMessage {
 
     @Override
     public @NotNull MiniMessage build() {
-      return new MiniMessageImpl(this.tagResolver, this.strict, this.debug, this.preProcessor, this.postProcessor);
+      return new MiniMessageImpl(this.tagResolver, this.strict, this.emitVirtuals, this.debug, this.preProcessor, this.postProcessor);
     }
   }
 }
