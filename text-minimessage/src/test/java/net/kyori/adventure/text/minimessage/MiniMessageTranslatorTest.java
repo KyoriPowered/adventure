@@ -30,6 +30,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.pointer.Pointered;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -51,7 +52,7 @@ public class MiniMessageTranslatorTest extends AbstractTest {
     @Override
     protected @Nullable String getMiniMessageString(final @NotNull String key, final @NotNull Locale locale) {
       // hack the test here by just returning the key
-      return key;
+      return !key.equals("test.untranslated") ? key : null;
     }
 
     @Override
@@ -193,6 +194,27 @@ public class MiniMessageTranslatorTest extends AbstractTest {
           Argument.tagResolver(Placeholder.component("name", Component.text("Kezz")))
         )
       ).compact()
+    );
+  }
+
+  @Test
+  public void testHoverEvent() {
+    assertEquals(
+      Component.translatable("test.untranslated")
+        .hoverEvent(HoverEvent.showText(Component.text("Test"))),
+      this.translate(
+        Component.translatable("test.untranslated")
+          .hoverEvent(HoverEvent.showText(Component.translatable("<arg:0>", Component.text("Test"))))
+      )
+    );
+
+    assertEquals(
+      Component.text("Test?")
+        .hoverEvent(HoverEvent.showText(Component.text("Test!"))),
+      this.translate(
+        Component.translatable("<arg:0>", Component.text("Test?"))
+          .hoverEvent(HoverEvent.showText(Component.translatable("<arg:0>", Component.text("Test!"))))
+      )
     );
   }
 

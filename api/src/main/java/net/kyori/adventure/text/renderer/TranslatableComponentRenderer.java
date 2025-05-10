@@ -211,7 +211,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
   @SuppressWarnings("JdkObsolete") // MessageFormat requires StringBuffer in its api
   protected @NotNull Component renderTranslatableInner(final @NotNull TranslatableComponent component, final @NotNull C context) {
     final @Nullable MessageFormat format = this.translate(component.key(), component.fallback(), context);
-    if (format == null) return this.optionallyRenderChildren(component, context);
+    if (format == null) return this.optionallyRenderChildrenAndStyle(component, context);
 
     final List<TranslationArgument> args = component.arguments();
 
@@ -243,7 +243,12 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
     return this.optionallyRenderChildrenAppendAndBuild(component.children(), builder, context);
   }
 
-  protected Component optionallyRenderChildren(final Component component, final C context) {
+  protected Component optionallyRenderChildrenAndStyle(Component component, final C context) {
+    final @Nullable HoverEvent<?> hoverEvent = component.hoverEvent();
+    if (hoverEvent != null) {
+      component = component.hoverEvent(hoverEvent.withRenderedValue(this, context));
+    }
+
     final List<Component> children = component.children();
     if (children.isEmpty()) return component;
 
