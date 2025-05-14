@@ -26,6 +26,7 @@ package net.kyori.adventure.resource;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.identity.Identified;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -53,6 +54,31 @@ public interface ResourcePackCallback {
    * @param success the success callback
    * @param failure the failure callback
    * @return the created callback
+   * @since 4.22.0
+   */
+  static @NotNull ResourcePackCallback onIdentifiedTerminal(final @NotNull BiConsumer<UUID, Identified> success, final @NotNull BiConsumer<UUID, Identified> failure) {
+    return new ResourcePackCallback() {
+      @Override
+      public void packEventReceived(final @NotNull UUID uuid, final @NotNull ResourcePackStatus status, final @NotNull Identified identified) {
+        if (status == ResourcePackStatus.SUCCESSFULLY_LOADED) {
+          success.accept(uuid, identified);
+        } else if (!status.intermediate()) {
+          failure.accept(uuid, identified);
+        }
+      }
+
+      @Override
+      public void packEventReceived(final @NotNull UUID uuid, final @NotNull ResourcePackStatus status, final @NotNull Audience audience) {
+      }
+    };
+  }
+
+  /**
+   * Create a pack callback that will only execute the provided functions when the pack application has completed, discarding all intermediate events.
+   *
+   * @param success the success callback
+   * @param failure the failure callback
+   * @return the created callback
    * @since 4.15.0
    */
   static @NotNull ResourcePackCallback onTerminal(final @NotNull BiConsumer<UUID, Audience> success, final @NotNull BiConsumer<UUID, Audience> failure) {
@@ -68,8 +94,26 @@ public interface ResourcePackCallback {
   /**
    * Called when a pack event has been received.
    *
+   * @param uuid the uuid of the pack that has been applied.
+   * @param status the current pack status
+   * @param identified the identified instance the pack is being applied to
+   * @since 4.22.0
+   */
+  default void packEventReceived(final @NotNull UUID uuid, final @NotNull ResourcePackStatus status, final @NotNull Identified identified) {
+    if (identified instanceof Audience) {
+      this.packEventReceived(uuid, status, (Audience) identified);
+    }
+  }
+
+  /**
+   * Called when a pack event has been received.
+   *
    * <p>If the pack apply action was executed on a group audience, {@code audience} will referer to the
    * individual member audiences the action is executed on. Forwarding audiences may wrap callbacks to ensure they receive the appropriate wrapped audience.</p>
+   *
+   * <p>Unless {@link #packEventReceived(UUID, ResourcePackStatus, Identified)} is
+   * overridden, this method will only be called if the {@link Identified} instance
+   * passed to that method is an {@link Audience}.</p>
    *
    * @param uuid the uuid of the pack that has been applied.
    * @param status the current pack status

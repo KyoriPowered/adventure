@@ -23,9 +23,22 @@
  */
 package net.kyori.adventure.resource;
 
+import java.util.UUID;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.identity.Identified;
+import org.jetbrains.annotations.NotNull;
+
 final class ResourcePackCallbacks {
   private ResourcePackCallbacks() {
   }
 
-  static final ResourcePackCallback NO_OP = (uuid, status, audience) -> {};
+  static final ResourcePackCallback NO_OP = new ResourcePackCallback() {
+    @Override
+    public void packEventReceived(final @NotNull UUID uuid, final @NotNull ResourcePackStatus status, final @NotNull Identified identified) {
+    }
+
+    @Override
+    public void packEventReceived(final @NotNull UUID uuid, final @NotNull ResourcePackStatus status, final @NotNull Audience audience) {
+    }
+  };
 }
