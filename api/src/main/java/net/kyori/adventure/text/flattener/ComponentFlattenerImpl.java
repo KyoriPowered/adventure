@@ -60,27 +60,32 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
     .mapper(TextComponent.class, TextComponent::content)
     .build();
 
+  private static final int MAX_DEPTH = 512;
+
   private final InheritanceAwareMap<Component, Handler> flatteners;
   private final Function<Component, String> unknownHandler;
-  private final int maximumDepth;
+  private final int maximumComplexity;
 
-  ComponentFlattenerImpl(final InheritanceAwareMap<Component, Handler> flatteners, final @Nullable Function<Component, String> unknownHandler, final int maximumDepth) {
+  ComponentFlattenerImpl(final InheritanceAwareMap<Component, Handler> flatteners, final @Nullable Function<Component, String> unknownHandler, final int maximumComplexity) {
     this.flatteners = flatteners;
     this.unknownHandler = unknownHandler;
-    this.maximumDepth = maximumDepth;
+    this.maximumComplexity = maximumComplexity;
   }
 
   @Override
   public void flatten(final @NotNull Component input, final @NotNull FlattenerListener listener) {
-    this.flatten0(input, listener, 0);
+    this.flatten0(input, listener, new State(), 0);
   }
 
-  private void flatten0(final @NotNull Component input, final @NotNull FlattenerListener listener, final int depth) {
+  private void flatten0(final @NotNull Component input, final @NotNull FlattenerListener listener, final @NotNull State state, final int depth) {
     requireNonNull(input, "input");
     requireNonNull(listener, "listener");
     if (input == Component.empty()) return;
-    if (depth > this.maximumDepth) {
-      throw new IllegalStateException("Exceeded maximum depth of " + this.maximumDepth + " while attempting to flatten components!");
+    if (this.maximumComplexity != Builder.UNLIMITED_COMPLEXITY && state.complexity > this.maximumComplexity) {
+      throw new IllegalStateException("Exceeded maximum complexity of " + this.maximumComplexity + " while attempting to flatten components!");
+    }
+    if (depth >= MAX_DEPTH) {
+      throw new IllegalStateException("Exceeded maximum depth of " + MAX_DEPTH + " while attempting to flatten components!");
     }
 
     final @Nullable Handler flattener = this.flattener(input);
@@ -89,12 +94,14 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
     listener.pushStyle(inputStyle);
     try {
       if (flattener != null) {
-        flattener.handle(this, input, listener, depth + 1);
+        state.complexity++;
+        flattener.handle(this, input, listener, state, depth + 1);
       }
 
       if (!input.children().isEmpty() && listener.shouldContinue()) {
         for (final Component child : input.children()) {
-          this.flatten0(child, listener, depth + 1);
+          state.complexity++;
+          this.flatten0(child, listener, state, depth + 1);
         }
       }
     } finally {
@@ -106,7 +113,7 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
     final Handler flattener = this.flatteners.get(test.getClass());
 
     if (flattener == null && this.unknownHandler != null) {
-      return (self, component, listener, depth) -> listener.component(this.unknownHandler.apply(component));
+      return (self, component, listener, state, depth) -> listener.component(this.unknownHandler.apply(component));
     } else {
       return flattener;
     }
@@ -114,49 +121,51 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
 
   @Override
   public ComponentFlattener.@NotNull Builder toBuilder() {
-    return new BuilderImpl(this.flatteners, this.unknownHandler, this.maximumDepth);
+    return new BuilderImpl(this.flatteners, this.unknownHandler, this.maximumComplexity);
+  }
+
+  static final class State {
+    int complexity = 0;
   }
 
   // A function that allows nesting other flatten operations
   @FunctionalInterface
   interface Handler {
-    void handle(final ComponentFlattenerImpl self, final Component input, final FlattenerListener listener, final int depth);
+    void handle(final ComponentFlattenerImpl self, final Component input, final FlattenerListener listener, final State state, final int depth);
   }
 
   static final class BuilderImpl implements Builder {
-    private static final int DEFAULT_MAX_DEPTH = 512;
-
     private final InheritanceAwareMap.Builder<Component, Handler> flatteners;
     private @Nullable Function<Component, String> unknownHandler;
-    private int maximumDepth;
+    private int maximumComplexity;
 
     BuilderImpl() {
       this.flatteners = InheritanceAwareMap.<Component, Handler>builder().strict(true);
-      this.maximumDepth = DEFAULT_MAX_DEPTH;
+      this.maximumComplexity = UNLIMITED_COMPLEXITY;
     }
 
-    BuilderImpl(final InheritanceAwareMap<Component, Handler> flatteners, final @Nullable Function<Component, String> unknownHandler, final int maximumDepth) {
+    BuilderImpl(final InheritanceAwareMap<Component, Handler> flatteners, final @Nullable Function<Component, String> unknownHandler, final int maximumComplexity) {
       this.flatteners = InheritanceAwareMap.builder(flatteners).strict(true);
       this.unknownHandler = unknownHandler;
-      this.maximumDepth = maximumDepth;
+      this.maximumComplexity = maximumComplexity;
     }
 
     @Override
     public @NotNull ComponentFlattener build() {
-      return new ComponentFlattenerImpl(this.flatteners.build(), this.unknownHandler, this.maximumDepth);
+      return new ComponentFlattenerImpl(this.flatteners.build(), this.unknownHandler, this.maximumComplexity);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T extends Component> ComponentFlattener.@NotNull Builder mapper(final @NotNull Class<T> type, final @NotNull Function<T, String> converter) {
-      this.flatteners.put(type, (self, component, listener, depth) -> listener.component(converter.apply((T) component)));
+      this.flatteners.put(type, (self, component, listener, state, depth) -> listener.component(converter.apply((T) component)));
       return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T extends Component> ComponentFlattener.@NotNull Builder complexMapper(final @NotNull Class<T> type, final @NotNull BiConsumer<T, Consumer<Component>> converter) {
-      this.flatteners.put(type, (self, component, listener, depth) -> converter.accept((T) component, c -> self.flatten0(c, listener, depth)));
+      this.flatteners.put(type, (self, component, listener, state, depth) -> converter.accept((T) component, c -> self.flatten0(c, listener, state, depth)));
       return this;
     }
 
@@ -167,9 +176,11 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
     }
 
     @Override
-    public @NotNull Builder maximumDepth(final int maximumDepth) {
-      if (maximumDepth <= 0) throw new IllegalArgumentException("maxDepth must be greater than 0, was " + maximumDepth);
-      this.maximumDepth = maximumDepth;
+    public @NotNull Builder maximumComplexity(final int maximumComplexity) {
+      if (maximumComplexity != UNLIMITED_COMPLEXITY && maximumComplexity <= 0) {
+        throw new IllegalArgumentException("maximumComplexity must be greater than 0, was " + maximumComplexity);
+      }
+      this.maximumComplexity = maximumComplexity;
       return this;
     }
   }

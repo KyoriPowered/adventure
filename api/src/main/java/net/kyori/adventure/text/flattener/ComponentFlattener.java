@@ -91,6 +91,14 @@ public interface ComponentFlattener extends Buildable<ComponentFlattener, Compon
    */
   interface Builder extends AbstractBuilder<ComponentFlattener>, Buildable.Builder<ComponentFlattener> {
     /**
+     * A constant value for {@link #maximumComplexity(int)} that indicates that the maximum complexity is unlimited.
+     *
+     * @see #maximumComplexity(int)
+     * @since 4.22.0
+     */
+    int UNLIMITED_COMPLEXITY = -1;
+
+    /**
      * Register a type of component to be handled.
      *
      * @param type the component type
@@ -125,12 +133,16 @@ public interface ComponentFlattener extends Buildable<ComponentFlattener, Compon
     @NotNull Builder unknownMapper(final @Nullable Function<Component, String> converter);
 
     /**
-     * Sets the maximum depth of the flattening.
+     * Sets the maximum complexity of the flattening.
      *
-     * @param maximumDepth the maximum depth
+     * <p>Complexity is defined as the number of recursive flatten operations that take place.
+     * This includes both depth and breadth as an additional count.</p>
+     *
+     * @param maximumComplexity the maximum complexity, defaulting to {@link #UNLIMITED_COMPLEXITY}
      * @return this builder
+     * @see #UNLIMITED_COMPLEXITY
      * @since 4.22.0
      */
-    @NotNull Builder maximumDepth(final int maximumDepth);
+    @NotNull Builder maximumComplexity(final int maximumComplexity);
   }
 }
