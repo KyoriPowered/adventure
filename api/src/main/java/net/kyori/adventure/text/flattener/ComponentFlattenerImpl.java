@@ -60,14 +60,14 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
     .mapper(TextComponent.class, TextComponent::content)
     .build();
 
-  private static final int MAX_DEPTH = 512;
-
   private final InheritanceAwareMap<Component, Handler> flatteners;
   private final Function<Component, String> unknownHandler;
+  private final int maximumDepth;
 
-  ComponentFlattenerImpl(final InheritanceAwareMap<Component, Handler> flatteners, final @Nullable Function<Component, String> unknownHandler) {
+  ComponentFlattenerImpl(final InheritanceAwareMap<Component, Handler> flatteners, final @Nullable Function<Component, String> unknownHandler, final int maximumDepth) {
     this.flatteners = flatteners;
     this.unknownHandler = unknownHandler;
+    this.maximumDepth = maximumDepth;
   }
 
   @Override
@@ -79,8 +79,8 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
     requireNonNull(input, "input");
     requireNonNull(listener, "listener");
     if (input == Component.empty()) return;
-    if (depth > MAX_DEPTH) {
-      throw new IllegalStateException("Exceeded maximum depth of " + MAX_DEPTH + " while attempting to flatten components!");
+    if (depth > this.maximumDepth) {
+      throw new IllegalStateException("Exceeded maximum depth of " + this.maximumDepth + " while attempting to flatten components!");
     }
 
     final @Nullable Handler flattener = this.flattener(input);
@@ -114,7 +114,7 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
 
   @Override
   public ComponentFlattener.@NotNull Builder toBuilder() {
-    return new BuilderImpl(this.flatteners, this.unknownHandler);
+    return new BuilderImpl(this.flatteners, this.unknownHandler, this.maximumDepth);
   }
 
   // A function that allows nesting other flatten operations
@@ -124,21 +124,26 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
   }
 
   static final class BuilderImpl implements Builder {
+    private static final int DEFAULT_MAX_DEPTH = 32;
+
     private final InheritanceAwareMap.Builder<Component, Handler> flatteners;
     private @Nullable Function<Component, String> unknownHandler;
+    private int maximumDepth;
 
     BuilderImpl() {
       this.flatteners = InheritanceAwareMap.<Component, Handler>builder().strict(true);
+      this.maximumDepth = DEFAULT_MAX_DEPTH;
     }
 
-    BuilderImpl(final InheritanceAwareMap<Component, Handler> flatteners, final @Nullable Function<Component, String> unknownHandler) {
+    BuilderImpl(final InheritanceAwareMap<Component, Handler> flatteners, final @Nullable Function<Component, String> unknownHandler, final int maximumDepth) {
       this.flatteners = InheritanceAwareMap.builder(flatteners).strict(true);
       this.unknownHandler = unknownHandler;
+      this.maximumDepth = maximumDepth;
     }
 
     @Override
     public @NotNull ComponentFlattener build() {
-      return new ComponentFlattenerImpl(this.flatteners.build(), this.unknownHandler);
+      return new ComponentFlattenerImpl(this.flatteners.build(), this.unknownHandler, this.maximumDepth);
     }
 
     @Override
@@ -158,6 +163,13 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
     @Override
     public ComponentFlattener.@NotNull Builder unknownMapper(final @Nullable Function<Component, String> converter) {
       this.unknownHandler = converter;
+      return this;
+    }
+
+    @Override
+    public @NotNull Builder maximumDepth(final int maximumDepth) {
+      if (maximumDepth <= 0) throw new IllegalArgumentException("maxDepth must be greater than 0, was " + maximumDepth);
+      this.maximumDepth = maximumDepth;
       return this;
     }
   }

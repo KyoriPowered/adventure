@@ -123,5 +123,14 @@ public interface ComponentFlattener extends Buildable<ComponentFlattener, Compon
      * @since 4.7.0
      */
     @NotNull Builder unknownMapper(final @Nullable Function<Component, String> converter);
+
+    /**
+     * Sets the maximum depth of the flattening.
+     *
+     * @param maximumDepth the maximum depth
+     * @return this builder
+     * @since 4.22.0
+     */
+    @NotNull Builder maximumDepth(final int maximumDepth);
   }
 }

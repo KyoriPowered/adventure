@@ -288,4 +288,21 @@ class ComponentFlattenerTest {
       .assertPushesAndPops(3)
       .assertContents("Hello", "How are you?", "Not great");
   }
+
+  public static Component createNestedComponent(final int depth, final String finalText) {
+    Component component = Component.text(finalText);
+
+    for (int i = 0; i < depth; i++) {
+      component = Component.translatable("%1$s%1$s%1$s", component);
+    }
+
+    return component;
+  }
+
+  @Test
+  void testGiantComponent() {
+    final Component component = createNestedComponent(34, "only 34?!");
+    final StringBuilder sb = new StringBuilder();
+    ComponentFlattener.basic().flatten(component, sb::append);
+  }
 }
