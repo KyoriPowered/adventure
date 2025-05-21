@@ -93,7 +93,12 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
         final TriState anyTranslations = source.hasAnyTranslations();
         if (anyTranslations == TriState.FALSE) return component;
 
-        final @Nullable Component translated = source.translate(component, context);
+        final @Nullable Component translated;
+        if (source.canTranslate(component.key(), context)) {
+          translated = source.translate(component, context);
+        } else {
+          translated = null;
+        }
         return translated != null ? this.render(translated, context) : super.renderTranslatableInner(component, context);
       }
     };
