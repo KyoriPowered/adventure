@@ -124,7 +124,7 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
   }
 
   static final class BuilderImpl implements Builder {
-    private static final int DEFAULT_MAX_DEPTH = 32;
+    private static final int DEFAULT_MAX_DEPTH = 512;
 
     private final InheritanceAwareMap.Builder<Component, Handler> flatteners;
     private @Nullable Function<Component, String> unknownHandler;
