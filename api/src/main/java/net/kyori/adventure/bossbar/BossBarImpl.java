@@ -26,7 +26,6 @@ package net.kyori.adventure.bossbar;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -92,12 +91,12 @@ final class BossBarImpl extends HackyBossBarPlatformBridge implements BossBar {
 
   @Override
   public @NotNull BossBar name(final @NotNull Component newName) {
+    // We do not check if the new name equals the old name here as the GlobalTranslator
+    // may produce a different resulting component for the end user.
     requireNonNull(newName, "name");
     final Component oldName = this.name;
-    if (!Objects.equals(newName, oldName)) {
-      this.name = newName;
-      this.forEachListener(listener -> listener.bossBarNameChanged(this, oldName, newName));
-    }
+    this.name = newName;
+    this.forEachListener(listener -> listener.bossBarNameChanged(this, oldName, newName));
     return this;
   }
 

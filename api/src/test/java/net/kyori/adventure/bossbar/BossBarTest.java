@@ -89,7 +89,7 @@ public class BossBarTest {
     assertEquals(1, this.name.get());
 
     assertEquals(Component.text("B"), this.bar.name(Component.text("B")).name());
-    assertEquals(1, this.name.get()); // value has not changed, should not have incremented
+    assertEquals(2, this.name.get()); // value has not changed, but we want this to have incremented
   }
 
   @Test
