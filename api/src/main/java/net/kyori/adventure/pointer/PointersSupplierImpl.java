@@ -33,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 final class PointersSupplierImpl<T> implements PointersSupplier<T> {
-  private final PointersSupplier<? super T> parent;
+  private final @Nullable PointersSupplier<? super T> parent;
   private final Map<Pointer<?>, Function<T, ?>> resolvers;
 
   PointersSupplierImpl(final @NotNull BuilderImpl<T> builder) {
@@ -87,7 +87,10 @@ final class PointersSupplierImpl<T> implements PointersSupplier<T> {
 
       // Fallback to the parent.
       if (resolver == null) {
-        resolver = this.supplier.parent.resolver(pointer);
+        final PointersSupplier<? super U> parent = this.supplier.parent;
+        if (parent != null) {
+          resolver = this.supplier.parent.resolver(pointer);
+        }
       }
 
       // Finally, wrap in an optional.
@@ -117,7 +120,7 @@ final class PointersSupplierImpl<T> implements PointersSupplier<T> {
   }
 
   static final class BuilderImpl<T> implements Builder<T> {
-    private PointersSupplier<? super T> parent = null;
+    private @Nullable PointersSupplier<? super T> parent = null;
     private final Map<Pointer<?>, Function<T, ?>> resolvers;
 
     BuilderImpl() {
