@@ -77,6 +77,11 @@ public final class AdventureCodecs {
       Component component = serializer.deserializeFromTree(jsonElement);
       return DataResult.success(Pair.of(component, ops.empty()));
     }
+
+    @Override
+    public String toString() {
+      return "Component";
+    }
   }
 
   public static class TranslationArgumentCodec implements Codec<TranslationArgument> {
@@ -118,6 +123,11 @@ public final class AdventureCodecs {
           default -> throw new IllegalArgumentException("Unknown value: " + type);
         }, value);
       }).getOrThrow());
+    }
+
+    @Override
+    public String toString() {
+      return "TranslationArgument";
     }
   }
 

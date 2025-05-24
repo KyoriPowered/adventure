@@ -389,4 +389,9 @@ public class BinaryTagOps implements DynamicOps<BinaryTag> {
     }
     return input;
   }
+
+  @Override
+  public String toString() {
+    return "BinaryTag";
+  }
 }
