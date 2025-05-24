@@ -26,6 +26,7 @@ package net.kyori.adventure.nbt.dfu;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.kyori.adventure.dfu.AdventureCodecs;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.BinaryTag;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
@@ -88,7 +89,7 @@ public class BinaryTagOpsTest {
     public static final Codec<TestValue> CODEC = RecordCodecBuilder.create(o -> o.group(
       Codec.STRING.fieldOf("name").forGetter(t -> t.name),
       Codec.INT.fieldOf("amount").forGetter(t -> t.amount),
-      Key.CODEC.fieldOf("key").forGetter(t -> t.ident)
+      AdventureCodecs.KEY.fieldOf("key").forGetter(t -> t.ident)
     ).apply(o, TestValue::new));
   }
 }
