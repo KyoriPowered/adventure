@@ -4,7 +4,9 @@ plugins {
 
 dependencies {
   api(libs.dfu8)
-  api(projects.adventureTextSerializerGson)
+  api(projects.adventureNbtDfu)
+  api(projects.adventureApi)
+  api(projects.adventureTextSerializerCommons)
 }
 
 indra {

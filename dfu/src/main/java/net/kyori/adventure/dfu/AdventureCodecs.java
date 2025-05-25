@@ -1,27 +1,25 @@
 package net.kyori.adventure.dfu;
 
-import com.google.gson.JsonElement;
+import com.mojang.datafixers.util.Function3;
 import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.DynamicOps;
-import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.*;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.sound.Sound;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TranslationArgument;
+import net.kyori.adventure.text.*;
 import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
+import net.kyori.adventure.text.event.DataComponentValue;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.*;
+import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import net.kyori.adventure.util.Index;
 
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.UUID;
-import java.util.function.Function;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.Stream;
+
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.*;
 
 public final class AdventureCodecs {
   private AdventureCodecs() {
@@ -30,14 +28,10 @@ public final class AdventureCodecs {
   // key
   public static final Codec<Key> KEY = xmap(Codec.STRING, Key::key, Key::asString, "Key");
   // uuid
-  public static final Codec<UUID> UUID = xmap(
-    Codec.list(Codec.LONG),
-    longs -> new UUID(longs.get(0), longs.get(1)),
-    uuid -> Arrays.asList(uuid.getLeastSignificantBits(), uuid.getMostSignificantBits()),
-    "UUID"
-  );
+  public static final Codec<UUID> UUID = xmap(Codec.list(Codec.LONG), longs -> new UUID(longs.get(0), longs.get(1)), uuid -> Arrays.asList(uuid.getLeastSignificantBits(), uuid.getMostSignificantBits()), "UUID");
   // TextColor
   public static final Codec<TextColor> TEXT_COLOR = xmap(Codec.INT, TextColor::color, TextColor::value, "TextColor");
+  public static final Codec<ShadowColor> SHADOW_COLOR = xmap(Codec.INT, ShadowColor::shadowColor, ShadowColor::value, "ShadowColor");
   // TranslationArgument
   public static final Codec<TranslationArgument> TRANSLATION_ARGUMENT = new TranslationArgumentCodec();
   // indexed
@@ -47,40 +41,607 @@ public final class AdventureCodecs {
   public static final Codec<BossBar.Overlay> BOSS_BAR_OVERLAY = new IndexCodec<>(Codec.STRING, BossBar.Overlay.NAMES, "BossBar.Overlay");
   public static final Codec<Sound.Source> SOUND_SOURCE = new IndexCodec<>(Codec.STRING, Sound.Source.NAMES, "Sound.Source");
   public static final Codec<ClickEvent.Action> CLICK_ACTION = new IndexCodec<>(Codec.STRING, ClickEvent.Action.NAMES, "ClickEvent.Action");
+  public static final Codec<HoverEvent.Action<?>> HOVER_ACTION = new IndexCodec<>(Codec.STRING, HoverEvent.Action.NAMES, "HoverEvent.Action");
   // TextDecoration
   public static final Codec<TextDecoration> TEXT_DECORATION = new IndexCodec<>(Codec.STRING, TextDecoration.NAMES, "TextDecoration");
+  public static final Codec<TextDecoration.State> TEXT_DECORATION_STATE = new IndexCodec<>(Codec.STRING, Index.create(TextDecoration.State.class, TextDecoration.State::toString), "TextDecoration.State");
 
-  public static final Codec<Component> COMPONENT = new ComponentCodec(GsonComponentSerializer.gson(), JsonOps.INSTANCE);
+  public static final Codec<Component> COMPONENT = new ComponentCodec();
+  public static final Codec<BlockNBTComponent.WorldPos.Coordinate> COORDINATE = new CoordinateCodec();
+  public static final Codec<BlockNBTComponent.Pos> POS = new PosCodec();
+  public static final Codec<ClickEvent> CLICK_EVENT = new ClickEventCodec();
+  public static final Codec<HoverEvent<?>> HOVER_EVENT = new HoverEventCodec();
+  public static final Codec<Style> STYLE = new StyleCodec();
+  public static final Codec<DataComponentValue> DATA_COMPONENT_VALUE = new DataComponentValueCodec();
 
-  private static <A, S> Codec<S> xmap(Codec<A> codec, final Function<? super A, ? extends S> to, final Function<? super S, ? extends A> from, String name) {
+  private static <A, S> Codec<S> xmap(Codec<A> codec, Function<? super A, ? extends S> to, Function<? super S, ? extends A> from, String name) {
     return Codec.of(codec.comap(from), codec.map(to), name);
   }
 
   public static class ComponentCodec implements Codec<Component> {
-    private final GsonComponentSerializer serializer;
-    private final JsonOps jsonOps;
-
-    public ComponentCodec(GsonComponentSerializer serializer, JsonOps jsonOps) {
-      this.serializer = serializer;
-      this.jsonOps = jsonOps;
-    }
-
     @Override
     public <T> DataResult<T> encode(Component input, DynamicOps<T> ops, T prefix) {
-      JsonElement jsonElement = serializer.serializeToTree(input);
-      return DataResult.success(jsonOps.convertTo(ops, jsonElement));
+      RecordBuilder<T> mapBuilder = ops.mapBuilder();
+      String type = null;
+      if (input instanceof TextComponent) {
+        type = TEXT;
+        mapBuilder.add(TEXT, Codec.STRING.encode(((TextComponent) input).content(), ops, prefix));
+      } else if (input instanceof TranslatableComponent) {
+        type = TRANSLATE;
+        TranslatableComponent translatableComponent = (TranslatableComponent) input;
+        mapBuilder.add(TRANSLATE, Codec.STRING.encode((translatableComponent).key(), ops, prefix));
+        if (!translatableComponent.arguments().isEmpty()) {
+          ListBuilder<T> args = ops.listBuilder();
+          for (TranslationArgument argument : translatableComponent.arguments()) {
+            args.add(TRANSLATION_ARGUMENT.encode(argument, ops, prefix));
+          }
+          mapBuilder.add(TRANSLATE_WITH, args.build(prefix));
+        }
+        if (translatableComponent.fallback() != null) {
+          mapBuilder.add(TRANSLATE_FALLBACK, Codec.STRING.encode(translatableComponent.fallback(), ops, prefix));
+        }
+      } else if (input instanceof ScoreComponent) {
+        type = SCORE;
+        ScoreComponent scoreComponent = (ScoreComponent) input;
+        mapBuilder.add(SCORE_NAME, Codec.STRING.encode(scoreComponent.name(), ops, prefix));
+        mapBuilder.add(SCORE_OBJECTIVE, Codec.STRING.encode(scoreComponent.objective(), ops, prefix));
+        if (scoreComponent.value() != null) {
+          mapBuilder.add(SCORE_VALUE, Codec.STRING.encode(scoreComponent.value(), ops, prefix));
+        }
+      } else if (input instanceof SelectorComponent) {
+        type = SELECTOR;
+        mapBuilder.add(SELECTOR, Codec.STRING.encode(((SelectorComponent) input).pattern(), ops, prefix));
+      } else if (input instanceof KeybindComponent) {
+        type = KEYBIND;
+        mapBuilder.add(KEYBIND, Codec.STRING.encode(((KeybindComponent) input).keybind(), ops, prefix));
+      } else if (input instanceof NBTComponent) {
+        type = NBT;
+        NBTComponent<?, ?> nbtComponent = (NBTComponent<?, ?>) input;
+        mapBuilder.add(NBT, Codec.STRING.encode(nbtComponent.nbtPath(), ops, prefix));
+        if (nbtComponent.interpret()) {
+          mapBuilder.add(NBT_INTERPRET, ops.createBoolean(true));
+        }
+        if (nbtComponent.separator() != null) {
+          mapBuilder.add(SEPARATOR, encode(nbtComponent.separator(), ops, prefix));
+        }
+        if (nbtComponent instanceof BlockNBTComponent) {
+          mapBuilder.add(NBT_BLOCK, POS.encode(((BlockNBTComponent) nbtComponent).pos(), ops, prefix));
+        } else if (nbtComponent instanceof EntityNBTComponent) {
+          mapBuilder.add(NBT_ENTITY, ops.createString(((EntityNBTComponent) nbtComponent).selector()));
+        } else if (nbtComponent instanceof StorageNBTComponent) {
+          mapBuilder.add(NBT_STORAGE, KEY.encode(((StorageNBTComponent) nbtComponent).storage(), ops, prefix));
+        } else {
+          return DataResult.error(() -> "Unknown NBT component type");
+        }
+      } else {
+        return DataResult.error(() -> "Unknown component type");
+      }
+      if (!input.children().isEmpty()) {
+        ListBuilder<T> children = ops.listBuilder();
+        for (Component child : input.children()) {
+          children.add(encode(child, ops, prefix));
+        }
+        mapBuilder.add(EXTRA, children.build(prefix));
+      }
+      if (input.hasStyling()) {
+        Style style = input.style();
+        if (!style.isEmpty()) {
+          mapBuilder.add("style", STYLE.encode(style, ops, prefix));
+        }
+      }
+
+      mapBuilder.add("type", ops.createString(type));
+      return mapBuilder.build(prefix);
     }
 
     @Override
     public <T> DataResult<Pair<Component, T>> decode(DynamicOps<T> ops, T input) {
-      JsonElement jsonElement = ops.convertTo(jsonOps, input);
-      Component component = serializer.deserializeFromTree(jsonElement);
-      return DataResult.success(Pair.of(component, ops.empty()));
+      return ops.getMap(input).flatMap(map -> {
+        DataResult<String> typeResult = ops.getStringValue(map.get("type"));
+        if (typeResult.isError()) {
+          return DataResult.error(() -> "Missing component type");
+        }
+        final String type = typeResult.getOrThrow();
+
+        Component baseComponent;
+        switch (type) {
+          case TEXT: {
+            DataResult<String> textResult = ops.getStringValue(map.get(TEXT));
+            if (textResult.isError()) {
+              return DataResult.error(() -> "Missing text content");
+            }
+            baseComponent = Component.text(textResult.getOrThrow());
+            break;
+          }
+          case TRANSLATE: {
+            DataResult<String> keyResult = ops.getStringValue(map.get(TRANSLATE));
+            if (keyResult.isError()) {
+              return DataResult.error(() -> "Missing translation key");
+            }
+            TranslatableComponent.Builder builder = Component.translatable()
+              .key(keyResult.getOrThrow());
+
+            if (map.get(TRANSLATE_WITH) != null) {
+              DataResult<Consumer<Consumer<T>>> argsResult = ops.getList(map.get(TRANSLATE_WITH));
+              if (argsResult.isSuccess()) {
+                List<TranslationArgument> arguments = new ArrayList<>();
+                argsResult.getOrThrow().accept(arg -> {
+                  DataResult<Pair<TranslationArgument, T>> dataResult = TRANSLATION_ARGUMENT.decode(ops, arg);
+                  if (dataResult.isSuccess())
+                    arguments.add(dataResult.getOrThrow().getFirst());
+                });
+                builder.arguments(arguments);
+              }
+            }
+
+            if (map.get(TRANSLATE_FALLBACK) != null) {
+              DataResult<String> fallbackResult = ops.getStringValue(map.get(TRANSLATE_FALLBACK));
+              fallbackResult.result().ifPresent(builder::fallback);
+            }
+            baseComponent = builder.build();
+            break;
+          }
+          case SCORE: {
+            DataResult<String> nameResult = ops.getStringValue(map.get(SCORE_NAME));
+            DataResult<String> objectiveResult = ops.getStringValue(map.get(SCORE_OBJECTIVE));
+            if (nameResult.isError() || objectiveResult.isError()) {
+              return DataResult.error(() -> "Missing score components");
+            }
+            ScoreComponent.Builder builder = Component.score()
+              .name(nameResult.getOrThrow())
+              .objective(objectiveResult.getOrThrow());
+
+            if (map.get(SCORE_VALUE) != null) {
+              DataResult<String> valueResult = ops.getStringValue(map.get(SCORE_VALUE));
+              valueResult.result().ifPresent(builder::value);
+            }
+            baseComponent = builder.build();
+            break;
+          }
+          case SELECTOR: {
+            DataResult<String> patternResult = ops.getStringValue(map.get(SELECTOR));
+            if (patternResult.isError()) {
+              return DataResult.error(() -> "Missing selector pattern");
+            }
+            baseComponent = Component.selector(patternResult.getOrThrow());
+            break;
+          }
+          case KEYBIND: {
+            DataResult<String> keybindResult = ops.getStringValue(map.get(KEYBIND));
+            if (keybindResult.isError()) {
+              return DataResult.error(() -> "Missing keybind value");
+            }
+            baseComponent = Component.keybind(keybindResult.getOrThrow());
+            break;
+          }
+          case NBT: {
+            DataResult<String> nbtPathResult = ops.getStringValue(map.get(NBT));
+            if (nbtPathResult.isError()) {
+              return DataResult.error(() -> "Missing NBT path");
+            }
+            String nbtPath = nbtPathResult.getOrThrow();
+
+            if (map.get(NBT_BLOCK) != null) {
+              DataResult<Pair<BlockNBTComponent.Pos, T>> posResult = POS.decode(ops, map.get(NBT_BLOCK));
+              if (posResult.isError()) {
+                return DataResult.error(() -> "Invalid block NBT position");
+              }
+              baseComponent = Component.blockNBT()
+                .nbtPath(nbtPath)
+                .interpret(map.get(NBT_INTERPRET) != null)
+                .pos(posResult.getOrThrow().getFirst())
+                .build();
+            } else if (map.get(NBT_ENTITY) != null) {
+              DataResult<String> selectorResult = ops.getStringValue(map.get(NBT_ENTITY));
+              if (selectorResult.isError()) {
+                return DataResult.error(() -> "Invalid entity NBT selector");
+              }
+              baseComponent = Component.entityNBT()
+                .nbtPath(nbtPath)
+                .interpret(map.get(NBT_INTERPRET) != null)
+                .selector(selectorResult.getOrThrow())
+                .build();
+            } else if (map.get(NBT_STORAGE) != null) {
+              DataResult<Pair<Key, T>> storageResult = KEY.decode(ops, map.get(NBT_STORAGE));
+              if (storageResult.isError()) {
+                return DataResult.error(() -> "Invalid storage NBT key");
+              }
+              baseComponent = Component.storageNBT()
+                .nbtPath(nbtPath)
+                .interpret(map.get(NBT_INTERPRET) != null)
+                .storage(storageResult.getOrThrow().getFirst())
+                .build();
+            } else {
+              return DataResult.error(() -> "Unknown NBT component type");
+            }
+
+            if (map.get(SEPARATOR) != null) {
+              DataResult<Component> separatorResult = COMPONENT.decode(ops, map.get(SEPARATOR))
+                .map(Pair::getFirst);
+              if (separatorResult.isError()) {
+                return DataResult.error(() -> "Invalid separator");
+              }
+              ((NBTComponent<?, ?>) baseComponent).separator(separatorResult.getOrThrow());
+            }
+            break;
+          }
+          default:
+            return DataResult.error(() -> "Unknown component type: " + type);
+        }
+
+        if (map.get(EXTRA) != null) {
+          DataResult<Consumer<Consumer<T>>> childrenResult = ops.getList(map.get(EXTRA));
+
+          if (childrenResult.isError()) {
+            return DataResult.error(() -> "Invalid extra components");
+          }
+          List<Component> childrens = new ArrayList<>();
+          childrenResult.result().ifPresent(children -> {
+            children.accept(t -> {
+              DataResult<Component> result = decode(ops, t).map(Pair::getFirst);
+              if (result.isError()) return;
+              childrens.add(result.getOrThrow());
+            });
+          });
+          baseComponent = baseComponent.children(childrens);
+        }
+
+        if (map.get("style") != null) {
+          DataResult<Style> styleResult = STYLE.decode(ops, map.get("style"))
+            .map(Pair::getFirst);
+          if (styleResult.isError()) return styleResult.map(p -> null);
+          baseComponent = baseComponent.style(styleResult.getOrThrow());
+        }
+
+        return DataResult.success(Pair.of(baseComponent, ops.empty()));
+      });
     }
+
 
     @Override
     public String toString() {
       return "Component";
+    }
+  }
+
+  public static class StyleCodec implements Codec<Style> {
+
+    @Override
+    public <T> DataResult<T> encode(Style input, DynamicOps<T> ops, T prefix) {
+      if (input.isEmpty()) {
+        return DataResult.success(ops.empty());
+      }
+      RecordBuilder<T> mapBuilder = ops.mapBuilder();
+      if (input.font() != null) {
+        mapBuilder.add(FONT, KEY.encode(input.font(), ops, prefix));
+      }
+      if (input.color() != null) {
+        mapBuilder.add(COLOR, TEXT_COLOR.encode(input.color(), ops, prefix));
+      }
+      if (input.insertion() != null) {
+        mapBuilder.add(INSERTION, Codec.STRING.encode(input.insertion(), ops, prefix));
+      }
+      if (input.shadowColor() != null) {
+        mapBuilder.add(ComponentTreeConstants.SHADOW_COLOR, SHADOW_COLOR.encode(input.shadowColor(), ops, prefix));
+      }
+      if (input.clickEvent() != null) {
+        mapBuilder.add(ComponentTreeConstants.CLICK_EVENT, CLICK_EVENT.encode(input.clickEvent(), ops, prefix));
+      }
+      if (input.hoverEvent() != null) {
+        mapBuilder.add(ComponentTreeConstants.HOVER_EVENT, HOVER_EVENT.encode(input.hoverEvent(), ops, prefix));
+      }
+      RecordBuilder<T> decorationMap = ops.mapBuilder();
+      for (TextDecoration decoration : TextDecoration.values()) {
+        if (input.hasDecoration(decoration)) {
+          decorationMap.add(TEXT_DECORATION.encode(decoration, ops, prefix), TEXT_DECORATION_STATE.encode(input.decorations().get(decoration), ops, prefix));
+        }
+      }
+      mapBuilder.add("decoration", decorationMap.build(prefix));
+      return mapBuilder.build(prefix);
+    }
+
+    @Override
+    public <T> DataResult<Pair<Style, T>> decode(DynamicOps<T> ops, T input) {
+      MapLike<T> map = ops.getMap(input).getOrThrow();
+
+      DataResult<Key> fontResult = KEY.decode(ops, map.get(FONT)).map(Pair::getFirst);
+      Key font = fontResult.result().orElse(null);
+
+      DataResult<TextColor> colorResult = TEXT_COLOR.decode(ops, map.get(COLOR)).map(Pair::getFirst);
+      DataResult<ShadowColor> shadowColorResult = SHADOW_COLOR.decode(ops, map.get(ComponentTreeConstants.SHADOW_COLOR)).map(Pair::getFirst);
+      TextColor color = colorResult.result().orElse(null);
+      ShadowColor shadowColor = shadowColorResult.result().orElse(null);
+      Style.Builder builder = Style.style();
+      builder.color(color).shadowColor(shadowColor).font(font);
+
+      DataResult<Consumer<BiConsumer<T, T>>> decorationMap = ops.getMapEntries(map.get("decoration"));
+      if (decorationMap.isError()) {
+        return DataResult.error(() -> "Invalid decoration map");
+      }
+      decorationMap.result().ifPresent(bi -> {
+        bi.accept((k, v) -> {
+          DataResult<TextDecoration> key = TEXT_DECORATION.decode(ops, k).map(Pair::getFirst);
+          DataResult<TextDecoration.State> value = TEXT_DECORATION_STATE.decode(ops, v).map(Pair::getFirst);
+          if (key.isError() || value.isError()) {
+            return;
+          }
+          builder.decoration(key.getOrThrow(), value.getOrThrow());
+        });
+      });
+
+      if (map.get(INSERTION) != null) {
+        DataResult<String> insertionResult = Codec.STRING.decode(ops, map.get(INSERTION)).map(Pair::getFirst);
+        builder.insertion(insertionResult.result().orElse(null));
+      }
+      if (map.get(ComponentTreeConstants.CLICK_EVENT) != null) {
+        DataResult<ClickEvent> clickEventResult = CLICK_EVENT.decode(ops, map.get(ComponentTreeConstants.CLICK_EVENT)).map(Pair::getFirst);
+        builder.clickEvent(clickEventResult.result().orElse(null));
+      }
+      if (map.get(ComponentTreeConstants.HOVER_EVENT) != null) {
+        DataResult<HoverEvent<?>> hoverEventResult = HOVER_EVENT.decode(ops, map.get(ComponentTreeConstants.HOVER_EVENT)).map(Pair::getFirst);
+        builder.hoverEvent(hoverEventResult.result().orElse(null));
+      }
+
+      Style style = builder.build();
+      return DataResult.success(Pair.of(style, ops.empty()));
+    }
+
+    @Override
+    public String toString() {
+      return "Style";
+    }
+  }
+
+  public static class HoverEventCodec implements Codec<HoverEvent<?>> {
+
+    @Override
+    public <T> DataResult<T> encode(HoverEvent<?> input, DynamicOps<T> ops, T prefix) {
+      RecordBuilder<T> map = ops.mapBuilder();
+
+      map.add(HOVER_EVENT_ACTION, HOVER_ACTION.encode(input.action(), ops, prefix));
+
+      Object value = input.value();
+      if (value instanceof Component) {
+        map.add(HOVER_EVENT_CONTENTS, COMPONENT.encode((Component) value, ops, prefix));
+      } else if (value instanceof HoverEvent.ShowEntity) {
+        HoverEvent.ShowEntity entity = (HoverEvent.ShowEntity) value;
+        RecordBuilder<T> entityMap = ops.mapBuilder().add(SHOW_ENTITY_TYPE, KEY.encode(entity.type(), ops, prefix)).add(SHOW_ENTITY_ID, UUID.encode(entity.id(), ops, prefix));
+        if (entity.name() != null) {
+          entityMap.add(SHOW_ENTITY_NAME, COMPONENT.encode(entity.name(), ops, prefix));
+        }
+        map.add(HOVER_EVENT_CONTENTS, entityMap.build(prefix));
+      } else if (value instanceof HoverEvent.ShowItem) {
+        HoverEvent.ShowItem item = (HoverEvent.ShowItem) value;
+        RecordBuilder<T> itemMap = ops.mapBuilder().add(SHOW_ITEM_ID, KEY.encode(item.item(), ops, prefix)).add(SHOW_ITEM_COUNT, ops.createInt(item.count()));
+        if (item.nbt() != null) {
+          itemMap.add(SHOW_ITEM_TAG, ops.createString(item.nbt().string()));
+        }
+        if (!item.dataComponents().isEmpty()) {
+          RecordBuilder<T> dataComponentMap = ops.mapBuilder();
+          item.dataComponents().forEach((key, dataComponentValue) -> {
+            dataComponentMap.add(KEY.encode(key, ops, prefix), DATA_COMPONENT_VALUE.encode(dataComponentValue, ops, prefix));
+          });
+          itemMap.add(SHOW_ITEM_COMPONENTS, dataComponentMap.build(prefix));
+        }
+        map.add(HOVER_EVENT_CONTENTS, itemMap.build(prefix));
+      }
+
+      return map.build(prefix);
+    }
+
+    @Override
+    public <T> DataResult<Pair<HoverEvent<?>, T>> decode(DynamicOps<T> ops, T input) {
+      return ops.getMap(input).flatMap(map -> {
+        DataResult<Pair<HoverEvent.Action<?>, T>> actionResult = HOVER_ACTION.decode(ops, map.get(HOVER_EVENT_ACTION));
+        if (actionResult.isError()) {
+          return DataResult.error(() -> "Missing hover action type");
+        }
+
+        HoverEvent.Action<?> action = actionResult.getOrThrow().getFirst();
+
+        T contents = map.get(HOVER_EVENT_CONTENTS);
+        if (contents == null) {
+          return DataResult.error(() -> "Missing hover contents");
+        }
+
+        try {
+          if (action == HoverEvent.Action.SHOW_TEXT) {
+            return COMPONENT.decode(ops, contents).map(pair -> Pair.of(HoverEvent.showText(pair.getFirst()), pair.getSecond()));
+          } else if (action == HoverEvent.Action.SHOW_ENTITY) {
+            return ops.getMap(contents).flatMap(entityMap -> {
+              DataResult<Key> typeResult = KEY.decode(ops, entityMap.get(SHOW_ENTITY_TYPE)).map(Pair::getFirst);
+              DataResult<UUID> idResult = UUID.decode(ops, entityMap.get(SHOW_ENTITY_ID)).map(Pair::getFirst);
+              DataResult<Component> nameResult = entityMap.get(SHOW_ENTITY_NAME) != null ? COMPONENT.decode(ops, entityMap.get(SHOW_ENTITY_NAME)).map(Pair::getFirst) : DataResult.success(null);
+
+              return typeResult.apply2((type, id) -> Pair.of(HoverEvent.showEntity(type, id, nameResult.result().orElse(null)), ops.empty()), idResult);
+            });
+          } else if (action == HoverEvent.Action.SHOW_ITEM) {
+            return ops.getMap(contents).flatMap(itemMap -> {
+              DataResult<Key> idResult = KEY.decode(ops, itemMap.get(SHOW_ITEM_ID)).map(Pair::getFirst);
+              DataResult<Integer> countResult = ops.getNumberValue(itemMap.get(SHOW_ITEM_COUNT)).map(Number::intValue);
+              String nbt = ops.getStringValue(itemMap.get(SHOW_ITEM_TAG)).result().orElse(null);
+              DataResult<Consumer<BiConsumer<T, T>>> dataComponentMap = ops.getMapEntries(itemMap.get(SHOW_ITEM_COMPONENTS));
+              if (dataComponentMap.isSuccess()) {
+                return idResult.apply3((id, count, dataComponentConsumer) -> {
+                  Map<Key, DataComponentValue> dataComponents = new HashMap<>();
+                  dataComponentConsumer.accept((key, value) -> {
+                    DataResult<Pair<Key, T>> keyResult = KEY.decode(ops, key);
+                    DataResult<Pair<DataComponentValue, T>> valueResult = DATA_COMPONENT_VALUE.decode(ops, value);
+                    if (keyResult.isError() || valueResult.isError()) {
+                      return;
+                    }
+                    dataComponents.put(keyResult.getOrThrow().getFirst(), valueResult.getOrThrow().getFirst());
+                  });
+                  return Pair.of(HoverEvent.showItem(id, count, dataComponents), ops.empty());
+                }, countResult, dataComponentMap);
+              }
+              return idResult.apply2((id, count) -> {
+
+                if (nbt != null) {
+                  return Pair.of(HoverEvent.showItem(id, count, BinaryTagHolder.binaryTagHolder(nbt)), ops.empty());
+                }
+                return Pair.of(HoverEvent.showItem(id, count), ops.empty());
+              }, countResult);
+            });
+          }
+        } catch (Exception e) {
+          return DataResult.error(e::getMessage);
+        }
+
+        return DataResult.error(() -> "Unhandled hover action type: " + action);
+      });
+    }
+
+    @Override
+    public String toString() {
+      return "HoverEvent";
+    }
+  }
+
+  public static class ClickEventCodec implements Codec<ClickEvent> {
+
+    @Override
+    public <T> DataResult<T> encode(ClickEvent input, DynamicOps<T> ops, T prefix) {
+      if (!input.action().readable()) {
+        return DataResult.success(ops.empty());
+      }
+
+      RecordBuilder<T> map = ops.mapBuilder();
+      map.add(CLICK_EVENT_ACTION, CLICK_ACTION.encode(input.action(), ops, prefix));
+      map.add(CLICK_EVENT_VALUE, ops.createString(input.value()));
+      return map.build(prefix);
+    }
+
+    @Override
+    public <T> DataResult<Pair<ClickEvent, T>> decode(DynamicOps<T> ops, T input) {
+      return ops.getMap(input).flatMap(map -> {
+        DataResult<Pair<ClickEvent.Action, T>> actionResult = CLICK_ACTION.decode(ops, map.get(CLICK_EVENT_ACTION));
+        if (actionResult.isError()) {
+          return DataResult.error(() -> "Missing click action type");
+        }
+
+        ClickEvent.Action action = actionResult.getOrThrow().getFirst();
+
+        if (!action.readable()) {
+          return DataResult.error(() -> "Unreadable click action: " + action);
+        }
+
+        DataResult<String> valueResult = ops.getStringValue(map.get(CLICK_EVENT_VALUE));
+        if (valueResult.isError()) {
+          return DataResult.error(() -> "Missing click value");
+        }
+
+        return DataResult.success(Pair.of(ClickEvent.clickEvent(action, valueResult.getOrThrow()), ops.empty()));
+      });
+    }
+
+    @Override
+    public String toString() {
+      return "ClickEvent";
+    }
+  }
+
+  public static class DataComponentValueCodec implements Codec<DataComponentValue> {
+
+    @Override
+    public <T> DataResult<T> encode(DataComponentValue input, DynamicOps<T> ops, T prefix) {
+      if (input instanceof DataComponentValue.TagSerializable) {
+        String nbt = ((DataComponentValue.TagSerializable) input).asBinaryTag().string();
+        return ops.mapBuilder().add("type", ops.createString("tag")).add("value", ops.createString(nbt)).build(prefix);
+      } else if (input instanceof DataComponentValue.Removed) {
+        return ops.mapBuilder().add("type", ops.createString("remove")).add("value", ops.empty()).build(prefix);
+      }
+      return DataResult.error(() -> "Unhandled data component value type: " + input);
+    }
+
+    @Override
+    public <T> DataResult<Pair<DataComponentValue, T>> decode(DynamicOps<T> ops, T input) {
+      return ops.getMap(input).flatMap(map -> {
+        DataResult<String> typeResult = ops.getStringValue(map.get("type"));
+        if (typeResult.isError()) {
+          return DataResult.error(() -> "Missing data component value type: " + typeResult.error().get().message());
+        }
+        String type = typeResult.result().get();
+        return switch (type) {
+          case "tag" -> ops.getStringValue(map.get("value")).flatMap(nbt -> {
+            return DataResult.success(Pair.of(BinaryTagHolder.binaryTagHolder(nbt), ops.empty()));
+          });
+          case "remove" -> DataResult.success(Pair.of(DataComponentValue.removed(), ops.empty()));
+          default -> DataResult.error(() -> "Unhandled data component value type: " + type);
+        };
+      });
+    }
+
+  }
+
+
+  public static class PosCodec implements Codec<BlockNBTComponent.Pos> {
+
+    @Override
+    public <T> DataResult<T> encode(BlockNBTComponent.Pos input, DynamicOps<T> ops, T prefix) {
+
+      if (input instanceof BlockNBTComponent.LocalPos) {
+        return ops.mapBuilder().add("left", Codec.DOUBLE.encode(((BlockNBTComponent.LocalPos) input).left(), ops, prefix)).add("up", Codec.DOUBLE.encode(((BlockNBTComponent.LocalPos) input).up(), ops, prefix)).add("forward", Codec.DOUBLE.encode(((BlockNBTComponent.LocalPos) input).forwards(), ops, prefix)).add("type", ops.createString("local")).build(prefix);
+      } else if (input instanceof BlockNBTComponent.WorldPos) {
+        return ops.mapBuilder().add("x", COORDINATE.encode(((BlockNBTComponent.WorldPos) input).x(), ops, prefix)).add("y", COORDINATE.encode(((BlockNBTComponent.WorldPos) input).y(), ops, prefix)).add("z", COORDINATE.encode(((BlockNBTComponent.WorldPos) input).z(), ops, prefix)).add("type", ops.createString("world")).build(prefix);
+      }
+      return DataResult.error(() -> "Unknown pos type");
+    }
+
+    @Override
+    public <T> DataResult<Pair<BlockNBTComponent.Pos, T>> decode(DynamicOps<T> ops, T input) {
+      DataResult<MapLike<T>> mapResult = ops.getMap(input);
+      if (mapResult.isError()) {
+        return DataResult.error(() -> "Not a map");
+      }
+      MapLike<T> map = mapResult.getOrThrow();
+      DataResult<String> typeResult = ops.getStringValue(map.get("type"));
+      if (typeResult.isError()) {
+        return DataResult.error(() -> "No type");
+      }
+      switch (typeResult.getOrThrow()) {
+        case "local":
+          return ops.getNumberValue(map.get("left")).apply3((left, up, forwards) -> Pair.of(BlockNBTComponent.LocalPos.localPos(left.doubleValue(), up.doubleValue(), forwards.doubleValue()), ops.empty()), ops.getNumberValue(map.get("up")), ops.getNumberValue(map.get("forward")));
+        case "world": {
+          DataResult<Pair<BlockNBTComponent.WorldPos.Coordinate, T>> x = COORDINATE.decode(ops, map.get("x"));
+          DataResult<Pair<BlockNBTComponent.WorldPos.Coordinate, T>> y = COORDINATE.decode(ops, map.get("y"));
+          DataResult<Pair<BlockNBTComponent.WorldPos.Coordinate, T>> z = COORDINATE.decode(ops, map.get("z"));
+          return x.apply3((x1, y1, z1) -> Pair.of(BlockNBTComponent.WorldPos.worldPos(x1.getFirst(), y1.getFirst(), z1.getFirst()), ops.empty()), y, z);
+        }
+      }
+      return DataResult.error(() -> "Unknown pos type");
+    }
+
+    @Override
+    public String toString() {
+      return "BlockNBTComponent.Pos";
+    }
+  }
+
+  public static class CoordinateCodec implements Codec<BlockNBTComponent.WorldPos.Coordinate> {
+
+    @Override
+    public <T> DataResult<T> encode(BlockNBTComponent.WorldPos.Coordinate input, DynamicOps<T> ops, T prefix) {
+      return ops.mapBuilder().add("type", ops.createString(input.type().name())).add("value", ops.createInt(input.value())).build(prefix);
+    }
+
+    @Override
+    public <T> DataResult<Pair<BlockNBTComponent.WorldPos.Coordinate, T>> decode(DynamicOps<T> ops, T input) {
+      DataResult<MapLike<T>> mapResult = ops.getMap(input);
+      if (mapResult.isError()) {
+        return DataResult.error(() -> "Not a map");
+      }
+      MapLike<T> map = mapResult.getOrThrow();
+      DataResult<String> typeResult = ops.getStringValue(map.get("type"));
+      return typeResult.apply2((type, value) -> {
+        BlockNBTComponent.WorldPos.Coordinate coordinate = BlockNBTComponent.WorldPos.Coordinate.coordinate(value.intValue(), BlockNBTComponent.WorldPos.Coordinate.Type.valueOf(type));
+        return Pair.of(coordinate, ops.empty());
+      }, ops.getNumberValue(map.get("value")));
+    }
+
+    @Override
+    public String toString() {
+      return "Coordinate";
     }
   }
 
@@ -113,7 +674,7 @@ public final class AdventureCodecs {
     public <T> DataResult<Pair<TranslationArgument, T>> decode(DynamicOps<T> ops, T input) {
 
       return ops.getMap(input).map(map -> ops.getStringValue(map.get("type")).map(type -> {
-        final T value = map.get("value");
+        T value = map.get("value");
         if (Objects.equals(type, "component")) {
           return COMPONENT.decode(ops, value).map(t -> Pair.of(TranslationArgument.component(t.getFirst()), t.getSecond())).getOrThrow();
         }
