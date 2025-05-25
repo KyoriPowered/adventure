@@ -276,20 +276,18 @@ public final class AdventureCodecs {
             return DataResult.error(() -> "Invalid extra components");
           }
           List<Component> childrens = new ArrayList<>();
-          childrenResult.result().ifPresent(children -> {
-            children.accept(t -> {
-              DataResult<Component> result = decode(ops, t).map(Pair::getFirst);
-              if (result.isError()) return;
-              childrens.add(result.getOrThrow());
-            });
-          });
+          childrenResult.result().ifPresent(children -> children.accept(t -> {
+            DataResult<Component> result = decode(ops, t).map(Pair::getFirst);
+            if (result.isError()) return;
+            childrens.add(result.getOrThrow());
+          }));
           baseComponent = baseComponent.children(childrens);
         }
 
         if (map.get("style") != null) {
           DataResult<Style> styleResult = STYLE.decode(ops, map.get("style"))
             .map(Pair::getFirst);
-          if (styleResult.isError()) return styleResult.map(p -> null);
+          if (styleResult.isError()) return DataResult.error(() -> "Invalid style");
           baseComponent = baseComponent.style(styleResult.getOrThrow());
         }
 
@@ -358,16 +356,14 @@ public final class AdventureCodecs {
       if (decorationMap.isError()) {
         return DataResult.error(() -> "Invalid decoration map");
       }
-      decorationMap.result().ifPresent(bi -> {
-        bi.accept((k, v) -> {
-          DataResult<TextDecoration> key = TEXT_DECORATION.decode(ops, k).map(Pair::getFirst);
-          DataResult<TextDecoration.State> value = TEXT_DECORATION_STATE.decode(ops, v).map(Pair::getFirst);
-          if (key.isError() || value.isError()) {
-            return;
-          }
-          builder.decoration(key.getOrThrow(), value.getOrThrow());
-        });
-      });
+      decorationMap.result().ifPresent(bi -> bi.accept((k, v) -> {
+        DataResult<TextDecoration> key = TEXT_DECORATION.decode(ops, k).map(Pair::getFirst);
+        DataResult<TextDecoration.State> value = TEXT_DECORATION_STATE.decode(ops, v).map(Pair::getFirst);
+        if (key.isError() || value.isError()) {
+          return;
+        }
+        builder.decoration(key.getOrThrow(), value.getOrThrow());
+      }));
 
       if (map.get(INSERTION) != null) {
         DataResult<String> insertionResult = Codec.STRING.decode(ops, map.get(INSERTION)).map(Pair::getFirst);
@@ -418,9 +414,7 @@ public final class AdventureCodecs {
         }
         if (!item.dataComponents().isEmpty()) {
           RecordBuilder<T> dataComponentMap = ops.mapBuilder();
-          item.dataComponents().forEach((key, dataComponentValue) -> {
-            dataComponentMap.add(KEY.encode(key, ops, prefix), DATA_COMPONENT_VALUE.encode(dataComponentValue, ops, prefix));
-          });
+          item.dataComponents().forEach((key, dataComponentValue) -> dataComponentMap.add(KEY.encode(key, ops, prefix), DATA_COMPONENT_VALUE.encode(dataComponentValue, ops, prefix)));
           itemMap.add(SHOW_ITEM_COMPONENTS, dataComponentMap.build(prefix));
         }
         map.add(HOVER_EVENT_CONTENTS, itemMap.build(prefix));
@@ -444,50 +438,45 @@ public final class AdventureCodecs {
           return DataResult.error(() -> "Missing hover contents");
         }
 
-        try {
-          if (action == HoverEvent.Action.SHOW_TEXT) {
-            return COMPONENT.decode(ops, contents).map(pair -> Pair.of(HoverEvent.showText(pair.getFirst()), pair.getSecond()));
-          } else if (action == HoverEvent.Action.SHOW_ENTITY) {
-            return ops.getMap(contents).flatMap(entityMap -> {
-              DataResult<Key> typeResult = KEY.decode(ops, entityMap.get(SHOW_ENTITY_TYPE)).map(Pair::getFirst);
-              DataResult<UUID> idResult = UUID.decode(ops, entityMap.get(SHOW_ENTITY_ID)).map(Pair::getFirst);
-              DataResult<Component> nameResult = entityMap.get(SHOW_ENTITY_NAME) != null ? COMPONENT.decode(ops, entityMap.get(SHOW_ENTITY_NAME)).map(Pair::getFirst) : DataResult.success(null);
+        if (action == HoverEvent.Action.SHOW_TEXT) {
+          return COMPONENT.decode(ops, contents).map(pair -> Pair.of(HoverEvent.showText(pair.getFirst()), pair.getSecond()));
+        } else if (action == HoverEvent.Action.SHOW_ENTITY) {
+          return ops.getMap(contents).flatMap(entityMap -> {
+            DataResult<Key> typeResult = KEY.decode(ops, entityMap.get(SHOW_ENTITY_TYPE)).map(Pair::getFirst);
+            DataResult<UUID> idResult = UUID.decode(ops, entityMap.get(SHOW_ENTITY_ID)).map(Pair::getFirst);
+            DataResult<Component> nameResult = entityMap.get(SHOW_ENTITY_NAME) != null ? COMPONENT.decode(ops, entityMap.get(SHOW_ENTITY_NAME)).map(Pair::getFirst) : DataResult.success(null);
 
-              return typeResult.apply2((type, id) -> Pair.of(HoverEvent.showEntity(type, id, nameResult.result().orElse(null)), ops.empty()), idResult);
-            });
-          } else if (action == HoverEvent.Action.SHOW_ITEM) {
-            return ops.getMap(contents).flatMap(itemMap -> {
-              DataResult<Key> idResult = KEY.decode(ops, itemMap.get(SHOW_ITEM_ID)).map(Pair::getFirst);
-              DataResult<Integer> countResult = ops.getNumberValue(itemMap.get(SHOW_ITEM_COUNT)).map(Number::intValue);
-              String nbt = ops.getStringValue(itemMap.get(SHOW_ITEM_TAG)).result().orElse(null);
-              DataResult<Consumer<BiConsumer<T, T>>> dataComponentMap = ops.getMapEntries(itemMap.get(SHOW_ITEM_COMPONENTS));
-              if (dataComponentMap.isSuccess()) {
-                return idResult.apply3((id, count, dataComponentConsumer) -> {
-                  Map<Key, DataComponentValue> dataComponents = new HashMap<>();
-                  dataComponentConsumer.accept((key, value) -> {
-                    DataResult<Pair<Key, T>> keyResult = KEY.decode(ops, key);
-                    DataResult<Pair<DataComponentValue, T>> valueResult = DATA_COMPONENT_VALUE.decode(ops, value);
-                    if (keyResult.isError() || valueResult.isError()) {
-                      return;
-                    }
-                    dataComponents.put(keyResult.getOrThrow().getFirst(), valueResult.getOrThrow().getFirst());
-                  });
-                  return Pair.of(HoverEvent.showItem(id, count, dataComponents), ops.empty());
-                }, countResult, dataComponentMap);
+            return typeResult.apply2((type, id) -> Pair.of(HoverEvent.showEntity(type, id, nameResult.result().orElse(null)), ops.empty()), idResult);
+          });
+        } else if (action == HoverEvent.Action.SHOW_ITEM) {
+          return ops.getMap(contents).flatMap(itemMap -> {
+            DataResult<Key> idResult = KEY.decode(ops, itemMap.get(SHOW_ITEM_ID)).map(Pair::getFirst);
+            DataResult<Integer> countResult = ops.getNumberValue(itemMap.get(SHOW_ITEM_COUNT)).map(Number::intValue);
+            String nbt = ops.getStringValue(itemMap.get(SHOW_ITEM_TAG)).result().orElse(null);
+            DataResult<Consumer<BiConsumer<T, T>>> dataComponentMap = ops.getMapEntries(itemMap.get(SHOW_ITEM_COMPONENTS));
+            if (dataComponentMap.isSuccess()) {
+              return idResult.apply3((id, count, dataComponentConsumer) -> {
+                Map<Key, DataComponentValue> dataComponents = new HashMap<>();
+                dataComponentConsumer.accept((key, value) -> {
+                  DataResult<Pair<Key, T>> keyResult = KEY.decode(ops, key);
+                  DataResult<Pair<DataComponentValue, T>> valueResult = DATA_COMPONENT_VALUE.decode(ops, value);
+                  if (keyResult.isError() || valueResult.isError()) {
+                    return;
+                  }
+                  dataComponents.put(keyResult.getOrThrow().getFirst(), valueResult.getOrThrow().getFirst());
+                });
+                return Pair.of(HoverEvent.showItem(id, count, dataComponents), ops.empty());
+              }, countResult, dataComponentMap);
+            }
+            return idResult.apply2((id, count) -> {
+
+              if (nbt != null) {
+                return Pair.of(HoverEvent.showItem(id, count, BinaryTagHolder.binaryTagHolder(nbt)), ops.empty());
               }
-              return idResult.apply2((id, count) -> {
-
-                if (nbt != null) {
-                  return Pair.of(HoverEvent.showItem(id, count, BinaryTagHolder.binaryTagHolder(nbt)), ops.empty());
-                }
-                return Pair.of(HoverEvent.showItem(id, count), ops.empty());
-              }, countResult);
-            });
-          }
-        } catch (Exception e) {
-          return DataResult.error(e::getMessage);
+              return Pair.of(HoverEvent.showItem(id, count), ops.empty());
+            }, countResult);
+          });
         }
-
         return DataResult.error(() -> "Unhandled hover action type: " + action);
       });
     }
@@ -503,7 +492,7 @@ public final class AdventureCodecs {
     @Override
     public <T> DataResult<T> encode(ClickEvent input, DynamicOps<T> ops, T prefix) {
       if (!input.action().readable()) {
-        return DataResult.success(ops.empty());
+        return DataResult.error(() -> "Unreadable click action: " + input.action());
       }
 
       RecordBuilder<T> map = ops.mapBuilder();
@@ -563,9 +552,7 @@ public final class AdventureCodecs {
         }
         String type = typeResult.result().get();
         return switch (type) {
-          case "tag" -> ops.getStringValue(map.get("value")).flatMap(nbt -> {
-            return DataResult.success(Pair.of(BinaryTagHolder.binaryTagHolder(nbt), ops.empty()));
-          });
+          case "tag" -> ops.getStringValue(map.get("value")).flatMap(nbt -> DataResult.success(Pair.of(BinaryTagHolder.binaryTagHolder(nbt), ops.empty())));
           case "remove" -> DataResult.success(Pair.of(DataComponentValue.removed(), ops.empty()));
           default -> DataResult.error(() -> "Unhandled data component value type: " + type);
         };
@@ -673,17 +660,19 @@ public final class AdventureCodecs {
     @Override
     public <T> DataResult<Pair<TranslationArgument, T>> decode(DynamicOps<T> ops, T input) {
 
-      return ops.getMap(input).map(map -> ops.getStringValue(map.get("type")).map(type -> {
+      return ops.getMap(input).flatMap(map -> ops.getStringValue(map.get("type")).flatMap(type -> {
         T value = map.get("value");
         if (Objects.equals(type, "component")) {
-          return COMPONENT.decode(ops, value).map(t -> Pair.of(TranslationArgument.component(t.getFirst()), t.getSecond())).getOrThrow();
+          return COMPONENT.decode(ops, value).map(t -> Pair.of(TranslationArgument.component(t.getFirst()), t.getSecond()));
         }
-        return Pair.of(switch (type) {
-          case "bool" -> ops.getBooleanValue(value).map(TranslationArgument::bool).getOrThrow();
-          case "number" -> ops.getNumberValue(value).map(TranslationArgument::numeric).getOrThrow();
-          default -> throw new IllegalArgumentException("Unknown value: " + type);
-        }, value);
-      }).getOrThrow());
+        if (Objects.equals(type, "bool")) {
+          return DataResult.success(Pair.of(ops.getBooleanValue(value).map(TranslationArgument::bool).getOrThrow(), value));
+        }
+        if (Objects.equals(type, "number")) {
+          return DataResult.success(Pair.of(ops.getNumberValue(value).map(TranslationArgument::numeric).getOrThrow(), value));
+        }
+        return DataResult.error(() -> "Unexpected value: " + type);
+      }));
     }
 
     @Override
@@ -715,12 +704,12 @@ public final class AdventureCodecs {
     @Override
     public <T> DataResult<Pair<V, T>> decode(DynamicOps<T> ops, T input) {
       DataResult<Pair<K, T>> result = keyCodec.decode(ops, input);
-      return result.map(pair -> {
+      return result.flatMap(pair -> {
         V value = this.index.value(pair.getFirst());
         if (value == null) {
-          throw new IllegalArgumentException("Unknown value: " + pair.getFirst());
+          return DataResult.error(() -> "Unknown value: " + pair.getFirst());
         }
-        return Pair.of(value, pair.getSecond());
+        return DataResult.success(Pair.of(value, pair.getSecond()));
       });
     }
 
