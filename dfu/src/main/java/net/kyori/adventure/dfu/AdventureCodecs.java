@@ -24,19 +24,17 @@
 package net.kyori.adventure.dfu;
 
 import com.mojang.datafixers.kinds.App;
+import com.mojang.datafixers.util.Function5;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
-import com.mojang.serialization.ListBuilder;
 import com.mojang.serialization.MapLike;
 import com.mojang.serialization.RecordBuilder;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -72,6 +70,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import net.kyori.adventure.util.Index;
 
+import static net.kyori.adventure.text.event.HoverEvent.Action.SHOW_TEXT;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_ACTION;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_VALUE;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.COLOR;
@@ -134,10 +133,14 @@ public final class AdventureCodecs {
   public static final Codec<TextDecoration> TEXT_DECORATION = new IndexCodec<>(Codec.STRING, TextDecoration.NAMES, "TextDecoration");
   public static final Codec<TextDecoration.State> TEXT_DECORATION_STATE = new IndexCodec<>(Codec.STRING, Index.create(TextDecoration.State.class, TextDecoration.State::toString), "TextDecoration.State");
 
+  public static final Codec<BinaryTagHolder> BINARY_TAG_HOLDER = xmap(Codec.STRING, BinaryTagHolder::binaryTagHolder, BinaryTagHolder::string, "BinaryTagHolder");
   public static final Codec<BlockNBTComponent.WorldPos.Coordinate> COORDINATE = new CoordinateCodec();
   public static final Codec<BlockNBTComponent.Pos> POS = new PosCodec();
-  public static final Codec<ClickEvent> CLICK_EVENT = new ClickEventCodec();
-  public static final Codec<HoverEvent<?>> HOVER_EVENT = new HoverEventCodec();
+  public static final Codec<ClickEvent> CLICK_EVENT = RecordCodecBuilder.create(instance -> instance.group(
+    CLICK_ACTION.fieldOf("action").forGetter(c -> c.action()),
+    Codec.STRING.fieldOf("value").forGetter(c -> c.value())
+  ).apply(instance, (action, value) -> ClickEvent.clickEvent(action, value)));
+
   public static final Codec<Style> STYLE = new StyleCodec();
   public static final Codec<DataComponentValue> DATA_COMPONENT_VALUE = RecordCodecBuilder.create(instance -> instance.group(
     Codec.STRING.fieldOf("type").forGetter(c -> c instanceof DataComponentValue.Removed ? "removed" : c instanceof DataComponentValue.TagSerializable ? "tag" : "unknown"),
@@ -150,6 +153,19 @@ public final class AdventureCodecs {
     }
     throw new IllegalArgumentException("Unknown type: " + type);
   }));
+  public static final Codec<HoverEvent.ShowItem> SHOW_ITEM = RecordCodecBuilder.create(instance -> instance.group(
+    KEY.fieldOf(SHOW_ITEM_ID).forGetter(c -> c.item()),
+    Codec.INT.fieldOf(SHOW_ITEM_COUNT).forGetter(c -> c.count()),
+    BINARY_TAG_HOLDER.optionalFieldOf(SHOW_ITEM_TAG).forGetter(c -> Optional.ofNullable(c.nbt())),
+    Codec.unboundedMap(KEY, DATA_COMPONENT_VALUE).fieldOf(SHOW_ITEM_COMPONENTS).forGetter(c -> c.dataComponents())
+  ).apply(instance, (id, count, nbt, dataComponentValueMap) -> {
+    if (nbt.isPresent()) {
+      return HoverEvent.ShowItem.showItem(id, count, nbt.get());
+    }
+    return HoverEvent.ShowItem.showItem(id, count, dataComponentValueMap);
+  }));
+  public static final Codec<HoverEvent.ShowEntity> SHOW_ENTITY;
+  public static final Codec<HoverEvent<?>> HOVER_EVENT;
 
   private static final Codec<BlockNBTComponent> BLOCK_NBT_CODEC;
   private static final Codec<EntityNBTComponent> ENTITY_NBT_CODEC;
@@ -168,8 +184,8 @@ public final class AdventureCodecs {
           STYLE.optionalFieldOf("style").forGetter(c -> Optional.of(c.style())),
           KEY.optionalFieldOf(FONT).forGetter(c -> Optional.ofNullable(c.font())),
           Codec.lazyInitialized(() -> INTERNAL_COMPONENT).listOf().optionalFieldOf(EXTRA, Collections.emptyList()).forGetter(Component::children),
-          CLICK_EVENT.optionalFieldOf(ComponentTreeConstants.CLICK_EVENT).forGetter(c -> Optional.ofNullable(c.clickEvent())),
-          HOVER_EVENT.optionalFieldOf(ComponentTreeConstants.HOVER_EVENT).forGetter(c -> Optional.ofNullable(c.hoverEvent())),
+          Codec.lazyInitialized(() -> CLICK_EVENT).optionalFieldOf(ComponentTreeConstants.CLICK_EVENT).forGetter(c -> Optional.ofNullable(c.clickEvent())),
+          Codec.lazyInitialized(() -> HOVER_EVENT).optionalFieldOf(ComponentTreeConstants.HOVER_EVENT).forGetter(c -> Optional.ofNullable(c.hoverEvent())),
           Codec.STRING.optionalFieldOf(INSERTION).forGetter(c -> Optional.ofNullable(c.insertion())),
           Codec.STRING.optionalFieldOf(TEXT).forGetter(c -> Optional.ofNullable(c instanceof TextComponent ? ((TextComponent) c).content() : null)),
           Codec.lazyInitialized(() -> BLOCK_NBT_CODEC).optionalFieldOf(NBT_BLOCK).forGetter(c -> Optional.ofNullable(c instanceof BlockNBTComponent ? ((BlockNBTComponent) c) : null)),
@@ -286,6 +302,35 @@ public final class AdventureCodecs {
       fallback.ifPresent(builder::fallback);
       return builder.build();
     }));
+
+    SHOW_ENTITY = RecordCodecBuilder.create(i -> i.group(
+        KEY.fieldOf(SHOW_ENTITY_TYPE).forGetter(HoverEvent.ShowEntity::type),
+        UUID.fieldOf(SHOW_ENTITY_ID).forGetter(HoverEvent.ShowEntity::id),
+        INTERNAL_COMPONENT.optionalFieldOf(SHOW_ENTITY_NAME).forGetter(c -> Optional.ofNullable(c.name()))
+      ).apply(i, (key, uuid, name) -> name.map(component -> HoverEvent.ShowEntity.showEntity(key, uuid, component)).orElseGet(() -> HoverEvent.ShowEntity.showEntity(key, uuid)))
+    );
+    HOVER_EVENT = RecordCodecBuilder.create(instance -> instance.group(
+      HOVER_ACTION.fieldOf(HOVER_EVENT_ACTION).forGetter(c -> c.action()),
+      SHOW_ITEM.optionalFieldOf("showItem").forGetter(c -> c.value() instanceof HoverEvent.ShowItem ? Optional.of(((HoverEvent.ShowItem) c.value())) : Optional.empty()),
+      INTERNAL_COMPONENT.optionalFieldOf("showText").forGetter(c -> c.value() instanceof Component ? Optional.of((Component) c.value()) : Optional.empty()),
+      SHOW_ENTITY.optionalFieldOf("showEntity").forGetter(c -> c.value() instanceof HoverEvent.ShowEntity ? Optional.of(((HoverEvent.ShowEntity) c.value())) : Optional.empty()),
+      Codec.STRING.optionalFieldOf("showAchievement").forGetter(c -> c.value() instanceof String ? Optional.of((String) c.value()) : Optional.empty())
+    ).apply(instance, new Function5<>() {
+      @Override
+      public HoverEvent<?> apply(final HoverEvent.Action<?> action, final Optional<HoverEvent.ShowItem> showItem, final Optional<Component> component, final Optional<HoverEvent.ShowEntity> showEntity, final Optional<String> achievement) {
+        if (action.equals(HoverEvent.Action.SHOW_TEXT)) {
+          return HoverEvent.showText(component.get());
+        } else if (action.equals(HoverEvent.Action.SHOW_ENTITY)) {
+          return HoverEvent.showEntity(showEntity.get());
+        } else if (action.equals(HoverEvent.Action.SHOW_ITEM)) {
+          return HoverEvent.showItem(showItem.get());
+        } else if (action.equals(HoverEvent.Action.SHOW_ACHIEVEMENT)) {
+          return HoverEvent.showAchievement(achievement.get());
+        } else {
+          throw new IllegalArgumentException("Unknown hover event action " + action);
+        }
+      }
+    }));
   }
 
   public static final Codec<Component> COMPONENT = INTERNAL_COMPONENT;
@@ -293,6 +338,7 @@ public final class AdventureCodecs {
   private static <A, S> Codec<S> xmap(final Codec<A> codec, final Function<? super A, ? extends S> to, final Function<? super S, ? extends A> from, final String name) {
     return Codec.of(codec.comap(from), codec.map(to), name);
   }
+
   /**
    * Style codec.
    *
@@ -382,192 +428,6 @@ public final class AdventureCodecs {
     public String toString() {
       return "Style";
     }
-  }
-
-  /**
-   * Hover event codec.
-   *
-   * @since 4.22.0
-   */
-  public static class HoverEventCodec implements Codec<HoverEvent<?>> {
-
-    @Override
-    public <T> DataResult<T> encode(final HoverEvent<?> input, final DynamicOps<T> ops, final T prefix) {
-      final RecordBuilder<T> map = ops.mapBuilder();
-
-      map.add(HOVER_EVENT_ACTION, HOVER_ACTION.encode(input.action(), ops, prefix));
-
-      final Object value = input.value();
-      if (value instanceof Component) {
-        map.add(HOVER_EVENT_CONTENTS, COMPONENT.encode((Component) value, ops, prefix));
-      } else if (value instanceof HoverEvent.ShowEntity entity) {
-        final RecordBuilder<T> entityMap = ops.mapBuilder().add(SHOW_ENTITY_TYPE, KEY.encode(entity.type(), ops, prefix)).add(SHOW_ENTITY_ID, UUID.encode(entity.id(), ops, prefix));
-        if (entity.name() != null) {
-          entityMap.add(SHOW_ENTITY_NAME, COMPONENT.encode(entity.name(), ops, prefix));
-        }
-        map.add(HOVER_EVENT_CONTENTS, entityMap.build(prefix));
-      } else if (value instanceof HoverEvent.ShowItem item) {
-        final RecordBuilder<T> itemMap = ops.mapBuilder().add(SHOW_ITEM_ID, KEY.encode(item.item(), ops, prefix)).add(SHOW_ITEM_COUNT, ops.createInt(item.count()));
-        if (item.nbt() != null) {
-          itemMap.add(SHOW_ITEM_TAG, ops.createString(item.nbt().string()));
-        }
-        if (!item.dataComponents().isEmpty()) {
-          final RecordBuilder<T> dataComponentMap = ops.mapBuilder();
-          item.dataComponents().forEach((key, dataComponentValue) -> dataComponentMap.add(KEY.encode(key, ops, prefix), DATA_COMPONENT_VALUE.encode(dataComponentValue, ops, prefix)));
-          itemMap.add(SHOW_ITEM_COMPONENTS, dataComponentMap.build(prefix));
-        }
-        map.add(HOVER_EVENT_CONTENTS, itemMap.build(prefix));
-      }
-
-      return map.build(prefix);
-    }
-
-    @Override
-    public <T> DataResult<Pair<HoverEvent<?>, T>> decode(final DynamicOps<T> ops, final T input) {
-      return ops.getMap(input).flatMap(map -> {
-        final DataResult<Pair<HoverEvent.Action<?>, T>> actionResult = HOVER_ACTION.decode(ops, map.get(HOVER_EVENT_ACTION));
-        if (actionResult.isError()) {
-          return DataResult.error(() -> "Missing hover action type");
-        }
-
-        final HoverEvent.Action<?> action = actionResult.getOrThrow().getFirst();
-
-        final T contents = map.get(HOVER_EVENT_CONTENTS);
-        if (contents == null) {
-          return DataResult.error(() -> "Missing hover contents");
-        }
-
-        if (action == HoverEvent.Action.SHOW_TEXT) {
-          return COMPONENT.decode(ops, contents).map(pair -> Pair.of(HoverEvent.showText(pair.getFirst()), pair.getSecond()));
-        } else if (action == HoverEvent.Action.SHOW_ENTITY) {
-          return ops.getMap(contents).flatMap(entityMap -> {
-            final DataResult<Key> typeResult = KEY.decode(ops, entityMap.get(SHOW_ENTITY_TYPE)).map(Pair::getFirst);
-            final DataResult<UUID> idResult = UUID.decode(ops, entityMap.get(SHOW_ENTITY_ID)).map(Pair::getFirst);
-            final DataResult<Component> nameResult = entityMap.get(SHOW_ENTITY_NAME) != null ? COMPONENT.decode(ops, entityMap.get(SHOW_ENTITY_NAME)).map(Pair::getFirst) : DataResult.success(null);
-
-            return typeResult.apply2((type, id) -> Pair.of(HoverEvent.showEntity(type, id, nameResult.result().orElse(null)), ops.empty()), idResult);
-          });
-        } else if (action == HoverEvent.Action.SHOW_ITEM) {
-          return ops.getMap(contents).flatMap(itemMap -> {
-            final DataResult<Key> idResult = KEY.decode(ops, itemMap.get(SHOW_ITEM_ID)).map(Pair::getFirst);
-            final DataResult<Integer> countResult = ops.getNumberValue(itemMap.get(SHOW_ITEM_COUNT)).map(Number::intValue);
-            final String nbt = ops.getStringValue(itemMap.get(SHOW_ITEM_TAG)).result().orElse(null);
-            final DataResult<Consumer<BiConsumer<T, T>>> dataComponentMap = ops.getMapEntries(itemMap.get(SHOW_ITEM_COMPONENTS));
-            if (dataComponentMap.isSuccess()) {
-              return idResult.apply3((id, count, dataComponentConsumer) -> {
-                final Map<Key, DataComponentValue> dataComponents = new HashMap<>();
-                dataComponentConsumer.accept((key, value) -> {
-                  final DataResult<Pair<Key, T>> keyResult = KEY.decode(ops, key);
-                  final DataResult<Pair<DataComponentValue, T>> valueResult = DATA_COMPONENT_VALUE.decode(ops, value);
-                  if (keyResult.isError() || valueResult.isError()) {
-                    return;
-                  }
-                  dataComponents.put(keyResult.getOrThrow().getFirst(), valueResult.getOrThrow().getFirst());
-                });
-                return Pair.of(HoverEvent.showItem(id, count, dataComponents), ops.empty());
-              }, countResult, dataComponentMap);
-            }
-            return idResult.apply2((id, count) -> {
-
-              if (nbt != null) {
-                return Pair.of(HoverEvent.showItem(id, count, BinaryTagHolder.binaryTagHolder(nbt)), ops.empty());
-              }
-              return Pair.of(HoverEvent.showItem(id, count), ops.empty());
-            }, countResult);
-          });
-        }
-        return DataResult.error(() -> "Unhandled hover action type: " + action);
-      });
-    }
-
-    @Override
-    public String toString() {
-      return "HoverEvent";
-    }
-  }
-
-  /**
-   * Click event codec.
-   *
-   * @since 4.22.0
-   */
-  public static class ClickEventCodec implements Codec<ClickEvent> {
-
-    @Override
-    public <T> DataResult<T> encode(final ClickEvent input, final DynamicOps<T> ops, final T prefix) {
-      if (!input.action().readable()) {
-        return DataResult.error(() -> "Unreadable click action: " + input.action());
-      }
-
-      final RecordBuilder<T> map = ops.mapBuilder();
-      map.add(CLICK_EVENT_ACTION, CLICK_ACTION.encode(input.action(), ops, prefix));
-      map.add(CLICK_EVENT_VALUE, ops.createString(input.value()));
-      return map.build(prefix);
-    }
-
-    @Override
-    public <T> DataResult<Pair<ClickEvent, T>> decode(final DynamicOps<T> ops, final T input) {
-      return ops.getMap(input).flatMap(map -> {
-        final DataResult<Pair<ClickEvent.Action, T>> actionResult = CLICK_ACTION.decode(ops, map.get(CLICK_EVENT_ACTION));
-        if (actionResult.isError()) {
-          return DataResult.error(() -> "Missing click action type");
-        }
-
-        final ClickEvent.Action action = actionResult.getOrThrow().getFirst();
-
-        if (!action.readable()) {
-          return DataResult.error(() -> "Unreadable click action: " + action);
-        }
-
-        final DataResult<String> valueResult = ops.getStringValue(map.get(CLICK_EVENT_VALUE));
-        if (valueResult.isError()) {
-          return DataResult.error(() -> "Missing click value");
-        }
-
-        return DataResult.success(Pair.of(ClickEvent.clickEvent(action, valueResult.getOrThrow()), ops.empty()));
-      });
-    }
-
-    @Override
-    public String toString() {
-      return "ClickEvent";
-    }
-  }
-
-  /**
-   * DataComponentValue codec.
-   *
-   * @since 4.22.0
-   */
-  public static class DataComponentValueCodec implements Codec<DataComponentValue> {
-
-    @Override
-    public <T> DataResult<T> encode(final DataComponentValue input, final DynamicOps<T> ops, final T prefix) {
-      if (input instanceof DataComponentValue.TagSerializable) {
-        final String nbt = ((DataComponentValue.TagSerializable) input).asBinaryTag().string();
-        return ops.mapBuilder().add("type", ops.createString("tag")).add("value", ops.createString(nbt)).build(prefix);
-      } else if (input instanceof DataComponentValue.Removed) {
-        return ops.mapBuilder().add("type", ops.createString("remove")).add("value", ops.empty()).build(prefix);
-      }
-      return DataResult.error(() -> "Unhandled data component value type: " + input);
-    }
-
-    @Override
-    public <T> DataResult<Pair<DataComponentValue, T>> decode(final DynamicOps<T> ops, final T input) {
-      return ops.getMap(input).flatMap(map -> {
-        final DataResult<String> typeResult = ops.getStringValue(map.get("type"));
-        if (typeResult.isError()) {
-          return DataResult.error(() -> "Missing data component value type: " + typeResult.error().get().message());
-        }
-        final String type = typeResult.result().get();
-        return switch (type) {
-          case "tag" -> ops.getStringValue(map.get("value")).flatMap(nbt -> DataResult.success(Pair.of(BinaryTagHolder.binaryTagHolder(nbt), ops.empty())));
-          case "remove" -> DataResult.success(Pair.of(DataComponentValue.removed(), ops.empty()));
-          default -> DataResult.error(() -> "Unhandled data component value type: " + type);
-        };
-      });
-    }
-
   }
 
   /**
