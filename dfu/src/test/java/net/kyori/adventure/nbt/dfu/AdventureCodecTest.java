@@ -24,6 +24,7 @@
 package net.kyori.adventure.nbt.dfu;
 
 import com.google.gson.JsonElement;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import java.util.HashMap;
@@ -45,7 +46,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AdventureCodecTest {
-  private <T> T valueOrThrow(final DataResult<T> result) {
+  protected static <T> T valueOrThrow(final DataResult<T> result) {
     result.error().ifPresent(err -> {
       throw new RuntimeException("Error with data result: " + err.message());
     });
@@ -55,36 +56,36 @@ public class AdventureCodecTest {
 
   @Test
   void testComponent() {
-    this.assertComponentCodec(
+    assertComponentCodec(
       Component.text("hello", NamedTextColor.RED)
         .clickEvent(ClickEvent.suggestCommand("/dfu"))
         .hoverEvent(Component.text("hover"))
         .decorate(TextDecoration.BOLD)
     );
 
-    this.assertComponentCodec(
+    assertComponentCodec(
       Component.text("test", NamedTextColor.RED)
         .hoverEvent(HoverEvent.showItem(HoverEvent.ShowItem.showItem(Key.key("diamond"), 1, BinaryTagHolder.binaryTagHolder("{display: {Lore: ['Test']}}"))))
         .shadowColor(ShadowColor.none())
     );
 
-    this.assertComponentCodec(
+    assertComponentCodec(
       Component.translatable("trans.key", TranslationArgument.numeric(1), TranslationArgument.component(Component.text("test")))
         .clickEvent(ClickEvent.openUrl("https://example.com"))
     );
 
-    this.assertComponentCodec(
+    assertComponentCodec(
       Component.blockNBT("pos", BlockNBTComponent.Pos.fromString("1 2 3"))
     );
-    this.assertComponentCodec(
+    assertComponentCodec(
       Component.blockNBT("pos", BlockNBTComponent.Pos.fromString("^1 ^2 ^3"))
     );
 
-    this.assertComponentCodec(
+    assertComponentCodec(
       Component.entityNBT("entities", "@e")
     );
 
-    this.assertComponentCodec(
+    assertComponentCodec(
       Component.text("Press ", NamedTextColor.GRAY)
         .append(Component.keybind("key.jump", NamedTextColor.RED))
         .append(Component.text(" to jump", NamedTextColor.GRAY))
@@ -92,33 +93,21 @@ public class AdventureCodecTest {
 
     final Map<Key, DataComponentValue> dataComponentValueMap = new HashMap<>();
     dataComponentValueMap.put(Key.key("name"), BinaryTagHolder.binaryTagHolder("{'text':'Example'}"));
-    this.assertComponentCodec(
+    assertComponentCodec(
       Component.text("Example")
         .hoverEvent(HoverEvent.showItem(Key.key("diamond"), 1, dataComponentValueMap))
     );
   }
 
-  private void assertComponentCodec(final Component component) {
-    final JsonElement jsonElement = this.valueOrThrow(AdventureCodecs.COMPONENT.encodeStart(JsonOps.INSTANCE, component));
-    final Component decode = this.valueOrThrow(AdventureCodecs.COMPONENT.decode(JsonOps.INSTANCE, jsonElement)).getFirst();
+  protected static void assertComponentCodec(final Component component) {
+    final JsonElement jsonElement = valueOrThrow(AdventureCodecs.COMPONENT.encodeStart(JsonOps.INSTANCE, component));
+    final Component decode = valueOrThrow(AdventureCodecs.COMPONENT.decode(JsonOps.INSTANCE, jsonElement)).getFirst();
     assertEquals(component, decode);
   }
 
-  @Test
-  void testTranslationArgument() {
-    final TranslationArgument bool = TranslationArgument.bool(true);
-    JsonElement jsonElement = this.valueOrThrow(AdventureCodecs.TRANSLATION_ARGUMENT.encodeStart(JsonOps.INSTANCE, bool));
-    TranslationArgument valued = this.valueOrThrow(AdventureCodecs.TRANSLATION_ARGUMENT.decode(JsonOps.INSTANCE, jsonElement)).getFirst();
-    assertEquals(bool, valued);
-
-    final TranslationArgument numeric = TranslationArgument.numeric(1);
-    jsonElement = this.valueOrThrow(AdventureCodecs.TRANSLATION_ARGUMENT.encodeStart(JsonOps.INSTANCE, numeric));
-    valued = this.valueOrThrow(AdventureCodecs.TRANSLATION_ARGUMENT.decode(JsonOps.INSTANCE, jsonElement)).getFirst();
-    assertEquals(numeric, valued);
-
-    final TranslationArgument component = TranslationArgument.component(Component.text("hello"));
-    jsonElement = this.valueOrThrow(AdventureCodecs.TRANSLATION_ARGUMENT.encodeStart(JsonOps.INSTANCE, component));
-    valued = this.valueOrThrow(AdventureCodecs.TRANSLATION_ARGUMENT.decode(JsonOps.INSTANCE, jsonElement)).getFirst();
-    assertEquals(component, valued);
+  protected static <A> void assertCodec(final Codec<A> codec, final A value) {
+    final JsonElement jsonElement = valueOrThrow(codec.encodeStart(JsonOps.INSTANCE, value));
+    final A decode = valueOrThrow(codec.decode(JsonOps.INSTANCE, jsonElement)).getFirst();
+    assertEquals(value, decode);
   }
 }
