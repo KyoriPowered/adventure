@@ -114,16 +114,16 @@ public final class AdventureCodecs {
   // TranslationArgument
   public static final Codec<TranslationArgument> TRANSLATION_ARGUMENT = new TranslationArgumentCodec();
   // indexed
-  public static final Codec<NamedTextColor> NAMED_TEXT_COLOR = new IndexCodec<>(Codec.STRING, NamedTextColor.NAMES, "NamedTextColor");
-  public static final Codec<BossBar.Color> BOSS_BAR_COLOR = new IndexCodec<>(Codec.STRING, BossBar.Color.NAMES, "BossBar.Color");
-  public static final Codec<BossBar.Flag> BOSS_BAR_FLAG = new IndexCodec<>(Codec.STRING, BossBar.Flag.NAMES, "BossBar.Flag");
-  public static final Codec<BossBar.Overlay> BOSS_BAR_OVERLAY = new IndexCodec<>(Codec.STRING, BossBar.Overlay.NAMES, "BossBar.Overlay");
-  public static final Codec<Sound.Source> SOUND_SOURCE = new IndexCodec<>(Codec.STRING, Sound.Source.NAMES, "Sound.Source");
-  public static final Codec<ClickEvent.Action> CLICK_ACTION = new IndexCodec<>(Codec.STRING, ClickEvent.Action.NAMES, "ClickEvent.Action");
-  public static final Codec<HoverEvent.Action<?>> HOVER_ACTION = new IndexCodec<>(Codec.STRING, HoverEvent.Action.NAMES, "HoverEvent.Action");
+  public static final Codec<NamedTextColor> NAMED_TEXT_COLOR = indexCode(Codec.STRING, NamedTextColor.NAMES, "NamedTextColor");
+  public static final Codec<BossBar.Color> BOSS_BAR_COLOR = indexCode(Codec.STRING, BossBar.Color.NAMES, "BossBar.Color");
+  public static final Codec<BossBar.Flag> BOSS_BAR_FLAG = indexCode(Codec.STRING, BossBar.Flag.NAMES, "BossBar.Flag");
+  public static final Codec<BossBar.Overlay> BOSS_BAR_OVERLAY = indexCode(Codec.STRING, BossBar.Overlay.NAMES, "BossBar.Overlay");
+  public static final Codec<Sound.Source> SOUND_SOURCE = indexCode(Codec.STRING, Sound.Source.NAMES, "Sound.Source");
+  public static final Codec<ClickEvent.Action> CLICK_ACTION = indexCode(Codec.STRING, ClickEvent.Action.NAMES, "ClickEvent.Action");
+  public static final Codec<HoverEvent.Action<?>> HOVER_ACTION = indexCode(Codec.STRING, HoverEvent.Action.NAMES, "HoverEvent.Action");
   // TextDecoration
-  public static final Codec<TextDecoration> TEXT_DECORATION = new IndexCodec<>(Codec.STRING, TextDecoration.NAMES, "TextDecoration");
-  public static final Codec<TextDecoration.State> TEXT_DECORATION_STATE = new IndexCodec<>(Codec.STRING, Index.create(TextDecoration.State.class, TextDecoration.State::toString), "TextDecoration.State");
+  public static final Codec<TextDecoration> TEXT_DECORATION = indexCode(Codec.STRING, TextDecoration.NAMES, "TextDecoration");
+  public static final Codec<TextDecoration.State> TEXT_DECORATION_STATE = indexCode(Codec.STRING, Index.create(TextDecoration.State.class, TextDecoration.State::toString), "TextDecoration.State");
 
   public static final Codec<BinaryTagHolder> BINARY_TAG_HOLDER = xmap(Codec.STRING, BinaryTagHolder::binaryTagHolder, BinaryTagHolder::string, "BinaryTagHolder");
   public static final Codec<BlockNBTComponent.WorldPos.Coordinate> COORDINATE = RecordCodecBuilder.create(instance -> instance.group(
@@ -347,6 +347,24 @@ public final class AdventureCodecs {
   }
 
   /**
+   * Creates a codec for an indexed type.
+   *
+   * @param codec the codec
+   * @param index the index
+   * @param name  the name
+   * @param <K>   the key type
+   * @param <C>   the component type
+   * @return a codec
+   * @since 4.22.0
+   */
+  public static <K, C> Codec<C> indexCode(final Codec<K> codec, final Index<K, C> index, final String name) {
+    return Codec.of(
+      codec.comap(index::keyOrThrow),
+      codec.map(index::valueOrThrow),
+      name);
+  }
+
+  /**
    * Translation argument codec.
    *
    * @since 4.22.0
@@ -401,56 +419,4 @@ public final class AdventureCodecs {
     }
   }
 
-  /**
-   * Index codec.
-   *
-   * @param <K> key type.
-   * @param <V> value type.
-   * @since 4.22.0
-   */
-  public static class IndexCodec<K, V> implements Codec<V> {
-    private final Codec<K> keyCodec;
-    private final Index<K, V> index;
-    private final String name;
-
-    /**
-     * Construct a new index codec.
-     *
-     * @param keyCodec The key codec.
-     * @param index    The index.
-     * @param name     Current codec name.
-     * @since 4.22.0
-     */
-    public IndexCodec(final Codec<K> keyCodec, final Index<K, V> index, final String name) {
-      this.keyCodec = keyCodec;
-      this.index = index;
-      this.name = name;
-    }
-
-    @Override
-    public <T> DataResult<T> encode(final V input, final DynamicOps<T> ops, final T prefix) {
-      final K key = this.index.key(input);
-      if (key == null) {
-        return DataResult.error(() -> "Unknown value: " + input);
-      }
-      return this.keyCodec.encode(key, ops, prefix);
-    }
-
-    @Override
-    public <T> DataResult<Pair<V, T>> decode(final DynamicOps<T> ops, final T input) {
-      final DataResult<Pair<K, T>> result = this.keyCodec.decode(ops, input);
-      return result.flatMap(pair -> {
-        final V value = this.index.value(pair.getFirst());
-        if (value == null) {
-          return DataResult.error(() -> "Unknown value: " + pair.getFirst());
-        }
-        return DataResult.success(Pair.of(value, pair.getSecond()));
-      });
-    }
-
-    @Override
-    public String toString() {
-      return "Index[" + this.name + "]";
-    }
-  }
 }
