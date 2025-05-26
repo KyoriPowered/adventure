@@ -24,19 +24,18 @@
 package net.kyori.adventure.dfu;
 
 import com.mojang.datafixers.kinds.App;
+import com.mojang.datafixers.util.Function7;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
-import com.mojang.serialization.MapLike;
-import com.mojang.serialization.RecordBuilder;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import net.kyori.adventure.bossbar.BossBar;
@@ -139,7 +138,7 @@ public final class AdventureCodecs {
     Codec.STRING.fieldOf("value").forGetter(ClickEvent::value)
   ).apply(instance, ClickEvent::clickEvent));
 
-  public static final Codec<Style> STYLE = new StyleCodec();
+  public static final Codec<Style> STYLE;
   public static final Codec<DataComponentValue> DATA_COMPONENT_VALUE = RecordCodecBuilder.create(instance -> instance.group(
     Codec.STRING.fieldOf("type").forGetter(c -> c instanceof DataComponentValue.Removed ? "removed" : c instanceof DataComponentValue.TagSerializable ? "tag" : "unknown"),
     Codec.STRING.optionalFieldOf("value").forGetter(c -> c instanceof DataComponentValue.TagSerializable ? Optional.of(((DataComponentValue.TagSerializable) c).asBinaryTag().string()) : Optional.empty())
@@ -152,13 +151,13 @@ public final class AdventureCodecs {
     throw new IllegalArgumentException("Unknown type: " + type);
   }));
   public static final Codec<HoverEvent.ShowItem> SHOW_ITEM = RecordCodecBuilder.create(instance -> instance.group(
-    KEY.fieldOf(SHOW_ITEM_ID).forGetter(HoverEvent.ShowItem::item),
-    Codec.INT.fieldOf(SHOW_ITEM_COUNT).forGetter(HoverEvent.ShowItem::count),
-    BINARY_TAG_HOLDER.optionalFieldOf(SHOW_ITEM_TAG).forGetter(c -> Optional.ofNullable(c.nbt())),
-    Codec.unboundedMap(KEY, DATA_COMPONENT_VALUE).fieldOf(SHOW_ITEM_COMPONENTS).forGetter(c -> c.dataComponents())
-  ).apply(instance, (id, count, nbt, dataComponentValueMap) -> {
-    return nbt.map(binaryTagHolder -> HoverEvent.ShowItem.showItem(id, count, binaryTagHolder)).orElseGet(() -> HoverEvent.ShowItem.showItem(id, count, dataComponentValueMap));
-  }));
+      KEY.fieldOf(SHOW_ITEM_ID).forGetter(HoverEvent.ShowItem::item),
+      Codec.INT.fieldOf(SHOW_ITEM_COUNT).forGetter(HoverEvent.ShowItem::count),
+      BINARY_TAG_HOLDER.optionalFieldOf(SHOW_ITEM_TAG).forGetter(c -> Optional.ofNullable(c.nbt())),
+      Codec.unboundedMap(KEY, DATA_COMPONENT_VALUE).fieldOf(SHOW_ITEM_COMPONENTS).forGetter(c -> c.dataComponents())
+    ).apply(instance, (id, count, nbt, dataComponentValueMap) ->
+      nbt.map(binaryTagHolder -> HoverEvent.ShowItem.showItem(id, count, binaryTagHolder)).orElseGet(() -> HoverEvent.ShowItem.showItem(id, count, dataComponentValueMap)))
+  );
   public static final Codec<HoverEvent.ShowEntity> SHOW_ENTITY;
   public static final Codec<HoverEvent<?>> HOVER_EVENT;
 
@@ -176,12 +175,8 @@ public final class AdventureCodecs {
       @Override
       public App<RecordCodecBuilder.Mu<Component>, Component> apply(final RecordCodecBuilder.Instance<Component> instance) {
         return instance.group(
-          STYLE.optionalFieldOf("style").forGetter(c -> Optional.of(c.style())),
-          KEY.optionalFieldOf(FONT).forGetter(c -> Optional.ofNullable(c.font())),
+          Codec.lazyInitialized(() -> STYLE).optionalFieldOf("style").forGetter(c -> Optional.of(c.style())),
           Codec.lazyInitialized(() -> INTERNAL_COMPONENT).listOf().optionalFieldOf(EXTRA, Collections.emptyList()).forGetter(Component::children),
-          Codec.lazyInitialized(() -> CLICK_EVENT).optionalFieldOf(ComponentTreeConstants.CLICK_EVENT).forGetter(c -> Optional.ofNullable(c.clickEvent())),
-          Codec.lazyInitialized(() -> HOVER_EVENT).optionalFieldOf(ComponentTreeConstants.HOVER_EVENT).forGetter(c -> Optional.ofNullable(c.hoverEvent())),
-          Codec.STRING.optionalFieldOf(INSERTION).forGetter(c -> Optional.ofNullable(c.insertion())),
           Codec.STRING.optionalFieldOf(TEXT).forGetter(c -> Optional.ofNullable(c instanceof TextComponent ? ((TextComponent) c).content() : null)),
           Codec.lazyInitialized(() -> BLOCK_NBT_CODEC).optionalFieldOf(NBT_BLOCK).forGetter(c -> Optional.ofNullable(c instanceof BlockNBTComponent ? ((BlockNBTComponent) c) : null)),
           Codec.lazyInitialized(() -> ENTITY_NBT_CODEC).optionalFieldOf(NBT_ENTITY).forGetter(c -> Optional.ofNullable(c instanceof EntityNBTComponent ? ((EntityNBTComponent) c) : null)),
@@ -190,14 +185,10 @@ public final class AdventureCodecs {
           Codec.lazyInitialized(() -> SELECTOR_CODEC).optionalFieldOf(SELECTOR).forGetter(c -> Optional.ofNullable(c instanceof SelectorComponent ? ((SelectorComponent) c) : null)),
           Codec.lazyInitialized(() -> KEYBIND_CODEC).optionalFieldOf(KEYBIND).forGetter(c -> Optional.ofNullable(c instanceof KeybindComponent ? ((KeybindComponent) c) : null)),
           Codec.lazyInitialized(() -> TRANSLATABLE_CODEC).optionalFieldOf(TRANSLATE).forGetter(c -> Optional.ofNullable(c instanceof TranslatableComponent ? ((TranslatableComponent) c) : null))
-        ).apply(instance, (style, font, children, clickEvent, hoverEvent, insertion, textContent, blockNBTComponent, entityNBTComponent, storageNBTComponent, scoreComponent, selectorComponent, keybindComponent, translatableComponent) -> {
+        ).apply(instance, (style, children, textContent, blockNBTComponent, entityNBTComponent, storageNBTComponent, scoreComponent, selectorComponent, keybindComponent, translatableComponent) -> {
           final Consumer<ComponentBuilder<?, ?>> consumer = builder -> {
             style.ifPresent(builder::style);
-            font.ifPresent(builder::font);
             builder.append(children);
-            clickEvent.ifPresent(builder::clickEvent);
-            hoverEvent.ifPresent(builder::hoverEvent);
-            insertion.ifPresent(builder::insertion);
           };
           final BuildableComponent<?, ?> baseComponent;
           if (textContent.isPresent()) {
@@ -217,7 +208,7 @@ public final class AdventureCodecs {
           } else if (blockNBTComponent.isPresent()) {
             baseComponent = blockNBTComponent.get();
           } else {
-            throw new IllegalArgumentException("Component is not a NBTComponent");
+            throw new IllegalArgumentException("Component is not a valid type");
           }
           final ComponentBuilder<?, ?> builder = baseComponent.toBuilder();
           consumer.accept(builder);
@@ -225,6 +216,56 @@ public final class AdventureCodecs {
         });
       }
     });
+    SHOW_ENTITY = RecordCodecBuilder.create(i -> i.group(
+        KEY.fieldOf(SHOW_ENTITY_TYPE).forGetter(HoverEvent.ShowEntity::type),
+        UUID.fieldOf(SHOW_ENTITY_ID).forGetter(HoverEvent.ShowEntity::id),
+        INTERNAL_COMPONENT.optionalFieldOf(SHOW_ENTITY_NAME).forGetter(c -> Optional.ofNullable(c.name()))
+      ).apply(i, (key, uuid, name) -> name.map(component -> HoverEvent.ShowEntity.showEntity(key, uuid, component)).orElseGet(() -> HoverEvent.ShowEntity.showEntity(key, uuid)))
+    );
+    HOVER_EVENT = RecordCodecBuilder.create(instance -> instance.group(
+      HOVER_ACTION.fieldOf(HOVER_EVENT_ACTION).forGetter(c -> c.action()),
+      SHOW_ITEM.optionalFieldOf("showItem").forGetter(c -> c.value() instanceof HoverEvent.ShowItem ? Optional.of(((HoverEvent.ShowItem) c.value())) : Optional.empty()),
+      INTERNAL_COMPONENT.optionalFieldOf("showText").forGetter(c -> c.value() instanceof Component ? Optional.of((Component) c.value()) : Optional.empty()),
+      SHOW_ENTITY.optionalFieldOf("showEntity").forGetter(c -> c.value() instanceof HoverEvent.ShowEntity ? Optional.of(((HoverEvent.ShowEntity) c.value())) : Optional.empty()),
+      Codec.STRING.optionalFieldOf("showAchievement").forGetter(c -> c.value() instanceof String ? Optional.of((String) c.value()) : Optional.empty())
+    ).apply(instance, (action, showItem, component, showEntity, achievement) -> {
+      if (action.equals(HoverEvent.Action.SHOW_TEXT)) {
+        return HoverEvent.showText(component.get());
+      } else if (action.equals(HoverEvent.Action.SHOW_ENTITY)) {
+        return HoverEvent.showEntity(showEntity.get());
+      } else if (action.equals(HoverEvent.Action.SHOW_ITEM)) {
+        return HoverEvent.showItem(showItem.get());
+      } else if (action.equals(HoverEvent.Action.SHOW_ACHIEVEMENT)) {
+        return HoverEvent.showAchievement(achievement.get());
+      } else {
+        throw new IllegalArgumentException("Unknown hover event action " + action);
+      }
+    }));
+    STYLE = RecordCodecBuilder.create(instance -> instance.group(
+      KEY.optionalFieldOf(FONT).forGetter(s -> Optional.ofNullable(s.font())),
+      TEXT_COLOR.optionalFieldOf(COLOR).forGetter(s -> Optional.ofNullable(s.color())),
+      SHADOW_COLOR.optionalFieldOf(ComponentTreeConstants.SHADOW_COLOR).forGetter(s -> Optional.ofNullable(s.shadowColor())),
+      Codec.STRING.optionalFieldOf(INSERTION).forGetter(s -> Optional.ofNullable(s.insertion())),
+      CLICK_EVENT.optionalFieldOf(ComponentTreeConstants.CLICK_EVENT).forGetter(s -> Optional.ofNullable(s.clickEvent())),
+      Codec.lazyInitialized(() -> HOVER_EVENT).optionalFieldOf(ComponentTreeConstants.HOVER_EVENT).forGetter(s -> Optional.ofNullable(s.hoverEvent())),
+      Codec.unboundedMap(TEXT_DECORATION, TEXT_DECORATION_STATE).optionalFieldOf(
+        "decoration",
+        Collections.emptyMap()
+      ).forGetter(Style::decorations)
+    ).apply(instance, new Function7<Optional<Key>, Optional<TextColor>, Optional<ShadowColor>, Optional<String>, Optional<ClickEvent>, Optional<HoverEvent<?>>, Map<TextDecoration, TextDecoration.State>, Style>() {
+      @Override
+      public Style apply(final Optional<Key> font, final Optional<TextColor> textColor, final Optional<ShadowColor> shadowColor, final Optional<String> insertion, final Optional<ClickEvent> clickEvent, final Optional<HoverEvent<?>> hoverEvent, final Map<TextDecoration, TextDecoration.State> decoration) {
+        final Style.Builder builder = Style.style();
+        font.ifPresent(builder::font);
+        textColor.ifPresent(builder::color);
+        shadowColor.ifPresent(builder::shadowColor);
+        insertion.ifPresent(builder::insertion);
+        clickEvent.ifPresent(builder::clickEvent);
+        hoverEvent.ifPresent(builder::hoverEvent);
+        decoration.forEach(builder::decoration);
+        return builder.build();
+      }
+    }));
     BLOCK_NBT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
       POS.fieldOf(NBT_BLOCK).forGetter(BlockNBTComponent::pos),
       Codec.STRING.fieldOf(NBT).forGetter(NBTComponent::nbtPath),
@@ -297,129 +338,12 @@ public final class AdventureCodecs {
       fallback.ifPresent(builder::fallback);
       return builder.build();
     }));
-
-    SHOW_ENTITY = RecordCodecBuilder.create(i -> i.group(
-        KEY.fieldOf(SHOW_ENTITY_TYPE).forGetter(HoverEvent.ShowEntity::type),
-        UUID.fieldOf(SHOW_ENTITY_ID).forGetter(HoverEvent.ShowEntity::id),
-        INTERNAL_COMPONENT.optionalFieldOf(SHOW_ENTITY_NAME).forGetter(c -> Optional.ofNullable(c.name()))
-      ).apply(i, (key, uuid, name) -> name.map(component -> HoverEvent.ShowEntity.showEntity(key, uuid, component)).orElseGet(() -> HoverEvent.ShowEntity.showEntity(key, uuid)))
-    );
-    HOVER_EVENT = RecordCodecBuilder.create(instance -> instance.group(
-      HOVER_ACTION.fieldOf(HOVER_EVENT_ACTION).forGetter(c -> c.action()),
-      SHOW_ITEM.optionalFieldOf("showItem").forGetter(c -> c.value() instanceof HoverEvent.ShowItem ? Optional.of(((HoverEvent.ShowItem) c.value())) : Optional.empty()),
-      INTERNAL_COMPONENT.optionalFieldOf("showText").forGetter(c -> c.value() instanceof Component ? Optional.of((Component) c.value()) : Optional.empty()),
-      SHOW_ENTITY.optionalFieldOf("showEntity").forGetter(c -> c.value() instanceof HoverEvent.ShowEntity ? Optional.of(((HoverEvent.ShowEntity) c.value())) : Optional.empty()),
-      Codec.STRING.optionalFieldOf("showAchievement").forGetter(c -> c.value() instanceof String ? Optional.of((String) c.value()) : Optional.empty())
-    ).apply(instance, (action, showItem, component, showEntity, achievement) -> {
-      if (action.equals(HoverEvent.Action.SHOW_TEXT)) {
-        return HoverEvent.showText(component.get());
-      } else if (action.equals(HoverEvent.Action.SHOW_ENTITY)) {
-        return HoverEvent.showEntity(showEntity.get());
-      } else if (action.equals(HoverEvent.Action.SHOW_ITEM)) {
-        return HoverEvent.showItem(showItem.get());
-      } else if (action.equals(HoverEvent.Action.SHOW_ACHIEVEMENT)) {
-        return HoverEvent.showAchievement(achievement.get());
-      } else {
-        throw new IllegalArgumentException("Unknown hover event action " + action);
-      }
-    }));
   }
 
   public static final Codec<Component> COMPONENT = INTERNAL_COMPONENT;
 
   private static <A, S> Codec<S> xmap(final Codec<A> codec, final Function<? super A, ? extends S> to, final Function<? super S, ? extends A> from, final String name) {
     return Codec.of(codec.comap(from), codec.map(to), name);
-  }
-
-  /**
-   * Style codec.
-   *
-   * @since 4.22.0
-   */
-  public static class StyleCodec implements Codec<Style> {
-
-    @Override
-    public <T> DataResult<T> encode(final Style input, final DynamicOps<T> ops, final T prefix) {
-      if (input.isEmpty()) {
-        return DataResult.success(ops.empty());
-      }
-      final RecordBuilder<T> mapBuilder = ops.mapBuilder();
-      if (input.font() != null) {
-        mapBuilder.add(FONT, KEY.encode(input.font(), ops, prefix));
-      }
-      if (input.color() != null) {
-        mapBuilder.add(COLOR, TEXT_COLOR.encode(input.color(), ops, prefix));
-      }
-      if (input.insertion() != null) {
-        mapBuilder.add(INSERTION, Codec.STRING.encode(input.insertion(), ops, prefix));
-      }
-      if (input.shadowColor() != null) {
-        mapBuilder.add(ComponentTreeConstants.SHADOW_COLOR, SHADOW_COLOR.encode(input.shadowColor(), ops, prefix));
-      }
-      if (input.clickEvent() != null) {
-        mapBuilder.add(ComponentTreeConstants.CLICK_EVENT, CLICK_EVENT.encode(input.clickEvent(), ops, prefix));
-      }
-      if (input.hoverEvent() != null) {
-        mapBuilder.add(ComponentTreeConstants.HOVER_EVENT, HOVER_EVENT.encode(input.hoverEvent(), ops, prefix));
-      }
-      final RecordBuilder<T> decorationMap = ops.mapBuilder();
-      for (final TextDecoration decoration : TextDecoration.values()) {
-        if (input.hasDecoration(decoration)) {
-          decorationMap.add(TEXT_DECORATION.encode(decoration, ops, prefix), TEXT_DECORATION_STATE.encode(input.decorations().get(decoration), ops, prefix));
-        }
-      }
-      mapBuilder.add("decoration", decorationMap.build(prefix));
-      return mapBuilder.build(prefix);
-    }
-
-    @Override
-    public <T> DataResult<Pair<Style, T>> decode(final DynamicOps<T> ops, final T input) {
-      final MapLike<T> map = ops.getMap(input).getOrThrow();
-
-      final DataResult<Key> fontResult = KEY.decode(ops, map.get(FONT)).map(Pair::getFirst);
-      final Key font = fontResult.result().orElse(null);
-
-      final DataResult<TextColor> colorResult = TEXT_COLOR.decode(ops, map.get(COLOR)).map(Pair::getFirst);
-      final DataResult<ShadowColor> shadowColorResult = SHADOW_COLOR.decode(ops, map.get(ComponentTreeConstants.SHADOW_COLOR)).map(Pair::getFirst);
-      final TextColor color = colorResult.result().orElse(null);
-      final ShadowColor shadowColor = shadowColorResult.result().orElse(null);
-      final Style.Builder builder = Style.style();
-      builder.color(color).shadowColor(shadowColor).font(font);
-
-      final DataResult<Consumer<BiConsumer<T, T>>> decorationMap = ops.getMapEntries(map.get("decoration"));
-      if (decorationMap.isError()) {
-        return DataResult.error(() -> "Invalid decoration map");
-      }
-      decorationMap.result().ifPresent(bi -> bi.accept((k, v) -> {
-        final DataResult<TextDecoration> key = TEXT_DECORATION.decode(ops, k).map(Pair::getFirst);
-        final DataResult<TextDecoration.State> value = TEXT_DECORATION_STATE.decode(ops, v).map(Pair::getFirst);
-        if (key.isError() || value.isError()) {
-          return;
-        }
-        builder.decoration(key.getOrThrow(), value.getOrThrow());
-      }));
-
-      if (map.get(INSERTION) != null) {
-        final DataResult<String> insertionResult = Codec.STRING.decode(ops, map.get(INSERTION)).map(Pair::getFirst);
-        builder.insertion(insertionResult.result().orElse(null));
-      }
-      if (map.get(ComponentTreeConstants.CLICK_EVENT) != null) {
-        final DataResult<ClickEvent> clickEventResult = CLICK_EVENT.decode(ops, map.get(ComponentTreeConstants.CLICK_EVENT)).map(Pair::getFirst);
-        builder.clickEvent(clickEventResult.result().orElse(null));
-      }
-      if (map.get(ComponentTreeConstants.HOVER_EVENT) != null) {
-        final DataResult<HoverEvent<?>> hoverEventResult = HOVER_EVENT.decode(ops, map.get(ComponentTreeConstants.HOVER_EVENT)).map(Pair::getFirst);
-        builder.hoverEvent(hoverEventResult.result().orElse(null));
-      }
-
-      final Style style = builder.build();
-      return DataResult.success(Pair.of(style, ops.empty()));
-    }
-
-    @Override
-    public String toString() {
-      return "Style";
-    }
   }
 
   /**
