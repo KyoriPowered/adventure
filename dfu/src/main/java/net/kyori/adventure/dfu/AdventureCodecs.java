@@ -34,8 +34,6 @@ import com.mojang.serialization.RecordBuilder;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -70,14 +68,10 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import net.kyori.adventure.util.Index;
 
-import static net.kyori.adventure.text.event.HoverEvent.Action.SHOW_TEXT;
-import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_ACTION;
-import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_VALUE;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.COLOR;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.EXTRA;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.FONT;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.HOVER_EVENT_ACTION;
-import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.HOVER_EVENT_CONTENTS;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.INSERTION;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.KEYBIND;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NBT;
@@ -134,12 +128,17 @@ public final class AdventureCodecs {
   public static final Codec<TextDecoration.State> TEXT_DECORATION_STATE = new IndexCodec<>(Codec.STRING, Index.create(TextDecoration.State.class, TextDecoration.State::toString), "TextDecoration.State");
 
   public static final Codec<BinaryTagHolder> BINARY_TAG_HOLDER = xmap(Codec.STRING, BinaryTagHolder::binaryTagHolder, BinaryTagHolder::string, "BinaryTagHolder");
-  public static final Codec<BlockNBTComponent.WorldPos.Coordinate> COORDINATE = new CoordinateCodec();
-  public static final Codec<BlockNBTComponent.Pos> POS = new PosCodec();
+  public static final Codec<BlockNBTComponent.WorldPos.Coordinate> COORDINATE = RecordCodecBuilder.create(instance -> instance.group(
+      Codec.INT.fieldOf("type").forGetter(c -> c.type().ordinal()),
+      Codec.INT.fieldOf("value").forGetter(BlockNBTComponent.WorldPos.Coordinate::value)
+    ).apply(instance, (type, value) ->
+      BlockNBTComponent.WorldPos.Coordinate.coordinate(value, BlockNBTComponent.WorldPos.Coordinate.Type.values()[type]))
+  );
+  public static final Codec<BlockNBTComponent.Pos> POS = xmap(Codec.STRING, BlockNBTComponent.Pos::fromString, BlockNBTComponent.Pos::asString, "BlockNBTComponent.Pos");
   public static final Codec<ClickEvent> CLICK_EVENT = RecordCodecBuilder.create(instance -> instance.group(
-    CLICK_ACTION.fieldOf("action").forGetter(c -> c.action()),
-    Codec.STRING.fieldOf("value").forGetter(c -> c.value())
-  ).apply(instance, (action, value) -> ClickEvent.clickEvent(action, value)));
+    CLICK_ACTION.fieldOf("action").forGetter(ClickEvent::action),
+    Codec.STRING.fieldOf("value").forGetter(ClickEvent::value)
+  ).apply(instance, ClickEvent::clickEvent));
 
   public static final Codec<Style> STYLE = new StyleCodec();
   public static final Codec<DataComponentValue> DATA_COMPONENT_VALUE = RecordCodecBuilder.create(instance -> instance.group(
@@ -154,15 +153,12 @@ public final class AdventureCodecs {
     throw new IllegalArgumentException("Unknown type: " + type);
   }));
   public static final Codec<HoverEvent.ShowItem> SHOW_ITEM = RecordCodecBuilder.create(instance -> instance.group(
-    KEY.fieldOf(SHOW_ITEM_ID).forGetter(c -> c.item()),
-    Codec.INT.fieldOf(SHOW_ITEM_COUNT).forGetter(c -> c.count()),
+    KEY.fieldOf(SHOW_ITEM_ID).forGetter(HoverEvent.ShowItem::item),
+    Codec.INT.fieldOf(SHOW_ITEM_COUNT).forGetter(HoverEvent.ShowItem::count),
     BINARY_TAG_HOLDER.optionalFieldOf(SHOW_ITEM_TAG).forGetter(c -> Optional.ofNullable(c.nbt())),
     Codec.unboundedMap(KEY, DATA_COMPONENT_VALUE).fieldOf(SHOW_ITEM_COMPONENTS).forGetter(c -> c.dataComponents())
   ).apply(instance, (id, count, nbt, dataComponentValueMap) -> {
-    if (nbt.isPresent()) {
-      return HoverEvent.ShowItem.showItem(id, count, nbt.get());
-    }
-    return HoverEvent.ShowItem.showItem(id, count, dataComponentValueMap);
+    return nbt.map(binaryTagHolder -> HoverEvent.ShowItem.showItem(id, count, binaryTagHolder)).orElseGet(() -> HoverEvent.ShowItem.showItem(id, count, dataComponentValueMap));
   }));
   public static final Codec<HoverEvent.ShowEntity> SHOW_ENTITY;
   public static final Codec<HoverEvent<?>> HOVER_EVENT;
@@ -315,20 +311,17 @@ public final class AdventureCodecs {
       INTERNAL_COMPONENT.optionalFieldOf("showText").forGetter(c -> c.value() instanceof Component ? Optional.of((Component) c.value()) : Optional.empty()),
       SHOW_ENTITY.optionalFieldOf("showEntity").forGetter(c -> c.value() instanceof HoverEvent.ShowEntity ? Optional.of(((HoverEvent.ShowEntity) c.value())) : Optional.empty()),
       Codec.STRING.optionalFieldOf("showAchievement").forGetter(c -> c.value() instanceof String ? Optional.of((String) c.value()) : Optional.empty())
-    ).apply(instance, new Function5<>() {
-      @Override
-      public HoverEvent<?> apply(final HoverEvent.Action<?> action, final Optional<HoverEvent.ShowItem> showItem, final Optional<Component> component, final Optional<HoverEvent.ShowEntity> showEntity, final Optional<String> achievement) {
-        if (action.equals(HoverEvent.Action.SHOW_TEXT)) {
-          return HoverEvent.showText(component.get());
-        } else if (action.equals(HoverEvent.Action.SHOW_ENTITY)) {
-          return HoverEvent.showEntity(showEntity.get());
-        } else if (action.equals(HoverEvent.Action.SHOW_ITEM)) {
-          return HoverEvent.showItem(showItem.get());
-        } else if (action.equals(HoverEvent.Action.SHOW_ACHIEVEMENT)) {
-          return HoverEvent.showAchievement(achievement.get());
-        } else {
-          throw new IllegalArgumentException("Unknown hover event action " + action);
-        }
+    ).apply(instance, (action, showItem, component, showEntity, achievement) -> {
+      if (action.equals(HoverEvent.Action.SHOW_TEXT)) {
+        return HoverEvent.showText(component.get());
+      } else if (action.equals(HoverEvent.Action.SHOW_ENTITY)) {
+        return HoverEvent.showEntity(showEntity.get());
+      } else if (action.equals(HoverEvent.Action.SHOW_ITEM)) {
+        return HoverEvent.showItem(showItem.get());
+      } else if (action.equals(HoverEvent.Action.SHOW_ACHIEVEMENT)) {
+        return HoverEvent.showAchievement(achievement.get());
+      } else {
+        throw new IllegalArgumentException("Unknown hover event action " + action);
       }
     }));
   }
@@ -427,86 +420,6 @@ public final class AdventureCodecs {
     @Override
     public String toString() {
       return "Style";
-    }
-  }
-
-  /**
-   * Pos codec.
-   *
-   * @since 4.22.0
-   */
-  public static class PosCodec implements Codec<BlockNBTComponent.Pos> {
-
-    @Override
-    public <T> DataResult<T> encode(final BlockNBTComponent.Pos input, final DynamicOps<T> ops, final T prefix) {
-
-      if (input instanceof BlockNBTComponent.LocalPos) {
-        return ops.mapBuilder().add("left", Codec.DOUBLE.encode(((BlockNBTComponent.LocalPos) input).left(), ops, prefix)).add("up", Codec.DOUBLE.encode(((BlockNBTComponent.LocalPos) input).up(), ops, prefix)).add("forward", Codec.DOUBLE.encode(((BlockNBTComponent.LocalPos) input).forwards(), ops, prefix)).add("type", ops.createString("local")).build(prefix);
-      } else if (input instanceof BlockNBTComponent.WorldPos) {
-        return ops.mapBuilder().add("x", COORDINATE.encode(((BlockNBTComponent.WorldPos) input).x(), ops, prefix)).add("y", COORDINATE.encode(((BlockNBTComponent.WorldPos) input).y(), ops, prefix)).add("z", COORDINATE.encode(((BlockNBTComponent.WorldPos) input).z(), ops, prefix)).add("type", ops.createString("world")).build(prefix);
-      }
-      return DataResult.error(() -> "Unknown pos type");
-    }
-
-    @Override
-    public <T> DataResult<Pair<BlockNBTComponent.Pos, T>> decode(final DynamicOps<T> ops, final T input) {
-      final DataResult<MapLike<T>> mapResult = ops.getMap(input);
-      if (mapResult.isError()) {
-        return DataResult.error(() -> "Not a map");
-      }
-      final MapLike<T> map = mapResult.getOrThrow();
-      final DataResult<String> typeResult = ops.getStringValue(map.get("type"));
-      if (typeResult.isError()) {
-        return DataResult.error(() -> "No type");
-      }
-      switch (typeResult.getOrThrow()) {
-        case "local":
-          return ops.getNumberValue(map.get("left")).apply3((left, up, forwards) -> Pair.of(BlockNBTComponent.LocalPos.localPos(left.doubleValue(), up.doubleValue(), forwards.doubleValue()), ops.empty()), ops.getNumberValue(map.get("up")), ops.getNumberValue(map.get("forward")));
-        case "world": {
-          final DataResult<Pair<BlockNBTComponent.WorldPos.Coordinate, T>> x = COORDINATE.decode(ops, map.get("x"));
-          final DataResult<Pair<BlockNBTComponent.WorldPos.Coordinate, T>> y = COORDINATE.decode(ops, map.get("y"));
-          final DataResult<Pair<BlockNBTComponent.WorldPos.Coordinate, T>> z = COORDINATE.decode(ops, map.get("z"));
-          return x.apply3((x1, y1, z1) -> Pair.of(BlockNBTComponent.WorldPos.worldPos(x1.getFirst(), y1.getFirst(), z1.getFirst()), ops.empty()), y, z);
-        }
-      }
-      return DataResult.error(() -> "Unknown pos type");
-    }
-
-    @Override
-    public String toString() {
-      return "BlockNBTComponent.Pos";
-    }
-  }
-
-  /**
-   * Coordinate codec.
-   *
-   * @since 4.22.0
-   */
-  public static class CoordinateCodec implements Codec<BlockNBTComponent.WorldPos.Coordinate> {
-
-    @Override
-    public <T> DataResult<T> encode(final BlockNBTComponent.WorldPos.Coordinate input, final DynamicOps<T> ops, final T prefix) {
-      return ops.mapBuilder().add("type", ops.createString(input.type().name())).add("value", ops.createInt(input.value())).build(prefix);
-    }
-
-    @Override
-    public <T> DataResult<Pair<BlockNBTComponent.WorldPos.Coordinate, T>> decode(final DynamicOps<T> ops, final T input) {
-      final DataResult<MapLike<T>> mapResult = ops.getMap(input);
-      if (mapResult.isError()) {
-        return DataResult.error(() -> "Not a map");
-      }
-      final MapLike<T> map = mapResult.getOrThrow();
-      final DataResult<String> typeResult = ops.getStringValue(map.get("type"));
-      return typeResult.apply2((type, value) -> {
-        final BlockNBTComponent.WorldPos.Coordinate coordinate = BlockNBTComponent.WorldPos.Coordinate.coordinate(value.intValue(), BlockNBTComponent.WorldPos.Coordinate.Type.valueOf(type));
-        return Pair.of(coordinate, ops.empty());
-      }, ops.getNumberValue(map.get("value")));
-    }
-
-    @Override
-    public String toString() {
-      return "Coordinate";
     }
   }
 
