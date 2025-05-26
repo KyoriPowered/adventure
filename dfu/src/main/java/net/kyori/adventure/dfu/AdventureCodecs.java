@@ -24,7 +24,6 @@
 package net.kyori.adventure.dfu;
 
 import com.mojang.datafixers.kinds.App;
-import com.mojang.datafixers.util.Function5;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;

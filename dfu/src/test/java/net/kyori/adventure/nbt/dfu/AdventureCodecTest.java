@@ -90,7 +90,7 @@ public class AdventureCodecTest {
         .append(Component.text(" to jump", NamedTextColor.GRAY))
     );
 
-    Map<Key, DataComponentValue> dataComponentValueMap = new HashMap<>();
+    final Map<Key, DataComponentValue> dataComponentValueMap = new HashMap<>();
     dataComponentValueMap.put(Key.key("name"), BinaryTagHolder.binaryTagHolder("{'text':'Example'}"));
     this.assertComponentCodec(
       Component.text("Example")
