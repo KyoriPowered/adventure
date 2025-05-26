@@ -23,6 +23,8 @@
  */
 package net.kyori.adventure.dfu;
 
+import com.mojang.datafixers.kinds.App;
+import com.mojang.datafixers.util.Function14;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -30,12 +32,15 @@ import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.ListBuilder;
 import com.mojang.serialization.MapLike;
 import com.mojang.serialization.RecordBuilder;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -45,7 +50,9 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.BlockNBTComponent;
+import net.kyori.adventure.text.BuildableComponent;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentBuilder;
 import net.kyori.adventure.text.EntityNBTComponent;
 import net.kyori.adventure.text.KeybindComponent;
 import net.kyori.adventure.text.NBTComponent;
@@ -128,13 +135,152 @@ public final class AdventureCodecs {
   public static final Codec<TextDecoration> TEXT_DECORATION = new IndexCodec<>(Codec.STRING, TextDecoration.NAMES, "TextDecoration");
   public static final Codec<TextDecoration.State> TEXT_DECORATION_STATE = new IndexCodec<>(Codec.STRING, Index.create(TextDecoration.State.class, TextDecoration.State::toString), "TextDecoration.State");
 
-  public static final Codec<Component> COMPONENT = new ComponentCodec();
+//  public static final Codec<Component> COMPONENT = new ComponentCodec();
   public static final Codec<BlockNBTComponent.WorldPos.Coordinate> COORDINATE = new CoordinateCodec();
   public static final Codec<BlockNBTComponent.Pos> POS = new PosCodec();
   public static final Codec<ClickEvent> CLICK_EVENT = new ClickEventCodec();
   public static final Codec<HoverEvent<?>> HOVER_EVENT = new HoverEventCodec();
   public static final Codec<Style> STYLE = new StyleCodec();
   public static final Codec<DataComponentValue> DATA_COMPONENT_VALUE = new DataComponentValueCodec();
+
+  private static final Codec<BlockNBTComponent> BLOCK_NBT_CODEC;
+  private static final Codec<EntityNBTComponent> ENTITY_NBT_CODEC;
+  private static final Codec<StorageNBTComponent> STORAGE_NBT_CODEC;
+  private static final Codec<KeybindComponent> KEYBIND_CODEC;
+  private static final Codec<ScoreComponent> SCORE_CODEC;
+  private static final Codec<SelectorComponent> SELECTOR_CODEC;
+  private static final Codec<TranslatableComponent> TRANSLATABLE_CODEC;
+  private static final Codec<Component> INTERNAL_COMPONENT;
+
+  static {
+    INTERNAL_COMPONENT = RecordCodecBuilder.create(new Function<RecordCodecBuilder.Instance<Component>, App<RecordCodecBuilder.Mu<Component>, Component>>() {
+      @Override
+      public App<RecordCodecBuilder.Mu<Component>, Component> apply(final RecordCodecBuilder.Instance<Component> instance) {
+        return instance.group(
+          STYLE.optionalFieldOf("style").forGetter(c -> Optional.of(c.style())),
+          KEY.optionalFieldOf(FONT).forGetter(c -> Optional.ofNullable(c.font())),
+          Codec.lazyInitialized(() -> INTERNAL_COMPONENT).listOf().optionalFieldOf(EXTRA, Collections.emptyList()).forGetter(Component::children),
+          CLICK_EVENT.optionalFieldOf(ComponentTreeConstants.CLICK_EVENT).forGetter(c -> Optional.ofNullable(c.clickEvent())),
+          HOVER_EVENT.optionalFieldOf(ComponentTreeConstants.HOVER_EVENT).forGetter(c -> Optional.ofNullable(c.hoverEvent())),
+          Codec.STRING.optionalFieldOf(INSERTION).forGetter(c -> Optional.ofNullable(c.insertion())),
+          Codec.STRING.optionalFieldOf(TEXT).forGetter(c -> Optional.ofNullable(c instanceof TextComponent ? ((TextComponent) c).content() : null)),
+          Codec.lazyInitialized(() -> BLOCK_NBT_CODEC).optionalFieldOf(NBT_BLOCK).forGetter(c -> Optional.ofNullable(c instanceof BlockNBTComponent ? ((BlockNBTComponent) c) : null)),
+          Codec.lazyInitialized(() -> ENTITY_NBT_CODEC).optionalFieldOf(NBT_ENTITY).forGetter(c -> Optional.ofNullable(c instanceof EntityNBTComponent ? ((EntityNBTComponent) c) : null)),
+          Codec.lazyInitialized(() -> STORAGE_NBT_CODEC).optionalFieldOf(NBT_STORAGE).forGetter(c -> Optional.ofNullable(c instanceof StorageNBTComponent ? ((StorageNBTComponent) c) : null)),
+          Codec.lazyInitialized(() -> SCORE_CODEC).optionalFieldOf(SCORE).forGetter(c -> Optional.ofNullable(c instanceof ScoreComponent ? ((ScoreComponent) c) : null)),
+          Codec.lazyInitialized(() -> SELECTOR_CODEC).optionalFieldOf(SELECTOR).forGetter(c -> Optional.ofNullable(c instanceof SelectorComponent ? ((SelectorComponent) c) : null)),
+          Codec.lazyInitialized(() -> KEYBIND_CODEC).optionalFieldOf(KEYBIND).forGetter(c -> Optional.ofNullable(c instanceof KeybindComponent ? ((KeybindComponent) c) : null)),
+          Codec.lazyInitialized(() -> TRANSLATABLE_CODEC).optionalFieldOf(TRANSLATE).forGetter(c -> Optional.ofNullable(c instanceof TranslatableComponent ? ((TranslatableComponent) c) : null))
+        ).apply(instance, (style, font, children, clickEvent, hoverEvent, insertion, textContent, blockNBTComponent, entityNBTComponent, storageNBTComponent, scoreComponent, selectorComponent, keybindComponent, translatableComponent) -> {
+          Consumer<ComponentBuilder<?, ?>> consumer = builder -> {
+            style.ifPresent(builder::style);
+            font.ifPresent(builder::font);
+            builder.append(children);
+            clickEvent.ifPresent(builder::clickEvent);
+            hoverEvent.ifPresent(builder::hoverEvent);
+            insertion.ifPresent(builder::insertion);
+          };
+          BuildableComponent<?, ?> baseComponent;
+          if (textContent.isPresent()) {
+            baseComponent = Component.text(textContent.get());
+          } else if (translatableComponent.isPresent()) {
+            baseComponent = translatableComponent.get();
+          } else if (keybindComponent.isPresent()) {
+            baseComponent = keybindComponent.get();
+          } else if (scoreComponent.isPresent()) {
+            baseComponent = scoreComponent.get();
+          } else if (selectorComponent.isPresent()) {
+            baseComponent = selectorComponent.get();
+          } else if (storageNBTComponent.isPresent()) {
+            baseComponent = storageNBTComponent.get();
+          } else if (entityNBTComponent.isPresent()) {
+            baseComponent = entityNBTComponent.get();
+          } else if (blockNBTComponent.isPresent()) {
+            baseComponent = blockNBTComponent.get();
+          } else {
+            throw new IllegalArgumentException("Component is not a NBTComponent");
+          }
+          final ComponentBuilder<?, ?> builder = baseComponent.toBuilder();
+          consumer.accept(builder);
+          return builder.build();
+        });
+      }
+    });
+    BLOCK_NBT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+      POS.fieldOf(NBT_BLOCK).forGetter(BlockNBTComponent::pos),
+      Codec.STRING.fieldOf(NBT).forGetter(NBTComponent::nbtPath),
+      Codec.BOOL.fieldOf(NBT_INTERPRET).forGetter(NBTComponent::interpret),
+      INTERNAL_COMPONENT.optionalFieldOf(SEPARATOR).forGetter(c -> Optional.ofNullable(c.separator()))
+    ).apply(instance, (pos, nbtPath, interpret, separator) -> {
+      final BlockNBTComponent.Builder builder = Component.blockNBT();
+      builder.pos(pos).interpret(interpret);
+      builder.nbtPath(nbtPath);
+      separator.ifPresent(builder::separator);
+      return builder.build();
+    }));
+    ENTITY_NBT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+      Codec.STRING.fieldOf(SELECTOR).forGetter(c -> c.selector()),
+      Codec.BOOL.fieldOf(NBT_INTERPRET).forGetter(NBTComponent::interpret),
+      Codec.STRING.fieldOf(NBT).forGetter(NBTComponent::nbtPath),
+      INTERNAL_COMPONENT.optionalFieldOf(SEPARATOR).forGetter(c -> Optional.ofNullable(c.separator()))
+    ).apply(instance, (selector, interpret, nbtPath, separator) -> {
+      final EntityNBTComponent.Builder builder = Component.entityNBT()
+        .selector(selector)
+        .interpret(interpret)
+        .nbtPath(nbtPath);
+      separator.ifPresent(builder::separator);
+      return builder.build();
+    }));
+    STORAGE_NBT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+      KEY.fieldOf(NBT_STORAGE).forGetter(StorageNBTComponent::storage),
+      Codec.BOOL.fieldOf(NBT_INTERPRET).forGetter(NBTComponent::interpret),
+      Codec.STRING.fieldOf(NBT).forGetter(NBTComponent::nbtPath),
+      INTERNAL_COMPONENT.optionalFieldOf(SEPARATOR).forGetter(c -> Optional.ofNullable(c.separator()))
+    ).apply(instance, (storage, interpret, nbtPath, separator) -> {
+      final StorageNBTComponent.Builder builder = Component.storageNBT()
+        .storage(storage)
+        .interpret(interpret)
+        .nbtPath(nbtPath);
+      separator.ifPresent(builder::separator);
+      return builder.build();
+    }));
+    KEYBIND_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+      Codec.STRING.fieldOf(KEYBIND).forGetter(c -> c.keybind())
+    ).apply(instance, Component::keybind));
+    SCORE_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+      Codec.STRING.fieldOf(SCORE_NAME).forGetter(ScoreComponent::name),
+      Codec.STRING.fieldOf(SCORE_OBJECTIVE).forGetter(ScoreComponent::objective),
+      Codec.STRING.optionalFieldOf(SCORE_VALUE).forGetter(c -> Optional.ofNullable(c.value()))
+    ).apply(instance, (name, objective, value) -> {
+      final ScoreComponent.Builder builder = Component.score()
+        .name(name)
+        .objective(objective);
+      value.ifPresent(builder::value);
+      return builder.build();
+    }));
+    SELECTOR_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+      Codec.STRING.fieldOf(SELECTOR).forGetter(SelectorComponent::pattern),
+      INTERNAL_COMPONENT.optionalFieldOf(SEPARATOR).forGetter(c -> Optional.ofNullable(c.separator()))
+    ).apply(instance, (pattern, separator) -> {
+      final SelectorComponent.Builder builder = Component.selector()
+        .pattern(pattern);
+      separator.ifPresent(builder::separator);
+      return builder.build();
+    }));
+    TRANSLATABLE_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+      Codec.STRING.fieldOf(TRANSLATE).forGetter(TranslatableComponent::key),
+      TRANSLATION_ARGUMENT.listOf().fieldOf(TRANSLATE_WITH).forGetter(TranslatableComponent::arguments),
+      Codec.STRING.optionalFieldOf(TRANSLATE_FALLBACK).forGetter(c -> Optional.ofNullable(c.fallback()))
+    ).apply(instance, (key, translationArguments, fallback) -> {
+      final TranslatableComponent.Builder builder = Component.translatable()
+        .key(key)
+        .arguments(translationArguments);
+      fallback.ifPresent(builder::fallback);
+      return builder.build();
+    }));
+  }
+
+  public static final Codec<Component> COMPONENT = INTERNAL_COMPONENT;
 
   private static <A, S> Codec<S> xmap(final Codec<A> codec, final Function<? super A, ? extends S> to, final Function<? super S, ? extends A> from, final String name) {
     return Codec.of(codec.comap(from), codec.map(to), name);
@@ -153,9 +299,8 @@ public final class AdventureCodecs {
       if (input instanceof TextComponent) {
         type = TEXT;
         mapBuilder.add(TEXT, Codec.STRING.encode(((TextComponent) input).content(), ops, prefix));
-      } else if (input instanceof TranslatableComponent) {
+      } else if (input instanceof TranslatableComponent translatableComponent) {
         type = TRANSLATE;
-        final TranslatableComponent translatableComponent = (TranslatableComponent) input;
         mapBuilder.add(TRANSLATE, Codec.STRING.encode((translatableComponent).key(), ops, prefix));
         if (!translatableComponent.arguments().isEmpty()) {
           final ListBuilder<T> args = ops.listBuilder();
@@ -167,9 +312,8 @@ public final class AdventureCodecs {
         if (translatableComponent.fallback() != null) {
           mapBuilder.add(TRANSLATE_FALLBACK, Codec.STRING.encode(translatableComponent.fallback(), ops, prefix));
         }
-      } else if (input instanceof ScoreComponent) {
+      } else if (input instanceof ScoreComponent scoreComponent) {
         type = SCORE;
-        final ScoreComponent scoreComponent = (ScoreComponent) input;
         mapBuilder.add(SCORE_NAME, Codec.STRING.encode(scoreComponent.name(), ops, prefix));
         mapBuilder.add(SCORE_OBJECTIVE, Codec.STRING.encode(scoreComponent.objective(), ops, prefix));
         if (scoreComponent.value() != null) {
@@ -181,9 +325,8 @@ public final class AdventureCodecs {
       } else if (input instanceof KeybindComponent) {
         type = KEYBIND;
         mapBuilder.add(KEYBIND, Codec.STRING.encode(((KeybindComponent) input).keybind(), ops, prefix));
-      } else if (input instanceof NBTComponent) {
+      } else if (input instanceof NBTComponent<?, ?> nbtComponent) {
         type = NBT;
-        final NBTComponent<?, ?> nbtComponent = (NBTComponent<?, ?>) input;
         mapBuilder.add(NBT, Codec.STRING.encode(nbtComponent.nbtPath(), ops, prefix));
         if (nbtComponent.interpret()) {
           mapBuilder.add(NBT_INTERPRET, ops.createBoolean(true));
@@ -477,15 +620,13 @@ public final class AdventureCodecs {
       final Object value = input.value();
       if (value instanceof Component) {
         map.add(HOVER_EVENT_CONTENTS, COMPONENT.encode((Component) value, ops, prefix));
-      } else if (value instanceof HoverEvent.ShowEntity) {
-        final HoverEvent.ShowEntity entity = (HoverEvent.ShowEntity) value;
+      } else if (value instanceof HoverEvent.ShowEntity entity) {
         final RecordBuilder<T> entityMap = ops.mapBuilder().add(SHOW_ENTITY_TYPE, KEY.encode(entity.type(), ops, prefix)).add(SHOW_ENTITY_ID, UUID.encode(entity.id(), ops, prefix));
         if (entity.name() != null) {
           entityMap.add(SHOW_ENTITY_NAME, COMPONENT.encode(entity.name(), ops, prefix));
         }
         map.add(HOVER_EVENT_CONTENTS, entityMap.build(prefix));
-      } else if (value instanceof HoverEvent.ShowItem) {
-        final HoverEvent.ShowItem item = (HoverEvent.ShowItem) value;
+      } else if (value instanceof HoverEvent.ShowItem item) {
         final RecordBuilder<T> itemMap = ops.mapBuilder().add(SHOW_ITEM_ID, KEY.encode(item.item(), ops, prefix)).add(SHOW_ITEM_COUNT, ops.createInt(item.count()));
         if (item.nbt() != null) {
           itemMap.add(SHOW_ITEM_TAG, ops.createString(item.nbt().string()));
