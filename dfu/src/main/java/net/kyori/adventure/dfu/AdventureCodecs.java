@@ -134,13 +134,22 @@ public final class AdventureCodecs {
   public static final Codec<TextDecoration> TEXT_DECORATION = new IndexCodec<>(Codec.STRING, TextDecoration.NAMES, "TextDecoration");
   public static final Codec<TextDecoration.State> TEXT_DECORATION_STATE = new IndexCodec<>(Codec.STRING, Index.create(TextDecoration.State.class, TextDecoration.State::toString), "TextDecoration.State");
 
-  //public static final Codec<Component> COMPONENT = new ComponentCodec();
   public static final Codec<BlockNBTComponent.WorldPos.Coordinate> COORDINATE = new CoordinateCodec();
   public static final Codec<BlockNBTComponent.Pos> POS = new PosCodec();
   public static final Codec<ClickEvent> CLICK_EVENT = new ClickEventCodec();
   public static final Codec<HoverEvent<?>> HOVER_EVENT = new HoverEventCodec();
   public static final Codec<Style> STYLE = new StyleCodec();
-  public static final Codec<DataComponentValue> DATA_COMPONENT_VALUE = new DataComponentValueCodec();
+  public static final Codec<DataComponentValue> DATA_COMPONENT_VALUE = RecordCodecBuilder.create(instance -> instance.group(
+    Codec.STRING.fieldOf("type").forGetter(c -> c instanceof DataComponentValue.Removed ? "removed" : c instanceof DataComponentValue.TagSerializable ? "tag" : "unknown"),
+    Codec.STRING.optionalFieldOf("value").forGetter(c -> c instanceof DataComponentValue.TagSerializable ? Optional.of(((DataComponentValue.TagSerializable) c).asBinaryTag().string()) : Optional.empty())
+  ).apply(instance, (type, value) -> {
+    if (Objects.equals("removed", type)) {
+      return DataComponentValue.removed();
+    } else if (Objects.equals("tag", type)) {
+      return value.map(BinaryTagHolder::binaryTagHolder).orElse(null);
+    }
+    throw new IllegalArgumentException("Unknown type: " + type);
+  }));
 
   private static final Codec<BlockNBTComponent> BLOCK_NBT_CODEC;
   private static final Codec<EntityNBTComponent> ENTITY_NBT_CODEC;
@@ -284,234 +293,6 @@ public final class AdventureCodecs {
   private static <A, S> Codec<S> xmap(final Codec<A> codec, final Function<? super A, ? extends S> to, final Function<? super S, ? extends A> from, final String name) {
     return Codec.of(codec.comap(from), codec.map(to), name);
   }
-
-  /**
-   * Component codec.
-   *
-   * @since 4.22.0
-   */
-  public static class ComponentCodec implements Codec<Component> {
-    @Override
-    public <T> DataResult<T> encode(final Component input, final DynamicOps<T> ops, final T prefix) {
-      final RecordBuilder<T> mapBuilder = ops.mapBuilder();
-      String type = null;
-      if (input instanceof TextComponent) {
-        type = TEXT;
-        mapBuilder.add(TEXT, Codec.STRING.encode(((TextComponent) input).content(), ops, prefix));
-      } else if (input instanceof TranslatableComponent translatableComponent) {
-        type = TRANSLATE;
-        mapBuilder.add(TRANSLATE, Codec.STRING.encode((translatableComponent).key(), ops, prefix));
-        if (!translatableComponent.arguments().isEmpty()) {
-          final ListBuilder<T> args = ops.listBuilder();
-          for (final TranslationArgument argument : translatableComponent.arguments()) {
-            args.add(TRANSLATION_ARGUMENT.encode(argument, ops, prefix));
-          }
-          mapBuilder.add(TRANSLATE_WITH, args.build(prefix));
-        }
-        if (translatableComponent.fallback() != null) {
-          mapBuilder.add(TRANSLATE_FALLBACK, Codec.STRING.encode(translatableComponent.fallback(), ops, prefix));
-        }
-      } else if (input instanceof ScoreComponent scoreComponent) {
-        type = SCORE;
-        mapBuilder.add(SCORE_NAME, Codec.STRING.encode(scoreComponent.name(), ops, prefix));
-        mapBuilder.add(SCORE_OBJECTIVE, Codec.STRING.encode(scoreComponent.objective(), ops, prefix));
-        if (scoreComponent.value() != null) {
-          mapBuilder.add(SCORE_VALUE, Codec.STRING.encode(scoreComponent.value(), ops, prefix));
-        }
-      } else if (input instanceof SelectorComponent) {
-        type = SELECTOR;
-        mapBuilder.add(SELECTOR, Codec.STRING.encode(((SelectorComponent) input).pattern(), ops, prefix));
-      } else if (input instanceof KeybindComponent) {
-        type = KEYBIND;
-        mapBuilder.add(KEYBIND, Codec.STRING.encode(((KeybindComponent) input).keybind(), ops, prefix));
-      } else if (input instanceof NBTComponent<?, ?> nbtComponent) {
-        type = NBT;
-        mapBuilder.add(NBT, Codec.STRING.encode(nbtComponent.nbtPath(), ops, prefix));
-        if (nbtComponent.interpret()) {
-          mapBuilder.add(NBT_INTERPRET, ops.createBoolean(true));
-        }
-        if (nbtComponent.separator() != null) {
-          mapBuilder.add(SEPARATOR, this.encode(nbtComponent.separator(), ops, prefix));
-        }
-        if (nbtComponent instanceof BlockNBTComponent) {
-          mapBuilder.add(NBT_BLOCK, POS.encode(((BlockNBTComponent) nbtComponent).pos(), ops, prefix));
-        } else if (nbtComponent instanceof EntityNBTComponent) {
-          mapBuilder.add(NBT_ENTITY, ops.createString(((EntityNBTComponent) nbtComponent).selector()));
-        } else if (nbtComponent instanceof StorageNBTComponent) {
-          mapBuilder.add(NBT_STORAGE, KEY.encode(((StorageNBTComponent) nbtComponent).storage(), ops, prefix));
-        } else {
-          return DataResult.error(() -> "Unknown NBT component type");
-        }
-      } else {
-        return DataResult.error(() -> "Unknown component type");
-      }
-      if (!input.children().isEmpty()) {
-        final ListBuilder<T> children = ops.listBuilder();
-        for (final Component child : input.children()) {
-          children.add(this.encode(child, ops, prefix));
-        }
-        mapBuilder.add(EXTRA, children.build(prefix));
-      }
-      if (input.hasStyling()) {
-        final Style style = input.style();
-        if (!style.isEmpty()) {
-          mapBuilder.add("style", STYLE.encode(style, ops, prefix));
-        }
-      }
-
-      mapBuilder.add("type", ops.createString(type));
-      return mapBuilder.build(prefix);
-    }
-
-    @Override
-    public <T> DataResult<Pair<Component, T>> decode(final DynamicOps<T> ops, final T input) {
-      return ops.getMap(input).flatMap(map -> {
-        final DataResult<String> typeResult = ops.getStringValue(map.get("type"));
-        if (typeResult.isError()) {
-          return DataResult.error(() -> "Missing component type");
-        }
-        final String type = typeResult.getOrThrow();
-
-        Component baseComponent;
-        switch (type) {
-          case TEXT: {
-            final DataResult<String> textResult = ops.getStringValue(map.get(TEXT));
-            if (textResult.isError()) {
-              return DataResult.error(() -> "Missing text content");
-            }
-            baseComponent = Component.text(textResult.getOrThrow());
-            break;
-          }
-          case TRANSLATE: {
-            final DataResult<String> keyResult = ops.getStringValue(map.get(TRANSLATE));
-            if (keyResult.isError()) {
-              return DataResult.error(() -> "Missing translation key");
-            }
-            final TranslatableComponent.Builder builder = Component.translatable().key(keyResult.getOrThrow());
-
-            if (map.get(TRANSLATE_WITH) != null) {
-              final DataResult<Consumer<Consumer<T>>> argsResult = ops.getList(map.get(TRANSLATE_WITH));
-              if (argsResult.isSuccess()) {
-                final List<TranslationArgument> arguments = new ArrayList<>();
-                argsResult.getOrThrow().accept(arg -> {
-                  final DataResult<Pair<TranslationArgument, T>> dataResult = TRANSLATION_ARGUMENT.decode(ops, arg);
-                  if (dataResult.isSuccess()) arguments.add(dataResult.getOrThrow().getFirst());
-                });
-                builder.arguments(arguments);
-              }
-            }
-
-            if (map.get(TRANSLATE_FALLBACK) != null) {
-              final DataResult<String> fallbackResult = ops.getStringValue(map.get(TRANSLATE_FALLBACK));
-              fallbackResult.result().ifPresent(builder::fallback);
-            }
-            baseComponent = builder.build();
-            break;
-          }
-          case SCORE: {
-            final DataResult<String> nameResult = ops.getStringValue(map.get(SCORE_NAME));
-            final DataResult<String> objectiveResult = ops.getStringValue(map.get(SCORE_OBJECTIVE));
-            if (nameResult.isError() || objectiveResult.isError()) {
-              return DataResult.error(() -> "Missing score components");
-            }
-            final ScoreComponent.Builder builder = Component.score().name(nameResult.getOrThrow()).objective(objectiveResult.getOrThrow());
-
-            if (map.get(SCORE_VALUE) != null) {
-              final DataResult<String> valueResult = ops.getStringValue(map.get(SCORE_VALUE));
-              valueResult.result().ifPresent(builder::value);
-            }
-            baseComponent = builder.build();
-            break;
-          }
-          case SELECTOR: {
-            final DataResult<String> patternResult = ops.getStringValue(map.get(SELECTOR));
-            if (patternResult.isError()) {
-              return DataResult.error(() -> "Missing selector pattern");
-            }
-            baseComponent = Component.selector(patternResult.getOrThrow());
-            break;
-          }
-          case KEYBIND: {
-            final DataResult<String> keybindResult = ops.getStringValue(map.get(KEYBIND));
-            if (keybindResult.isError()) {
-              return DataResult.error(() -> "Missing keybind value");
-            }
-            baseComponent = Component.keybind(keybindResult.getOrThrow());
-            break;
-          }
-          case NBT: {
-            final DataResult<String> nbtPathResult = ops.getStringValue(map.get(NBT));
-            if (nbtPathResult.isError()) {
-              return DataResult.error(() -> "Missing NBT path");
-            }
-            final String nbtPath = nbtPathResult.getOrThrow();
-
-            if (map.get(NBT_BLOCK) != null) {
-              final DataResult<Pair<BlockNBTComponent.Pos, T>> posResult = POS.decode(ops, map.get(NBT_BLOCK));
-              if (posResult.isError()) {
-                return DataResult.error(() -> "Invalid block NBT position");
-              }
-              baseComponent = Component.blockNBT().nbtPath(nbtPath).interpret(map.get(NBT_INTERPRET) != null).pos(posResult.getOrThrow().getFirst()).build();
-            } else if (map.get(NBT_ENTITY) != null) {
-              final DataResult<String> selectorResult = ops.getStringValue(map.get(NBT_ENTITY));
-              if (selectorResult.isError()) {
-                return DataResult.error(() -> "Invalid entity NBT selector");
-              }
-              baseComponent = Component.entityNBT().nbtPath(nbtPath).interpret(map.get(NBT_INTERPRET) != null).selector(selectorResult.getOrThrow()).build();
-            } else if (map.get(NBT_STORAGE) != null) {
-              final DataResult<Pair<Key, T>> storageResult = KEY.decode(ops, map.get(NBT_STORAGE));
-              if (storageResult.isError()) {
-                return DataResult.error(() -> "Invalid storage NBT key");
-              }
-              baseComponent = Component.storageNBT().nbtPath(nbtPath).interpret(map.get(NBT_INTERPRET) != null).storage(storageResult.getOrThrow().getFirst()).build();
-            } else {
-              return DataResult.error(() -> "Unknown NBT component type");
-            }
-
-            if (map.get(SEPARATOR) != null) {
-              final DataResult<Component> separatorResult = COMPONENT.decode(ops, map.get(SEPARATOR)).map(Pair::getFirst);
-              if (separatorResult.isError()) {
-                return DataResult.error(() -> "Invalid separator");
-              }
-              ((NBTComponent<?, ?>) baseComponent).separator(separatorResult.getOrThrow());
-            }
-            break;
-          }
-          default:
-            return DataResult.error(() -> "Unknown component type: " + type);
-        }
-
-        if (map.get(EXTRA) != null) {
-          final DataResult<Consumer<Consumer<T>>> childrenResult = ops.getList(map.get(EXTRA));
-
-          if (childrenResult.isError()) {
-            return DataResult.error(() -> "Invalid extra components");
-          }
-          final List<Component> childrens = new ArrayList<>();
-          childrenResult.result().ifPresent(children -> children.accept(t -> {
-            final DataResult<Component> result = this.decode(ops, t).map(Pair::getFirst);
-            if (result.isError()) return;
-            childrens.add(result.getOrThrow());
-          }));
-          baseComponent = baseComponent.children(childrens);
-        }
-
-        if (map.get("style") != null) {
-          final DataResult<Style> styleResult = STYLE.decode(ops, map.get("style")).map(Pair::getFirst);
-          if (styleResult.isError()) return DataResult.error(() -> "Invalid style");
-          baseComponent = baseComponent.style(styleResult.getOrThrow());
-        }
-
-        return DataResult.success(Pair.of(baseComponent, ops.empty()));
-      });
-    }
-
-    @Override
-    public String toString() {
-      return "Component";
-    }
-  }
-
   /**
    * Style codec.
    *

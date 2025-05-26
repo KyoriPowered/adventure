@@ -26,6 +26,8 @@ package net.kyori.adventure.nbt.dfu;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
+import java.util.HashMap;
+import java.util.Map;
 import net.kyori.adventure.dfu.AdventureCodecs;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
@@ -33,6 +35,7 @@ import net.kyori.adventure.text.BlockNBTComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslationArgument;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.DataComponentValue;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.ShadowColor;
@@ -85,6 +88,13 @@ public class AdventureCodecTest {
       Component.text("Press ", NamedTextColor.GRAY)
         .append(Component.keybind("key.jump", NamedTextColor.RED))
         .append(Component.text(" to jump", NamedTextColor.GRAY))
+    );
+
+    Map<Key, DataComponentValue> dataComponentValueMap = new HashMap<>();
+    dataComponentValueMap.put(Key.key("name"), BinaryTagHolder.binaryTagHolder("{'text':'Example'}"));
+    this.assertComponentCodec(
+      Component.text("Example")
+        .hoverEvent(HoverEvent.showItem(Key.key("diamond"), 1, dataComponentValueMap))
     );
   }
 
