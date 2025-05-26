@@ -107,7 +107,7 @@ public final class AdventureCodecs {
   // key
   public static final Codec<Key> KEY = xmap(Codec.STRING, Key::key, Key::asString, "Key");
   // uuid
-  public static final Codec<UUID> UUID = xmap(Codec.list(Codec.LONG), longs -> new UUID(longs.get(0), longs.get(1)), uuid -> Arrays.asList(uuid.getLeastSignificantBits(), uuid.getMostSignificantBits()), "UUID");
+  public static final Codec<UUID> UUID = xmap(Codec.list(Codec.LONG), longs -> new UUID(longs.get(0), longs.get(1)), uuid -> Arrays.asList(uuid.getMostSignificantBits(), uuid.getLeastSignificantBits()), "UUID");
   // TextColor
   public static final Codec<TextColor> TEXT_COLOR = xmap(Codec.INT, TextColor::color, TextColor::value, "TextColor");
   public static final Codec<ShadowColor> SHADOW_COLOR = xmap(Codec.INT, ShadowColor::shadowColor, ShadowColor::value, "ShadowColor");
