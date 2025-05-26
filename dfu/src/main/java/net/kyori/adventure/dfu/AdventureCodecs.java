@@ -154,7 +154,7 @@ public final class AdventureCodecs {
       KEY.fieldOf(SHOW_ITEM_ID).forGetter(HoverEvent.ShowItem::item),
       Codec.INT.fieldOf(SHOW_ITEM_COUNT).forGetter(HoverEvent.ShowItem::count),
       BINARY_TAG_HOLDER.optionalFieldOf(SHOW_ITEM_TAG).forGetter(c -> Optional.ofNullable(c.nbt())),
-      Codec.unboundedMap(KEY, DATA_COMPONENT_VALUE).fieldOf(SHOW_ITEM_COMPONENTS).forGetter(c -> c.dataComponents())
+      Codec.unboundedMap(KEY, DATA_COMPONENT_VALUE).fieldOf(SHOW_ITEM_COMPONENTS).forGetter(HoverEvent.ShowItem::dataComponents)
     ).apply(instance, (id, count, nbt, dataComponentValueMap) ->
       nbt.map(binaryTagHolder -> HoverEvent.ShowItem.showItem(id, count, binaryTagHolder)).orElseGet(() -> HoverEvent.ShowItem.showItem(id, count, dataComponentValueMap)))
   );
@@ -171,7 +171,7 @@ public final class AdventureCodecs {
   private static final Codec<Component> INTERNAL_COMPONENT;
 
   static {
-    INTERNAL_COMPONENT = RecordCodecBuilder.create(new Function<RecordCodecBuilder.Instance<Component>, App<RecordCodecBuilder.Mu<Component>, Component>>() {
+    INTERNAL_COMPONENT = RecordCodecBuilder.create(new Function<>() {
       @Override
       public App<RecordCodecBuilder.Mu<Component>, Component> apply(final RecordCodecBuilder.Instance<Component> instance) {
         return instance.group(
@@ -223,7 +223,7 @@ public final class AdventureCodecs {
       ).apply(i, (key, uuid, name) -> name.map(component -> HoverEvent.ShowEntity.showEntity(key, uuid, component)).orElseGet(() -> HoverEvent.ShowEntity.showEntity(key, uuid)))
     );
     HOVER_EVENT = RecordCodecBuilder.create(instance -> instance.group(
-      HOVER_ACTION.fieldOf(HOVER_EVENT_ACTION).forGetter(c -> c.action()),
+      HOVER_ACTION.fieldOf(HOVER_EVENT_ACTION).forGetter(HoverEvent::action),
       SHOW_ITEM.optionalFieldOf("showItem").forGetter(c -> c.value() instanceof HoverEvent.ShowItem ? Optional.of(((HoverEvent.ShowItem) c.value())) : Optional.empty()),
       INTERNAL_COMPONENT.optionalFieldOf("showText").forGetter(c -> c.value() instanceof Component ? Optional.of((Component) c.value()) : Optional.empty()),
       SHOW_ENTITY.optionalFieldOf("showEntity").forGetter(c -> c.value() instanceof HoverEvent.ShowEntity ? Optional.of(((HoverEvent.ShowEntity) c.value())) : Optional.empty()),
@@ -252,19 +252,16 @@ public final class AdventureCodecs {
         "decoration",
         Collections.emptyMap()
       ).forGetter(Style::decorations)
-    ).apply(instance, new Function7<Optional<Key>, Optional<TextColor>, Optional<ShadowColor>, Optional<String>, Optional<ClickEvent>, Optional<HoverEvent<?>>, Map<TextDecoration, TextDecoration.State>, Style>() {
-      @Override
-      public Style apply(final Optional<Key> font, final Optional<TextColor> textColor, final Optional<ShadowColor> shadowColor, final Optional<String> insertion, final Optional<ClickEvent> clickEvent, final Optional<HoverEvent<?>> hoverEvent, final Map<TextDecoration, TextDecoration.State> decoration) {
-        final Style.Builder builder = Style.style();
-        font.ifPresent(builder::font);
-        textColor.ifPresent(builder::color);
-        shadowColor.ifPresent(builder::shadowColor);
-        insertion.ifPresent(builder::insertion);
-        clickEvent.ifPresent(builder::clickEvent);
-        hoverEvent.ifPresent(builder::hoverEvent);
-        decoration.forEach(builder::decoration);
-        return builder.build();
-      }
+    ).apply(instance, (font, textColor, shadowColor, insertion, clickEvent, hoverEvent, decoration) -> {
+      final Style.Builder builder = Style.style();
+      font.ifPresent(builder::font);
+      textColor.ifPresent(builder::color);
+      shadowColor.ifPresent(builder::shadowColor);
+      insertion.ifPresent(builder::insertion);
+      clickEvent.ifPresent(builder::clickEvent);
+      hoverEvent.ifPresent(builder::hoverEvent);
+      decoration.forEach(builder::decoration);
+      return builder.build();
     }));
     BLOCK_NBT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
       POS.fieldOf(NBT_BLOCK).forGetter(BlockNBTComponent::pos),
@@ -361,7 +358,8 @@ public final class AdventureCodecs {
     return Codec.of(
       codec.comap(index::keyOrThrow),
       codec.map(index::valueOrThrow),
-      name);
+      name
+    );
   }
 
   /**
