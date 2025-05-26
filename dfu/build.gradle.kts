@@ -4,7 +4,6 @@ plugins {
 
 dependencies {
   api(libs.dfu8)
-  api(projects.adventureNbtDfu)
   api(projects.adventureApi)
   api(projects.adventureTextSerializerCommons)
 }

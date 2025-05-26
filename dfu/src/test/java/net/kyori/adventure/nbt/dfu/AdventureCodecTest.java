@@ -1,3 +1,26 @@
+/*
+ * This file is part of adventure, licensed under the MIT License.
+ *
+ * Copyright (c) 2017-2025 KyoriPowered
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package net.kyori.adventure.nbt.dfu;
 
 import com.google.gson.JsonElement;
@@ -14,7 +37,6 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.ShadowColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.util.ARGBLike;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,63 +52,63 @@ public class AdventureCodecTest {
 
   @Test
   void testComponent() {
-    assertComponentCodec(
+    this.assertComponentCodec(
       Component.text("hello", NamedTextColor.RED)
         .clickEvent(ClickEvent.suggestCommand("/dfu"))
         .hoverEvent(Component.text("hover"))
         .decorate(TextDecoration.BOLD)
     );
 
-    assertComponentCodec(
+    this.assertComponentCodec(
       Component.text("test", NamedTextColor.RED)
         .hoverEvent(HoverEvent.showItem(HoverEvent.ShowItem.showItem(Key.key("diamond"), 1, BinaryTagHolder.binaryTagHolder("{display: {Lore: ['Test']}}"))))
         .shadowColor(ShadowColor.none())
     );
 
-    assertComponentCodec(
+    this.assertComponentCodec(
       Component.translatable("trans.key", TranslationArgument.numeric(1), TranslationArgument.component(Component.text("test")))
         .clickEvent(ClickEvent.openUrl("https://example.com"))
     );
 
-    assertComponentCodec(
+    this.assertComponentCodec(
       Component.blockNBT("pos", BlockNBTComponent.Pos.fromString("1 2 3"))
     );
-    assertComponentCodec(
+    this.assertComponentCodec(
       Component.blockNBT("pos", BlockNBTComponent.Pos.fromString("^1 ^2 ^3"))
     );
 
-    assertComponentCodec(
+    this.assertComponentCodec(
       Component.entityNBT("entities", "@e")
     );
 
-    assertComponentCodec(
+    this.assertComponentCodec(
       Component.text("Press ", NamedTextColor.GRAY)
         .append(Component.keybind("key.jump", NamedTextColor.RED))
         .append(Component.text(" to jump", NamedTextColor.GRAY))
     );
   }
 
-  private void assertComponentCodec(Component component) {
-    JsonElement jsonElement = valueOrThrow(AdventureCodecs.COMPONENT.encodeStart(JsonOps.INSTANCE, component));
-    Component decode = valueOrThrow(AdventureCodecs.COMPONENT.decode(JsonOps.INSTANCE, jsonElement)).getFirst();
+  private void assertComponentCodec(final Component component) {
+    final JsonElement jsonElement = this.valueOrThrow(AdventureCodecs.COMPONENT.encodeStart(JsonOps.INSTANCE, component));
+    final Component decode = this.valueOrThrow(AdventureCodecs.COMPONENT.decode(JsonOps.INSTANCE, jsonElement)).getFirst();
     assertEquals(component, decode);
   }
 
   @Test
   void testTranslationArgument() {
-    TranslationArgument bool = TranslationArgument.bool(true);
-    JsonElement jsonElement = valueOrThrow(AdventureCodecs.TRANSLATION_ARGUMENT.encodeStart(JsonOps.INSTANCE, bool));
-    TranslationArgument valued = valueOrThrow(AdventureCodecs.TRANSLATION_ARGUMENT.decode(JsonOps.INSTANCE, jsonElement)).getFirst();
+    final TranslationArgument bool = TranslationArgument.bool(true);
+    JsonElement jsonElement = this.valueOrThrow(AdventureCodecs.TRANSLATION_ARGUMENT.encodeStart(JsonOps.INSTANCE, bool));
+    TranslationArgument valued = this.valueOrThrow(AdventureCodecs.TRANSLATION_ARGUMENT.decode(JsonOps.INSTANCE, jsonElement)).getFirst();
     assertEquals(bool, valued);
 
-    TranslationArgument numeric = TranslationArgument.numeric(1);
-    jsonElement = valueOrThrow(AdventureCodecs.TRANSLATION_ARGUMENT.encodeStart(JsonOps.INSTANCE, numeric));
-    valued = valueOrThrow(AdventureCodecs.TRANSLATION_ARGUMENT.decode(JsonOps.INSTANCE, jsonElement)).getFirst();
+    final TranslationArgument numeric = TranslationArgument.numeric(1);
+    jsonElement = this.valueOrThrow(AdventureCodecs.TRANSLATION_ARGUMENT.encodeStart(JsonOps.INSTANCE, numeric));
+    valued = this.valueOrThrow(AdventureCodecs.TRANSLATION_ARGUMENT.decode(JsonOps.INSTANCE, jsonElement)).getFirst();
     assertEquals(numeric, valued);
 
-    TranslationArgument component = TranslationArgument.component(Component.text("hello"));
-    jsonElement = valueOrThrow(AdventureCodecs.TRANSLATION_ARGUMENT.encodeStart(JsonOps.INSTANCE, component));
-    valued = valueOrThrow(AdventureCodecs.TRANSLATION_ARGUMENT.decode(JsonOps.INSTANCE, jsonElement)).getFirst();
+    final TranslationArgument component = TranslationArgument.component(Component.text("hello"));
+    jsonElement = this.valueOrThrow(AdventureCodecs.TRANSLATION_ARGUMENT.encodeStart(JsonOps.INSTANCE, component));
+    valued = this.valueOrThrow(AdventureCodecs.TRANSLATION_ARGUMENT.decode(JsonOps.INSTANCE, jsonElement)).getFirst();
     assertEquals(component, valued);
   }
 }
