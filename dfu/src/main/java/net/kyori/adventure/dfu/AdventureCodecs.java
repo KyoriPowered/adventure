@@ -24,7 +24,6 @@
 package net.kyori.adventure.dfu;
 
 import com.mojang.datafixers.kinds.App;
-import com.mojang.datafixers.util.Function14;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -135,7 +134,7 @@ public final class AdventureCodecs {
   public static final Codec<TextDecoration> TEXT_DECORATION = new IndexCodec<>(Codec.STRING, TextDecoration.NAMES, "TextDecoration");
   public static final Codec<TextDecoration.State> TEXT_DECORATION_STATE = new IndexCodec<>(Codec.STRING, Index.create(TextDecoration.State.class, TextDecoration.State::toString), "TextDecoration.State");
 
-//  public static final Codec<Component> COMPONENT = new ComponentCodec();
+  //public static final Codec<Component> COMPONENT = new ComponentCodec();
   public static final Codec<BlockNBTComponent.WorldPos.Coordinate> COORDINATE = new CoordinateCodec();
   public static final Codec<BlockNBTComponent.Pos> POS = new PosCodec();
   public static final Codec<ClickEvent> CLICK_EVENT = new ClickEventCodec();
@@ -172,7 +171,7 @@ public final class AdventureCodecs {
           Codec.lazyInitialized(() -> KEYBIND_CODEC).optionalFieldOf(KEYBIND).forGetter(c -> Optional.ofNullable(c instanceof KeybindComponent ? ((KeybindComponent) c) : null)),
           Codec.lazyInitialized(() -> TRANSLATABLE_CODEC).optionalFieldOf(TRANSLATE).forGetter(c -> Optional.ofNullable(c instanceof TranslatableComponent ? ((TranslatableComponent) c) : null))
         ).apply(instance, (style, font, children, clickEvent, hoverEvent, insertion, textContent, blockNBTComponent, entityNBTComponent, storageNBTComponent, scoreComponent, selectorComponent, keybindComponent, translatableComponent) -> {
-          Consumer<ComponentBuilder<?, ?>> consumer = builder -> {
+          final Consumer<ComponentBuilder<?, ?>> consumer = builder -> {
             style.ifPresent(builder::style);
             font.ifPresent(builder::font);
             builder.append(children);
@@ -180,7 +179,7 @@ public final class AdventureCodecs {
             hoverEvent.ifPresent(builder::hoverEvent);
             insertion.ifPresent(builder::insertion);
           };
-          BuildableComponent<?, ?> baseComponent;
+          final BuildableComponent<?, ?> baseComponent;
           if (textContent.isPresent()) {
             baseComponent = Component.text(textContent.get());
           } else if (translatableComponent.isPresent()) {
