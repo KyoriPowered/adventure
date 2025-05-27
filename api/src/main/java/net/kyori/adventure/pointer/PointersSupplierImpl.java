@@ -89,7 +89,7 @@ final class PointersSupplierImpl<T> implements PointersSupplier<T> {
       if (resolver == null) {
         final PointersSupplier<? super U> parent = this.supplier.parent;
         if (parent != null) {
-          resolver = this.supplier.parent.resolver(pointer);
+          resolver = parent.resolver(pointer);
         }
       }
 
