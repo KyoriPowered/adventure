@@ -24,7 +24,6 @@
 package net.kyori.adventure.dfu;
 
 import com.mojang.datafixers.kinds.App;
-import com.mojang.datafixers.util.Function7;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -32,7 +31,6 @@ import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
