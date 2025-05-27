@@ -21,19 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.nbt.dfu;
+package net.kyori.adventure.dfu;
 
 import net.kyori.adventure.text.Component;
 import org.junit.jupiter.api.Test;
 
-public class EntityNBTComponentCodecTest extends AdventureCodecTest {
+public class SelectorComponentCodecTest extends AdventureCodecTest {
   @Test
   void test() {
     assertComponentCodec(
-      Component.entityNBT().nbtPath("abc").selector("test").build()
+      Component.selector("selector")
     );
     assertComponentCodec(
-      Component.entityNBT().nbtPath("abc").selector("test").interpret(true).build()
+      Component.selector("selector", Component.text(","))
     );
   }
 }

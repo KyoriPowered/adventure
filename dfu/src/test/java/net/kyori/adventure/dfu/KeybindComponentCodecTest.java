@@ -21,25 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.nbt.dfu;
+package net.kyori.adventure.dfu;
 
-import java.util.UUID;
-import net.kyori.adventure.dfu.AdventureCodecs;
-import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.HoverEvent;
 import org.junit.jupiter.api.Test;
 
-public class ShowEntityCodecTest extends AdventureCodecTest {
+public class KeybindComponentCodecTest extends AdventureCodecTest {
   @Test
   void test() {
-    assertCodec(
-      AdventureCodecs.SHOW_ENTITY,
-      HoverEvent.ShowEntity.showEntity(Key.key("minecraft:player"), UUID.randomUUID())
-    );
-    assertCodec(
-      AdventureCodecs.SHOW_ENTITY,
-      HoverEvent.ShowEntity.showEntity(Key.key("minecraft:player"), UUID.randomUUID(), Component.text("name"))
+    assertComponentCodec(
+      Component.keybind("key.jump")
     );
   }
 }

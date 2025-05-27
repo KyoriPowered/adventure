@@ -21,41 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.nbt.dfu;
+package net.kyori.adventure.dfu;
 
-import java.util.HashMap;
-import java.util.Map;
-import net.kyori.adventure.dfu.AdventureCodecs;
-import net.kyori.adventure.key.Key;
-import net.kyori.adventure.nbt.api.BinaryTagHolder;
-import net.kyori.adventure.text.event.DataComponentValue;
-import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.Component;
 import org.junit.jupiter.api.Test;
 
-public class ShowItemCodecTest extends AdventureCodecTest {
+public class EntityNBTComponentCodecTest extends AdventureCodecTest {
   @Test
   void test() {
-    assertCodec(
-      AdventureCodecs.SHOW_ITEM,
-      HoverEvent.ShowItem.showItem(
-        Key.key("stone"), 1
-      )
+    assertComponentCodec(
+      Component.entityNBT().nbtPath("abc").selector("test").build()
     );
-    assertCodec(
-      AdventureCodecs.SHOW_ITEM,
-      HoverEvent.ShowItem.showItem(
-        Key.key("stone"), 1,
-        BinaryTagHolder.binaryTagHolder("{inValidPath: '123'}")
-      )
-    );
-    final Map<Key, DataComponentValue> componentValueMap = new HashMap<>();
-    componentValueMap.put(Key.key("in_valid_path"), BinaryTagHolder.binaryTagHolder("123"));
-    assertCodec(
-      AdventureCodecs.SHOW_ITEM,
-      HoverEvent.ShowItem.showItem(
-        Key.key("stone"), 1,
-        componentValueMap
-      )
+    assertComponentCodec(
+      Component.entityNBT().nbtPath("abc").selector("test").interpret(true).build()
     );
   }
 }

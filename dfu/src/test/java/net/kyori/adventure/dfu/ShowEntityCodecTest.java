@@ -21,29 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.nbt.dfu;
+package net.kyori.adventure.dfu;
 
+import java.util.UUID;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.event.HoverEvent;
 import org.junit.jupiter.api.Test;
 
-public class TextComponentCodecTest extends AdventureCodecTest {
+public class ShowEntityCodecTest extends AdventureCodecTest {
   @Test
   void test() {
-    assertComponentCodec(
-      Component.text("Hello, world!")
+    assertCodec(
+      AdventureCodecs.SHOW_ENTITY,
+      HoverEvent.ShowEntity.showEntity(Key.key("minecraft:player"), UUID.randomUUID())
     );
-    assertComponentCodec(
-      Component.text()
-        .content("c")
-        .color(NamedTextColor.GOLD)
-        .append(Component.text("o", NamedTextColor.DARK_AQUA))
-        .append(Component.text("l", NamedTextColor.LIGHT_PURPLE))
-        .append(Component.text("o", NamedTextColor.DARK_PURPLE))
-        .append(Component.text("u", NamedTextColor.BLUE))
-        .append(Component.text("r", NamedTextColor.DARK_GREEN))
-        .append(Component.text("s", NamedTextColor.RED))
-        .build()
+    assertCodec(
+      AdventureCodecs.SHOW_ENTITY,
+      HoverEvent.ShowEntity.showEntity(Key.key("minecraft:player"), UUID.randomUUID(), Component.text("name"))
     );
   }
 }

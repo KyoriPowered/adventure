@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.nbt.dfu;
+package net.kyori.adventure.dfu;
 
 import net.kyori.adventure.text.Component;
 import org.junit.jupiter.api.Test;

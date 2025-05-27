@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.nbt.dfu;
+package net.kyori.adventure.dfu;
 
 import com.google.gson.JsonElement;
 import com.mojang.serialization.Codec;
@@ -29,7 +29,6 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import java.util.HashMap;
 import java.util.Map;
-import net.kyori.adventure.dfu.AdventureCodecs;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.BlockNBTComponent;

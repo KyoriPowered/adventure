@@ -21,16 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.nbt.dfu;
+package net.kyori.adventure.dfu;
 
 import net.kyori.adventure.text.Component;
 import org.junit.jupiter.api.Test;
 
-public class KeybindComponentCodecTest extends AdventureCodecTest {
+public class ScoreComponentCodecTest extends AdventureCodecTest {
   @Test
   void test() {
     assertComponentCodec(
-      Component.keybind("key.jump")
+      Component.score("test", "obj")
+    );
+    assertComponentCodec(
+      Component.score("test", "obj", "value")
     );
   }
 }

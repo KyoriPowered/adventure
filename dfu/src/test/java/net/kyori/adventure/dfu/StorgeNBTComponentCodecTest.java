@@ -21,19 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.nbt.dfu;
+package net.kyori.adventure.dfu;
 
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.junit.jupiter.api.Test;
 
-public class ScoreComponentCodecTest extends AdventureCodecTest {
+public class StorgeNBTComponentCodecTest extends AdventureCodecTest {
   @Test
   void test() {
     assertComponentCodec(
-      Component.score("test", "obj")
+      Component.storageNBT().nbtPath("abc").storage(Key.key("doom:apple")).build()
     );
     assertComponentCodec(
-      Component.score("test", "obj", "value")
+      Component.storageNBT().nbtPath("abc").storage(Key.key("doom:apple")).interpret(true).build()
     );
   }
 }

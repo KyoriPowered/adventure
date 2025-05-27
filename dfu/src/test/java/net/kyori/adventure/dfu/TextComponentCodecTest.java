@@ -21,20 +21,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.nbt.dfu;
+package net.kyori.adventure.dfu;
 
-import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.junit.jupiter.api.Test;
 
-public class StorgeNBTComponentCodecTest extends AdventureCodecTest {
+public class TextComponentCodecTest extends AdventureCodecTest {
   @Test
   void test() {
     assertComponentCodec(
-      Component.storageNBT().nbtPath("abc").storage(Key.key("doom:apple")).build()
+      Component.text("Hello, world!")
     );
     assertComponentCodec(
-      Component.storageNBT().nbtPath("abc").storage(Key.key("doom:apple")).interpret(true).build()
+      Component.text()
+        .content("c")
+        .color(NamedTextColor.GOLD)
+        .append(Component.text("o", NamedTextColor.DARK_AQUA))
+        .append(Component.text("l", NamedTextColor.LIGHT_PURPLE))
+        .append(Component.text("o", NamedTextColor.DARK_PURPLE))
+        .append(Component.text("u", NamedTextColor.BLUE))
+        .append(Component.text("r", NamedTextColor.DARK_GREEN))
+        .append(Component.text("s", NamedTextColor.RED))
+        .build()
     );
   }
 }
