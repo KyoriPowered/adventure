@@ -28,6 +28,7 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Arrays;
 import java.util.Collections;
@@ -124,38 +125,21 @@ public final class AdventureCodecs {
   public static final Codec<TextDecoration.State> TEXT_DECORATION_STATE = indexCode(Codec.STRING, Index.create(TextDecoration.State.class, TextDecoration.State::toString), "TextDecoration.State");
 
   public static final Codec<BinaryTagHolder> BINARY_TAG_HOLDER = xmap(Codec.STRING, BinaryTagHolder::binaryTagHolder, BinaryTagHolder::string, "BinaryTagHolder");
-  public static final Codec<BlockNBTComponent.WorldPos.Coordinate> COORDINATE = RecordCodecBuilder.create(instance -> instance.group(
-      Codec.INT.fieldOf("type").forGetter(c -> c.type().ordinal()),
-      Codec.INT.fieldOf("value").forGetter(BlockNBTComponent.WorldPos.Coordinate::value)
-    ).apply(instance, (type, value) ->
-      BlockNBTComponent.WorldPos.Coordinate.coordinate(value, BlockNBTComponent.WorldPos.Coordinate.Type.values()[type]))
-  );
+  public static final Codec<BlockNBTComponent.WorldPos.Coordinate> COORDINATE = RecordCodecBuilder.create(instance -> instance.group(Codec.INT.fieldOf("type").forGetter(c -> c.type().ordinal()), Codec.INT.fieldOf("value").forGetter(BlockNBTComponent.WorldPos.Coordinate::value)).apply(instance, (type, value) -> BlockNBTComponent.WorldPos.Coordinate.coordinate(value, BlockNBTComponent.WorldPos.Coordinate.Type.values()[type])));
   public static final Codec<BlockNBTComponent.Pos> POS = xmap(Codec.STRING, BlockNBTComponent.Pos::fromString, BlockNBTComponent.Pos::asString, "BlockNBTComponent.Pos");
-  public static final Codec<ClickEvent> CLICK_EVENT = RecordCodecBuilder.create(instance -> instance.group(
-    CLICK_ACTION.fieldOf("action").forGetter(ClickEvent::action),
-    Codec.STRING.fieldOf("value").forGetter(ClickEvent::value)
-  ).apply(instance, ClickEvent::clickEvent));
+  public static final Codec<ClickEvent> CLICK_EVENT = RecordCodecBuilder.create(instance -> instance.group(CLICK_ACTION.fieldOf("action").forGetter(ClickEvent::action), Codec.STRING.fieldOf("value").forGetter(ClickEvent::value)).apply(instance, ClickEvent::clickEvent));
 
   public static final Codec<Style> STYLE;
-  public static final Codec<DataComponentValue> DATA_COMPONENT_VALUE = RecordCodecBuilder.create(instance -> instance.group(
-    Codec.STRING.fieldOf("type").forGetter(c -> c instanceof DataComponentValue.Removed ? "removed" : c instanceof DataComponentValue.TagSerializable ? "tag" : "unknown"),
-    Codec.STRING.optionalFieldOf("value").forGetter(c -> c instanceof DataComponentValue.TagSerializable ? Optional.of(((DataComponentValue.TagSerializable) c).asBinaryTag().string()) : Optional.empty())
-  ).apply(instance, (type, value) -> {
-    if (Objects.equals("removed", type)) {
-      return DataComponentValue.removed();
-    } else if (Objects.equals("tag", type)) {
-      return value.map(BinaryTagHolder::binaryTagHolder).orElse(null);
-    }
-    throw new IllegalArgumentException("Unknown type: " + type);
-  }));
-  public static final Codec<HoverEvent.ShowItem> SHOW_ITEM = RecordCodecBuilder.create(instance -> instance.group(
-      KEY.fieldOf(SHOW_ITEM_ID).forGetter(HoverEvent.ShowItem::item),
-      Codec.INT.fieldOf(SHOW_ITEM_COUNT).forGetter(HoverEvent.ShowItem::count),
-      BINARY_TAG_HOLDER.optionalFieldOf(SHOW_ITEM_TAG).forGetter(c -> Optional.ofNullable(c.nbt())),
-      Codec.unboundedMap(KEY, DATA_COMPONENT_VALUE).fieldOf(SHOW_ITEM_COMPONENTS).forGetter(HoverEvent.ShowItem::dataComponents)
-    ).apply(instance, (id, count, nbt, dataComponentValueMap) ->
-      nbt.map(binaryTagHolder -> HoverEvent.ShowItem.showItem(id, count, binaryTagHolder)).orElseGet(() -> HoverEvent.ShowItem.showItem(id, count, dataComponentValueMap)))
+  private static final MapCodec<DataComponentValue.Removed> DATA_COMPONENT_REMOVED = Codec.STRING.fieldOf("value")
+    .xmap(c -> DataComponentValue.removed(), c -> "removed")
+    .stable();
+  private static final MapCodec<DataComponentValue.TagSerializable> DATA_COMPONENT_TAG = BINARY_TAG_HOLDER.fieldOf("value")
+    .xmap(c -> ((DataComponentValue.TagSerializable) c), DataComponentValue.TagSerializable::asBinaryTag)
+    .stable();
+  public static final Codec<DataComponentValue> DATA_COMPONENT_VALUE = Codec.STRING.partialDispatch(
+    "type", AdventureCodecs::dataComponentValueType, AdventureCodecs::dataComponentValueCodec
   );
+  public static final Codec<HoverEvent.ShowItem> SHOW_ITEM = RecordCodecBuilder.create(instance -> instance.group(KEY.fieldOf(SHOW_ITEM_ID).forGetter(HoverEvent.ShowItem::item), Codec.INT.fieldOf(SHOW_ITEM_COUNT).forGetter(HoverEvent.ShowItem::count), BINARY_TAG_HOLDER.optionalFieldOf(SHOW_ITEM_TAG).forGetter(c -> Optional.ofNullable(c.nbt())), Codec.unboundedMap(KEY, DATA_COMPONENT_VALUE).fieldOf(SHOW_ITEM_COMPONENTS).forGetter(HoverEvent.ShowItem::dataComponents)).apply(instance, (id, count, nbt, dataComponentValueMap) -> nbt.map(binaryTagHolder -> HoverEvent.ShowItem.showItem(id, count, binaryTagHolder)).orElseGet(() -> HoverEvent.ShowItem.showItem(id, count, dataComponentValueMap))));
   public static final Codec<HoverEvent.ShowEntity> SHOW_ENTITY;
   public static final Codec<HoverEvent<?>> HOVER_EVENT;
 
@@ -172,18 +156,7 @@ public final class AdventureCodecs {
     INTERNAL_COMPONENT = RecordCodecBuilder.create(new Function<>() {
       @Override
       public App<RecordCodecBuilder.Mu<Component>, Component> apply(final RecordCodecBuilder.Instance<Component> instance) {
-        return instance.group(
-          Codec.lazyInitialized(() -> STYLE).optionalFieldOf("style").forGetter(c -> Optional.of(c.style())),
-          Codec.lazyInitialized(() -> INTERNAL_COMPONENT).listOf().optionalFieldOf(EXTRA, Collections.emptyList()).forGetter(Component::children),
-          Codec.STRING.optionalFieldOf(TEXT).forGetter(c -> Optional.ofNullable(c instanceof TextComponent ? ((TextComponent) c).content() : null)),
-          Codec.lazyInitialized(() -> BLOCK_NBT_CODEC).optionalFieldOf(NBT_BLOCK).forGetter(c -> Optional.ofNullable(c instanceof BlockNBTComponent ? ((BlockNBTComponent) c) : null)),
-          Codec.lazyInitialized(() -> ENTITY_NBT_CODEC).optionalFieldOf(NBT_ENTITY).forGetter(c -> Optional.ofNullable(c instanceof EntityNBTComponent ? ((EntityNBTComponent) c) : null)),
-          Codec.lazyInitialized(() -> STORAGE_NBT_CODEC).optionalFieldOf(NBT_STORAGE).forGetter(c -> Optional.ofNullable(c instanceof StorageNBTComponent ? ((StorageNBTComponent) c) : null)),
-          Codec.lazyInitialized(() -> SCORE_CODEC).optionalFieldOf(SCORE).forGetter(c -> Optional.ofNullable(c instanceof ScoreComponent ? ((ScoreComponent) c) : null)),
-          Codec.lazyInitialized(() -> SELECTOR_CODEC).optionalFieldOf(SELECTOR).forGetter(c -> Optional.ofNullable(c instanceof SelectorComponent ? ((SelectorComponent) c) : null)),
-          Codec.lazyInitialized(() -> KEYBIND_CODEC).optionalFieldOf(KEYBIND).forGetter(c -> Optional.ofNullable(c instanceof KeybindComponent ? ((KeybindComponent) c) : null)),
-          Codec.lazyInitialized(() -> TRANSLATABLE_CODEC).optionalFieldOf(TRANSLATE).forGetter(c -> Optional.ofNullable(c instanceof TranslatableComponent ? ((TranslatableComponent) c) : null))
-        ).apply(instance, (style, children, textContent, blockNBTComponent, entityNBTComponent, storageNBTComponent, scoreComponent, selectorComponent, keybindComponent, translatableComponent) -> {
+        return instance.group(Codec.lazyInitialized(() -> STYLE).optionalFieldOf("style").forGetter(c -> Optional.of(c.style())), Codec.lazyInitialized(() -> INTERNAL_COMPONENT).listOf().optionalFieldOf(EXTRA, Collections.emptyList()).forGetter(Component::children), Codec.STRING.optionalFieldOf(TEXT).forGetter(c -> Optional.ofNullable(c instanceof TextComponent ? ((TextComponent) c).content() : null)), Codec.lazyInitialized(() -> BLOCK_NBT_CODEC).optionalFieldOf(NBT_BLOCK).forGetter(c -> Optional.ofNullable(c instanceof BlockNBTComponent ? ((BlockNBTComponent) c) : null)), Codec.lazyInitialized(() -> ENTITY_NBT_CODEC).optionalFieldOf(NBT_ENTITY).forGetter(c -> Optional.ofNullable(c instanceof EntityNBTComponent ? ((EntityNBTComponent) c) : null)), Codec.lazyInitialized(() -> STORAGE_NBT_CODEC).optionalFieldOf(NBT_STORAGE).forGetter(c -> Optional.ofNullable(c instanceof StorageNBTComponent ? ((StorageNBTComponent) c) : null)), Codec.lazyInitialized(() -> SCORE_CODEC).optionalFieldOf(SCORE).forGetter(c -> Optional.ofNullable(c instanceof ScoreComponent ? ((ScoreComponent) c) : null)), Codec.lazyInitialized(() -> SELECTOR_CODEC).optionalFieldOf(SELECTOR).forGetter(c -> Optional.ofNullable(c instanceof SelectorComponent ? ((SelectorComponent) c) : null)), Codec.lazyInitialized(() -> KEYBIND_CODEC).optionalFieldOf(KEYBIND).forGetter(c -> Optional.ofNullable(c instanceof KeybindComponent ? ((KeybindComponent) c) : null)), Codec.lazyInitialized(() -> TRANSLATABLE_CODEC).optionalFieldOf(TRANSLATE).forGetter(c -> Optional.ofNullable(c instanceof TranslatableComponent ? ((TranslatableComponent) c) : null))).apply(instance, (style, children, textContent, blockNBTComponent, entityNBTComponent, storageNBTComponent, scoreComponent, selectorComponent, keybindComponent, translatableComponent) -> {
           final Consumer<ComponentBuilder<?, ?>> consumer = builder -> {
             style.ifPresent(builder::style);
             builder.append(children);
@@ -214,19 +187,8 @@ public final class AdventureCodecs {
         });
       }
     });
-    SHOW_ENTITY = RecordCodecBuilder.create(i -> i.group(
-        KEY.fieldOf(SHOW_ENTITY_TYPE).forGetter(HoverEvent.ShowEntity::type),
-        UUID.fieldOf(SHOW_ENTITY_ID).forGetter(HoverEvent.ShowEntity::id),
-        INTERNAL_COMPONENT.optionalFieldOf(SHOW_ENTITY_NAME).forGetter(c -> Optional.ofNullable(c.name()))
-      ).apply(i, (key, uuid, name) -> name.map(component -> HoverEvent.ShowEntity.showEntity(key, uuid, component)).orElseGet(() -> HoverEvent.ShowEntity.showEntity(key, uuid)))
-    );
-    HOVER_EVENT = RecordCodecBuilder.create(instance -> instance.group(
-      HOVER_ACTION.fieldOf(HOVER_EVENT_ACTION).forGetter(HoverEvent::action),
-      SHOW_ITEM.optionalFieldOf("showItem").forGetter(c -> c.value() instanceof HoverEvent.ShowItem ? Optional.of(((HoverEvent.ShowItem) c.value())) : Optional.empty()),
-      INTERNAL_COMPONENT.optionalFieldOf("showText").forGetter(c -> c.value() instanceof Component ? Optional.of((Component) c.value()) : Optional.empty()),
-      SHOW_ENTITY.optionalFieldOf("showEntity").forGetter(c -> c.value() instanceof HoverEvent.ShowEntity ? Optional.of(((HoverEvent.ShowEntity) c.value())) : Optional.empty()),
-      Codec.STRING.optionalFieldOf("showAchievement").forGetter(c -> c.value() instanceof String ? Optional.of((String) c.value()) : Optional.empty())
-    ).apply(instance, (action, showItem, component, showEntity, achievement) -> {
+    SHOW_ENTITY = RecordCodecBuilder.create(i -> i.group(KEY.fieldOf(SHOW_ENTITY_TYPE).forGetter(HoverEvent.ShowEntity::type), UUID.fieldOf(SHOW_ENTITY_ID).forGetter(HoverEvent.ShowEntity::id), INTERNAL_COMPONENT.optionalFieldOf(SHOW_ENTITY_NAME).forGetter(c -> Optional.ofNullable(c.name()))).apply(i, (key, uuid, name) -> name.map(component -> HoverEvent.ShowEntity.showEntity(key, uuid, component)).orElseGet(() -> HoverEvent.ShowEntity.showEntity(key, uuid))));
+    HOVER_EVENT = RecordCodecBuilder.create(instance -> instance.group(HOVER_ACTION.fieldOf(HOVER_EVENT_ACTION).forGetter(HoverEvent::action), SHOW_ITEM.optionalFieldOf("showItem").forGetter(c -> c.value() instanceof HoverEvent.ShowItem ? Optional.of(((HoverEvent.ShowItem) c.value())) : Optional.empty()), INTERNAL_COMPONENT.optionalFieldOf("showText").forGetter(c -> c.value() instanceof Component ? Optional.of((Component) c.value()) : Optional.empty()), SHOW_ENTITY.optionalFieldOf("showEntity").forGetter(c -> c.value() instanceof HoverEvent.ShowEntity ? Optional.of(((HoverEvent.ShowEntity) c.value())) : Optional.empty()), Codec.STRING.optionalFieldOf("showAchievement").forGetter(c -> c.value() instanceof String ? Optional.of((String) c.value()) : Optional.empty())).apply(instance, (action, showItem, component, showEntity, achievement) -> {
       if (action.equals(HoverEvent.Action.SHOW_TEXT)) {
         return HoverEvent.showText(component.get());
       } else if (action.equals(HoverEvent.Action.SHOW_ENTITY)) {
@@ -239,18 +201,7 @@ public final class AdventureCodecs {
         throw new IllegalArgumentException("Unknown hover event action " + action);
       }
     }));
-    STYLE = RecordCodecBuilder.create(instance -> instance.group(
-      KEY.optionalFieldOf(FONT).forGetter(s -> Optional.ofNullable(s.font())),
-      TEXT_COLOR.optionalFieldOf(COLOR).forGetter(s -> Optional.ofNullable(s.color())),
-      SHADOW_COLOR.optionalFieldOf(ComponentTreeConstants.SHADOW_COLOR).forGetter(s -> Optional.ofNullable(s.shadowColor())),
-      Codec.STRING.optionalFieldOf(INSERTION).forGetter(s -> Optional.ofNullable(s.insertion())),
-      CLICK_EVENT.optionalFieldOf(ComponentTreeConstants.CLICK_EVENT).forGetter(s -> Optional.ofNullable(s.clickEvent())),
-      Codec.lazyInitialized(() -> HOVER_EVENT).optionalFieldOf(ComponentTreeConstants.HOVER_EVENT).forGetter(s -> Optional.ofNullable(s.hoverEvent())),
-      Codec.unboundedMap(TEXT_DECORATION, TEXT_DECORATION_STATE).optionalFieldOf(
-        "decoration",
-        Collections.emptyMap()
-      ).forGetter(Style::decorations)
-    ).apply(instance, (font, textColor, shadowColor, insertion, clickEvent, hoverEvent, decoration) -> {
+    STYLE = RecordCodecBuilder.create(instance -> instance.group(KEY.optionalFieldOf(FONT).forGetter(s -> Optional.ofNullable(s.font())), TEXT_COLOR.optionalFieldOf(COLOR).forGetter(s -> Optional.ofNullable(s.color())), SHADOW_COLOR.optionalFieldOf(ComponentTreeConstants.SHADOW_COLOR).forGetter(s -> Optional.ofNullable(s.shadowColor())), Codec.STRING.optionalFieldOf(INSERTION).forGetter(s -> Optional.ofNullable(s.insertion())), CLICK_EVENT.optionalFieldOf(ComponentTreeConstants.CLICK_EVENT).forGetter(s -> Optional.ofNullable(s.clickEvent())), Codec.lazyInitialized(() -> HOVER_EVENT).optionalFieldOf(ComponentTreeConstants.HOVER_EVENT).forGetter(s -> Optional.ofNullable(s.hoverEvent())), Codec.unboundedMap(TEXT_DECORATION, TEXT_DECORATION_STATE).optionalFieldOf("decoration", Collections.emptyMap()).forGetter(Style::decorations)).apply(instance, (font, textColor, shadowColor, insertion, clickEvent, hoverEvent, decoration) -> {
       final Style.Builder builder = Style.style();
       font.ifPresent(builder::font);
       textColor.ifPresent(builder::color);
@@ -261,75 +212,36 @@ public final class AdventureCodecs {
       decoration.forEach(builder::decoration);
       return builder.build();
     }));
-    BLOCK_NBT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-      POS.fieldOf(NBT_BLOCK).forGetter(BlockNBTComponent::pos),
-      Codec.STRING.fieldOf(NBT).forGetter(NBTComponent::nbtPath),
-      Codec.BOOL.fieldOf(NBT_INTERPRET).forGetter(NBTComponent::interpret),
-      INTERNAL_COMPONENT.optionalFieldOf(SEPARATOR).forGetter(c -> Optional.ofNullable(c.separator()))
-    ).apply(instance, (pos, nbtPath, interpret, separator) -> {
+    BLOCK_NBT_CODEC = RecordCodecBuilder.create(instance -> instance.group(POS.fieldOf(NBT_BLOCK).forGetter(BlockNBTComponent::pos), Codec.STRING.fieldOf(NBT).forGetter(NBTComponent::nbtPath), Codec.BOOL.fieldOf(NBT_INTERPRET).forGetter(NBTComponent::interpret), INTERNAL_COMPONENT.optionalFieldOf(SEPARATOR).forGetter(c -> Optional.ofNullable(c.separator()))).apply(instance, (pos, nbtPath, interpret, separator) -> {
       final BlockNBTComponent.Builder builder = Component.blockNBT();
       builder.pos(pos).interpret(interpret);
       builder.nbtPath(nbtPath);
       separator.ifPresent(builder::separator);
       return builder.build();
     }));
-    ENTITY_NBT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-      Codec.STRING.fieldOf(SELECTOR).forGetter(c -> c.selector()),
-      Codec.BOOL.fieldOf(NBT_INTERPRET).forGetter(NBTComponent::interpret),
-      Codec.STRING.fieldOf(NBT).forGetter(NBTComponent::nbtPath),
-      INTERNAL_COMPONENT.optionalFieldOf(SEPARATOR).forGetter(c -> Optional.ofNullable(c.separator()))
-    ).apply(instance, (selector, interpret, nbtPath, separator) -> {
-      final EntityNBTComponent.Builder builder = Component.entityNBT()
-        .selector(selector)
-        .interpret(interpret)
-        .nbtPath(nbtPath);
+    ENTITY_NBT_CODEC = RecordCodecBuilder.create(instance -> instance.group(Codec.STRING.fieldOf(SELECTOR).forGetter(c -> c.selector()), Codec.BOOL.fieldOf(NBT_INTERPRET).forGetter(NBTComponent::interpret), Codec.STRING.fieldOf(NBT).forGetter(NBTComponent::nbtPath), INTERNAL_COMPONENT.optionalFieldOf(SEPARATOR).forGetter(c -> Optional.ofNullable(c.separator()))).apply(instance, (selector, interpret, nbtPath, separator) -> {
+      final EntityNBTComponent.Builder builder = Component.entityNBT().selector(selector).interpret(interpret).nbtPath(nbtPath);
       separator.ifPresent(builder::separator);
       return builder.build();
     }));
-    STORAGE_NBT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-      KEY.fieldOf(NBT_STORAGE).forGetter(StorageNBTComponent::storage),
-      Codec.BOOL.fieldOf(NBT_INTERPRET).forGetter(NBTComponent::interpret),
-      Codec.STRING.fieldOf(NBT).forGetter(NBTComponent::nbtPath),
-      INTERNAL_COMPONENT.optionalFieldOf(SEPARATOR).forGetter(c -> Optional.ofNullable(c.separator()))
-    ).apply(instance, (storage, interpret, nbtPath, separator) -> {
-      final StorageNBTComponent.Builder builder = Component.storageNBT()
-        .storage(storage)
-        .interpret(interpret)
-        .nbtPath(nbtPath);
+    STORAGE_NBT_CODEC = RecordCodecBuilder.create(instance -> instance.group(KEY.fieldOf(NBT_STORAGE).forGetter(StorageNBTComponent::storage), Codec.BOOL.fieldOf(NBT_INTERPRET).forGetter(NBTComponent::interpret), Codec.STRING.fieldOf(NBT).forGetter(NBTComponent::nbtPath), INTERNAL_COMPONENT.optionalFieldOf(SEPARATOR).forGetter(c -> Optional.ofNullable(c.separator()))).apply(instance, (storage, interpret, nbtPath, separator) -> {
+      final StorageNBTComponent.Builder builder = Component.storageNBT().storage(storage).interpret(interpret).nbtPath(nbtPath);
       separator.ifPresent(builder::separator);
       return builder.build();
     }));
-    KEYBIND_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-      Codec.STRING.fieldOf(KEYBIND).forGetter(c -> c.keybind())
-    ).apply(instance, Component::keybind));
-    SCORE_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-      Codec.STRING.fieldOf(SCORE_NAME).forGetter(ScoreComponent::name),
-      Codec.STRING.fieldOf(SCORE_OBJECTIVE).forGetter(ScoreComponent::objective),
-      Codec.STRING.optionalFieldOf(SCORE_VALUE).forGetter(c -> Optional.ofNullable(c.value()))
-    ).apply(instance, (name, objective, value) -> {
-      final ScoreComponent.Builder builder = Component.score()
-        .name(name)
-        .objective(objective);
+    KEYBIND_CODEC = RecordCodecBuilder.create(instance -> instance.group(Codec.STRING.fieldOf(KEYBIND).forGetter(c -> c.keybind())).apply(instance, Component::keybind));
+    SCORE_CODEC = RecordCodecBuilder.create(instance -> instance.group(Codec.STRING.fieldOf(SCORE_NAME).forGetter(ScoreComponent::name), Codec.STRING.fieldOf(SCORE_OBJECTIVE).forGetter(ScoreComponent::objective), Codec.STRING.optionalFieldOf(SCORE_VALUE).forGetter(c -> Optional.ofNullable(c.value()))).apply(instance, (name, objective, value) -> {
+      final ScoreComponent.Builder builder = Component.score().name(name).objective(objective);
       value.ifPresent(builder::value);
       return builder.build();
     }));
-    SELECTOR_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-      Codec.STRING.fieldOf(SELECTOR).forGetter(SelectorComponent::pattern),
-      INTERNAL_COMPONENT.optionalFieldOf(SEPARATOR).forGetter(c -> Optional.ofNullable(c.separator()))
-    ).apply(instance, (pattern, separator) -> {
-      final SelectorComponent.Builder builder = Component.selector()
-        .pattern(pattern);
+    SELECTOR_CODEC = RecordCodecBuilder.create(instance -> instance.group(Codec.STRING.fieldOf(SELECTOR).forGetter(SelectorComponent::pattern), INTERNAL_COMPONENT.optionalFieldOf(SEPARATOR).forGetter(c -> Optional.ofNullable(c.separator()))).apply(instance, (pattern, separator) -> {
+      final SelectorComponent.Builder builder = Component.selector().pattern(pattern);
       separator.ifPresent(builder::separator);
       return builder.build();
     }));
-    TRANSLATABLE_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-      Codec.STRING.fieldOf(TRANSLATE).forGetter(TranslatableComponent::key),
-      TRANSLATION_ARGUMENT.listOf().fieldOf(TRANSLATE_WITH).forGetter(TranslatableComponent::arguments),
-      Codec.STRING.optionalFieldOf(TRANSLATE_FALLBACK).forGetter(c -> Optional.ofNullable(c.fallback()))
-    ).apply(instance, (key, translationArguments, fallback) -> {
-      final TranslatableComponent.Builder builder = Component.translatable()
-        .key(key)
-        .arguments(translationArguments);
+    TRANSLATABLE_CODEC = RecordCodecBuilder.create(instance -> instance.group(Codec.STRING.fieldOf(TRANSLATE).forGetter(TranslatableComponent::key), TRANSLATION_ARGUMENT.listOf().fieldOf(TRANSLATE_WITH).forGetter(TranslatableComponent::arguments), Codec.STRING.optionalFieldOf(TRANSLATE_FALLBACK).forGetter(c -> Optional.ofNullable(c.fallback()))).apply(instance, (key, translationArguments, fallback) -> {
+      final TranslatableComponent.Builder builder = Component.translatable().key(key).arguments(translationArguments);
       fallback.ifPresent(builder::fallback);
       return builder.build();
     }));
@@ -353,11 +265,27 @@ public final class AdventureCodecs {
    * @since 4.22.0
    */
   public static <K, C> Codec<C> indexCode(final Codec<K> codec, final Index<K, C> index, final String name) {
-    return Codec.of(
-      codec.comap(index::keyOrThrow),
-      codec.map(index::valueOrThrow),
-      name
-    );
+    return Codec.of(codec.comap(index::keyOrThrow), codec.map(index::valueOrThrow), name);
+  }
+
+  private static DataResult<MapCodec<? extends DataComponentValue>> dataComponentValueCodec(final String type) {
+    if (Objects.equals(type, "removed")) {
+      return DataResult.success(DATA_COMPONENT_REMOVED);
+    }
+    if (Objects.equals(type, "tag")) {
+      return DataResult.success(DATA_COMPONENT_TAG);
+    }
+    return DataResult.error(() -> "Unknown data component value type: " + type);
+  }
+
+  private static DataResult<String> dataComponentValueType(final DataComponentValue type) {
+    if (type instanceof DataComponentValue.Removed) {
+      return DataResult.success("removed");
+    }
+    if (type instanceof DataComponentValue.TagSerializable) {
+      return DataResult.success("tag");
+    }
+    return DataResult.error(() -> "Unknown data component value type");
   }
 
   /**
