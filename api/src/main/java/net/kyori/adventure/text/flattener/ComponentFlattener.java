@@ -31,6 +31,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.Buildable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 /**
  * A 'flattener' to convert a component tree to a linear string for display.
@@ -38,6 +39,13 @@ import org.jetbrains.annotations.Nullable;
  * @since 4.7.0
  */
 public interface ComponentFlattener extends Buildable<ComponentFlattener, ComponentFlattener.Builder> {
+  /**
+   * A constant representing a flattener with no limit on nested flatten calls.
+   *
+   * @since 4.22.0
+   */
+  int NO_NESTING_LIMIT = -1;
+
   /**
    * Create a new builder for a flattener.
    *
@@ -123,5 +131,16 @@ public interface ComponentFlattener extends Buildable<ComponentFlattener, Compon
      * @since 4.7.0
      */
     @NotNull Builder unknownMapper(final @Nullable Function<Component, String> converter);
+
+    /**
+     * Sets the limit of nested flatten calls.
+     *
+     * <p>The default value is {@link #NO_NESTING_LIMIT}, which means there is no limit on nesting.</p>
+     *
+     * @param limit the new limit (must be a positive integer, or {@link #NO_NESTING_LIMIT})
+     * @return this builder
+     * @since 4.22.0
+     */
+    @NotNull Builder nestingLimit(final @Range(from = 1, to = Integer.MAX_VALUE) int limit);
   }
 }
