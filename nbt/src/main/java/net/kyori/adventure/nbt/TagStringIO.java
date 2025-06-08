@@ -140,7 +140,6 @@ public final class TagStringIO {
     }
   }
 
-
   /**
    * Read the string into an embedded tag, returning the remainder of the input.
    *
