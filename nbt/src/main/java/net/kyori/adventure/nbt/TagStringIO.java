@@ -119,7 +119,7 @@ public final class TagStringIO {
   }
 
   /**
-   * Read the string into an embedded tag, returning the remainder of the input.
+   * Read the string into an embedded compound tag, returning the remainder of the input.
    *
    * @param input the input string
    * @param remainder the appendable to write the remainder to
