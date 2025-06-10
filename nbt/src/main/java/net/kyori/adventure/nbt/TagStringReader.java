@@ -266,6 +266,10 @@ final class TagStringReader {
     // Determine the radix and strip its prefix if present
     final int radix = this.extractRadix(builder, original);
 
+    if (builder.length() == 0) {
+      throw this.buffer.makeError("Input is a radix, not a number");
+    }
+
     // Check for the sign before removing the type token because of hex number always needing a sign thanks to byte types
     final char last = builder.charAt(builder.length() - 1);
     boolean hasSignToken = false;
@@ -331,7 +335,10 @@ final class TagStringReader {
     if (first == '+' || first == '-') {
       radixPrefixOffset = 1;
     }
-    if (original.startsWith("0b", radixPrefixOffset) || original.startsWith("0B", radixPrefixOffset)) {
+
+    int radixEndIndex = 2 + radixPrefixOffset;
+
+    if (original.length() > radixEndIndex && (original.startsWith("0b", radixPrefixOffset) || original.startsWith("0B", radixPrefixOffset))) {
       radix = BINARY_RADIX;
     } else if (original.startsWith("0x", radixPrefixOffset) || original.startsWith("0X", radixPrefixOffset)) {
       radix = HEX_RADIX;
@@ -339,7 +346,7 @@ final class TagStringReader {
       radix = DECIMAL_RADIX;
     }
     if (radix != DECIMAL_RADIX) {
-      builder.delete(radixPrefixOffset, 2 + radixPrefixOffset);
+      builder.delete(radixPrefixOffset, radixEndIndex);
     }
     return radix;
   }
