@@ -337,7 +337,7 @@ final class TagStringReader {
       radixPrefixOffset = 1;
     }
 
-    int radixEndIndex = 2 + radixPrefixOffset;
+    final int radixEndIndex = 2 + radixPrefixOffset;
 
     if (original.length() > radixEndIndex && (original.startsWith("0b", radixPrefixOffset) || original.startsWith("0B", radixPrefixOffset))) {
       radix = BINARY_RADIX;

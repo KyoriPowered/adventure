@@ -337,6 +337,14 @@ class StringIOTest {
   }
 
   @Test
+  void testRadixConversion() throws IOException {
+    assertEquals(CompoundBinaryTag.builder().putByte("test", (byte) 0).build(), this.stringToTag("{test: 0b}"));
+    assertEquals(CompoundBinaryTag.builder().putByte("test", (byte) 0).build(), this.stringToTag("{test: 0B}"));
+    assertEquals(CompoundBinaryTag.builder().putByte("test", (byte) 0).build(), this.stringToTag("{test: 0b0000B}"));
+    assertThrows(StringTagParseException.class, () -> this.stringToTag("{test: 0x}"));
+  }
+
+  @Test
   void testReadingEmbeddedCompound() throws IOException {
     final String input = "{test: \"hello\"} extra content";
     final StringBuilder remainderBuilder = new StringBuilder();
