@@ -45,6 +45,7 @@ public final class JSONOptions {
   private static final int VERSION_1_20_5 = 3819; // 24w09a
   private static final int VERSION_1_21_4 = 4174; // 24w44a
   private static final int VERSION_1_21_5 = 4298; // 25w02a
+  private static final int VERSION_1_21_6 = 4422; // 25w15a
 
   // todo(5.0): move these options out of the global schema
   private static final OptionSchema.Mutable UNSAFE_SCHEMA = OptionSchema.globalSchema();
@@ -127,6 +128,13 @@ public final class JSONOptions {
    */
   public static final Option<ShadowColorEmitMode> SHADOW_COLOR_MODE = UNSAFE_SCHEMA.enumOption(key("emit/shadow_color"), ShadowColorEmitMode.class, ShadowColorEmitMode.EMIT_INTEGER);
 
+  /**
+   * Whether to emit the page in a {@code change_page} click event as a string.
+   *
+   * @since 4.22.0
+   */
+  public static final Option<Boolean> EMIT_CHANGE_PAGE_CLICK_EVENT_PAGE_AS_STRING = UNSAFE_SCHEMA.booleanOption(key("emit/change_page_click_event_page_as_string"), false);
+
   // aim for compatibility? or something
   private static final OptionSchema SCHEMA = OptionSchema.childSchema(UNSAFE_SCHEMA).frozenView();
 
@@ -145,6 +153,7 @@ public final class JSONOptions {
         .value(EMIT_DEFAULT_ITEM_HOVER_QUANTITY, false)
         .value(SHOW_ITEM_HOVER_DATA_MODE, ShowItemHoverDataMode.EMIT_LEGACY_NBT)
         .value(SHADOW_COLOR_MODE, ShadowColorEmitMode.NONE)
+        .value(EMIT_CHANGE_PAGE_CLICK_EVENT_PAGE_AS_STRING, true)
     )
     .version(
       VERSION_1_16,
@@ -171,6 +180,10 @@ public final class JSONOptions {
       b -> b.value(EMIT_HOVER_EVENT_TYPE, HoverEventValueMode.SNAKE_CASE)
         .value(EMIT_CLICK_EVENT_TYPE, ClickEventValueMode.SNAKE_CASE)
         .value(EMIT_HOVER_SHOW_ENTITY_KEY_AS_TYPE_AND_UUID_AS_ID, false)
+    )
+    .version(
+      VERSION_1_21_6,
+      b -> b.value(EMIT_CHANGE_PAGE_CLICK_EVENT_PAGE_AS_STRING, false)
     )
     .build();
 

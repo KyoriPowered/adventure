@@ -60,6 +60,8 @@ public final class ComponentTreeConstants {
   public static final String CLICK_EVENT_PATH = "path";
   public static final String CLICK_EVENT_COMMAND = "command";
   public static final String CLICK_EVENT_PAGE = "page";
+  public static final String CLICK_EVENT_ID = "id";
+  public static final String CLICK_EVENT_PAYLOAD = "payload";
   @Deprecated
   public static final String HOVER_EVENT_CAMEL = "hoverEvent";
   public static final String HOVER_EVENT_SNAKE = "hover_event";
