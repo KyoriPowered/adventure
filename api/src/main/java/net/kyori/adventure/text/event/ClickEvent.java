@@ -29,7 +29,10 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.builder.AbstractBuilder;
+import net.kyori.adventure.dialog.DialogLike;
 import net.kyori.adventure.internal.Internals;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.key.Keyed;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.StyleBuilderApplicable;
 import net.kyori.adventure.util.Index;
@@ -56,7 +59,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @since 4.0.0
    */
   public static @NotNull ClickEvent openUrl(final @NotNull String url) {
-    return new ClickEvent(Action.OPEN_URL, url);
+    return new ClickEvent(Action.OPEN_URL, Payload.string(url));
   }
 
   /**
@@ -80,7 +83,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @since 4.0.0
    */
   public static @NotNull ClickEvent openFile(final @NotNull String file) {
-    return new ClickEvent(Action.OPEN_FILE, file);
+    return new ClickEvent(Action.OPEN_FILE, Payload.string(file));
   }
 
   /**
@@ -91,7 +94,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @since 4.0.0
    */
   public static @NotNull ClickEvent runCommand(final @NotNull String command) {
-    return new ClickEvent(Action.RUN_COMMAND, command);
+    return new ClickEvent(Action.RUN_COMMAND, Payload.string(command));
   }
 
   /**
@@ -102,7 +105,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @since 4.0.0
    */
   public static @NotNull ClickEvent suggestCommand(final @NotNull String command) {
-    return new ClickEvent(Action.SUGGEST_COMMAND, command);
+    return new ClickEvent(Action.SUGGEST_COMMAND, Payload.string(command));
   }
 
   /**
@@ -110,10 +113,14 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    *
    * @param page the page to change to
    * @return a click event
+   * @throws IllegalArgumentException if the page cannot be represented as an integer using
    * @since 4.0.0
+   * @deprecated For removal since 4.22.0, pages are integers, use {@link #changePage(int)}
    */
+  @Deprecated
   public static @NotNull ClickEvent changePage(final @NotNull String page) {
-    return new ClickEvent(Action.CHANGE_PAGE, page);
+    requireNonNull(page, "page");
+    return new ClickEvent(Action.CHANGE_PAGE, Payload.integer(Integer.parseInt(page)));
   }
 
   /**
@@ -124,7 +131,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @since 4.0.0
    */
   public static @NotNull ClickEvent changePage(final int page) {
-    return changePage(String.valueOf(page));
+    return new ClickEvent(Action.CHANGE_PAGE, Payload.integer(page));
   }
 
   /**
@@ -136,7 +143,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @sinceMinecraft 1.15
    */
   public static @NotNull ClickEvent copyToClipboard(final @NotNull String text) {
-    return new ClickEvent(Action.COPY_TO_CLIPBOARD, text);
+    return new ClickEvent(Action.COPY_TO_CLIPBOARD, Payload.string(text));
   }
 
   /**
@@ -180,23 +187,56 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
   }
 
   /**
-   * Creates a click event.
+   * Creates a click event that shows a dialog.
+   *
+   * @param dialog the dialog
+   * @return the click event
+   * @since 4.22.0
+   */
+  public static @NotNull ClickEvent showDialog(final @NotNull DialogLike dialog) {
+    requireNonNull(dialog, "dialog");
+    return new ClickEvent(Action.SHOW_DIALOG, Payload.dialog(dialog));
+  }
+
+  /**
+   * Creates a click event sends a custom event to the server.
+   *
+   * @param key the key
+   * @param data the data
+   * @return the click event
+   * @since 4.22.0
+   */
+  public static @NotNull ClickEvent custom(final @NotNull Key key, final @NotNull String data) {
+    requireNonNull(key, "key");
+    requireNonNull(data, "data");
+    return new ClickEvent(Action.CUSTOM, Payload.custom(key, data));
+  }
+
+  /**
+   * Creates a click event with a {@link Payload.Text string payload}.
    *
    * @param action the action
    * @param value the value
    * @return a click event
+   * @throws IllegalArgumentException if the action does not support a string payload
    * @since 4.0.0
+   * @deprecated For removal since 4.22.0, not all actions support string payloads
    */
+  @Deprecated
   public static @NotNull ClickEvent clickEvent(final @NotNull Action action, final @NotNull String value) {
-    return new ClickEvent(action, value);
+    // A special case here to ensure that page can still accept a string.
+    if (action == Action.CHANGE_PAGE) return changePage(value);
+    if (!action.payloadType().equals(Payload.Text.class)) throw new IllegalArgumentException("Action " + action + " does not support string payloads");
+    return new ClickEvent(action, Payload.string(value));
   }
 
   private final Action action;
-  private final String value;
+  private final Payload payload;
 
-  private ClickEvent(final @NotNull Action action, final @NotNull String value) {
+  private ClickEvent(final @NotNull Action action, final @NotNull Payload payload) {
+    if (!action.supports(payload)) throw new IllegalArgumentException("Action " + action + " does not support payload " + payload);
     this.action = requireNonNull(action, "action");
-    this.value = requireNonNull(value, "value");
+    this.payload = requireNonNull(payload, "payload");
   }
 
   /**
@@ -210,13 +250,32 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
   }
 
   /**
-   * Gets the click event value.
+   * Gets the click event value if the payload is a {@link Payload.Text string payload}.
    *
    * @return the click event value
+   * @throws IllegalStateException if the payload is not a string payload
    * @since 4.0.0
+   * @deprecated For removal since 4.22.0, click events can hold more than just strings, see {@link #payload()}
    */
+  @Deprecated
   public @NotNull String value() {
-    return this.value;
+    if (this.payload instanceof Payload.Text) {
+      return ((Payload.Text) this.payload).value();
+    } else if (this.action == Action.CHANGE_PAGE) { // Special case for page.
+      return String.valueOf(((Payload.Int) this.payload).integer());
+    } else {
+      throw new IllegalStateException("Payload is not a string payload, is " + this.payload);
+    }
+  }
+
+  /**
+   * Gets the payload associated with this click event.
+   *
+   * @return the payload
+   * @since 4.22.0
+   */
+  public @NotNull Payload payload() {
+    return this.payload;
   }
 
   @Override
@@ -229,13 +288,13 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
     if (this == other) return true;
     if (other == null || this.getClass() != other.getClass()) return false;
     final ClickEvent that = (ClickEvent) other;
-    return this.action == that.action && Objects.equals(this.value, that.value);
+    return this.action == that.action && Objects.equals(this.payload, that.payload);
   }
 
   @Override
   public int hashCode() {
     int result = this.action.hashCode();
-    result = (31 * result) + this.value.hashCode();
+    result = (31 * result) + this.payload.hashCode();
     return result;
   }
 
@@ -243,13 +302,131 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
   public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("action", this.action),
-      ExaminableProperty.of("value", this.value)
+      ExaminableProperty.of("payload", this.payload)
     );
   }
 
   @Override
   public String toString() {
     return Internals.toString(this);
+  }
+
+  /**
+   * A payload for a click event.
+   *
+   * @since 4.22.0
+   */
+  public /* sealed */ interface Payload /* permits String, Dialog, Custom */ extends Examinable {
+    /**
+     * Creates a text payload.
+     *
+     * @param value the payload value
+     * @return the payload
+     * @since 4.22.0
+     */
+    static ClickEvent.Payload.@NotNull Text string(final @NotNull String value) {
+      requireNonNull(value, "value");
+      return new PayloadImpl.TextImpl(value);
+    }
+
+    /**
+     * Creates an integer payload.
+     *
+     * @param integer the integer
+     * @return the payload
+     * @since 4.22.0
+     */
+    static ClickEvent.Payload.@NotNull Int integer(final int integer) {
+      return new PayloadImpl.IntImpl(integer);
+    }
+
+    /**
+     * Creates a dialog payload.
+     *
+     * @param dialog the payload value
+     * @return the payload
+     * @since 4.22.0
+     */
+    static Payload.@NotNull Dialog dialog(final @NotNull DialogLike dialog) {
+      requireNonNull(dialog, "dialog");
+      return new PayloadImpl.DialogImpl(dialog);
+    }
+
+    /**
+     * Creates a custom payload.
+     *
+     * @param key the key identifying the payload
+     * @param data the payload data
+     * @return the payload
+     * @since 4.22.0
+     */
+    static Payload.@NotNull Custom custom(final @NotNull Key key, final @NotNull String data) {
+      requireNonNull(key, "key");
+      requireNonNull(data, "data");
+      return new PayloadImpl.CustomImpl(key, data);
+    }
+
+    /**
+     * A payload that holds a string.
+     *
+     * @since 4.22.0
+     */
+    interface Text extends Payload {
+      /**
+       * The string value for this payload.
+       *
+       * @return the string
+       * @since 4.22.0
+       */
+      @NotNull String value();
+    }
+
+    /**
+     * A payload that holds an integer.
+     *
+     * @since 4.22.0
+     */
+    interface Int extends Payload {
+      /**
+       * The integer value for this payload.
+       *
+       * @return the integer
+       * @since 4.22.0
+       */
+      int integer();
+    }
+
+    /**
+     * A payload that holds a dialog.
+     *
+     * @see Action#SHOW_DIALOG
+     * @since 4.22.0
+     */
+    interface Dialog extends Payload {
+      /**
+       * The dialog.
+       *
+       * @return the dialog
+       * @since 4.22.0
+       */
+      @NotNull DialogLike dialog();
+    }
+
+    /**
+     * A payload that holds custom data.
+     *
+     * @see Action#CUSTOM
+     * @since 4.22.0
+     */
+    interface Custom extends Payload, Keyed {
+      /**
+       * The custom data.
+       *
+       * @return the data
+       * @since 4.22.0
+       */
+      @NotNull String data();
+    }
   }
 
   /**
@@ -263,7 +440,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
      *
      * @since 4.0.0
      */
-    OPEN_URL("open_url", true),
+    OPEN_URL("open_url", true, Payload.Text.class),
     /**
      * Opens a file when clicked.
      *
@@ -271,32 +448,48 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
      *
      * @since 4.0.0
      */
-    OPEN_FILE("open_file", false),
+    OPEN_FILE("open_file", false, Payload.Text.class),
     /**
      * Runs a command when clicked.
      *
      * @since 4.0.0
      */
-    RUN_COMMAND("run_command", true),
+    RUN_COMMAND("run_command", true, Payload.Text.class),
     /**
      * Suggests a command into the chat box.
      *
      * @since 4.0.0
      */
-    SUGGEST_COMMAND("suggest_command", true),
+    SUGGEST_COMMAND("suggest_command", true, Payload.Text.class),
     /**
      * Changes the page of a book.
      *
      * @since 4.0.0
      */
-    CHANGE_PAGE("change_page", true),
+    CHANGE_PAGE("change_page", true, Payload.Int.class),
     /**
      * Copies text to the clipboard.
      *
      * @since 4.0.0
      * @sinceMinecraft 1.15
      */
-    COPY_TO_CLIPBOARD("copy_to_clipboard", true);
+    COPY_TO_CLIPBOARD("copy_to_clipboard", true, Payload.Text.class),
+    /**
+     * Shows a dialog.
+     *
+     * <p>This action is not readable at this time until Adventure has a full Dialog API.</p>
+     *
+     * @since 4.22.0
+     * @sinceMinecraft 1.21.6
+     */
+    SHOW_DIALOG("show_dialog", false, Payload.Dialog.class),
+    /**
+     * Sends a custom event to the server.
+     *
+     * @since 4.22.0
+     * @sinceMinecraft 1.21.6
+     */
+    CUSTOM("custom", true, Payload.Custom.class);
 
     /**
      * The name map.
@@ -311,10 +504,12 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
      * <p>When an action is not readable it will not be deserialized.</p>
      */
     private final boolean readable;
+    private final Class<? extends Payload> payloadType;
 
-    Action(final @NotNull String name, final boolean readable) {
+    Action(final @NotNull String name, final boolean readable, final @NotNull Class<? extends Payload> payloadType) {
       this.name = name;
       this.readable = readable;
+      this.payloadType = payloadType;
     }
 
     /**
@@ -326,6 +521,28 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
      */
     public boolean readable() {
       return this.readable;
+    }
+
+    /**
+     * Returns if this action supports the provided payload.
+     *
+     * @param payload the payload
+     * @return {@code true} if this action supports the payload
+     * @since 4.22.0
+     */
+    public boolean supports(final @NotNull Payload payload) {
+      requireNonNull(payload, "payload");
+      return this.payloadType.isAssignableFrom(payload.getClass());
+    }
+
+    /**
+     * The type of the payload this click event supports.
+     *
+     * @return the payload type
+     * @since 4.22.0
+     */
+    public @NotNull Class<? extends Payload> payloadType() {
+      return this.payloadType;
     }
 
     @Override
