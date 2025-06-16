@@ -229,19 +229,110 @@ public interface Sound extends Examinable {
   /**
    * The sound source.
    *
+   * <p>The documentation for each source details the vanilla use.</p>
+   *
    * @since 4.0.0
    */
   enum Source {
+    /**
+     * The main sound source.
+     *
+     * <p>This source controls the overall sound of the game.</p>
+     *
+     * @since 4.0.0
+     */
     MASTER("master"),
+
+    /**
+     * The music sound source.
+     *
+     * <p>This source handles the in-game soundtrack.</p>
+     *
+     * @since 4.0.0
+     */
     MUSIC("music"),
+
+    /**
+     * The record sound source.
+     *
+     * <p>This source handles jukeboxes and note blocks.</p>
+     *
+     * @since 4.0.0
+     */
     RECORD("record"),
+
+    /**
+     * The weather sound source.
+     *
+     * <p>This source handles weather sounds.</p>
+     *
+     * @since 4.0.0
+     */
     WEATHER("weather"),
+
+    /**
+     * The block sound source.
+     *
+     * <p>This source handles player interaction with blocks as well as passive block sounds.</p>
+     *
+     * @since 4.0.0
+     */
     BLOCK("block"),
+
+    /**
+     * The hostile sound source.
+     *
+     * <p>This source handles hostile entities.</p>
+     *
+     * @since 4.0.0
+     */
     HOSTILE("hostile"),
+
+    /**
+     * The neutral sound source.
+     *
+     * <p>This source handles neutral entities.</p>
+     *
+     * @since 4.0.0
+     */
     NEUTRAL("neutral"),
+
+    /**
+     * The player sound source.
+     *
+     * <p>This source handles player entities.</p>
+     *
+     * @since 4.0.0
+     */
     PLAYER("player"),
+
+    /**
+     * The ambient sound source.
+     *
+     * <p>This source handles ambience.</p>
+     *
+     * @since 4.0.0
+     */
     AMBIENT("ambient"),
-    VOICE("voice");
+
+    /**
+     * The voice sound source.
+     *
+     * <p>This source handles the narrator.</p>
+     *
+     * @since 4.0.0
+     */
+    VOICE("voice"),
+
+    /**
+     * The UI sound source.
+     *
+     * <p>This source handles UI actions.</p>
+     *
+     * @since 4.22.0
+     * @sinceMinecraft 1.21.6
+     */
+    UI("ui");
 
     /**
      * The name map.
