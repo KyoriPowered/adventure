@@ -30,6 +30,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.pointer.Pointered;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -51,7 +52,7 @@ public class MiniMessageTranslatorTest extends AbstractTest {
     @Override
     protected @Nullable String getMiniMessageString(final @NotNull String key, final @NotNull Locale locale) {
       // hack the test here by just returning the key
-      return key;
+      return !key.equals("test.untranslated") ? key : null;
     }
 
     @Override
@@ -149,12 +150,80 @@ public class MiniMessageTranslatorTest extends AbstractTest {
     );
   }
 
+  @Test
+  public void testRecursiveArguments() {
+    assertEquals(
+      Component.text("Kezz is cool!"),
+      this.translate(
+        Component.translatable(
+          "<arg:0> is <arg:1>!",
+          Component.translatable("<arg:0>", Component.text("Kezz")),
+          Component.translatable(
+            "<arg:0>",
+            Component.translatable("<arg:0>", Component.text("cool"))
+          )
+        )
+      )
+    );
+  }
+
+  @Test
+  public void testChildren() {
+    assertEquals(
+      Component.text()
+        .content("Kezz is ")
+        .append(Component.text("cool!"))
+        .build(),
+      this.translate(
+        Component.translatable()
+          .key("<arg:0> is ")
+          .arguments(Component.text("Kezz"))
+          .append(Component.translatable("<arg:0>", Component.text("cool!")))
+          .build()
+      )
+    );
+  }
+
+  @Test
+  public void testLangTag() {
+    assertEquals(
+      Component.text("Kezz is cool!"),
+      this.translate(
+        Component.translatable(
+          "<lang:'<arg:0>':'<name>'> is <lang:'cool'>!",
+          Argument.tagResolver(Placeholder.component("name", Component.text("Kezz")))
+        )
+      ).compact()
+    );
+  }
+
+  @Test
+  public void testHoverEvent() {
+    assertEquals(
+      Component.translatable("test.untranslated")
+        .hoverEvent(HoverEvent.showText(Component.text("Test"))),
+      this.translate(
+        Component.translatable("test.untranslated")
+          .hoverEvent(HoverEvent.showText(Component.translatable("<arg:0>", Component.text("Test"))))
+      )
+    );
+
+    assertEquals(
+      Component.text("Test?")
+        .hoverEvent(HoverEvent.showText(Component.text("Test!"))),
+      this.translate(
+        Component.translatable("<arg:0>", Component.text("Test?"))
+          .hoverEvent(HoverEvent.showText(Component.translatable("<arg:0>", Component.text("Test!"))))
+      )
+    );
+  }
+
   @AfterAll
   public static void afterAll() {
     GlobalTranslator.translator().removeSource(TRANSLATOR);
   }
 
   private Component translate(final TranslatableComponent component) {
-    return GlobalTranslator.translator().translate(component, LOCALE);
+    return GlobalTranslator.render(component, LOCALE);
   }
 }

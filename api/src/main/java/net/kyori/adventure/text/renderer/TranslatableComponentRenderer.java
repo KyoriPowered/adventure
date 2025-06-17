@@ -45,6 +45,7 @@ import net.kyori.adventure.text.StorageNBTComponent;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.TranslationArgument;
+import net.kyori.adventure.text.VirtualComponent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.translation.Translator;
@@ -88,14 +89,12 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
       }
 
       @Override
-      protected @NotNull Component renderTranslatable(final @NotNull TranslatableComponent component, final @NotNull Locale context) {
+      protected @NotNull Component renderTranslatableInner(final @NotNull TranslatableComponent component, final @NotNull Locale context) {
         final TriState anyTranslations = source.hasAnyTranslations();
-        if (anyTranslations == TriState.TRUE || anyTranslations == TriState.NOT_SET) {
-          final @Nullable Component translated = source.translate(component, context);
-          if (translated != null) return translated;
-          return super.renderTranslatable(component, context);
-        }
-        return component;
+        if (anyTranslations == TriState.FALSE) return component;
+
+        final @Nullable Component translated = source.translate(component, context);
+        return translated != null ? this.render(translated, context) : super.renderTranslatableInner(component, context);
       }
     };
   }
@@ -184,27 +183,35 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
   }
 
   @Override
-  @SuppressWarnings("JdkObsolete") // MessageFormat requires StringBuffer in its api
-  protected @NotNull Component renderTranslatable(final @NotNull TranslatableComponent component, final @NotNull C context) {
-    final @Nullable MessageFormat format = this.translate(component.key(), component.fallback(), context);
-    if (format == null) {
-      // we don't have a translation for this component, but the arguments or children
-      // of this component might need additional rendering
+  protected @NotNull Component renderTranslatable(@NotNull TranslatableComponent component, final @NotNull C context) {
+    final List<TranslationArgument> arguments = component.arguments();
+    final List<Component> children = component.children();
 
-      final TranslatableComponent.Builder builder = Component.translatable()
-        .key(component.key()).fallback(component.fallback());
-      if (!component.arguments().isEmpty()) {
-        final List<TranslationArgument> args = new ArrayList<>(component.arguments());
-        for (int i = 0, size = args.size(); i < size; i++) {
-          final TranslationArgument arg = args.get(i);
-          if (arg.value() instanceof Component) {
-            args.set(i, TranslationArgument.component(this.render(((Component) arg.value()), context)));
+    if (!arguments.isEmpty() || !children.isEmpty()) {
+      final TranslatableComponent.Builder builder = component.toBuilder();
+
+      if (!arguments.isEmpty()) {
+        final List<TranslationArgument> translatedArguments = new ArrayList<>(arguments);
+        for (int i = 0; i < translatedArguments.size(); i++) {
+          final TranslationArgument arg = translatedArguments.get(i);
+          if (arg.value() instanceof Component && !(arg.value() instanceof VirtualComponent)) {
+            translatedArguments.set(i, TranslationArgument.component(this.render((Component) arg.value(), context)));
           }
         }
-        builder.arguments(args);
+
+        builder.arguments(translatedArguments);
       }
-      return this.mergeStyleAndOptionallyDeepRender(component, builder, context);
+
+      component = builder.build();
     }
+
+    return this.renderTranslatableInner(component, context);
+  }
+
+  @SuppressWarnings("JdkObsolete") // MessageFormat requires StringBuffer in its api
+  protected @NotNull Component renderTranslatableInner(final @NotNull TranslatableComponent component, final @NotNull C context) {
+    final @Nullable MessageFormat format = this.translate(component.key(), component.fallback(), context);
+    if (format == null) return this.optionallyRenderChildrenAndStyle(component, context);
 
     final List<TranslationArgument> args = component.arguments();
 
@@ -226,11 +233,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
       final Integer index = (Integer) it.getAttribute(MessageFormat.Field.ARGUMENT);
       if (index != null) {
         final TranslationArgument arg = args.get(index);
-        if (arg.value() instanceof Component) {
-          builder.append(this.render(arg.asComponent(), context));
-        } else {
-          builder.append(arg.asComponent()); // todo: number rendering?
-        }
+        builder.append(arg.asComponent()); // todo: number rendering?
       } else {
         builder.append(Component.text(sb.substring(it.getIndex(), end)));
       }
@@ -238,6 +241,21 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
     }
 
     return this.optionallyRenderChildrenAppendAndBuild(component.children(), builder, context);
+  }
+
+  protected Component optionallyRenderChildrenAndStyle(Component component, final C context) {
+    final @Nullable HoverEvent<?> hoverEvent = component.hoverEvent();
+    if (hoverEvent != null) {
+      component = component.hoverEvent(hoverEvent.withRenderedValue(this, context));
+    }
+
+    final List<Component> children = component.children();
+    if (children.isEmpty()) return component;
+
+    final List<Component> rendered = new ArrayList<>(children.size());
+    children.forEach(child -> rendered.add(this.render(child, context)));
+
+    return component.children(rendered);
   }
 
   protected <O extends BuildableComponent<O, B>, B extends ComponentBuilder<O, B>> O mergeStyleAndOptionallyDeepRender(final Component component, final B builder, final C context) {
