@@ -313,6 +313,31 @@ class StringIOTest {
     assertEquals(ListBinaryTag.builder().add(StringBinaryTag.stringBinaryTag("hello")).build(), this.stringToTag("[\"hello\",]"));
   }
 
+  @Test
+  void testReadingEmbeddedCompound() throws IOException {
+    final String input = "{test: \"hello\"} extra content";
+    final StringBuilder remainderBuilder = new StringBuilder();
+    final CompoundBinaryTag tag = TagStringIO.get().asCompound(input, remainderBuilder);
+    assertEquals(CompoundBinaryTag.builder().putString("test", "hello").build(), tag);
+    assertEquals(" extra content", remainderBuilder.toString());
+  }
+
+  @Test
+  void testReadingEmbedded() throws IOException {
+    final String input = "[1, 1, 1] extra content";
+    final StringBuilder remainderBuilder = new StringBuilder();
+    final BinaryTag tag = TagStringIO.get().asTag(input, remainderBuilder);
+    assertEquals(ListBinaryTag.builder().add(IntBinaryTag.intBinaryTag(1)).add(IntBinaryTag.intBinaryTag(1)).add(IntBinaryTag.intBinaryTag(1)).build(), tag);
+    assertEquals(" extra content", remainderBuilder.toString());
+  }
+
+  @Test
+  void testReadingInvalidEmbeddedTag() throws IOException {
+    final String input = "{test: \"hello\" extra content";
+    final StringBuilder remainderBuilder = new StringBuilder();
+    assertThrows(IOException.class, () -> TagStringIO.get().asTag(input, remainderBuilder));
+  }
+
   private String tagToString(final BinaryTag tag) throws IOException {
     final StringWriter writer = new StringWriter();
     try (final TagStringWriter emitter = new TagStringWriter(writer, "")) {
