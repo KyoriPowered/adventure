@@ -58,11 +58,15 @@ public final class TagStringIO {
 
   private final boolean acceptLegacy;
   private final boolean emitLegacy;
+  private final boolean acceptHeterogeneousLists;
+  private final boolean emitHeterogeneousLists;
   private final String indent;
 
   private TagStringIO(final @NotNull Builder builder) {
     this.acceptLegacy = builder.acceptLegacy;
     this.emitLegacy = builder.emitLegacy;
+    this.acceptHeterogeneousLists = builder.acceptHeterogeneousLists;
+    this.emitHeterogeneousLists = builder.emitHeterogeneousLists;
     this.indent = builder.indent;
   }
 
@@ -146,6 +150,8 @@ public final class TagStringIO {
   public static class Builder {
     private boolean acceptLegacy = true;
     private boolean emitLegacy = false;
+    private boolean acceptHeterogeneousLists = false;
+    private boolean emitHeterogeneousLists = false;
     private String indent = "";
 
     Builder() {
@@ -217,6 +223,36 @@ public final class TagStringIO {
      */
     public @NotNull Builder emitLegacy(final boolean legacy) {
       this.emitLegacy = legacy;
+      return this;
+    }
+
+    /**
+     * Configure whether or not the resulting IO configuration will accept heterogeneous lists.
+     *
+     * <p>Heterogeneous lists are lists that contain multiple types of tags, such as a list containing
+     * both strings and integers.</p>
+     *
+     * @param heterogeneous whether to accept heterogeneous lists
+     * @return this builder
+     * @since 4.22.0
+     */
+    public @NotNull Builder acceptHeterogeneousLists(final boolean heterogeneous) {
+      this.acceptHeterogeneousLists = heterogeneous;
+      return this;
+    }
+
+    /**
+     * Configure whether or not the resulting IO configuration will emit heterogeneous lists.
+     *
+     * <p>Heterogeneous lists are lists that contain multiple types of tags, such as a list containing
+     * both strings and integers.</p>
+     *
+     * @param heterogeneous whether to emit heterogeneous lists
+     * @return this builder
+     * @since 4.22.0
+     */
+    public @NotNull Builder emitHeterogeneousLists(final boolean heterogeneous) {
+      this.emitHeterogeneousLists = heterogeneous;
       return this;
     }
 
