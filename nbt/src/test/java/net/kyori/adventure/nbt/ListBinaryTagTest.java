@@ -127,6 +127,24 @@ class ListBinaryTagTest {
   }
 
   @Test
+  void testBoxHeterogeneousDoubleWrap() {
+    // For backwards compatibility, wrapping a tag which is already {"": value} should wrap it again.
+    final ListBinaryTag input = ListBinaryTag.listBinaryTag(
+      BinaryTagTypes.LIST_WILDCARD,
+      Arrays.asList(
+        CompoundBinaryTag.from(Collections.singletonMap("", longBinaryTag(5))),
+              StringBinaryTag.stringBinaryTag("five")
+      )
+    );
+      final ListBinaryTag expected = ListBinaryTag.builder()
+              .add(CompoundBinaryTag.from(Collections.singletonMap("", CompoundBinaryTag.from(Collections.singletonMap("", longBinaryTag(5))))))
+              .add(CompoundBinaryTag.from(Collections.singletonMap("", stringBinaryTag("five"))))
+              .build();
+
+      assertEquals(expected, input.wrapHeterogeneity());
+  }
+
+  @Test
   void testBoxingReversible() {
     final ListBinaryTag input = ListBinaryTag.listBinaryTag(
       BinaryTagTypes.LIST_WILDCARD,
