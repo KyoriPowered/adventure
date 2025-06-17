@@ -280,10 +280,19 @@ final class ListBinaryTag0 {
   }
 
   static CompoundBinaryTag box(final BinaryTag tag) {
-    if (tag instanceof CompoundBinaryTag) {
-      return (CompoundBinaryTag) tag;
-    } else {
+    if (needsBox(tag)) {
       return new CompoundBinaryTagImpl(Collections.singletonMap(WRAPPER_KEY, tag));
+    } else {
+      return (CompoundBinaryTag) tag;
     }
+  }
+
+  private static boolean needsBox(final BinaryTag tag) {
+    if (!(tag instanceof CompoundBinaryTag)) {
+      return true;
+    }
+
+    final CompoundBinaryTag compound = (CompoundBinaryTag) tag;
+    return compound.size() == 1 && compound.get(WRAPPER_KEY) != null;
   }
 }
