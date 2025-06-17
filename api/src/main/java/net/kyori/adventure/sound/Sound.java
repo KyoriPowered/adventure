@@ -54,6 +54,12 @@ import static java.util.Objects.requireNonNull;
  *   <dd>a number in the range [0,2] representing which pitch the sound should be played at</dd>
  * </dl>
  *
+ * <p>There are some bugs that are of note when using sounds:</p>
+ * <ul>
+ *   <li>As documented in <a href="https://bugs.mojang.com/browse/MC/issues/MC-146721">MC-146721</a>, stereo sounds are always played globally in 1.14+.</li>
+ *   <li>Due to <a href="https://bugs.mojang.com/browse/MC/issues/MC-138832">MC-138832</a>, the volume and pitch are ignored when playing a sound with an emitter in 1.14 to 1.16.5.</li>
+ * </ul>
+ *
  * @see SoundStop
  * @since 4.0.0
  */
