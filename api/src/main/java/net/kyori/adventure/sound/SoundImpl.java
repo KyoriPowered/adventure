@@ -73,7 +73,7 @@ abstract class SoundImpl implements Sound {
   }
 
   @Override
-  public OptionalLong seed() {
+  public @NotNull OptionalLong seed() {
     return this.seed;
   }
 

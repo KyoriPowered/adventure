@@ -37,6 +37,7 @@ import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.bossbar.BossBarViewer;
 import net.kyori.adventure.chat.ChatType;
 import net.kyori.adventure.chat.SignedMessage;
+import net.kyori.adventure.dialog.DialogLike;
 import net.kyori.adventure.identity.Identified;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.inventory.Book;
@@ -861,5 +862,22 @@ public interface Audience extends Pointered {
    * @since 4.15.0
    */
   default void clearResourcePacks() {
+  }
+
+  // -----------------
+  // ---- Dialogs ----
+  // -----------------
+
+  /**
+   * Shows a dialog to this audience.
+   *
+   * <p>This method exists to allow initial native support for dialogs until Adventure
+   * has full API to support building and sending dialogs.</p>
+   *
+   * @param dialog the dialog
+   * @since 4.22.0
+   * @sinceMinecraft 1.21.6
+   */
+  default void showDialog(final @NotNull DialogLike dialog) {
   }
 }

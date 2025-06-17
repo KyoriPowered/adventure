@@ -26,7 +26,7 @@ package net.kyori.adventure.text.event;
 import com.google.common.testing.EqualsTester;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 
@@ -63,7 +63,9 @@ class ClickEventTest {
 
   @Test
   void assertReadable() {
-    final Set<ClickEvent.Action> unreadable = Collections.singleton(ClickEvent.Action.OPEN_FILE);
+    final Set<ClickEvent.Action> unreadable = new HashSet();
+    unreadable.add(ClickEvent.Action.OPEN_FILE);
+    unreadable.add(ClickEvent.Action.SHOW_DIALOG);
     for (final ClickEvent.Action action : ClickEvent.Action.values()) {
       assertEquals(action.readable(), !unreadable.contains(action));
     }

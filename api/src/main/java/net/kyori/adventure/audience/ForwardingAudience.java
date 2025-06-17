@@ -34,6 +34,7 @@ import java.util.function.Supplier;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.chat.ChatType;
 import net.kyori.adventure.chat.SignedMessage;
+import net.kyori.adventure.dialog.DialogLike;
 import net.kyori.adventure.identity.Identified;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.inventory.Book;
@@ -221,6 +222,11 @@ public interface ForwardingAudience extends Audience {
     for (final Audience audience : this.audiences()) audience.clearResourcePacks();
   }
 
+  @Override
+  default void showDialog(final @NotNull DialogLike dialog) {
+    for (final Audience audience : this.audiences()) audience.showDialog(dialog);
+  }
+
   /**
    * An audience that forwards everything to a single other audience.
    *
@@ -402,6 +408,11 @@ public interface ForwardingAudience extends Audience {
     @Override
     default void clearResourcePacks() {
       this.audience().clearResourcePacks();
+    }
+
+    @Override
+    default void showDialog(final @NotNull DialogLike dialog) {
+      this.audience().showDialog(dialog);
     }
   }
 }
