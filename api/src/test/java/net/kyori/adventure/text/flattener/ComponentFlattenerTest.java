@@ -27,20 +27,25 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import net.kyori.adventure.text.BlockNBTComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.NBTComponent;
 import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.text.TranslationArgument;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ComponentFlattenerTest {
   static class TrackingFlattener implements FlattenerListener {
@@ -287,5 +292,65 @@ class ComponentFlattenerTest {
       .assertBalanced()
       .assertPushesAndPops(3)
       .assertContents("Hello", "How are you?", "Not great");
+  }
+
+  private static final Pattern PAPERS_WEIRD_LOCALIZATION_PATTERN = Pattern.compile("%(?:(\\d+)\\$)?s");
+  public static final ComponentFlattener PAPERS_WEIRD_FLATTENER = ComponentFlattener.basic().toBuilder()
+    .complexMapper(TranslatableComponent.class, (translatable, consumer) -> {
+      final String key = translatable.key();
+      final Matcher matcher = PAPERS_WEIRD_LOCALIZATION_PATTERN.matcher(key);
+      final List<TranslationArgument> args = translatable.arguments();
+      int argPosition = 0;
+      int lastIdx = 0;
+      while (matcher.find()) {
+        // append prior
+        if (lastIdx < matcher.start()) {
+          consumer.accept(Component.text(key.substring(lastIdx, matcher.start())));
+        }
+        lastIdx = matcher.end();
+
+        final @Nullable String argIdx = matcher.group(1);
+        // calculate argument position
+        if (argIdx != null) {
+          try {
+            final int idx = Integer.parseInt(argIdx) - 1;
+            if (idx < args.size()) {
+              consumer.accept(args.get(idx).asComponent());
+            }
+          } catch (final NumberFormatException ex) {
+            // ignore, drop the format placeholder
+          }
+        } else {
+          final int idx = argPosition++;
+          if (idx < args.size()) {
+            consumer.accept(args.get(idx).asComponent());
+          }
+        }
+      }
+
+      // append tail
+      if (lastIdx < key.length()) {
+        consumer.accept(Component.text(key.substring(lastIdx)));
+      }
+    })
+    .nestingLimit(4)
+    .build();
+
+  public static Component createNestedComponent(final int depth, final String finalText) {
+    Component component = Component.text(finalText);
+
+    for (int i = 0; i < depth; i++) {
+      component = Component.translatable("%1$s%1$s%1$s", component);
+    }
+
+    return component;
+  }
+
+  @Test
+  void testGiantComponent() {
+    final Component component = createNestedComponent(34, "only 34?!");
+    final StringBuilder sb = new StringBuilder();
+    final Exception exception = assertThrows(IllegalStateException.class, () -> PAPERS_WEIRD_FLATTENER.flatten(component, sb::append));
+    assertTrue(exception.getMessage().startsWith("Exceeded maximum nesting depth"));
   }
 }
