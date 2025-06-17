@@ -136,12 +136,12 @@ class ListBinaryTagTest {
               StringBinaryTag.stringBinaryTag("five")
       )
     );
-      final ListBinaryTag expected = ListBinaryTag.builder()
-              .add(CompoundBinaryTag.from(Collections.singletonMap("", CompoundBinaryTag.from(Collections.singletonMap("", longBinaryTag(5))))))
-              .add(CompoundBinaryTag.from(Collections.singletonMap("", stringBinaryTag("five"))))
-              .build();
+    final ListBinaryTag expected = ListBinaryTag.builder()
+      .add(CompoundBinaryTag.from(Collections.singletonMap("", CompoundBinaryTag.from(Collections.singletonMap("", longBinaryTag(5))))))
+      .add(CompoundBinaryTag.from(Collections.singletonMap("", stringBinaryTag("five"))))
+      .build();
 
-      assertEquals(expected, input.wrapHeterogeneity());
+    assertEquals(expected, input.wrapHeterogeneity());
   }
 
   @Test

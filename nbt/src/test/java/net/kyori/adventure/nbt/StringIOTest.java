@@ -349,7 +349,7 @@ class StringIOTest {
   }
 
   private BinaryTag stringToTag(final String input, final boolean acceptLegacy) throws StringTagParseException {
-   return this.stringToTag(input, acceptLegacy, false);
+    return this.stringToTag(input, acceptLegacy, false);
   }
 
   private BinaryTag stringToTag(final String input, final boolean acceptLegacy, final boolean acceptHeterogeneousLists) throws StringTagParseException {
