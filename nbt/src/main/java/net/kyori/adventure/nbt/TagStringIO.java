@@ -86,6 +86,7 @@ public final class TagStringIO {
       final CharBuffer buffer = new CharBuffer(input);
       final TagStringReader parser = new TagStringReader(buffer);
       parser.legacy(this.acceptLegacy);
+      parser.heterogeneousLists(this.acceptHeterogeneousLists);
       final CompoundBinaryTag tag = parser.compound();
       if (buffer.skipWhitespace().hasMore()) {
         throw new IOException("Document had trailing content after first CompoundTag");
@@ -120,6 +121,7 @@ public final class TagStringIO {
     final StringBuilder sb = new StringBuilder();
     try (final TagStringWriter emit = new TagStringWriter(sb, this.indent)) {
       emit.legacy(this.emitLegacy);
+      emit.heterogeneousLists(this.emitHeterogeneousLists);
       emit.writeTag(input);
     }
     return sb.toString();
@@ -138,6 +140,7 @@ public final class TagStringIO {
   public void toWriter(final CompoundBinaryTag input, final Writer dest) throws IOException {
     try (final TagStringWriter emit = new TagStringWriter(dest, this.indent)) {
       emit.legacy(this.emitLegacy);
+      emit.heterogeneousLists(this.emitHeterogeneousLists);
       emit.writeTag(input);
     }
   }
