@@ -24,6 +24,7 @@
 package net.kyori.adventure.key;
 
 import java.util.Comparator;
+import java.util.Objects;
 import java.util.OptionalInt;
 import java.util.stream.Stream;
 import net.kyori.examination.Examinable;
@@ -105,6 +106,7 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
    */
   @SuppressWarnings("PatternValidation") // impossible to validate since the character is variable
   static @NotNull Key key(final @NotNull String string, final char character) {
+    Objects.requireNonNull(string, "string");
     final int index = string.indexOf(character);
     final String namespace = index >= 1 ? string.substring(0, index) : MINECRAFT_NAMESPACE;
     final String value = index >= 0 ? string.substring(index + 1) : string;
@@ -121,7 +123,7 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
    * @since 4.4.0
    */
   static @NotNull Key key(final @NotNull Namespaced namespaced, @KeyPattern.Value final @NotNull String value) {
-    return key(namespaced.namespace(), value);
+    return key(Objects.requireNonNull(namespaced, "namespaced").namespace(), value);
   }
 
   /**
@@ -185,6 +187,7 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
    * @since 4.14.0
    */
   static @NotNull OptionalInt checkNamespace(final @NotNull String namespace) {
+    Objects.requireNonNull(namespace, "namespace");
     for (int i = 0, length = namespace.length(); i < length; i++) {
       if (!allowedInNamespace(namespace.charAt(i))) {
         return OptionalInt.of(i);
@@ -212,6 +215,7 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
    * @since 4.14.0
    */
   static @NotNull OptionalInt checkValue(final @NotNull String value) {
+    Objects.requireNonNull(value, "value");
     for (int i = 0, length = value.length(); i < length; i++) {
       if (!allowedInValue(value.charAt(i))) {
         return OptionalInt.of(i);
