@@ -128,6 +128,7 @@ public final class TagStringIO {
       final CharBuffer buffer = new CharBuffer(input);
       final TagStringReader parser = new TagStringReader(buffer);
       parser.legacy(this.acceptLegacy);
+      parser.heterogeneousLists(this.acceptHeterogeneousLists);
       final BinaryTag tag = parser.tag();
       if (buffer.skipWhitespace().hasMore()) {
         throw new IOException("Document had trailing content after first Tag");
@@ -154,6 +155,7 @@ public final class TagStringIO {
       final CharBuffer buffer = new CharBuffer(input);
       final TagStringReader parser = new TagStringReader(buffer);
       parser.legacy(this.acceptLegacy);
+      parser.heterogeneousLists(this.acceptHeterogeneousLists);
       final CompoundBinaryTag tag = parser.compound();
       remainder.append(buffer.takeRest());
       return tag;
@@ -178,6 +180,7 @@ public final class TagStringIO {
       final CharBuffer buffer = new CharBuffer(input);
       final TagStringReader parser = new TagStringReader(buffer);
       parser.legacy(this.acceptLegacy);
+      parser.heterogeneousLists(this.acceptHeterogeneousLists);
       final BinaryTag tag = parser.tag();
       remainder.append(buffer.takeRest());
       return tag;
