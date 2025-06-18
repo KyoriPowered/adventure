@@ -28,6 +28,7 @@ import java.util.stream.Stream;
 import net.kyori.adventure.dialog.DialogLike;
 import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 
@@ -138,11 +139,11 @@ abstract class PayloadImpl implements ClickEvent.Payload {
 
   static final class CustomImpl extends PayloadImpl implements ClickEvent.Payload.Custom {
     private final Key key;
-    private final String data;
+    private final BinaryTagHolder nbt;
 
-    CustomImpl(final @NotNull Key key, final @NotNull String data) {
+    CustomImpl(final @NotNull Key key, final @NotNull BinaryTagHolder nbt) {
       this.key = key;
-      this.data = data;
+      this.nbt = nbt;
     }
 
     @Override
@@ -152,14 +153,19 @@ abstract class PayloadImpl implements ClickEvent.Payload {
 
     @Override
     public @NotNull String data() {
-      return this.data;
+      return this.nbt.string();
+    }
+
+    @Override
+    public @NotNull BinaryTagHolder nbt() {
+      return this.nbt;
     }
 
     @Override
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
       return Stream.of(
         ExaminableProperty.of("key", this.key),
-        ExaminableProperty.of("data", this.data)
+        ExaminableProperty.of("nbt", this.nbt)
       );
     }
 
@@ -168,13 +174,13 @@ abstract class PayloadImpl implements ClickEvent.Payload {
       if (this == other) return true;
       if (other == null || getClass() != other.getClass()) return false;
       final CustomImpl that = (CustomImpl) other;
-      return Objects.equals(this.key, that.key) && Objects.equals(this.data, that.data);
+      return Objects.equals(this.key, that.key) && Objects.equals(this.nbt, that.nbt);
     }
 
     @Override
     public int hashCode() {
       int result = this.key.hashCode();
-      result = (31 * result) + this.data.hashCode();
+      result = (31 * result) + this.nbt.hashCode();
       return result;
     }
   }
