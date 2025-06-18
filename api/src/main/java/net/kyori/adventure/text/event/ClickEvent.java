@@ -33,6 +33,7 @@ import net.kyori.adventure.dialog.DialogLike;
 import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
+import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.StyleBuilderApplicable;
 import net.kyori.adventure.util.Index;
@@ -205,11 +206,29 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @param data the data
    * @return the click event
    * @since 4.22.0
+   * @deprecated For removal since 4.23.0, payloads hold NBT data, use {@link #custom(Key, BinaryTagHolder)} instead.
+   *     This method will create NBT using {@link BinaryTagHolder#binaryTagHolder(String)}.
    */
+  @Deprecated
   public static @NotNull ClickEvent custom(final @NotNull Key key, final @NotNull String data) {
+    return custom(key, BinaryTagHolder.binaryTagHolder(data));
+  }
+
+  /**
+   * Creates a click event that sends a custom event to the server.
+   *
+   * <p>See {@link BinaryTagHolder#binaryTagHolder(String)} for a simple way to create NBT from SNBT.
+   * For simple use cases, you can use plain strings directly as SNBT.</p>
+   *
+   * @param key the key identifying the payload
+   * @param nbt the nbt data
+   * @return the click event
+   * @since 4.23.0
+   */
+  public static @NotNull ClickEvent custom(final @NotNull Key key, final @NotNull BinaryTagHolder nbt) {
     requireNonNull(key, "key");
-    requireNonNull(data, "data");
-    return new ClickEvent(Action.CUSTOM, Payload.custom(key, data));
+    requireNonNull(nbt, "nbt");
+    return new ClickEvent(Action.CUSTOM, Payload.custom(key, nbt));
   }
 
   /**
@@ -359,11 +378,29 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
      * @param data the payload data
      * @return the payload
      * @since 4.22.0
+     * @deprecated For removal since 4.23.0, payloads hold NBT data, use {@link #custom(Key, BinaryTagHolder)} instead.
+     *     This method will create NBT using {@link BinaryTagHolder#binaryTagHolder(String)}.
      */
+    @Deprecated
     static Payload.@NotNull Custom custom(final @NotNull Key key, final @NotNull String data) {
+      return Payload.custom(key, BinaryTagHolder.binaryTagHolder(data));
+    }
+
+    /**
+     * Creates a custom payload.
+     *
+     * <p>See {@link BinaryTagHolder#binaryTagHolder(String)} for a simple way to create NBT from SNBT.
+     * For simple use cases, you can use plain strings directly as SNBT.</p>
+     *
+     * @param key the key identifying the payload
+     * @param nbt the payload nbt data
+     * @return the payload
+     * @since 4.23.0
+     */
+    static Payload.@NotNull Custom custom(final @NotNull Key key, final @NotNull BinaryTagHolder nbt) {
       requireNonNull(key, "key");
-      requireNonNull(data, "data");
-      return new PayloadImpl.CustomImpl(key, data);
+      requireNonNull(nbt, "nbt");
+      return new PayloadImpl.CustomImpl(key, nbt);
     }
 
     /**
@@ -424,8 +461,21 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
        *
        * @return the data
        * @since 4.22.0
+       * @deprecated For removal since 4.23.0, custom payloads contain NBT data, use {@link #nbt()} instead.
+       *     This method will return {@link BinaryTagHolder#string()} on the held NBT.
        */
+      @Deprecated
       @NotNull String data();
+
+      /**
+       * The custom data.
+       *
+       * <p>See {@link BinaryTagHolder#string()} for a simple way to return SNBT from NBT data.</p>
+       *
+       * @return the data
+       * @since 4.23.0
+       */
+      @NotNull BinaryTagHolder nbt();
     }
   }
 
