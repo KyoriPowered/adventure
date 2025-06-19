@@ -878,4 +878,16 @@ public interface Audience extends Pointered {
    */
   default void showDialog(final @NotNull DialogLike dialog) {
   }
+
+  /**
+   * Closes the dialog that is currently being shown to this audience, if any.
+   *
+   * <p>This will return the user to the previous dialog if one was opened from the
+   * current dialog.</p>
+   *
+   * @since 4.24.0
+   * @sinceMinecraft 1.21.6
+   */
+  default void closeDialog() {
+  }
 }
