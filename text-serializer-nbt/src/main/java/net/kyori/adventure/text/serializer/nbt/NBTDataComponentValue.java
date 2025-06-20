@@ -33,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * <p>This holder is exposed to allow conversions to/from NBT data holders.</p>
  *
- * @since 4.18.0
+ * @since 4.24.0
  */
 @ApiStatus.NonExtendable
 public interface NBTDataComponentValue extends DataComponentValue {
@@ -41,7 +41,7 @@ public interface NBTDataComponentValue extends DataComponentValue {
    * The contained element, intended for read-only use.
    *
    * @return a copy of the contained element
-   * @since 4.18.0
+   * @since 4.24.0
    */
   @NotNull BinaryTag binaryTag();
 
@@ -50,7 +50,7 @@ public interface NBTDataComponentValue extends DataComponentValue {
    *
    * @param binaryTag the item data to hold
    * @return a newly created item data holder instance
-   * @since 4.18.0
+   * @since 4.24.0
    */
   static @NotNull NBTDataComponentValue nbtDataComponentValue(@NotNull BinaryTag binaryTag) {
     return new NBTDataComponentValueImpl(binaryTag);
