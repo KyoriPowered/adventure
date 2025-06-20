@@ -124,4 +124,9 @@ class KeyTest {
   void testParseWithEmptyNamespace() {
     assertEquals(Key.key(Key.MINECRAFT_NAMESPACE, "test"), Key.key(":test"));
   }
+
+  @Test
+  void testKeyWithInvalidCharacter() {
+    assertThrows(InvalidKeyException.class, () -> Key.key("a/b", "a"));
+  }
 }

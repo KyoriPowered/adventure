@@ -37,6 +37,7 @@ import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.bossbar.BossBarViewer;
 import net.kyori.adventure.chat.ChatType;
 import net.kyori.adventure.chat.SignedMessage;
+import net.kyori.adventure.dialog.DialogLike;
 import net.kyori.adventure.identity.Identified;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.inventory.Book;
@@ -659,8 +660,6 @@ public interface Audience extends Pointered {
    *
    * <p>To play a sound that follows the recipient, use {@link Sound.Emitter#self()}.</p>
    *
-   * <p><b>Note</b>: Due to <a href="https://bugs.mojang.com/browse/MC-138832">MC-138832</a>, the volume and pitch may be ignored when using this method.</p>
-   *
    * @param sound a sound
    * @param emitter an emitter
    * @since 4.8.0
@@ -861,5 +860,22 @@ public interface Audience extends Pointered {
    * @since 4.15.0
    */
   default void clearResourcePacks() {
+  }
+
+  // -----------------
+  // ---- Dialogs ----
+  // -----------------
+
+  /**
+   * Shows a dialog to this audience.
+   *
+   * <p>This method exists to allow initial native support for dialogs until Adventure
+   * has full API to support building and sending dialogs.</p>
+   *
+   * @param dialog the dialog
+   * @since 4.22.0
+   * @sinceMinecraft 1.21.6
+   */
+  default void showDialog(final @NotNull DialogLike dialog) {
   }
 }

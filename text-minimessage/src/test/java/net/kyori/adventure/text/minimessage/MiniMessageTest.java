@@ -396,7 +396,7 @@ public class MiniMessageTest extends AbstractTest {
     assertTrue(messages.contains("Attempting to match node 'blue' at column 10"));
     assertTrue(anyMatch(messages, it -> it.startsWith("Successfully matched node 'blue' to tag ")));
     assertTrue(messages.contains("Attempting to match node 'click' at column 22"));
-    assertTrue(messages.contains("Could not match node 'click' - A click tag requires an action of one of [open_url, run_command, copy_to_clipboard, open_file, change_page, suggest_command]"));
+    assertTrue(messages.contains("Could not match node 'click' - A click tag requires an action of one of [run_command, open_file, custom, open_url, copy_to_clipboard, change_page, show_dialog, suggest_command]"));
     assertTrue(messages.contains("\t<red> RED <blue> BLUE <click> bad click </click>"));
     assertTrue(messages.contains("\t                      ^~~~~~^"));
     assertTrue(messages.contains("Text parsed into element tree:"));
