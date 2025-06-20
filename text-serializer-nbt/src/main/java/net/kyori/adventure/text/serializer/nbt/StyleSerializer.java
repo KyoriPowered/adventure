@@ -31,9 +31,11 @@ import net.kyori.adventure.nbt.StringBinaryTag;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.ShadowColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import org.jetbrains.annotations.NotNull;
 
 final class StyleSerializer {
@@ -88,6 +90,11 @@ final class StyleSerializer {
     BinaryTag binaryHoverEvent = compound.get(HOVER_EVENT);
     if (binaryHoverEvent != null) {
       styleBuilder.hoverEvent(HoverEventSerializer.deserialize((CompoundBinaryTag) binaryHoverEvent, serializer));
+    }
+
+    BinaryTag shadowColorTag = compound.get(ComponentTreeConstants.SHADOW_COLOR);
+    if (shadowColorTag != null) {
+      styleBuilder.shadowColor(ShadowColorSerializer.deserialize(shadowColorTag));
     }
 
     return styleBuilder.build();
@@ -150,6 +157,14 @@ final class StyleSerializer {
     HoverEvent<?> hoverEvent = style.hoverEvent();
     if (hoverEvent != null) {
       builder.put(HOVER_EVENT, HoverEventSerializer.serialize(hoverEvent, serializer));
+    }
+
+    ShadowColor shadowColor = style.shadowColor();
+    if (shadowColor != null) {
+      BinaryTag serializedShadowColor = ShadowColorSerializer.serialize(shadowColor, serializer);
+      if (serializedShadowColor != null) {
+        builder.put(ComponentTreeConstants.SHADOW_COLOR, serializedShadowColor);
+      }
     }
   }
 

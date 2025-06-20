@@ -46,11 +46,43 @@ public final class NBTSerializerOptions {
    * @since 4.18.0
    */
   public static final Option<Boolean> SERIALIZE_COMPONENT_TYPES = Option.booleanOption(key("serialize/component-types"), true);
+  /**
+   * How to emit shadow colour data.
+   *
+   * @since 4.18.0
+   * @sinceMinecraft 1.21.4
+   */
+  public static final Option<ShadowColorEmitMode> SHADOW_COLOR_MODE = Option.enumOption(key("emit/shadow_color"), ShadowColorEmitMode.class, ShadowColorEmitMode.EMIT_INTEGER);
 
   private NBTSerializerOptions() {
   }
 
   private static String key(final String value) {
     return "adventure:nbt/" + value;
+  }
+
+  /**
+   * How text shadow colors should be emitted.
+   *
+   * @since 4.18.0
+   * @sinceMinecraft 1.21.4
+   */
+  public enum ShadowColorEmitMode {
+    /**
+     * Do not emit shadow colours.
+     */
+    NONE,
+    /**
+     * Emit as a single packed integer value containing, in order, ARGB bytes.
+     *
+     * @since 4.18.0
+     */
+    EMIT_INTEGER,
+    /**
+     * Emit a colour as 4-element float array of the RGBA components of the colour.
+     *
+     * @since 4.18.0
+     */
+    EMIT_ARRAY
   }
 }
