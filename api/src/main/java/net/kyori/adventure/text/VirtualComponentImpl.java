@@ -26,7 +26,6 @@ package net.kyori.adventure.text;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
 import net.kyori.adventure.text.format.Style;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -77,7 +76,7 @@ final class VirtualComponentImpl<C> extends TextComponentImpl implements Virtual
   }
 
   @Override
-  public boolean equals(@Nullable Object other) {
+  public boolean equals(final @Nullable Object other) {
     if (this == other) return true;
     if (!(other instanceof VirtualComponentImpl)) return false;
     if (!super.equals(other)) return false;
