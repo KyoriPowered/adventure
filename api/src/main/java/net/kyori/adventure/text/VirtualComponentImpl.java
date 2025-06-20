@@ -84,6 +84,14 @@ final class VirtualComponentImpl<C> extends TextComponentImpl implements Virtual
     return Objects.equals(this.contextType, that.contextType) && Objects.equals(this.renderer, that.renderer);
   }
 
+  @Override
+  public int hashCode() {
+    int result = super.hashCode();
+    result = (31 * result) + this.contextType.hashCode();
+    result = (31 * result) + this.renderer.hashCode();
+    return result;
+  }
+
   static final class BuilderImpl<C> extends TextComponentImpl.BuilderImpl {
     private final Class<C> contextType;
     private final VirtualComponentRenderer<C> renderer;
