@@ -147,7 +147,7 @@ final class ShowItemSerializer extends TypeAdapter<HoverEvent.ShowItem> {
       out.name(SHOW_ITEM_COMPONENTS);
       out.beginObject();
       for (final Map.Entry<Key, GsonDataComponentValue> entry : value.dataComponentsAs(GsonDataComponentValue.class).entrySet()) {
-        final JsonElement el = entry.getValue().element();;
+        final JsonElement el = entry.getValue().element();
         if (el instanceof JsonNull) { // removed
           out.name(DATA_COMPONENT_REMOVAL_PREFIX + entry.getKey().asString());
           out.beginObject().endObject();
