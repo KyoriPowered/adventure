@@ -127,6 +127,18 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
   }
 
   /**
+   * Creates a key in the {@code minecraft} namespace.
+   *
+   * @param value the value
+   * @return the key
+   * @throws InvalidKeyException if value contains an invalid character
+   * @since 4.23.0
+   */
+  static @NotNull Key minecraft(@KeyPattern.Value final @NotNull String value) {
+    return key(MINECRAFT_NAMESPACE, Objects.requireNonNull(value, "value"));
+  }
+
+  /**
    * Creates a key.
    *
    * @param namespace the namespace
