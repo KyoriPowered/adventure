@@ -23,37 +23,115 @@
  */
 package net.kyori.adventure.text.serializer.nbt;
 
-import net.kyori.adventure.nbt.BinaryTag;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.nbt.BinaryTagTypes;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
+import net.kyori.adventure.nbt.IntBinaryTag;
 import net.kyori.adventure.nbt.StringBinaryTag;
+import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_ACTION;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_COMMAND;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_ID;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_PAGE;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_PAYLOAD;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_URL;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_VALUE;
+import static net.kyori.adventure.text.serializer.nbt.NBTSerializerUtils.getRequiredTag;
 
 final class ClickEventSerializer {
-
-  private static final String ACTION = "action";
-  private static final String VALUE = "value";
 
   private ClickEventSerializer() {
   }
 
-  static @NotNull ClickEvent deserialize(@NotNull CompoundBinaryTag tag) {
-    BinaryTag actionTag = tag.get(ACTION);
+  static @Nullable ClickEvent deserializeCamel(@NotNull CompoundBinaryTag tag) {
+    StringBinaryTag actionTag = getRequiredTag(tag, CLICK_EVENT_ACTION, BinaryTagTypes.STRING);
+    StringBinaryTag valueTag = getRequiredTag(tag, CLICK_EVENT_VALUE, BinaryTagTypes.STRING);
 
-    if (actionTag == null) {
-      throw new IllegalArgumentException("The serialized click event doesn't contain an action");
+    ClickEvent.Action action = ClickEvent.Action.NAMES.valueOrThrow(actionTag.value());
+    if (!action.readable()) {
+      return null;
     }
 
-    String actionString = ((StringBinaryTag) actionTag).value();
-    ClickEvent.Action action = ClickEvent.Action.NAMES.valueOrThrow(actionString);
-
-    return ClickEvent.clickEvent(action, tag.getString(VALUE));
+    return ClickEvent.clickEvent(action, valueTag.value());
   }
 
-  static @NotNull CompoundBinaryTag serialize(@NotNull ClickEvent event) {
-    return CompoundBinaryTag.builder()
-      .putString(ACTION, ClickEvent.Action.NAMES.keyOrThrow(event.action()))
-      .putString(VALUE, event.value())
-      .build();
+  static @Nullable ClickEvent deserializeSnake(@NotNull CompoundBinaryTag tag) {
+    StringBinaryTag actionTag = getRequiredTag(tag, CLICK_EVENT_ACTION, BinaryTagTypes.STRING);
+    ClickEvent.Action action = ClickEvent.Action.NAMES.valueOrThrow(actionTag.value());
+
+    if (!action.readable()) {
+      return null;
+    }
+
+    switch (action) {
+      case OPEN_URL:
+        StringBinaryTag urlTag = getRequiredTag(tag, CLICK_EVENT_URL, BinaryTagTypes.STRING);
+        return ClickEvent.openUrl(urlTag.value());
+      case RUN_COMMAND:
+      case SUGGEST_COMMAND:
+        StringBinaryTag commandTag = getRequiredTag(tag, CLICK_EVENT_COMMAND, BinaryTagTypes.STRING);
+        String command = commandTag.value();
+        return action == ClickEvent.Action.RUN_COMMAND ? ClickEvent.runCommand(command) : ClickEvent.suggestCommand(command);
+      case CHANGE_PAGE:
+        IntBinaryTag pageTag = getRequiredTag(tag, CLICK_EVENT_PAGE, BinaryTagTypes.INT);
+        return ClickEvent.changePage(pageTag.value());
+      case COPY_TO_CLIPBOARD:
+        StringBinaryTag valueTag = getRequiredTag(tag, CLICK_EVENT_VALUE, BinaryTagTypes.STRING);
+        return ClickEvent.copyToClipboard(valueTag.value());
+      case CUSTOM:
+        StringBinaryTag clickEventIdTag = getRequiredTag(tag, CLICK_EVENT_ID, BinaryTagTypes.STRING);
+        StringBinaryTag payloadTag = getRequiredTag(tag, CLICK_EVENT_PAYLOAD, BinaryTagTypes.STRING);
+        return ClickEvent.custom(Key.key(clickEventIdTag.value()), BinaryTagHolder.binaryTagHolder(payloadTag.value()));
+      default:
+        // Never called, but needed for proper compilation
+        throw new IllegalArgumentException("Unknown click event action: " + action);
+    }
+  }
+
+  static @Nullable CompoundBinaryTag serialize(@NotNull ClickEvent event, boolean snakeCase) {
+    CompoundBinaryTag.Builder builder = CompoundBinaryTag.builder()
+      .putString(CLICK_EVENT_ACTION, ClickEvent.Action.NAMES.keyOrThrow(event.action()));
+
+    if (snakeCase) {
+      ClickEvent.Action action = event.action();
+      if (!action.readable()) {
+        return null;
+      }
+
+      ClickEvent.Payload payload = event.payload();
+      if (payload instanceof ClickEvent.Payload.Text) {
+        String payloadFieldName;
+        switch (action) {
+          case OPEN_URL:
+            payloadFieldName = CLICK_EVENT_URL;
+            break;
+          case RUN_COMMAND:
+          case SUGGEST_COMMAND:
+            payloadFieldName = CLICK_EVENT_COMMAND;
+            break;
+          case COPY_TO_CLIPBOARD:
+            payloadFieldName = CLICK_EVENT_VALUE;
+            break;
+          default:
+            // Never called, but needed for proper compilation
+            throw new IllegalArgumentException("Unknown click event action: " + action);
+        }
+        builder.putString(payloadFieldName, ((ClickEvent.Payload.Text) payload).value());
+      } else if (payload instanceof ClickEvent.Payload.Custom) {
+        ClickEvent.Payload.Custom castPayload = (ClickEvent.Payload.Custom) payload;
+        builder.putString(CLICK_EVENT_ID, castPayload.key().asString());
+        builder.putString(CLICK_EVENT_PAYLOAD, castPayload.nbt().string());
+      } else if (payload instanceof ClickEvent.Payload.Int) {
+        builder.putInt(CLICK_EVENT_PAGE, ((ClickEvent.Payload.Int) payload).integer());
+      }
+    } else {
+      builder.putString(CLICK_EVENT_VALUE, event.value());
+    }
+
+    return builder.build();
   }
 }
