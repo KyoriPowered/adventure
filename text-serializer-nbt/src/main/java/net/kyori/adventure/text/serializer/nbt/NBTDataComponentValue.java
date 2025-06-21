@@ -24,9 +24,12 @@
 package net.kyori.adventure.text.serializer.nbt;
 
 import net.kyori.adventure.nbt.BinaryTag;
+import net.kyori.adventure.nbt.EndBinaryTag;
 import net.kyori.adventure.text.event.DataComponentValue;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * An {@link DataComponentValue} implementation that holds a {@linkplain BinaryTag binary tag}.
@@ -38,9 +41,9 @@ import org.jetbrains.annotations.NotNull;
 @ApiStatus.NonExtendable
 public interface NBTDataComponentValue extends DataComponentValue {
   /**
-   * The contained element, intended for read-only use.
+   * The contained element.
    *
-   * @return a copy of the contained element
+   * @return the contained element
    * @since 4.24.0
    */
   @NotNull BinaryTag binaryTag();
@@ -48,11 +51,15 @@ public interface NBTDataComponentValue extends DataComponentValue {
   /**
    * Create a box for item data that can be understood by the NBT serializer.
    *
-   * @param binaryTag the item data to hold
+   * @param data the item data to hold
    * @return a newly created item data holder instance
    * @since 4.24.0
    */
-  static @NotNull NBTDataComponentValue nbtDataComponentValue(@NotNull BinaryTag binaryTag) {
-    return new NBTDataComponentValueImpl(binaryTag);
+  static @NotNull NBTDataComponentValue nbtDataComponentValue(final @NotNull BinaryTag data) {
+    if (data instanceof EndBinaryTag) {
+      return NBTDataComponentValueImpl.RemovedNBTComponentValueImpl.INSTANCE;
+    } else {
+      return new NBTDataComponentValueImpl(requireNonNull(data, "data"));
+    }
   }
 }
