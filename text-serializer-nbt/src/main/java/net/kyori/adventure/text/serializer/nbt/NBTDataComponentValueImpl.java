@@ -24,11 +24,13 @@
 package net.kyori.adventure.text.serializer.nbt;
 
 import net.kyori.adventure.nbt.BinaryTag;
+import net.kyori.adventure.nbt.EndBinaryTag;
+import net.kyori.adventure.text.event.DataComponentValue;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-final class NBTDataComponentValueImpl implements NBTDataComponentValue {
+class NBTDataComponentValueImpl implements NBTDataComponentValue {
 
   private final BinaryTag binaryTag;
 
@@ -52,5 +54,13 @@ final class NBTDataComponentValueImpl implements NBTDataComponentValue {
   @Override
   public int hashCode() {
     return Objects.hashCode(this.binaryTag);
+  }
+
+  static final class RemovedNBTComponentValueImpl extends NBTDataComponentValueImpl implements DataComponentValue.Removed {
+    static final RemovedNBTComponentValueImpl INSTANCE = new RemovedNBTComponentValueImpl();
+
+    RemovedNBTComponentValueImpl() {
+      super(EndBinaryTag.endBinaryTag());
+    }
   }
 }
