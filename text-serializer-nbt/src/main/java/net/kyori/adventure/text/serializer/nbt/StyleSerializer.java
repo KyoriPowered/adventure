@@ -31,7 +31,6 @@ import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.nbt.StringBinaryTag;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.ShadowColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
@@ -41,21 +40,21 @@ import org.jetbrains.annotations.NotNull;
 
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_CAMEL;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_SNAKE;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.COLOR;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.FONT;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.HOVER_EVENT_CAMEL;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.HOVER_EVENT_SNAKE;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.INSERTION;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SHADOW_COLOR;
 import static net.kyori.adventure.text.serializer.nbt.NBTSerializerUtils.getOptionalTag;
 
 final class StyleSerializer {
 
-  private static final String COLOR = "color";
   private static final String BOLD = "bold";
   private static final String ITALIC = "italic";
   private static final String UNDERLINED = "underlined";
   private static final String STRIKETHROUGH = "strikethrough";
   private static final String OBFUSCATED = "obfuscated";
-  private static final String FONT = "font";
-  private static final String INSERTION = "insertion";
 
   private StyleSerializer() {
   }
@@ -63,13 +62,9 @@ final class StyleSerializer {
   static @NotNull Style deserialize(@NotNull CompoundBinaryTag compound, @NotNull NBTComponentSerializerImpl serializer) {
     Style.Builder styleBuilder = Style.style();
 
-    String colorString = compound.getString(COLOR);
-    if (!colorString.isEmpty()) {
-      if (colorString.startsWith(TextColor.HEX_PREFIX)) {
-        styleBuilder.color(TextColor.fromHexString(colorString));
-      } else {
-        styleBuilder.color(NamedTextColor.NAMES.value(colorString));
-      }
+    StringBinaryTag colorTag = NBTSerializerUtils.getOptionalTag(compound, COLOR, BinaryTagTypes.STRING);
+    if (colorTag != null) {
+      styleBuilder.color(TextColorSerializer.deserialize(colorTag));
     }
 
     styleBuilder.decoration(TextDecoration.BOLD, readOptionalState(BOLD, compound))
@@ -78,14 +73,14 @@ final class StyleSerializer {
       .decoration(TextDecoration.STRIKETHROUGH, readOptionalState(STRIKETHROUGH, compound))
       .decoration(TextDecoration.OBFUSCATED, readOptionalState(OBFUSCATED, compound));
 
-    String fontString = compound.getString(FONT);
-    if (!fontString.isEmpty()) {
-      styleBuilder.font(Key.key(fontString));
+    StringBinaryTag fontTag = getOptionalTag(compound, FONT, BinaryTagTypes.STRING);
+    if (fontTag != null) {
+      styleBuilder.font(Key.key(fontTag.value()));
     }
 
-    BinaryTag binaryInsertion = compound.get(INSERTION);
-    if (binaryInsertion != null) {
-      styleBuilder.insertion(((StringBinaryTag) binaryInsertion).value());
+    StringBinaryTag insertionTag = getOptionalTag(compound, INSERTION, BinaryTagTypes.STRING);
+    if (insertionTag != null) {
+      styleBuilder.insertion(insertionTag.value());
     }
 
     CompoundBinaryTag binaryClickEvent = getOptionalTag(compound, CLICK_EVENT_SNAKE, BinaryTagTypes.COMPOUND);
@@ -122,7 +117,7 @@ final class StyleSerializer {
 
     TextColor color = style.color();
     if (color != null) {
-      builder.putString(COLOR, color.toString());
+      builder.put(COLOR, TextColorSerializer.serialize(color));
     }
 
     style.decorations().forEach((decoration, state) -> {
@@ -155,13 +150,11 @@ final class StyleSerializer {
     });
 
     Key font = style.font();
-
     if (font != null) {
       builder.putString(FONT, font.asString());
     }
 
     String insertion = style.insertion();
-
     if (insertion != null) {
       builder.putString(INSERTION, insertion);
     }
