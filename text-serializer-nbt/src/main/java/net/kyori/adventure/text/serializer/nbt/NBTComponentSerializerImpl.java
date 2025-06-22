@@ -272,7 +272,11 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
     } else if (component instanceof NBTComponent) {
       NBTComponent<?, ?> nbt = (NBTComponent<?, ?>) component;
       builder.putString(NBT, nbt.nbtPath());
-      builder.putBoolean(NBT_INTERPRET, nbt.interpret()); // TODO: Make it optional
+
+      boolean interpret = nbt.interpret();
+      if (this.flags.value(NBTSerializerOptions.EMIT_DEFAULT_NBT_INTERPRET_VALUE) || interpret) {
+        builder.putBoolean(NBT_INTERPRET, interpret);
+      }
 
       Component separator = nbt.separator();
       if (separator != null) {

@@ -73,6 +73,13 @@ public final class NBTSerializerOptions {
   public static final Option<Boolean> EMIT_DEFAULT_ITEM_HOVER_QUANTITY = Option.booleanOption(key("emit/default_item_hover_quantity"), true);
 
   /**
+   * Whether to emit the default interpret value ({@code false}) of NBT components.
+   *
+   * @since 4.24.0
+   */
+  public static final Option<Boolean> EMIT_DEFAULT_NBT_INTERPRET_VALUE = Option.booleanOption(key("emit/default_nbt_interpret_value"), true);
+
+  /**
    * Control how entity ids of show entity hover events should be emitted.
    *
    * @since 4.24.0
