@@ -21,7 +21,6 @@ final class NBTSerializerUtils {
     return tag;
   }
 
-
   static <B extends BinaryTag> @Nullable B getOptionalTag(@NotNull CompoundBinaryTag compoundTag,
                                                           @NotNull String name, @NotNull BinaryTagType<B> tagType) {
     BinaryTag tag = compoundTag.get(name);
