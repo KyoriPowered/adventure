@@ -25,6 +25,8 @@ package net.kyori.adventure.text.serializer.nbt;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.BinaryTag;
+import net.kyori.adventure.nbt.BinaryTagTypes;
+import net.kyori.adventure.nbt.ByteBinaryTag;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.nbt.ListBinaryTag;
 import net.kyori.adventure.nbt.StringBinaryTag;
@@ -50,6 +52,25 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.EXTRA;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.KEYBIND;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NBT;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NBT_BLOCK;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NBT_ENTITY;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NBT_INTERPRET;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NBT_STORAGE;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SCORE;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SCORE_NAME;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SCORE_OBJECTIVE;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SELECTOR;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SEPARATOR;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.TEXT;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.TRANSLATE;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.TRANSLATE_FALLBACK;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.TRANSLATE_WITH;
+import static net.kyori.adventure.text.serializer.nbt.NBTSerializerUtils.asBoolean;
+import static net.kyori.adventure.text.serializer.nbt.NBTSerializerUtils.getOptionalTag;
+import static net.kyori.adventure.text.serializer.nbt.NBTSerializerUtils.getRequiredTag;
 
 final class NBTComponentSerializerImpl implements NBTComponentSerializer {
 
@@ -79,39 +100,6 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
       .orElseGet(() -> new NBTComponentSerializerImpl(OptionState.emptyOptionState()));
   }
 
-  private static final String TYPE = "type";
-
-  private static final String TYPE_TEXT = "text";
-  private static final String TYPE_TRANSLATABLE = "translatable";
-  private static final String TYPE_KEYBIND = "keybind";
-  private static final String TYPE_SCORE = "score";
-  private static final String TYPE_SELECTOR = "selector";
-  private static final String TYPE_NBT = "nbt";
-
-  private static final String EXTRA = "extra";
-
-  private static final String TEXT = "text";
-
-  private static final String TRANSLATE_KEY = "translate";
-  private static final String TRANSLATE_WITH = "with";
-  private static final String TRANSLATE_FALLBACK = "fallback";
-
-  private static final String KEYBIND = "keybind";
-
-  private static final String SCORE = "score";
-  private static final String SCORE_NAME = "name";
-  private static final String SCORE_OBJECTIVE = "objective";
-
-  private static final String SELECTOR = "selector";
-  private static final String SELECTOR_SEPARATOR = "separator";
-
-  private static final String NBT = "nbt";
-  private static final String NBT_INTERPRET = "interpret";
-  private static final String NBT_SEPARATOR = "separator";
-  private static final String NBT_BLOCK = "block";
-  private static final String NBT_ENTITY = "entity";
-  private static final String NBT_STORAGE = "storage";
-
   private final OptionState flags;
 
   NBTComponentSerializerImpl(@NotNull OptionState flags) {
@@ -129,12 +117,14 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
     }
 
     CompoundBinaryTag compound = (CompoundBinaryTag) input;
-    String type = compound.getString(TYPE);
 
-    if (type.isEmpty()) {
+    StringBinaryTag typeTag = getOptionalTag(compound, TYPE, BinaryTagTypes.STRING);
+    String type;
+
+    if (typeTag == null) {
       if (compound.get(TEXT) != null) {
         type = TYPE_TEXT;
-      } else if (compound.get(TRANSLATE_KEY) != null) {
+      } else if (compound.get(TRANSLATE) != null) {
         type = TYPE_TRANSLATABLE;
       } else if (compound.get(KEYBIND) != null) {
         type = TYPE_KEYBIND;
@@ -142,125 +132,118 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
         type = TYPE_SCORE;
       } else if (compound.get(SELECTOR) != null) {
         type = TYPE_SELECTOR;
-      } else if (compound.get(NBT) != null && (compound.get(NBT_BLOCK) != null
-        || compound.get(NBT_STORAGE) != null || compound.get(NBT_ENTITY) != null)) {
+      } else if (compound.get(NBT) != null) {
         type = TYPE_NBT;
       } else {
         throw new IllegalArgumentException("Could not guess type of the component");
       }
+    } else {
+      type = typeTag.value();
     }
 
     Style style = StyleSerializer.deserialize(compound, this);
 
     List<Component> children = new ArrayList<>();
-    ListBinaryTag binaryChildren = compound.getList(EXTRA);
-    binaryChildren.forEach(child -> children.add(this.deserialize(child)));
+    ListBinaryTag extraTag = compound.getList(EXTRA);
+    // TODO: Deserialize it like vanilla
+    extraTag.forEach(child -> children.add(this.deserialize(child)));
 
     switch (type) {
       case TYPE_TEXT:
         return Component.text()
-          .content(compound.getString(TEXT))
+          .content(getRequiredTag(compound, TEXT, BinaryTagTypes.STRING).value())
           .style(style)
           .append(children)
           .build();
       case TYPE_TRANSLATABLE:
-        ListBinaryTag binaryArguments = compound.getList(TRANSLATE_WITH);
-        String fallback = compound.getString(TRANSLATE_FALLBACK);
+        StringBinaryTag translateTag = getRequiredTag(compound, TRANSLATE, BinaryTagTypes.STRING);
+        ListBinaryTag translateWithTag = compound.getList(TRANSLATE_WITH);
+        StringBinaryTag fallbackTag = getOptionalTag(compound, TRANSLATE_FALLBACK, BinaryTagTypes.STRING);
 
-        if (fallback.isEmpty()) {
-          fallback = null;
-        }
-
+        // TODO: Decode it like vanilla
         List<Component> arguments = new ArrayList<>();
-        for (BinaryTag argument : binaryArguments) {
-          arguments.add(this.deserialize(argument));
-        }
+        translateWithTag.forEach(argumentTag -> arguments.add(this.deserialize(argumentTag)));
 
         return Component.translatable()
-          .key(compound.getString(TRANSLATE_KEY))
-          .fallback(fallback)
+          .key(translateTag.value())
+          .fallback(fallbackTag == null ? null : fallbackTag.value())
           .arguments(arguments)
           .style(style)
           .append(children)
           .build();
       case TYPE_KEYBIND:
         return Component.keybind()
-          .keybind(compound.getString(KEYBIND))
+          .keybind(getRequiredTag(compound, KEYBIND, BinaryTagTypes.STRING).value())
           .style(style)
           .append(children)
           .build();
       case TYPE_SCORE:
-        CompoundBinaryTag binaryScore = compound.getCompound(SCORE);
-
-        String scoreName = binaryScore.getString(SCORE_NAME);
-        String scoreObjective = binaryScore.getString(SCORE_OBJECTIVE);
-
+        CompoundBinaryTag scoreTag = getRequiredTag(compound, SCORE, BinaryTagTypes.COMPOUND);
         return Component.score()
-          .name(scoreName)
-          .objective(scoreObjective)
+          .name(getRequiredTag(scoreTag, SCORE_NAME, BinaryTagTypes.STRING).value())
+          .objective(getRequiredTag(scoreTag, SCORE_OBJECTIVE, BinaryTagTypes.STRING).value())
           .style(style)
           .append(children)
           .build();
       case TYPE_SELECTOR:
-        String selector = compound.getString(SELECTOR);
-        Component selectorSeparator = null;
-
-        BinaryTag binarySelectorSeparator = compound.get(SELECTOR_SEPARATOR);
-        if (binarySelectorSeparator != null) {
-          selectorSeparator = this.deserialize(binarySelectorSeparator);
-        }
-
+        StringBinaryTag selectorTag = getRequiredTag(compound, SELECTOR, BinaryTagTypes.STRING);
+        BinaryTag selectorSeparatorTag = compound.get(SEPARATOR);
         return Component.selector()
-          .pattern(selector)
-          .separator(selectorSeparator)
+          .pattern(selectorTag.value())
+          .separator(selectorSeparatorTag == null ? null : this.deserialize(selectorSeparatorTag))
           .style(style)
           .append(children)
           .build();
       case TYPE_NBT:
-        String nbtPath = compound.getString(NBT);
-        boolean nbtInterpret = compound.getBoolean(NBT_INTERPRET);
+        String nbtPath = getRequiredTag(compound, NBT, BinaryTagTypes.STRING).value();
+
+        ByteBinaryTag nbtInterpretTag = getOptionalTag(compound, NBT_INTERPRET, BinaryTagTypes.BYTE);
+        boolean nbtInterpret = nbtInterpretTag != null && asBoolean(nbtInterpretTag);
+
+        BinaryTag nbtSeparatorTag = compound.get(SEPARATOR);
         Component nbtSeparator = null;
 
-        BinaryTag binaryNbtSeparator = compound.get(NBT_SEPARATOR);
-        if (binaryNbtSeparator != null) {
-          nbtSeparator = this.deserialize(binaryNbtSeparator);
+        if (nbtSeparatorTag != null) {
+          nbtSeparator = this.deserialize(nbtSeparatorTag);
         }
 
-        BinaryTag binaryBlock = compound.get(NBT_BLOCK);
-        BinaryTag binaryEntity = compound.get(NBT_ENTITY);
-        BinaryTag binaryStorage = compound.get(NBT_STORAGE);
+        StringBinaryTag nbtBlockTag = getOptionalTag(compound, NBT_BLOCK, BinaryTagTypes.STRING);
+        StringBinaryTag nbtEntityTag = getOptionalTag(compound, NBT_ENTITY, BinaryTagTypes.STRING);
+        StringBinaryTag nbtStorageTag = getOptionalTag(compound, NBT_STORAGE, BinaryTagTypes.STRING);
 
-        if (binaryBlock != null) {
-          BlockNBTComponent.Pos pos = BlockNBTComponent.Pos.fromString(((StringBinaryTag) binaryBlock).value());
+        // TODO: Deserialize data sources
+        if (nbtBlockTag != null) {
           return Component.blockNBT()
             .nbtPath(nbtPath)
             .interpret(nbtInterpret)
             .separator(nbtSeparator)
-            .pos(pos)
+            .pos(BlockNBTComponent.Pos.fromString(nbtBlockTag.value()))
             .style(style)
             .append(children)
             .build();
-        } else if (binaryEntity != null) {
+        } else if (nbtEntityTag != null) {
           return Component.entityNBT()
             .nbtPath(nbtPath)
             .interpret(nbtInterpret)
             .separator(nbtSeparator)
-            .selector(((StringBinaryTag) binaryEntity).value())
+            .selector(nbtEntityTag.value())
             .style(style)
             .append(children)
             .build();
-        } else if (binaryStorage != null) {
+        } else if (nbtStorageTag != null) {
           return Component.storageNBT()
             .nbtPath(nbtPath)
             .interpret(nbtInterpret)
             .separator(nbtSeparator)
-            .storage(Key.key(((StringBinaryTag) binaryStorage).value()))
+            .storage(Key.key(nbtStorageTag.value()))
             .style(style)
             .append(children)
             .build();
+        } else {
+          throw notSureHowToDeserialize(input);
         }
       default:
-        throw new IllegalArgumentException("Unknown component type " + type);
+        throw notSureHowToDeserialize(input);
     }
   }
 
@@ -275,7 +258,6 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
 
   private @NotNull CompoundBinaryTag writeCompoundComponent(@NotNull Component component) {
     CompoundBinaryTag.Builder builder = CompoundBinaryTag.builder();
-    StyleSerializer.serialize(component.style(), builder, this);
 
     if (component instanceof TextComponent) {
       this.writeComponentType(TYPE_TEXT, builder);
@@ -284,23 +266,19 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
       this.writeComponentType(TYPE_TRANSLATABLE, builder);
 
       TranslatableComponent translatable = (TranslatableComponent) component;
-      builder.putString(TRANSLATE_KEY, translatable.key());
-
-      List<TranslationArgument> arguments = translatable.arguments();
-
-      if (!arguments.isEmpty()) {
-        List<BinaryTag> argumentsTags = new ArrayList<>();
-
-        for (TranslationArgument argument : arguments) {
-          argumentsTags.add(this.writeCompoundComponent(argument.asComponent()));
-        }
-
-        builder.put(TRANSLATE_WITH, ListBinaryTag.from(argumentsTags));
-      }
+      builder.putString(TRANSLATE, translatable.key());
 
       String fallback = translatable.fallback();
       if (fallback != null) {
         builder.putString(TRANSLATE_FALLBACK, fallback);
+      }
+
+      List<TranslationArgument> arguments = translatable.arguments();
+      if (!arguments.isEmpty()) {
+        List<BinaryTag> argumentsTags = new ArrayList<>();
+        // TODO: Encode it like vanilla
+        arguments.forEach(argument -> argumentsTags.add(this.writeCompoundComponent(argument.asComponent())));
+        builder.put(TRANSLATE_WITH, ListBinaryTag.from(argumentsTags));
       }
     } else if (component instanceof KeybindComponent) {
       this.writeComponentType(TYPE_KEYBIND, builder);
@@ -322,20 +300,21 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
 
       Component separator = selector.separator();
       if (separator != null) {
-        builder.put(SELECTOR_SEPARATOR, this.serialize(separator));
+        builder.put(SEPARATOR, this.serialize(separator));
       }
     } else if (component instanceof NBTComponent) {
       this.writeComponentType(TYPE_NBT, builder);
 
       NBTComponent<?, ?> nbt = (NBTComponent<?, ?>) component;
       builder.putString(NBT, nbt.nbtPath());
-      builder.putBoolean(NBT_INTERPRET, nbt.interpret());
+      builder.putBoolean(NBT_INTERPRET, nbt.interpret()); // TODO: Make it optional
 
       Component separator = nbt.separator();
       if (separator != null) {
-        builder.put(NBT_SEPARATOR, this.serialize(separator));
+        builder.put(SEPARATOR, this.serialize(separator));
       }
 
+      // TODO: Serialize data sources
       if (nbt instanceof BlockNBTComponent) {
         builder.putString(NBT_BLOCK, ((BlockNBTComponent) nbt).pos().asString());
       } else if (nbt instanceof EntityNBTComponent) {
@@ -350,17 +329,14 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
     }
 
     List<Component> children = component.children();
-
     if (!children.isEmpty()) {
       List<BinaryTag> serializedChildren = new ArrayList<>();
-
-      for (Component child : children) {
-        serializedChildren.add(this.writeCompoundComponent(child));
-      }
-
+      // TODO: Encode it like vanilla
+      children.forEach(child -> serializedChildren.add(this.writeCompoundComponent(child)));
       builder.put(EXTRA, ListBinaryTag.from(serializedChildren));
     }
 
+    StyleSerializer.serialize(component.style(), builder, this);
     return builder.build();
   }
 
@@ -374,7 +350,11 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
     }
   }
 
-  private static IllegalArgumentException notSureHowToSerialize(final Component component) {
+  private static @NotNull IllegalArgumentException notSureHowToDeserialize(BinaryTag tag) {
+    return new IllegalArgumentException("Don't know how to turn " + tag + " into a Component");
+  }
+
+  private static @NotNull IllegalArgumentException notSureHowToSerialize(Component component) {
     return new IllegalArgumentException("Don't know how to serialize " + component + " as a Component");
   }
 
@@ -394,8 +374,7 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
 
     @Override
     public @NotNull Builder editOptions(@NotNull Consumer<OptionState.Builder> optionEditor) {
-      final OptionState.Builder builder = OptionState.optionState()
-        .values(this.flags);
+      final OptionState.Builder builder = OptionState.optionState().values(this.flags);
       requireNonNull(optionEditor, "optionEditor").accept(builder);
       this.flags = builder.build();
       return this;
