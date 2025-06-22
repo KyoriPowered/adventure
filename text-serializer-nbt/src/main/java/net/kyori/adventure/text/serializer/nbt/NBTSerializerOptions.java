@@ -43,13 +43,6 @@ public final class NBTSerializerOptions {
   public static final Option<Boolean> EMIT_COMPACT_TEXT_COMPONENT = Option.booleanOption(key("emit/compact_text_component"), true);
 
   /**
-   * Whether to serialize the types of {@linkplain net.kyori.adventure.text.Component components}.
-   *
-   * @since 4.24.0
-   */
-  public static final Option<Boolean> SERIALIZE_COMPONENT_TYPES = Option.booleanOption(key("serialize/component-types"), true);
-
-  /**
    * How to emit shadow colour data.
    *
    * @since 4.24.0
