@@ -18,7 +18,7 @@ final class NBTSerializerUtils {
     if (tag == null) {
       throw new IllegalArgumentException("The specified compound tag does not contain a \"" + name + "\" field");
     }
-    return (B) tag;
+    return tag;
   }
 
 
