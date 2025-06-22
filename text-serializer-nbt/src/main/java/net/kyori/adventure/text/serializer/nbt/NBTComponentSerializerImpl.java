@@ -186,7 +186,6 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
       StringBinaryTag nbtEntityTag = getOptionalTag(compound, NBT_ENTITY, BinaryTagTypes.STRING);
       StringBinaryTag nbtStorageTag = getOptionalTag(compound, NBT_STORAGE, BinaryTagTypes.STRING);
 
-      // TODO: Deserialize data sources
       if (nbtBlockTag != null) {
         return Component.blockNBT()
           .nbtPath(nbtPath)
@@ -280,7 +279,6 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
         builder.put(SEPARATOR, this.serialize(separator));
       }
 
-      // TODO: Serialize data sources
       if (nbt instanceof BlockNBTComponent) {
         builder.putString(NBT_BLOCK, ((BlockNBTComponent) nbt).pos().asString());
       } else if (nbt instanceof EntityNBTComponent) {
