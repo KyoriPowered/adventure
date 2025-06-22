@@ -47,6 +47,7 @@ import net.kyori.option.OptionState;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -119,10 +120,15 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
     CompoundBinaryTag compound = (CompoundBinaryTag) input;
     Style style = StyleSerializer.deserialize(compound, this);
 
-    List<Component> children = new ArrayList<>();
-    ListBinaryTag extraTag = compound.getList(EXTRA);
-    // TODO: Deserialize it like vanilla
-    extraTag.forEach(child -> children.add(this.deserialize(child)));
+    ListBinaryTag extraTag = getOptionalTag(compound, EXTRA, BinaryTagTypes.LIST);
+    List<Component> children;
+
+    if (extraTag == null) {
+      children = Collections.emptyList();
+    } else {
+      children = new ArrayList<>();
+      extraTag.unwrapHeterogeneity().forEach(child -> children.add(this.deserialize(child)));
+    }
 
     if (compound.get(TEXT) != null) {
       return Component.text()
@@ -298,10 +304,9 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
 
     List<Component> children = component.children();
     if (!children.isEmpty()) {
-      List<BinaryTag> serializedChildren = new ArrayList<>();
-      // TODO: Encode it like vanilla
-      children.forEach(child -> serializedChildren.add(this.writeCompoundComponent(child)));
-      builder.put(EXTRA, ListBinaryTag.from(serializedChildren));
+      ListBinaryTag.Builder<BinaryTag> extraTagBuilder = ListBinaryTag.heterogeneousListBinaryTag();
+      children.forEach(child -> extraTagBuilder.add(this.serialize(child)));
+      builder.put(EXTRA, extraTagBuilder.build().wrapHeterogeneity());
     }
 
     StyleSerializer.serialize(component.style(), builder, this);
