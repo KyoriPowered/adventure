@@ -23,7 +23,10 @@
  */
 package net.kyori.adventure.internal.properties;
 
+import java.util.Objects;
 import java.util.function.Function;
+import net.kyori.adventure.text.flattener.ComponentFlattener;
+import net.kyori.adventure.util.PlatformAPI;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -52,13 +55,19 @@ public final class AdventureProperties {
    *
    * @since 4.10.0
    */
-  public static final Property<Boolean> SERVICE_LOAD_FAILURES_ARE_FATAL = property("serviceLoadFailuresAreFatal", Boolean::parseBoolean, Boolean.TRUE);
+  public static final Property<Boolean> SERVICE_LOAD_FAILURES_ARE_FATAL = property("serviceLoadFailuresAreFatal", Boolean::parseBoolean, Boolean.TRUE, false);
   /**
    * Property for specifying whether to warn when legacy formatting is detected.
    *
    * @since 4.10.0
    */
   public static final Property<Boolean> TEXT_WARN_WHEN_LEGACY_FORMATTING_DETECTED = property("text.warnWhenLegacyFormattingDetected", Boolean::parseBoolean, Boolean.FALSE);
+  /**
+   * Property for setting a global default for flattener nesting.
+   *
+   * @since 4.24.0
+   */
+  public static final Property<Integer> DEFAULT_FLATTENER_NESTING_LIMIT = property("defaultFlattenerNestingLimit", Integer::parseInt, ComponentFlattener.NO_NESTING_LIMIT);
 
   private AdventureProperties() {
   }
@@ -74,7 +83,22 @@ public final class AdventureProperties {
    * @since 4.10.0
    */
   public static <T> @NotNull Property<T> property(final @NotNull String name, final @NotNull Function<String, T> parser, final @Nullable T defaultValue) {
-    return AdventurePropertiesImpl.property(name, parser, defaultValue);
+    return property(name, parser, defaultValue, true);
+  }
+
+  /**
+   * Creates a new property.
+   *
+   * @param name the property name
+   * @param parser the value parser
+   * @param defaultValue the default value
+   * @param allowProviderDefaultOverride if the {@link DefaultOverrideProvider} is used to override the default value provided
+   * @param <T> the value type
+   * @return a property
+   * @since 4.24.0
+   */
+  public static <T> @NotNull Property<T> property(final @NotNull String name, final @NotNull Function<String, T> parser, final @Nullable T defaultValue, final boolean allowProviderDefaultOverride) {
+    return AdventurePropertiesImpl.property(name, parser, defaultValue, allowProviderDefaultOverride);
   }
 
   /**
@@ -93,5 +117,37 @@ public final class AdventureProperties {
      * @since 4.10.0
      */
     @Nullable T value();
+
+    /**
+     * Gets the value, returning a default value if the value is {@code null}.
+     *
+     * @param defaultValue the default value
+     * @return the value
+     * @since 4.24.0
+     */
+    default @NotNull T valueOr(final @NotNull T defaultValue) {
+      final T value = this.value();
+      return value == null ? Objects.requireNonNull(defaultValue, "defaultValue") : value;
+    }
+  }
+
+  /**
+   * A service provider that allows default property values to be overridden.
+   *
+   * @since 4.24.0
+   */
+  @ApiStatus.Internal
+  @PlatformAPI
+  public interface DefaultOverrideProvider {
+    /**
+     * Overrides the default value for a property.
+     *
+     * @param name the name of the property
+     * @param existingDefault the current default value
+     * @return the new default value
+     * @param <T> the value type
+     * @since 4.24.0
+     */
+    <T> @Nullable T overrideDefault(final @NotNull String name, final @Nullable T existingDefault);
   }
 }

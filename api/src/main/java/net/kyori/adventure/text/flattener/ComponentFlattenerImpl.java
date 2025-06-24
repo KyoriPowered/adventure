@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import net.kyori.adventure.internal.properties.AdventureProperties;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.KeybindComponent;
 import net.kyori.adventure.text.ScoreComponent;
@@ -170,7 +171,7 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
   static final class BuilderImpl implements Builder {
     private final InheritanceAwareMap.Builder<Component, Handler> flatteners;
     private @Nullable Function<Component, String> unknownHandler;
-    private int maxNestedDepth = ComponentFlattener.NO_NESTING_LIMIT;
+    private int maxNestedDepth = AdventureProperties.DEFAULT_FLATTENER_NESTING_LIMIT.valueOr(ComponentFlattener.NO_NESTING_LIMIT);
 
     BuilderImpl() {
       this.flatteners = InheritanceAwareMap.<Component, Handler>builder().strict(true);

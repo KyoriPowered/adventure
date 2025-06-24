@@ -31,11 +31,17 @@ import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.function.Function;
+import net.kyori.adventure.util.Services;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
 final class AdventurePropertiesImpl {
+
+  static final class Providers {
+    static final @NotNull Optional<AdventureProperties.DefaultOverrideProvider> DEFAULT_PROVIDER = Services.service(AdventureProperties.DefaultOverrideProvider.class);
+  }
+
   private static final String FILESYSTEM_DIRECTORY_NAME = "config";
   private static final String FILESYSTEM_FILE_NAME = "adventure.properties";
   private static final Properties PROPERTIES = new Properties();
@@ -67,21 +73,23 @@ final class AdventurePropertiesImpl {
     return String.join(".", "net", "kyori", "adventure", name);
   }
 
-  static <T> AdventureProperties.@NotNull Property<T> property(final @NotNull String name, final @NotNull Function<String, T> parser, final @Nullable T defaultValue) {
-    return new PropertyImpl<>(name, parser, defaultValue);
+  static <T> AdventureProperties.@NotNull Property<T> property(final @NotNull String name, final @NotNull Function<String, T> parser, final @Nullable T defaultValue, final boolean allowProviderDefaultOverride) {
+    return new PropertyImpl<>(name, parser, defaultValue, allowProviderDefaultOverride);
   }
 
   private static final class PropertyImpl<T> implements AdventureProperties.Property<T> {
     private final String name;
     private final Function<String, T> parser;
     private final @Nullable T defaultValue;
+    private final boolean allowProviderDefaultOverride;
     private boolean valueCalculated;
     private @Nullable T value;
 
-    PropertyImpl(final @NotNull String name, final @NotNull Function<String, T> parser, final @Nullable T defaultValue) {
+    PropertyImpl(final @NotNull String name, final @NotNull Function<String, T> parser, final @Nullable T defaultValue, final boolean allowProviderDefaultOverride) {
       this.name = name;
       this.parser = parser;
       this.defaultValue = defaultValue;
+      this.allowProviderDefaultOverride = allowProviderDefaultOverride;
     }
 
     @Override
@@ -93,7 +101,13 @@ final class AdventurePropertiesImpl {
           this.value = this.parser.apply(value);
         }
         if (this.value == null) {
-          this.value = this.defaultValue;
+          if (this.allowProviderDefaultOverride) {
+            this.value = Providers.DEFAULT_PROVIDER
+              .map(provider -> provider.overrideDefault(this.name, this.defaultValue))
+              .orElse(this.defaultValue);
+          } else {
+            this.value = this.defaultValue;
+          }
         }
         this.valueCalculated = true;
       }
