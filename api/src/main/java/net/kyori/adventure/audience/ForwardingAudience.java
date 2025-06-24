@@ -227,6 +227,11 @@ public interface ForwardingAudience extends Audience {
     for (final Audience audience : this.audiences()) audience.showDialog(dialog);
   }
 
+  @Override
+  default void closeDialog() {
+    for (final Audience audience : this.audiences()) audience.closeDialog();
+  }
+
   /**
    * An audience that forwards everything to a single other audience.
    *
@@ -413,6 +418,11 @@ public interface ForwardingAudience extends Audience {
     @Override
     default void showDialog(final @NotNull DialogLike dialog) {
       this.audience().showDialog(dialog);
+    }
+
+    @Override
+    default void closeDialog() {
+      this.audience().closeDialog();
     }
   }
 }
