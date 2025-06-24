@@ -25,8 +25,10 @@ package net.kyori.adventure.text;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import net.kyori.adventure.text.format.Style;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 final class VirtualComponentImpl<C> extends TextComponentImpl implements VirtualComponent {
   static <C> VirtualComponent createVirtual(final @NotNull Class<C> contextType, final @NotNull VirtualComponentRenderer<C> renderer) {
@@ -71,6 +73,23 @@ final class VirtualComponentImpl<C> extends TextComponentImpl implements Virtual
   @Override
   public @NotNull Builder toBuilder() {
     return new BuilderImpl<>(this);
+  }
+
+  @Override
+  public boolean equals(final @Nullable Object other) {
+    if (this == other) return true;
+    if (!(other instanceof VirtualComponentImpl)) return false;
+    if (!super.equals(other)) return false;
+    final VirtualComponentImpl<?> that = (VirtualComponentImpl<?>) other;
+    return Objects.equals(this.contextType, that.contextType) && Objects.equals(this.renderer, that.renderer);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = super.hashCode();
+    result = (31 * result) + this.contextType.hashCode();
+    result = (31 * result) + this.renderer.hashCode();
+    return result;
   }
 
   static final class BuilderImpl<C> extends TextComponentImpl.BuilderImpl {
