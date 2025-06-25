@@ -38,9 +38,6 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.option.OptionState;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.EnumSet;
-import java.util.Set;
-
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_CAMEL;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_SNAKE;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.COLOR;
@@ -53,28 +50,6 @@ import static net.kyori.adventure.text.serializer.nbt.NBTSerializerUtils.getOpti
 
 final class StyleSerializer {
 
-  @SuppressWarnings("checkstyle:NoWhitespaceAfter")
-  private static final TextDecoration[] DECORATIONS = {
-    // The order here is important -- Minecraft does string comparisons of some
-    // serialized components so we have to make sure our order matches Vanilla
-    TextDecoration.BOLD,
-    TextDecoration.ITALIC,
-    TextDecoration.UNDERLINED,
-    TextDecoration.STRIKETHROUGH,
-    TextDecoration.OBFUSCATED
-  };
-
-  static {
-    // Ensure coverage of decorations
-    final Set<TextDecoration> knownDecorations = EnumSet.allOf(TextDecoration.class);
-    for (final TextDecoration decoration : DECORATIONS) {
-      knownDecorations.remove(decoration);
-    }
-    if (!knownDecorations.isEmpty()) {
-      throw new IllegalStateException("NBT serializer is missing some text decorations: " + knownDecorations);
-    }
-  }
-
   private StyleSerializer() {
   }
 
@@ -86,7 +61,7 @@ final class StyleSerializer {
       styleBuilder.color(TextColorSerializer.deserialize(colorTag));
     }
 
-    for (TextDecoration decoration : DECORATIONS) {
+    for (TextDecoration decoration : TextDecoration.values()) {
       String name = TextDecoration.NAMES.keyOrThrow(decoration);
       ByteBinaryTag decorationTag = NBTSerializerUtils.getOptionalTag(compound, name, BinaryTagTypes.BYTE);
       if (decorationTag == null) continue;
@@ -140,7 +115,7 @@ final class StyleSerializer {
       builder.put(COLOR, TextColorSerializer.serialize(color));
     }
 
-    for (TextDecoration decoration : DECORATIONS) {
+    for (TextDecoration decoration : TextDecoration.values()) {
       TextDecoration.State state = style.decoration(decoration);
       if (state == TextDecoration.State.NOT_SET) continue;
       String name = TextDecoration.NAMES.keyOrThrow(decoration);
@@ -210,13 +185,5 @@ final class StyleSerializer {
         builder.put(SHADOW_COLOR, serializedShadowColor);
       }
     }
-  }
-
-  private static TextDecoration.@NotNull State readOptionalState(@NotNull String key, @NotNull CompoundBinaryTag compound) {
-    BinaryTag tag = compound.get(key);
-    if (tag == null) {
-      return TextDecoration.State.NOT_SET;
-    }
-    return TextDecoration.State.byBoolean(((ByteBinaryTag) tag).value() != 0);
   }
 }
