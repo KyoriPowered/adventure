@@ -138,12 +138,11 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
         .build();
     } else if (compound.get(TRANSLATE) != null) {
       StringBinaryTag translateTag = getRequiredTag(compound, TRANSLATE, BinaryTagTypes.STRING);
-      ListBinaryTag translateWithTag = compound.getList(TRANSLATE_WITH);
+      ListBinaryTag translateWithTag = compound.getList(TRANSLATE_WITH).unwrapHeterogeneity();
       StringBinaryTag fallbackTag = getOptionalTag(compound, TRANSLATE_FALLBACK, BinaryTagTypes.STRING);
 
-      // TODO: Decode it like vanilla
-      List<Component> arguments = new ArrayList<>();
-      translateWithTag.forEach(argumentTag -> arguments.add(this.deserialize(argumentTag)));
+      List<TranslationArgument> arguments = new ArrayList<>();
+      translateWithTag.forEach(argumentTag -> arguments.add(TranslationArgumentSerializer.deserialize(argumentTag, this)));
 
       return Component.translatable()
         .key(translateTag.value())
@@ -252,10 +251,9 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
 
       List<TranslationArgument> arguments = translatable.arguments();
       if (!arguments.isEmpty()) {
-        List<BinaryTag> argumentsTags = new ArrayList<>();
-        // TODO: Encode it like vanilla
-        arguments.forEach(argument -> argumentsTags.add(this.writeCompoundComponent(argument.asComponent())));
-        builder.put(TRANSLATE_WITH, ListBinaryTag.from(argumentsTags));
+        ListBinaryTag.Builder<BinaryTag> translateWithTagBuilder = ListBinaryTag.heterogeneousListBinaryTag();
+        arguments.forEach(argument -> translateWithTagBuilder.add(TranslationArgumentSerializer.serialize(argument, this)));
+        builder.put(TRANSLATE_WITH, translateWithTagBuilder.build().wrapHeterogeneity());
       }
     } else if (component instanceof KeybindComponent) {
       builder.putString(KEYBIND, ((KeybindComponent) component).keybind());

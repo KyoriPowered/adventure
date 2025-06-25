@@ -2,6 +2,7 @@ package net.kyori.adventure.text.serializer.nbt;
 
 import net.kyori.adventure.nbt.BinaryTag;
 import net.kyori.adventure.nbt.BinaryTagType;
+import net.kyori.adventure.nbt.ByteBinaryTag;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.nbt.NumberBinaryTag;
 import org.jetbrains.annotations.NotNull;
@@ -43,5 +44,9 @@ final class NBTSerializerUtils {
   static boolean asBoolean(@NotNull NumberBinaryTag tag) {
     // != 0 might look weird, but it is what vanilla does
     return tag.byteValue() != 0;
+  }
+
+  static @NotNull ByteBinaryTag asTag(boolean value) {
+    return value ? ByteBinaryTag.ONE : ByteBinaryTag.ZERO;
   }
 }
