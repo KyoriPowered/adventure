@@ -88,12 +88,14 @@ public final class NBTSerializerOptions {
    */
   public static final Option<ShowEntityUUIDEmitMode> EMIT_SHOW_ENTITY_UUID_TYPE;
 
-  private static final OptionSchema SCHEMA;
+  /**
+   * How to emit show item hovers in {@code hoverEvent} (camelCase) fields.
+   *
+   * @since 4.24.0
+   */
+  public static final Option<ShowItemHoverDataMode> SHOW_ITEM_HOVER_DATA_MODE;
 
-  // TODO: Add show item hover data mode
-  // TODO: Add component type field emitting mode
-  // TODO: Add source field emitting mode
-  // TODO: Add show item hover data mode
+  private static final OptionSchema SCHEMA;
 
   static {
     OptionSchema.Mutable schema = OptionSchema.emptySchema();
@@ -104,6 +106,7 @@ public final class NBTSerializerOptions {
     EMIT_DEFAULT_ITEM_HOVER_QUANTITY = schema.booleanOption(key("emit/default_item_hover_quantity"), true);
     EMIT_DEFAULT_NBT_INTERPRET_VALUE = schema.booleanOption(key("emit/default_nbt_interpret_value"), true);
     EMIT_SHOW_ENTITY_UUID_TYPE = schema.enumOption(key("emit/show_entity_uuid"), ShowEntityUUIDEmitMode.class, ShowEntityUUIDEmitMode.EMIT_INT_ARRAY);
+    SHOW_ITEM_HOVER_DATA_MODE = schema.enumOption(key("emit/show_item_hover_data"), ShowItemHoverDataMode.class, ShowItemHoverDataMode.EMIT_EITHER);
     SCHEMA = schema.frozenView();
   }
 
@@ -225,5 +228,31 @@ public final class NBTSerializerOptions {
      * @since 4.24.0
      */
     EMIT_LIST
+  }
+
+  /**
+   * Configure how to emit show item hovers in {@code hoverEvent} (camelCase) fields.
+   *
+   * @since 4.24.0
+   */
+  public enum ShowItemHoverDataMode {
+    /**
+     * Only emit the pre-1.20.5 item NBT.
+     *
+     * @since 4.24.0
+     */
+    EMIT_LEGACY_NBT,
+    /**
+     * Only emit modern data components.
+     *
+     * @since 4.24.0
+     */
+    EMIT_DATA_COMPONENTS,
+    /**
+     * Emit whichever of legacy or modern data the item has.
+     *
+     * @since 4.24.0
+     */
+    EMIT_EITHER,
   }
 }
