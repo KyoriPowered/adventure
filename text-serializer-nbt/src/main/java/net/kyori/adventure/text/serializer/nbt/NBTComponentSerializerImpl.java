@@ -114,9 +114,19 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
   public @NotNull Component deserialize(@NotNull BinaryTag input) {
     if (input instanceof StringBinaryTag) {
       return Component.text(((StringBinaryTag) input).value());
-    }
+    } else if (input instanceof ListBinaryTag) {
+      ListBinaryTag castTag = (ListBinaryTag) input;
+      if (castTag.isEmpty()) {
+        throw new IllegalArgumentException("The list binary tag must not be empty");
+      }
 
-    if (!(input instanceof CompoundBinaryTag)) {
+      Component rootTag = this.deserialize(castTag.get(0));
+      for (int index = 1; index < castTag.size(); index++) {
+        rootTag = rootTag.append(this.deserialize(castTag.get(index)));
+      }
+
+      return rootTag;
+    } else if (!(input instanceof CompoundBinaryTag)) {
       throw new IllegalArgumentException("The input isn't a compound or string binary tag");
     }
 
