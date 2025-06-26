@@ -24,6 +24,8 @@
 package net.kyori.adventure.text.serializer.nbt;
 
 import net.kyori.option.Option;
+import net.kyori.option.OptionSchema;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Options that can apply to {@linkplain NBTComponentSerializer NBT serializers}.
@@ -40,28 +42,28 @@ public final class NBTSerializerOptions {
    * @since 4.24.0
    * @sinceMinecraft 1.20.3
    */
-  public static final Option<Boolean> EMIT_COMPACT_TEXT_COMPONENT = Option.booleanOption(key("emit/compact_text_component"), true);
+  public static final Option<Boolean> EMIT_COMPACT_TEXT_COMPONENT;
 
   /**
    * How to emit shadow colour data.
    *
    * @since 4.24.0
    */
-  public static final Option<ShadowColorEmitMode> SHADOW_COLOR_MODE = Option.enumOption(key("emit/shadow_color"), ShadowColorEmitMode.class, ShadowColorEmitMode.EMIT_INTEGER);
+  public static final Option<ShadowColorEmitMode> SHADOW_COLOR_MODE;
 
   /**
    * Control how hover event values should be emitted.
    *
    * @since 4.24.0
    */
-  public static final Option<HoverEventValueMode> EMIT_HOVER_EVENT_TYPE = Option.enumOption(key("emit/hover_value_mode"), HoverEventValueMode.class, HoverEventValueMode.SNAKE_CASE);
+  public static final Option<HoverEventValueMode> EMIT_HOVER_EVENT_TYPE;
 
   /**
    * Control how click event values should be emitted.
    *
    * @since 4.24.0
    */
-  public static final Option<ClickEventValueMode> EMIT_CLICK_EVENT_TYPE = Option.enumOption(key("emit/click_value_mode"), ClickEventValueMode.class, ClickEventValueMode.SNAKE_CASE);
+  public static final Option<ClickEventValueMode> EMIT_CLICK_EVENT_TYPE;
 
   /**
    * Whether to emit the default hover event item stack quantity of {@code 1}.
@@ -70,27 +72,57 @@ public final class NBTSerializerOptions {
    *
    * @since 4.24.0
    */
-  public static final Option<Boolean> EMIT_DEFAULT_ITEM_HOVER_QUANTITY = Option.booleanOption(key("emit/default_item_hover_quantity"), true);
+  public static final Option<Boolean> EMIT_DEFAULT_ITEM_HOVER_QUANTITY;
 
   /**
    * Whether to emit the default interpret value ({@code false}) of NBT components.
    *
    * @since 4.24.0
    */
-  public static final Option<Boolean> EMIT_DEFAULT_NBT_INTERPRET_VALUE = Option.booleanOption(key("emit/default_nbt_interpret_value"), true);
+  public static final Option<Boolean> EMIT_DEFAULT_NBT_INTERPRET_VALUE;
 
   /**
    * Control how entity ids of show entity hover events should be emitted.
    *
    * @since 4.24.0
    */
-  public static final Option<ShowEntityUUIDEmitMode> EMIT_SHOW_ENTITY_UUID_TYPE = Option.enumOption(key("emit/show_entity_uuid"), ShowEntityUUIDEmitMode.class, ShowEntityUUIDEmitMode.EMIT_INT_ARRAY);
+  public static final Option<ShowEntityUUIDEmitMode> EMIT_SHOW_ENTITY_UUID_TYPE;
+
+  private static final OptionSchema SCHEMA;
+
+  // TODO: Add show item hover data mode
+  // TODO: Add component type field emitting mode
+  // TODO: Add a way to serialize components as lists
+  // TODO: Add source field emitting mode
+  // TODO: Add show item hover data mode
+
+  static {
+    OptionSchema.Mutable schema = OptionSchema.emptySchema();
+    EMIT_COMPACT_TEXT_COMPONENT = schema.booleanOption(key("emit/compact_text_component"), true);
+    SHADOW_COLOR_MODE = schema.enumOption(key("emit/shadow_color"), ShadowColorEmitMode.class, ShadowColorEmitMode.EMIT_INTEGER);
+    EMIT_HOVER_EVENT_TYPE = schema.enumOption(key("emit/hover_value_mode"), HoverEventValueMode.class, HoverEventValueMode.SNAKE_CASE);
+    EMIT_CLICK_EVENT_TYPE = schema.enumOption(key("emit/click_value_mode"), ClickEventValueMode.class, ClickEventValueMode.SNAKE_CASE);
+    EMIT_DEFAULT_ITEM_HOVER_QUANTITY = schema.booleanOption(key("emit/default_item_hover_quantity"), true);
+    EMIT_DEFAULT_NBT_INTERPRET_VALUE = schema.booleanOption(key("emit/default_nbt_interpret_value"), true);
+    EMIT_SHOW_ENTITY_UUID_TYPE = schema.enumOption(key("emit/show_entity_uuid"), ShowEntityUUIDEmitMode.class, ShowEntityUUIDEmitMode.EMIT_INT_ARRAY);
+    SCHEMA = schema.frozenView();
+  }
 
   private NBTSerializerOptions() {
   }
 
   private static String key(final String value) {
     return "adventure:nbt/" + value;
+  }
+
+  /**
+   * A schema of available options.
+   *
+   * @return the schema of known NBT serializer options
+   * @since 4.20.0
+   */
+  public static @NotNull OptionSchema schema() {
+    return SCHEMA;
   }
 
   /**

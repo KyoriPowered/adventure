@@ -98,13 +98,16 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
   static final class Instances {
     static final NBTComponentSerializer INSTANCE = SERVICE
       .map(Provider::nbt)
-      .orElseGet(() -> new NBTComponentSerializerImpl(OptionState.emptyOptionState()));
+      .orElseGet(() -> new NBTComponentSerializerImpl(NBTSerializerOptions.schema().emptyState()));
   }
 
   private final OptionState flags;
 
   NBTComponentSerializerImpl(@NotNull OptionState flags) {
-    this.flags = flags;
+    this.flags = requireNonNull(flags, "flags");
+    if (flags.schema() != NBTSerializerOptions.schema()) {
+      throw new IllegalArgumentException("The specified option state does not use the NBT serializer option schema");
+    }
   }
 
   @Override
@@ -325,7 +328,7 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
 
   static final class BuilderImpl implements NBTComponentSerializer.Builder {
 
-    private OptionState flags = OptionState.emptyOptionState();
+    private OptionState flags = NBTSerializerOptions.schema().emptyState();
 
     BuilderImpl() {
       BUILDER.accept(this); // let service provider touch the builder before anybody else touches it
@@ -339,7 +342,7 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
 
     @Override
     public @NotNull Builder editOptions(@NotNull Consumer<OptionState.Builder> optionEditor) {
-      final OptionState.Builder builder = OptionState.optionState().values(this.flags);
+      final OptionState.Builder builder = NBTSerializerOptions.schema().stateBuilder().values(this.flags);
       requireNonNull(optionEditor, "optionEditor").accept(builder);
       this.flags = builder.build();
       return this;
