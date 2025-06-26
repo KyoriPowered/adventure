@@ -29,6 +29,8 @@ import net.kyori.adventure.nbt.BinaryTagTypes;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.nbt.EndBinaryTag;
 import net.kyori.adventure.nbt.IntBinaryTag;
+import net.kyori.adventure.nbt.StringBinaryTag;
+import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.event.DataComponentValue;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.jetbrains.annotations.NotNull;
@@ -39,56 +41,65 @@ import java.util.Map;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SHOW_ITEM_COMPONENTS;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SHOW_ITEM_COUNT;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SHOW_ITEM_ID;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SHOW_ITEM_TAG;
 import static net.kyori.adventure.text.serializer.nbt.NBTSerializerUtils.getOptionalTag;
 import static net.kyori.adventure.text.serializer.nbt.NBTSerializerUtils.getRequiredTag;
 
 final class ShowItemSerializer {
 
   private static final String DATA_COMPONENT_REMOVAL_PREFIX = "!";
+  private static final int DEFAULT_ITEM_QUANTITY = 1;
 
   private ShowItemSerializer() {
   }
 
-  static HoverEvent.@NotNull ShowItem deserialize(@NotNull CompoundBinaryTag compound) {
+  static HoverEvent.@NotNull ShowItem deserialize(@NotNull CompoundBinaryTag compound, boolean snakeCase) {
     Key itemId = Key.key(getRequiredTag(compound, SHOW_ITEM_ID, BinaryTagTypes.STRING).value());
 
     IntBinaryTag countTag = getOptionalTag(compound, SHOW_ITEM_COUNT, BinaryTagTypes.INT);
-    int itemCount = countTag == null ? 1 : countTag.value();
+    int itemCount = countTag == null ? DEFAULT_ITEM_QUANTITY : countTag.value();
 
-    CompoundBinaryTag components = getOptionalTag(compound, SHOW_ITEM_COMPONENTS, BinaryTagTypes.COMPOUND);
-    if (components == null) {
-      return HoverEvent.ShowItem.showItem(itemId, itemCount);
+    CompoundBinaryTag componentsTag = getOptionalTag(compound, SHOW_ITEM_COMPONENTS, BinaryTagTypes.COMPOUND);
+    StringBinaryTag nbtTag = getOptionalTag(compound, SHOW_ITEM_TAG, BinaryTagTypes.STRING);
+
+    if (componentsTag == null) {
+      if (snakeCase || nbtTag == null) {
+        return HoverEvent.ShowItem.showItem(itemId, itemCount);
+      }
+      return HoverEvent.ShowItem.showItem(itemId, itemCount, BinaryTagHolder.binaryTagHolder(nbtTag.value()));
     } else {
       Map<Key, DataComponentValue> componentValues = new HashMap<>();
 
-      for (String string : components.keySet()) {
+      for (String string : componentsTag.keySet()) {
         boolean removed = string.startsWith(DATA_COMPONENT_REMOVAL_PREFIX);
 
-        BinaryTag value = components.get(string);
-        if (value == null) continue;
+        BinaryTag valueTag = componentsTag.get(string);
+        if (valueTag == null) continue;
 
         if (removed) {
           string = string.substring(1);
         }
 
-        componentValues.put(Key.key(string), removed ? DataComponentValue.removed() : NBTDataComponentValue.nbtDataComponentValue(value));
+        componentValues.put(Key.key(string), removed ? DataComponentValue.removed() : NBTDataComponentValue.nbtDataComponentValue(valueTag));
       }
 
       return HoverEvent.ShowItem.showItem(itemId, itemCount, componentValues);
     }
   }
 
-  static @NotNull CompoundBinaryTag serialize(HoverEvent.@NotNull ShowItem showItem, @NotNull NBTComponentSerializerImpl serializer) {
+  static @NotNull CompoundBinaryTag serialize(HoverEvent.@NotNull ShowItem showItem, boolean snakeCase,
+                                              @NotNull NBTComponentSerializerImpl serializer) {
     CompoundBinaryTag.Builder builder = CompoundBinaryTag.builder()
       .putString(SHOW_ITEM_ID, showItem.item().asString());
 
     int count = showItem.count();
-    if (count != 1 || serializer.flags().value(NBTSerializerOptions.EMIT_DEFAULT_ITEM_HOVER_QUANTITY)) {
+    if (count != DEFAULT_ITEM_QUANTITY || serializer.flags().value(NBTSerializerOptions.EMIT_DEFAULT_ITEM_HOVER_QUANTITY)) {
       builder.putInt(SHOW_ITEM_COUNT, count);
     }
 
-    if (!showItem.dataComponents().isEmpty()) {
-      CompoundBinaryTag.Builder dataComponentsBuilder = CompoundBinaryTag.builder();
+    NBTSerializerOptions.ShowItemHoverDataMode dataMode = serializer.flags().value(NBTSerializerOptions.SHOW_ITEM_HOVER_DATA_MODE);
+    if ((snakeCase || dataMode != NBTSerializerOptions.ShowItemHoverDataMode.EMIT_LEGACY_NBT) && !showItem.dataComponents().isEmpty()) {
+      CompoundBinaryTag.Builder componentsTagBuilder = CompoundBinaryTag.builder();
 
       Map<Key, NBTDataComponentValue> components = showItem.dataComponentsAs(NBTDataComponentValue.class);
       for (Map.Entry<Key, NBTDataComponentValue> entry : components.entrySet()) {
@@ -99,10 +110,15 @@ final class ShowItemSerializer {
           key = DATA_COMPONENT_REMOVAL_PREFIX + key;
         }
 
-        dataComponentsBuilder.put(key, value);
+        componentsTagBuilder.put(key, value);
       }
 
-      builder.put(SHOW_ITEM_COMPONENTS, dataComponentsBuilder.build());
+      builder.put(SHOW_ITEM_COMPONENTS, componentsTagBuilder.build());
+    } else if (!snakeCase && dataMode != NBTSerializerOptions.ShowItemHoverDataMode.EMIT_DATA_COMPONENTS) {
+      BinaryTagHolder nbt = showItem.nbt();
+      if (nbt != null) {
+        builder.putString(SHOW_ITEM_TAG, nbt.string());
+      }
     }
 
     return builder.build();

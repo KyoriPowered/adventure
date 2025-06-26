@@ -62,7 +62,7 @@ final class HoverEventSerializer {
       }
       return HoverEvent.showText(serializer.deserialize(textTag));
     } else if (action == HoverEvent.Action.SHOW_ITEM) {
-      return HoverEvent.showItem(ShowItemSerializer.deserialize(contentsTag));
+      return HoverEvent.showItem(ShowItemSerializer.deserialize(contentsTag, snakeCase));
     } else if (action == HoverEvent.Action.SHOW_ENTITY) {
       return HoverEvent.showEntity(ShowEntitySerializer.deserialize(contentsTag, snakeCase, serializer));
     } else {
@@ -88,7 +88,7 @@ final class HoverEventSerializer {
         contentsTag = serializedComponent;
       }
     } else if (action == HoverEvent.Action.SHOW_ITEM) {
-      contentsTag = ShowItemSerializer.serialize((HoverEvent.ShowItem) event.value(), serializer);
+      contentsTag = ShowItemSerializer.serialize((HoverEvent.ShowItem) event.value(), snakeCase, serializer);
     } else if (action == HoverEvent.Action.SHOW_ENTITY) {
       contentsTag = ShowEntitySerializer.serialize((HoverEvent.ShowEntity) event.value(), snakeCase, serializer);
     } else {
