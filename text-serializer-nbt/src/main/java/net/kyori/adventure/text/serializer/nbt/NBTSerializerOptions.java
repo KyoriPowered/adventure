@@ -37,7 +37,7 @@ import org.jetbrains.annotations.NotNull;
 public final class NBTSerializerOptions {
 
   /**
-   * Whether to emit text components with no style and no children as plain text.
+   * Whether to emit text components with no style and no children as a plain text.
    *
    * @since 4.24.0
    * @sinceMinecraft 1.20.3
@@ -92,7 +92,6 @@ public final class NBTSerializerOptions {
 
   // TODO: Add show item hover data mode
   // TODO: Add component type field emitting mode
-  // TODO: Add a way to serialize components as lists
   // TODO: Add source field emitting mode
   // TODO: Add show item hover data mode
 
