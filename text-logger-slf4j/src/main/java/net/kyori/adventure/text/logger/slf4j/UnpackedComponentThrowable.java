@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.logger.slf4j;
 
+import java.io.Serial;
 import java.util.function.Function;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.ComponentMessageThrowable;
@@ -33,7 +34,7 @@ import org.jetbrains.annotations.Nullable;
  */
 @SuppressWarnings("OverrideThrowableToString")
 final class UnpackedComponentThrowable extends Throwable {
-  private static final long serialVersionUID = -1L;
+  @Serial private static final long serialVersionUID = -1L;
 
   private final Class<? extends Throwable> backingType;
 
@@ -46,10 +47,8 @@ final class UnpackedComponentThrowable extends Throwable {
 
     final UnpackedComponentThrowable ret = new UnpackedComponentThrowable(maybeRich.getClass(), serializer.apply(message), cause);
     ret.setStackTrace(maybeRich.getStackTrace());
-    if (suppressed.length > 0) {
-      for (int i = 0; i < suppressed.length; i++) {
-        ret.addSuppressed(unpack(suppressed[i], serializer));
-      }
+    for (final Throwable throwable : suppressed) {
+      ret.addSuppressed(unpack(throwable, serializer));
     }
 
     return ret;

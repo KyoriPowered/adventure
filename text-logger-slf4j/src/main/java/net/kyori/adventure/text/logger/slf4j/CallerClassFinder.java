@@ -28,13 +28,9 @@ final class CallerClassFinder {
   }
 
   static String callingClassName() {
-    return callingClassName(2); // this, plus the calling method
-  }
-
-  static String callingClassName(final int elementsToSkip) { // elementsToSkip not counting this method
     return StackWalker.getInstance().walk(stream -> stream.map(StackWalker.StackFrame::getClassName)
-        .skip(elementsToSkip + 1)
+        .skip(2) // Skip this method, plus the calling method.
         .findFirst())
-      .orElseThrow(() -> new IllegalArgumentException("Not enough stack elements to skip " + elementsToSkip + " elements"));
+      .orElseThrow(() -> new IllegalArgumentException("Not enough stack elements to skip 2 elements"));
   }
 }
