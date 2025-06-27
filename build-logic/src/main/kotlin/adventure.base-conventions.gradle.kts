@@ -7,7 +7,7 @@ val libs = extensions.getByType(org.gradle.accessors.dm.LibrariesForLibs::class)
 
 indra {
   javaVersions {
-    minimumToolchain(17)
+    target(21)
     val testVersions = (project.property("testJdks") as String)
       .split(",")
       .map { it.trim().toInt() }

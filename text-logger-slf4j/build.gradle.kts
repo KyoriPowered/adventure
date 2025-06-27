@@ -25,12 +25,6 @@ dependencies {
   testImplementation(libs.slf4j)
 }
 
-sourceSets.main {
-  multirelease {
-    alternateVersions(9)
-  }
-}
-
 applyJarMetadata("net.kyori.adventure.text.logger.slf4j")
 
 eclipse {
