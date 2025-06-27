@@ -34,7 +34,6 @@ sequenceOf(
   "api",
   "annotation-processors",
   "bom",
-  "extra-kotlin",
   "key",
   "nbt",
   "serializer-configurate4",
