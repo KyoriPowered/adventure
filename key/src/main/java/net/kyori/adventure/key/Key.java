@@ -122,6 +122,7 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
    * @throws InvalidKeyException if the namespace or value contains an invalid character
    * @since 4.4.0
    */
+  @SuppressWarnings("PatternValidation") // The namespace is tested later.
   static @NotNull Key key(final @NotNull Namespaced namespaced, @KeyPattern.Value final @NotNull String value) {
     return key(Objects.requireNonNull(namespaced, "namespaced").namespace(), value);
   }
@@ -136,6 +137,8 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
    * @since 4.0.0
    */
   static @NotNull Key key(@KeyPattern.Namespace final @NotNull String namespace, @KeyPattern.Value final @NotNull String value) {
+    KeyImpl.checkError("namespace", namespace, namespace, value, Key.checkNamespace(namespace), KeyImpl.NAMESPACE_PATTERN);
+    KeyImpl.checkError("value", value, namespace, value, Key.checkValue(value), KeyImpl.VALUE_PATTERN);
     return new KeyImpl(namespace, value);
   }
 
@@ -176,7 +179,7 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
    * @since 4.12.0
    */
   static boolean parseableNamespace(final @NotNull String namespace) {
-    return !checkNamespace(namespace).isPresent();
+    return checkNamespace(namespace).isEmpty();
   }
 
   /**
@@ -204,7 +207,7 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
    * @since 4.12.0
    */
   static boolean parseableValue(final @NotNull String value) {
-    return !checkValue(value).isPresent();
+    return checkValue(value).isEmpty();
   }
 
   /**
