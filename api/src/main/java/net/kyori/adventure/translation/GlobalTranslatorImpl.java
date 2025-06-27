@@ -85,8 +85,7 @@ final class GlobalTranslatorImpl implements GlobalTranslator {
     requireNonNull(key, "key");
     requireNonNull(locale, "locale");
     for (final Translator source : this.sources) {
-      boolean canTranslate = source.canTranslate(key, locale);
-      if (canTranslate) return true;
+      if (source.canTranslate(key, locale)) return true;
     }
     return false;
   }
