@@ -25,6 +25,7 @@ package net.kyori.adventure.text.logger.slf4j;
 
 import java.util.function.Function;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.util.PlatformAPI;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -34,7 +35,8 @@ import org.slf4j.Logger;
  *
  * @since 4.11.0
  */
-@ApiStatus.Internal // SPI for platform use only
+@ApiStatus.Internal
+@PlatformAPI
 public interface ComponentLoggerProvider {
   /**
    * Create a component logger for the provided logger name.
@@ -52,10 +54,11 @@ public interface ComponentLoggerProvider {
    * @since 4.11.0
    */
   @ApiStatus.NonExtendable
+  @PlatformAPI
   interface LoggerHelper {
 
     /**
-     * Create a serializer function that will translate logged output into the system default locale, and then serialize it to plain text.
+     * Create a serializer function that will translate logged output into the system default locale and then serialize it to plain text.
      *
      * @return a plain serializer
      * @since 4.11.0
