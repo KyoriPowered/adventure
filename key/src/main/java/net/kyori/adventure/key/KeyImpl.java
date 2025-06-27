@@ -35,23 +35,14 @@ import org.jetbrains.annotations.NotNull;
 
 import static java.util.Objects.requireNonNull;
 
-final class KeyImpl implements Key {
+record KeyImpl(String namespace, String value) implements Key {
   static final Comparator<? super Key> COMPARATOR = Comparator.comparing(Key::value).thenComparing(Key::namespace);
 
   static final @RegExp String NAMESPACE_PATTERN = "[a-z0-9_\\-.]+";
   static final @RegExp String VALUE_PATTERN = "[a-z0-9_\\-./]+";
 
-  private final String namespace;
-  private final String value;
-
-  KeyImpl(final @NotNull String namespace, final @NotNull String value) {
-    checkError("namespace", namespace, namespace, value, Key.checkNamespace(namespace), NAMESPACE_PATTERN);
-    checkError("value", value, namespace, value, Key.checkValue(value), VALUE_PATTERN);
-    this.namespace = requireNonNull(namespace, "namespace");
-    this.value = requireNonNull(value, "value");
-  }
-
-  private static void checkError(final String name, final String checkPart, final String namespace, final String value, final OptionalInt index, final String pattern) {
+  static void checkError(final String name, final String checkPart, final String namespace, final String value, final OptionalInt index, final String pattern) {
+    requireNonNull(checkPart, name);
     if (index.isPresent()) {
       final int indexValue = index.getAsInt();
       final char character = checkPart.charAt(indexValue);
@@ -72,16 +63,6 @@ final class KeyImpl implements Key {
 
   static boolean allowedInValue(final char character) {
     return character == '_' || character == '-' || (character >= 'a' && character <= 'z') || (character >= '0' && character <= '9') || character == '.' || character == '/';
-  }
-
-  @Override
-  public @NotNull String namespace() {
-    return this.namespace;
-  }
-
-  @Override
-  public @NotNull String value() {
-    return this.value;
   }
 
   @Override
@@ -109,16 +90,8 @@ final class KeyImpl implements Key {
   @Override
   public boolean equals(final Object other) {
     if (this == other) return true;
-    if (!(other instanceof Key)) return false;
-    final Key that = (Key) other;
+    if (!(other instanceof Key that)) return false;
     return Objects.equals(this.namespace, that.namespace()) && Objects.equals(this.value, that.value());
-  }
-
-  @Override
-  public int hashCode() {
-    int result = this.namespace.hashCode();
-    result = (31 * result) + this.value.hashCode();
-    return result;
   }
 
   @Override

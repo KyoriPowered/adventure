@@ -30,38 +30,13 @@ import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-final class KeyedValueImpl<T> implements Examinable, KeyedValue<T> {
-  private final Key key;
-  private final T value;
-
-  KeyedValueImpl(final Key key, final T value) {
-    this.key = key;
-    this.value = value;
-  }
-
-  @Override
-  public @NotNull Key key() {
-    return this.key;
-  }
-
-  @Override
-  public @NotNull T value() {
-    return this.value;
-  }
+record KeyedValueImpl<T>(Key key, T value) implements Examinable, KeyedValue<T> {
 
   @Override
   public boolean equals(final @Nullable Object other) {
     if (this == other) return true;
-    if (other == null || this.getClass() != other.getClass()) return false;
-    final KeyedValueImpl<?> that = (KeyedValueImpl<?>) other;
-    return this.key.equals(that.key) && this.value.equals(that.value);
-  }
-
-  @Override
-  public int hashCode() {
-    int result = this.key.hashCode();
-    result = (31 * result) + this.value.hashCode();
-    return result;
+    if (!(other instanceof KeyedValue<?> that)) return false;
+    return this.key.equals(that.key()) && this.value.equals(that.value());
   }
 
   @Override
@@ -73,7 +48,7 @@ final class KeyedValueImpl<T> implements Examinable, KeyedValue<T> {
   }
 
   @Override
-  public String toString() {
+  public @NotNull String toString() {
     return this.examine(StringExaminer.simpleEscaping());
   }
 }

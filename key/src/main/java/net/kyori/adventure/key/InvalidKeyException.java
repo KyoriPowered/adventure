@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.key;
 
+import java.io.Serial;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,6 +33,7 @@ import org.jetbrains.annotations.Nullable;
  * @since 4.0.0
  */
 public final class InvalidKeyException extends RuntimeException {
+  @Serial
   private static final long serialVersionUID = -5413304087321449434L;
   private final String keyNamespace;
   private final String keyValue;
@@ -48,7 +50,7 @@ public final class InvalidKeyException extends RuntimeException {
    * @return a key
    * @since 4.0.0
    */
-  public final @NotNull String keyNamespace() {
+  public @NotNull String keyNamespace() {
     return this.keyNamespace;
   }
 
@@ -58,7 +60,7 @@ public final class InvalidKeyException extends RuntimeException {
    * @return a key
    * @since 4.0.0
    */
-  public final @NotNull String keyValue() {
+  public @NotNull String keyValue() {
     return this.keyValue;
   }
 }
