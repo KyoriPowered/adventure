@@ -25,6 +25,7 @@ package net.kyori.adventure.text.serializer.nbt;
 
 import net.kyori.option.Option;
 import net.kyori.option.OptionSchema;
+import net.kyori.option.OptionState;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -96,6 +97,9 @@ public final class NBTSerializerOptions {
   public static final Option<ShowItemHoverDataMode> SHOW_ITEM_HOVER_DATA_MODE;
 
   private static final OptionSchema SCHEMA;
+  private static final OptionState.Versioned BY_DATA_VERSION;
+
+  private static final int VERSION_23W40A = 3679;
 
   static {
     OptionSchema.Mutable schema = OptionSchema.emptySchema();
@@ -108,6 +112,20 @@ public final class NBTSerializerOptions {
     EMIT_SHOW_ENTITY_UUID_TYPE = schema.enumOption(key("emit/show_entity_uuid"), ShowEntityUUIDEmitMode.class, ShowEntityUUIDEmitMode.EMIT_INT_ARRAY);
     SHOW_ITEM_HOVER_DATA_MODE = schema.enumOption(key("emit/show_item_hover_data"), ShowItemHoverDataMode.class, ShowItemHoverDataMode.EMIT_EITHER);
     SCHEMA = schema.frozenView();
+
+    BY_DATA_VERSION = SCHEMA.versionedStateBuilder()
+      .version(
+        VERSION_23W40A,
+        builder -> builder.value(EMIT_COMPACT_TEXT_COMPONENT, true)
+          .value(SHADOW_COLOR_MODE, ShadowColorEmitMode.NONE)
+          .value(EMIT_HOVER_EVENT_TYPE, HoverEventValueMode.CAMEL_CASE)
+          .value(EMIT_CLICK_EVENT_TYPE, ClickEventValueMode.CAMEL_CASE)
+          .value(EMIT_DEFAULT_ITEM_HOVER_QUANTITY, false)
+          .value(EMIT_DEFAULT_NBT_INTERPRET_VALUE, false)
+          .value(EMIT_SHOW_ENTITY_UUID_TYPE, ShowEntityUUIDEmitMode.EMIT_INT_ARRAY)
+          .value(SHOW_ITEM_HOVER_DATA_MODE, ShowItemHoverDataMode.EMIT_LEGACY_NBT)
+        )
+      .build();
   }
 
   private NBTSerializerOptions() {
@@ -121,10 +139,20 @@ public final class NBTSerializerOptions {
    * A schema of available options.
    *
    * @return the schema of known NBT serializer options
-   * @since 4.20.0
+   * @since 4.24.0
    */
   public static @NotNull OptionSchema schema() {
     return SCHEMA;
+  }
+
+  /**
+   * NBT serializer options delineated by world data version.
+   *
+   * @return the versioned option state
+   * @since 4.24.0
+   */
+  public static OptionState.@NotNull Versioned byDataVersion() {
+    return BY_DATA_VERSION;
   }
 
   /**
