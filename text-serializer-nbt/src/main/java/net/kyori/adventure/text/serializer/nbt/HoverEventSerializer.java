@@ -50,20 +50,14 @@ final class HoverEventSerializer {
       return null;
     }
 
-    CompoundBinaryTag contentsTag = snakeCase ? compound : getRequiredTag(compound, HOVER_EVENT_CONTENTS, BinaryTagTypes.COMPOUND);
     if (action == HoverEvent.Action.SHOW_TEXT) {
-      BinaryTag textTag;
-      if (snakeCase) {
-        textTag = compound.get(HOVER_EVENT_VALUE);
-        if (textTag == null)
-          throw new IllegalArgumentException("The show text hover event action tag does not contain a text field");
-      } else {
-        textTag = contentsTag;
-      }
+      BinaryTag textTag = getRequiredTag(compound, snakeCase ? HOVER_EVENT_VALUE : HOVER_EVENT_CONTENTS);
       return HoverEvent.showText(serializer.deserialize(textTag));
     } else if (action == HoverEvent.Action.SHOW_ITEM) {
+      BinaryTag contentsTag = getRequiredTag(compound, HOVER_EVENT_CONTENTS);
       return HoverEvent.showItem(ShowItemSerializer.deserialize(contentsTag, snakeCase));
     } else if (action == HoverEvent.Action.SHOW_ENTITY) {
+      CompoundBinaryTag contentsTag = getRequiredTag(compound, HOVER_EVENT_CONTENTS, BinaryTagTypes.COMPOUND);
       return HoverEvent.showEntity(ShowEntitySerializer.deserialize(contentsTag, snakeCase, serializer));
     } else {
       throw new IllegalArgumentException("Don't know how to deserialize a hoverEvent with action of " + actionString + " from a binary tag");

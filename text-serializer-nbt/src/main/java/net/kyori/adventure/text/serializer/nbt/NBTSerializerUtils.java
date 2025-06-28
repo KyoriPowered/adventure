@@ -36,11 +36,19 @@ final class NBTSerializerUtils {
   private NBTSerializerUtils() {
   }
 
+  static @NotNull BinaryTag getRequiredTag(@NotNull CompoundBinaryTag compound, @NotNull String name) {
+    BinaryTag tag = compound.get(name);
+    if (tag == null) {
+      throw noSuchField(name);
+    }
+    return tag;
+  }
+
   static <B extends BinaryTag> @NotNull B getRequiredTag(@NotNull CompoundBinaryTag compound,
                                                          @NotNull String name, @NotNull BinaryTagType<B> tagType) {
     B tag = getOptionalTag(compound, name, tagType);
     if (tag == null) {
-      throw new IllegalArgumentException("The specified compound tag does not contain a \"" + name + "\" field");
+      throw noSuchField(name);
     }
     return tag;
   }
@@ -71,5 +79,9 @@ final class NBTSerializerUtils {
 
   static @NotNull ByteBinaryTag asTag(boolean value) {
     return value ? ByteBinaryTag.ONE : ByteBinaryTag.ZERO;
+  }
+
+  private static @NotNull IllegalArgumentException noSuchField(@NotNull String name) {
+    return new IllegalArgumentException("The specified compound tag does not contain a \"" + name + "\" field");
   }
 }

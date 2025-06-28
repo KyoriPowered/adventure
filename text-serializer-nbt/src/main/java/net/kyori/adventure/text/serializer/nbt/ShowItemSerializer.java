@@ -53,9 +53,21 @@ final class ShowItemSerializer {
   private ShowItemSerializer() {
   }
 
-  static HoverEvent.@NotNull ShowItem deserialize(@NotNull CompoundBinaryTag compound, boolean snakeCase) {
-    Key itemId = Key.key(getRequiredTag(compound, SHOW_ITEM_ID, BinaryTagTypes.STRING).value());
+  static HoverEvent.@NotNull ShowItem deserialize(@NotNull BinaryTag tag, boolean snakeCase) {
+    if (tag instanceof StringBinaryTag && !snakeCase) {
+      StringBinaryTag castTag = (StringBinaryTag) tag;
+      return HoverEvent.ShowItem.showItem(Key.key(castTag.value()), DEFAULT_ITEM_QUANTITY);
+    } else if (!(tag instanceof CompoundBinaryTag)) {
+      if (snakeCase) {
+        throw new IllegalArgumentException("The specified binary tag isn't a compound tag");
+      } else {
+        throw new IllegalArgumentException("The specified binary tag isn't either a string tag or compound tag");
+      }
+    }
 
+    CompoundBinaryTag compound = (CompoundBinaryTag) tag;
+
+    Key itemId = Key.key(getRequiredTag(compound, SHOW_ITEM_ID, BinaryTagTypes.STRING).value());
     IntBinaryTag countTag = getOptionalTag(compound, SHOW_ITEM_COUNT, BinaryTagTypes.INT);
     int itemCount = countTag == null ? DEFAULT_ITEM_QUANTITY : countTag.value();
 
