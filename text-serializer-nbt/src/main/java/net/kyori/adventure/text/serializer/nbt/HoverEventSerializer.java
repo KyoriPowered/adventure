@@ -51,6 +51,7 @@ final class HoverEventSerializer {
     }
 
     if (action == HoverEvent.Action.SHOW_TEXT) {
+      // TODO: According to the MCW, pre-25w03a and post-25w03a use different fields for this, we need to take a look into that
       BinaryTag textTag = getRequiredTag(compound, snakeCase ? HOVER_EVENT_VALUE : HOVER_EVENT_CONTENTS);
       return HoverEvent.showText(serializer.deserialize(textTag));
     } else if (action == HoverEvent.Action.SHOW_ITEM) {
@@ -75,6 +76,7 @@ final class HoverEventSerializer {
     if (action == HoverEvent.Action.SHOW_TEXT) {
       BinaryTag serializedComponent = serializer.serialize((Component) event.value());
       if (snakeCase) {
+        // TODO: According to the MCW, pre-25w03a and post-25w03a use different fields for this, we need to take a look into that
         contentsTag = CompoundBinaryTag.builder()
           .put(HOVER_EVENT_VALUE, serializedComponent)
           .build();
