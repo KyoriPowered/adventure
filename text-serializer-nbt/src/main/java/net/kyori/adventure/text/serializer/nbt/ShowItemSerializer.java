@@ -93,11 +93,11 @@ final class ShowItemSerializer {
       .putString(SHOW_ITEM_ID, showItem.item().asString());
 
     int count = showItem.count();
-    if (count != DEFAULT_ITEM_QUANTITY || serializer.flags().value(NBTSerializerOptions.EMIT_DEFAULT_ITEM_HOVER_QUANTITY)) {
+    if (count != DEFAULT_ITEM_QUANTITY || serializer.options().value(NBTSerializerOptions.EMIT_DEFAULT_ITEM_HOVER_QUANTITY)) {
       builder.putInt(SHOW_ITEM_COUNT, count);
     }
 
-    NBTSerializerOptions.ShowItemHoverDataMode dataMode = serializer.flags().value(NBTSerializerOptions.SHOW_ITEM_HOVER_DATA_MODE);
+    NBTSerializerOptions.ShowItemHoverDataMode dataMode = serializer.options().value(NBTSerializerOptions.SHOW_ITEM_HOVER_DATA_MODE);
     if ((snakeCase || dataMode != NBTSerializerOptions.ShowItemHoverDataMode.EMIT_LEGACY_NBT) && !showItem.dataComponents().isEmpty()) {
       CompoundBinaryTag.Builder componentsTagBuilder = CompoundBinaryTag.builder();
 

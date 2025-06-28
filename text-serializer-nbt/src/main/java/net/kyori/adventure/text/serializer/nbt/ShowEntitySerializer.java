@@ -54,12 +54,12 @@ final class ShowEntitySerializer {
     }
 
     UUID entityId = UUIDSerializer.deserialize(entityIdTag);
-    BinaryTag entityName = compound.get(SHOW_ENTITY_NAME);
+    BinaryTag entityNameTag = compound.get(SHOW_ENTITY_NAME);
 
-    if (entityName == null) {
+    if (entityNameTag == null) {
       return HoverEvent.ShowEntity.showEntity(entityType, entityId);
     } else {
-      return HoverEvent.ShowEntity.showEntity(entityType, entityId, serializer.deserialize(entityName));
+      return HoverEvent.ShowEntity.showEntity(entityType, entityId, serializer.deserialize(entityNameTag));
     }
   }
   
@@ -70,7 +70,7 @@ final class ShowEntitySerializer {
 
     UUID entityId = showEntity.id();
     if (snakeCase) {
-      NBTSerializerOptions.ShowEntityUUIDEmitMode uuidEmitMode = serializer.flags().value(NBTSerializerOptions.EMIT_SHOW_ENTITY_UUID_TYPE);
+      NBTSerializerOptions.ShowEntityUUIDEmitMode uuidEmitMode = serializer.options().value(NBTSerializerOptions.EMIT_SHOW_ENTITY_UUID_TYPE);
       builder.put(SHOW_ENTITY_UUID, UUIDSerializer.serialize(entityId, uuidEmitMode));
     } else {
       builder.put(SHOW_ENTITY_ID, UUIDSerializer.serialize(entityId, NBTSerializerOptions.ShowEntityUUIDEmitMode.EMIT_STRING));
