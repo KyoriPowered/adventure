@@ -79,10 +79,12 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
   private static final class StackEntry {
     final Component component;
     final int depth;
+    final int stylesToPop;
 
-    StackEntry(final Component component, final int depth) {
+    StackEntry(final Component component, final int depth, final int stylesToPop) {
       this.component = component;
       this.depth = depth;
+      this.stylesToPop = stylesToPop;
     }
   }
 
@@ -104,7 +106,7 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
     final Deque<Style> styleStack = new ArrayDeque<>();
 
     // Push the starting component.
-    componentStack.push(new StackEntry(input, depth));
+    componentStack.push(new StackEntry(input, depth, 1));
 
     while (!componentStack.isEmpty()) {
       final StackEntry entry = componentStack.pop();
@@ -130,12 +132,19 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
         // Push any children onto the stack in reverse order so they are popped in the right order.
         final List<Component> children = component.children();
         for (int i = children.size() - 1; i >= 0; i--) {
-          componentStack.push(new StackEntry(children.get(i), currentDepth + 1));
+          if (i == children.size() - 1) {
+            // The last child is responsible for popping all the parents' styles.
+            componentStack.push(new StackEntry(children.get(i), currentDepth + 1, entry.stylesToPop + 1));
+          } else {
+            componentStack.push(new StackEntry(children.get(i), currentDepth + 1, 1));
+          }
         }
       } else {
-        // If there are no children, we pop the latest style to go back "up" the tree.
-        final Style style = styleStack.pop();
-        listener.popStyle(style);
+        // If there are no children, we pop the latest N styles to go back "up" the tree.
+        for (int i = entry.stylesToPop; i > 0; i--) {
+          final Style style = styleStack.pop();
+          listener.popStyle(style);
+        }
       }
     }
 
