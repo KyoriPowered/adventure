@@ -38,9 +38,13 @@ final class TextColorSerializer {
   static @NotNull TextColor deserialize(@NotNull StringBinaryTag tag) {
     String value = tag.value();
     if (value.startsWith(TextColor.HEX_PREFIX)) {
-      return TextColor.fromHexString(value);
+      TextColor color = TextColor.fromHexString(value);
+      if (color == null) {
+        throw new IllegalArgumentException("Invalid hex text color: " + value);
+      }
+      return color;
     } else {
-      return NamedTextColor.NAMES.value(value);
+      return NamedTextColor.NAMES.valueOrThrow(value);
     }
   }
 

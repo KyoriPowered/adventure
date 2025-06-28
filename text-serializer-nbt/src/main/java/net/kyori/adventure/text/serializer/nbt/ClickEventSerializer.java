@@ -24,14 +24,19 @@
 package net.kyori.adventure.text.serializer.nbt;
 
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.nbt.BinaryTag;
 import net.kyori.adventure.nbt.BinaryTagTypes;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.nbt.IntBinaryTag;
 import net.kyori.adventure.nbt.StringBinaryTag;
+import net.kyori.adventure.nbt.TagStringIO;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.util.Codec;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.io.IOException;
 
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_ACTION;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_COMMAND;
@@ -43,6 +48,9 @@ import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants
 import static net.kyori.adventure.text.serializer.nbt.NBTSerializerUtils.getRequiredTag;
 
 final class ClickEventSerializer {
+
+  private static final TagStringIO SNBT_IO = TagStringIO.tagStringIO();
+  private static final Codec<BinaryTag, String, IOException, IOException> SNBT_CODEC = Codec.codec(SNBT_IO::asTag, SNBT_IO::asString);
 
   private ClickEventSerializer() {
   }
@@ -72,9 +80,13 @@ final class ClickEventSerializer {
           StringBinaryTag valueTag = getRequiredTag(compound, CLICK_EVENT_VALUE, BinaryTagTypes.STRING);
           return ClickEvent.copyToClipboard(valueTag.value());
         case CUSTOM:
-          StringBinaryTag clickEventIdTag = getRequiredTag(compound, CLICK_EVENT_ID, BinaryTagTypes.STRING);
-          StringBinaryTag payloadTag = getRequiredTag(compound, CLICK_EVENT_PAYLOAD, BinaryTagTypes.STRING);
-          return ClickEvent.custom(Key.key(clickEventIdTag.value()), BinaryTagHolder.binaryTagHolder(payloadTag.value()));
+          try {
+            StringBinaryTag clickEventIdTag = getRequiredTag(compound, CLICK_EVENT_ID, BinaryTagTypes.STRING);
+            BinaryTag payloadTag = getRequiredTag(compound, CLICK_EVENT_PAYLOAD);
+            return ClickEvent.custom(Key.key(clickEventIdTag.value()), BinaryTagHolder.encode(payloadTag, SNBT_CODEC));
+          } catch (IOException exception) {
+            throw new RuntimeException("An error occurred while encoding payload tag", exception);
+          }
         default:
           // Never called, but needed for proper compilation
           throw new IllegalArgumentException("Unknown click event action: " + action);
@@ -115,9 +127,13 @@ final class ClickEventSerializer {
         }
         builder.putString(payloadFieldName, ((ClickEvent.Payload.Text) payload).value());
       } else if (payload instanceof ClickEvent.Payload.Custom) {
-        ClickEvent.Payload.Custom castPayload = (ClickEvent.Payload.Custom) payload;
-        builder.putString(CLICK_EVENT_ID, castPayload.key().asString());
-        builder.putString(CLICK_EVENT_PAYLOAD, castPayload.nbt().string());
+        try {
+          ClickEvent.Payload.Custom castPayload = (ClickEvent.Payload.Custom) payload;
+          builder.putString(CLICK_EVENT_ID, castPayload.key().asString());
+          builder.put(CLICK_EVENT_PAYLOAD, castPayload.nbt().get(SNBT_CODEC));
+        } catch (IOException exception) {
+          throw new RuntimeException("An error occurred while decoding a payload tag", exception);
+        }
       } else if (payload instanceof ClickEvent.Payload.Int) {
         builder.putInt(CLICK_EVENT_PAGE, ((ClickEvent.Payload.Int) payload).integer());
       }

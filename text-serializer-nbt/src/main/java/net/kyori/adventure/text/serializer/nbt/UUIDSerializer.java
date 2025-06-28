@@ -77,7 +77,7 @@ final class UUIDSerializer {
   }
 
   private static int mostSignificantBits(long value) {
-    return (int) ((value >> Integer.SIZE) & LONG_HALF);
+    return (int) (value >> Integer.SIZE);
   }
 
   private static int leastSignificantBits(long value) {

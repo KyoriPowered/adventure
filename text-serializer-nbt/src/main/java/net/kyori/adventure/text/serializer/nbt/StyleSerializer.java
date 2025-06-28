@@ -115,6 +115,14 @@ final class StyleSerializer {
       builder.put(COLOR, TextColorSerializer.serialize(color));
     }
 
+    ShadowColor shadowColor = style.shadowColor();
+    if (shadowColor != null) {
+      BinaryTag shadowColorTag = ShadowColorSerializer.serialize(shadowColor, serializer);
+      if (shadowColorTag != null) {
+        builder.put(SHADOW_COLOR, shadowColorTag);
+      }
+    }
+
     for (TextDecoration decoration : TextDecoration.values()) {
       TextDecoration.State state = style.decoration(decoration);
       if (state == TextDecoration.State.NOT_SET) continue;
@@ -175,14 +183,6 @@ final class StyleSerializer {
         if (hoverEventTag != null) {
           builder.put(HOVER_EVENT_CAMEL, hoverEventTag);
         }
-      }
-    }
-
-    ShadowColor shadowColor = style.shadowColor();
-    if (shadowColor != null) {
-      BinaryTag shadowColorTag = ShadowColorSerializer.serialize(shadowColor, serializer);
-      if (shadowColorTag != null) {
-        builder.put(SHADOW_COLOR, shadowColorTag);
       }
     }
   }
