@@ -47,19 +47,7 @@ final class ClickEventSerializer {
   private ClickEventSerializer() {
   }
 
-  static @Nullable ClickEvent deserializeCamel(@NotNull CompoundBinaryTag compound) {
-    StringBinaryTag actionTag = getRequiredTag(compound, CLICK_EVENT_ACTION, BinaryTagTypes.STRING);
-    StringBinaryTag valueTag = getRequiredTag(compound, CLICK_EVENT_VALUE, BinaryTagTypes.STRING);
-
-    ClickEvent.Action action = ClickEvent.Action.NAMES.valueOrThrow(actionTag.value());
-    if (!action.readable()) {
-      return null;
-    }
-
-    return ClickEvent.clickEvent(action, valueTag.value());
-  }
-
-  static @Nullable ClickEvent deserializeSnake(@NotNull CompoundBinaryTag compound) {
+  static @Nullable ClickEvent deserialize(@NotNull CompoundBinaryTag compound, boolean snakeCase) {
     StringBinaryTag actionTag = getRequiredTag(compound, CLICK_EVENT_ACTION, BinaryTagTypes.STRING);
     ClickEvent.Action action = ClickEvent.Action.NAMES.valueOrThrow(actionTag.value());
 
@@ -67,28 +55,33 @@ final class ClickEventSerializer {
       return null;
     }
 
-    switch (action) {
-      case OPEN_URL:
-        StringBinaryTag urlTag = getRequiredTag(compound, CLICK_EVENT_URL, BinaryTagTypes.STRING);
-        return ClickEvent.openUrl(urlTag.value());
-      case RUN_COMMAND:
-      case SUGGEST_COMMAND:
-        StringBinaryTag commandTag = getRequiredTag(compound, CLICK_EVENT_COMMAND, BinaryTagTypes.STRING);
-        String command = commandTag.value();
-        return action == ClickEvent.Action.RUN_COMMAND ? ClickEvent.runCommand(command) : ClickEvent.suggestCommand(command);
-      case CHANGE_PAGE:
-        IntBinaryTag pageTag = getRequiredTag(compound, CLICK_EVENT_PAGE, BinaryTagTypes.INT);
-        return ClickEvent.changePage(pageTag.value());
-      case COPY_TO_CLIPBOARD:
-        StringBinaryTag valueTag = getRequiredTag(compound, CLICK_EVENT_VALUE, BinaryTagTypes.STRING);
-        return ClickEvent.copyToClipboard(valueTag.value());
-      case CUSTOM:
-        StringBinaryTag clickEventIdTag = getRequiredTag(compound, CLICK_EVENT_ID, BinaryTagTypes.STRING);
-        StringBinaryTag payloadTag = getRequiredTag(compound, CLICK_EVENT_PAYLOAD, BinaryTagTypes.STRING);
-        return ClickEvent.custom(Key.key(clickEventIdTag.value()), BinaryTagHolder.binaryTagHolder(payloadTag.value()));
-      default:
-        // Never called, but needed for proper compilation
-        throw new IllegalArgumentException("Unknown click event action: " + action);
+    if (snakeCase) {
+      switch (action) {
+        case OPEN_URL:
+          StringBinaryTag urlTag = getRequiredTag(compound, CLICK_EVENT_URL, BinaryTagTypes.STRING);
+          return ClickEvent.openUrl(urlTag.value());
+        case RUN_COMMAND:
+        case SUGGEST_COMMAND:
+          StringBinaryTag commandTag = getRequiredTag(compound, CLICK_EVENT_COMMAND, BinaryTagTypes.STRING);
+          String command = commandTag.value();
+          return action == ClickEvent.Action.RUN_COMMAND ? ClickEvent.runCommand(command) : ClickEvent.suggestCommand(command);
+        case CHANGE_PAGE:
+          IntBinaryTag pageTag = getRequiredTag(compound, CLICK_EVENT_PAGE, BinaryTagTypes.INT);
+          return ClickEvent.changePage(pageTag.value());
+        case COPY_TO_CLIPBOARD:
+          StringBinaryTag valueTag = getRequiredTag(compound, CLICK_EVENT_VALUE, BinaryTagTypes.STRING);
+          return ClickEvent.copyToClipboard(valueTag.value());
+        case CUSTOM:
+          StringBinaryTag clickEventIdTag = getRequiredTag(compound, CLICK_EVENT_ID, BinaryTagTypes.STRING);
+          StringBinaryTag payloadTag = getRequiredTag(compound, CLICK_EVENT_PAYLOAD, BinaryTagTypes.STRING);
+          return ClickEvent.custom(Key.key(clickEventIdTag.value()), BinaryTagHolder.binaryTagHolder(payloadTag.value()));
+        default:
+          // Never called, but needed for proper compilation
+          throw new IllegalArgumentException("Unknown click event action: " + action);
+      }
+    } else {
+      StringBinaryTag valueTag = getRequiredTag(compound, CLICK_EVENT_VALUE, BinaryTagTypes.STRING);
+      return ClickEvent.clickEvent(action, valueTag.value());
     }
   }
 

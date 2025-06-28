@@ -82,10 +82,10 @@ final class StyleSerializer {
     if (clickEventTag == null) {
       clickEventTag = getOptionalTag(compound, CLICK_EVENT_CAMEL, BinaryTagTypes.COMPOUND);
       if (clickEventTag != null) {
-        styleBuilder.clickEvent(ClickEventSerializer.deserializeCamel(clickEventTag));
+        styleBuilder.clickEvent(ClickEventSerializer.deserialize(clickEventTag, false));
       }
     } else {
-      styleBuilder.clickEvent(ClickEventSerializer.deserializeSnake(clickEventTag));
+      styleBuilder.clickEvent(ClickEventSerializer.deserialize(clickEventTag, true));
     }
 
     CompoundBinaryTag hoverEventTag = getOptionalTag(compound, HOVER_EVENT_SNAKE, BinaryTagTypes.COMPOUND);
