@@ -101,6 +101,7 @@ public final class NBTSerializerOptions {
 
   private static final int VERSION_23W40A = 3679;
   private static final int VERSION_24W09A = 3819;
+  private static final int VERSION_24W44A = 4174;
 
   static {
     OptionSchema.Mutable schema = OptionSchema.emptySchema();
@@ -129,6 +130,10 @@ public final class NBTSerializerOptions {
       .version(
         VERSION_24W09A,
         builder -> builder.value(SHOW_ITEM_HOVER_DATA_MODE, ShowItemHoverDataMode.EMIT_DATA_COMPONENTS)
+      )
+      .version(
+        VERSION_24W44A,
+        builder -> builder.value(SHADOW_COLOR_MODE, ShadowColorEmitMode.EMIT_ARRAY)
       )
       .build();
   }
