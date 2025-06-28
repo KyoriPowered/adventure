@@ -241,8 +241,7 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
 
   @Override
   public @NotNull BinaryTag serialize(@NotNull Component component) {
-    if (this.options.value(NBTSerializerOptions.EMIT_COMPACT_TEXT_COMPONENT) && component instanceof TextComponent
-      && !component.hasStyling() && component.children().isEmpty()) {
+    if (component instanceof TextComponent && !component.hasStyling() && component.children().isEmpty()) {
       return StringBinaryTag.stringBinaryTag(((TextComponent) component).content());
     }
 
@@ -287,9 +286,8 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
       NBTComponent<?, ?> nbt = (NBTComponent<?, ?>) component;
       builder.putString(NBT, nbt.nbtPath());
 
-      boolean interpret = nbt.interpret();
-      if (this.options.value(NBTSerializerOptions.EMIT_DEFAULT_NBT_INTERPRET_VALUE) || interpret) {
-        builder.putBoolean(NBT_INTERPRET, interpret);
+      if (nbt.interpret()) {
+        builder.putBoolean(NBT_INTERPRET, true);
       }
 
       Component separator = nbt.separator();
