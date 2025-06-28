@@ -117,7 +117,7 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
     } else if (input instanceof ListBinaryTag) {
       ListBinaryTag castInput = (ListBinaryTag) input;
       if (castInput.isEmpty()) {
-        throw new IllegalArgumentException("The list binary tag must not be empty");
+        throw new IllegalArgumentException("The list binary tag representing a component must not be empty");
       }
 
       Component rootTag = this.deserialize(castInput.get(0));
@@ -180,54 +180,54 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
         .build();
     } else if (compound.get(SELECTOR) != null) {
       StringBinaryTag selectorTag = getRequiredTag(compound, SELECTOR, BinaryTagTypes.STRING);
-      BinaryTag selectorSeparatorTag = compound.get(SEPARATOR);
+      BinaryTag separatorTag = compound.get(SEPARATOR);
       return Component.selector()
         .pattern(selectorTag.value())
-        .separator(selectorSeparatorTag == null ? null : this.deserialize(selectorSeparatorTag))
+        .separator(separatorTag == null ? null : this.deserialize(separatorTag))
         .style(style)
         .append(children)
         .build();
     } else if (compound.get(NBT) != null) {
       String nbtPath = getRequiredTag(compound, NBT, BinaryTagTypes.STRING).value();
 
-      ByteBinaryTag nbtInterpretTag = getOptionalTag(compound, NBT_INTERPRET, BinaryTagTypes.BYTE);
-      boolean nbtInterpret = nbtInterpretTag != null && asBoolean(nbtInterpretTag);
+      ByteBinaryTag interpretTag = getOptionalTag(compound, NBT_INTERPRET, BinaryTagTypes.BYTE);
+      boolean interpret = interpretTag != null && asBoolean(interpretTag);
 
-      BinaryTag nbtSeparatorTag = compound.get(SEPARATOR);
-      Component nbtSeparator = null;
+      BinaryTag separatorTag = compound.get(SEPARATOR);
+      Component separator = null;
 
-      if (nbtSeparatorTag != null) {
-        nbtSeparator = this.deserialize(nbtSeparatorTag);
+      if (separatorTag != null) {
+        separator = this.deserialize(separatorTag);
       }
 
-      StringBinaryTag nbtBlockTag = getOptionalTag(compound, NBT_BLOCK, BinaryTagTypes.STRING);
-      StringBinaryTag nbtEntityTag = getOptionalTag(compound, NBT_ENTITY, BinaryTagTypes.STRING);
-      StringBinaryTag nbtStorageTag = getOptionalTag(compound, NBT_STORAGE, BinaryTagTypes.STRING);
+      StringBinaryTag blockTag = getOptionalTag(compound, NBT_BLOCK, BinaryTagTypes.STRING);
+      StringBinaryTag entityTag = getOptionalTag(compound, NBT_ENTITY, BinaryTagTypes.STRING);
+      StringBinaryTag storageTag = getOptionalTag(compound, NBT_STORAGE, BinaryTagTypes.STRING);
 
-      if (nbtBlockTag != null) {
+      if (blockTag != null) {
         return Component.blockNBT()
           .nbtPath(nbtPath)
-          .interpret(nbtInterpret)
-          .separator(nbtSeparator)
-          .pos(BlockNBTComponent.Pos.fromString(nbtBlockTag.value()))
+          .interpret(interpret)
+          .separator(separator)
+          .pos(BlockNBTComponent.Pos.fromString(blockTag.value()))
           .style(style)
           .append(children)
           .build();
-      } else if (nbtEntityTag != null) {
+      } else if (entityTag != null) {
         return Component.entityNBT()
           .nbtPath(nbtPath)
-          .interpret(nbtInterpret)
-          .separator(nbtSeparator)
-          .selector(nbtEntityTag.value())
+          .interpret(interpret)
+          .separator(separator)
+          .selector(entityTag.value())
           .style(style)
           .append(children)
           .build();
-      } else if (nbtStorageTag != null) {
+      } else if (storageTag != null) {
         return Component.storageNBT()
           .nbtPath(nbtPath)
-          .interpret(nbtInterpret)
-          .separator(nbtSeparator)
-          .storage(Key.key(nbtStorageTag.value()))
+          .interpret(interpret)
+          .separator(separator)
+          .storage(Key.key(storageTag.value()))
           .style(style)
           .append(children)
           .build();

@@ -47,15 +47,10 @@ final class ShowEntitySerializer {
   static HoverEvent.@NotNull ShowEntity deserialize(@NotNull CompoundBinaryTag compound, boolean snakeCase,
                                                     @NotNull NBTComponentSerializerImpl serializer) {
     Key entityType = Key.key(getRequiredTag(compound, snakeCase ? SHOW_ENTITY_ID : SHOW_ENTITY_TYPE, BinaryTagTypes.STRING).value());
-
-    BinaryTag entityIdTag = compound.get(snakeCase ? SHOW_ENTITY_UUID : SHOW_ENTITY_ID);
-    if (entityIdTag == null) {
-      throw new IllegalArgumentException("The show entity compound tag does not contain an entity id field");
-    }
-
-    UUID entityId = UUIDSerializer.deserialize(entityIdTag);
+    BinaryTag entityIdTag = getRequiredTag(compound, snakeCase ? SHOW_ENTITY_UUID : SHOW_ENTITY_ID);
     BinaryTag entityNameTag = compound.get(SHOW_ENTITY_NAME);
 
+    UUID entityId = UUIDSerializer.deserialize(entityIdTag);
     if (entityNameTag == null) {
       return HoverEvent.ShowEntity.showEntity(entityType, entityId);
     } else {
@@ -69,9 +64,9 @@ final class ShowEntitySerializer {
       .putString(snakeCase ? SHOW_ENTITY_ID : SHOW_ENTITY_TYPE, showEntity.type().asString())
       .put(snakeCase ? SHOW_ENTITY_UUID : SHOW_ENTITY_ID, UUIDSerializer.serialize(showEntity.id()));
 
-    Component customName = showEntity.name();
-    if (customName != null) {
-      builder.put(SHOW_ENTITY_NAME, serializer.serialize(customName));
+    Component entityName = showEntity.name();
+    if (entityName != null) {
+      builder.put(SHOW_ENTITY_NAME, serializer.serialize(entityName));
     }
 
     return builder.build();
