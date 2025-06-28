@@ -32,7 +32,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import org.junit.jupiter.api.Test;
 
-public final class TextComponentTest extends SerializerTest {
+final class TextComponentTest extends SerializerTest {
   @Test
   public void testSimple() {
     this.test(
