@@ -29,6 +29,7 @@ import net.kyori.adventure.nbt.StringBinaryTag;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import org.junit.jupiter.api.Test;
 
 public final class TextComponentTest extends SerializerTest {
@@ -53,34 +54,34 @@ public final class TextComponentTest extends SerializerTest {
         .append(Component.text("s", NamedTextColor.RED))
         .build(),
       CompoundBinaryTag.builder()
-        .putString("text", "c")
-        .putString("color", "gold")
+        .putString(ComponentTreeConstants.TEXT, "c")
+        .putString(ComponentTreeConstants.COLOR, "gold")
         .put(
-          "extra",
+          ComponentTreeConstants.EXTRA,
           ListBinaryTag.builder()
             .add(CompoundBinaryTag.builder()
-              .putString("text", "o")
-              .putString("color", "dark_aqua")
+              .putString(ComponentTreeConstants.TEXT, "o")
+              .putString(ComponentTreeConstants.COLOR, "dark_aqua")
               .build())
             .add(CompoundBinaryTag.builder()
-              .putString("text", "l")
-              .putString("color", "light_purple")
+              .putString(ComponentTreeConstants.TEXT, "l")
+              .putString(ComponentTreeConstants.COLOR, "light_purple")
               .build())
             .add(CompoundBinaryTag.builder()
-              .putString("text", "o")
-              .putString("color", "dark_purple")
+              .putString(ComponentTreeConstants.TEXT, "o")
+              .putString(ComponentTreeConstants.COLOR, "dark_purple")
               .build())
             .add(CompoundBinaryTag.builder()
-              .putString("text", "u")
-              .putString("color", "blue")
+              .putString(ComponentTreeConstants.TEXT, "u")
+              .putString(ComponentTreeConstants.COLOR, "blue")
               .build())
             .add(CompoundBinaryTag.builder()
-              .putString("text", "r")
-              .putString("color", "dark_green")
+              .putString(ComponentTreeConstants.TEXT, "r")
+              .putString(ComponentTreeConstants.COLOR, "dark_green")
               .build())
             .add(CompoundBinaryTag.builder()
-              .putString("text", "s")
-              .putString("color", "red")
+              .putString(ComponentTreeConstants.TEXT, "s")
+              .putString(ComponentTreeConstants.COLOR, "red")
               .build())
             .build()
         )
@@ -98,22 +99,22 @@ public final class TextComponentTest extends SerializerTest {
         .append(Component.text("A what?", NamedTextColor.DARK_AQUA))
         .build(),
       CompoundBinaryTag.builder()
-        .putString("text", "This is a test.")
-        .putString("color", "dark_purple")
+        .putString(ComponentTreeConstants.TEXT, "This is a test.")
+        .putString(ComponentTreeConstants.COLOR, "dark_purple")
         .put(
-          "hover_event",
+          ComponentTreeConstants.HOVER_EVENT_SNAKE,
           CompoundBinaryTag.builder()
-            .putString("action", "show_text")
-            .putString("value", "A test.")
+            .putString(ComponentTreeConstants.HOVER_EVENT_ACTION, "show_text")
+            .putString(ComponentTreeConstants.HOVER_EVENT_VALUE, "A test.")
             .build()
         )
         .put(
-          "extra",
+          ComponentTreeConstants.EXTRA,
           ListBinaryTag.heterogeneousListBinaryTag()
             .add(StringBinaryTag.stringBinaryTag(" "))
             .add(CompoundBinaryTag.builder()
-              .putString("text", "A what?")
-              .putString("color", "dark_aqua")
+              .putString(ComponentTreeConstants.TEXT, "A what?")
+              .putString(ComponentTreeConstants.COLOR, "dark_aqua")
               .build())
             .build()
             .wrapHeterogeneity()
