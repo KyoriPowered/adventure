@@ -100,6 +100,7 @@ public final class NBTSerializerOptions {
   private static final OptionState.Versioned BY_DATA_VERSION;
 
   private static final int VERSION_23W40A = 3679;
+  private static final int VERSION_24W09A = 3819;
 
   static {
     OptionSchema.Mutable schema = OptionSchema.emptySchema();
@@ -124,7 +125,11 @@ public final class NBTSerializerOptions {
           .value(EMIT_DEFAULT_NBT_INTERPRET_VALUE, false)
           .value(EMIT_SHOW_ENTITY_UUID_TYPE, ShowEntityUUIDEmitMode.EMIT_INT_ARRAY)
           .value(SHOW_ITEM_HOVER_DATA_MODE, ShowItemHoverDataMode.EMIT_LEGACY_NBT)
-        )
+      )
+      .version(
+        VERSION_24W09A,
+        builder -> builder.value(SHOW_ITEM_HOVER_DATA_MODE, ShowItemHoverDataMode.EMIT_DATA_COMPONENTS)
+      )
       .build();
   }
 
