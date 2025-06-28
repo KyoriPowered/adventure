@@ -31,8 +31,6 @@ import net.kyori.adventure.nbt.ListBinaryTag;
 import net.kyori.adventure.nbt.StringBinaryTag;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 final class UUIDSerializer {
@@ -68,11 +66,11 @@ final class UUIDSerializer {
       case EMIT_INT_ARRAY:
         return IntArrayBinaryTag.intArrayBinaryTag(createArrayFromUUID(uuid));
       case EMIT_LIST:
-        List<BinaryTag> tags = new ArrayList<>();
+        ListBinaryTag.Builder<IntBinaryTag> builder = ListBinaryTag.builder(BinaryTagTypes.INT);
         for (int value : createArrayFromUUID(uuid)) {
-          tags.add(IntBinaryTag.intBinaryTag(value));
+          builder.add(IntBinaryTag.intBinaryTag(value));
         }
-        return ListBinaryTag.listBinaryTag(BinaryTagTypes.INT, tags);
+        return builder.build();
       default:
         // Never called, but needed for proper compilation
         throw new IllegalStateException("Unknown emit mode: " + emitMode);

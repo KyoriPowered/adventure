@@ -37,40 +37,40 @@ final class ShadowColorSerializer {
   private ShadowColorSerializer() {
   }
 
+  static @NotNull ShadowColor deserialize(@NotNull BinaryTag tag) {
+    if (tag instanceof IntBinaryTag) {
+      IntBinaryTag castTag = (IntBinaryTag) tag;
+      return ShadowColor.shadowColor(castTag.value());
+    } else if (tag instanceof ListBinaryTag) {
+      ListBinaryTag castTag = (ListBinaryTag) tag;
+      return ShadowColor.shadowColor(
+        getShadowColorComponent(castTag, 0),
+        getShadowColorComponent(castTag, 1),
+        getShadowColorComponent(castTag, 2),
+        getShadowColorComponent(castTag, 3)
+      );
+    } else {
+      throw new IllegalArgumentException("The binary tag representing the shadow color is of an invalid type");
+    }
+  }
+
   static @Nullable BinaryTag serialize(@NotNull ShadowColor color, @NotNull NBTComponentSerializerImpl serializer) {
-    NBTSerializerOptions.ShadowColorEmitMode emitMode = serializer.flags().value(NBTSerializerOptions.SHADOW_COLOR_MODE);
+    NBTSerializerOptions.ShadowColorEmitMode emitMode = serializer.options().value(NBTSerializerOptions.SHADOW_COLOR_MODE);
     switch (emitMode) {
       case NONE:
         return null;
       case EMIT_INTEGER:
         return IntBinaryTag.intBinaryTag(color.value());
       case EMIT_ARRAY:
-        ListBinaryTag.Builder<FloatBinaryTag> shadowColorTagBuilder = ListBinaryTag.builder(BinaryTagTypes.FLOAT);
-        addShadowColorComponent(shadowColorTagBuilder, color.red());
-        addShadowColorComponent(shadowColorTagBuilder, color.green());
-        addShadowColorComponent(shadowColorTagBuilder, color.blue());
-        addShadowColorComponent(shadowColorTagBuilder, color.alpha());
-        return shadowColorTagBuilder.build();
+        ListBinaryTag.Builder<FloatBinaryTag> builder = ListBinaryTag.builder(BinaryTagTypes.FLOAT);
+        addShadowColorComponent(builder, color.red());
+        addShadowColorComponent(builder, color.green());
+        addShadowColorComponent(builder, color.blue());
+        addShadowColorComponent(builder, color.alpha());
+        return builder.build();
       default:
         // Never called, but needed for proper compilation
         throw new IllegalArgumentException("Unknown shadow color emit mode: " + emitMode);
-    }
-  }
-
-  static @NotNull ShadowColor deserialize(@NotNull BinaryTag tag) {
-    if (tag instanceof IntBinaryTag) {
-      IntBinaryTag castShadowColorTag = (IntBinaryTag) tag;
-      return ShadowColor.shadowColor(castShadowColorTag.value());
-    } else if (tag instanceof ListBinaryTag) {
-      ListBinaryTag castShadowColorTag = (ListBinaryTag) tag;
-      return ShadowColor.shadowColor(
-        getShadowColorComponent(castShadowColorTag, 0),
-        getShadowColorComponent(castShadowColorTag, 1),
-        getShadowColorComponent(castShadowColorTag, 2),
-        getShadowColorComponent(castShadowColorTag, 3)
-      );
-    } else {
-      throw new IllegalArgumentException("The binary tag representing the shadow color is of an invalid type");
     }
   }
 

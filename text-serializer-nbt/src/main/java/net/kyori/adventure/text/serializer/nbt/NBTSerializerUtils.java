@@ -36,18 +36,18 @@ final class NBTSerializerUtils {
   private NBTSerializerUtils() {
   }
 
-  static <B extends BinaryTag> @NotNull B getRequiredTag(@NotNull CompoundBinaryTag compoundTag,
+  static <B extends BinaryTag> @NotNull B getRequiredTag(@NotNull CompoundBinaryTag compound,
                                                          @NotNull String name, @NotNull BinaryTagType<B> tagType) {
-    B tag = getOptionalTag(compoundTag, name, tagType);
+    B tag = getOptionalTag(compound, name, tagType);
     if (tag == null) {
       throw new IllegalArgumentException("The specified compound tag does not contain a \"" + name + "\" field");
     }
     return tag;
   }
 
-  static <B extends BinaryTag> @Nullable B getOptionalTag(@NotNull CompoundBinaryTag compoundTag,
+  static <B extends BinaryTag> @Nullable B getOptionalTag(@NotNull CompoundBinaryTag compound,
                                                           @NotNull String name, @NotNull BinaryTagType<B> tagType) {
-    BinaryTag tag = compoundTag.get(name);
+    BinaryTag tag = compound.get(name);
     if (tag == null) {
       return null;
     }

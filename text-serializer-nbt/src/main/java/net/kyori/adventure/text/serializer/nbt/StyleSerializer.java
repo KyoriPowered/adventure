@@ -78,24 +78,24 @@ final class StyleSerializer {
       styleBuilder.insertion(insertionTag.value());
     }
 
-    CompoundBinaryTag binaryClickEvent = getOptionalTag(compound, CLICK_EVENT_SNAKE, BinaryTagTypes.COMPOUND);
-    if (binaryClickEvent == null) {
-      binaryClickEvent = getOptionalTag(compound, CLICK_EVENT_CAMEL, BinaryTagTypes.COMPOUND);
-      if (binaryClickEvent != null) {
-        styleBuilder.clickEvent(ClickEventSerializer.deserializeCamel(binaryClickEvent));
+    CompoundBinaryTag clickEventTag = getOptionalTag(compound, CLICK_EVENT_SNAKE, BinaryTagTypes.COMPOUND);
+    if (clickEventTag == null) {
+      clickEventTag = getOptionalTag(compound, CLICK_EVENT_CAMEL, BinaryTagTypes.COMPOUND);
+      if (clickEventTag != null) {
+        styleBuilder.clickEvent(ClickEventSerializer.deserializeCamel(clickEventTag));
       }
     } else {
-      styleBuilder.clickEvent(ClickEventSerializer.deserializeSnake(binaryClickEvent));
+      styleBuilder.clickEvent(ClickEventSerializer.deserializeSnake(clickEventTag));
     }
 
-    CompoundBinaryTag binaryHoverEvent = getOptionalTag(compound, HOVER_EVENT_SNAKE, BinaryTagTypes.COMPOUND);
-    if (binaryHoverEvent == null) {
-      binaryHoverEvent = getOptionalTag(compound, HOVER_EVENT_CAMEL, BinaryTagTypes.COMPOUND);
-      if (binaryHoverEvent != null) {
-        styleBuilder.hoverEvent(HoverEventSerializer.deserialize(binaryHoverEvent, false, serializer));
+    CompoundBinaryTag hoverEventTag = getOptionalTag(compound, HOVER_EVENT_SNAKE, BinaryTagTypes.COMPOUND);
+    if (hoverEventTag == null) {
+      hoverEventTag = getOptionalTag(compound, HOVER_EVENT_CAMEL, BinaryTagTypes.COMPOUND);
+      if (hoverEventTag != null) {
+        styleBuilder.hoverEvent(HoverEventSerializer.deserialize(hoverEventTag, false, serializer));
       }
     } else {
-      styleBuilder.hoverEvent(HoverEventSerializer.deserialize(binaryHoverEvent, true, serializer));
+      styleBuilder.hoverEvent(HoverEventSerializer.deserialize(hoverEventTag, true, serializer));
     }
 
     BinaryTag shadowColorTag = compound.get(SHADOW_COLOR);
@@ -108,7 +108,7 @@ final class StyleSerializer {
 
   static void serialize(@NotNull Style style, CompoundBinaryTag.@NotNull Builder builder,
                         @NotNull NBTComponentSerializerImpl serializer) {
-    OptionState flags = serializer.flags();
+    OptionState flags = serializer.options();
 
     TextColor color = style.color();
     if (color != null) {
@@ -141,16 +141,16 @@ final class StyleSerializer {
       boolean emitCamelCaseClickEvent = clickEventValueMode == NBTSerializerOptions.ClickEventValueMode.CAMEL_CASE;
 
       if (emitBothClickEvents || emitSnakeCaseClickEvent) {
-        BinaryTag serializedClickEvent = ClickEventSerializer.serialize(clickEvent, true);
-        if (serializedClickEvent != null) {
-          builder.put(CLICK_EVENT_SNAKE, serializedClickEvent);
+        BinaryTag clickEventTag = ClickEventSerializer.serialize(clickEvent, true);
+        if (clickEventTag != null) {
+          builder.put(CLICK_EVENT_SNAKE, clickEventTag);
         }
       }
 
       if (emitBothClickEvents || emitCamelCaseClickEvent) {
-        BinaryTag serializedClickEvent = ClickEventSerializer.serialize(clickEvent, false);
-        if (serializedClickEvent != null) {
-          builder.put(CLICK_EVENT_CAMEL, serializedClickEvent);
+        BinaryTag clickEventTag = ClickEventSerializer.serialize(clickEvent, false);
+        if (clickEventTag != null) {
+          builder.put(CLICK_EVENT_CAMEL, clickEventTag);
         }
       }
     }
@@ -164,25 +164,25 @@ final class StyleSerializer {
       boolean emitCamelCaseHoverEvent = hoverEventValueMode == NBTSerializerOptions.HoverEventValueMode.CAMEL_CASE;
 
       if (emitBothHoverEvents || emitSnakeCaseHoverEvent) {
-        BinaryTag serializedHoverEvent = HoverEventSerializer.serialize(hoverEvent, true, serializer);
-        if (serializedHoverEvent != null) {
-          builder.put(HOVER_EVENT_SNAKE, serializedHoverEvent);
+        BinaryTag hoverEventTag = HoverEventSerializer.serialize(hoverEvent, true, serializer);
+        if (hoverEventTag != null) {
+          builder.put(HOVER_EVENT_SNAKE, hoverEventTag);
         }
       }
 
       if (emitBothHoverEvents || emitCamelCaseHoverEvent) {
-        BinaryTag serializedHoverEvent = HoverEventSerializer.serialize(hoverEvent, false, serializer);
-        if (serializedHoverEvent != null) {
-          builder.put(HOVER_EVENT_CAMEL, serializedHoverEvent);
+        BinaryTag hoverEventTag = HoverEventSerializer.serialize(hoverEvent, false, serializer);
+        if (hoverEventTag != null) {
+          builder.put(HOVER_EVENT_CAMEL, hoverEventTag);
         }
       }
     }
 
     ShadowColor shadowColor = style.shadowColor();
     if (shadowColor != null) {
-      BinaryTag serializedShadowColor = ShadowColorSerializer.serialize(shadowColor, serializer);
-      if (serializedShadowColor != null) {
-        builder.put(SHADOW_COLOR, serializedShadowColor);
+      BinaryTag shadowColorTag = ShadowColorSerializer.serialize(shadowColor, serializer);
+      if (shadowColorTag != null) {
+        builder.put(SHADOW_COLOR, shadowColorTag);
       }
     }
   }

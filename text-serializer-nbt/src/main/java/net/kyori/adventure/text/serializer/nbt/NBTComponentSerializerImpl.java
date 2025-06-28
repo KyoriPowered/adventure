@@ -101,11 +101,11 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
       .orElseGet(() -> new NBTComponentSerializerImpl(NBTSerializerOptions.schema().emptyState()));
   }
 
-  private final OptionState flags;
+  private final OptionState options;
 
-  NBTComponentSerializerImpl(@NotNull OptionState flags) {
-    this.flags = requireNonNull(flags, "flags");
-    if (flags.schema() != NBTSerializerOptions.schema()) {
+  NBTComponentSerializerImpl(@NotNull OptionState options) {
+    this.options = requireNonNull(options, "options");
+    if (options.schema() != NBTSerializerOptions.schema()) {
       throw new IllegalArgumentException("The specified option state does not use the NBT serializer option schema");
     }
   }
@@ -115,19 +115,19 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
     if (input instanceof StringBinaryTag) {
       return Component.text(((StringBinaryTag) input).value());
     } else if (input instanceof ListBinaryTag) {
-      ListBinaryTag castTag = (ListBinaryTag) input;
-      if (castTag.isEmpty()) {
+      ListBinaryTag castInput = (ListBinaryTag) input;
+      if (castInput.isEmpty()) {
         throw new IllegalArgumentException("The list binary tag must not be empty");
       }
 
-      Component rootTag = this.deserialize(castTag.get(0));
-      for (int index = 1; index < castTag.size(); index++) {
-        rootTag = rootTag.append(this.deserialize(castTag.get(index)));
+      Component rootTag = this.deserialize(castInput.get(0));
+      for (int index = 1; index < castInput.size(); index++) {
+        rootTag = rootTag.append(this.deserialize(castInput.get(index)));
       }
 
       return rootTag;
     } else if (!(input instanceof CompoundBinaryTag)) {
-      throw new IllegalArgumentException("The input isn't a compound or string binary tag");
+      throw new IllegalArgumentException("The input isn't a compound, string or list binary tag");
     }
 
     CompoundBinaryTag compound = (CompoundBinaryTag) input;
@@ -241,14 +241,11 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
 
   @Override
   public @NotNull BinaryTag serialize(@NotNull Component component) {
-    if (this.flags.value(NBTSerializerOptions.EMIT_COMPACT_TEXT_COMPONENT) && component instanceof TextComponent
+    if (this.options.value(NBTSerializerOptions.EMIT_COMPACT_TEXT_COMPONENT) && component instanceof TextComponent
       && !component.hasStyling() && component.children().isEmpty()) {
       return StringBinaryTag.stringBinaryTag(((TextComponent) component).content());
     }
-    return writeCompoundComponent(component);
-  }
 
-  private @NotNull CompoundBinaryTag writeCompoundComponent(@NotNull Component component) {
     CompoundBinaryTag.Builder builder = CompoundBinaryTag.builder();
 
     if (component instanceof TextComponent) {
@@ -273,11 +270,11 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
     } else if (component instanceof ScoreComponent) {
       ScoreComponent score = (ScoreComponent) component;
 
-      CompoundBinaryTag.Builder scoreBuilder = CompoundBinaryTag.builder()
+      CompoundBinaryTag.Builder scoreTagBuilder = CompoundBinaryTag.builder()
         .putString(SCORE_NAME, score.name())
         .putString(SCORE_OBJECTIVE, score.objective());
 
-      builder.put(SCORE, scoreBuilder.build());
+      builder.put(SCORE, scoreTagBuilder.build());
     } else if (component instanceof SelectorComponent) {
       SelectorComponent selector = (SelectorComponent) component;
       builder.putString(SELECTOR, selector.pattern());
@@ -291,7 +288,7 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
       builder.putString(NBT, nbt.nbtPath());
 
       boolean interpret = nbt.interpret();
-      if (this.flags.value(NBTSerializerOptions.EMIT_DEFAULT_NBT_INTERPRET_VALUE) || interpret) {
+      if (this.options.value(NBTSerializerOptions.EMIT_DEFAULT_NBT_INTERPRET_VALUE) || interpret) {
         builder.putBoolean(NBT_INTERPRET, interpret);
       }
 
@@ -324,15 +321,15 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
     return builder.build();
   }
 
-  @NotNull OptionState flags() {
-    return this.flags;
+  @NotNull OptionState options() {
+    return this.options;
   }
 
-  private static @NotNull IllegalArgumentException notSureHowToDeserialize(BinaryTag tag) {
+  private static @NotNull IllegalArgumentException notSureHowToDeserialize(@NotNull BinaryTag tag) {
     return new IllegalArgumentException("Don't know how to turn " + tag + " into a Component");
   }
 
-  private static @NotNull IllegalArgumentException notSureHowToSerialize(Component component) {
+  private static @NotNull IllegalArgumentException notSureHowToSerialize(@NotNull Component component) {
     return new IllegalArgumentException("Don't know how to serialize " + component + " as a Component");
   }
 
