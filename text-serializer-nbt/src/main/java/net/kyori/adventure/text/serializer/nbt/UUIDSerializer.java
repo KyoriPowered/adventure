@@ -24,9 +24,7 @@
 package net.kyori.adventure.text.serializer.nbt;
 
 import net.kyori.adventure.nbt.BinaryTag;
-import net.kyori.adventure.nbt.BinaryTagTypes;
 import net.kyori.adventure.nbt.IntArrayBinaryTag;
-import net.kyori.adventure.nbt.IntBinaryTag;
 import net.kyori.adventure.nbt.ListBinaryTag;
 import net.kyori.adventure.nbt.StringBinaryTag;
 import org.jetbrains.annotations.NotNull;
@@ -59,37 +57,19 @@ final class UUIDSerializer {
     }
   }
 
-  static @NotNull BinaryTag serialize(@NotNull UUID uuid, NBTSerializerOptions.@NotNull ShowEntityUUIDEmitMode emitMode) {
-    switch (emitMode) {
-      case EMIT_STRING:
-        return StringBinaryTag.stringBinaryTag(uuid.toString());
-      case EMIT_INT_ARRAY:
-        return IntArrayBinaryTag.intArrayBinaryTag(createArrayFromUUID(uuid));
-      case EMIT_LIST:
-        ListBinaryTag.Builder<IntBinaryTag> builder = ListBinaryTag.builder(BinaryTagTypes.INT);
-        for (int value : createArrayFromUUID(uuid)) {
-          builder.add(IntBinaryTag.intBinaryTag(value));
-        }
-        return builder.build();
-      default:
-        // Never called, but needed for proper compilation
-        throw new IllegalStateException("Unknown emit mode: " + emitMode);
-    }
+  static @NotNull BinaryTag serialize(@NotNull UUID uuid) {
+    long mostSignificantBits = uuid.getMostSignificantBits();
+    long leastSignificantBits = uuid.getLeastSignificantBits();
+    return IntArrayBinaryTag.intArrayBinaryTag(
+      mostSignificantBits(mostSignificantBits), leastSignificantBits(mostSignificantBits),
+      mostSignificantBits(leastSignificantBits), leastSignificantBits(leastSignificantBits)
+    );
   }
 
   private static @NotNull UUID createUUIDFromArray(int @NotNull [] array) {
     long mostSignificantBits = binaryConcat(array[0], array[1]);
     long leastSignificantBits = binaryConcat(array[2], array[3]);
     return new UUID(mostSignificantBits, leastSignificantBits);
-  }
-
-  private static int @NotNull [] createArrayFromUUID(@NotNull UUID uuid) {
-    long mostSignificantBits = uuid.getMostSignificantBits();
-    long leastSignificantBits = uuid.getLeastSignificantBits();
-    return new int[] {
-      mostSignificantBits(mostSignificantBits), leastSignificantBits(mostSignificantBits),
-      mostSignificantBits(leastSignificantBits), leastSignificantBits(leastSignificantBits)
-    };
   }
 
   private static long binaryConcat(int mostSignificantBits, int leastSignificantBits) {

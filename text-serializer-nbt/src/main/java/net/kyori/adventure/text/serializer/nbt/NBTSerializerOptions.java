@@ -38,14 +38,6 @@ import org.jetbrains.annotations.NotNull;
 public final class NBTSerializerOptions {
 
   /**
-   * Whether to emit text components with no style and no children as a plain text.
-   *
-   * @since 4.24.0
-   * @sinceMinecraft 1.20.3
-   */
-  public static final Option<Boolean> EMIT_COMPACT_TEXT_COMPONENT;
-
-  /**
    * How to emit shadow colour data.
    *
    * @since 4.24.0
@@ -69,25 +61,11 @@ public final class NBTSerializerOptions {
   /**
    * Whether to emit the default hover event item stack quantity of {@code 1}.
    *
-   * <p>When enabled, this matches Vanilla as of 1.20.5.</p>
+   * <p>When enabled, this matches Vanilla as of 1.21.6.</p>
    *
    * @since 4.24.0
    */
-  public static final Option<Boolean> EMIT_DEFAULT_ITEM_HOVER_QUANTITY;
-
-  /**
-   * Whether to emit the default interpret value ({@code false}) of NBT components.
-   *
-   * @since 4.24.0
-   */
-  public static final Option<Boolean> EMIT_DEFAULT_NBT_INTERPRET_VALUE;
-
-  /**
-   * Control how entity ids of show entity hover events should be emitted.
-   *
-   * @since 4.24.0
-   */
-  public static final Option<ShowEntityUUIDEmitMode> EMIT_SHOW_ENTITY_UUID_TYPE;
+  public static final Option<Boolean> EMIT_DEFAULT_ITEM_HOVER_QUANTITY; // TODO: Find out in which version it was added and add it to the option state
 
   /**
    * How to emit show item hovers in {@code hoverEvent} (camelCase) fields.
@@ -106,26 +84,20 @@ public final class NBTSerializerOptions {
 
   static {
     OptionSchema.Mutable schema = OptionSchema.emptySchema();
-    EMIT_COMPACT_TEXT_COMPONENT = schema.booleanOption(key("emit/compact_text_component"), true);
     SHADOW_COLOR_MODE = schema.enumOption(key("emit/shadow_color"), ShadowColorEmitMode.class, ShadowColorEmitMode.EMIT_INTEGER);
     EMIT_HOVER_EVENT_TYPE = schema.enumOption(key("emit/hover_value_mode"), HoverEventValueMode.class, HoverEventValueMode.SNAKE_CASE);
     EMIT_CLICK_EVENT_TYPE = schema.enumOption(key("emit/click_value_mode"), ClickEventValueMode.class, ClickEventValueMode.SNAKE_CASE);
     EMIT_DEFAULT_ITEM_HOVER_QUANTITY = schema.booleanOption(key("emit/default_item_hover_quantity"), true);
-    EMIT_DEFAULT_NBT_INTERPRET_VALUE = schema.booleanOption(key("emit/default_nbt_interpret_value"), true);
-    EMIT_SHOW_ENTITY_UUID_TYPE = schema.enumOption(key("emit/show_entity_uuid"), ShowEntityUUIDEmitMode.class, ShowEntityUUIDEmitMode.EMIT_INT_ARRAY);
     SHOW_ITEM_HOVER_DATA_MODE = schema.enumOption(key("emit/show_item_hover_data"), ShowItemHoverDataMode.class, ShowItemHoverDataMode.EMIT_EITHER);
     SCHEMA = schema.frozenView();
 
     BY_DATA_VERSION = SCHEMA.versionedStateBuilder()
       .version(
         VERSION_23W40A,
-        builder -> builder.value(EMIT_COMPACT_TEXT_COMPONENT, true)
-          .value(SHADOW_COLOR_MODE, ShadowColorEmitMode.NONE)
+        builder -> builder.value(SHADOW_COLOR_MODE, ShadowColorEmitMode.NONE)
           .value(EMIT_HOVER_EVENT_TYPE, HoverEventValueMode.CAMEL_CASE)
           .value(EMIT_CLICK_EVENT_TYPE, ClickEventValueMode.CAMEL_CASE)
           .value(EMIT_DEFAULT_ITEM_HOVER_QUANTITY, false)
-          .value(EMIT_DEFAULT_NBT_INTERPRET_VALUE, false)
-          .value(EMIT_SHOW_ENTITY_UUID_TYPE, ShowEntityUUIDEmitMode.EMIT_INT_ARRAY)
           .value(SHOW_ITEM_HOVER_DATA_MODE, ShowItemHoverDataMode.EMIT_LEGACY_NBT)
       )
       .version(
@@ -246,32 +218,6 @@ public final class NBTSerializerOptions {
      * @since 4.24.0
      */
     EMIT_ARRAY
-  }
-
-  /**
-   * Configure how to emit entity ids of show entity hover events.
-   *
-   * @since 4.24.0
-   */
-  public enum ShowEntityUUIDEmitMode {
-    /**
-     * Emit as a string.
-     *
-     * @since 4.24.0
-     */
-    EMIT_STRING,
-    /**
-     * Emit as an int array.
-     *
-     * @since 4.24.0
-     */
-    EMIT_INT_ARRAY,
-    /**
-     * Emit as an int list.
-     *
-     * @since 4.24.0
-     */
-    EMIT_LIST
   }
 
   /**

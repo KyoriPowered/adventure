@@ -66,15 +66,8 @@ final class ShowEntitySerializer {
   static @NotNull CompoundBinaryTag serialize(HoverEvent.@NotNull ShowEntity showEntity, boolean snakeCase,
                                               @NotNull NBTComponentSerializerImpl serializer) {
     CompoundBinaryTag.Builder builder = CompoundBinaryTag.builder()
-      .putString(snakeCase ? SHOW_ENTITY_ID : SHOW_ENTITY_TYPE, showEntity.type().asString());
-
-    UUID entityId = showEntity.id();
-    if (snakeCase) {
-      NBTSerializerOptions.ShowEntityUUIDEmitMode uuidEmitMode = serializer.options().value(NBTSerializerOptions.EMIT_SHOW_ENTITY_UUID_TYPE);
-      builder.put(SHOW_ENTITY_UUID, UUIDSerializer.serialize(entityId, uuidEmitMode));
-    } else {
-      builder.put(SHOW_ENTITY_ID, UUIDSerializer.serialize(entityId, NBTSerializerOptions.ShowEntityUUIDEmitMode.EMIT_STRING));
-    }
+      .putString(snakeCase ? SHOW_ENTITY_ID : SHOW_ENTITY_TYPE, showEntity.type().asString())
+      .put(snakeCase ? SHOW_ENTITY_UUID : SHOW_ENTITY_ID, UUIDSerializer.serialize(showEntity.id()));
 
     Component customName = showEntity.name();
     if (customName != null) {
