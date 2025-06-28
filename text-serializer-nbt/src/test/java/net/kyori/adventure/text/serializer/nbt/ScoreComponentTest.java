@@ -23,36 +23,46 @@
  */
 package net.kyori.adventure.text.serializer.nbt;
 
-import net.kyori.adventure.nbt.BinaryTag;
+import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.text.Component;
-import org.jspecify.annotations.NonNull;
-import org.junit.jupiter.api.BeforeEach;
+import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public abstract class SerializerTest {
-
-  private NBTComponentSerializer serializer;
-
-  public void test(@NonNull Component component, @NonNull BinaryTag tag) {
-    assertEquals(tag, this.serialize(component));
-    assertEquals(component, this.deserialize(tag));
+final class ScoreComponentTest extends SerializerTest {
+  @Test
+  public void test() {
+    String name = "abc";
+    String objective = "def";
+    this.test(
+      Component.score(name, objective),
+      CompoundBinaryTag.builder()
+        .put(
+          ComponentTreeConstants.SCORE,
+          CompoundBinaryTag.builder()
+            .putString(ComponentTreeConstants.SCORE_NAME, name)
+            .putString(ComponentTreeConstants.SCORE_OBJECTIVE, objective)
+            .build()
+        )
+        .build()
+    );
   }
 
-  @BeforeEach
-  public void setUpSerializer() {
-    this.serializer = this.createSerializer();
-  }
-
-  protected @NonNull Component deserialize(@NonNull BinaryTag tag) {
-    return this.serializer.deserialize(tag);
-  }
-
-  protected @NonNull BinaryTag serialize(@NonNull Component component) {
-    return this.serializer.serialize(component);
-  }
-
-  protected @NonNull NBTComponentSerializer createSerializer() {
-    return NBTComponentSerializer.nbt();
+  @Test
+  public void testWithoutObjective() {
+    assertThrows(
+      IllegalArgumentException.class,
+      () -> this.deserialize(
+        CompoundBinaryTag.builder()
+          .put(
+            ComponentTreeConstants.SCORE,
+            CompoundBinaryTag.builder()
+              .putString(ComponentTreeConstants.SCORE_NAME, "qwerty")
+              .build()
+          )
+          .build()
+      )
+    );
   }
 }

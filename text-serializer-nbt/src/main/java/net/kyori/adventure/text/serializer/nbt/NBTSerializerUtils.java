@@ -82,6 +82,6 @@ final class NBTSerializerUtils {
   }
 
   private static @NotNull IllegalArgumentException noSuchField(@NotNull String name) {
-    return new IllegalArgumentException("The specified compound tag does not contain a \"" + name + "\" field");
+    return new IllegalArgumentException("The specified compound tag does not contain a field with name of \"" + name + "\"");
   }
 }
