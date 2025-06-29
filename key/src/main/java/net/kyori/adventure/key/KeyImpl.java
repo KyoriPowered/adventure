@@ -45,18 +45,18 @@ final class KeyImpl implements Key {
   private final String value;
 
   KeyImpl(final @NotNull String namespace, final @NotNull String value) {
-    checkError("namespace", namespace, value, Key.checkNamespace(namespace));
-    checkError("value", namespace, value, Key.checkValue(value));
+    checkError("namespace", namespace, namespace, value, Key.checkNamespace(namespace), NAMESPACE_PATTERN);
+    checkError("value", value, namespace, value, Key.checkValue(value), VALUE_PATTERN);
     this.namespace = requireNonNull(namespace, "namespace");
     this.value = requireNonNull(value, "value");
   }
 
-  private static void checkError(final String name, final String namespace, final String value, final OptionalInt index) {
+  private static void checkError(final String name, final String checkPart, final String namespace, final String value, final OptionalInt index, final String pattern) {
     if (index.isPresent()) {
       final int indexValue = index.getAsInt();
-      final char character = value.charAt(indexValue);
+      final char character = checkPart.charAt(indexValue);
       throw new InvalidKeyException(namespace, value, String.format(
-        "Non [a-z0-9_.-] character in %s of Key[%s] at index %d ('%s', bytes: %s)",
+        "Non " + pattern + " character in %s of Key[%s] at index %d ('%s', bytes: %s)",
         name,
         asString(namespace, value),
         indexValue,

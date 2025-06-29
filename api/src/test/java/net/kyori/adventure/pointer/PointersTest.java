@@ -90,4 +90,25 @@ final class PointersTest {
     assertEquals("1", rebuilt.get(p0).get());
     assertEquals("1", rebuilt.get(p1).get());
   }
+
+  @Test
+  public void ofPointersSuppliersWithNoParent() {
+    final Pointer<String> p0 = Pointer.pointer(String.class, Key.key("adventure:test1"));
+    final Pointer<String> p1 = Pointer.pointer(String.class, Key.key("adventure:test2"));
+
+    final PointersSupplier<Integer> supplier = PointersSupplier.<Integer>builder()
+      .resolving(p1, (object) -> "1")
+      .build();
+
+    assertFalse(supplier.supports(p0));
+    assertTrue(supplier.supports(p1));
+
+    final Pointers pointer = supplier.view(10);
+    assertFalse(pointer.get(p0).isPresent());
+    assertEquals("1", pointer.get(p1).get());
+
+    final Pointers rebuilt = pointer.toBuilder().withStatic(p0, "1").build();
+    assertEquals("1", rebuilt.get(p0).get());
+    assertEquals("1", rebuilt.get(p1).get());
+  }
 }

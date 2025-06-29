@@ -253,6 +253,29 @@ class StringIOTest {
   }
 
   @Test
+  void testHeterogeneousListTag() throws IOException {
+    final String input = "[\"Tag #1\",2]";
+    final BinaryTag tag = this.stringToTag(input, false, true);
+    assertEquals("[{:\"Tag #1\"},{:2}]", this.tagToString(tag));
+    final StringWriter output = new StringWriter();
+    try (final TagStringWriter writer = new TagStringWriter(output, "").heterogeneousLists(true)) {
+      writer.writeTag(tag);
+    }
+    assertEquals(input, output.toString());
+
+    final ListTagBuilder<BinaryTag> builder = new ListTagBuilder<>(true);
+    builder.add(StringBinaryTag.stringBinaryTag("Tag #1"));
+    builder.add(IntBinaryTag.intBinaryTag(2));
+    assertEquals(builder.build(), tag);
+  }
+
+  @Test
+  void testFailHeterogeneousListTag() {
+    final String input = "[\"Tag #1\",2]";
+    assertThrows(IllegalArgumentException.class, () -> this.stringToTag(input, false, false));
+  }
+
+  @Test
   void testReadsLegacyCompoundKey() throws IOException {
     final String input = "{test*compound: \"hello world\"}";
     assertThrows(IOException.class, () -> this.stringToTag(input, false));
@@ -320,6 +343,31 @@ class StringIOTest {
     assertEquals(CompoundBinaryTag.builder().putByte("test", (byte) 0).build(), this.stringToTag("{test: 0b0000B}"));
     assertThrows(StringTagParseException.class, () -> this.stringToTag("{test: 0x}"));
   }
+  
+  @Test
+  void testReadingEmbeddedCompound() throws IOException {
+    final String input = "{test: \"hello\"} extra content";
+    final StringBuilder remainderBuilder = new StringBuilder();
+    final CompoundBinaryTag tag = TagStringIO.get().asCompound(input, remainderBuilder);
+    assertEquals(CompoundBinaryTag.builder().putString("test", "hello").build(), tag);
+    assertEquals(" extra content", remainderBuilder.toString());
+  }
+
+  @Test
+  void testReadingEmbedded() throws IOException {
+    final String input = "[1, 1, 1] extra content";
+    final StringBuilder remainderBuilder = new StringBuilder();
+    final BinaryTag tag = TagStringIO.get().asTag(input, remainderBuilder);
+    assertEquals(ListBinaryTag.builder().add(IntBinaryTag.intBinaryTag(1)).add(IntBinaryTag.intBinaryTag(1)).add(IntBinaryTag.intBinaryTag(1)).build(), tag);
+    assertEquals(" extra content", remainderBuilder.toString());
+  }
+
+  @Test
+  void testReadingInvalidEmbeddedTag() throws IOException {
+    final String input = "{test: \"hello\" extra content";
+    final StringBuilder remainderBuilder = new StringBuilder();
+    assertThrows(IOException.class, () -> TagStringIO.get().asTag(input, remainderBuilder));
+  }
 
   private String tagToString(final BinaryTag tag) throws IOException {
     final StringWriter writer = new StringWriter();
@@ -334,9 +382,14 @@ class StringIOTest {
   }
 
   private BinaryTag stringToTag(final String input, final boolean acceptLegacy) throws StringTagParseException {
+    return this.stringToTag(input, acceptLegacy, false);
+  }
+
+  private BinaryTag stringToTag(final String input, final boolean acceptLegacy, final boolean acceptHeterogeneousLists) throws StringTagParseException {
     final CharBuffer buffer = new CharBuffer(input);
     final TagStringReader parser = new TagStringReader(buffer);
     parser.legacy(acceptLegacy);
+    parser.heterogeneousLists(acceptHeterogeneousLists);
     final BinaryTag ret = parser.tag();
     if (buffer.skipWhitespace().hasMore()) {
       throw buffer.makeError("Trailing content after parse!");

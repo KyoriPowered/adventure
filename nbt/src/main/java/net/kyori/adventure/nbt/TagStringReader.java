@@ -40,7 +40,7 @@ final class TagStringReader {
 
   private final CharBuffer buffer;
   private boolean acceptLegacy;
-  private boolean acceptHeterogenousLists;
+  private boolean acceptHeterogeneousLists;
   private int depth;
 
   TagStringReader(final CharBuffer buffer) {
@@ -64,7 +64,8 @@ final class TagStringReader {
   }
 
   public ListBinaryTag list() throws StringTagParseException {
-    final ListBinaryTag.Builder<BinaryTag> builder = ListBinaryTag.builder();
+    final ListBinaryTag.Builder<BinaryTag> builder = this.acceptHeterogeneousLists
+      ? ListBinaryTag.heterogeneousListBinaryTag() : ListBinaryTag.builder();
     this.buffer.expect(Tokens.ARRAY_BEGIN);
     final boolean prefixedIndex = this.acceptLegacy && this.buffer.peek() == '0' && this.buffer.peek(1) == ':';
     if (!prefixedIndex && this.buffer.takeIf(Tokens.ARRAY_END)) {
@@ -438,5 +439,9 @@ final class TagStringReader {
 
   public void legacy(final boolean acceptLegacy) {
     this.acceptLegacy = acceptLegacy;
+  }
+
+  public void heterogeneousLists(final boolean acceptHeterogeneousLists) {
+    this.acceptHeterogeneousLists = acceptHeterogeneousLists;
   }
 }

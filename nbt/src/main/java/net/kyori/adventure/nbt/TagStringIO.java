@@ -26,6 +26,7 @@ package net.kyori.adventure.nbt;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Arrays;
+import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -37,17 +38,29 @@ public final class TagStringIO {
   private static final TagStringIO INSTANCE = new TagStringIO(new Builder());
 
   /**
-   * Get an instance of {@link TagStringIO} that creates reads and writes using standard options.
+   * Get an instance of {@link TagStringIO} that reads and writes using standard options.
    *
    * @return the basic instance
    * @since 4.0.0
+   * @deprecated For removal since 4.22.0, use {@link #tagStringIO()} instead
    */
+  @Deprecated
   public static @NotNull TagStringIO get() {
+    return tagStringIO();
+  }
+
+  /**
+   * Gets an instance of {@link TagStringIO} that reads and writes using standard options.
+   *
+   * @return the basic instance
+   * @since 4.22.0
+   */
+  public static @NotNull TagStringIO tagStringIO() {
     return INSTANCE;
   }
 
   /**
-   * Create an new builder to configure IO.
+   * Create a new builder to configure IO.
    *
    * @return a builder
    * @since 4.0.0
@@ -58,11 +71,15 @@ public final class TagStringIO {
 
   private final boolean acceptLegacy;
   private final boolean emitLegacy;
+  private final boolean acceptHeterogeneousLists;
+  private final boolean emitHeterogeneousLists;
   private final String indent;
 
   private TagStringIO(final @NotNull Builder builder) {
     this.acceptLegacy = builder.acceptLegacy;
     this.emitLegacy = builder.emitLegacy;
+    this.acceptHeterogeneousLists = builder.acceptHeterogeneousLists;
+    this.emitHeterogeneousLists = builder.emitHeterogeneousLists;
     this.indent = builder.indent;
   }
 
@@ -77,15 +94,95 @@ public final class TagStringIO {
    * @throws IOException on any syntax errors
    * @since 4.0.0
    */
-  public CompoundBinaryTag asCompound(final String input) throws IOException {
+  public @NotNull CompoundBinaryTag asCompound(final @NotNull String input) throws IOException {
+    Objects.requireNonNull(input, "input");
     try {
       final CharBuffer buffer = new CharBuffer(input);
       final TagStringReader parser = new TagStringReader(buffer);
       parser.legacy(this.acceptLegacy);
+      parser.heterogeneousLists(this.acceptHeterogeneousLists);
       final CompoundBinaryTag tag = parser.compound();
       if (buffer.skipWhitespace().hasMore()) {
         throw new IOException("Document had trailing content after first CompoundTag");
       }
+      return tag;
+    } catch (final StringTagParseException ex) {
+      throw new IOException(ex);
+    }
+  }
+
+  /**
+   * Read the string into a tag.
+   *
+   * <p>When working with untrusted input (such as from the network), users should be careful
+   * to validate that the {@code input} string is of a reasonable size.</p>
+   *
+   * @param input Input data
+   * @return the parsed tag
+   * @throws IOException on any syntax errors
+   * @since 4.22.0
+   */
+  public @NotNull BinaryTag asTag(final @NotNull String input) throws IOException {
+    Objects.requireNonNull(input, "input");
+    try {
+      final CharBuffer buffer = new CharBuffer(input);
+      final TagStringReader parser = new TagStringReader(buffer);
+      parser.legacy(this.acceptLegacy);
+      parser.heterogeneousLists(this.acceptHeterogeneousLists);
+      final BinaryTag tag = parser.tag();
+      if (buffer.skipWhitespace().hasMore()) {
+        throw new IOException("Document had trailing content after first Tag");
+      }
+      return tag;
+    } catch (final StringTagParseException ex) {
+      throw new IOException(ex);
+    }
+  }
+
+  /**
+   * Read the string into an embedded compound tag, returning the remainder of the input.
+   *
+   * @param input the input string
+   * @param remainder the appendable to write the remainder to
+   * @return the parsed tag with the remainder
+   * @throws IOException on any syntax errors
+   * @since 4.22.0
+   */
+  public @NotNull CompoundBinaryTag asCompound(final @NotNull String input, final @NotNull Appendable remainder) throws IOException {
+    Objects.requireNonNull(input, "input");
+    Objects.requireNonNull(remainder, "remainder");
+    try {
+      final CharBuffer buffer = new CharBuffer(input);
+      final TagStringReader parser = new TagStringReader(buffer);
+      parser.legacy(this.acceptLegacy);
+      parser.heterogeneousLists(this.acceptHeterogeneousLists);
+      final CompoundBinaryTag tag = parser.compound();
+      remainder.append(buffer.takeRest());
+      return tag;
+    } catch (final StringTagParseException ex) {
+      throw new IOException(ex);
+    }
+  }
+
+  /**
+   * Read the string into an embedded tag, returning the remainder of the input.
+   *
+   * @param input the input string
+   * @param remainder the appendable to write the remainder to
+   * @return the parsed tag with the remainder
+   * @throws IOException on any syntax errors
+   * @since 4.22.0
+   */
+  public @NotNull BinaryTag asTag(final @NotNull String input, final @NotNull Appendable remainder) throws IOException {
+    Objects.requireNonNull(input, "input");
+    Objects.requireNonNull(remainder, "remainder");
+    try {
+      final CharBuffer buffer = new CharBuffer(input);
+      final TagStringReader parser = new TagStringReader(buffer);
+      parser.legacy(this.acceptLegacy);
+      parser.heterogeneousLists(this.acceptHeterogeneousLists);
+      final BinaryTag tag = parser.tag();
+      remainder.append(buffer.takeRest());
       return tag;
     } catch (final StringTagParseException ex) {
       throw new IOException(ex);
@@ -100,7 +197,7 @@ public final class TagStringIO {
    * @throws IOException if any errors occur writing to string
    * @since 4.0.0
    */
-  public String asString(final CompoundBinaryTag input) throws IOException {
+  public @NotNull String asString(final @NotNull CompoundBinaryTag input) throws IOException {
     return this.asString((BinaryTag) input);
   }
 
@@ -112,13 +209,29 @@ public final class TagStringIO {
    * @throws IOException if any errors occur writing to string
    * @since 4.20.0
    */
-  public String asString(final BinaryTag input) throws IOException {
+  public @NotNull String asString(final @NotNull BinaryTag input) throws IOException {
+    Objects.requireNonNull(input, "input");
     final StringBuilder sb = new StringBuilder();
     try (final TagStringWriter emit = new TagStringWriter(sb, this.indent)) {
       emit.legacy(this.emitLegacy);
+      emit.heterogeneousLists(this.emitHeterogeneousLists);
       emit.writeTag(input);
     }
     return sb.toString();
+  }
+
+  /**
+   * Writes a compound tag to in string format.
+   *
+   * <p>The provided {@link Writer} will remain open after reading a tag.</p>
+   *
+   * @param input Tag to write
+   * @param dest Writer to write to
+   * @throws IOException if any IO or syntax errors occur while parsing
+   * @since 4.0.0
+   */
+  public void toWriter(final @NotNull CompoundBinaryTag input, final @NotNull Writer dest) throws IOException {
+    this.toWriter((BinaryTag) input, dest);
   }
 
   /**
@@ -129,11 +242,14 @@ public final class TagStringIO {
    * @param input Tag to write
    * @param dest Writer to write to
    * @throws IOException if any IO or syntax errors occur while parsing
-   * @since 4.0.0
+   * @since 4.22.0
    */
-  public void toWriter(final CompoundBinaryTag input, final Writer dest) throws IOException {
+  public void toWriter(final @NotNull BinaryTag input, final @NotNull Writer dest) throws IOException {
+    Objects.requireNonNull(input, "input");
+    Objects.requireNonNull(dest, "dest");
     try (final TagStringWriter emit = new TagStringWriter(dest, this.indent)) {
       emit.legacy(this.emitLegacy);
+      emit.heterogeneousLists(this.emitHeterogeneousLists);
       emit.writeTag(input);
     }
   }
@@ -146,6 +262,8 @@ public final class TagStringIO {
   public static class Builder {
     private boolean acceptLegacy = true;
     private boolean emitLegacy = false;
+    private boolean acceptHeterogeneousLists = false;
+    private boolean emitHeterogeneousLists = false;
     private String indent = "";
 
     Builder() {
@@ -163,7 +281,7 @@ public final class TagStringIO {
     public @NotNull Builder indent(final int spaces) {
       if (spaces == 0) {
         this.indent = "";
-      } else if ((this.indent.length() > 0 && this.indent.charAt(0) != ' ') || spaces != this.indent.length()) {
+      } else if ((!this.indent.isEmpty() && this.indent.charAt(0) != ' ') || spaces != this.indent.length()) {
         final char[] indent = new char[spaces];
         Arrays.fill(indent, ' ');
         this.indent = String.copyValueOf(indent);
@@ -183,7 +301,7 @@ public final class TagStringIO {
     public @NotNull Builder indentTab(final int tabs) {
       if (tabs == 0) {
         this.indent = "";
-      } else if ((this.indent.length() > 0 && this.indent.charAt(0) != '\t') || tabs != this.indent.length()) {
+      } else if ((!this.indent.isEmpty() && this.indent.charAt(0) != '\t') || tabs != this.indent.length()) {
         final char[] indent = new char[tabs];
         Arrays.fill(indent, '\t');
         this.indent = String.copyValueOf(indent);
@@ -217,6 +335,36 @@ public final class TagStringIO {
      */
     public @NotNull Builder emitLegacy(final boolean legacy) {
       this.emitLegacy = legacy;
+      return this;
+    }
+
+    /**
+     * Configure whether or not the resulting IO configuration will accept heterogeneous lists.
+     *
+     * <p>Heterogeneous lists are lists that contain multiple types of tags, such as a list containing
+     * both strings and integers.</p>
+     *
+     * @param heterogeneous whether to accept heterogeneous lists
+     * @return this builder
+     * @since 4.22.0
+     */
+    public @NotNull Builder acceptHeterogeneousLists(final boolean heterogeneous) {
+      this.acceptHeterogeneousLists = heterogeneous;
+      return this;
+    }
+
+    /**
+     * Configure whether or not the resulting IO configuration will emit heterogeneous lists.
+     *
+     * <p>Heterogeneous lists are lists that contain multiple types of tags, such as a list containing
+     * both strings and integers.</p>
+     *
+     * @param heterogeneous whether to emit heterogeneous lists
+     * @return this builder
+     * @since 4.22.0
+     */
+    public @NotNull Builder emitHeterogeneousLists(final boolean heterogeneous) {
+      this.emitHeterogeneousLists = heterogeneous;
       return this;
     }
 

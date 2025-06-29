@@ -41,6 +41,7 @@ final class TagStringWriter implements AutoCloseable {
    */
   private boolean needsSeparator;
   private boolean legacy;
+  private boolean heterogeneousLists;
 
   TagStringWriter(final Appendable out, final String indent) {
     this.out = out;
@@ -49,6 +50,11 @@ final class TagStringWriter implements AutoCloseable {
 
   public TagStringWriter legacy(final boolean legacy) {
     this.legacy = legacy;
+    return this;
+  }
+
+  public TagStringWriter heterogeneousLists(final boolean emitHeterogeneousLists) {
+    this.heterogeneousLists = emitHeterogeneousLists;
     return this;
   }
 
@@ -96,7 +102,8 @@ final class TagStringWriter implements AutoCloseable {
     return this;
   }
 
-  private TagStringWriter writeList(final ListBinaryTag tag) throws IOException {
+  private TagStringWriter writeList(final ListBinaryTag rawTag) throws IOException {
+    final ListBinaryTag tag = this.heterogeneousLists ? rawTag.unwrapHeterogeneity() : rawTag.wrapHeterogeneity();
     this.beginList();
     int idx = 0;
     final boolean lineBreaks = this.prettyPrinting() && this.breakListElement(tag.elementType());
