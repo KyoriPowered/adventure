@@ -115,7 +115,7 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
     if (input instanceof StringBinaryTag) {
       return Component.text(((StringBinaryTag) input).value());
     } else if (input instanceof ListBinaryTag) {
-      ListBinaryTag castInput = (ListBinaryTag) input;
+      ListBinaryTag castInput = ((ListBinaryTag) input).unwrapHeterogeneity();
       if (castInput.isEmpty()) {
         throw new IllegalArgumentException("The list binary tag representing a component must not be empty");
       }
