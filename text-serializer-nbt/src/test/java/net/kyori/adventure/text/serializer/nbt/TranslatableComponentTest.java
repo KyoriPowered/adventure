@@ -36,11 +36,14 @@ import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
-final class TranslatableComponentTest extends SerializerTest {
+import static net.kyori.adventure.text.serializer.nbt.SerializerTests.name;
+import static net.kyori.adventure.text.serializer.nbt.SerializerTests.testComponent;
+
+final class TranslatableComponentTest {
   @Test
-  public void testNoArgs() {
+  void testNoArgs() {
     String translationKey = "multiplayer.player.left";
-    this.test(
+    testComponent(
       Component.translatable(translationKey),
       CompoundBinaryTag.builder()
         .putString(ComponentTreeConstants.TRANSLATE, translationKey)
@@ -49,10 +52,11 @@ final class TranslatableComponentTest extends SerializerTest {
   }
 
   @Test
-  public void testFallback() {
+  void testFallback() {
     String translationKey = "thisIsA";
     String fallback = "This is a test.";
-    this.test(
+
+    testComponent(
       Component.translatable()
         .key(translationKey)
         .fallback(fallback)
@@ -65,26 +69,27 @@ final class TranslatableComponentTest extends SerializerTest {
   }
 
   @Test
-  public void testSingleArgWithEvents() {
+  void testSingleArgWithEvents() {
     String translationKey = "translatable.message";
 
     UUID id = UUID.fromString("86365c36-e272-4d32-8ab8-d4fee19f6231");
     String name = "Codestech";
     String command = String.format("/msg %s ", name);
+    String showEntityId = "minecraft:player";
 
-    this.test(
+    testComponent(
       Component.translatable()
         .key(translationKey)
         .color(NamedTextColor.YELLOW)
         .arguments(Component.text()
           .content(name)
           .clickEvent(ClickEvent.suggestCommand(command))
-          .hoverEvent(HoverEvent.showEntity(Key.key("minecraft", "player"), id, Component.text(name)))
+          .hoverEvent(HoverEvent.showEntity(Key.key(showEntityId), id, Component.text(name)))
           .build())
         .build(),
       CompoundBinaryTag.builder()
         .putString(ComponentTreeConstants.TRANSLATE, translationKey)
-        .putString(ComponentTreeConstants.COLOR, "yellow")
+        .putString(ComponentTreeConstants.COLOR, name(NamedTextColor.YELLOW))
         .put(
           ComponentTreeConstants.TRANSLATE_WITH,
           ListBinaryTag.builder()
@@ -94,15 +99,15 @@ final class TranslatableComponentTest extends SerializerTest {
               .put(
                 ComponentTreeConstants.CLICK_EVENT_SNAKE,
                 CompoundBinaryTag.builder()
-                  .putString(ComponentTreeConstants.CLICK_EVENT_ACTION, "suggest_command")
+                  .putString(ComponentTreeConstants.CLICK_EVENT_ACTION, name(ClickEvent.Action.SUGGEST_COMMAND))
                   .putString(ComponentTreeConstants.CLICK_EVENT_COMMAND, command)
                   .build()
               )
               .put(
                 ComponentTreeConstants.HOVER_EVENT_SNAKE,
                 CompoundBinaryTag.builder()
-                  .putString(ComponentTreeConstants.HOVER_EVENT_ACTION, "show_entity")
-                  .putString(ComponentTreeConstants.SHOW_ENTITY_ID, "minecraft:player")
+                  .putString(ComponentTreeConstants.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ENTITY))
+                  .putString(ComponentTreeConstants.SHOW_ENTITY_ID, showEntityId)
                   .put(
                     ComponentTreeConstants.SHOW_ENTITY_UUID,
                     IntArrayBinaryTag.intArrayBinaryTag(-2043257802, -495825614, -1967598338, -509648335)

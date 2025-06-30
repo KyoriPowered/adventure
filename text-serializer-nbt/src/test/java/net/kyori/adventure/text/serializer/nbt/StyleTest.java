@@ -44,17 +44,20 @@ import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
+import static net.kyori.adventure.text.serializer.nbt.SerializerTests.deserializeStyle;
+import static net.kyori.adventure.text.serializer.nbt.SerializerTests.name;
+import static net.kyori.adventure.text.serializer.nbt.SerializerTests.testStyle;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-final class StyleTest extends SerializerTest {
+final class StyleTest {
   @Test
-  public void testEmpty() {
-    this.test(Style.empty(), CompoundBinaryTag.empty());
+  void testEmpty() {
+    testStyle(Style.empty(), CompoundBinaryTag.empty());
   }
 
   @Test
-  public void testHexColor() {
-    this.test(
+  void testHexColor() {
+    testStyle(
       Style.style(TextColor.color(0x0a1ab9)),
       CompoundBinaryTag.builder()
         .putString(ComponentTreeConstants.COLOR, "#0A1AB9")
@@ -63,51 +66,50 @@ final class StyleTest extends SerializerTest {
   }
 
   @Test
-  public void testNamedColor() {
-    this.test(
+  void testNamedColor() {
+    testStyle(
       Style.style(NamedTextColor.LIGHT_PURPLE),
       CompoundBinaryTag.builder()
-        .putString(ComponentTreeConstants.COLOR, "light_purple")
+        .putString(ComponentTreeConstants.COLOR, name(NamedTextColor.LIGHT_PURPLE))
         .build()
     );
   }
 
   @Test
-  public void testDecoration() {
-    this.test(
+  void testDecoration() {
+    testStyle(
       Style.style(TextDecoration.BOLD),
       CompoundBinaryTag.builder()
-        .putBoolean("bold", true)
+        .putBoolean(name(TextDecoration.BOLD), true)
         .build()
     );
 
-    this.test(
+    testStyle(
       Style.style(TextDecoration.BOLD.withState(false)),
       CompoundBinaryTag.builder()
-        .putBoolean("bold", false)
+        .putBoolean(name(TextDecoration.BOLD), false)
         .build()
     );
 
-    this.test(
+    testStyle(
       Style.style(TextDecoration.BOLD.withState(TriState.NOT_SET)),
       CompoundBinaryTag.empty()
     );
 
     assertThrows(
       IllegalArgumentException.class,
-      () -> this.deserialize(
+      () -> deserializeStyle(
         CompoundBinaryTag.builder()
-          .putString(ComponentTreeConstants.TEXT, "")
-          .put("bold", EndBinaryTag.endBinaryTag())
+          .put(name(TextDecoration.BOLD), EndBinaryTag.endBinaryTag())
           .build()
       )
     );
   }
 
   @Test
-  public void testShadowColorInt() {
+  void testShadowColorInt() {
     int shadowColorValue = 0xCCFF0022;
-    this.test(
+    testStyle(
       Style.style(ShadowColor.shadowColor(shadowColorValue)),
       CompoundBinaryTag.builder()
         .putInt(ComponentTreeConstants.SHADOW_COLOR, shadowColorValue)
@@ -116,8 +118,8 @@ final class StyleTest extends SerializerTest {
   }
 
   @Test
-  public void testShadowColorFloats() {
-    this.test(
+  void testShadowColorFloats() {
+    testStyle(
       NBTComponentSerializer.builder()
         .editOptions(builder -> builder.value(NBTSerializerOptions.SHADOW_COLOR_MODE, NBTSerializerOptions.ShadowColorEmitMode.EMIT_ARRAY))
         .build(),
@@ -126,9 +128,9 @@ final class StyleTest extends SerializerTest {
         .put(
           ComponentTreeConstants.SHADOW_COLOR,
           ListBinaryTag.builder(BinaryTagTypes.FLOAT)
-            .add(FloatBinaryTag.floatBinaryTag(0.501960813999176f))
-            .add(FloatBinaryTag.floatBinaryTag(0.250980406999588f))
-            .add(FloatBinaryTag.floatBinaryTag(0.800000011920929f))
+            .add(FloatBinaryTag.floatBinaryTag(0.5019608f))
+            .add(FloatBinaryTag.floatBinaryTag(0.2509804f))
+            .add(FloatBinaryTag.floatBinaryTag(0.8f))
             .add(FloatBinaryTag.floatBinaryTag(1f))
             .build()
         )
@@ -137,9 +139,9 @@ final class StyleTest extends SerializerTest {
   }
 
   @Test
-  public void testInsertion() {
+  void testInsertion() {
     String insertion = "honk";
-    this.test(
+    testStyle(
       Style.style()
         .insertion(insertion)
         .build(),
@@ -150,9 +152,9 @@ final class StyleTest extends SerializerTest {
   }
 
   @Test
-  public void testMixedFontColorDecorationClickEvent() {
+  void testMixedFontColorDecorationClickEvent() {
     String clickEventUrl = "https://github.com";
-    this.test(
+    testStyle(
       Style.style()
         .font(Key.key("kyori", "kittens"))
         .color(NamedTextColor.RED)
@@ -161,12 +163,12 @@ final class StyleTest extends SerializerTest {
         .build(),
       CompoundBinaryTag.builder()
         .putString(ComponentTreeConstants.FONT, "kyori:kittens")
-        .putString(ComponentTreeConstants.COLOR, "red")
-        .putBoolean("bold", true)
+        .putString(ComponentTreeConstants.COLOR, name(NamedTextColor.RED))
+        .putBoolean(name(TextDecoration.BOLD), true)
         .put(
           ComponentTreeConstants.CLICK_EVENT_SNAKE,
           CompoundBinaryTag.builder()
-            .putString(ComponentTreeConstants.CLICK_EVENT_ACTION, "open_url")
+            .putString(ComponentTreeConstants.CLICK_EVENT_ACTION, name(ClickEvent.Action.OPEN_URL))
             .putString(ComponentTreeConstants.CLICK_EVENT_URL, clickEventUrl)
             .build()
         )
@@ -175,11 +177,11 @@ final class StyleTest extends SerializerTest {
   }
 
   @Test
-  public void testShowEntityHoverEvent() {
+  void testShowEntityHoverEvent() {
     UUID showEntityUUID = UUID.randomUUID();
     String showEntityName = "Dolores";
 
-    this.test(
+    testStyle(
       Style.style()
         .hoverEvent(HoverEvent.showEntity(
           Key.key(Key.MINECRAFT_NAMESPACE, "pig"),
@@ -191,7 +193,7 @@ final class StyleTest extends SerializerTest {
         .put(
           ComponentTreeConstants.HOVER_EVENT_SNAKE,
           CompoundBinaryTag.builder()
-            .putString(ComponentTreeConstants.HOVER_EVENT_ACTION, "show_entity")
+            .putString(ComponentTreeConstants.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ENTITY))
             .putString(ComponentTreeConstants.SHOW_ENTITY_ID, "minecraft:pig")
             .put(
               ComponentTreeConstants.SHOW_ENTITY_UUID,

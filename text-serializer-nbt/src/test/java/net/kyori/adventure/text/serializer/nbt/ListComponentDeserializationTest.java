@@ -34,18 +34,20 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import org.junit.jupiter.api.Test;
 
+import static net.kyori.adventure.text.serializer.nbt.SerializerTests.deserializeComponent;
+import static net.kyori.adventure.text.serializer.nbt.SerializerTests.name;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-final class ListComponentDeserializationTest extends SerializerTest {
+final class ListComponentDeserializationTest {
   @Test
-  public void testStringListDeserialization() {
+  void testStringListDeserialization() {
     assertEquals(
       Component.text()
         .content("a")
         .append(Component.text("b"))
         .append(Component.text("c"))
         .build(),
-      this.deserialize(
+      deserializeComponent(
         ListBinaryTag.builder(BinaryTagTypes.STRING)
           .add(StringBinaryTag.stringBinaryTag("a"))
           .add(StringBinaryTag.stringBinaryTag("b"))
@@ -56,7 +58,7 @@ final class ListComponentDeserializationTest extends SerializerTest {
   }
 
   @Test
-  public void testCompoundListDeserialization() {
+  void testCompoundListDeserialization() {
     assertEquals(
       Component.text()
         .content("x")
@@ -71,19 +73,19 @@ final class ListComponentDeserializationTest extends SerializerTest {
             .build()
         )
         .build(),
-      this.deserialize(
+      deserializeComponent(
         ListBinaryTag.builder(BinaryTagTypes.COMPOUND)
           .add(
             CompoundBinaryTag.builder()
               .putString(ComponentTreeConstants.TEXT, "x")
-              .putString(ComponentTreeConstants.COLOR, "red")
+              .putString(ComponentTreeConstants.COLOR, name(NamedTextColor.RED))
               .put(
                 ComponentTreeConstants.EXTRA,
                 ListBinaryTag.builder(BinaryTagTypes.COMPOUND)
                   .add(
                     CompoundBinaryTag.builder()
                       .putString(ComponentTreeConstants.TRANSLATE, "message.disconnection")
-                      .putBoolean("bold", true)
+                      .putBoolean(name(TextDecoration.BOLD), true)
                       .build()
                   )
                   .build()
@@ -93,14 +95,14 @@ final class ListComponentDeserializationTest extends SerializerTest {
           .add(
             CompoundBinaryTag.builder()
               .putString(ComponentTreeConstants.TEXT, "z")
-              .putString(ComponentTreeConstants.COLOR, "dark_aqua")
-              .putBoolean("italic", false)
+              .putString(ComponentTreeConstants.COLOR, name(NamedTextColor.DARK_AQUA))
+              .putBoolean(name(TextDecoration.ITALIC), false)
               .build()
           )
           .add(
             CompoundBinaryTag.builder()
               .putString(ComponentTreeConstants.TEXT, "qwerty")
-              .putString(ComponentTreeConstants.COLOR, "black")
+              .putString(ComponentTreeConstants.COLOR, name(NamedTextColor.BLACK))
               .put(
                 ComponentTreeConstants.EXTRA,
                 ListBinaryTag.builder(BinaryTagTypes.STRING)
@@ -115,7 +117,7 @@ final class ListComponentDeserializationTest extends SerializerTest {
   }
 
   @Test
-  public void testHeterogeneousListDeserialization() {
+  void testHeterogeneousListDeserialization() {
     assertEquals(
       Component.text()
         .content("a")
@@ -124,19 +126,19 @@ final class ListComponentDeserializationTest extends SerializerTest {
         .append(Component.text("b", NamedTextColor.YELLOW))
         .append(Component.text("qwerty"))
         .build(),
-      this.deserialize(
+      deserializeComponent(
         ListBinaryTag.heterogeneousListBinaryTag()
           .add(
             CompoundBinaryTag.builder()
               .putString(ComponentTreeConstants.TEXT, "a")
-              .putString(ComponentTreeConstants.COLOR, "red")
+              .putString(ComponentTreeConstants.COLOR, name(NamedTextColor.RED))
               .build()
           )
           .add(StringBinaryTag.stringBinaryTag(""))
           .add(
             CompoundBinaryTag.builder()
               .putString(ComponentTreeConstants.TEXT, "b")
-              .putString(ComponentTreeConstants.COLOR, "yellow")
+              .putString(ComponentTreeConstants.COLOR, name(NamedTextColor.YELLOW))
               .build()
           )
           .add(StringBinaryTag.stringBinaryTag("qwerty"))
