@@ -29,7 +29,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.renderer.TranslatableComponentRenderer;
 import net.kyori.examination.Examinable;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -49,19 +48,6 @@ public interface GlobalTranslator extends Translator, Examinable {
    * @since 4.10.0
    */
   static @NotNull GlobalTranslator translator() {
-    return GlobalTranslatorImpl.INSTANCE;
-  }
-
-  /**
-   * Gets the global translation source.
-   *
-   * @return the source
-   * @since 4.0.0
-   * @deprecated for removal since 4.10.0, use {@link #translator()} instead.
-   */
-  @Deprecated
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  static @NotNull GlobalTranslator get() {
     return GlobalTranslatorImpl.INSTANCE;
   }
 

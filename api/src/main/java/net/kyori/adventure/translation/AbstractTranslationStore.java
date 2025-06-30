@@ -163,9 +163,7 @@ public abstract class AbstractTranslationStore<T> implements Examinable, Transla
   @Override
   public final boolean equals(final Object other) {
     if (this == other) return true;
-    if (!(other instanceof AbstractTranslationStore)) return false;
-
-    final AbstractTranslationStore<?> that = (AbstractTranslationStore<?>) other;
+    if (!(other instanceof AbstractTranslationStore<?> that)) return false;
 
     return this.name.equals(that.name)
       && this.translations.equals(that.translations)
@@ -194,7 +192,7 @@ public abstract class AbstractTranslationStore<T> implements Examinable, Transla
     private @Nullable T translate(final @NotNull Locale locale) {
       T format = this.translations.get(requireNonNull(locale, "locale"));
       if (format == null) {
-        format = this.translations.get(new Locale(locale.getLanguage())); // try without country
+        format = this.translations.get(Locale.of(locale.getLanguage())); // try without country
         if (format == null) {
           format = this.translations.get(AbstractTranslationStore.this.defaultLocale); // try local default locale
           if (format == null) {
@@ -222,10 +220,8 @@ public abstract class AbstractTranslationStore<T> implements Examinable, Transla
     @Override
     public boolean equals(final Object other) {
       if (this == other) return true;
-      if (!(other instanceof AbstractTranslationStore.Translation)) return false;
-      final AbstractTranslationStore<?>.Translation that = (AbstractTranslationStore<?>.Translation) other;
-      return this.key.equals(that.key) &&
-        this.translations.equals(that.translations);
+      if (!(other instanceof AbstractTranslationStore<?>.Translation that)) return false;
+      return this.key.equals(that.key) && this.translations.equals(that.translations);
     }
 
     @Override

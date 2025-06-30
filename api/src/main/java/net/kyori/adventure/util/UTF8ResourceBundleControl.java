@@ -37,7 +37,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * A {@link ResourceBundle.Control} that enforces UTF-8 string encoding.
  *
- * <p>See https://stackoverflow.com/a/4660195 for more details.</p>
+ * <p>See <a href="https://stackoverflow.com/a/4660195">stackoverflow.com/a/4660195</a> for more details.</p>
  *
  * @since 4.0.0
  */

@@ -41,7 +41,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.0.0
  * @sinceMinecraft 1.16
  */
-public interface Identity extends Examinable, Identified {
+public sealed interface Identity extends Examinable, Identified permits IdentityImpl, NilIdentity {
   /**
    * A pointer to a name.
    *

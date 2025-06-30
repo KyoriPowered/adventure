@@ -40,34 +40,14 @@ import java.util.stream.Stream;
 import net.kyori.adventure.internal.Internals;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-final class ResourcePackInfoImpl implements ResourcePackInfo {
-  private final UUID id;
-  private final URI uri;
-  private final String hash;
-
+record ResourcePackInfoImpl(UUID id, URI uri, String hash) implements ResourcePackInfo {
   ResourcePackInfoImpl(final @NotNull UUID id, final @NotNull URI uri, final @NotNull String hash) {
     this.id = requireNonNull(id, "id");
     this.uri = requireNonNull(uri, "uri");
     this.hash = requireNonNull(hash, "hash");
-  }
-
-  @Override
-  public @NotNull UUID id() {
-    return this.id;
-  }
-
-  @Override
-  public @NotNull URI uri() {
-    return this.uri;
-  }
-
-  @Override
-  public @NotNull String hash() {
-    return this.hash;
   }
 
   @Override
@@ -80,26 +60,8 @@ final class ResourcePackInfoImpl implements ResourcePackInfo {
   }
 
   @Override
-  public String toString() {
+  public @NotNull String toString() {
     return Internals.toString(this);
-  }
-
-  @Override
-  public boolean equals(final @Nullable Object other) {
-    if (this == other) return true;
-    if (!(other instanceof ResourcePackInfoImpl)) return false;
-    final ResourcePackInfoImpl that = (ResourcePackInfoImpl) other;
-    return this.id.equals(that.id) &&
-           this.uri.equals(that.uri) &&
-           this.hash.equals(that.hash);
-  }
-
-  @Override
-  public int hashCode() {
-    int result = this.id.hashCode();
-    result = 31 * result + this.uri.hashCode();
-    result = 31 * result + this.hash.hashCode();
-    return result;
   }
 
   static final class BuilderImpl implements Builder {
@@ -174,8 +136,8 @@ final class ResourcePackInfoImpl implements ResourcePackInfo {
   static String bytesToString(final byte[] arr) {
     final StringBuilder builder = new StringBuilder(arr.length * 2);
     final Formatter fmt = new Formatter(builder, Locale.ROOT);
-    for (int i = 0; i < arr.length; i++) {
-      fmt.format("%02x", arr[i] & 0xff);
+    for (byte b : arr) {
+      fmt.format("%02x", b & 0xff);
     }
     return builder.toString();
   }

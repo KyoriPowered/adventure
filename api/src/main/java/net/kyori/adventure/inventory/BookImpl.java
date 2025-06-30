@@ -35,11 +35,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static java.util.Objects.requireNonNull;
 
-final class BookImpl implements Book {
-  private final Component title;
-  private final Component author;
-  private final List<Component> pages;
-
+record BookImpl(Component title, Component author, List<Component> pages) implements Book {
   BookImpl(final @NotNull Component title, final @NotNull Component author, final @NotNull List<Component> pages) {
     this.title = requireNonNull(title, "title");
     this.author = requireNonNull(author, "author");
@@ -86,29 +82,11 @@ final class BookImpl implements Book {
   }
 
   @Override
-  public boolean equals(final Object o) {
-    if (this == o) return true;
-    if (!(o instanceof BookImpl)) return false;
-    final BookImpl that = (BookImpl) o;
-    return this.title.equals(that.title)
-      && this.author.equals(that.author)
-      && this.pages.equals(that.pages);
-  }
-
-  @Override
-  public int hashCode() {
-    int result = this.title.hashCode();
-    result = 31 * result + this.author.hashCode();
-    result = 31 * result + this.pages.hashCode();
-    return result;
-  }
-
-  @Override
-  public String toString() {
+  public @NotNull String toString() {
     return Internals.toString(this);
   }
 
-  static final class BuilderImpl implements Book.Builder {
+  static final class BuilderImpl implements Builder {
     private Component title = Component.empty();
     private Component author = Component.empty();
     private final List<Component> pages = new ArrayList<>();
@@ -138,7 +116,7 @@ final class BookImpl implements Book {
     }
 
     @Override
-    public @NotNull Builder pages(final @NotNull Component@NotNull... pages) {
+    public @NotNull Builder pages(final @NotNull Component @NotNull ... pages) {
       Collections.addAll(this.pages, pages);
       return this;
     }

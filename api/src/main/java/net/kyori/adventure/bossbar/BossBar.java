@@ -28,6 +28,7 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.util.Index;
+import net.kyori.adventure.util.PlatformAPI;
 import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
@@ -53,8 +54,7 @@ import org.jetbrains.annotations.UnmodifiableView;
  *
  * @since 4.0.0
  */
-@ApiStatus.NonExtendable
-public interface BossBar extends Examinable {
+public sealed interface BossBar extends Examinable permits BossBarImpl {
   /**
    * The minimum value the progress can be.
    *
@@ -67,24 +67,6 @@ public interface BossBar extends Examinable {
    * @since 4.2.0
    */
   float MAX_PROGRESS = 1f;
-  /**
-   * The minimum value the progress can be.
-   *
-   * @since 4.0.0
-   * @deprecated for removal since 4.2.0, use {@link #MIN_PROGRESS}
-   */
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  @Deprecated
-  float MIN_PERCENT = MIN_PROGRESS;
-  /**
-   * The maximum value the progress can be.
-   *
-   * @since 4.0.0
-   * @deprecated for removal since 4.2.0, use {@link #MAX_PROGRESS}
-   */
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  @Deprecated
-  float MAX_PERCENT = MAX_PROGRESS;
 
   /**
    * Creates a new bossbar.
@@ -204,39 +186,6 @@ public interface BossBar extends Examinable {
    */
   @Contract("_ -> this")
   @NotNull BossBar progress(final float progress);
-
-  /**
-   * Gets the progress.
-   *
-   * <p>The progress is a value between 0 and 1.</p>
-   *
-   * @return the progress
-   * @since 4.0.0
-   * @deprecated for removal since 4.2.0, use {@link #progress()}
-   */
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  @Deprecated
-  default float percent() {
-    return this.progress();
-  }
-
-  /**
-   * Sets the progress.
-   *
-   * <p>The progress is a value between 0 and 1.</p>
-   *
-   * @param progress the progress
-   * @return the bossbar
-   * @throws IllegalArgumentException if progress is less than 0 or greater than 1
-   * @since 4.0.0
-   * @deprecated for removal since 4.2.0, use {@link #progress(float)}
-   */
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  @Contract("_ -> this")
-  @Deprecated
-  default @NotNull BossBar percent(final float progress) {
-    return this.progress(progress);
-  }
 
   /**
    * Gets the color.
@@ -423,7 +372,8 @@ public interface BossBar extends Examinable {
    *
    * @since 4.0.0
    */
-  @ApiStatus.OverrideOnly
+  @ApiStatus.NonExtendable
+  @PlatformAPI
   interface Listener {
     /**
      * Bossbar name changed.
@@ -445,22 +395,6 @@ public interface BossBar extends Examinable {
      * @since 4.0.0
      */
     default void bossBarProgressChanged(final @NotNull BossBar bar, final float oldProgress, final float newProgress) {
-      this.bossBarPercentChanged(bar, oldProgress, newProgress);
-    }
-
-    /**
-     * Bossbar progress changed.
-     *
-     * @param bar the bossbar
-     * @param oldProgress the old progress
-     * @param newProgress the new progress
-     * @since 4.0.0
-     * @deprecated for removal since 4.2.0, use {@link #bossBarProgressChanged(BossBar, float, float)}
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-    @Deprecated
-    @SuppressWarnings("DeprecatedIsStillUsed")
-    default void bossBarPercentChanged(final @NotNull BossBar bar, final float oldProgress, final float newProgress) {
     }
 
     /**

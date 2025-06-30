@@ -26,7 +26,6 @@ package net.kyori.adventure.util;
 import java.util.stream.Stream;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
@@ -48,22 +47,6 @@ public interface HSVLike extends Examinable {
    * @since 4.10.0
    */
   static @NotNull HSVLike hsvLike(final float h, final float s, final float v) {
-    return new HSVLikeImpl(h, s, v);
-  }
-
-  /**
-   * Creates a new HSVLike.
-   *
-   * @param h hue color component
-   * @param s saturation color component
-   * @param v value color component
-   * @return a new HSVLike
-   * @since 4.6.0
-   * @deprecated for removal since 4.10.0, use {@link #hsvLike(float, float, float)} instead.
-   */
-  @Deprecated
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  static @NotNull HSVLike of(final float h, final float s, final float v) {
     return new HSVLikeImpl(h, s, v);
   }
 

@@ -34,7 +34,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
-import net.kyori.adventure.util.Buildable;
 import net.kyori.adventure.util.MonkeyBars;
 import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.ApiStatus;

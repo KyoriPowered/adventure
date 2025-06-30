@@ -27,7 +27,6 @@ import java.util.function.Supplier;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.key.Key;
 import net.kyori.examination.Examinable;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,8 +43,7 @@ import static java.util.Objects.requireNonNull;
  * @see Audience#stopSound(SoundStop)
  * @since 4.0.0
  */
-@ApiStatus.NonExtendable
-public interface SoundStop extends Examinable {
+public sealed interface SoundStop extends Examinable permits SoundStopImpl {
   /**
    * Stops all sounds.
    *
@@ -65,12 +63,7 @@ public interface SoundStop extends Examinable {
    */
   static @NotNull SoundStop named(final @NotNull Key sound) {
     requireNonNull(sound, "sound");
-    return new SoundStopImpl(null) {
-      @Override
-      public @NotNull Key sound() {
-        return sound;
-      }
-    };
+    return new SoundStopImpl(sound, null);
   }
 
   /**
@@ -82,12 +75,7 @@ public interface SoundStop extends Examinable {
    */
   static @NotNull SoundStop named(final Sound.@NotNull Type sound) {
     requireNonNull(sound, "sound");
-    return new SoundStopImpl(null) {
-      @Override
-      public @NotNull Key sound() {
-        return sound.key();
-      }
-    };
+    return new SoundStopImpl(sound.key(), null);
   }
 
   /**
@@ -99,12 +87,7 @@ public interface SoundStop extends Examinable {
    */
   static @NotNull SoundStop named(final @NotNull Supplier<? extends Sound.Type> sound) {
     requireNonNull(sound, "sound");
-    return new SoundStopImpl(null) {
-      @Override
-      public @NotNull Key sound() {
-        return sound.get().key();
-      }
-    };
+    return new SoundStopImpl(sound.get().key(), null);
   }
 
   /**
@@ -116,12 +99,7 @@ public interface SoundStop extends Examinable {
    */
   static @NotNull SoundStop source(final Sound.@NotNull Source source) {
     requireNonNull(source, "source");
-    return new SoundStopImpl(source) {
-      @Override
-      public @Nullable Key sound() {
-        return null;
-      }
-    };
+    return new SoundStopImpl(null, source);
   }
 
   /**
@@ -135,12 +113,7 @@ public interface SoundStop extends Examinable {
   static @NotNull SoundStop namedOnSource(final @NotNull Key sound, final Sound.@NotNull Source source) {
     requireNonNull(sound, "sound");
     requireNonNull(source, "source");
-    return new SoundStopImpl(source) {
-      @Override
-      public @NotNull Key sound() {
-        return sound;
-      }
-    };
+    return new SoundStopImpl(sound, source);
   }
 
   /**
@@ -167,12 +140,7 @@ public interface SoundStop extends Examinable {
   static @NotNull SoundStop namedOnSource(final @NotNull Supplier<? extends Sound.Type> sound, final Sound.@NotNull Source source) {
     requireNonNull(sound, "sound");
     requireNonNull(source, "source");
-    return new SoundStopImpl(source) {
-      @Override
-      public @NotNull Key sound() {
-        return sound.get().key();
-      }
-    };
+    return new SoundStopImpl(sound.get().key(), source);
   }
 
   /**

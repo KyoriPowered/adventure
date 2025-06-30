@@ -41,7 +41,7 @@ import org.jetbrains.annotations.NotNull;
  * @see Audience#sendResourcePacks(ResourcePackInfoLike, ResourcePackInfoLike...)
  * @since 4.15.0
  */
-public interface ResourcePackInfo extends Examinable, ResourcePackInfoLike {
+public sealed interface ResourcePackInfo extends Examinable, ResourcePackInfoLike permits ResourcePackInfoImpl {
   /**
    * Creates information about a resource pack.
    *
@@ -99,7 +99,7 @@ public interface ResourcePackInfo extends Examinable, ResourcePackInfoLike {
    *
    * @since 4.15.0
    */
-  interface Builder extends AbstractBuilder<ResourcePackInfo>, ResourcePackInfoLike {
+  sealed interface Builder extends AbstractBuilder<ResourcePackInfo>, ResourcePackInfoLike permits ResourcePackInfoImpl.BuilderImpl {
     /**
      * Sets the id.
      *

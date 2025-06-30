@@ -31,7 +31,6 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
 import net.kyori.adventure.util.Index;
 import net.kyori.examination.Examinable;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
@@ -63,8 +62,7 @@ import static java.util.Objects.requireNonNull;
  * @see SoundStop
  * @since 4.0.0
  */
-@ApiStatus.NonExtendable
-public interface Sound extends Examinable {
+public sealed interface Sound extends Examinable permits SoundImpl {
   /**
    * Create a new builder for {@link Sound} instances.
    *
@@ -411,7 +409,7 @@ public interface Sound extends Examinable {
    *
    * @since 4.12.0
    */
-  interface Builder extends AbstractBuilder<Sound> {
+  sealed interface Builder extends AbstractBuilder<Sound> permits SoundImpl.BuilderImpl {
     /**
      * Set the type of this sound.
      *

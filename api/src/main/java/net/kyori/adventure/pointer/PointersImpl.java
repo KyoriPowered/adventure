@@ -31,33 +31,11 @@ import java.util.function.Supplier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-final class PointersImpl implements Pointers {
-  static final Pointers EMPTY = new Pointers() {
-    @Override
-    public @NotNull <T> Optional<T> get(final @NotNull Pointer<T> pointer) {
-      return Optional.empty();
-    }
+record PointersImpl(Map<Pointer<?>, Supplier<?>> pointers) implements Pointers {
+  static final PointersImpl EMPTY = new PointersImpl(Map.of());
 
-    @Override
-    public <T> boolean supports(final @NotNull Pointer<T> pointer) {
-      return false;
-    }
-
-    @Override
-    public Pointers.@NotNull Builder toBuilder() {
-      return new PointersImpl.BuilderImpl();
-    }
-
-    @Override
-    public String toString() {
-      return "EmptyPointers";
-    }
-  };
-
-  private final Map<Pointer<?>, Supplier<?>> pointers;
-
-  PointersImpl(final @NotNull BuilderImpl builder) {
-    this.pointers = new HashMap<>(builder.pointers);
+  PointersImpl(final @NotNull BuilderImpl pointers) {
+    this(new HashMap<>(pointers.pointers));
   }
 
   @Override
@@ -78,20 +56,11 @@ final class PointersImpl implements Pointers {
     return this.pointers.containsKey(pointer);
   }
 
-  @Override
-  public Pointers.@NotNull Builder toBuilder() {
-    return new BuilderImpl(this);
-  }
-
   static final class BuilderImpl implements Builder {
     private final Map<Pointer<?>, Supplier<?>> pointers;
 
     BuilderImpl() {
       this.pointers = new HashMap<>();
-    }
-
-    BuilderImpl(final @NotNull PointersImpl pointers) {
-      this.pointers = new HashMap<>(pointers.pointers);
     }
 
     @Override

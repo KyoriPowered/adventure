@@ -31,7 +31,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -42,8 +41,7 @@ import org.jetbrains.annotations.Nullable;
  * @since 4.12.0
  * @sinceMinecraft 1.19
  */
-@ApiStatus.NonExtendable
-public interface SignedMessage extends Identified, Examinable {
+public sealed interface SignedMessage extends Identified, Examinable permits SignedMessageImpl {
 
   /**
    * Creates a signature wrapper.
@@ -163,8 +161,7 @@ public interface SignedMessage extends Identified, Examinable {
    * @since 4.12.0
    * @sinceMinecraft 1.19
    */
-  @ApiStatus.NonExtendable
-  interface Signature extends Examinable {
+  sealed interface Signature extends Examinable permits SignedMessageImpl.SignatureImpl {
 
     /**
      * Gets the bytes for this signature.

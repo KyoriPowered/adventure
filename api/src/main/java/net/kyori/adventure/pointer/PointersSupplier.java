@@ -53,7 +53,7 @@ import org.jetbrains.annotations.Nullable;
  * @param <T> the type
  * @since 4.17.0
  */
-public interface PointersSupplier<T> {
+public sealed interface PointersSupplier<T> permits PointersSupplierImpl {
   /**
    * Gets a new pointers supplier builder.
    *
@@ -100,7 +100,7 @@ public interface PointersSupplier<T> {
    * @param <T> the type to supply pointers for
    * @since 4.17.0
    */
-  interface Builder<T> extends AbstractBuilder<PointersSupplier<T>> {
+  sealed interface Builder<T> extends AbstractBuilder<PointersSupplier<T>> permits PointersSupplierImpl.BuilderImpl {
     /**
      * Sets (or removes, if {@code null}) the parent pointer supplier that will be used
      * to resolve pointers that are not supplied by this supplier.

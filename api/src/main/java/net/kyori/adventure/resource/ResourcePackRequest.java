@@ -40,7 +40,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 4.15.0
  */
-public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike {
+public sealed interface ResourcePackRequest extends Examinable, ResourcePackRequestLike permits ResourcePackRequestImpl {
   /**
    * Create a basic request to apply the provided resource packs.
    *
@@ -160,7 +160,7 @@ public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike
    *
    * @since 4.15.0
    */
-  interface Builder extends AbstractBuilder<ResourcePackRequest>, ResourcePackRequestLike {
+  sealed interface Builder extends AbstractBuilder<ResourcePackRequest>, ResourcePackRequestLike permits ResourcePackRequestImpl.BuilderImpl {
     /**
      * Set the resource packs to apply.
      *
