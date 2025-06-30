@@ -26,7 +26,6 @@ package net.kyori.adventure.pointer;
 import java.util.Optional;
 import java.util.function.Supplier;
 import net.kyori.adventure.builder.AbstractBuilder;
-import net.kyori.adventure.util.Buildable;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -37,7 +36,7 @@ import org.jetbrains.annotations.UnknownNullability;
  *
  * @since 4.8.0
  */
-public interface Pointers extends Buildable<Pointers, Pointers.Builder> {
+public sealed interface Pointers permits PointersImpl, PointersSupplierImpl.ForwardingPointers {
   /**
    * Gets an empty pointers collection.
    *
@@ -122,7 +121,7 @@ public interface Pointers extends Buildable<Pointers, Pointers.Builder> {
    * @see Pointers
    * @since 4.8.0
    */
-  interface Builder extends AbstractBuilder<Pointers>, Buildable.Builder<Pointers> {
+  sealed interface Builder extends AbstractBuilder<Pointers> permits PointersImpl.BuilderImpl {
     /**
      * Adds a pointer with a static, optional value.
      *

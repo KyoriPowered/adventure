@@ -30,9 +30,7 @@ import java.util.List;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.util.Buildable;
 import net.kyori.examination.Examinable;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
@@ -47,8 +45,7 @@ import org.jetbrains.annotations.Unmodifiable;
  * @see Audience#openBook(Book)
  * @since 4.0.0
  */
-@ApiStatus.NonExtendable
-public interface Book extends Buildable<Book, Book.Builder>, Examinable {
+public sealed interface Book extends Examinable permits BookImpl {
   /**
    * Creates a book.
    *
@@ -154,24 +151,11 @@ public interface Book extends Buildable<Book, Book.Builder>, Examinable {
   @NotNull Book pages(final @NotNull List<Component> pages);
 
   /**
-   * Create a new builder initialized with the attributes of this book.
-   *
-   * @return the builder
-   */
-  @Override
-  default @NotNull Builder toBuilder() {
-    return builder()
-      .title(this.title())
-      .author(this.author())
-      .pages(this.pages());
-  }
-
-  /**
    * A builder for a {@link Book}.
    *
    * @since 4.0.0
    */
-  interface Builder extends AbstractBuilder<Book>, Buildable.Builder<Book> {
+  sealed interface Builder extends AbstractBuilder<Book> permits BookImpl.BuilderImpl {
     /**
      * Set the title.
      *
@@ -226,13 +210,5 @@ public interface Book extends Buildable<Book, Book.Builder>, Examinable {
      */
     @Contract("_ -> this")
     @NotNull Builder pages(final @NotNull Collection<Component> pages);
-
-    /**
-     * Builds.
-     *
-     * @return a new book
-     */
-    @Override
-    @NotNull Book build();
   }
 }

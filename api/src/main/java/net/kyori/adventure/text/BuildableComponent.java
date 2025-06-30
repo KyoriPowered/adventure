@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.text;
 
-import net.kyori.adventure.util.Buildable;
 import org.jetbrains.annotations.NotNull;
 
 /**

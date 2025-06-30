@@ -36,7 +36,7 @@ import org.jetbrains.annotations.Range;
 
 import static java.util.Objects.requireNonNull;
 
-abstract class SoundImpl implements Sound {
+sealed abstract class SoundImpl implements Sound permits SoundImpl.Eager, SoundImpl.Lazy {
   static final Emitter EMITTER_SELF = new Emitter() {
     @Override
     public String toString() {
@@ -86,8 +86,7 @@ abstract class SoundImpl implements Sound {
   @Override
   public boolean equals(final @Nullable Object other) {
     if (this == other) return true;
-    if (!(other instanceof SoundImpl)) return false;
-    final SoundImpl that = (SoundImpl) other;
+    if (!(other instanceof SoundImpl that)) return false;
     return this.name().equals(that.name())
       && this.source == that.source
       && ShadyPines.equals(this.volume, that.volume)

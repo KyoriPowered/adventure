@@ -61,11 +61,11 @@ public interface Translator {
     final String[] segments = string.split("_", 3); // language_country_variant
     final int length = segments.length;
     if (length == 1) {
-      return new Locale(string); // language
+      return Locale.of(string); // language
     } else if (length == 2) {
-      return new Locale(segments[0], segments[1]); // language + country
+      return Locale.of(segments[0], segments[1]); // language + country
     } else if (length == 3) {
-      return new Locale(segments[0], segments[1], segments[2]); // language + country + variant
+      return Locale.of(segments[0], segments[1], segments[2]); // language + country + variant
     }
     return null;
   }

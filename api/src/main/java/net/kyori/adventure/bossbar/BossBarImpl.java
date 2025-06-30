@@ -37,13 +37,11 @@ import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.Services;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-@SuppressWarnings("deprecation")
 final class BossBarImpl extends HackyBossBarPlatformBridge implements BossBar {
   private final List<Listener> listeners = new CopyOnWriteArrayList<>();
   private Component name;
@@ -53,7 +51,6 @@ final class BossBarImpl extends HackyBossBarPlatformBridge implements BossBar {
   private final Set<Flag> flags = EnumSet.noneOf(Flag.class);
   @Nullable BossBarImplementation implementation;
 
-  @ApiStatus.Internal
   static final class ImplementationAccessor {
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     private static final Optional<BossBarImplementation.Provider> SERVICE = Services.service(BossBarImplementation.Provider.class);

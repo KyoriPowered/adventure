@@ -29,7 +29,7 @@ import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-final class MessageFormatTranslationStore extends AbstractTranslationStore.StringBased<MessageFormat> implements TranslationRegistry {
+final class MessageFormatTranslationStore extends AbstractTranslationStore.StringBased<MessageFormat> {
 
   MessageFormatTranslationStore(final Key name) {
     super(name);

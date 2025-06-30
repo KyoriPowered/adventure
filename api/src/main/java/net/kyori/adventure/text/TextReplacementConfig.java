@@ -29,7 +29,6 @@ import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.util.Buildable;
 import net.kyori.adventure.util.IntFunction2;
 import net.kyori.examination.Examinable;
 import org.intellij.lang.annotations.RegExp;

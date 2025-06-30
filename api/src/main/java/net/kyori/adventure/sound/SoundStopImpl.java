@@ -31,32 +31,8 @@ import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-abstract class SoundStopImpl implements SoundStop {
-  static final SoundStop ALL = new SoundStopImpl(null) {
-    @Override
-    public @Nullable Key sound() {
-      return null; // all
-    }
-  };
-  private final Sound.@Nullable Source source;
-
-  SoundStopImpl(final Sound.@Nullable Source source) {
-    this.source = source;
-  }
-
-  @Override
-  public Sound.@Nullable Source source() {
-    return this.source;
-  }
-
-  @Override
-  public boolean equals(final @Nullable Object other) {
-    if (this == other) return true;
-    if (!(other instanceof SoundStopImpl)) return false;
-    final SoundStopImpl that = (SoundStopImpl) other;
-    return Objects.equals(this.sound(), that.sound())
-      && Objects.equals(this.source, that.source);
-  }
+record SoundStopImpl(@Nullable Key sound, Sound.@Nullable Source source) implements SoundStop {
+  static final SoundStopImpl ALL = new SoundStopImpl(null, null);
 
   @Override
   public int hashCode() {
@@ -74,7 +50,7 @@ abstract class SoundStopImpl implements SoundStop {
   }
 
   @Override
-  public String toString() {
+  public @NotNull String toString() {
     return Internals.toString(this);
   }
 }

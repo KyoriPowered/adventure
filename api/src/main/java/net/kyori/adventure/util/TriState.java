@@ -59,11 +59,11 @@ public enum TriState {
    * @since 4.10.0
    */
   public @Nullable Boolean toBoolean() {
-    switch (this) {
-      case TRUE: return Boolean.TRUE;
-      case FALSE: return Boolean.FALSE;
-      default: return null;
-    }
+    return switch (this) {
+      case TRUE -> Boolean.TRUE;
+      case FALSE -> Boolean.FALSE;
+      default -> null;
+    };
   }
 
   /**
@@ -79,11 +79,11 @@ public enum TriState {
    * @since 4.10.0
    */
   public boolean toBooleanOrElse(final boolean other) {
-    switch (this) {
-      case TRUE: return true;
-      case FALSE: return false;
-      default: return other;
-    }
+    return switch (this) {
+      case TRUE -> true;
+      case FALSE -> false;
+      default -> other;
+    };
   }
 
   /**
@@ -99,11 +99,11 @@ public enum TriState {
    * @since 4.10.0
    */
   public boolean toBooleanOrElseGet(final @NotNull BooleanSupplier supplier) {
-    switch (this) {
-      case TRUE: return true;
-      case FALSE: return false;
-      default: return supplier.getAsBoolean();
-    }
+    return switch (this) {
+      case TRUE -> true;
+      case FALSE -> false;
+      default -> supplier.getAsBoolean();
+    };
   }
 
   /**

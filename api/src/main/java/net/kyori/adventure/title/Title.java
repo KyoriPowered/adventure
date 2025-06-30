@@ -27,7 +27,6 @@ import java.time.Duration;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.Ticks;
 import net.kyori.examination.Examinable;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
@@ -38,8 +37,7 @@ import org.jetbrains.annotations.UnknownNullability;
  * @see Times
  * @since 4.0.0
  */
-@ApiStatus.NonExtendable
-public interface Title extends Examinable {
+public sealed interface Title extends Examinable permits TitleImpl {
   /**
    * The default times.
    *
@@ -126,23 +124,7 @@ public interface Title extends Examinable {
    *
    * @since 4.0.0
    */
-  interface Times extends Examinable {
-    /**
-     * Creates times.
-     *
-     * @param fadeIn the fade-in time
-     * @param stay the stay time
-     * @param fadeOut the fade-out time
-     * @return times
-     * @since 4.0.0
-     * @deprecated for removal since 4.10.0, use {@link #times()}
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-    @Deprecated
-    static @NotNull Times of(final @NotNull Duration fadeIn, final @NotNull Duration stay, final @NotNull Duration fadeOut) {
-      return times(fadeIn, stay, fadeOut);
-    }
-
+  sealed interface Times extends Examinable permits TitleImpl.TimesImpl {
     /**
      * Creates times.
      *

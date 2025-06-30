@@ -21,36 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.audience;
+package net.kyori.adventure.title;
 
-import net.kyori.adventure.chat.ChatType;
-import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 
-/**
- * Message types.
- *
- * @since 4.0.0
- * @deprecated for removal since 4.12.0, use separate methods on {@link Audience} for sending player or system messages
- */
-@ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-@Deprecated
-public enum MessageType {
-  /**
-   * Chat message type.
-   *
-   * @since 4.0.0
-   * @deprecated for removal since 4.12.0, use {@link ChatType#CHAT} instead
-   */
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  @Deprecated
-  CHAT,
-  /**
-   * System message type.
-   *
-   * @since 4.0.0
-   * @deprecated for removal since 4.12.0
-   */
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  @Deprecated
-  SYSTEM;
+public record TitlePartImpl<T>(
+  @NotNull String part
+) implements TitlePart<T> {
+  @Override
+  public boolean equals(final Object o) {
+    return o == this;
+  }
+
+  @Override
+  public @NotNull String toString() {
+    return "TitlePart." + this.part();
+  }
 }

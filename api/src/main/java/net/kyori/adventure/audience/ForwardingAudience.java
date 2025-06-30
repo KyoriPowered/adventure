@@ -35,8 +35,6 @@ import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.chat.ChatType;
 import net.kyori.adventure.chat.SignedMessage;
 import net.kyori.adventure.dialog.DialogLike;
-import net.kyori.adventure.identity.Identified;
-import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.pointer.Pointer;
 import net.kyori.adventure.pointer.Pointers;
@@ -118,18 +116,6 @@ public interface ForwardingAudience extends Audience {
   @Override
   default void deleteMessage(final SignedMessage.@NotNull Signature signature) {
     for (final Audience audience : this.audiences()) audience.deleteMessage(signature);
-  }
-
-  @Override
-  @Deprecated
-  default void sendMessage(final @NotNull Identified source, final @NotNull Component message, final @NotNull MessageType type) {
-    for (final Audience audience : this.audiences()) audience.sendMessage(source, message, type);
-  }
-
-  @Override
-  @Deprecated
-  default void sendMessage(final @NotNull Identity source, final @NotNull Component message, final @NotNull MessageType type) {
-    for (final Audience audience : this.audiences()) audience.sendMessage(source, message, type);
   }
 
   @Override
@@ -253,7 +239,7 @@ public interface ForwardingAudience extends Audience {
      * @return {@link #audience()}
      * @deprecated this audience only supports forwarding to a single audience
      */
-    @Deprecated(/* forRemoval = false */)
+    @Deprecated
     @Override
     default @NotNull Iterable<? extends Audience> audiences() {
       return Collections.singleton(this.audience());
@@ -311,18 +297,6 @@ public interface ForwardingAudience extends Audience {
     @Override
     default void deleteMessage(final SignedMessage.@NotNull Signature signature) {
       this.audience().deleteMessage(signature);
-    }
-
-    @Override
-    @Deprecated
-    default void sendMessage(final @NotNull Identified source, final @NotNull Component message, final @NotNull MessageType type) {
-      this.audience().sendMessage(source, message, type);
-    }
-
-    @Override
-    @Deprecated
-    default void sendMessage(final @NotNull Identity source, final @NotNull Component message, final @NotNull MessageType type) {
-      this.audience().sendMessage(source, message, type);
     }
 
     @Override
