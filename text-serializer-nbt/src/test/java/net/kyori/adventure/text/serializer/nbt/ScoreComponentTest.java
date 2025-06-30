@@ -28,14 +28,17 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import org.junit.jupiter.api.Test;
 
+import static net.kyori.adventure.text.serializer.nbt.SerializerTests.deserializeComponent;
+import static net.kyori.adventure.text.serializer.nbt.SerializerTests.testComponent;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-final class ScoreComponentTest extends SerializerTest {
+final class ScoreComponentTest {
   @Test
-  public void test() {
+  void test() {
     String name = "abc";
     String objective = "def";
-    this.test(
+
+    testComponent(
       Component.score(name, objective),
       CompoundBinaryTag.builder()
         .put(
@@ -50,10 +53,10 @@ final class ScoreComponentTest extends SerializerTest {
   }
 
   @Test
-  public void testWithoutObjective() {
+  void testWithoutObjective() {
     assertThrows(
       IllegalArgumentException.class,
-      () -> this.deserialize(
+      () -> deserializeComponent(
         CompoundBinaryTag.builder()
           .put(
             ComponentTreeConstants.SCORE,

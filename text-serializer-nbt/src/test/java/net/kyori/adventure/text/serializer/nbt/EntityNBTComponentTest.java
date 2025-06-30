@@ -28,13 +28,15 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import org.junit.jupiter.api.Test;
 
-final class EntityNBTComponentTest extends SerializerTest {
+import static net.kyori.adventure.text.serializer.nbt.SerializerTests.testComponent;
+
+final class EntityNBTComponentTest {
   @Test
-  public void testWithoutInterpret() {
+  void testWithoutInterpret() {
     String nbtPath = "abc";
     String selector = "test";
 
-    this.test(
+    testComponent(
       Component.entityNBT()
         .nbtPath(nbtPath)
         .selector(selector)
@@ -47,11 +49,11 @@ final class EntityNBTComponentTest extends SerializerTest {
   }
 
   @Test
-  public void testWithInterpret() {
+  void testWithInterpret() {
     String nbtPath = "abc";
     String selector = "test";
 
-    this.test(
+    testComponent(
       Component.entityNBT()
         .nbtPath(nbtPath)
         .selector(selector)

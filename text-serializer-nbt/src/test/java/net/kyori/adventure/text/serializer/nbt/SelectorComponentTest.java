@@ -28,11 +28,14 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import org.junit.jupiter.api.Test;
 
-final class SelectorComponentTest extends SerializerTest {
+import static net.kyori.adventure.text.serializer.nbt.SerializerTests.serializeComponent;
+import static net.kyori.adventure.text.serializer.nbt.SerializerTests.testComponent;
+
+final class SelectorComponentTest {
   @Test
-  public void test() {
+  void test() {
     String pattern = "@p";
-    this.test(
+    testComponent(
       Component.selector(pattern),
       CompoundBinaryTag.builder()
         .putString(ComponentTreeConstants.SELECTOR, pattern)
@@ -41,14 +44,15 @@ final class SelectorComponentTest extends SerializerTest {
   }
 
   @Test
-  public void testSeparator() {
+  void testSeparator() {
     String pattern = "@r";
     Component separator = Component.text(",");
-    this.test(
+
+    testComponent(
       Component.selector(pattern, separator),
       CompoundBinaryTag.builder()
         .putString(ComponentTreeConstants.SELECTOR, pattern)
-        .put(ComponentTreeConstants.SEPARATOR, this.serialize(separator))
+        .put(ComponentTreeConstants.SEPARATOR, serializeComponent(separator))
         .build()
     );
   }

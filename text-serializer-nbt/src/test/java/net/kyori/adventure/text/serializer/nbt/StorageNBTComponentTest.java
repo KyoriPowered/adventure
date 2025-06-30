@@ -29,13 +29,15 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import org.junit.jupiter.api.Test;
 
-final class StorageNBTComponentTest extends SerializerTest {
+import static net.kyori.adventure.text.serializer.nbt.SerializerTests.testComponent;
+
+final class StorageNBTComponentTest {
   @Test
-  public void testWithoutInterpret() {
+  void testWithoutInterpret() {
     String nbtPath = "abc";
     String storage = "doom:apple";
 
-    this.test(
+    testComponent(
       Component.storageNBT()
         .nbtPath(nbtPath)
         .storage(Key.key(storage))
@@ -48,11 +50,11 @@ final class StorageNBTComponentTest extends SerializerTest {
   }
 
   @Test
-  public void testWithInterpret() {
+  void testWithInterpret() {
     String nbtPath = "abc";
     String storage = "doom:apple";
 
-    this.test(
+    testComponent(
       Component.storageNBT()
         .nbtPath(nbtPath)
         .storage(Key.key(storage))

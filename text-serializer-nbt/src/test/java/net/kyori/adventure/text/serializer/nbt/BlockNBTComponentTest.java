@@ -29,16 +29,18 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import org.junit.jupiter.api.Test;
 
-final class BlockNBTComponentTest extends SerializerTest {
+import static net.kyori.adventure.text.serializer.nbt.SerializerTests.testComponent;
+
+final class BlockNBTComponentTest {
   @Test
-  public void testLocal() {
+  void testLocal() {
     String nbtPath = "abc";
 
     double left = 1.23D;
     double up = 2.0D;
     double forwards = 3.89D;
 
-    this.test(
+    testComponent(
       Component.blockNBT()
         .nbtPath(nbtPath)
         .localPos(left, up, forwards)
@@ -51,14 +53,14 @@ final class BlockNBTComponentTest extends SerializerTest {
   }
 
     @Test
-    public void testAbsoluteWorld() {
+    void testAbsoluteWorld() {
       String nbtPath = "xyz";
 
       int x = 4;
       int y = 5;
       int z = 6;
 
-      this.test(
+      testComponent(
         Component.blockNBT()
           .nbtPath(nbtPath)
           .absoluteWorldPos(x, y, z)
@@ -73,14 +75,14 @@ final class BlockNBTComponentTest extends SerializerTest {
     }
 
   @Test
-  public void testRelativeWorld() {
+  void testRelativeWorld() {
     String nbtPath = "eeee";
 
     int x = 7;
     int y = 83;
     int z = 900;
 
-    this.test(
+    testComponent(
       Component.blockNBT()
         .nbtPath(nbtPath)
         .relativeWorldPos(x, y, z)
@@ -93,14 +95,14 @@ final class BlockNBTComponentTest extends SerializerTest {
   }
 
   @Test
-  public void testMixedAbsoluteAndRelative() {
+  void testMixedAbsoluteAndRelative() {
     String nbtPath = "qwert";
 
     int x = 12;
     int y = 3;
     int z = 1200;
 
-    this.test(
+    testComponent(
       Component.blockNBT()
         .nbtPath(nbtPath)
         .worldPos(

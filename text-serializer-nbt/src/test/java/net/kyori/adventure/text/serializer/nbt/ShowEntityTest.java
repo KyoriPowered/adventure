@@ -35,11 +35,14 @@ import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
-final class ShowEntityTest extends SerializerTest {
+import static net.kyori.adventure.text.serializer.nbt.SerializerTests.name;
+import static net.kyori.adventure.text.serializer.nbt.SerializerTests.testStyle;
+
+final class ShowEntityTest {
   @Test
-  public void testWithoutName() {
+  void testWithoutName() {
     UUID uuid = UUID.fromString("c04d19f7-9854-4122-93ab-ad7d4e1af8bc");
-    this.test(
+    testStyle(
       Style.style()
         .hoverEvent(HoverEvent.showEntity(Key.key("zombie"), uuid))
         .build(),
@@ -47,7 +50,7 @@ final class ShowEntityTest extends SerializerTest {
         .put(
           ComponentTreeConstants.HOVER_EVENT_SNAKE,
           CompoundBinaryTag.builder()
-            .putString(ComponentTreeConstants.HOVER_EVENT_ACTION, "show_entity")
+            .putString(ComponentTreeConstants.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ENTITY))
             .putString(ComponentTreeConstants.SHOW_ENTITY_ID, "minecraft:zombie")
             .put(
               ComponentTreeConstants.SHOW_ENTITY_UUID,
@@ -60,12 +63,12 @@ final class ShowEntityTest extends SerializerTest {
   }
 
   @Test
-  public void testWithName() {
+  void testWithName() {
     String entityId = "minecraft:spider";
     UUID uuid = UUID.randomUUID();
     String entityName = "Adventure spider";
 
-    this.test(
+    testStyle(
       Style.style()
         .hoverEvent(HoverEvent.showEntity(Key.key(entityId), uuid, Component.text(entityName, NamedTextColor.RED)))
         .build(),
@@ -73,7 +76,7 @@ final class ShowEntityTest extends SerializerTest {
         .put(
           ComponentTreeConstants.HOVER_EVENT_SNAKE,
           CompoundBinaryTag.builder()
-            .putString(ComponentTreeConstants.HOVER_EVENT_ACTION, "show_entity")
+            .putString(ComponentTreeConstants.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ENTITY))
             .putString(ComponentTreeConstants.SHOW_ENTITY_ID, entityId)
             .put(
               ComponentTreeConstants.SHOW_ENTITY_UUID,
@@ -88,7 +91,7 @@ final class ShowEntityTest extends SerializerTest {
               ComponentTreeConstants.SHOW_ENTITY_NAME,
               CompoundBinaryTag.builder()
                 .putString(ComponentTreeConstants.TEXT, entityName)
-                .putString(ComponentTreeConstants.COLOR, "red")
+                .putString(ComponentTreeConstants.COLOR, name(NamedTextColor.RED))
                 .build()
             )
             .build()

@@ -28,11 +28,13 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import org.junit.jupiter.api.Test;
 
-final class KeybindComponentTest extends SerializerTest {
+import static net.kyori.adventure.text.serializer.nbt.SerializerTests.testComponent;
+
+final class KeybindComponentTest {
   @Test
-  public void test() {
+  void test() {
     String keybind = "key.jump";
-    this.test(
+    testComponent(
       Component.keybind(keybind),
       CompoundBinaryTag.builder()
         .putString(ComponentTreeConstants.KEYBIND, keybind)

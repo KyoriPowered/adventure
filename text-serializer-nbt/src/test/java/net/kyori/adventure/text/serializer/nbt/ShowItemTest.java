@@ -38,13 +38,16 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.Collections;
 
-final class ShowItemTest extends SerializerTest {
+import static net.kyori.adventure.text.serializer.nbt.SerializerTests.name;
+import static net.kyori.adventure.text.serializer.nbt.SerializerTests.testStyle;
+
+final class ShowItemTest {
   @Test
-  public void testWithPopulatedTag() throws IOException {
+  void testWithPopulatedTag() throws IOException {
     String item = "minecraft:diamond";
     int count = 2;
 
-    this.test(
+    testStyle(
       NBTComponentSerializer.builder()
         .editOptions(builder -> {
           builder.value(
@@ -73,7 +76,7 @@ final class ShowItemTest extends SerializerTest {
         .put(
           ComponentTreeConstants.HOVER_EVENT_CAMEL,
           CompoundBinaryTag.builder()
-            .putString(ComponentTreeConstants.HOVER_EVENT_ACTION, "show_item")
+            .putString(ComponentTreeConstants.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ITEM))
             .put(
               ComponentTreeConstants.HOVER_EVENT_CONTENTS,
               CompoundBinaryTag.builder()
@@ -89,11 +92,11 @@ final class ShowItemTest extends SerializerTest {
   }
 
   @Test
-  public void testWithoutAdditionalData() {
+  void testWithoutAdditionalData() {
     String item = "minecraft:diamond";
     int count = 2;
 
-    this.test(
+    testStyle(
       Style.style()
         .hoverEvent(HoverEvent.showItem(Key.key(item), count, Collections.emptyMap()))
         .build(),
@@ -101,7 +104,7 @@ final class ShowItemTest extends SerializerTest {
         .put(
           ComponentTreeConstants.HOVER_EVENT_SNAKE,
           CompoundBinaryTag.builder()
-            .putString(ComponentTreeConstants.HOVER_EVENT_ACTION, "show_item")
+            .putString(ComponentTreeConstants.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ITEM))
             .putString(ComponentTreeConstants.SHOW_ITEM_ID, item)
             .putInt(ComponentTreeConstants.SHOW_ITEM_COUNT, count)
             .build()
@@ -111,11 +114,11 @@ final class ShowItemTest extends SerializerTest {
   }
 
   @Test
-  public void testWithCountOfOne() {
+  void testWithCountOfOne() {
     String item = "minecraft:diamond";
     int count = 1;
 
-    this.test(
+    testStyle(
       Style.style()
         .hoverEvent(HoverEvent.showItem(Key.key(item), count))
         .build(),
@@ -123,7 +126,7 @@ final class ShowItemTest extends SerializerTest {
         .put(
           ComponentTreeConstants.HOVER_EVENT_SNAKE,
           CompoundBinaryTag.builder()
-            .putString(ComponentTreeConstants.HOVER_EVENT_ACTION, "show_item")
+            .putString(ComponentTreeConstants.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ITEM))
             .putString(ComponentTreeConstants.SHOW_ITEM_ID, item)
             .putInt(ComponentTreeConstants.SHOW_ITEM_COUNT, count)
             .build()
@@ -133,12 +136,12 @@ final class ShowItemTest extends SerializerTest {
   }
 
   @Test
-  public void testWithRemovedComponent() {
+  void testWithRemovedComponent() {
     String item = "minecraft:diamond";
     int count = 2;
     String component = "minecraft:damage";
 
-    this.test(
+    testStyle(
       Style.style()
         .hoverEvent(
           HoverEvent.showItem(
@@ -151,7 +154,7 @@ final class ShowItemTest extends SerializerTest {
         .put(
           ComponentTreeConstants.HOVER_EVENT_SNAKE,
           CompoundBinaryTag.builder()
-            .putString(ComponentTreeConstants.HOVER_EVENT_ACTION, "show_item")
+            .putString(ComponentTreeConstants.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ITEM))
             .putString(ComponentTreeConstants.SHOW_ITEM_ID, item)
             .putInt(ComponentTreeConstants.SHOW_ITEM_COUNT, count)
             .put(
