@@ -63,7 +63,7 @@ final class ShowEntitySerializer {
   static @NotNull CompoundBinaryTag serialize(HoverEvent.@NotNull ShowEntity showEntity, boolean snakeCase,
                                               @NotNull NBTComponentSerializerImpl serializer) {
     CompoundBinaryTag.Builder builder = CompoundBinaryTag.builder()
-      .putString(snakeCase ? SHOW_ENTITY_ID : SHOW_ENTITY_TYPE, showEntity.type().asString())
+      .put(snakeCase ? SHOW_ENTITY_ID : SHOW_ENTITY_TYPE, KeySerializer.serialize(showEntity.type()))
       .put(snakeCase ? SHOW_ENTITY_UUID : SHOW_ENTITY_ID, UUIDSerializer.serialize(showEntity.id()));
 
     Component entityName = showEntity.name();
@@ -76,7 +76,7 @@ final class ShowEntitySerializer {
 
   private static HoverEvent.@NotNull ShowEntity deserializeModern(@NotNull CompoundBinaryTag compound, boolean snakeCase,
                                                                   @NotNull NBTComponentSerializerImpl serializer) {
-    Key entityType = Key.key(getRequiredTag(compound, snakeCase ? SHOW_ENTITY_ID : SHOW_ENTITY_TYPE, BinaryTagTypes.STRING).value());
+    Key entityType = KeySerializer.deserialize(getRequiredTag(compound, snakeCase ? SHOW_ENTITY_ID : SHOW_ENTITY_TYPE, BinaryTagTypes.STRING));
     BinaryTag entityIdTag = getRequiredTag(compound, snakeCase ? SHOW_ENTITY_UUID : SHOW_ENTITY_ID);
     BinaryTag entityNameTag = compound.get(SHOW_ENTITY_NAME);
 

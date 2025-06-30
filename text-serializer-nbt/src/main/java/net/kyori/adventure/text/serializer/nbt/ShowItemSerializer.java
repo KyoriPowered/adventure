@@ -76,7 +76,7 @@ final class ShowItemSerializer {
   static @NotNull CompoundBinaryTag serialize(HoverEvent.@NotNull ShowItem showItem, boolean snakeCase,
                                               @NotNull NBTComponentSerializerImpl serializer) {
     CompoundBinaryTag.Builder builder = CompoundBinaryTag.builder()
-      .putString(SHOW_ITEM_ID, showItem.item().asString());
+      .put(SHOW_ITEM_ID, KeySerializer.serialize(showItem.item()));
 
     int count = showItem.count();
     if (count != DEFAULT_ITEM_QUANTITY || serializer.options().value(NBTSerializerOptions.EMIT_DEFAULT_ITEM_HOVER_QUANTITY)) {
@@ -113,7 +113,7 @@ final class ShowItemSerializer {
   private static HoverEvent.@NotNull ShowItem deserializeModern(@NotNull BinaryTag tag, boolean snakeCase) {
     if (tag instanceof StringBinaryTag && !snakeCase) {
       StringBinaryTag castTag = (StringBinaryTag) tag;
-      return HoverEvent.ShowItem.showItem(Key.key(castTag.value()), DEFAULT_ITEM_QUANTITY);
+      return HoverEvent.ShowItem.showItem(KeySerializer.deserialize(castTag), DEFAULT_ITEM_QUANTITY);
     } else if (!(tag instanceof CompoundBinaryTag)) {
       if (snakeCase) {
         throw new IllegalArgumentException("The specified binary tag isn't a compound tag");
@@ -124,7 +124,7 @@ final class ShowItemSerializer {
 
     CompoundBinaryTag compound = (CompoundBinaryTag) tag;
 
-    Key itemId = Key.key(getRequiredTag(compound, SHOW_ITEM_ID, BinaryTagTypes.STRING).value());
+    Key itemId = KeySerializer.deserialize(getRequiredTag(compound, SHOW_ITEM_ID, BinaryTagTypes.STRING));
     IntBinaryTag countTag = getOptionalTag(compound, SHOW_ITEM_COUNT, BinaryTagTypes.INT);
     int itemCount = countTag == null ? DEFAULT_ITEM_QUANTITY : countTag.value();
 
@@ -166,7 +166,7 @@ final class ShowItemSerializer {
       String content = ((TextComponent) component).content();
       CompoundBinaryTag compound = SNBT_IO.asCompound(content);
 
-      Key key = Key.key(getRequiredTag(compound, SHOW_ITEM_ID, BinaryTagTypes.STRING).value());
+      Key key = KeySerializer.deserialize(getRequiredTag(compound, SHOW_ITEM_ID, BinaryTagTypes.STRING));
       byte count = getRequiredTag(compound, LEGACY_ITEM_COUNT, BinaryTagTypes.BYTE).value();
 
       CompoundBinaryTag nbtTag = getOptionalTag(compound, SHOW_ITEM_TAG, BinaryTagTypes.COMPOUND);

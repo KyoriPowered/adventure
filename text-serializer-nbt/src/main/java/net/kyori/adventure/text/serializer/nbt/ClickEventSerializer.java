@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.text.serializer.nbt;
 
-import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.BinaryTag;
 import net.kyori.adventure.nbt.BinaryTagTypes;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
@@ -79,7 +78,7 @@ final class ClickEventSerializer {
           try {
             StringBinaryTag clickEventIdTag = getRequiredTag(compound, CLICK_EVENT_ID, BinaryTagTypes.STRING);
             BinaryTag payloadTag = getRequiredTag(compound, CLICK_EVENT_PAYLOAD);
-            return ClickEvent.custom(Key.key(clickEventIdTag.value()), BinaryTagHolder.encode(payloadTag, SNBT_CODEC));
+            return ClickEvent.custom(KeySerializer.deserialize(clickEventIdTag), BinaryTagHolder.encode(payloadTag, SNBT_CODEC));
           } catch (IOException exception) {
             throw new RuntimeException("An error occurred while encoding payload tag", exception);
           }
@@ -125,7 +124,7 @@ final class ClickEventSerializer {
       } else if (payload instanceof ClickEvent.Payload.Custom) {
         try {
           ClickEvent.Payload.Custom castPayload = (ClickEvent.Payload.Custom) payload;
-          builder.putString(CLICK_EVENT_ID, castPayload.key().asString());
+          builder.put(CLICK_EVENT_ID, KeySerializer.serialize(castPayload.key()));
           builder.put(CLICK_EVENT_PAYLOAD, castPayload.nbt().get(SNBT_CODEC));
         } catch (IOException exception) {
           throw new RuntimeException("An error occurred while decoding a payload tag", exception);

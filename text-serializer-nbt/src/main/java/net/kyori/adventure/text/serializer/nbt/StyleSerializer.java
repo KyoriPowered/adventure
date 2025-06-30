@@ -70,7 +70,7 @@ final class StyleSerializer {
 
     StringBinaryTag fontTag = getOptionalTag(compound, FONT, BinaryTagTypes.STRING);
     if (fontTag != null) {
-      styleBuilder.font(Key.key(fontTag.value()));
+      styleBuilder.font(KeySerializer.deserialize(fontTag));
     }
 
     StringBinaryTag insertionTag = getOptionalTag(compound, INSERTION, BinaryTagTypes.STRING);
@@ -132,7 +132,7 @@ final class StyleSerializer {
 
     Key font = style.font();
     if (font != null) {
-      builder.putString(FONT, font.asString());
+      builder.put(FONT, KeySerializer.serialize(font));
     }
 
     String insertion = style.insertion();
