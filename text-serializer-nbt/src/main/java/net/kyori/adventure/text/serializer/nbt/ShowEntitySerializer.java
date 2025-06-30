@@ -28,33 +28,35 @@ import net.kyori.adventure.nbt.BinaryTag;
 import net.kyori.adventure.nbt.BinaryTagTypes;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.UUID;
 
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SHOW_ENTITY_ID;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SHOW_ENTITY_NAME;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SHOW_ENTITY_TYPE;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SHOW_ENTITY_UUID;
+import static net.kyori.adventure.text.serializer.nbt.NBTSerializerUtils.SNBT_IO;
 import static net.kyori.adventure.text.serializer.nbt.NBTSerializerUtils.getRequiredTag;
 
 final class ShowEntitySerializer {
   
   private ShowEntitySerializer() {
   }
-  
-  static HoverEvent.@NotNull ShowEntity deserialize(@NotNull CompoundBinaryTag compound, boolean snakeCase,
-                                                    @NotNull NBTComponentSerializerImpl serializer) {
-    Key entityType = Key.key(getRequiredTag(compound, snakeCase ? SHOW_ENTITY_ID : SHOW_ENTITY_TYPE, BinaryTagTypes.STRING).value());
-    BinaryTag entityIdTag = getRequiredTag(compound, snakeCase ? SHOW_ENTITY_UUID : SHOW_ENTITY_ID);
-    BinaryTag entityNameTag = compound.get(SHOW_ENTITY_NAME);
 
-    UUID entityId = UUIDSerializer.deserialize(entityIdTag);
-    if (entityNameTag == null) {
-      return HoverEvent.ShowEntity.showEntity(entityType, entityId);
-    } else {
-      return HoverEvent.ShowEntity.showEntity(entityType, entityId, serializer.deserialize(entityNameTag));
+  static HoverEvent.@NotNull ShowEntity deserialize(@NotNull BinaryTag tag, boolean snakeCase,
+                                                    @NotNull NBTComponentSerializerImpl serializer) {
+    try {
+      return deserializeModern((CompoundBinaryTag) tag, snakeCase, serializer);
+    } catch (Exception exception) {
+      if (snakeCase) {
+        throw notSureHowToDeserialize(tag);
+      } else {
+        return deserializeLegacy(tag, serializer);
+      }
     }
   }
   
@@ -70,5 +72,38 @@ final class ShowEntitySerializer {
     }
 
     return builder.build();
+  }
+
+  private static HoverEvent.@NotNull ShowEntity deserializeModern(@NotNull CompoundBinaryTag compound, boolean snakeCase,
+                                                                  @NotNull NBTComponentSerializerImpl serializer) {
+    Key entityType = Key.key(getRequiredTag(compound, snakeCase ? SHOW_ENTITY_ID : SHOW_ENTITY_TYPE, BinaryTagTypes.STRING).value());
+    BinaryTag entityIdTag = getRequiredTag(compound, snakeCase ? SHOW_ENTITY_UUID : SHOW_ENTITY_ID);
+    BinaryTag entityNameTag = compound.get(SHOW_ENTITY_NAME);
+
+    UUID entityId = UUIDSerializer.deserialize(entityIdTag);
+    if (entityNameTag == null) {
+      return HoverEvent.ShowEntity.showEntity(entityType, entityId);
+    } else {
+      return HoverEvent.ShowEntity.showEntity(entityType, entityId, serializer.deserialize(entityNameTag));
+    }
+  }
+
+  private static HoverEvent.@NotNull ShowEntity deserializeLegacy(@NotNull BinaryTag tag, @NotNull NBTComponentSerializerImpl serializer) {
+    try {
+      Component component = serializer.deserialize(tag);
+      if (!(component instanceof TextComponent)) {
+        throw notSureHowToDeserialize(tag);
+      }
+
+      String content = ((TextComponent) component).content();
+      CompoundBinaryTag compound = SNBT_IO.asCompound(content);
+      return deserializeModern(compound, false, serializer);
+    } catch (IOException exception) {
+      throw notSureHowToDeserialize(tag);
+    }
+  }
+
+  private static @NotNull IllegalArgumentException notSureHowToDeserialize(@NotNull BinaryTag tag) {
+    return new IllegalArgumentException("Don't know how to turn " + tag + " into a show entity hover event data");
   }
 }

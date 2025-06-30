@@ -29,10 +29,8 @@ import net.kyori.adventure.nbt.BinaryTagTypes;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.nbt.IntBinaryTag;
 import net.kyori.adventure.nbt.StringBinaryTag;
-import net.kyori.adventure.nbt.TagStringIO;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.util.Codec;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -45,12 +43,10 @@ import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_PAYLOAD;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_URL;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_VALUE;
+import static net.kyori.adventure.text.serializer.nbt.NBTSerializerUtils.SNBT_CODEC;
 import static net.kyori.adventure.text.serializer.nbt.NBTSerializerUtils.getRequiredTag;
 
 final class ClickEventSerializer {
-
-  private static final TagStringIO SNBT_IO = TagStringIO.tagStringIO();
-  private static final Codec<BinaryTag, String, IOException, IOException> SNBT_CODEC = Codec.codec(SNBT_IO::asTag, SNBT_IO::asString);
 
   private ClickEventSerializer() {
   }
