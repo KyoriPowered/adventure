@@ -26,7 +26,6 @@ package net.kyori.adventure.text.serializer.nbt;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.nbt.EndBinaryTag;
-import net.kyori.adventure.nbt.StringBinaryTag;
 import net.kyori.adventure.nbt.TagStringIO;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.event.DataComponentValue;
@@ -38,10 +37,17 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.Collections;
 
+import static net.kyori.adventure.text.serializer.nbt.NBTSerializerUtils.SNBT_CODEC;
+import static net.kyori.adventure.text.serializer.nbt.NBTSerializerUtils.SNBT_IO;
+import static net.kyori.adventure.text.serializer.nbt.SerializerTests.deserializeStyle;
 import static net.kyori.adventure.text.serializer.nbt.SerializerTests.name;
 import static net.kyori.adventure.text.serializer.nbt.SerializerTests.testStyle;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 final class ShowItemTest {
+
+  private static final String LEGACY_COUNT = "Count";
+
   @Test
   void testWithPopulatedTag() throws IOException {
     String item = "minecraft:diamond";
@@ -66,7 +72,7 @@ final class ShowItemTest {
           BinaryTagHolder.binaryTagHolder(TagStringIO.tagStringIO().asString(
             CompoundBinaryTag.builder()
               .put("display", CompoundBinaryTag.builder()
-                .put("Name", StringBinaryTag.stringBinaryTag("A test!"))
+                .putString("Name", "A test!")
                 .build())
               .build()
           ))
@@ -166,6 +172,77 @@ final class ShowItemTest {
             .build()
         )
         .build()
+    );
+  }
+
+  @Test
+  void testLegacyWithoutTag() throws IOException {
+    String item = "minecraft:diamond";
+    byte count = 3;
+
+    CompoundBinaryTag itemData = CompoundBinaryTag.builder()
+      .putString(ComponentTreeConstants.SHOW_ITEM_ID, item)
+      .putByte(LEGACY_COUNT, count)
+      .build();
+
+    assertEquals(
+      Style.style()
+        .hoverEvent(HoverEvent.showItem(Key.key(item), count))
+        .build(),
+      deserializeStyle(
+        CompoundBinaryTag.builder()
+          .put(
+            ComponentTreeConstants.HOVER_EVENT_CAMEL,
+            CompoundBinaryTag.builder()
+              .putString(ComponentTreeConstants.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ITEM))
+              .putString(ComponentTreeConstants.HOVER_EVENT_CONTENTS, SNBT_IO.asString(itemData))
+              .build()
+          )
+          .build()
+      )
+    );
+  }
+
+  @Test
+  void testLegacyWithTag() throws IOException {
+    String item = "minecraft:diamond";
+    byte count = 1;
+
+    CompoundBinaryTag itemTag = CompoundBinaryTag.builder()
+      .put(
+        "display",
+        CompoundBinaryTag.builder()
+          .putString("Name", "Legacy test!")
+          .build()
+      )
+      .build();
+
+    CompoundBinaryTag itemData = CompoundBinaryTag.builder()
+      .putString(ComponentTreeConstants.SHOW_ITEM_ID, item)
+      .putByte(LEGACY_COUNT, count)
+      .put(ComponentTreeConstants.SHOW_ITEM_TAG, itemTag)
+      .build();
+
+    assertEquals(
+      Style.style()
+        .hoverEvent(HoverEvent.showItem(Key.key(item), count, BinaryTagHolder.encode(itemTag, SNBT_CODEC)))
+        .build(),
+      deserializeStyle(
+        CompoundBinaryTag.builder()
+          .put(
+            ComponentTreeConstants.HOVER_EVENT_CAMEL,
+            CompoundBinaryTag.builder()
+              .putString(ComponentTreeConstants.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ITEM))
+              .put(
+                ComponentTreeConstants.HOVER_EVENT_CONTENTS,
+                CompoundBinaryTag.builder()
+                  .putString(ComponentTreeConstants.TEXT, SNBT_IO.asString(itemData))
+                  .build()
+              )
+              .build()
+          )
+          .build()
+      )
     );
   }
 }

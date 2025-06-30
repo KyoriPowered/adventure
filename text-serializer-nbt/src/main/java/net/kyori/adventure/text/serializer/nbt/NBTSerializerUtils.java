@@ -28,10 +28,17 @@ import net.kyori.adventure.nbt.BinaryTagType;
 import net.kyori.adventure.nbt.ByteBinaryTag;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.nbt.NumberBinaryTag;
+import net.kyori.adventure.nbt.TagStringIO;
+import net.kyori.adventure.util.Codec;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
+
 final class NBTSerializerUtils {
+
+  static final TagStringIO SNBT_IO = TagStringIO.tagStringIO();
+  static final Codec<BinaryTag, String, IOException, IOException> SNBT_CODEC = Codec.codec(SNBT_IO::asTag, SNBT_IO::asString);
 
   private NBTSerializerUtils() {
   }

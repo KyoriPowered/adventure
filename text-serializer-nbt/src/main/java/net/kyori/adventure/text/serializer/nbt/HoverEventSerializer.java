@@ -24,7 +24,6 @@
 package net.kyori.adventure.text.serializer.nbt;
 
 import net.kyori.adventure.nbt.BinaryTag;
-import net.kyori.adventure.nbt.BinaryTagTypes;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -56,9 +55,9 @@ final class HoverEventSerializer {
       return HoverEvent.showText(serializer.deserialize(textTag));
     } else if (action == HoverEvent.Action.SHOW_ITEM) {
       BinaryTag contentsTag = snakeCase ? compound : getRequiredTag(compound, HOVER_EVENT_CONTENTS);
-      return HoverEvent.showItem(ShowItemSerializer.deserialize(contentsTag, snakeCase));
+      return HoverEvent.showItem(ShowItemSerializer.deserialize(contentsTag, snakeCase, serializer));
     } else if (action == HoverEvent.Action.SHOW_ENTITY) {
-      CompoundBinaryTag contentsTag = snakeCase ? compound : getRequiredTag(compound, HOVER_EVENT_CONTENTS, BinaryTagTypes.COMPOUND);
+      BinaryTag contentsTag = snakeCase ? compound : getRequiredTag(compound, HOVER_EVENT_CONTENTS);
       return HoverEvent.showEntity(ShowEntitySerializer.deserialize(contentsTag, snakeCase, serializer));
     } else {
       throw new IllegalArgumentException("Don't know how to deserialize a hoverEvent with action of " + actionString + " from a binary tag");

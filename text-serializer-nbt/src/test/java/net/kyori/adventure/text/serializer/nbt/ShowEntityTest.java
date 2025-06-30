@@ -33,10 +33,15 @@ import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.UUID;
 
+import static net.kyori.adventure.text.serializer.nbt.NBTSerializerUtils.SNBT_IO;
+import static net.kyori.adventure.text.serializer.nbt.SerializerTests.deserializeStyle;
 import static net.kyori.adventure.text.serializer.nbt.SerializerTests.name;
+import static net.kyori.adventure.text.serializer.nbt.SerializerTests.serializeComponent;
 import static net.kyori.adventure.text.serializer.nbt.SerializerTests.testStyle;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 final class ShowEntityTest {
   @Test
@@ -97,6 +102,69 @@ final class ShowEntityTest {
             .build()
         )
         .build()
+    );
+  }
+
+  @Test
+  void testLegacyWithoutName() throws IOException {
+    String entityType = "minecraft:blaze";
+    UUID uuid = UUID.randomUUID();
+
+    CompoundBinaryTag contentsTag = CompoundBinaryTag.builder()
+      .putString(ComponentTreeConstants.SHOW_ENTITY_TYPE, entityType)
+      .putString(ComponentTreeConstants.SHOW_ENTITY_ID, uuid.toString())
+      .build();
+
+    assertEquals(
+      Style.style()
+        .hoverEvent(HoverEvent.showEntity(Key.key(entityType), uuid))
+        .build(),
+      deserializeStyle(
+        CompoundBinaryTag.builder()
+          .put(
+            ComponentTreeConstants.HOVER_EVENT_CAMEL,
+            CompoundBinaryTag.builder()
+              .putString(ComponentTreeConstants.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ENTITY))
+              .put(
+                ComponentTreeConstants.HOVER_EVENT_CONTENTS,
+                CompoundBinaryTag.builder()
+                  .putString(ComponentTreeConstants.TEXT, SNBT_IO.asString(contentsTag))
+                  .build()
+              )
+              .build()
+          )
+          .build()
+      )
+    );
+  }
+
+  @Test
+  void testLegacyWithName() throws IOException {
+    String entityType = "minecraft:chicken";
+    UUID uuid = UUID.fromString("a8aa3054-ca11-41bd-ac7e-95967816a135");
+    Component entityName = Component.text("Lava chicken", NamedTextColor.DARK_RED);
+
+    CompoundBinaryTag contentsTag = CompoundBinaryTag.builder()
+      .putString(ComponentTreeConstants.SHOW_ENTITY_TYPE, entityType)
+      .putString(ComponentTreeConstants.SHOW_ENTITY_ID, uuid.toString())
+      .put(ComponentTreeConstants.SHOW_ENTITY_NAME, serializeComponent(entityName))
+      .build();
+
+    assertEquals(
+      Style.style()
+        .hoverEvent(HoverEvent.showEntity(Key.key(entityType), uuid, entityName))
+        .build(),
+      deserializeStyle(
+        CompoundBinaryTag.builder()
+          .put(
+            ComponentTreeConstants.HOVER_EVENT_CAMEL,
+            CompoundBinaryTag.builder()
+              .putString(ComponentTreeConstants.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ENTITY))
+              .putString(ComponentTreeConstants.HOVER_EVENT_CONTENTS, SNBT_IO.asString(contentsTag))
+              .build()
+          )
+          .build()
+      )
     );
   }
 }
