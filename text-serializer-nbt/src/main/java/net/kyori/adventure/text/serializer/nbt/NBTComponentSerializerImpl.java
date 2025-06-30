@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.text.serializer.nbt;
 
-import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.BinaryTag;
 import net.kyori.adventure.nbt.BinaryTagTypes;
 import net.kyori.adventure.nbt.ByteBinaryTag;
@@ -227,7 +226,7 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
           .nbtPath(nbtPath)
           .interpret(interpret)
           .separator(separator)
-          .storage(Key.key(storageTag.value()))
+          .storage(KeySerializer.deserialize(storageTag))
           .style(style)
           .append(children)
           .build();
@@ -300,7 +299,7 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
       } else if (nbt instanceof EntityNBTComponent) {
         builder.putString(NBT_ENTITY, ((EntityNBTComponent) nbt).selector());
       } else if (nbt instanceof StorageNBTComponent) {
-        builder.putString(NBT_STORAGE, ((StorageNBTComponent) nbt).storage().asString());
+        builder.put(NBT_STORAGE, KeySerializer.serialize(((StorageNBTComponent) nbt).storage()));
       } else {
         throw notSureHowToSerialize(component);
       }
