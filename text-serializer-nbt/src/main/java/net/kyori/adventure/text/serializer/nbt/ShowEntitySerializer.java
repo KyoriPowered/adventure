@@ -42,7 +42,7 @@ import static net.kyori.adventure.text.serializer.nbt.NBTSerializerUtils.SNBT_IO
 import static net.kyori.adventure.text.serializer.nbt.NBTSerializerUtils.requiredTag;
 
 final class ShowEntitySerializer {
-  
+
   private ShowEntitySerializer() {
   }
 
@@ -58,7 +58,7 @@ final class ShowEntitySerializer {
       }
     }
   }
-  
+
   static @NotNull CompoundBinaryTag serialize(final HoverEvent.@NotNull ShowEntity showEntity, final boolean snakeCase,
                                               final @NotNull NBTComponentSerializerImpl serializer) {
     final CompoundBinaryTag.Builder builder = CompoundBinaryTag.builder()
