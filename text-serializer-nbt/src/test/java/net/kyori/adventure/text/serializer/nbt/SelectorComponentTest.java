@@ -34,7 +34,7 @@ import static net.kyori.adventure.text.serializer.nbt.SerializerTests.testCompon
 final class SelectorComponentTest {
   @Test
   void test() {
-    String pattern = "@p";
+    final String pattern = "@p";
     testComponent(
       Component.selector(pattern),
       CompoundBinaryTag.builder()
@@ -45,8 +45,8 @@ final class SelectorComponentTest {
 
   @Test
   void testSeparator() {
-    String pattern = "@r";
-    Component separator = Component.text(",");
+    final String pattern = "@r";
+    final Component separator = Component.text(",");
 
     testComponent(
       Component.selector(pattern, separator),

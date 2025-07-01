@@ -39,53 +39,54 @@ final class SerializerTests {
 
   private static final NBTComponentSerializer DEFAULT_SERIALIZER = NBTComponentSerializer.nbt();
 
-  private SerializerTests() {}
+  private SerializerTests() {
+  }
 
-  static void testComponent(@NotNull Component component, @NotNull BinaryTag tag) {
+  static void testComponent(final @NotNull Component component, final @NotNull BinaryTag tag) {
     testComponent(DEFAULT_SERIALIZER, component, tag);
   }
 
-  static void testComponent(@NotNull NBTComponentSerializer serializer,
-                            @NotNull Component component, @NotNull BinaryTag tag) {
+  static void testComponent(final @NotNull NBTComponentSerializer serializer,
+                            final @NotNull Component component, final @NotNull BinaryTag tag) {
     assertEquals(tag, serializer.serialize(component));
     assertEquals(component, serializer.deserialize(tag));
   }
 
-  static void testStyle(@NotNull Style style, @NotNull CompoundBinaryTag tag) {
+  static void testStyle(final @NotNull Style style, final @NotNull CompoundBinaryTag tag) {
     testStyle(DEFAULT_SERIALIZER, style, tag);
   }
 
-  static void testStyle(@NotNull NBTComponentSerializer serializer,
-                        @NotNull Style style, @NotNull CompoundBinaryTag tag) {
+  static void testStyle(final @NotNull NBTComponentSerializer serializer,
+                        final @NotNull Style style, final @NotNull CompoundBinaryTag tag) {
     assertEquals(tag, serializer.serializeStyle(style));
     assertEquals(style, serializer.deserializeStyle(tag));
   }
 
-  static @NotNull Component deserializeComponent(@NotNull BinaryTag tag) {
+  static @NotNull Component deserializeComponent(final @NotNull BinaryTag tag) {
     return DEFAULT_SERIALIZER.deserialize(tag);
   }
 
-  static @NotNull BinaryTag serializeComponent(@NotNull Component component) {
+  static @NotNull BinaryTag serializeComponent(final @NotNull Component component) {
     return DEFAULT_SERIALIZER.serialize(component);
   }
 
-  static @NotNull Style deserializeStyle(@NotNull CompoundBinaryTag tag) {
+  static @NotNull Style deserializeStyle(final @NotNull CompoundBinaryTag tag) {
     return DEFAULT_SERIALIZER.deserializeStyle(tag);
   }
 
-  static @NotNull String name(@NotNull TextDecoration decoration) {
+  static @NotNull String name(final @NotNull TextDecoration decoration) {
     return TextDecoration.NAMES.keyOrThrow(decoration);
   }
 
-  static @NotNull String name(@NotNull NamedTextColor decoration) {
+  static @NotNull String name(final @NotNull NamedTextColor decoration) {
     return NamedTextColor.NAMES.keyOrThrow(decoration);
   }
 
-  static @NotNull String name(ClickEvent.@NotNull Action action) {
+  static @NotNull String name(final ClickEvent.@NotNull Action action) {
     return ClickEvent.Action.NAMES.keyOrThrow(action);
   }
 
-  static @NotNull String name(HoverEvent.@NotNull Action<?> action) {
+  static @NotNull String name(final HoverEvent.@NotNull Action<?> action) {
     return HoverEvent.Action.NAMES.keyOrThrow(action);
   }
 }

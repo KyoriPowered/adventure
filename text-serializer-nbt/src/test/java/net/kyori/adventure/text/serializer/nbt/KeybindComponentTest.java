@@ -33,7 +33,7 @@ import static net.kyori.adventure.text.serializer.nbt.SerializerTests.testCompon
 final class KeybindComponentTest {
   @Test
   void test() {
-    String keybind = "key.jump";
+    final String keybind = "key.jump";
     testComponent(
       Component.keybind(keybind),
       CompoundBinaryTag.builder()

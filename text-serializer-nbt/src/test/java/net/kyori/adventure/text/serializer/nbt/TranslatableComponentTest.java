@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.serializer.nbt;
 
+import java.util.UUID;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.nbt.IntArrayBinaryTag;
@@ -34,15 +35,13 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import org.junit.jupiter.api.Test;
 
-import java.util.UUID;
-
 import static net.kyori.adventure.text.serializer.nbt.SerializerTests.name;
 import static net.kyori.adventure.text.serializer.nbt.SerializerTests.testComponent;
 
 final class TranslatableComponentTest {
   @Test
   void testNoArgs() {
-    String translationKey = "multiplayer.player.left";
+    final String translationKey = "multiplayer.player.left";
     testComponent(
       Component.translatable(translationKey),
       CompoundBinaryTag.builder()
@@ -53,8 +52,8 @@ final class TranslatableComponentTest {
 
   @Test
   void testFallback() {
-    String translationKey = "thisIsA";
-    String fallback = "This is a test.";
+    final String translationKey = "thisIsA";
+    final String fallback = "This is a test.";
 
     testComponent(
       Component.translatable()
@@ -70,12 +69,12 @@ final class TranslatableComponentTest {
 
   @Test
   void testSingleArgWithEvents() {
-    String translationKey = "translatable.message";
+    final String translationKey = "translatable.message";
 
-    UUID id = UUID.fromString("86365c36-e272-4d32-8ab8-d4fee19f6231");
-    String name = "Codestech";
-    String command = String.format("/msg %s ", name);
-    String showEntityId = "minecraft:player";
+    final UUID id = UUID.fromString("86365c36-e272-4d32-8ab8-d4fee19f6231");
+    final String name = "Codestech";
+    final String command = String.format("/msg %s ", name);
+    final String showEntityId = "minecraft:player";
 
     testComponent(
       Component.translatable()

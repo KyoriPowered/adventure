@@ -23,6 +23,8 @@
  */
 package net.kyori.adventure.text.serializer.nbt;
 
+import java.io.IOException;
+import java.util.UUID;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.nbt.IntArrayBinaryTag;
@@ -32,9 +34,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.util.UUID;
 
 import static net.kyori.adventure.text.serializer.nbt.NBTSerializerUtils.SNBT_IO;
 import static net.kyori.adventure.text.serializer.nbt.SerializerTests.deserializeStyle;
@@ -46,7 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 final class ShowEntityTest {
   @Test
   void testWithoutName() {
-    UUID uuid = UUID.fromString("c04d19f7-9854-4122-93ab-ad7d4e1af8bc");
+    final UUID uuid = UUID.fromString("c04d19f7-9854-4122-93ab-ad7d4e1af8bc");
     testStyle(
       Style.style()
         .hoverEvent(HoverEvent.showEntity(Key.key("zombie"), uuid))
@@ -69,9 +68,9 @@ final class ShowEntityTest {
 
   @Test
   void testWithName() {
-    String entityId = "minecraft:spider";
-    UUID uuid = UUID.randomUUID();
-    String entityName = "Adventure spider";
+    final String entityId = "minecraft:spider";
+    final UUID uuid = UUID.randomUUID();
+    final String entityName = "Adventure spider";
 
     testStyle(
       Style.style()
@@ -107,10 +106,10 @@ final class ShowEntityTest {
 
   @Test
   void testLegacyWithoutName() throws IOException {
-    String entityType = "minecraft:blaze";
-    UUID uuid = UUID.randomUUID();
+    final String entityType = "minecraft:blaze";
+    final UUID uuid = UUID.randomUUID();
 
-    CompoundBinaryTag contentsTag = CompoundBinaryTag.builder()
+    final CompoundBinaryTag contentsTag = CompoundBinaryTag.builder()
       .putString(ComponentTreeConstants.SHOW_ENTITY_TYPE, entityType)
       .putString(ComponentTreeConstants.SHOW_ENTITY_ID, uuid.toString())
       .build();
@@ -140,11 +139,11 @@ final class ShowEntityTest {
 
   @Test
   void testLegacyWithName() throws IOException {
-    String entityType = "minecraft:chicken";
-    UUID uuid = UUID.fromString("a8aa3054-ca11-41bd-ac7e-95967816a135");
-    Component entityName = Component.text("Lava chicken", NamedTextColor.DARK_RED);
+    final String entityType = "minecraft:chicken";
+    final UUID uuid = UUID.fromString("a8aa3054-ca11-41bd-ac7e-95967816a135");
+    final Component entityName = Component.text("Lava chicken", NamedTextColor.DARK_RED);
 
-    CompoundBinaryTag contentsTag = CompoundBinaryTag.builder()
+    final CompoundBinaryTag contentsTag = CompoundBinaryTag.builder()
       .putString(ComponentTreeConstants.SHOW_ENTITY_TYPE, entityType)
       .putString(ComponentTreeConstants.SHOW_ENTITY_ID, uuid.toString())
       .put(ComponentTreeConstants.SHOW_ENTITY_NAME, serializeComponent(entityName))
