@@ -71,6 +71,8 @@ public final class ComponentTreeConstants {
   @Deprecated
   public static final String HOVER_EVENT_VALUE = "value";
   @Deprecated
+  public static final String SHOW_TEXT_TEXT = "text";
+  @Deprecated
   public static final String SHOW_ENTITY_TYPE = "type";
   public static final String SHOW_ENTITY_ID = "id";
   public static final String SHOW_ENTITY_UUID = "uuid";

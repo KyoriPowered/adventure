@@ -61,11 +61,11 @@ public final class NBTSerializerOptions {
   /**
    * Whether to emit the default hover event item stack quantity of {@code 1}.
    *
-   * <p>When enabled, this matches Vanilla as of 1.21.6.</p>
+   * <p>When enabled, this matches Vanilla as of 1.20.5.</p>
    *
    * @since 4.24.0
    */
-  public static final Option<Boolean> EMIT_DEFAULT_ITEM_HOVER_QUANTITY; // TODO: Find out in which version it was added and add it to the option state
+  public static final Option<Boolean> EMIT_DEFAULT_ITEM_HOVER_QUANTITY;
 
   /**
    * How to emit show item hovers in {@code hoverEvent} (camelCase) fields.
@@ -74,13 +74,23 @@ public final class NBTSerializerOptions {
    */
   public static final Option<ShowItemHoverDataMode> SHOW_ITEM_HOVER_DATA_MODE;
 
+  /**
+   * Whether to emit {@code text} field instead of {@code value} field in {@code show_item}
+   * hover events specified in {@code hover_event} (snake_case) fields.
+   *
+   * @since 4.24.0
+   */
+  public static final Option<Boolean> EMIT_SHOW_TEXT_HOVER_TEXT_FIELD;
+
   private static final OptionSchema SCHEMA;
   private static final OptionState.Versioned BY_DATA_VERSION;
 
   private static final int VERSION_23W40A = 3679;
   private static final int VERSION_24W09A = 3819;
+  private static final int VERSION_24W10A = 3821;
   private static final int VERSION_24W44A = 4174;
   private static final int VERSION_25W02A = 4298;
+  private static final int VERSION_25W03A = 4304;
 
   static {
     OptionSchema.Mutable schema = OptionSchema.emptySchema();
@@ -89,6 +99,7 @@ public final class NBTSerializerOptions {
     EMIT_CLICK_EVENT_TYPE = schema.enumOption(key("emit/click_value_mode"), ClickEventValueMode.class, ClickEventValueMode.SNAKE_CASE);
     EMIT_DEFAULT_ITEM_HOVER_QUANTITY = schema.booleanOption(key("emit/default_item_hover_quantity"), true);
     SHOW_ITEM_HOVER_DATA_MODE = schema.enumOption(key("emit/show_item_hover_data"), ShowItemHoverDataMode.class, ShowItemHoverDataMode.EMIT_EITHER);
+    EMIT_SHOW_TEXT_HOVER_TEXT_FIELD = schema.booleanOption(key("emit/show_text_hover_text_field"), false);
     SCHEMA = schema.frozenView();
 
     BY_DATA_VERSION = SCHEMA.versionedStateBuilder()
@@ -99,10 +110,15 @@ public final class NBTSerializerOptions {
           .value(EMIT_CLICK_EVENT_TYPE, ClickEventValueMode.CAMEL_CASE)
           .value(EMIT_DEFAULT_ITEM_HOVER_QUANTITY, false)
           .value(SHOW_ITEM_HOVER_DATA_MODE, ShowItemHoverDataMode.EMIT_LEGACY_NBT)
+          .value(EMIT_SHOW_TEXT_HOVER_TEXT_FIELD, false)
       )
       .version(
         VERSION_24W09A,
         builder -> builder.value(SHOW_ITEM_HOVER_DATA_MODE, ShowItemHoverDataMode.EMIT_DATA_COMPONENTS)
+      )
+      .version(
+        VERSION_24W10A,
+        builder -> builder.value(EMIT_DEFAULT_ITEM_HOVER_QUANTITY, true)
       )
       .version(
         VERSION_24W44A,
@@ -112,6 +128,11 @@ public final class NBTSerializerOptions {
         VERSION_25W02A,
         builder -> builder.value(EMIT_HOVER_EVENT_TYPE, HoverEventValueMode.SNAKE_CASE)
           .value(EMIT_CLICK_EVENT_TYPE, ClickEventValueMode.SNAKE_CASE)
+          .value(EMIT_SHOW_TEXT_HOVER_TEXT_FIELD, true)
+      )
+      .version(
+        VERSION_25W03A,
+        builder -> builder.value(EMIT_SHOW_TEXT_HOVER_TEXT_FIELD, false)
       )
       .build();
   }

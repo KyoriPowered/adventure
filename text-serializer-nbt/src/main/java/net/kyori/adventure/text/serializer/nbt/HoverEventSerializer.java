@@ -33,6 +33,7 @@ import org.jetbrains.annotations.Nullable;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.HOVER_EVENT_ACTION;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.HOVER_EVENT_CONTENTS;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.HOVER_EVENT_VALUE;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SHOW_TEXT_TEXT;
 import static net.kyori.adventure.text.serializer.nbt.NBTSerializerUtils.getRequiredTag;
 
 final class HoverEventSerializer {
@@ -50,8 +51,21 @@ final class HoverEventSerializer {
     }
 
     if (action == HoverEvent.Action.SHOW_TEXT) {
-      // TODO: According to the MCW, pre-25w03a and post-25w03a use different fields for this, we need to take a look into that
-      BinaryTag textTag = getRequiredTag(compound, snakeCase ? HOVER_EVENT_VALUE : HOVER_EVENT_CONTENTS);
+      BinaryTag textTag;
+
+      if (snakeCase) {
+        textTag = compound.get(HOVER_EVENT_VALUE);
+        if (textTag == null) {
+          textTag = compound.get(SHOW_TEXT_TEXT);
+        }
+
+        if (textTag == null) {
+          throw new IllegalStateException("Could not find a field containing text of the show_text hover event");
+        }
+      } else {
+        textTag = getRequiredTag(compound, HOVER_EVENT_CONTENTS);
+      }
+
       return HoverEvent.showText(serializer.deserialize(textTag));
     } else if (action == HoverEvent.Action.SHOW_ITEM) {
       BinaryTag contentsTag = snakeCase ? compound : getRequiredTag(compound, HOVER_EVENT_CONTENTS);
@@ -75,9 +89,9 @@ final class HoverEventSerializer {
     if (action == HoverEvent.Action.SHOW_TEXT) {
       BinaryTag serializedComponent = serializer.serialize((Component) event.value());
       if (snakeCase) {
-        // TODO: According to the MCW, pre-25w03a and post-25w03a use different fields for this, we need to take a look into that
+        String textFieldName = serializer.options().value(NBTSerializerOptions.EMIT_SHOW_TEXT_HOVER_TEXT_FIELD) ? SHOW_TEXT_TEXT : HOVER_EVENT_VALUE;
         contentsTag = CompoundBinaryTag.builder()
-          .put(HOVER_EVENT_VALUE, serializedComponent)
+          .put(textFieldName, serializedComponent)
           .build();
       } else {
         contentsTag = serializedComponent;
