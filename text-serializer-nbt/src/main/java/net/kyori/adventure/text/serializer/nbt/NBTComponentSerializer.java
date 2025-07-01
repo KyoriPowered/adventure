@@ -40,6 +40,7 @@ import java.util.function.Consumer;
  * A NBT component serializer.
  *
  * @since 4.24.0
+ * @sinceMinecraft 1.20.3
  */
 public interface NBTComponentSerializer extends ComponentSerializer<Component, Component, BinaryTag> {
   /**

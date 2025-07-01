@@ -22,12 +22,9 @@
  * SOFTWARE.
  */
 /**
- * Internal classes for the NBT component serializer.
+ * NBT-based component serialization and deserialization.
  *
  * @since 4.24.0
  * @sinceMinecraft 1.20.3
  */
-@ApiStatus.Internal
-package net.kyori.adventure.text.serializer.nbt.impl;
-
-import org.jetbrains.annotations.ApiStatus;
+package net.kyori.adventure.text.serializer.nbt;

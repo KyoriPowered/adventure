@@ -37,6 +37,7 @@ import static java.util.Objects.requireNonNull;
  * <p>This holder is exposed to allow conversions to/from NBT data holders.</p>
  *
  * @since 4.24.0
+ * @sinceMinecraft 1.20.3
  */
 @ApiStatus.NonExtendable
 public interface NBTDataComponentValue extends DataComponentValue {
