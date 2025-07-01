@@ -29,11 +29,12 @@ import net.kyori.option.OptionState;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Options that can apply to {@linkplain NBTComponentSerializer NBT serializers}.
+ * Options that can apply to {@linkplain NBTComponentSerializer NBT component serializers}.
  *
  * <p>See serializer documentation for specific details on which flags are supported.</p>
  *
  * @since 4.24.0
+ * @sinceMinecraft 1.20.3
  */
 public final class NBTSerializerOptions {
 
@@ -85,12 +86,12 @@ public final class NBTSerializerOptions {
   private static final OptionSchema SCHEMA;
   private static final OptionState.Versioned BY_DATA_VERSION;
 
-  private static final int VERSION_23W40A = 3679;
-  private static final int VERSION_24W09A = 3819;
-  private static final int VERSION_24W10A = 3821;
-  private static final int VERSION_24W44A = 4174;
-  private static final int VERSION_25W02A = 4298;
-  private static final int VERSION_25W03A = 4304;
+  private static final int VERSION_23W40A = 3679; // 1.20.3 snapshot, initial version with NBT component serialization
+  private static final int VERSION_24W09A = 3819; // 1.20.5 snapshot
+  private static final int VERSION_24W10A = 3821; // 1.20.5 snapshot
+  private static final int VERSION_24W44A = 4174; // 1.21.4 snapshot
+  private static final int VERSION_25W02A = 4298; // 1.21.5 snapshot
+  private static final int VERSION_25W03A = 4304; // 1.21.5 snapshot
 
   static {
     OptionSchema.Mutable schema = OptionSchema.emptySchema();
