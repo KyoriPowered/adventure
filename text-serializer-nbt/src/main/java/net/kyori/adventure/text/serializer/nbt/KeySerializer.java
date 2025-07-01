@@ -29,13 +29,14 @@ import org.jetbrains.annotations.NotNull;
 
 final class KeySerializer {
 
-  private KeySerializer() {}
+  private KeySerializer() {
+  }
 
-  static @NotNull Key deserialize(@NotNull StringBinaryTag tag) {
+  static @NotNull Key deserialize(final @NotNull StringBinaryTag tag) {
     return Key.key(tag.value());
   }
 
-  static @NotNull StringBinaryTag serialize(@NotNull Key key) {
+  static @NotNull StringBinaryTag serialize(final @NotNull Key key) {
     return StringBinaryTag.stringBinaryTag(key.asString());
   }
 }

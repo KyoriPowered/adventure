@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.serializer.nbt.impl;
 
 import com.google.auto.service.AutoService;
+import java.util.Collections;
 import net.kyori.adventure.Adventure;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.EndBinaryTag;
@@ -32,8 +33,6 @@ import net.kyori.adventure.text.event.DataComponentValueConverterRegistry;
 import net.kyori.adventure.text.serializer.nbt.NBTDataComponentValue;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Collections;
 
 /**
  * A provider for NBT component serializer's implementations of data component value converters.

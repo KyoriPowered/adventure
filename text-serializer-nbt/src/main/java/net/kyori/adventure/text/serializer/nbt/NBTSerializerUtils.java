@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.serializer.nbt;
 
+import java.io.IOException;
 import net.kyori.adventure.nbt.BinaryTag;
 import net.kyori.adventure.nbt.BinaryTagType;
 import net.kyori.adventure.nbt.ByteBinaryTag;
@@ -33,8 +34,6 @@ import net.kyori.adventure.util.Codec;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
-
 final class NBTSerializerUtils {
 
   static final TagStringIO SNBT_IO = TagStringIO.tagStringIO();
@@ -43,31 +42,31 @@ final class NBTSerializerUtils {
   private NBTSerializerUtils() {
   }
 
-  static @NotNull BinaryTag getRequiredTag(@NotNull CompoundBinaryTag compound, @NotNull String name) {
-    BinaryTag tag = compound.get(name);
+  static @NotNull BinaryTag requiredTag(final @NotNull CompoundBinaryTag compound, final @NotNull String name) {
+    final BinaryTag tag = compound.get(name);
     if (tag == null) {
       throw noSuchField(name);
     }
     return tag;
   }
 
-  static <B extends BinaryTag> @NotNull B getRequiredTag(@NotNull CompoundBinaryTag compound,
-                                                         @NotNull String name, @NotNull BinaryTagType<B> tagType) {
-    B tag = getOptionalTag(compound, name, tagType);
+  static <B extends BinaryTag> @NotNull B requiredTag(final @NotNull CompoundBinaryTag compound,
+                                                      final @NotNull String name, final @NotNull BinaryTagType<B> tagType) {
+    final B tag = optionalTag(compound, name, tagType);
     if (tag == null) {
       throw noSuchField(name);
     }
     return tag;
   }
 
-  static <B extends BinaryTag> @Nullable B getOptionalTag(@NotNull CompoundBinaryTag compound,
-                                                          @NotNull String name, @NotNull BinaryTagType<B> tagType) {
-    BinaryTag tag = compound.get(name);
+  static <B extends BinaryTag> @Nullable B optionalTag(final @NotNull CompoundBinaryTag compound,
+                                                       final @NotNull String name, final @NotNull BinaryTagType<B> tagType) {
+    final BinaryTag tag = compound.get(name);
     if (tag == null) {
       return null;
     }
 
-    BinaryTagType<?> actualTagType = tag.type();
+    final BinaryTagType<?> actualTagType = tag.type();
     if (actualTagType != tagType) {
       throw new IllegalArgumentException(
         "A type of the tag is different than expected." +
@@ -79,16 +78,16 @@ final class NBTSerializerUtils {
     return (B) tag;
   }
 
-  static boolean asBoolean(@NotNull NumberBinaryTag tag) {
+  static boolean asBoolean(final @NotNull NumberBinaryTag tag) {
     // != 0 might look weird, but it is what vanilla does
     return tag.byteValue() != 0;
   }
 
-  static @NotNull ByteBinaryTag asTag(boolean value) {
+  static @NotNull ByteBinaryTag asTag(final boolean value) {
     return value ? ByteBinaryTag.ONE : ByteBinaryTag.ZERO;
   }
 
-  private static @NotNull IllegalArgumentException noSuchField(@NotNull String name) {
+  private static @NotNull IllegalArgumentException noSuchField(final @NotNull String name) {
     return new IllegalArgumentException("The specified compound tag does not contain a field with name of \"" + name + "\"");
   }
 }

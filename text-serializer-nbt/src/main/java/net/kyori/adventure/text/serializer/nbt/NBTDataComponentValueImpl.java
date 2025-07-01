@@ -23,18 +23,17 @@
  */
 package net.kyori.adventure.text.serializer.nbt;
 
+import java.util.Objects;
 import net.kyori.adventure.nbt.BinaryTag;
 import net.kyori.adventure.nbt.EndBinaryTag;
 import net.kyori.adventure.text.event.DataComponentValue;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
-
 class NBTDataComponentValueImpl implements NBTDataComponentValue {
 
   private final BinaryTag binaryTag;
 
-  NBTDataComponentValueImpl(@NotNull BinaryTag binaryTag) {
+  NBTDataComponentValueImpl(final @NotNull BinaryTag binaryTag) {
     this.binaryTag = binaryTag;
   }
 
@@ -44,10 +43,10 @@ class NBTDataComponentValueImpl implements NBTDataComponentValue {
   }
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(final Object o) {
     if (this == o) return true;
     if (!(o instanceof NBTDataComponentValueImpl)) return false;
-    NBTDataComponentValueImpl that = (NBTDataComponentValueImpl) o;
+    final NBTDataComponentValueImpl that = (NBTDataComponentValueImpl) o;
     return Objects.equals(this.binaryTag, that.binaryTag);
   }
 

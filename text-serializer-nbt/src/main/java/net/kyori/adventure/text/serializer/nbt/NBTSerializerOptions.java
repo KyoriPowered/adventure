@@ -94,7 +94,7 @@ public final class NBTSerializerOptions {
   private static final int VERSION_25W03A = 4304; // 1.21.5 snapshot
 
   static {
-    OptionSchema.Mutable schema = OptionSchema.emptySchema();
+    final OptionSchema.Mutable schema = OptionSchema.emptySchema();
     SHADOW_COLOR_MODE = schema.enumOption(key("emit/shadow_color"), ShadowColorEmitMode.class, ShadowColorEmitMode.EMIT_INTEGER);
     EMIT_HOVER_EVENT_TYPE = schema.enumOption(key("emit/hover_value_mode"), HoverEventValueMode.class, HoverEventValueMode.SNAKE_CASE);
     EMIT_CLICK_EVENT_TYPE = schema.enumOption(key("emit/click_value_mode"), ClickEventValueMode.class, ClickEventValueMode.SNAKE_CASE);

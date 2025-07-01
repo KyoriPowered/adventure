@@ -23,13 +23,12 @@
  */
 package net.kyori.adventure.text.serializer.nbt;
 
+import java.util.UUID;
 import net.kyori.adventure.nbt.BinaryTag;
 import net.kyori.adventure.nbt.IntArrayBinaryTag;
 import net.kyori.adventure.nbt.ListBinaryTag;
 import net.kyori.adventure.nbt.StringBinaryTag;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.UUID;
 
 final class UUIDSerializer {
 
@@ -38,14 +37,14 @@ final class UUIDSerializer {
   private UUIDSerializer() {
   }
 
-  static @NotNull UUID deserialize(@NotNull BinaryTag tag) {
+  static @NotNull UUID deserialize(final @NotNull BinaryTag tag) {
     if (tag instanceof StringBinaryTag) {
       return UUID.fromString(((StringBinaryTag) tag).value());
     } else if (tag instanceof IntArrayBinaryTag) {
       return createUUIDFromArray(((IntArrayBinaryTag) tag).value());
     } else if (tag instanceof ListBinaryTag) {
-      ListBinaryTag castTag = (ListBinaryTag) tag;
-      int[] array = new int[castTag.size()];
+      final ListBinaryTag castTag = (ListBinaryTag) tag;
+      final int[] array = new int[castTag.size()];
 
       for (int index = 0; index < array.length; index++) {
         array[index] = castTag.getInt(index);
@@ -57,30 +56,30 @@ final class UUIDSerializer {
     }
   }
 
-  static @NotNull BinaryTag serialize(@NotNull UUID uuid) {
-    long mostSignificantBits = uuid.getMostSignificantBits();
-    long leastSignificantBits = uuid.getLeastSignificantBits();
+  static @NotNull BinaryTag serialize(final @NotNull UUID uuid) {
+    final long mostSignificantBits = uuid.getMostSignificantBits();
+    final long leastSignificantBits = uuid.getLeastSignificantBits();
     return IntArrayBinaryTag.intArrayBinaryTag(
       mostSignificantBits(mostSignificantBits), leastSignificantBits(mostSignificantBits),
       mostSignificantBits(leastSignificantBits), leastSignificantBits(leastSignificantBits)
     );
   }
 
-  private static @NotNull UUID createUUIDFromArray(int @NotNull [] array) {
-    long mostSignificantBits = binaryConcat(array[0], array[1]);
-    long leastSignificantBits = binaryConcat(array[2], array[3]);
+  private static @NotNull UUID createUUIDFromArray(final int @NotNull [] array) {
+    final long mostSignificantBits = binaryConcat(array[0], array[1]);
+    final long leastSignificantBits = binaryConcat(array[2], array[3]);
     return new UUID(mostSignificantBits, leastSignificantBits);
   }
 
-  private static long binaryConcat(int mostSignificantBits, int leastSignificantBits) {
+  private static long binaryConcat(final int mostSignificantBits, final int leastSignificantBits) {
     return ((long) mostSignificantBits << Integer.SIZE) | ((long) leastSignificantBits & LONG_HALF);
   }
 
-  private static int mostSignificantBits(long value) {
+  private static int mostSignificantBits(final long value) {
     return (int) (value >> Integer.SIZE);
   }
 
-  private static int leastSignificantBits(long value) {
+  private static int leastSignificantBits(final long value) {
     return (int) (value & LONG_HALF);
   }
 }

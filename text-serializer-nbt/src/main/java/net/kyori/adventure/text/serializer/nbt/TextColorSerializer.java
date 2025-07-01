@@ -23,22 +23,21 @@
  */
 package net.kyori.adventure.text.serializer.nbt;
 
+import java.util.Locale;
 import net.kyori.adventure.nbt.StringBinaryTag;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Locale;
 
 final class TextColorSerializer {
 
   private TextColorSerializer() {
   }
 
-  static @NotNull TextColor deserialize(@NotNull StringBinaryTag tag) {
-    String value = tag.value();
+  static @NotNull TextColor deserialize(final @NotNull StringBinaryTag tag) {
+    final String value = tag.value();
     if (value.startsWith(TextColor.HEX_PREFIX)) {
-      TextColor color = TextColor.fromHexString(value);
+      final TextColor color = TextColor.fromHexString(value);
       if (color == null) {
         throw new IllegalArgumentException("Invalid hex text color: " + value);
       }
@@ -48,8 +47,8 @@ final class TextColorSerializer {
     }
   }
 
-  static @NotNull StringBinaryTag serialize(@NotNull TextColor color) {
-    String value = color instanceof NamedTextColor
+  static @NotNull StringBinaryTag serialize(final @NotNull TextColor color) {
+    final String value = color instanceof NamedTextColor
       ? NamedTextColor.NAMES.keyOrThrow((NamedTextColor) color)
       : asUpperCaseHexString(color);
     return StringBinaryTag.stringBinaryTag(value);

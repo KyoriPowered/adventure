@@ -37,32 +37,32 @@ final class ShadowColorSerializer {
   private ShadowColorSerializer() {
   }
 
-  static @NotNull ShadowColor deserialize(@NotNull BinaryTag tag) {
+  static @NotNull ShadowColor deserialize(final @NotNull BinaryTag tag) {
     if (tag instanceof IntBinaryTag) {
-      IntBinaryTag castTag = (IntBinaryTag) tag;
+      final IntBinaryTag castTag = (IntBinaryTag) tag;
       return ShadowColor.shadowColor(castTag.value());
     } else if (tag instanceof ListBinaryTag) {
-      ListBinaryTag castTag = (ListBinaryTag) tag;
+      final ListBinaryTag castTag = (ListBinaryTag) tag;
       return ShadowColor.shadowColor(
-        getShadowColorComponent(castTag, 0),
-        getShadowColorComponent(castTag, 1),
-        getShadowColorComponent(castTag, 2),
-        getShadowColorComponent(castTag, 3)
+        shadowColorComponent(castTag, 0),
+        shadowColorComponent(castTag, 1),
+        shadowColorComponent(castTag, 2),
+        shadowColorComponent(castTag, 3)
       );
     } else {
       throw new IllegalArgumentException("The binary tag representing the shadow color is of an invalid type");
     }
   }
 
-  static @Nullable BinaryTag serialize(@NotNull ShadowColor color, @NotNull NBTComponentSerializerImpl serializer) {
-    NBTSerializerOptions.ShadowColorEmitMode emitMode = serializer.options().value(NBTSerializerOptions.SHADOW_COLOR_MODE);
+  static @Nullable BinaryTag serialize(final @NotNull ShadowColor color, final @NotNull NBTComponentSerializerImpl serializer) {
+    final NBTSerializerOptions.ShadowColorEmitMode emitMode = serializer.options().value(NBTSerializerOptions.SHADOW_COLOR_MODE);
     switch (emitMode) {
       case NONE:
         return null;
       case EMIT_INTEGER:
         return IntBinaryTag.intBinaryTag(color.value());
       case EMIT_ARRAY:
-        ListBinaryTag.Builder<FloatBinaryTag> builder = ListBinaryTag.builder(BinaryTagTypes.FLOAT);
+        final ListBinaryTag.Builder<FloatBinaryTag> builder = ListBinaryTag.builder(BinaryTagTypes.FLOAT);
         addShadowColorComponent(builder, color.red());
         addShadowColorComponent(builder, color.green());
         addShadowColorComponent(builder, color.blue());
@@ -74,11 +74,11 @@ final class ShadowColorSerializer {
     }
   }
 
-  private static int getShadowColorComponent(@NotNull ListBinaryTag tag, int index) {
+  private static int shadowColorComponent(final @NotNull ListBinaryTag tag, final int index) {
     return (int) (tag.getFloat(index) * 0xff);
   }
 
-  private static void addShadowColorComponent(@NotNull ListBinaryTag.Builder<FloatBinaryTag> builder, int element) {
+  private static void addShadowColorComponent(final ListBinaryTag.@NotNull Builder<FloatBinaryTag> builder, final int element) {
     builder.add(FloatBinaryTag.floatBinaryTag((float) element / 0xff));
   }
 }

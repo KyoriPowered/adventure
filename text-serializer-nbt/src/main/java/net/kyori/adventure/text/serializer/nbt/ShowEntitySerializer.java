@@ -23,6 +23,8 @@
  */
 package net.kyori.adventure.text.serializer.nbt;
 
+import java.io.IOException;
+import java.util.UUID;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.BinaryTag;
 import net.kyori.adventure.nbt.BinaryTagTypes;
@@ -32,26 +34,23 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
-import java.util.UUID;
-
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SHOW_ENTITY_ID;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SHOW_ENTITY_NAME;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SHOW_ENTITY_TYPE;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SHOW_ENTITY_UUID;
 import static net.kyori.adventure.text.serializer.nbt.NBTSerializerUtils.SNBT_IO;
-import static net.kyori.adventure.text.serializer.nbt.NBTSerializerUtils.getRequiredTag;
+import static net.kyori.adventure.text.serializer.nbt.NBTSerializerUtils.requiredTag;
 
 final class ShowEntitySerializer {
   
   private ShowEntitySerializer() {
   }
 
-  static HoverEvent.@NotNull ShowEntity deserialize(@NotNull BinaryTag tag, boolean snakeCase,
-                                                    @NotNull NBTComponentSerializerImpl serializer) {
+  static HoverEvent.@NotNull ShowEntity deserialize(final @NotNull BinaryTag tag, final boolean snakeCase,
+                                                    final @NotNull NBTComponentSerializerImpl serializer) {
     try {
       return deserializeModern((CompoundBinaryTag) tag, snakeCase, serializer);
-    } catch (Exception exception) {
+    } catch (final Exception exception) {
       if (snakeCase) {
         throw notSureHowToDeserialize(tag);
       } else {
@@ -60,13 +59,13 @@ final class ShowEntitySerializer {
     }
   }
   
-  static @NotNull CompoundBinaryTag serialize(HoverEvent.@NotNull ShowEntity showEntity, boolean snakeCase,
-                                              @NotNull NBTComponentSerializerImpl serializer) {
-    CompoundBinaryTag.Builder builder = CompoundBinaryTag.builder()
+  static @NotNull CompoundBinaryTag serialize(final HoverEvent.@NotNull ShowEntity showEntity, final boolean snakeCase,
+                                              final @NotNull NBTComponentSerializerImpl serializer) {
+    final CompoundBinaryTag.Builder builder = CompoundBinaryTag.builder()
       .put(snakeCase ? SHOW_ENTITY_ID : SHOW_ENTITY_TYPE, KeySerializer.serialize(showEntity.type()))
       .put(snakeCase ? SHOW_ENTITY_UUID : SHOW_ENTITY_ID, UUIDSerializer.serialize(showEntity.id()));
 
-    Component entityName = showEntity.name();
+    final Component entityName = showEntity.name();
     if (entityName != null) {
       builder.put(SHOW_ENTITY_NAME, serializer.serialize(entityName));
     }
@@ -74,13 +73,13 @@ final class ShowEntitySerializer {
     return builder.build();
   }
 
-  private static HoverEvent.@NotNull ShowEntity deserializeModern(@NotNull CompoundBinaryTag compound, boolean snakeCase,
-                                                                  @NotNull NBTComponentSerializerImpl serializer) {
-    Key entityType = KeySerializer.deserialize(getRequiredTag(compound, snakeCase ? SHOW_ENTITY_ID : SHOW_ENTITY_TYPE, BinaryTagTypes.STRING));
-    BinaryTag entityIdTag = getRequiredTag(compound, snakeCase ? SHOW_ENTITY_UUID : SHOW_ENTITY_ID);
-    BinaryTag entityNameTag = compound.get(SHOW_ENTITY_NAME);
+  private static HoverEvent.@NotNull ShowEntity deserializeModern(final @NotNull CompoundBinaryTag compound, final boolean snakeCase,
+                                                                  final @NotNull NBTComponentSerializerImpl serializer) {
+    final Key entityType = KeySerializer.deserialize(requiredTag(compound, snakeCase ? SHOW_ENTITY_ID : SHOW_ENTITY_TYPE, BinaryTagTypes.STRING));
+    final BinaryTag entityIdTag = requiredTag(compound, snakeCase ? SHOW_ENTITY_UUID : SHOW_ENTITY_ID);
+    final BinaryTag entityNameTag = compound.get(SHOW_ENTITY_NAME);
 
-    UUID entityId = UUIDSerializer.deserialize(entityIdTag);
+    final UUID entityId = UUIDSerializer.deserialize(entityIdTag);
     if (entityNameTag == null) {
       return HoverEvent.ShowEntity.showEntity(entityType, entityId);
     } else {
@@ -88,22 +87,22 @@ final class ShowEntitySerializer {
     }
   }
 
-  private static HoverEvent.@NotNull ShowEntity deserializeLegacy(@NotNull BinaryTag tag, @NotNull NBTComponentSerializerImpl serializer) {
+  private static HoverEvent.@NotNull ShowEntity deserializeLegacy(final @NotNull BinaryTag tag, final @NotNull NBTComponentSerializerImpl serializer) {
     try {
-      Component component = serializer.deserialize(tag);
+      final Component component = serializer.deserialize(tag);
       if (!(component instanceof TextComponent)) {
         throw notSureHowToDeserialize(tag);
       }
 
-      String content = ((TextComponent) component).content();
-      CompoundBinaryTag compound = SNBT_IO.asCompound(content);
+      final String content = ((TextComponent) component).content();
+      final CompoundBinaryTag compound = SNBT_IO.asCompound(content);
       return deserializeModern(compound, false, serializer);
-    } catch (IOException exception) {
+    } catch (final IOException exception) {
       throw notSureHowToDeserialize(tag);
     }
   }
 
-  private static @NotNull IllegalArgumentException notSureHowToDeserialize(@NotNull BinaryTag tag) {
+  private static @NotNull IllegalArgumentException notSureHowToDeserialize(final @NotNull BinaryTag tag) {
     return new IllegalArgumentException("Don't know how to turn " + tag + " into a show entity hover event data");
   }
 }
