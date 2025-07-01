@@ -23,6 +23,8 @@
  */
 package net.kyori.adventure.text.serializer.nbt;
 
+import java.io.IOException;
+import java.util.Collections;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.nbt.EndBinaryTag;
@@ -33,9 +35,6 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.util.Collections;
 
 import static net.kyori.adventure.text.serializer.nbt.NBTSerializerUtils.SNBT_CODEC;
 import static net.kyori.adventure.text.serializer.nbt.NBTSerializerUtils.SNBT_IO;
@@ -50,8 +49,8 @@ final class ShowItemTest {
 
   @Test
   void testWithPopulatedTag() throws IOException {
-    String item = "minecraft:diamond";
-    int count = 2;
+    final String item = "minecraft:diamond";
+    final int count = 2;
 
     testStyle(
       NBTComponentSerializer.builder()
@@ -99,8 +98,8 @@ final class ShowItemTest {
 
   @Test
   void testWithoutAdditionalData() {
-    String item = "minecraft:diamond";
-    int count = 2;
+    final String item = "minecraft:diamond";
+    final int count = 2;
 
     testStyle(
       Style.style()
@@ -121,8 +120,8 @@ final class ShowItemTest {
 
   @Test
   void testWithCountOfOne() {
-    String item = "minecraft:diamond";
-    int count = 1;
+    final String item = "minecraft:diamond";
+    final int count = 1;
 
     testStyle(
       Style.style()
@@ -143,9 +142,9 @@ final class ShowItemTest {
 
   @Test
   void testWithRemovedComponent() {
-    String item = "minecraft:diamond";
-    int count = 2;
-    String component = "minecraft:damage";
+    final String item = "minecraft:diamond";
+    final int count = 2;
+    final String component = "minecraft:damage";
 
     testStyle(
       Style.style()
@@ -177,10 +176,10 @@ final class ShowItemTest {
 
   @Test
   void testLegacyWithoutTag() throws IOException {
-    String item = "minecraft:diamond";
-    byte count = 3;
+    final String item = "minecraft:diamond";
+    final byte count = 3;
 
-    CompoundBinaryTag itemData = CompoundBinaryTag.builder()
+    final CompoundBinaryTag itemData = CompoundBinaryTag.builder()
       .putString(ComponentTreeConstants.SHOW_ITEM_ID, item)
       .putByte(LEGACY_COUNT, count)
       .build();
@@ -205,10 +204,10 @@ final class ShowItemTest {
 
   @Test
   void testLegacyWithTag() throws IOException {
-    String item = "minecraft:diamond";
-    byte count = 1;
+    final String item = "minecraft:diamond";
+    final byte count = 1;
 
-    CompoundBinaryTag itemTag = CompoundBinaryTag.builder()
+    final CompoundBinaryTag itemTag = CompoundBinaryTag.builder()
       .put(
         "display",
         CompoundBinaryTag.builder()
@@ -217,7 +216,7 @@ final class ShowItemTest {
       )
       .build();
 
-    CompoundBinaryTag itemData = CompoundBinaryTag.builder()
+    final CompoundBinaryTag itemData = CompoundBinaryTag.builder()
       .putString(ComponentTreeConstants.SHOW_ITEM_ID, item)
       .putByte(LEGACY_COUNT, count)
       .put(ComponentTreeConstants.SHOW_ITEM_TAG, itemTag)

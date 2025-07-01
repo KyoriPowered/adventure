@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.serializer.nbt;
 
+import java.util.UUID;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.BinaryTagTypes;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
@@ -41,8 +42,6 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import net.kyori.adventure.util.TriState;
 import org.junit.jupiter.api.Test;
-
-import java.util.UUID;
 
 import static net.kyori.adventure.text.serializer.nbt.SerializerTests.deserializeStyle;
 import static net.kyori.adventure.text.serializer.nbt.SerializerTests.name;
@@ -108,7 +107,7 @@ final class StyleTest {
 
   @Test
   void testShadowColorInt() {
-    int shadowColorValue = 0xCCFF0022;
+    final int shadowColorValue = 0xCCFF0022;
     testStyle(
       Style.style(ShadowColor.shadowColor(shadowColorValue)),
       CompoundBinaryTag.builder()
@@ -140,7 +139,7 @@ final class StyleTest {
 
   @Test
   void testInsertion() {
-    String insertion = "honk";
+    final String insertion = "honk";
     testStyle(
       Style.style()
         .insertion(insertion)
@@ -153,7 +152,7 @@ final class StyleTest {
 
   @Test
   void testMixedFontColorDecorationClickEvent() {
-    String clickEventUrl = "https://github.com";
+    final String clickEventUrl = "https://github.com";
     testStyle(
       Style.style()
         .font(Key.key("kyori", "kittens"))
@@ -178,8 +177,8 @@ final class StyleTest {
 
   @Test
   void testShowEntityHoverEvent() {
-    UUID showEntityUUID = UUID.randomUUID();
-    String showEntityName = "Dolores";
+    final UUID showEntityUUID = UUID.randomUUID();
+    final String showEntityName = "Dolores";
 
     testStyle(
       Style.style()

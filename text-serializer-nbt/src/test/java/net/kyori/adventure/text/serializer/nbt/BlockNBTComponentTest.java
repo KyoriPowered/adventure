@@ -34,11 +34,11 @@ import static net.kyori.adventure.text.serializer.nbt.SerializerTests.testCompon
 final class BlockNBTComponentTest {
   @Test
   void testLocal() {
-    String nbtPath = "abc";
+    final String nbtPath = "abc";
 
-    double left = 1.23D;
-    double up = 2.0D;
-    double forwards = 3.89D;
+    final double left = 1.23D;
+    final double up = 2.0D;
+    final double forwards = 3.89D;
 
     testComponent(
       Component.blockNBT()
@@ -52,35 +52,35 @@ final class BlockNBTComponentTest {
     );
   }
 
-    @Test
-    void testAbsoluteWorld() {
-      String nbtPath = "xyz";
+  @Test
+  void testAbsoluteWorld() {
+    final String nbtPath = "xyz";
 
-      int x = 4;
-      int y = 5;
-      int z = 6;
+    final int x = 4;
+    final int y = 5;
+    final int z = 6;
 
-      testComponent(
-        Component.blockNBT()
-          .nbtPath(nbtPath)
-          .absoluteWorldPos(x, y, z)
-          .interpret(true)
-          .build(),
-        CompoundBinaryTag.builder()
-          .putString(ComponentTreeConstants.NBT, nbtPath)
-          .putBoolean(ComponentTreeConstants.NBT_INTERPRET, true)
-          .putString(ComponentTreeConstants.NBT_BLOCK, x + " " + y + " " + z)
-          .build()
-      );
-    }
+    testComponent(
+      Component.blockNBT()
+        .nbtPath(nbtPath)
+        .absoluteWorldPos(x, y, z)
+        .interpret(true)
+        .build(),
+      CompoundBinaryTag.builder()
+        .putString(ComponentTreeConstants.NBT, nbtPath)
+        .putBoolean(ComponentTreeConstants.NBT_INTERPRET, true)
+        .putString(ComponentTreeConstants.NBT_BLOCK, x + " " + y + " " + z)
+        .build()
+    );
+  }
 
   @Test
   void testRelativeWorld() {
-    String nbtPath = "eeee";
+    final String nbtPath = "eeee";
 
-    int x = 7;
-    int y = 83;
-    int z = 900;
+    final int x = 7;
+    final int y = 83;
+    final int z = 900;
 
     testComponent(
       Component.blockNBT()
@@ -96,11 +96,11 @@ final class BlockNBTComponentTest {
 
   @Test
   void testMixedAbsoluteAndRelative() {
-    String nbtPath = "qwert";
+    final String nbtPath = "qwert";
 
-    int x = 12;
-    int y = 3;
-    int z = 1200;
+    final int x = 12;
+    final int y = 3;
+    final int z = 1200;
 
     testComponent(
       Component.blockNBT()

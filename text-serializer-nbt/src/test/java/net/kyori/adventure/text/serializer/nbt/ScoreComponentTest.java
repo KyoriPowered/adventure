@@ -35,8 +35,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 final class ScoreComponentTest {
   @Test
   void test() {
-    String name = "abc";
-    String objective = "def";
+    final String name = "abc";
+    final String objective = "def";
 
     testComponent(
       Component.score(name, objective),

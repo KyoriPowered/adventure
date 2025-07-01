@@ -34,8 +34,8 @@ import static net.kyori.adventure.text.serializer.nbt.SerializerTests.testCompon
 final class StorageNBTComponentTest {
   @Test
   void testWithoutInterpret() {
-    String nbtPath = "abc";
-    String storage = "doom:apple";
+    final String nbtPath = "abc";
+    final String storage = "doom:apple";
 
     testComponent(
       Component.storageNBT()
@@ -51,8 +51,8 @@ final class StorageNBTComponentTest {
 
   @Test
   void testWithInterpret() {
-    String nbtPath = "abc";
-    String storage = "doom:apple";
+    final String nbtPath = "abc";
+    final String storage = "doom:apple";
 
     testComponent(
       Component.storageNBT()
