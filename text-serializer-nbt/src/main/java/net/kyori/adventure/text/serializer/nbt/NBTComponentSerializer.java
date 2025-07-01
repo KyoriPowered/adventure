@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.serializer.nbt;
 
+import java.util.function.Consumer;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.nbt.BinaryTag;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
@@ -33,8 +34,6 @@ import net.kyori.adventure.util.PlatformAPI;
 import net.kyori.option.OptionState;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.function.Consumer;
 
 /**
  * A NBT component serializer.
@@ -50,7 +49,7 @@ public interface NBTComponentSerializer extends ComponentSerializer<Component, C
    * @return the style
    * @since 4.24.0
    */
-  @NotNull Style deserializeStyle(@NotNull CompoundBinaryTag tag);
+  @NotNull Style deserializeStyle(final @NotNull CompoundBinaryTag tag);
 
   /**
    * Serializes a {@linkplain Style style} to a {@linkplain BinaryTag binary tag}.
@@ -59,7 +58,7 @@ public interface NBTComponentSerializer extends ComponentSerializer<Component, C
    * @return the binary tag
    * @since 4.24.0
    */
-  @NotNull CompoundBinaryTag serializeStyle(@NotNull Style style);
+  @NotNull CompoundBinaryTag serializeStyle(final @NotNull Style style);
 
   /**
    * Gets a component serializer for NBT serialization and deserialization.

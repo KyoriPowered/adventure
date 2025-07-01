@@ -40,7 +40,7 @@ final class TranslationArgumentSerializer {
   private TranslationArgumentSerializer() {
   }
 
-  static @NotNull TranslationArgument deserialize(@NotNull BinaryTag tag, @NotNull NBTComponentSerializerImpl serializer) {
+  static @NotNull TranslationArgument deserialize(final @NotNull BinaryTag tag, final @NotNull NBTComponentSerializerImpl serializer) {
     /* Serialized booleans are not deserialized as booleans because Minecraft also does that - NbtOps serializes
        booleans as byte tags and there is no way to distinguish the original type during deserialization.*/
     if (tag instanceof NumberBinaryTag) {
@@ -50,8 +50,8 @@ final class TranslationArgumentSerializer {
     }
   }
 
-  static @NotNull BinaryTag serialize(@NotNull TranslationArgument argument, @NotNull NBTComponentSerializerImpl serializer) {
-    Object value = argument.value();
+  static @NotNull BinaryTag serialize(final @NotNull TranslationArgument argument, final @NotNull NBTComponentSerializerImpl serializer) {
+    final Object value = argument.value();
     if (value instanceof Boolean) {
       return NBTSerializerUtils.asTag((boolean) value);
     } else if (value instanceof Byte) {
