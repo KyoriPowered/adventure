@@ -24,7 +24,6 @@
 package net.kyori.adventure.text.serializer.nbt;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -68,6 +67,7 @@ import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.TRANSLATE_FALLBACK;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.TRANSLATE_WITH;
 import static net.kyori.adventure.text.serializer.nbt.NBTSerializerUtils.asBoolean;
+import static net.kyori.adventure.text.serializer.nbt.NBTSerializerUtils.forEach;
 import static net.kyori.adventure.text.serializer.nbt.NBTSerializerUtils.optionalTag;
 import static net.kyori.adventure.text.serializer.nbt.NBTSerializerUtils.requiredTag;
 
@@ -131,14 +131,11 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
     final CompoundBinaryTag compound = (CompoundBinaryTag) input;
     final Style style = StyleSerializer.deserialize(compound, this);
 
-    final ListBinaryTag extraTag = optionalTag(compound, EXTRA, BinaryTagTypes.LIST);
-    final List<Component> children;
+    final BinaryTag extraTag = compound.get(EXTRA);
+    final List<Component> children = new ArrayList<>();
 
-    if (extraTag == null) {
-      children = Collections.emptyList();
-    } else {
-      children = new ArrayList<>();
-      extraTag.unwrapHeterogeneity().forEach(child -> children.add(this.deserialize(child)));
+    if (extraTag != null) {
+      forEach(extraTag, child -> children.add(this.deserialize(child)));
     }
 
     if (compound.get(TEXT) != null) {
@@ -149,11 +146,13 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
         .build();
     } else if (compound.get(TRANSLATE) != null) {
       final StringBinaryTag translateTag = requiredTag(compound, TRANSLATE, BinaryTagTypes.STRING);
-      final ListBinaryTag translateWithTag = compound.getList(TRANSLATE_WITH).unwrapHeterogeneity();
+      final BinaryTag translateWithTag = compound.get(TRANSLATE_WITH);
       final StringBinaryTag fallbackTag = optionalTag(compound, TRANSLATE_FALLBACK, BinaryTagTypes.STRING);
 
       final List<TranslationArgument> arguments = new ArrayList<>();
-      translateWithTag.forEach(argumentTag -> arguments.add(TranslationArgumentSerializer.deserialize(argumentTag, this)));
+      if (translateWithTag != null) {
+        forEach(translateWithTag, argumentTag -> arguments.add(TranslationArgumentSerializer.deserialize(argumentTag, this)));
+      }
 
       return Component.translatable()
         .key(translateTag.value())
@@ -258,9 +257,9 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
 
       final List<TranslationArgument> arguments = translatable.arguments();
       if (!arguments.isEmpty()) {
-        final ListBinaryTag.Builder<BinaryTag> translateWithTagBuilder = ListBinaryTag.heterogeneousListBinaryTag();
+        final NBTAggregateCollector translateWithTagBuilder = NBTAggregateCollector.create();
         arguments.forEach(argument -> translateWithTagBuilder.add(TranslationArgumentSerializer.serialize(argument, this)));
-        builder.put(TRANSLATE_WITH, translateWithTagBuilder.build().wrapHeterogeneity());
+        builder.put(TRANSLATE_WITH, translateWithTagBuilder.collect());
       }
     } else if (component instanceof KeybindComponent) {
       builder.putString(KEYBIND, ((KeybindComponent) component).keybind());
@@ -308,9 +307,9 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
 
     final List<Component> children = component.children();
     if (!children.isEmpty()) {
-      final ListBinaryTag.Builder<BinaryTag> extraTagBuilder = ListBinaryTag.heterogeneousListBinaryTag();
+      final NBTAggregateCollector extraTagBuilder = NBTAggregateCollector.create();
       children.forEach(child -> extraTagBuilder.add(this.serialize(child)));
-      builder.put(EXTRA, extraTagBuilder.build().wrapHeterogeneity());
+      builder.put(EXTRA, extraTagBuilder.collect());
     }
 
     StyleSerializer.serialize(component.style(), builder, this);

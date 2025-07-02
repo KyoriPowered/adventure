@@ -24,10 +24,17 @@
 package net.kyori.adventure.text.serializer.nbt;
 
 import java.io.IOException;
+import java.util.function.Consumer;
 import net.kyori.adventure.nbt.BinaryTag;
 import net.kyori.adventure.nbt.BinaryTagType;
+import net.kyori.adventure.nbt.ByteArrayBinaryTag;
 import net.kyori.adventure.nbt.ByteBinaryTag;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
+import net.kyori.adventure.nbt.IntArrayBinaryTag;
+import net.kyori.adventure.nbt.IntBinaryTag;
+import net.kyori.adventure.nbt.ListBinaryTag;
+import net.kyori.adventure.nbt.LongArrayBinaryTag;
+import net.kyori.adventure.nbt.LongBinaryTag;
 import net.kyori.adventure.nbt.NumberBinaryTag;
 import net.kyori.adventure.nbt.TagStringIO;
 import net.kyori.adventure.util.Codec;
@@ -85,6 +92,26 @@ final class NBTSerializerUtils {
 
   static @NotNull ByteBinaryTag asTag(final boolean value) {
     return value ? ByteBinaryTag.ONE : ByteBinaryTag.ZERO;
+  }
+
+  static void forEach(final @NotNull BinaryTag tag, final @NotNull Consumer<? super BinaryTag> action) {
+    if (tag instanceof ListBinaryTag) {
+      ((ListBinaryTag) tag).unwrapHeterogeneity().forEach(action);
+    } else if (tag instanceof ByteArrayBinaryTag) {
+      for (final byte value : ((ByteArrayBinaryTag) tag).value()) {
+        action.accept(ByteBinaryTag.byteBinaryTag(value));
+      }
+    } else if (tag instanceof IntArrayBinaryTag) {
+      for (final int value : ((IntArrayBinaryTag) tag).value()) {
+        action.accept(IntBinaryTag.intBinaryTag(value));
+      }
+    } else if (tag instanceof LongArrayBinaryTag) {
+      for (final long value : ((LongArrayBinaryTag) tag).value()) {
+        action.accept(LongBinaryTag.longBinaryTag(value));
+      }
+    } else {
+      throw new IllegalArgumentException("The specified tag (" + tag + ") does not represent an aggregate");
+    }
   }
 
   private static @NotNull IllegalArgumentException noSuchField(final @NotNull String name) {
