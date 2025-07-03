@@ -25,7 +25,9 @@ package net.kyori.adventure.nbt;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * An emitter for the SNBT format.
@@ -80,10 +82,17 @@ final class TagStringWriter implements AutoCloseable {
 
   private TagStringWriter writeCompound(final CompoundBinaryTag tag) throws IOException {
     this.beginCompound();
-    for (final Map.Entry<String, ? extends BinaryTag> entry : tag) {
-      this.key(entry.getKey());
-      this.writeTag(entry.getValue());
+
+    final List<String> keys = new ArrayList<>(tag.keySet());
+    Collections.sort(keys);
+
+    for (final String key : keys) {
+      final BinaryTag value = tag.get(key);
+      if (value == null) continue;
+      this.key(key);
+      this.writeTag(value);
     }
+
     this.endCompound();
     return this;
   }
