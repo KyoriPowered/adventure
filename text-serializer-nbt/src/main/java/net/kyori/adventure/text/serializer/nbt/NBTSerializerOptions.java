@@ -84,6 +84,13 @@ public final class NBTSerializerOptions {
    */
   public static final Option<Boolean> EMIT_SHOW_TEXT_HOVER_TEXT_FIELD;
 
+  /**
+   * Whether to emit array binary tags instead of list binary tags when it's possible.
+   *
+   * @since 4.24.0
+   */
+  public static final Option<Boolean> EMIT_OPTIMIZED_LISTS;
+
   private static final OptionSchema SCHEMA;
   private static final OptionState.Versioned BY_DATA_VERSION;
 
@@ -93,6 +100,7 @@ public final class NBTSerializerOptions {
   private static final int VERSION_24W44A = 4174; // 1.21.4 snapshot
   private static final int VERSION_25W02A = 4298; // 1.21.5 snapshot
   private static final int VERSION_25W03A = 4304; // 1.21.5 snapshot
+  private static final int VERSION_25W04A = 4308; // 1.21.5 snapshot
 
   static {
     final OptionSchema.Mutable schema = OptionSchema.emptySchema();
@@ -102,6 +110,7 @@ public final class NBTSerializerOptions {
     EMIT_DEFAULT_ITEM_HOVER_QUANTITY = schema.booleanOption(key("emit/default_item_hover_quantity"), true);
     SHOW_ITEM_HOVER_DATA_MODE = schema.enumOption(key("emit/show_item_hover_data"), ShowItemHoverDataMode.class, ShowItemHoverDataMode.EMIT_EITHER);
     EMIT_SHOW_TEXT_HOVER_TEXT_FIELD = schema.booleanOption(key("emit/show_text_hover_text_field"), false);
+    EMIT_OPTIMIZED_LISTS = schema.booleanOption(key("emit/optimized_lists"), false);
     SCHEMA = schema.frozenView();
 
     BY_DATA_VERSION = SCHEMA.versionedStateBuilder()
@@ -113,6 +122,7 @@ public final class NBTSerializerOptions {
           .value(EMIT_DEFAULT_ITEM_HOVER_QUANTITY, false)
           .value(SHOW_ITEM_HOVER_DATA_MODE, ShowItemHoverDataMode.EMIT_LEGACY_NBT)
           .value(EMIT_SHOW_TEXT_HOVER_TEXT_FIELD, false)
+          .value(EMIT_OPTIMIZED_LISTS, true)
       )
       .version(
         VERSION_24W09A,
@@ -135,6 +145,10 @@ public final class NBTSerializerOptions {
       .version(
         VERSION_25W03A,
         builder -> builder.value(EMIT_SHOW_TEXT_HOVER_TEXT_FIELD, false)
+      )
+      .version(
+        VERSION_25W04A,
+        builder -> builder.value(EMIT_OPTIMIZED_LISTS, false)
       )
       .build();
   }
