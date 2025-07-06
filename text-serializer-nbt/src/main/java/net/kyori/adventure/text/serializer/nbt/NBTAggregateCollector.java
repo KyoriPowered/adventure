@@ -41,8 +41,8 @@ import org.jetbrains.annotations.Nullable;
 
   @NotNull BinaryTag collect();
 
-  static @NotNull NBTAggregateCollector create() {
-    return new Initial();
+  static @NotNull NBTAggregateCollector create(final @NotNull NBTComponentSerializerImpl serializer) {
+    return serializer.options().value(NBTSerializerOptions.EMIT_OPTIMIZED_LISTS) ? new Initial() : new ListCollector();
   }
 
   final class Initial implements NBTAggregateCollector {

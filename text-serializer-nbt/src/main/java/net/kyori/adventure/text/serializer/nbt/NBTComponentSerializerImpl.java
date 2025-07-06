@@ -257,7 +257,7 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
 
       final List<TranslationArgument> arguments = translatable.arguments();
       if (!arguments.isEmpty()) {
-        final NBTAggregateCollector translateWithTagBuilder = NBTAggregateCollector.create();
+        final NBTAggregateCollector translateWithTagBuilder = NBTAggregateCollector.create(this);
         arguments.forEach(argument -> translateWithTagBuilder.add(TranslationArgumentSerializer.serialize(argument, this)));
         builder.put(TRANSLATE_WITH, translateWithTagBuilder.collect());
       }
@@ -307,7 +307,7 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
 
     final List<Component> children = component.children();
     if (!children.isEmpty()) {
-      final NBTAggregateCollector extraTagBuilder = NBTAggregateCollector.create();
+      final NBTAggregateCollector extraTagBuilder = NBTAggregateCollector.create(this);
       children.forEach(child -> extraTagBuilder.add(this.serialize(child)));
       builder.put(EXTRA, extraTagBuilder.collect());
     }
