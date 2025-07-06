@@ -24,8 +24,6 @@
 package net.kyori.adventure.text.serializer.nbt;
 
 import net.kyori.adventure.nbt.BinaryTag;
-import net.kyori.adventure.nbt.BinaryTagTypes;
-import net.kyori.adventure.nbt.FloatBinaryTag;
 import net.kyori.adventure.nbt.IntBinaryTag;
 import net.kyori.adventure.nbt.ListBinaryTag;
 import net.kyori.adventure.text.format.ShadowColor;
@@ -55,30 +53,10 @@ final class ShadowColorSerializer {
   }
 
   static @Nullable BinaryTag serialize(final @NotNull ShadowColor color, final @NotNull NBTComponentSerializerImpl serializer) {
-    final NBTSerializerOptions.ShadowColorEmitMode emitMode = serializer.options().value(NBTSerializerOptions.SHADOW_COLOR_MODE);
-    switch (emitMode) {
-      case NONE:
-        return null;
-      case EMIT_INTEGER:
-        return IntBinaryTag.intBinaryTag(color.value());
-      case EMIT_ARRAY:
-        final ListBinaryTag.Builder<FloatBinaryTag> builder = ListBinaryTag.builder(BinaryTagTypes.FLOAT);
-        addShadowColorComponent(builder, color.red());
-        addShadowColorComponent(builder, color.green());
-        addShadowColorComponent(builder, color.blue());
-        addShadowColorComponent(builder, color.alpha());
-        return builder.build();
-      default:
-        // Never called, but needed for proper compilation
-        throw new IllegalArgumentException("Unknown shadow color emit mode: " + emitMode);
-    }
+    return serializer.options().value(NBTSerializerOptions.EMIT_SHADOW_COLOR) ? IntBinaryTag.intBinaryTag(color.value()) : null;
   }
 
   private static int shadowColorComponent(final @NotNull ListBinaryTag tag, final int index) {
     return (int) (tag.getFloat(index) * 0xff);
-  }
-
-  private static void addShadowColorComponent(final ListBinaryTag.@NotNull Builder<FloatBinaryTag> builder, final int element) {
-    builder.add(FloatBinaryTag.floatBinaryTag((float) element / 0xff));
   }
 }

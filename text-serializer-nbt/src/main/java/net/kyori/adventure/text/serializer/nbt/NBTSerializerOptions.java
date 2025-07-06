@@ -39,11 +39,12 @@ import org.jetbrains.annotations.NotNull;
 public final class NBTSerializerOptions {
 
   /**
-   * How to emit shadow colour data.
+   * Whether to emit shadow colour data.
    *
    * @since 4.24.0
+   * @sinceMinecraft 1.21.4
    */
-  public static final Option<ShadowColorEmitMode> SHADOW_COLOR_MODE;
+  public static final Option<Boolean> EMIT_SHADOW_COLOR;
 
   /**
    * Control how hover event values should be emitted.
@@ -95,7 +96,7 @@ public final class NBTSerializerOptions {
 
   static {
     final OptionSchema.Mutable schema = OptionSchema.emptySchema();
-    SHADOW_COLOR_MODE = schema.enumOption(key("emit/shadow_color"), ShadowColorEmitMode.class, ShadowColorEmitMode.EMIT_INTEGER);
+    EMIT_SHADOW_COLOR = schema.booleanOption(key("emit/shadow_color"), true);
     EMIT_HOVER_EVENT_TYPE = schema.enumOption(key("emit/hover_value_mode"), HoverEventValueMode.class, HoverEventValueMode.SNAKE_CASE);
     EMIT_CLICK_EVENT_TYPE = schema.enumOption(key("emit/click_value_mode"), ClickEventValueMode.class, ClickEventValueMode.SNAKE_CASE);
     EMIT_DEFAULT_ITEM_HOVER_QUANTITY = schema.booleanOption(key("emit/default_item_hover_quantity"), true);
@@ -106,7 +107,7 @@ public final class NBTSerializerOptions {
     BY_DATA_VERSION = SCHEMA.versionedStateBuilder()
       .version(
         VERSION_23W40A,
-        builder -> builder.value(SHADOW_COLOR_MODE, ShadowColorEmitMode.NONE)
+        builder -> builder.value(EMIT_SHADOW_COLOR, false)
           .value(EMIT_HOVER_EVENT_TYPE, HoverEventValueMode.CAMEL_CASE)
           .value(EMIT_CLICK_EVENT_TYPE, ClickEventValueMode.CAMEL_CASE)
           .value(EMIT_DEFAULT_ITEM_HOVER_QUANTITY, false)
@@ -123,7 +124,7 @@ public final class NBTSerializerOptions {
       )
       .version(
         VERSION_24W44A,
-        builder -> builder.value(SHADOW_COLOR_MODE, ShadowColorEmitMode.EMIT_ARRAY)
+        builder -> builder.value(EMIT_SHADOW_COLOR, true)
       )
       .version(
         VERSION_25W02A,
@@ -215,31 +216,6 @@ public final class NBTSerializerOptions {
      * @since 4.24.0
      */
     BOTH,
-  }
-
-  /**
-   * How text shadow colors should be emitted.
-   *
-   * @since 4.24.0
-   * @sinceMinecraft 1.21.4
-   */
-  public enum ShadowColorEmitMode {
-    /**
-     * Do not emit shadow colours.
-     */
-    NONE,
-    /**
-     * Emit as a single packed integer value containing, in order, ARGB bytes.
-     *
-     * @since 4.24.0
-     */
-    EMIT_INTEGER,
-    /**
-     * Emit a colour as 4-element float array of the RGBA components of the colour.
-     *
-     * @since 4.24.0
-     */
-    EMIT_ARRAY
   }
 
   /**

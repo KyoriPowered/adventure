@@ -46,6 +46,7 @@ import org.junit.jupiter.api.Test;
 import static net.kyori.adventure.text.serializer.nbt.SerializerTests.deserializeStyle;
 import static net.kyori.adventure.text.serializer.nbt.SerializerTests.name;
 import static net.kyori.adventure.text.serializer.nbt.SerializerTests.testStyle;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 final class StyleTest {
@@ -117,23 +118,22 @@ final class StyleTest {
   }
 
   @Test
-  void testShadowColorFloats() {
-    testStyle(
-      NBTComponentSerializer.builder()
-        .editOptions(builder -> builder.value(NBTSerializerOptions.SHADOW_COLOR_MODE, NBTSerializerOptions.ShadowColorEmitMode.EMIT_ARRAY))
-        .build(),
+  void testShadowColorFloatList() {
+    assertEquals(
       Style.style(ShadowColor.shadowColor(0x80, 0x40, 0xcc, 0xff)),
-      CompoundBinaryTag.builder()
-        .put(
-          ComponentTreeConstants.SHADOW_COLOR,
-          ListBinaryTag.builder(BinaryTagTypes.FLOAT)
-            .add(FloatBinaryTag.floatBinaryTag(0.5019608f))
-            .add(FloatBinaryTag.floatBinaryTag(0.2509804f))
-            .add(FloatBinaryTag.floatBinaryTag(0.8f))
-            .add(FloatBinaryTag.floatBinaryTag(1f))
-            .build()
-        )
-        .build()
+      deserializeStyle(
+        CompoundBinaryTag.builder()
+          .put(
+            ComponentTreeConstants.SHADOW_COLOR,
+            ListBinaryTag.builder(BinaryTagTypes.FLOAT)
+              .add(FloatBinaryTag.floatBinaryTag(0.5019608f))
+              .add(FloatBinaryTag.floatBinaryTag(0.2509804f))
+              .add(FloatBinaryTag.floatBinaryTag(0.8f))
+              .add(FloatBinaryTag.floatBinaryTag(1f))
+              .build()
+          )
+          .build()
+      )
     );
   }
 
