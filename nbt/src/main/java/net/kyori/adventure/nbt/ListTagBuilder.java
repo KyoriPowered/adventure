@@ -32,14 +32,24 @@ final class ListTagBuilder<T extends BinaryTag> implements ListBinaryTag.Builder
   private @Nullable List<BinaryTag> tags;
   private final boolean permitsHeterogeneity;
   private BinaryTagType<? extends BinaryTag> elementType;
+  private final int initialCapacity;
 
   ListTagBuilder(final boolean permitsHeterogeneity) {
     this(permitsHeterogeneity, BinaryTagTypes.END);
   }
 
+  ListTagBuilder(final boolean permitsHeterogeneity, final int initialCapacity) {
+    this(permitsHeterogeneity, BinaryTagTypes.END, initialCapacity);
+  }
+
   ListTagBuilder(final boolean permitsHeterogeneity, final BinaryTagType<? extends BinaryTag> type) {
+    this(permitsHeterogeneity, type, -1);
+  }
+
+  ListTagBuilder(final boolean permitsHeterogeneity, final BinaryTagType<? extends BinaryTag> type, final int initialCapacity) {
     this.permitsHeterogeneity = permitsHeterogeneity;
     this.elementType = type;
+    this.initialCapacity = initialCapacity;
   }
 
   @Override
@@ -47,7 +57,7 @@ final class ListTagBuilder<T extends BinaryTag> implements ListBinaryTag.Builder
     // check after changing from an empty tag
     this.elementType = ListBinaryTagImpl.validateTagType(tag, this.elementType, this.permitsHeterogeneity);
     if (this.tags == null) {
-      this.tags = new ArrayList<>();
+      this.tags = this.initialCapacity != -1 ? new ArrayList<>(this.initialCapacity) : new ArrayList<>();
     }
     this.tags.add(tag);
     return this;

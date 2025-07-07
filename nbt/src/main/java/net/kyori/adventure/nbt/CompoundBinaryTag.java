@@ -31,6 +31,7 @@ import java.util.stream.Collector;
 import java.util.stream.Stream;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import static java.util.Objects.requireNonNull;
 
@@ -147,6 +148,17 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    */
   static @NotNull Builder builder() {
     return new CompoundTagBuilder();
+  }
+
+  /**
+   * Creates a builder with the specified initial capacity.
+   *
+   * @param initialCapacity the initial capacity
+   * @return a new builder
+   * @since 4.24.0
+   */
+  static @NotNull Builder builder(final @Range(from = 0, to = Integer.MAX_VALUE) int initialCapacity) {
+    return new CompoundTagBuilder(initialCapacity);
   }
 
   @Override

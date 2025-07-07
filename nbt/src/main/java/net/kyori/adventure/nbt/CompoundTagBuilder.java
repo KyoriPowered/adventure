@@ -31,10 +31,19 @@ import org.jetbrains.annotations.Nullable;
 
 final class CompoundTagBuilder implements CompoundBinaryTag.Builder {
   private @Nullable Map<String, BinaryTag> tags;
+  private final int initialCapacity;
+
+  CompoundTagBuilder() {
+    this(-1);
+  }
+
+  CompoundTagBuilder(final int initialCapacity) {
+    this.initialCapacity = initialCapacity;
+  }
 
   private Map<String, BinaryTag> tags() {
     if (this.tags == null) {
-      this.tags = new HashMap<>();
+      this.tags = this.initialCapacity != -1 ? new HashMap<>(this.initialCapacity) : new HashMap<>();
     }
     return this.tags;
   }
