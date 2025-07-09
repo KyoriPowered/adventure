@@ -32,6 +32,13 @@ import org.jetbrains.annotations.Nullable;
 final class CompoundTagBuilder implements CompoundBinaryTag.Builder {
   private @Nullable Map<String, BinaryTag> tags;
 
+  CompoundTagBuilder() {
+  }
+
+  CompoundTagBuilder(final Map<String, BinaryTag> tags) {
+    this.tags = tags;
+  }
+
   private Map<String, BinaryTag> tags() {
     if (this.tags == null) {
       this.tags = new HashMap<>();

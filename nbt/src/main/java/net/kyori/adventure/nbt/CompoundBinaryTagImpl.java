@@ -54,6 +54,11 @@ final class CompoundBinaryTagImpl extends AbstractBinaryTag implements CompoundB
   }
 
   @Override
+  public Builder createBuilder() {
+    return new CompoundTagBuilder(new HashMap<>(this.tags)); // explicitly copy
+  }
+
+  @Override
   public @NotNull Set<String> keySet() {
     return Collections.unmodifiableSet(this.tags.keySet());
   }
