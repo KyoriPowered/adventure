@@ -26,8 +26,6 @@ package net.kyori.adventure.nbt;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Predicate;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -40,7 +38,7 @@ import org.jetbrains.annotations.Nullable;
  * @since 4.0.0
  */
 public abstract class BinaryTagType<T extends BinaryTag> implements Predicate<BinaryTagType<? extends BinaryTag>> {
-  private static final List<BinaryTagType<? extends BinaryTag>> TYPES = new ArrayList<>();
+  private static final BinaryTagType<? extends BinaryTag>[] BY_ID = new BinaryTagType<?>[13];
 
   /**
    * Gets the id.
@@ -77,14 +75,20 @@ public abstract class BinaryTagType<T extends BinaryTag> implements Predicate<Bi
     ((BinaryTagType<T>) type).write(tag, output);
   }
 
-  static @NotNull BinaryTagType<? extends BinaryTag> binaryTagType(final byte id) {
-    for (int i = 0; i < TYPES.size(); i++) {
-      final BinaryTagType<? extends BinaryTag> type = TYPES.get(i);
-      if (type.id() == id) {
-        return type;
-      }
+  /**
+   * Gets a {@link BinaryTagType} by its id.
+   *
+   * @param id the id
+   * @return a binary tag type
+   * @throws IllegalArgumentException if <code>id</code> doesn't match any <code>BinaryTagType</code>.
+   * @see #id()
+   * @since 4.24.0
+   */
+  public static @NotNull BinaryTagType<? extends BinaryTag> binaryTagType(final byte id) {
+    if (id >= 0 && id < BY_ID.length) {
+      return BY_ID[id];
     }
-    throw new IllegalArgumentException(String.valueOf(id));
+    throw new IllegalArgumentException("Byte id '" + id + "' does not match any binary tag types.");
   }
 
   @Deprecated
@@ -102,7 +106,7 @@ public abstract class BinaryTagType<T extends BinaryTag> implements Predicate<Bi
   }
 
   private static <T extends BinaryTag, Y extends BinaryTagType<T>> Y register(final Y type) {
-    TYPES.add(type);
+    BY_ID[type.id()] = type;
     return type;
   }
 
