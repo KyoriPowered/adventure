@@ -48,6 +48,12 @@ final class CompoundBinaryTagImpl extends AbstractBinaryTag implements CompoundB
     this.hashCode = tags.hashCode();
   }
 
+  @Override
+  public boolean containsKey(final @NotNull String key) {
+    return this.tags.containsKey(key);
+  }
+
+  @Override
   public boolean contains(final @NotNull String key, final @NotNull BinaryTagType<?> type) {
     final @Nullable BinaryTag tag = this.tags.get(key);
     return tag != null && type.test(tag.type());
