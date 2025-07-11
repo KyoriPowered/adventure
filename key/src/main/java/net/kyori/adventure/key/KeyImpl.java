@@ -33,6 +33,7 @@ import net.kyori.adventure.internal.properties.AdventureProperties;
 import net.kyori.examination.ExaminableProperty;
 import org.intellij.lang.annotations.RegExp;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
