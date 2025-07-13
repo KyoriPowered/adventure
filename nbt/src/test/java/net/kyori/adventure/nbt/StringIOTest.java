@@ -135,6 +135,7 @@ class StringIOTest {
     assertEquals("0b", this.tagToString(ByteBinaryTag.byteBinaryTag((byte) 0)));
     assertEquals("112b", this.tagToString(ByteBinaryTag.byteBinaryTag((byte) 112)));
 
+    assertEquals(ByteBinaryTag.byteBinaryTag((byte) 0), this.stringToTag("0b"));
     assertEquals(ByteBinaryTag.byteBinaryTag((byte) 12), this.stringToTag("12b"));
     assertEquals(ByteBinaryTag.byteBinaryTag((byte) 13), this.stringToTag("13B"));
   }
