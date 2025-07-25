@@ -73,6 +73,21 @@ public interface Title extends Examinable {
   }
 
   /**
+   * Creates a title.
+   *
+   * @param title the title
+   * @param subtitle the subtitle
+   * @param fadeIn duration in ticks that the title fades in
+   * @param stay duration in ticks that the title stays on screen
+   * @param fadeOut duration in ticks that the title fades out
+   * @return the title
+   * @since 4.24.0
+   */
+  static @NotNull Title title(final @NotNull Component title, final @NotNull Component subtitle, final int fadeIn, final int stay, final int fadeOut) {
+    return new TitleImpl(title, subtitle, Times.times(Ticks.duration(fadeIn), Ticks.duration(stay), Ticks.duration(fadeOut));
+  }
+
+  /**
    * Gets the title.
    *
    * @return the title
