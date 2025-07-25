@@ -339,6 +339,7 @@ final class TagStringReader {
 
     final int radixEndIndex = 2 + radixPrefixOffset;
 
+    // There should be more after '0b', else it would be a regular byte tag
     if (original.length() > radixEndIndex && (original.startsWith("0b", radixPrefixOffset) || original.startsWith("0B", radixPrefixOffset))) {
       radix = BINARY_RADIX;
     } else if (original.startsWith("0x", radixPrefixOffset) || original.startsWith("0X", radixPrefixOffset)) {
