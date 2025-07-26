@@ -65,7 +65,8 @@ public final class StandardTags {
         ScoreTag.RESOLVER,
         NbtTag.RESOLVER,
         PrideTag.RESOLVER,
-        ShadowColorTag.RESOLVER
+        ShadowColorTag.RESOLVER,
+        SmallCapsTag.RESOLVER
       )
       .build();
 
@@ -286,6 +287,16 @@ public final class StandardTags {
    */
   public static @NotNull TagResolver shadowColor() {
     return ShadowColorTag.RESOLVER;
+  }
+
+  /**
+   * Get a resolver for the {@value SmallCapsTag#SMALL} tag.
+   *
+   * @return a resolver for the {@value SmallCapsTag#SMALL} tag
+   * @since 4.24.0
+   */
+  public static @NotNull TagResolver smallCaps() {
+    return SmallCapsTag.RESOLVER;
   }
 
   /**
