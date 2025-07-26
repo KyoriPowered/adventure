@@ -84,7 +84,7 @@ public interface Title extends Examinable {
    * @since 4.24.0
    */
   static @NotNull Title title(final @NotNull Component title, final @NotNull Component subtitle, final int fadeIn, final int stay, final int fadeOut) {
-    return new TitleImpl(title, subtitle, Times.times(Ticks.duration(fadeIn), Ticks.duration(stay), Ticks.duration(fadeOut));
+    return new TitleImpl(title, subtitle, Times.times(Ticks.duration(fadeIn), Ticks.duration(stay), Ticks.duration(fadeOut)));
   }
 
   /**
