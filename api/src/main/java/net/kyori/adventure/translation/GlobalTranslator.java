@@ -25,12 +25,17 @@ package net.kyori.adventure.translation;
 
 import java.util.Locale;
 import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.audience.ForwardingAudience;
+import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.renderer.TranslatableComponentRenderer;
 import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A global source of translations. The global source is the default source used by adventure platforms
@@ -78,6 +83,25 @@ public interface GlobalTranslator extends Translator, Examinable {
   /**
    * Renders a component using the {@link #renderer() global renderer}.
    *
+   * <p>The locale will be determined using the
+   * {@link #localeOverride(Audience) locale override} or determined using the
+   * {@link Identity#LOCALE locale pointer}.</p>
+   *
+   * @param component the component to render
+   * @param audience the audience to extract the locale from
+   * @return the rendered component
+   * @since 4.22.0
+   */
+  static @NotNull Component render(final @NotNull Component component, final @NotNull Audience audience) {
+    Locale locale = translator().localeOverride(requireNonNull(audience, "audience"));
+    if (locale == null) locale = audience.getOrDefault(Identity.LOCALE, null);
+    if (locale == null) return component;
+    return render(component, locale);
+  }
+
+  /**
+   * Renders a component using the {@link #renderer() global renderer}.
+   *
    * @param component the component to render
    * @param locale the locale to use when rendering
    * @return the rendered component
@@ -115,4 +139,24 @@ public interface GlobalTranslator extends Translator, Examinable {
    * @since 4.0.0
    */
   boolean removeSource(final @NotNull Translator source);
+
+  /**
+   * Sets an override for the locale of the audience when fetched using {@link #localeOverride(Audience)}.
+   *
+   * @param audience the audience, may be a {@link ForwardingAudience} to set the override for all members in the audience
+   * @param locale the locale to set, or {@code null} to remove the override
+   * @see #localeOverride(Audience)
+   * @since 4.22.0
+   */
+  void overrideLocale(final @NotNull Audience audience, final @Nullable Locale locale);
+
+  /**
+   * Returns the override locale for an audience that will be used in {@link #render(Component, Audience)}.
+   *
+   * @param audience the audience member
+   * @return the locale, if any
+   * @see #overrideLocale(Audience, Locale)
+   * @since 4.22.0
+   */
+  @Nullable Locale localeOverride(final @NotNull Audience audience);
 }
