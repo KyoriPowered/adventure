@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.format;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Stream;
 import net.kyori.adventure.util.HSVLike;
 import net.kyori.adventure.util.RGBLike;
@@ -222,7 +223,7 @@ public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, S
       result.append('0');
     }
     result.append(hex);
-    return result.toString();
+    return result.toString().toUpperCase(Locale.ROOT);
   }
 
   /**
