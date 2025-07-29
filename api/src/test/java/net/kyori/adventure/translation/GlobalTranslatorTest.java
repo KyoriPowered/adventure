@@ -111,6 +111,16 @@ class GlobalTranslatorTest {
     assertEquals(Component.text("so valid").append(Component.translatable("test.2")), GlobalTranslator.render(input, Locale.UK));
   }
 
+  // https://github.com/KyoriPowered/adventure/issues/1273
+  @Test
+  void testRemovingMutatedSource() {
+    final TranslationStore.StringBased<MessageFormat> store = TranslationStore.messageFormat(Key.key("adventure", "test_mutating"));
+    GlobalTranslator.translator().addSource(store);
+    store.register("test", Locale.US, new MessageFormat("testing123"));
+    assertTrue(GlobalTranslator.translator().removeSource(store));
+    assertThat(GlobalTranslator.translator().sources()).doesNotContain(store);
+  }
+
   static class DummyTranslator implements Translator {
     static final DummyTranslator INSTANCE = new DummyTranslator();
 
