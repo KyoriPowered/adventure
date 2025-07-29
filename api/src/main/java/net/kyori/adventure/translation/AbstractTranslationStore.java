@@ -167,14 +167,12 @@ public abstract class AbstractTranslationStore<T> implements Examinable, Transla
 
     final AbstractTranslationStore<?> that = (AbstractTranslationStore<?>) other;
 
-    return this.name.equals(that.name)
-      && this.translations.equals(that.translations)
-      && this.defaultLocale.equals(that.defaultLocale);
+    return this.name.equals(that.name);
   }
 
   @Override
   public final int hashCode() {
-    return Objects.hash(this.name, this.translations, this.defaultLocale);
+    return this.name.hashCode();
   }
 
   @Override
