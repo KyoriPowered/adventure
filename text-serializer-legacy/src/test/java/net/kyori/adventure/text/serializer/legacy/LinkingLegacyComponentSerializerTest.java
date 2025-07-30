@@ -165,4 +165,15 @@ class LinkingLegacyComponentSerializerTest {
       .build();
     assertEquals(expectedWithPathAndSuffix, LegacyComponentSerializer.builder().character('&').extractUrls().build().deserialize(withUnsafeChars));
   }
+
+  @Test
+  void testLinkifyWithPercentEncodedChars() {
+    final String bareUrl = "https://www.example.com/hello/:world$_:%5E)/test";
+    final String withSurroundingBrackets = "did you hear about https://www.example.com/hello/:world$_:%5E)/test? they're really cool";
+    final TextComponent expectedWithSurroundingBrackets = Component.text().content("did you hear about ")
+      .append(Component.text(bareUrl).clickEvent(ClickEvent.openUrl(bareUrl)))
+      .append(Component.text("? they're really cool"))
+      .build();
+    assertEquals(expectedWithSurroundingBrackets, LegacyComponentSerializer.builder().character('&').extractUrls().build().deserialize(withSurroundingBrackets));
+  }
 }
