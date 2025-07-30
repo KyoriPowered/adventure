@@ -23,6 +23,8 @@
  */
 package net.kyori.adventure.text.serializer.legacy;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -50,7 +52,7 @@ import org.jetbrains.annotations.Nullable;
 import static java.util.Objects.requireNonNull;
 
 final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
-  static final Pattern DEFAULT_URL_PATTERN = Pattern.compile("(?:(https?)://)?([-\\w_.]+\\.\\w{2,})(/\\S*)?");
+  static final Pattern DEFAULT_URL_PATTERN = Pattern.compile("(?:(https?)://)?([-\\w_.]+\\.\\w{2,})(/[^\\s<>\"'`{}|^\\[\\] ]*)?");
   static final Pattern URL_SCHEME_PATTERN = Pattern.compile("^[a-z][a-z0-9+\\-.]*:");
   private static final TextDecoration[] DECORATIONS = TextDecoration.values();
   private static final char LEGACY_BUNGEE_HEX_CHAR = 'x';
@@ -506,7 +508,13 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
           if (!URL_SCHEME_PATTERN.matcher(clickUrl).find()) {
             clickUrl = "http://" + clickUrl;
           }
-          return (style == null ? url : url.style(style)).clickEvent(ClickEvent.openUrl(clickUrl));
+
+          try {
+            URI ignored = new URI(clickUrl); // just to validate that the uri is valid
+            return (style == null ? url : url.style(style)).clickEvent(ClickEvent.openUrl(clickUrl));
+          } catch (URISyntaxException ignored) {
+            return url;
+          }
         })
         .build();
       return this;
