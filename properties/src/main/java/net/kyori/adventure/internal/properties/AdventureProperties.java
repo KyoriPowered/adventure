@@ -60,6 +60,13 @@ public final class AdventureProperties {
    */
   public static final Property<Boolean> TEXT_WARN_WHEN_LEGACY_FORMATTING_DETECTED = property("text.warnWhenLegacyFormattingDetected", Boolean::parseBoolean, Boolean.FALSE);
 
+  /**
+   * Property for specifying what strategy to use for interning strings in keys.
+   *
+   * @since 4.22.0
+   */
+  public static final Property<KeyInternStrategy> KEY_INTERN_STRATEGY = property("key.internStrategy", KeyInternStrategy::valueOf, KeyInternStrategy.NAMESPACE);
+
   private AdventureProperties() {
   }
 
@@ -93,5 +100,17 @@ public final class AdventureProperties {
      * @since 4.10.0
      */
     @Nullable T value();
+  }
+
+  /**
+   * The strategy to use for interning strings in keys.
+   *
+   * @since 4.22.0
+   */
+  @ApiStatus.Internal
+  public enum KeyInternStrategy {
+    NONE,
+    NAMESPACE,
+    ALL
   }
 }

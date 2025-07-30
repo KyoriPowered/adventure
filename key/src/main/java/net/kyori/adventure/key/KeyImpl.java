@@ -29,9 +29,11 @@ import java.util.Comparator;
 import java.util.Objects;
 import java.util.OptionalInt;
 import java.util.stream.Stream;
+import net.kyori.adventure.internal.properties.AdventureProperties;
 import net.kyori.examination.ExaminableProperty;
 import org.intellij.lang.annotations.RegExp;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -41,14 +43,16 @@ final class KeyImpl implements Key {
   static final @RegExp String NAMESPACE_PATTERN = "[a-z0-9_\\-.]+";
   static final @RegExp String VALUE_PATTERN = "[a-z0-9_\\-./]+";
 
+  static final AdventureProperties.@Nullable KeyInternStrategy INTERN_STRATEGY = AdventureProperties.KEY_INTERN_STRATEGY.value();
+
   private final String namespace;
   private final String value;
 
   KeyImpl(final @NotNull String namespace, final @NotNull String value) {
     checkError("namespace", namespace, namespace, value, Key.checkNamespace(namespace), NAMESPACE_PATTERN);
     checkError("value", value, namespace, value, Key.checkValue(value), VALUE_PATTERN);
-    this.namespace = requireNonNull(namespace, "namespace");
-    this.value = requireNonNull(value, "value");
+    this.namespace = finalizeNamespace(requireNonNull(namespace, "namespace"));
+    this.value = finalizeValue(requireNonNull(value, "value"));
   }
 
   private static void checkError(final String name, final String checkPart, final String namespace, final String value, final OptionalInt index, final String pattern) {
@@ -64,6 +68,20 @@ final class KeyImpl implements Key {
         Arrays.toString(String.valueOf(character).getBytes(StandardCharsets.UTF_8))
       ));
     }
+  }
+
+  private static String finalizeNamespace(final @NotNull String namespace) {
+    if (AdventureProperties.KeyInternStrategy.ALL.equals(INTERN_STRATEGY) || AdventureProperties.KeyInternStrategy.NAMESPACE.equals(INTERN_STRATEGY)) {
+      return namespace.intern();
+    }
+    return namespace;
+  }
+
+  private static String finalizeValue(final @NotNull String value) {
+    if (AdventureProperties.KeyInternStrategy.ALL.equals(INTERN_STRATEGY)) {
+      return value.intern();
+    }
+    return value;
   }
 
   static boolean allowedInNamespace(final char character) {

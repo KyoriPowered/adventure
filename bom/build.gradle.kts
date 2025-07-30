@@ -17,6 +17,7 @@ dependencies {
       "extra-kotlin",
       "key",
       "nbt",
+      "properties",
       "serializer-configurate4",
       "text-logger-slf4j",
       "text-minimessage",

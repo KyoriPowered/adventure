@@ -12,6 +12,7 @@ dependencies {
   api(libs.examination.api)
   api(libs.examination.string)
   compileOnlyApi(libs.jetbrainsAnnotations)
+  implementation(projects.adventureProperties)
   testImplementation(libs.guava)
 }
 
