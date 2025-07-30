@@ -135,7 +135,8 @@ public interface ComponentFlattener extends Buildable<ComponentFlattener, Compon
     /**
      * Sets the limit of nested flatten calls.
      *
-     * <p>The default value is {@link #NO_NESTING_LIMIT}, which means there is no limit on nesting.</p>
+     * <p>Unless the property is changed, the default value is {@link #NO_NESTING_LIMIT},
+     * which means there is no limit on nesting.</p>
      *
      * @param limit the new limit (must be a positive integer, or {@link #NO_NESTING_LIMIT})
      * @return this builder
