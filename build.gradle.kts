@@ -4,7 +4,3 @@ plugins {
 }
 
 // Project metadata is configured in gradle.properties
-
-indraSonatype {
-  useAlternateSonatypeOSSHost("s01")
-}

@@ -1,11 +1,11 @@
 pluginManagement {
   includeBuild("build-logic")
   repositories {
-    maven(url = "https://repo.stellardrift.ca/repository/internal/") {
+    maven(url = "https://repo.stellardrift.ca/maven/internal/") {
       name = "stellardriftReleases"
       mavenContent { releasesOnly() }
     }
-    maven(url = "https://repo.stellardrift.ca/repository/snapshots/") {
+    maven(url = "https://repo.stellardrift.ca/maven/snapshots/") {
       name = "stellardriftSnapshots"
       mavenContent { snapshotsOnly() }
     }
