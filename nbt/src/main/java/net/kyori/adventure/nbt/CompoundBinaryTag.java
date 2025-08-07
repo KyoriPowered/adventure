@@ -155,7 +155,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    *
    * @param initialCapacity the initial capacity
    * @return a new builder
-   * @since 4.24.0
+   * @since 4.25.0
    */
   static @NotNull Builder builder(final @Range(from = 0, to = Integer.MAX_VALUE) int initialCapacity) {
     return new CompoundTagBuilder(initialCapacity);

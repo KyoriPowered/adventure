@@ -78,7 +78,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    *
    * @param initialCapacity the initial capacity
    * @return a new builder
-   * @since 4.24.0
+   * @since 4.25.0
    */
   static @NotNull Builder<BinaryTag> builder(final @Range(from = 0, to = Integer.MAX_VALUE) int initialCapacity) {
     return new ListTagBuilder<>(false, initialCapacity);
@@ -99,7 +99,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    *
    * @param initialCapacity the initial capacity
    * @return a new builder
-   * @since 4.24.0
+   * @since 4.25.0
    */
   static @NotNull Builder<BinaryTag> heterogeneousListBinaryTag(final @Range(from = 0, to = Integer.MAX_VALUE) int initialCapacity) {
     return new ListTagBuilder<>(true, initialCapacity);
@@ -127,7 +127,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @param <T> the element type
    * @return a new builder
    * @throws IllegalArgumentException if {@code type} is {@link BinaryTagTypes#END}
-   * @since 4.24.0
+   * @since 4.25.0
    */
   static <T extends BinaryTag> @NotNull Builder<T> builder(final @NotNull BinaryTagType<T> type, final @Range(from = 0, to = Integer.MAX_VALUE) int initialCapacity) {
     if (type == BinaryTagTypes.END) throw new IllegalArgumentException("Cannot create a list of " + BinaryTagTypes.END);
