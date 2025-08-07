@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.format;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -36,6 +37,7 @@ import net.kyori.adventure.util.ARGBLike;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -336,9 +338,19 @@ final class StyleImpl implements Style {
     }
 
     @Override
+    public @Nullable Key font() {
+      return this.font;
+    }
+
+    @Override
     public @NotNull Builder font(final @Nullable Key font) {
       this.font = font;
       return this;
+    }
+
+    @Override
+    public @Nullable TextColor color() {
+      return this.color;
     }
 
     @Override
@@ -356,6 +368,11 @@ final class StyleImpl implements Style {
     }
 
     @Override
+    public @Nullable ShadowColor shadowColor() {
+      return this.shadowColor;
+    }
+
+    @Override
     public @NotNull Builder shadowColor(final @Nullable ARGBLike argb) {
       this.shadowColor = argb == null ? null : ShadowColor.shadowColor(argb);
       return this;
@@ -367,6 +384,20 @@ final class StyleImpl implements Style {
         this.shadowColor = argb == null ? null : ShadowColor.shadowColor(argb);
       }
       return this;
+    }
+
+    @Override
+    public TextDecoration.@NotNull State decoration(final @NotNull TextDecoration decoration) {
+      final TextDecoration.@Nullable State state = this.decorations.get(decoration);
+      if (state != null) {
+        return state;
+      }
+      throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
+    }
+
+    @Override
+    public @Unmodifiable @NotNull Map<TextDecoration, TextDecoration.State> decorations() {
+      return Collections.unmodifiableMap(this.decorations);
     }
 
     @Override
@@ -391,15 +422,30 @@ final class StyleImpl implements Style {
     }
 
     @Override
+    public @Nullable ClickEvent clickEvent() {
+      return this.clickEvent;
+    }
+
+    @Override
     public @NotNull Builder clickEvent(final @Nullable ClickEvent event) {
       this.clickEvent = event;
       return this;
     }
 
     @Override
+    public @Nullable HoverEvent<?> hoverEvent() {
+      return this.hoverEvent;
+    }
+
+    @Override
     public @NotNull Builder hoverEvent(final @Nullable HoverEventSource<?> source) {
       this.hoverEvent = HoverEventSource.unbox(source);
       return this;
+    }
+
+    @Override
+    public @Nullable String insertion() {
+      return this.insertion;
     }
 
     @Override

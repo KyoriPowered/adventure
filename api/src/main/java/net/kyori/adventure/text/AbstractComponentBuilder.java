@@ -27,18 +27,22 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
+import net.kyori.adventure.text.format.ShadowColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.util.ARGBLike;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -217,10 +221,20 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
   }
 
   @Override
+  public @Nullable Key font() {
+    return this.styleBuilder().font();
+  }
+
+  @Override
   @SuppressWarnings("unchecked")
   public @NotNull B font(final @Nullable Key font) {
     this.styleBuilder().font(font);
     return (B) this;
+  }
+
+  @Override
+  public @Nullable TextColor color() {
+    return this.styleBuilder().color();
   }
 
   @Override
@@ -238,6 +252,11 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
   }
 
   @Override
+  public @Nullable ShadowColor shadowColor() {
+    return this.styleBuilder().shadowColor();
+  }
+
+  @Override
   @SuppressWarnings("unchecked")
   public @NotNull B shadowColor(final @Nullable ARGBLike argb) {
     this.styleBuilder().shadowColor(argb);
@@ -249,6 +268,21 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
   public @NotNull B shadowColorIfAbsent(final @Nullable ARGBLike argb) {
     this.styleBuilder().shadowColorIfAbsent(argb);
     return (B) this;
+  }
+
+  @Override
+  public TextDecoration.@NotNull State decoration(final @NotNull TextDecoration decoration) {
+    return this.styleBuilder().decoration(decoration);
+  }
+
+  @Override
+  public @Unmodifiable @NotNull Map<TextDecoration, TextDecoration.State> decorations() {
+    return this.styleBuilder().decorations();
+  }
+
+  @Override
+  public boolean hasDecoration(final @NotNull TextDecoration decoration) {
+    return this.styleBuilder().hasDecoration(decoration);
   }
 
   @Override
@@ -266,6 +300,11 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
   }
 
   @Override
+  public @Nullable ClickEvent clickEvent() {
+    return this.styleBuilder().clickEvent();
+  }
+
+  @Override
   @SuppressWarnings("unchecked")
   public @NotNull B clickEvent(final @Nullable ClickEvent event) {
     this.styleBuilder().clickEvent(event);
@@ -273,10 +312,20 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
   }
 
   @Override
+  public @Nullable HoverEvent<?> hoverEvent() {
+    return this.styleBuilder().hoverEvent();
+  }
+
+  @Override
   @SuppressWarnings("unchecked")
   public @NotNull B hoverEvent(final @Nullable HoverEventSource<?> source) {
     this.styleBuilder().hoverEvent(source);
     return (B) this;
+  }
+
+  @Override
+  public @Nullable String insertion() {
+    return this.styleBuilder().insertion();
   }
 
   @Override

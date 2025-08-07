@@ -31,9 +31,12 @@ import java.util.function.Function;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.text.format.MutableStyleSetter;
+import net.kyori.adventure.text.format.ShadowColor;
 import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.format.StyleGetter;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.util.Buildable;
@@ -41,6 +44,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * A component builder.
@@ -50,7 +54,7 @@ import org.jetbrains.annotations.Nullable;
  * @since 4.0.0
  */
 @ApiStatus.NonExtendable
-public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> extends AbstractBuilder<C>, Buildable.Builder<C>, ComponentBuilderApplicable, ComponentLike, MutableStyleSetter<B> {
+public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> extends AbstractBuilder<C>, Buildable.Builder<C>, ComponentBuilderApplicable, ComponentLike, MutableStyleSetter<B>, StyleGetter {
   /**
    * Appends a component to this component.
    *
@@ -210,6 +214,15 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
   @NotNull B style(final @NotNull Consumer<Style.Builder> consumer);
 
   /**
+   * {@inheritDoc}
+   *
+   * @since 4.25.0
+   * @sinceMinecraft 1.16
+   */
+  @Override
+  @Nullable Key font();
+
+  /**
    * Sets the font of this component.
    *
    * @param font the font
@@ -219,6 +232,14 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
   @Contract("_ -> this")
   @Override
   @NotNull B font(final @Nullable Key font);
+
+  /**
+   * {@inheritDoc}
+   *
+   * @since 4.25.0
+   */
+  @Override
+  @Nullable TextColor color();
 
   /**
    * Sets the color of this component.
@@ -241,6 +262,38 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
   @Contract("_ -> this")
   @Override
   @NotNull B colorIfAbsent(final @Nullable TextColor color);
+
+  /**
+   * {@inheritDoc}
+   *
+   * @since 4.25.0
+   */
+  @Override
+  @Nullable ShadowColor shadowColor();
+
+  /**
+   * {@inheritDoc}
+   *
+   * @since 4.25.0
+   */
+  @Override
+  boolean hasDecoration(final @NotNull TextDecoration decoration);
+
+  /**
+   * {@inheritDoc}
+   *
+   * @since 4.25.0
+   */
+  @Override
+  TextDecoration.@NotNull State decoration(final @NotNull TextDecoration decoration);
+
+  /**
+   * {@inheritDoc}
+   *
+   * @since 4.25.0
+   */
+  @Override
+  @Unmodifiable @NotNull Map<TextDecoration, TextDecoration.State> decorations();
 
   /**
    * Sets the state of a set of decorations to {@code flag} on this component.
@@ -342,6 +395,14 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
   @NotNull B decorationIfAbsent(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state);
 
   /**
+   * {@inheritDoc}
+   *
+   * @since 4.25.0
+   */
+  @Override
+  @Nullable ClickEvent clickEvent();
+
+  /**
    * Sets the click event of this component.
    *
    * @param event the click event
@@ -353,6 +414,14 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
   @NotNull B clickEvent(final @Nullable ClickEvent event);
 
   /**
+   * {@inheritDoc}
+   *
+   * @since 4.25.0
+   */
+  @Override
+  @Nullable HoverEvent<?> hoverEvent();
+
+  /**
    * Sets the hover event of this component.
    *
    * @param source the hover event source
@@ -362,6 +431,14 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
   @Contract("_ -> this")
   @Override
   @NotNull B hoverEvent(final @Nullable HoverEventSource<?> source);
+
+  /**
+   * {@inheritDoc}
+   *
+   * @since 4.25.0
+   */
+  @Override
+  @Nullable String insertion();
 
   /**
    * Sets the string to be inserted when this component is shift-clicked.
