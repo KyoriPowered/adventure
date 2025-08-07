@@ -82,7 +82,7 @@ public abstract class BinaryTagType<T extends BinaryTag> implements Predicate<Bi
    * @return a binary tag type
    * @throws IllegalArgumentException if <code>id</code> doesn't match any <code>BinaryTagType</code>.
    * @see #id()
-   * @since 4.24.0
+   * @since 4.25.0
    */
   public static @NotNull BinaryTagType<? extends BinaryTag> binaryTagType(final byte id) {
     if (id >= 0 && id < BY_ID.length) {
