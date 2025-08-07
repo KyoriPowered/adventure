@@ -158,7 +158,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    * Creates a builder, pre-filled with the contents of this compound.
    *
    * @return a new builder
-   * @since 4.24.0
+   * @since 4.25.0
    */
   Builder createBuilder();
 
