@@ -36,7 +36,7 @@ import static java.util.Objects.requireNonNull;
  *
  * <p>This holder is exposed to allow conversions to/from NBT data holders.</p>
  *
- * @since 4.24.0
+ * @since 4.25.0
  * @sinceMinecraft 1.20.3
  */
 @ApiStatus.NonExtendable
@@ -45,7 +45,7 @@ public interface NBTDataComponentValue extends DataComponentValue {
    * The contained element.
    *
    * @return the contained element
-   * @since 4.24.0
+   * @since 4.25.0
    */
   @NotNull BinaryTag binaryTag();
 
@@ -54,7 +54,7 @@ public interface NBTDataComponentValue extends DataComponentValue {
    *
    * @param data the item data to hold
    * @return a newly created item data holder instance
-   * @since 4.24.0
+   * @since 4.25.0
    */
   static @NotNull NBTDataComponentValue nbtDataComponentValue(final @NotNull BinaryTag data) {
     if (data instanceof EndBinaryTag) {

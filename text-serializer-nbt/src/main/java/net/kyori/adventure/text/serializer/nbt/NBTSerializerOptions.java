@@ -33,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * <p>See serializer documentation for specific details on which flags are supported.</p>
  *
- * @since 4.24.0
+ * @since 4.25.0
  * @sinceMinecraft 1.20.3
  */
 public final class NBTSerializerOptions {
@@ -41,7 +41,7 @@ public final class NBTSerializerOptions {
   /**
    * Whether to emit shadow colour data.
    *
-   * @since 4.24.0
+   * @since 4.25.0
    * @sinceMinecraft 1.21.4
    */
   public static final Option<Boolean> EMIT_SHADOW_COLOR;
@@ -49,14 +49,14 @@ public final class NBTSerializerOptions {
   /**
    * Control how hover event values should be emitted.
    *
-   * @since 4.24.0
+   * @since 4.25.0
    */
   public static final Option<HoverEventValueMode> EMIT_HOVER_EVENT_TYPE;
 
   /**
    * Control how click event values should be emitted.
    *
-   * @since 4.24.0
+   * @since 4.25.0
    */
   public static final Option<ClickEventValueMode> EMIT_CLICK_EVENT_TYPE;
 
@@ -65,14 +65,14 @@ public final class NBTSerializerOptions {
    *
    * <p>When enabled, this matches Vanilla as of 1.20.5.</p>
    *
-   * @since 4.24.0
+   * @since 4.25.0
    */
   public static final Option<Boolean> EMIT_DEFAULT_ITEM_HOVER_QUANTITY;
 
   /**
    * How to emit show item hovers in {@code hoverEvent} (camelCase) fields.
    *
-   * @since 4.24.0
+   * @since 4.25.0
    */
   public static final Option<ShowItemHoverDataMode> SHOW_ITEM_HOVER_DATA_MODE;
 
@@ -80,14 +80,14 @@ public final class NBTSerializerOptions {
    * Whether to emit {@code text} field instead of {@code value} field in {@code show_item}
    * hover events specified in {@code hover_event} (snake_case) fields.
    *
-   * @since 4.24.0
+   * @since 4.25.0
    */
   public static final Option<Boolean> EMIT_SHOW_TEXT_HOVER_TEXT_FIELD;
 
   /**
    * Whether to emit array binary tags instead of list binary tags when it's possible.
    *
-   * @since 4.24.0
+   * @since 4.25.0
    */
   public static final Option<Boolean> EMIT_OPTIMIZED_LISTS;
 
@@ -164,7 +164,7 @@ public final class NBTSerializerOptions {
    * A schema of available options.
    *
    * @return the schema of known NBT serializer options
-   * @since 4.24.0
+   * @since 4.25.0
    */
   public static @NotNull OptionSchema schema() {
     return SCHEMA;
@@ -174,7 +174,7 @@ public final class NBTSerializerOptions {
    * NBT serializer options delineated by world data version.
    *
    * @return the versioned option state
-   * @since 4.24.0
+   * @since 4.25.0
    */
   public static OptionState.@NotNull Versioned byDataVersion() {
     return BY_DATA_VERSION;
@@ -183,25 +183,25 @@ public final class NBTSerializerOptions {
   /**
    * Configure how to emit hover event values.
    *
-   * @since 4.24.0
+   * @since 4.25.0
    */
   public enum HoverEventValueMode {
     /**
      * Only emit the 1.21.5+ hover events using the {@code hover_event} field.
      *
-     * @since 4.24.0
+     * @since 4.25.0
      */
     SNAKE_CASE,
     /**
      * Only emit the 1.16+ hover events using the {@code hoverEvent} field.
      *
-     * @since 4.24.0
+     * @since 4.25.0
      */
     CAMEL_CASE,
     /**
      * Include both camel and snake case hover event fields, for maximum compatibility.
      *
-     * @since 4.24.0
+     * @since 4.25.0
      */
     BOTH
   }
@@ -209,25 +209,25 @@ public final class NBTSerializerOptions {
   /**
    * Configure how to emit click event values.
    *
-   * @since 4.24.0
+   * @since 4.25.0
    */
   public enum ClickEventValueMode {
     /**
      * Only emit the 1.21.5+ click events using the {@code click_event} field.
      *
-     * @since 4.24.0
+     * @since 4.25.0
      */
     SNAKE_CASE,
     /**
      * Only emit the pre-1.21.5 click events using the {@code clickEvent} field.
      *
-     * @since 4.24.0
+     * @since 4.25.0
      */
     CAMEL_CASE,
     /**
      * Include both camel and snake case click event fields, for maximum compatibility.
      *
-     * @since 4.24.0
+     * @since 4.25.0
      */
     BOTH,
   }
@@ -235,25 +235,25 @@ public final class NBTSerializerOptions {
   /**
    * Configure how to emit show item hovers in {@code hoverEvent} (camelCase) fields.
    *
-   * @since 4.24.0
+   * @since 4.25.0
    */
   public enum ShowItemHoverDataMode {
     /**
      * Only emit the pre-1.20.5 item NBT.
      *
-     * @since 4.24.0
+     * @since 4.25.0
      */
     EMIT_LEGACY_NBT,
     /**
      * Only emit modern data components.
      *
-     * @since 4.24.0
+     * @since 4.25.0
      */
     EMIT_DATA_COMPONENTS,
     /**
      * Emit whichever of legacy or modern data the item has.
      *
-     * @since 4.24.0
+     * @since 4.25.0
      */
     EMIT_EITHER,
   }

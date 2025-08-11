@@ -24,7 +24,7 @@
 /**
  * Internal classes for the NBT component serializer.
  *
- * @since 4.24.0
+ * @since 4.25.0
  * @sinceMinecraft 1.20.3
  */
 @ApiStatus.Internal

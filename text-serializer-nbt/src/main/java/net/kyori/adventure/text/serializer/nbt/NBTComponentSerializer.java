@@ -38,7 +38,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * A NBT component serializer.
  *
- * @since 4.24.0
+ * @since 4.25.0
  * @sinceMinecraft 1.20.3
  */
 public interface NBTComponentSerializer extends ComponentSerializer<Component, Component, BinaryTag> {
@@ -47,7 +47,7 @@ public interface NBTComponentSerializer extends ComponentSerializer<Component, C
    *
    * @param tag the binary tag
    * @return the style
-   * @since 4.24.0
+   * @since 4.25.0
    */
   @NotNull Style deserializeStyle(final @NotNull CompoundBinaryTag tag);
 
@@ -56,7 +56,7 @@ public interface NBTComponentSerializer extends ComponentSerializer<Component, C
    *
    * @param style the style
    * @return the binary tag
-   * @since 4.24.0
+   * @since 4.25.0
    */
   @NotNull CompoundBinaryTag serializeStyle(final @NotNull Style style);
 
@@ -64,7 +64,7 @@ public interface NBTComponentSerializer extends ComponentSerializer<Component, C
    * Gets a component serializer for NBT serialization and deserialization.
    *
    * @return a NBT component serializer
-   * @since 4.24.0
+   * @since 4.25.0
    */
   static @NotNull NBTComponentSerializer nbt() {
     return NBTComponentSerializerImpl.Instances.INSTANCE;
@@ -74,7 +74,7 @@ public interface NBTComponentSerializer extends ComponentSerializer<Component, C
    * Creates a new {@link NBTComponentSerializer.Builder}.
    *
    * @return a builder
-   * @since 4.24.0
+   * @since 4.25.0
    */
   static @NotNull Builder builder() {
     return new NBTComponentSerializerImpl.BuilderImpl();
@@ -83,7 +83,7 @@ public interface NBTComponentSerializer extends ComponentSerializer<Component, C
   /**
    * A builder for {@link NBTComponentSerializer}.
    *
-   * @since 4.24.0
+   * @since 4.25.0
    */
   interface Builder extends AbstractBuilder<NBTComponentSerializer> {
     /**
@@ -94,7 +94,7 @@ public interface NBTComponentSerializer extends ComponentSerializer<Component, C
      * @param flags the flag set to use
      * @return this builder
      * @see NBTSerializerOptions
-     * @since 4.24.0
+     * @since 4.25.0
      */
     @NotNull Builder options(final @NotNull OptionState flags);
 
@@ -104,7 +104,7 @@ public interface NBTComponentSerializer extends ComponentSerializer<Component, C
      * @param optionEditor the consumer operating on the existing flag set
      * @return this builder
      * @see NBTSerializerOptions
-     * @since 4.24.0
+     * @since 4.25.0
      */
     @NotNull Builder editOptions(final @NotNull Consumer<OptionState.Builder> optionEditor);
 
@@ -112,7 +112,7 @@ public interface NBTComponentSerializer extends ComponentSerializer<Component, C
      * Builds the serializer.
      *
      * @return the built serializer
-     * @since 4.24.0
+     * @since 4.25.0
      */
     @Override
     @NotNull NBTComponentSerializer build();
@@ -121,7 +121,7 @@ public interface NBTComponentSerializer extends ComponentSerializer<Component, C
   /**
    * A {@link NBTComponentSerializer} service provider.
    *
-   * @since 4.24.0
+   * @since 4.25.0
    */
   @ApiStatus.Internal
   @PlatformAPI
@@ -130,7 +130,7 @@ public interface NBTComponentSerializer extends ComponentSerializer<Component, C
      * Provides a standard {@link NBTComponentSerializer}.
      *
      * @return a {@link NBTComponentSerializer}
-     * @since 4.24.0
+     * @since 4.25.0
      */
     @ApiStatus.Internal
     @PlatformAPI
@@ -140,7 +140,7 @@ public interface NBTComponentSerializer extends ComponentSerializer<Component, C
      * Completes the building process of {@link Builder}.
      *
      * @return a {@link Consumer}
-     * @since 4.24.0
+     * @since 4.25.0
      */
     @ApiStatus.Internal
     @PlatformAPI
