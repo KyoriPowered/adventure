@@ -81,6 +81,16 @@ final class GlobalTranslatorImpl implements GlobalTranslator {
   }
 
   @Override
+  public boolean canTranslate(final @NotNull String key, final @NotNull Locale locale) {
+    requireNonNull(key, "key");
+    requireNonNull(locale, "locale");
+    for (final Translator source : this.sources) {
+      if (source.canTranslate(key, locale)) return true;
+    }
+    return false;
+  }
+
+  @Override
   public @Nullable MessageFormat translate(final @NotNull String key, final @NotNull Locale locale) {
     requireNonNull(key, "key");
     requireNonNull(locale, "locale");

@@ -37,7 +37,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * A {@link ResourceBundle.Control} that enforces UTF-8 string encoding.
  *
- * <p>See https://stackoverflow.com/a/4660195 for more details.</p>
+ * <p>See <a href="https://stackoverflow.com/a/4660195">this Stack Overflow post</a> for more details.</p>
  *
  * @since 4.0.0
  */
@@ -49,8 +49,20 @@ public final class UTF8ResourceBundleControl extends ResourceBundle.Control {
    *
    * @return a resource bundle control
    * @since 4.0.0
+   * @deprecated For removal since 4.24.0, use {@link #utf8ResourceBundleControl} instead
    */
+  @Deprecated
   public static ResourceBundle.@NotNull Control get() {
+    return INSTANCE;
+  }
+
+  /**
+   * Gets the shared instance.
+   *
+   * @return a resource bundle control
+   * @since 4.24.0
+   */
+  public static ResourceBundle.@NotNull Control utf8ResourceBundleControl() {
     return INSTANCE;
   }
 

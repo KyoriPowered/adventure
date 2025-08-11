@@ -34,6 +34,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.NBTComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.TranslationArgument;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -52,6 +53,7 @@ class ComponentFlattenerTest {
     int pushCount;
     int popCount;
     final List<Style> pushedStyles = new ArrayList<>();
+    final List<Style> poppedStyles = new ArrayList<>();
     final List<String> strings = new ArrayList<>();
 
     @Override
@@ -68,6 +70,7 @@ class ComponentFlattenerTest {
     @Override
     public void popStyle(final @NotNull Style style) {
       this.popCount++;
+      this.poppedStyles.add(style);
     }
 
     public TrackingFlattener assertBalanced() {
@@ -88,6 +91,11 @@ class ComponentFlattenerTest {
 
     public TrackingFlattener assertStyles(final Style... styles) {
       assertIterableEquals(Arrays.asList(styles), this.pushedStyles);
+      return this;
+    }
+
+    public TrackingFlattener assertPoppedStyles(final Style... styles) {
+      assertIterableEquals(Arrays.asList(styles), this.poppedStyles);
       return this;
     }
   }
@@ -152,6 +160,40 @@ class ComponentFlattenerTest {
       .assertPushesAndPops(3)
       .assertStyles(Style.empty(), Style.style(NamedTextColor.BLUE), Style.empty())
       .assertContents("Hi there my", " blue ", "friend");
+  }
+
+  @Test
+  void testComplexNested() {
+    final Component input = Component.text()
+      .content("Hi there my")
+      .append(Component.text(" clickable ")
+        .clickEvent(ClickEvent.copyToClipboard("some text"))
+        .append(
+          Component.text("and bold ")
+            .decorate(TextDecoration.BOLD)
+            .append(Component.text("red ", NamedTextColor.RED)))
+        .append(
+          Component.text("and blue ", NamedTextColor.BLUE)))
+      .append(Component.text("friend"))
+      .build();
+
+    this.testFlatten(ComponentFlattener.basic(), input).assertBalanced()
+      .assertPushesAndPops(6)
+      .assertStyles(
+        Style.empty(),
+        Style.style(ClickEvent.copyToClipboard("some text")),
+        Style.style(TextDecoration.BOLD),
+        Style.style(NamedTextColor.RED),
+        Style.style(NamedTextColor.BLUE),
+        Style.empty())
+      .assertPoppedStyles(
+        Style.style(NamedTextColor.RED),
+        Style.style(TextDecoration.BOLD),
+        Style.style(NamedTextColor.BLUE),
+        Style.style(ClickEvent.copyToClipboard("some text")),
+        Style.empty(),
+        Style.empty())
+      .assertContents("Hi there my", " clickable ", "and bold ", "red ", "and blue ", "friend");
   }
 
   @Test

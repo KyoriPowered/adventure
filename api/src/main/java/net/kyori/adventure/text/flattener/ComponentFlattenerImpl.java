@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import net.kyori.adventure.internal.properties.AdventureProperties;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.KeybindComponent;
 import net.kyori.adventure.text.ScoreComponent;
@@ -79,10 +80,12 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
   private static final class StackEntry {
     final Component component;
     final int depth;
+    final int stylesToPop;
 
-    StackEntry(final Component component, final int depth) {
+    StackEntry(final Component component, final int depth, final int stylesToPop) {
       this.component = component;
       this.depth = depth;
+      this.stylesToPop = stylesToPop;
     }
   }
 
@@ -104,7 +107,7 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
     final Deque<Style> styleStack = new ArrayDeque<>();
 
     // Push the starting component.
-    componentStack.push(new StackEntry(input, depth));
+    componentStack.push(new StackEntry(input, depth, 1));
 
     while (!componentStack.isEmpty()) {
       final StackEntry entry = componentStack.pop();
@@ -130,12 +133,19 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
         // Push any children onto the stack in reverse order so they are popped in the right order.
         final List<Component> children = component.children();
         for (int i = children.size() - 1; i >= 0; i--) {
-          componentStack.push(new StackEntry(children.get(i), currentDepth + 1));
+          if (i == children.size() - 1) {
+            // The last child is responsible for popping all the parents' styles.
+            componentStack.push(new StackEntry(children.get(i), currentDepth + 1, entry.stylesToPop + 1));
+          } else {
+            componentStack.push(new StackEntry(children.get(i), currentDepth + 1, 1));
+          }
         }
       } else {
-        // If there are no children, we pop the latest style to go back "up" the tree.
-        final Style style = styleStack.pop();
-        listener.popStyle(style);
+        // If there are no children, we pop the latest N styles to go back "up" the tree.
+        for (int i = entry.stylesToPop; i > 0; i--) {
+          final Style style = styleStack.pop();
+          listener.popStyle(style);
+        }
       }
     }
 
@@ -170,7 +180,7 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
   static final class BuilderImpl implements Builder {
     private final InheritanceAwareMap.Builder<Component, Handler> flatteners;
     private @Nullable Function<Component, String> unknownHandler;
-    private int maxNestedDepth = ComponentFlattener.NO_NESTING_LIMIT;
+    private int maxNestedDepth = AdventureProperties.DEFAULT_FLATTENER_NESTING_LIMIT.valueOr(ComponentFlattener.NO_NESTING_LIMIT);
 
     BuilderImpl() {
       this.flatteners = InheritanceAwareMap.<Component, Handler>builder().strict(true);

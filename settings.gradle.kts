@@ -1,11 +1,11 @@
 pluginManagement {
   includeBuild("build-logic")
   repositories {
-    maven(url = "https://repo.stellardrift.ca/repository/internal/") {
+    maven(url = "https://repo.stellardrift.ca/maven/internal/") {
       name = "stellardriftReleases"
       mavenContent { releasesOnly() }
     }
-    maven(url = "https://repo.stellardrift.ca/repository/snapshots/") {
+    maven(url = "https://repo.stellardrift.ca/maven/snapshots/") {
       name = "stellardriftSnapshots"
       mavenContent { snapshotsOnly() }
     }
@@ -14,7 +14,7 @@ pluginManagement {
 }
 
 plugins {
-  id("org.gradle.toolchains.foojay-resolver-convention") version "0.10.0"
+  id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
