@@ -39,7 +39,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * <p>This is public SPI, not API.</p>
  *
- * @since 4.24.0
+ * @since 4.25.0
  */
 @AutoService(DataComponentValueConverterRegistry.Provider.class)
 @ApiStatus.Internal
