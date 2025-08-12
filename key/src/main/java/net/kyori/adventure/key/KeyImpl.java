@@ -66,6 +66,10 @@ final class KeyImpl implements Key {
     }
   }
 
+  static boolean allowedInKey(final char character) {
+    return character == ':' || allowedInNamespace(character) || allowedInValue(character);
+  }
+  
   static boolean allowedInNamespace(final char character) {
     return character == '_' || character == '-' || (character >= 'a' && character <= 'z') || (character >= '0' && character <= '9') || character == '.';
   }

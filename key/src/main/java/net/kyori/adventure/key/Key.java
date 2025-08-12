@@ -225,6 +225,17 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
   }
 
   /**
+   * Checks if {@code character} is a valid character in a key.
+   *
+   * @param character the character to check
+   * @return {@code true} if {@code character} is a valid character in a key, {@code false} otherwise
+   * @since 4.25.0
+   */
+  static boolean allowedInKey(final char character) {
+    return KeyImpl.allowedInKey(character);
+  }
+
+  /**
    * Checks if {@code value} is a valid character in a namespace.
    *
    * @param character the character to check
