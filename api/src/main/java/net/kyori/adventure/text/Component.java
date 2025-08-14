@@ -2599,7 +2599,20 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @ScopedComponentOverrideNotRequired
   default @NotNull Component compact() {
-    return ComponentCompaction.compact(this, null);
+    return this.compact(null);
+  }
+
+  /**
+   * Create a new component with any redundant style elements or children removed.
+   * It is assumed that the component will inherit the given {@code parentStyle}.
+   *
+   * @param parentStyle the style of the parent of this component
+   * @return the optimized component
+   * @since 4.25.0
+   */
+  @ScopedComponentOverrideNotRequired
+  default @NotNull Component compact(final @Nullable Style parentStyle) {
+    return ComponentCompaction.compact(this, parentStyle);
   }
 
   /**
