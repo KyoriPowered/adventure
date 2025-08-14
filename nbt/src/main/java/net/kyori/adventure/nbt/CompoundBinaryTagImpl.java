@@ -49,7 +49,7 @@ final class CompoundBinaryTagImpl extends AbstractBinaryTag implements CompoundB
   }
 
   @Override
-  public boolean containsKey(final @NotNull String key) {
+  public boolean contains(final @NotNull String key) {
     return this.tags.containsKey(key);
   }
 
