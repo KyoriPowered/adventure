@@ -23,7 +23,9 @@
  */
 package net.kyori.adventure.text;
 
+import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
+import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -51,6 +53,17 @@ public interface ObjectComponent extends BuildableComponent<ObjectComponent, Obj
    * @since 4.25.0
    */
   @NotNull Key sprite();
+
+  @Override
+  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.concat(
+      Stream.of(
+        ExaminableProperty.of("atlas", this.atlas()),
+        ExaminableProperty.of("sprite", this.sprite())
+      ),
+      BuildableComponent.super.examinableProperties()
+    );
+  }
 
   /**
    * An object component builder.
