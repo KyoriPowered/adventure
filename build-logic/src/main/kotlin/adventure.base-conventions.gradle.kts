@@ -6,6 +6,7 @@ plugins {
 val libs = extensions.getByType(org.gradle.accessors.dm.LibrariesForLibs::class)
 
 indra {
+  publishSnapshotsTo("papermc", "https://repo.papermc.io/repository/maven-snapshots/")
   javaVersions {
     minimumToolchain(17)
     val testVersions = (project.property("testJdks") as String)

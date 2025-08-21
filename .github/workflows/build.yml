@@ -14,4 +14,5 @@ jobs:
     with:
       publish_releases: true
       publish_release_javadoc: true
+      publishing_branch_regex: '(?:(?:(?:unstable\/)?(\d+(?:\.\d+)*(?:\.x)?)))'
     secrets: "inherit"
