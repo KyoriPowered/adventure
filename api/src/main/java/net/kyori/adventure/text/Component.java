@@ -609,8 +609,20 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.25.0
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull ObjectComponent object(final @NotNull Key atlas, final @NotNull Key sprite) {
-    return ObjectComponentImpl.create(Collections.emptyList(), Style.empty(), requireNonNull(atlas, "atlas"), requireNonNull(sprite, "sprite"));
+  static @NotNull ObjectComponent object(final @Nullable Key atlas, final @NotNull Key sprite) {
+    return ObjectComponentImpl.create(Collections.emptyList(), Style.empty(), atlas, requireNonNull(sprite, "sprite"));
+  }
+
+  /**
+   * Creates an object component a sprite and the default atlas.
+   *
+   * @param sprite the sprite
+   * @return an object component
+   * @since 4.25.0
+   */
+  @Contract(value = "_ -> new", pure = true)
+  static @NotNull ObjectComponent object(final @NotNull Key sprite) {
+    return ObjectComponentImpl.create(Collections.emptyList(), Style.empty(), null, requireNonNull(sprite, "sprite"));
   }
 
   /*
