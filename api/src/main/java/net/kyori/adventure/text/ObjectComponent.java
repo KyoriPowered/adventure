@@ -54,6 +54,24 @@ public interface ObjectComponent extends BuildableComponent<ObjectComponent, Obj
    */
   @NotNull Key sprite();
 
+  /**
+   * Creates a copy of this object component with a new atlas key.
+   *
+   * @param atlas the atlas key, or null for the default
+   * @return a new object component
+   * @since 4.25.0
+   */
+  @NotNull ObjectComponent atlas(@Nullable Key atlas);
+
+  /**
+   * Creates a copy of this object component with a new sprite key.
+   *
+   * @param sprite the sprite key
+   * @return a new object component
+   * @since 4.25.0
+   */
+  @NotNull ObjectComponent sprite(@NotNull Key sprite);
+
   @Override
   default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.concat(
