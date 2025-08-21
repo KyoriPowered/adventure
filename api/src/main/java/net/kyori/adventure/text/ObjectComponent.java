@@ -1,0 +1,76 @@
+/*
+ * This file is part of adventure, licensed under the MIT License.
+ *
+ * Copyright (c) 2017-2025 KyoriPowered
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+package net.kyori.adventure.text;
+
+import net.kyori.adventure.key.Key;
+import org.jetbrains.annotations.NotNull;
+
+/**
+ * Displays a sprite based on an atlas and sprite key.
+ *
+ * @since 4.25.0
+ * @sinceMinecraft 1.21.9
+ */
+public interface ObjectComponent extends BuildableComponent<ObjectComponent, ObjectComponent.Builder>, ScopedComponent<ObjectComponent> {
+  /**
+   * Gets the atlas key.
+   *
+   * @return the atlas key
+   * @since 4.25.0
+   */
+  @NotNull Key atlas();
+
+  /**
+   * Gets the sprite key.
+   *
+   * @return the sprite key
+   * @since 4.25.0
+   */
+  @NotNull Key sprite();
+
+  /**
+   * An object component builder.
+   *
+   * @since 4.25.0
+   */
+  interface Builder extends ComponentBuilder<ObjectComponent, Builder> {
+    /**
+     * Sets the atlas key.
+     *
+     * @param atlas the atlas key
+     * @return this builder
+     * @since 4.25.0
+     */
+    @NotNull Builder atlas(@NotNull Key atlas);
+
+    /**
+     * Sets the sprite key.
+     *
+     * @param sprite the sprite key
+     * @return this builder
+     * @since 4.25.0
+     */
+    @NotNull Builder sprite(@NotNull Key sprite);
+  }
+}
