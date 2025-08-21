@@ -34,17 +34,17 @@ import org.jetbrains.annotations.Nullable;
 import static java.util.Objects.requireNonNull;
 
 final class ObjectComponentImpl extends AbstractComponent implements ObjectComponent {
-  private final Key atlas;
+  private final @Nullable Key atlas;
   private final Key sprite;
 
-  private ObjectComponentImpl(final @NotNull List<Component> children, final @NotNull Style style, final @NotNull Key atlas, final @NotNull Key sprite) {
+  private ObjectComponentImpl(final @NotNull List<Component> children, final @NotNull Style style, final @Nullable Key atlas, final @NotNull Key sprite) {
     super(children, style);
     this.atlas = atlas;
     this.sprite = sprite;
   }
 
   @Override
-  public @NotNull Key atlas() {
+  public @Nullable Key atlas() {
     return this.atlas;
   }
 
@@ -66,7 +66,7 @@ final class ObjectComponentImpl extends AbstractComponent implements ObjectCompo
   @Override
   public int hashCode() {
     int result = super.hashCode();
-    result = (31 * result) + this.atlas.hashCode();
+    result = (31 * result) + Objects.hashCode(this.atlas);
     result = (31 * result) + this.sprite.hashCode();
     return result;
   }
@@ -81,7 +81,7 @@ final class ObjectComponentImpl extends AbstractComponent implements ObjectCompo
     return new BuilderImpl(this);
   }
 
-  static @NotNull ObjectComponentImpl create(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final @NotNull Key atlas, final @NotNull Key sprite) {
+  static @NotNull ObjectComponentImpl create(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final @Nullable Key atlas, final @NotNull Key sprite) {
     return new ObjectComponentImpl(
       ComponentLike.asComponents(children, IS_NOT_EMPTY),
       requireNonNull(style, "style"),
@@ -114,8 +114,8 @@ final class ObjectComponentImpl extends AbstractComponent implements ObjectCompo
     }
 
     @Override
-    public @NotNull Builder atlas(final @NotNull Key atlas) {
-      this.atlas = requireNonNull(atlas, "atlas");
+    public @NotNull Builder atlas(final @Nullable Key atlas) {
+      this.atlas = atlas;
       return this;
     }
 
@@ -127,7 +127,6 @@ final class ObjectComponentImpl extends AbstractComponent implements ObjectCompo
 
     @Override
     public @NotNull ObjectComponent build() {
-      if (this.atlas == null) throw new IllegalStateException("atlas id must be set");
       if (this.sprite == null) throw new IllegalStateException("sprite id must be set");
       return create(this.children, this.buildStyle(), this.atlas, this.sprite);
     }

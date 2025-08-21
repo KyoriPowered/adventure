@@ -25,6 +25,7 @@ package net.kyori.adventure.text;
 
 import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Displays a sprite based on an atlas and sprite key.
@@ -36,10 +37,12 @@ public interface ObjectComponent extends BuildableComponent<ObjectComponent, Obj
   /**
    * Gets the atlas key.
    *
-   * @return the atlas key
+   * <p>When null, the default atlas key is used by the client, currently {@code minecraft:blocks}.</p>
+   *
+   * @return the atlas key or null
    * @since 4.25.0
    */
-  @NotNull Key atlas();
+  @Nullable Key atlas();
 
   /**
    * Gets the sprite key.
@@ -62,7 +65,7 @@ public interface ObjectComponent extends BuildableComponent<ObjectComponent, Obj
      * @return this builder
      * @since 4.25.0
      */
-    @NotNull Builder atlas(@NotNull Key atlas);
+    @NotNull Builder atlas(@Nullable Key atlas);
 
     /**
      * Sets the sprite key.
