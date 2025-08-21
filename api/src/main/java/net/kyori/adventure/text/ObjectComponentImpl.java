@@ -54,6 +54,16 @@ final class ObjectComponentImpl extends AbstractComponent implements ObjectCompo
   }
 
   @Override
+  public @NotNull ObjectComponent atlas(final @Nullable Key atlas) {
+    return create(this.children, this.style, atlas, this.sprite);
+  }
+
+  @Override
+  public @NotNull ObjectComponent sprite(final @NotNull Key sprite) {
+    return create(this.children, this.style, this.atlas, requireNonNull(sprite, "sprite"));
+  }
+
+  @Override
   public boolean equals(final @Nullable Object other) {
     if (this == other) return true;
     if (!(other instanceof ObjectComponent)) return false;
@@ -85,7 +95,7 @@ final class ObjectComponentImpl extends AbstractComponent implements ObjectCompo
     return new ObjectComponentImpl(
       ComponentLike.asComponents(children, IS_NOT_EMPTY),
       requireNonNull(style, "style"),
-      requireNonNull(atlas, "atlas"),
+      atlas,
       requireNonNull(sprite, "sprite")
     );
   }
