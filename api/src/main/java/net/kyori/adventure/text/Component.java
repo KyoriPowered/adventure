@@ -572,6 +572,48 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   }
 
   /*
+   * -------------------------
+   * ---- ObjectComponent ----
+   * -------------------------
+   */
+
+  /**
+   * Creates an object component builder.
+   *
+   * @return a builder
+   * @since 4.25.0
+   */
+  @Contract(pure = true)
+  static ObjectComponent.@NotNull Builder object() {
+    return new ObjectComponentImpl.BuilderImpl();
+  }
+
+  /**
+   * Creates an object component by applying configuration from {@code consumer}.
+   *
+   * @param consumer the builder configurator
+   * @return an object component
+   * @since 4.25.0
+   */
+  @Contract("_ -> new")
+  static @NotNull ObjectComponent object(final @NotNull Consumer<? super ObjectComponent.Builder> consumer) {
+    return AbstractBuilder.configureAndBuild(object(), consumer);
+  }
+
+  /**
+   * Creates an object component with an atlas and sprite.
+   *
+   * @param atlas the atlas
+   * @param sprite the sprite
+   * @return an object component
+   * @since 4.25.0
+   */
+  @Contract(value = "_, _ -> new", pure = true)
+  static @NotNull ObjectComponent object(final @NotNull Key atlas, final @NotNull Key sprite) {
+    return ObjectComponentImpl.create(Collections.emptyList(), Style.empty(), requireNonNull(atlas, "atlas"), requireNonNull(sprite, "sprite"));
+  }
+
+  /*
    * ------------------------
    * ---- ScoreComponent ----
    * ------------------------
