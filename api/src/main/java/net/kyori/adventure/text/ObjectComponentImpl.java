@@ -96,16 +96,16 @@ final class ObjectComponentImpl extends AbstractComponent implements ObjectCompo
   }
 
   static final class SpriteContentsImpl implements SpriteContents {
-    private final @Nullable Key atlas;
+    private final Key atlas;
     private final Key sprite;
 
-    SpriteContentsImpl(final @Nullable Key atlas, final @NotNull Key sprite) {
+    SpriteContentsImpl(final @NotNull Key atlas, final @NotNull Key sprite) {
       this.atlas = atlas;
-      this.sprite = requireNonNull(sprite, "sprite");
+      this.sprite = sprite;
     }
 
     @Override
-    public @Nullable Key atlas() {
+    public @NotNull Key atlas() {
       return this.atlas;
     }
 
@@ -125,7 +125,7 @@ final class ObjectComponentImpl extends AbstractComponent implements ObjectCompo
 
     @Override
     public int hashCode() {
-      int result = Objects.hashCode(this.atlas);
+      int result = this.atlas.hashCode();
       result = (31 * result) + this.sprite.hashCode();
       return result;
     }
