@@ -53,4 +53,28 @@ class SpriteTagTest extends AbstractTest {
 
     this.assertParsedEquals(expected, input);
   }
+
+  @Test
+  void testSerializeAtlasSprite() {
+    final String expected = "This sentence is <sprite:'minecraft:items':'minecraft:item/emerald'/>!";
+
+    final TextComponent.Builder builder = Component.text()
+      .append(Component.text("This sentence is "))
+      .append(Component.object(ObjectComponent.Contents.sprite(Key.key("items"), Key.key("item/emerald"))))
+      .append(Component.text("!"));
+
+    this.assertSerializedEquals(expected, builder);
+  }
+
+  @Test
+  void testAtlasSprite() {
+    final String input = "A <sprite:items:item/diamond_sword> is strong.";
+    final Component expected = Component.text()
+      .append(Component.text("A "))
+      .append(Component.object(ObjectComponent.Contents.sprite(Key.key("items"), Key.key("item/diamond_sword"))))
+      .append(Component.text(" is strong."))
+      .build();
+
+    this.assertParsedEquals(expected, input);
+  }
 }

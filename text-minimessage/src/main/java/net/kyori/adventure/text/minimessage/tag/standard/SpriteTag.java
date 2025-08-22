@@ -31,8 +31,16 @@ final class SpriteTag {
   }
 
   static Tag create(final ArgumentQueue args, final Context ctx) throws ParsingException {
-    final @Subst("empty") String object = args.popOr("A value is required to produce an object component").value();
-    return Tag.selfClosingInserting(Component.object(ObjectComponent.Contents.sprite(Key.key(object))));
+    final @Subst("empty") String firstArg = args.popOr("A value is required to produce an object component").value();
+    final @Subst("empty") String secondArg = args.hasNext() ? args.pop().value() : null;
+
+    if (secondArg == null) {
+      return Tag.selfClosingInserting(Component.object(ObjectComponent.Contents.sprite(Key.key(firstArg))));
+    }
+    return Tag.selfClosingInserting(Component.object(ObjectComponent.Contents.sprite(
+      Key.key(firstArg),
+      Key.key(secondArg)
+    )));
   }
 
   static @Nullable Emitable claimComponent(final Component input) {
@@ -45,8 +53,13 @@ final class SpriteTag {
       return null;
     }
 
+    final Key atlas = ((ObjectComponent.SpriteContents) contents).atlas();
     final Key key = ((ObjectComponent.SpriteContents) contents).sprite();
 
-    return emit -> emit.tag(SPRITE).argument(key.asString());
+    if (atlas == null) {
+      return emit -> emit.tag(SPRITE).argument(key.asString());
+    }
+
+    return emit -> emit.tag(SPRITE).argument(atlas.asString()).argument(key.asString());
   }
 }
