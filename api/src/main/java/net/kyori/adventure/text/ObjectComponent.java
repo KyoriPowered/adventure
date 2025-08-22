@@ -25,62 +25,112 @@ package net.kyori.adventure.text;
 
 import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
+import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import static java.util.Objects.requireNonNull;
+
 /**
- * Displays a sprite based on an atlas and sprite key.
+ * Displays a non-text object.
  *
  * @since 4.25.0
  * @sinceMinecraft 1.21.9
  */
 public interface ObjectComponent extends BuildableComponent<ObjectComponent, ObjectComponent.Builder>, ScopedComponent<ObjectComponent> {
   /**
-   * Gets the atlas key.
+   * Gets the contents of this object component.
    *
-   * <p>When null, the default atlas key is used by the client, currently {@code minecraft:blocks}.</p>
-   *
-   * @return the atlas key or null
+   * @return the contents
    * @since 4.25.0
    */
-  @Nullable Key atlas();
+  @NotNull Contents contents();
 
   /**
-   * Gets the sprite key.
+   * Creates a copy of this object component with the given contents.
    *
-   * @return the sprite key
+   * @param contents the contents to set
+   * @return new object component
    * @since 4.25.0
    */
-  @NotNull Key sprite();
-
-  /**
-   * Creates a copy of this object component with a new atlas key.
-   *
-   * @param atlas the atlas key, or null for the default
-   * @return a new object component
-   * @since 4.25.0
-   */
-  @NotNull ObjectComponent atlas(@Nullable Key atlas);
-
-  /**
-   * Creates a copy of this object component with a new sprite key.
-   *
-   * @param sprite the sprite key
-   * @return a new object component
-   * @since 4.25.0
-   */
-  @NotNull ObjectComponent sprite(@NotNull Key sprite);
+  @NotNull ObjectComponent contents(@NotNull Contents contents);
 
   @Override
   default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.concat(
-      Stream.of(
-        ExaminableProperty.of("atlas", this.atlas()),
-        ExaminableProperty.of("sprite", this.sprite())
-      ),
+      Stream.of(ExaminableProperty.of("contents", this.contents())),
       BuildableComponent.super.examinableProperties()
     );
+  }
+
+  /**
+   * An object component contents.
+   *
+   * @since 4.25.0
+   */
+  /*sealed*/ interface Contents extends Examinable /*permits SpriteContents*/ {
+    /**
+     * Creates a sprite contents with the given atlas and sprite.
+     *
+     * @param atlas the atlas
+     * @param sprite the sprite
+     * @return a sprite contents
+     * @since 4.25.0
+     */
+    @Contract(value = "_, _ -> new", pure = true)
+    static @NotNull SpriteContents sprite(final @Nullable Key atlas, final @NotNull Key sprite) {
+      return new ObjectComponentImpl.SpriteContentsImpl(atlas, requireNonNull(sprite, "sprite"));
+    }
+
+    /**
+     * Creates a sprite contents with the given sprite and the default atlas.
+     *
+     * @param sprite the sprite
+     * @return a sprite contents
+     * @since 4.25.0
+     */
+    @Contract(value = "_ -> new", pure = true)
+    static @NotNull SpriteContents sprite(final @NotNull Key sprite) {
+      return new ObjectComponentImpl.SpriteContentsImpl(null, requireNonNull(sprite, "sprite"));
+    }
+  }
+
+  /**
+   * A sprite contents.
+   *
+   * <p>Represents a sprite in an atlas, such as a block texture.</p>
+   *
+   * @since 4.25.0
+   * @sinceMinecraft 1.21.9
+   */
+  interface SpriteContents extends Contents {
+    /**
+     * Gets the atlas key.
+     *
+     * <p>When null, the default atlas key is used by the client, currently {@code minecraft:blocks}.</p>
+     *
+     * @return the atlas key or null
+     * @since 4.25.0
+     */
+    @Nullable Key atlas();
+
+    /**
+     * Gets the sprite key.
+     *
+     * @return the sprite key
+     * @since 4.25.0
+     */
+    @NotNull Key sprite();
+
+    @Override
+    default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+      return Stream.of(
+        ExaminableProperty.of("atlas", this.atlas()),
+        ExaminableProperty.of("sprite", this.sprite())
+      );
+    }
   }
 
   /**
@@ -90,21 +140,12 @@ public interface ObjectComponent extends BuildableComponent<ObjectComponent, Obj
    */
   interface Builder extends ComponentBuilder<ObjectComponent, Builder> {
     /**
-     * Sets the atlas key.
+     * Sets the contents of this object component builder.
      *
-     * @param atlas the atlas key
+     * @param contents the contents to set
      * @return this builder
      * @since 4.25.0
      */
-    @NotNull Builder atlas(@Nullable Key atlas);
-
-    /**
-     * Sets the sprite key.
-     *
-     * @param sprite the sprite key
-     * @return this builder
-     * @since 4.25.0
-     */
-    @NotNull Builder sprite(@NotNull Key sprite);
+    @NotNull Builder contents(@NotNull Contents contents);
   }
 }

@@ -31,24 +31,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ObjectComponentTest extends AbstractComponentTest<ObjectComponent, ObjectComponent.Builder> {
   @Override
   ObjectComponent.Builder builder() {
-    return Component.object().sprite(Key.key("sprite"));
+    return Component.object().contents(ObjectComponent.Contents.sprite(Key.key("sprite")));
   }
 
   @Test
-  void testSprite() {
-    final ObjectComponent c0 = Component.object(Key.key("atlas"), Key.key("sprite"));
-    final ObjectComponent c1 = c0.sprite(Key.key("sprite1"));
-    assertEquals(Key.key("sprite"), c0.sprite());
-    assertEquals(Key.key("sprite1"), c1.sprite());
-    assertEquals(Key.key("atlas"), c1.atlas());
-  }
+  void testContents() {
+    final ObjectComponent.SpriteContents sprite = ObjectComponent.Contents.sprite(Key.key("atlas"), Key.key("sprite"));
+    final ObjectComponent c0 = Component.object(sprite);
+    assertEquals(sprite, c0.contents());
 
-  @Test
-  void testAtlas() {
-    final ObjectComponent c0 = Component.object(Key.key("atlas"), Key.key("sprite"));
-    final ObjectComponent c1 = c0.atlas(Key.key("atlas1"));
-    assertEquals(Key.key("atlas"), c0.atlas());
-    assertEquals(Key.key("atlas1"), c1.atlas());
-    assertEquals(Key.key("sprite"), c1.sprite());
+    final ObjectComponent.SpriteContents sprite1 = ObjectComponent.Contents.sprite(Key.key("atlas"), Key.key("sprite1"));
+    final ObjectComponent c1 = c0.contents(sprite1);
+    assertEquals(sprite1, c1.contents());
   }
 }

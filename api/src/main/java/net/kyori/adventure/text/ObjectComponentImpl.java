@@ -34,33 +34,21 @@ import org.jetbrains.annotations.Nullable;
 import static java.util.Objects.requireNonNull;
 
 final class ObjectComponentImpl extends AbstractComponent implements ObjectComponent {
-  private final @Nullable Key atlas;
-  private final Key sprite;
+  private final Contents contents;
 
-  private ObjectComponentImpl(final @NotNull List<Component> children, final @NotNull Style style, final @Nullable Key atlas, final @NotNull Key sprite) {
+  private ObjectComponentImpl(final @NotNull List<Component> children, final @NotNull Style style, final @NotNull Contents contents) {
     super(children, style);
-    this.atlas = atlas;
-    this.sprite = sprite;
+    this.contents = contents;
   }
 
   @Override
-  public @Nullable Key atlas() {
-    return this.atlas;
+  public @NotNull Contents contents() {
+    return this.contents;
   }
 
   @Override
-  public @NotNull Key sprite() {
-    return this.sprite;
-  }
-
-  @Override
-  public @NotNull ObjectComponent atlas(final @Nullable Key atlas) {
-    return create(this.children, this.style, atlas, this.sprite);
-  }
-
-  @Override
-  public @NotNull ObjectComponent sprite(final @NotNull Key sprite) {
-    return create(this.children, this.style, this.atlas, requireNonNull(sprite, "sprite"));
+  public @NotNull ObjectComponent contents(final @NotNull Contents contents) {
+    return create(this.children, this.style, contents);
   }
 
   @Override
@@ -69,15 +57,13 @@ final class ObjectComponentImpl extends AbstractComponent implements ObjectCompo
     if (!(other instanceof ObjectComponent)) return false;
     if (!super.equals(other)) return false;
     final ObjectComponentImpl that = (ObjectComponentImpl) other;
-    return Objects.equals(this.atlas, that.atlas())
-      && Objects.equals(this.sprite, that.sprite());
+    return Objects.equals(this.contents, that.contents());
   }
 
   @Override
   public int hashCode() {
     int result = super.hashCode();
-    result = (31 * result) + Objects.hashCode(this.atlas);
-    result = (31 * result) + this.sprite.hashCode();
+    result = (31 * result) + this.contents.hashCode();
     return result;
   }
 
@@ -91,54 +77,86 @@ final class ObjectComponentImpl extends AbstractComponent implements ObjectCompo
     return new BuilderImpl(this);
   }
 
-  static @NotNull ObjectComponentImpl create(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final @Nullable Key atlas, final @NotNull Key sprite) {
+  static @NotNull ObjectComponentImpl create(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final @NotNull Contents contents) {
     return new ObjectComponentImpl(
       ComponentLike.asComponents(children, IS_NOT_EMPTY),
       requireNonNull(style, "style"),
-      atlas,
-      requireNonNull(sprite, "sprite")
+      requireNonNull(contents, "contents")
     );
   }
 
   @Override
   public @NotNull ObjectComponent children(final @NotNull List<? extends ComponentLike> children) {
-    return create(children, this.style, this.atlas, this.sprite);
+    return create(children, this.style, this.contents);
   }
 
   @Override
   public @NotNull ObjectComponent style(final @NotNull Style style) {
-    return create(this.children, style, this.atlas, this.sprite);
+    return create(this.children, style, this.contents);
   }
 
-  static class BuilderImpl extends AbstractComponentBuilder<ObjectComponent, ObjectComponent.Builder> implements ObjectComponent.Builder {
-    private Key atlas;
-    private Key sprite;
+  static final class SpriteContentsImpl implements SpriteContents {
+    private final @Nullable Key atlas;
+    private final Key sprite;
+
+    SpriteContentsImpl(final @Nullable Key atlas, final @NotNull Key sprite) {
+      this.atlas = atlas;
+      this.sprite = requireNonNull(sprite, "sprite");
+    }
+
+    @Override
+    public @Nullable Key atlas() {
+      return this.atlas;
+    }
+
+    @Override
+    public @NotNull Key sprite() {
+      return this.sprite;
+    }
+
+    @Override
+    public boolean equals(final @Nullable Object other) {
+      if (this == other) return true;
+      if (!(other instanceof SpriteContents)) return false;
+      final SpriteContentsImpl that = (SpriteContentsImpl) other;
+      return Objects.equals(this.atlas, that.atlas())
+        && Objects.equals(this.sprite, that.sprite());
+    }
+
+    @Override
+    public int hashCode() {
+      int result = Objects.hashCode(this.atlas);
+      result = (31 * result) + this.sprite.hashCode();
+      return result;
+    }
+
+    @Override
+    public String toString() {
+      return Internals.toString(this);
+    }
+  }
+
+  static final class BuilderImpl extends AbstractComponentBuilder<ObjectComponent, ObjectComponent.Builder> implements ObjectComponent.Builder {
+    private Contents contents;
 
     BuilderImpl() {
     }
 
     BuilderImpl(final @NotNull ObjectComponent component) {
       super(component);
-      this.atlas = component.atlas();
-      this.sprite = component.sprite();
+      this.contents = component.contents();
     }
 
     @Override
-    public @NotNull Builder atlas(final @Nullable Key atlas) {
-      this.atlas = atlas;
-      return this;
-    }
-
-    @Override
-    public @NotNull Builder sprite(final @NotNull Key sprite) {
-      this.sprite = requireNonNull(sprite, "sprite");
+    public @NotNull Builder contents(final @NotNull Contents contents) {
+      this.contents = requireNonNull(contents, "contents");
       return this;
     }
 
     @Override
     public @NotNull ObjectComponent build() {
-      if (this.sprite == null) throw new IllegalStateException("sprite id must be set");
-      return create(this.children, this.buildStyle(), this.atlas, this.sprite);
+      if (this.contents == null) throw new IllegalStateException("contents must be set");
+      return create(this.children, this.buildStyle(), this.contents);
     }
   }
 }
