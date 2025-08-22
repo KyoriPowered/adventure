@@ -99,3 +99,20 @@ tasks {
     }
   }
 }
+
+if (group != "net.kyori") {
+  fun Configuration.addCapabilities() {
+    outgoing {
+      capability("$group:${project.name}:$version")
+      capability("net.kyori:${project.name}:$version")
+    }
+  }
+  afterEvaluate {
+    configurations {
+      named("apiElements") { addCapabilities() }
+      named("runtimeElements") { addCapabilities() }
+      named("sourcesElements") { addCapabilities() }
+      named("javadocElements") { addCapabilities() }
+    }
+  }
+}
