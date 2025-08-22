@@ -115,7 +115,7 @@ public interface ObjectComponent extends BuildableComponent<ObjectComponent, Obj
     /**
      * Gets the atlas key.
      *
-     * @return the atlas key or null
+     * @return the atlas key
      * @since 4.25.0
      */
     @NotNull Key atlas();
