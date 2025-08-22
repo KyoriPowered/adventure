@@ -29,7 +29,6 @@ import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -80,8 +79,8 @@ public interface ObjectComponent extends BuildableComponent<ObjectComponent, Obj
      * @since 4.25.0
      */
     @Contract(value = "_, _ -> new", pure = true)
-    static @NotNull SpriteContents sprite(final @Nullable Key atlas, final @NotNull Key sprite) {
-      return new ObjectComponentImpl.SpriteContentsImpl(atlas, requireNonNull(sprite, "sprite"));
+    static @NotNull SpriteContents sprite(final @NotNull Key atlas, final @NotNull Key sprite) {
+      return new ObjectComponentImpl.SpriteContentsImpl(requireNonNull(atlas, "atlas"), requireNonNull(sprite, "sprite"));
     }
 
     /**
@@ -93,7 +92,7 @@ public interface ObjectComponent extends BuildableComponent<ObjectComponent, Obj
      */
     @Contract(value = "_ -> new", pure = true)
     static @NotNull SpriteContents sprite(final @NotNull Key sprite) {
-      return new ObjectComponentImpl.SpriteContentsImpl(null, requireNonNull(sprite, "sprite"));
+      return new ObjectComponentImpl.SpriteContentsImpl(SpriteContents.DEFAULT_ATLAS, requireNonNull(sprite, "sprite"));
     }
   }
 
@@ -107,14 +106,19 @@ public interface ObjectComponent extends BuildableComponent<ObjectComponent, Obj
    */
   interface SpriteContents extends Contents {
     /**
-     * Gets the atlas key.
+     * The default atlas key for sprites, used by vanilla when the atlas is not specified in a serialized object component.
      *
-     * <p>When null, the default atlas key is used by the client, currently {@code minecraft:blocks}.</p>
+     * @since 4.25.0
+     */
+    Key DEFAULT_ATLAS = Key.key("minecraft:blocks");
+
+    /**
+     * Gets the atlas key.
      *
      * @return the atlas key or null
      * @since 4.25.0
      */
-    @Nullable Key atlas();
+    @NotNull Key atlas();
 
     /**
      * Gets the sprite key.
