@@ -14,9 +14,10 @@ import org.intellij.lang.annotations.Subst;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * An object sprite tag.
+ * A sprite object tag.
  *
  * @since 4.25.0
+ * @sinceMinecraft 1.21.9
  */
 final class SpriteTag {
   private static final String SPRITE = "sprite";
@@ -31,7 +32,7 @@ final class SpriteTag {
   }
 
   static Tag create(final ArgumentQueue args, final Context ctx) throws ParsingException {
-    final @Subst("empty") String firstArg = args.popOr("A value is required to produce an object component").value();
+    final @Subst("empty") String firstArg = args.popOr("An atlas id and or a sprite id is required to produce a sprite object component").value();
     final @Subst("empty") String secondArg = args.hasNext() ? args.pop().value() : null;
 
     if (secondArg == null) {
@@ -56,7 +57,7 @@ final class SpriteTag {
     final Key atlas = ((ObjectComponent.SpriteContents) contents).atlas();
     final Key key = ((ObjectComponent.SpriteContents) contents).sprite();
 
-    if (atlas == null) {
+    if (atlas == ObjectComponent.SpriteContents.DEFAULT_ATLAS) {
       return emit -> emit.tag(SPRITE).argument(key.asString());
     }
 
