@@ -82,6 +82,8 @@ final class StyleSerializer extends TypeAdapter<Style> {
     TextDecoration.OBFUSCATED
   };
 
+  private static final String FALLBACK_URL_PROTOCOL = "https://";
+
   static {
     // Ensure coverage of decorations
     final Set<TextDecoration> knownDecorations = EnumSet.allOf(TextDecoration.class);
@@ -106,6 +108,7 @@ final class StyleSerializer extends TypeAdapter<Style> {
       features.value(JSONOptions.VALIDATE_STRICT_EVENTS),
       features.value(JSONOptions.SHADOW_COLOR_MODE) != JSONOptions.ShadowColorEmitMode.NONE,
       features.value(JSONOptions.EMIT_CHANGE_PAGE_CLICK_EVENT_PAGE_AS_STRING),
+      features.value(JSONOptions.EMIT_CLICK_URL_HTTPS),
       gson
     ).nullSafe();
   }
@@ -119,6 +122,7 @@ final class StyleSerializer extends TypeAdapter<Style> {
   private final boolean strictEventValues;
   private final boolean emitShadowColor;
   private final boolean emitStringPage;
+  private final boolean emitClickUrlHttps;
   private final Gson gson;
 
   private StyleSerializer(
@@ -131,6 +135,7 @@ final class StyleSerializer extends TypeAdapter<Style> {
     final boolean strictEventValues,
     final boolean emitShadowColor,
     final boolean emitStringPage,
+    final boolean emitClickUrlHttps,
     final Gson gson
   ) {
     this.legacyHover = legacyHover;
@@ -142,6 +147,7 @@ final class StyleSerializer extends TypeAdapter<Style> {
     this.strictEventValues = strictEventValues;
     this.emitShadowColor = emitShadowColor;
     this.emitStringPage = emitStringPage;
+    this.emitClickUrlHttps = emitClickUrlHttps;
     this.gson = gson;
   }
 
@@ -205,7 +211,12 @@ final class StyleSerializer extends TypeAdapter<Style> {
         if (action != null && action.readable()) {
           switch (action) {
             case OPEN_URL:
-              if (value != null) style.clickEvent(ClickEvent.openUrl(value));
+              if (value != null) {
+                if (this.emitClickUrlHttps && !StyleSerializer.isValidUrlScheme(value)) {
+                  value = StyleSerializer.FALLBACK_URL_PROTOCOL + value;
+                }
+                style.clickEvent(ClickEvent.openUrl(value));
+              }
               break;
             case RUN_COMMAND:
               if (value != null) style.clickEvent(ClickEvent.runCommand(value));
@@ -383,7 +394,11 @@ final class StyleSerializer extends TypeAdapter<Style> {
                 out.name(CLICK_EVENT_VALUE);
                 break;
             }
-            out.value(((ClickEvent.Payload.Text) payload).value());
+            String payloadValue = ((ClickEvent.Payload.Text) payload).value();
+            if (action == ClickEvent.Action.OPEN_URL && this.emitClickUrlHttps && !StyleSerializer.isValidUrlScheme(payloadValue)) {
+              payloadValue = StyleSerializer.FALLBACK_URL_PROTOCOL + payloadValue;
+            }
+            out.value(payloadValue);
           } else if (payload instanceof ClickEvent.Payload.Custom) {
             final ClickEvent.Payload.Custom customPayload = (ClickEvent.Payload.Custom) payload;
             out.name(CLICK_EVENT_ID);
@@ -410,7 +425,11 @@ final class StyleSerializer extends TypeAdapter<Style> {
         out.name(CLICK_EVENT_ACTION);
         this.gson.toJson(action, SerializerFactory.CLICK_ACTION_TYPE, out);
         out.name(CLICK_EVENT_VALUE);
-        out.value(clickEvent.value());
+        String payloadValue = clickEvent.value();
+        if (action == ClickEvent.Action.OPEN_URL && this.emitClickUrlHttps && !StyleSerializer.isValidUrlScheme(payloadValue)) {
+          payloadValue = StyleSerializer.FALLBACK_URL_PROTOCOL + payloadValue;
+        }
+        out.value(payloadValue);
         out.endObject();
       }
     }
@@ -508,5 +527,10 @@ final class StyleSerializer extends TypeAdapter<Style> {
     } else {
       out.nullValue();
     }
+  }
+
+  @SuppressWarnings({"BooleanMethodIsAlwaysInverted", "HttpUrlsUsage"})
+  private static boolean isValidUrlScheme(final String url) {
+    return url.startsWith("http://") || url.startsWith("https://");
   }
 }

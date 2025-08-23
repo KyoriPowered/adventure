@@ -105,6 +105,7 @@ public final class JSONOptions {
    * @since 4.15.0
    */
   public static final Option<Boolean> VALIDATE_STRICT_EVENTS = UNSAFE_SCHEMA.booleanOption(key("validate/strict_events"), true);
+
   /**
    * Whether to emit the default hover event item stack quantity of {@code 1}.
    *
@@ -134,6 +135,15 @@ public final class JSONOptions {
    * @since 4.22.0
    */
   public static final Option<Boolean> EMIT_CHANGE_PAGE_CLICK_EVENT_PAGE_AS_STRING = UNSAFE_SCHEMA.booleanOption(key("emit/change_page_click_event_page_as_string"), false);
+
+  /**
+   * Whether to prepend {@code https://} to {@code open_url} click event URIs without a protocol.
+   *
+   * <p>As of minecraft 1.21.5 URIs without protocol fail to parse.</p>
+   *
+   * @since 4.25.0
+   */
+  public static final Option<Boolean> EMIT_CLICK_URL_HTTPS = UNSAFE_SCHEMA.booleanOption(key("emit/click_url_https"), false);
 
   // aim for compatibility? or something
   private static final OptionSchema SCHEMA = OptionSchema.childSchema(UNSAFE_SCHEMA).frozenView();
@@ -180,6 +190,7 @@ public final class JSONOptions {
       b -> b.value(EMIT_HOVER_EVENT_TYPE, HoverEventValueMode.SNAKE_CASE)
         .value(EMIT_CLICK_EVENT_TYPE, ClickEventValueMode.SNAKE_CASE)
         .value(EMIT_HOVER_SHOW_ENTITY_KEY_AS_TYPE_AND_UUID_AS_ID, false)
+        .value(EMIT_CLICK_URL_HTTPS, true)
     )
     .version(
       VERSION_1_21_6,
@@ -200,6 +211,7 @@ public final class JSONOptions {
     .value(VALIDATE_STRICT_EVENTS, false)
     .value(SHOW_ITEM_HOVER_DATA_MODE, ShowItemHoverDataMode.EMIT_EITHER)
     .value(SHADOW_COLOR_MODE, ShadowColorEmitMode.EMIT_INTEGER)
+    .value(EMIT_CLICK_URL_HTTPS, true)
     .build();
 
   private static String key(final String value) {
