@@ -137,9 +137,9 @@ public final class JSONOptions {
   public static final Option<Boolean> EMIT_CHANGE_PAGE_CLICK_EVENT_PAGE_AS_STRING = UNSAFE_SCHEMA.booleanOption(key("emit/change_page_click_event_page_as_string"), false);
 
   /**
-   * Whether to prepend {@code https://} to {@code open_url} click event URIs without a protocol.
+   * Whether to prepend {@code https://} to {@code open_url} click event URIs without a valid scheme.
    *
-   * <p>As of minecraft 1.21.5 URIs without protocol fail to parse.</p>
+   * <p>As of minecraft 1.21.5 URIs that are not a {@code http://} or {@code https://} scheme fail to parse.</p>
    *
    * @since 4.25.0
    */
