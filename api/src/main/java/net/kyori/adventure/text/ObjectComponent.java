@@ -205,6 +205,10 @@ public interface ObjectComponent extends BuildableComponent<ObjectComponent, Obj
 
     boolean hat();
 
+    static ProfileProperty property(final @NotNull String value) {
+      return new ObjectComponentImpl.ProfilePropertyImpl(requireNonNull(value, "value"), null);
+    }
+
     static ProfileProperty property(final @NotNull String value, final @Nullable String signature) {
       return new ObjectComponentImpl.ProfilePropertyImpl(requireNonNull(value, "value"), signature);
     }
@@ -241,6 +245,12 @@ public interface ObjectComponent extends BuildableComponent<ObjectComponent, Obj
 
       @Contract(value = "_, _ -> this")
       @NotNull Builder property(final @NotNull String name, final @NotNull ProfileProperty property);
+
+      @Contract(value = "_, _, _ -> this")
+      @NotNull Builder property(final @NotNull String name, final @NotNull String value, final @Nullable String signature);
+
+      @Contract(value = "_, _ -> this")
+      @NotNull Builder property(final @NotNull String name, final @NotNull String value);
 
       @Contract(value = "_ -> this")
       @NotNull Builder properties(final @NotNull Map<String, ProfileProperty> properties);
