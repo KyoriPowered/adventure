@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text;
 
+import java.util.UUID;
 import net.kyori.adventure.key.Key;
 import org.junit.jupiter.api.Test;
 
@@ -35,7 +36,7 @@ class ObjectComponentTest extends AbstractComponentTest<ObjectComponent, ObjectC
   }
 
   @Test
-  void testContents() {
+  void testSpriteContents() {
     final ObjectComponent.SpriteContents sprite = ObjectComponent.Contents.sprite(Key.key("atlas"), Key.key("sprite"));
     final ObjectComponent c0 = Component.object(sprite);
     assertEquals(sprite, c0.contents());
@@ -43,5 +44,19 @@ class ObjectComponentTest extends AbstractComponentTest<ObjectComponent, ObjectC
     final ObjectComponent.SpriteContents sprite1 = ObjectComponent.Contents.sprite(Key.key("atlas"), Key.key("sprite1"));
     final ObjectComponent c1 = c0.contents(sprite1);
     assertEquals(sprite1, c1.contents());
+  }
+
+  @Test
+  void testPlayerHeadContents() {
+    final ObjectComponent.PlayerHeadContents head = ObjectComponent.Contents.playerHead("fortnite", UUID.randomUUID(), true);
+    final ObjectComponent c0 = Component.object(head);
+    assertEquals(head, c0.contents());
+
+    final ObjectComponent.PlayerHeadContents head1 = ObjectComponent.Contents.playerHead()
+      .id(UUID.randomUUID())
+      .property("textures", "texture_value", "texture_signature")
+      .build();
+    final ObjectComponent c1 = c0.contents(head1);
+    assertEquals(head1, c1.contents());
   }
 }
