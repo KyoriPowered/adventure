@@ -46,11 +46,11 @@ public interface ObjectComponent extends BuildableComponent<ObjectComponent, Obj
   /**
    * Creates a copy of this object component with the given contents.
    *
-   * @param objectContents the contents to set
+   * @param contents the contents to set
    * @return new object component
    * @since 4.25.0
    */
-  @NotNull ObjectComponent contents(@NotNull ObjectContents objectContents);
+  @NotNull ObjectComponent contents(@NotNull ObjectContents contents);
 
   @Override
   default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
