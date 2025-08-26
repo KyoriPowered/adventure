@@ -274,6 +274,12 @@ final class ObjectComponentImpl extends AbstractComponent implements ObjectCompo
     }
 
     @Override
+    public PlayerHeadContents.@NotNull Builder skin(final PlayerHeadContents.@NotNull SkinSource skinSource) {
+      requireNonNull(skinSource, "skinSource").applySkinToPlayerHeadContents(this);
+      return this;
+    }
+
+    @Override
     public PlayerHeadContents.@NotNull Builder hat(final boolean hat) {
       this.hat = hat;
       return this;
