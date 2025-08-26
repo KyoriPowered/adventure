@@ -57,7 +57,7 @@ class ObjectComponentTest extends AbstractComponentTest<ObjectComponent, ObjectC
 
     final PlayerHeadObjectContents head1 = ObjectContents.playerHead()
       .id(UUID.randomUUID())
-      .property("textures", "texture_value", "texture_signature")
+      .profileProperty("textures", "texture_value", "texture_signature")
       .build();
     final ObjectComponent c1 = c0.contents(head1);
     assertEquals(head1, c1.contents());

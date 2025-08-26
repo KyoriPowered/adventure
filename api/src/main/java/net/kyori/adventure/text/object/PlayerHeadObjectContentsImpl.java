@@ -34,13 +34,13 @@ import org.jetbrains.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-public final class PlayerHeadObjectContentsImpl implements PlayerHeadObjectContents {
+final class PlayerHeadObjectContentsImpl implements PlayerHeadObjectContents {
   private final @Nullable String name;
   private final @Nullable UUID id;
   private final Map<String, ProfileProperty> properties;
   private final boolean hat;
 
-  public PlayerHeadObjectContentsImpl(
+  PlayerHeadObjectContentsImpl(
     final @Nullable String name,
     final @Nullable UUID id,
     final @NotNull Map<String, ProfileProperty> properties,
@@ -67,7 +67,7 @@ public final class PlayerHeadObjectContentsImpl implements PlayerHeadObjectConte
   }
 
   @Override
-  public @NotNull Map<String, ProfileProperty> properties() {
+  public @NotNull Map<String, ProfileProperty> profileProperties() {
     return this.properties;
   }
 
@@ -77,13 +77,18 @@ public final class PlayerHeadObjectContentsImpl implements PlayerHeadObjectConte
   }
 
   @Override
+  public @NotNull Builder toBuilder() {
+    return new BuilderImpl(this);
+  }
+
+  @Override
   public boolean equals(final @Nullable Object other) {
     if (this == other) return true;
     if (!(other instanceof PlayerHeadObjectContents)) return false;
     final PlayerHeadObjectContentsImpl that = (PlayerHeadObjectContentsImpl) other;
-    return Objects.equals(name, that.name)
-      && Objects.equals(id, that.id)
-      && Objects.equals(properties, that.properties);
+    return Objects.equals(this.name, that.name)
+      && Objects.equals(this.id, that.id)
+      && Objects.equals(this.properties, that.properties);
   }
 
   @Override
@@ -120,8 +125,8 @@ public final class PlayerHeadObjectContentsImpl implements PlayerHeadObjectConte
       if (this == other) return true;
       if (!(other instanceof ProfilePropertyImpl)) return false;
       final ProfilePropertyImpl that = (ProfilePropertyImpl) other;
-      return Objects.equals(value, that.value)
-        && Objects.equals(signature, that.signature);
+      return Objects.equals(this.value, that.value)
+        && Objects.equals(this.signature, that.signature);
     }
 
     @Override
@@ -141,6 +146,16 @@ public final class PlayerHeadObjectContentsImpl implements PlayerHeadObjectConte
     private final Map<String, PlayerHeadObjectContents.ProfileProperty> properties = new HashMap<>();
     private boolean hat;
 
+    BuilderImpl() {
+    }
+
+    BuilderImpl(final @NotNull PlayerHeadObjectContentsImpl playerHeadObjectContents) {
+      this.name = playerHeadObjectContents.name;
+      this.id = playerHeadObjectContents.id;
+      this.properties.putAll(playerHeadObjectContents.properties);
+      this.hat = playerHeadObjectContents.hat;
+    }
+
     @Override
     public PlayerHeadObjectContents.@NotNull Builder name(final @Nullable String name) {
       this.name = name;
@@ -154,25 +169,25 @@ public final class PlayerHeadObjectContentsImpl implements PlayerHeadObjectConte
     }
 
     @Override
-    public PlayerHeadObjectContents.@NotNull Builder property(final @NotNull String name, final PlayerHeadObjectContents.@NotNull ProfileProperty property) {
+    public PlayerHeadObjectContents.@NotNull Builder profileProperty(final @NotNull String name, final PlayerHeadObjectContents.@NotNull ProfileProperty property) {
       this.properties.put(requireNonNull(name, "name"), requireNonNull(property, "property"));
       return this;
     }
 
     @Override
-    public PlayerHeadObjectContents.@NotNull Builder property(final @NotNull String name, final @NotNull String value, final @Nullable String signature) {
+    public PlayerHeadObjectContents.@NotNull Builder profileProperty(final @NotNull String name, final @NotNull String value, final @Nullable String signature) {
       this.properties.put(requireNonNull(name, "name"), new ProfilePropertyImpl(requireNonNull(value, "value"), signature));
       return this;
     }
 
     @Override
-    public PlayerHeadObjectContents.@NotNull Builder property(final @NotNull String name, final @NotNull String value) {
+    public PlayerHeadObjectContents.@NotNull Builder profileProperty(final @NotNull String name, final @NotNull String value) {
       this.properties.put(requireNonNull(name, "name"), new ProfilePropertyImpl(requireNonNull(value, "value"), null));
       return this;
     }
 
     @Override
-    public PlayerHeadObjectContents.@NotNull Builder properties(final @NotNull Map<String, PlayerHeadObjectContents.ProfileProperty> properties) {
+    public PlayerHeadObjectContents.@NotNull Builder profileProperties(final @NotNull Map<String, PlayerHeadObjectContents.ProfileProperty> properties) {
       this.properties.putAll(requireNonNull(properties, "properties"));
       return this;
     }

@@ -31,8 +31,8 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Displays a non-text object.
  *
- * @sinceMinecraft 1.21.9
  * @since 4.25.0
+ * @sinceMinecraft 1.21.9
  */
 public interface ObjectComponent extends BuildableComponent<ObjectComponent, ObjectComponent.Builder>, ScopedComponent<ObjectComponent> {
   /**
