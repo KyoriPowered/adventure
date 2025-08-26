@@ -177,8 +177,15 @@ public final class PlayerHeadObjectContentsImpl implements PlayerHeadObjectConte
       return this;
     }
 
+    private void clearProfile() {
+      this.name = null;
+      this.id = null;
+      this.properties.clear();
+    }
+
     @Override
     public PlayerHeadObjectContents.@NotNull Builder skin(final PlayerHeadObjectContents.@NotNull SkinSource skinSource) {
+      this.clearProfile(); // intent of this method is to override any existing profile data
       requireNonNull(skinSource, "skinSource").applySkinToPlayerHeadContents(this);
       return this;
     }
