@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
@@ -117,6 +118,20 @@ public interface ObjectComponent extends BuildableComponent<ObjectComponent, Obj
      *
      * @param name the player name, may be null
      * @param id the player UUID, may be null
+     * @param hat whether to show the hat layer
+     * @return a player head contents
+     * @since 4.25.0
+     */
+    @Contract(value = "_, _, _ -> new", pure = true)
+    static @NotNull PlayerHeadContents playerHead(final @Nullable String name, final @Nullable UUID id, final boolean hat) {
+      return new ObjectComponentImpl.PlayerHeadContentsImpl(name, id, Collections.emptyMap(), hat);
+    }
+
+    /**
+     * Creates a player head contents with the given parameters.
+     *
+     * @param name the player name, may be null
+     * @param id the player UUID, may be null
      * @param properties the player properties, must not be null
      * @param hat whether to show the hat layer
      * @return a player head contents
@@ -129,9 +144,7 @@ public interface ObjectComponent extends BuildableComponent<ObjectComponent, Obj
 
     @Contract(value = "_, _ -> new", pure = true)
     static @NotNull PlayerHeadContents playerHead(final PlayerHeadContents.@NotNull SkinSource skinSource, final boolean hat) {
-      final PlayerHeadContents.Builder builder = playerHead();
-      skinSource.applySkinToPlayerHeadContents(builder);
-      return builder.hat(hat).build();
+      return playerHead().skin(skinSource).hat(hat).build();
     }
   }
 
@@ -231,6 +244,9 @@ public interface ObjectComponent extends BuildableComponent<ObjectComponent, Obj
 
       @Contract(value = "_ -> this")
       @NotNull Builder properties(final @NotNull Map<String, ProfileProperty> properties);
+
+      @Contract(value = "_ -> this")
+      @NotNull Builder skin(final @NotNull SkinSource skinSource);
 
       @Contract(value = "_ -> this")
       @NotNull Builder hat(final boolean hat);
