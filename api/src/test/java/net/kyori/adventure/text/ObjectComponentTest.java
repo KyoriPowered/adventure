@@ -25,6 +25,9 @@ package net.kyori.adventure.text;
 
 import java.util.UUID;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.text.object.ObjectContents;
+import net.kyori.adventure.text.object.PlayerHeadObjectContents;
+import net.kyori.adventure.text.object.SpriteObjectContents;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,27 +35,27 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ObjectComponentTest extends AbstractComponentTest<ObjectComponent, ObjectComponent.Builder> {
   @Override
   ObjectComponent.Builder builder() {
-    return Component.object().contents(ObjectComponent.Contents.sprite(Key.key("sprite")));
+    return Component.object().contents(ObjectContents.sprite(Key.key("sprite")));
   }
 
   @Test
   void testSpriteContents() {
-    final ObjectComponent.SpriteContents sprite = ObjectComponent.Contents.sprite(Key.key("atlas"), Key.key("sprite"));
+    final SpriteObjectContents sprite = ObjectContents.sprite(Key.key("atlas"), Key.key("sprite"));
     final ObjectComponent c0 = Component.object(sprite);
     assertEquals(sprite, c0.contents());
 
-    final ObjectComponent.SpriteContents sprite1 = ObjectComponent.Contents.sprite(Key.key("atlas"), Key.key("sprite1"));
+    final SpriteObjectContents sprite1 = ObjectContents.sprite(Key.key("atlas"), Key.key("sprite1"));
     final ObjectComponent c1 = c0.contents(sprite1);
     assertEquals(sprite1, c1.contents());
   }
 
   @Test
   void testPlayerHeadContents() {
-    final ObjectComponent.PlayerHeadContents head = ObjectComponent.Contents.playerHead("fortnite", UUID.randomUUID(), true);
+    final PlayerHeadObjectContents head = ObjectContents.playerHead("fortnite", UUID.randomUUID(), true);
     final ObjectComponent c0 = Component.object(head);
     assertEquals(head, c0.contents());
 
-    final ObjectComponent.PlayerHeadContents head1 = ObjectComponent.Contents.playerHead()
+    final PlayerHeadObjectContents head1 = ObjectContents.playerHead()
       .id(UUID.randomUUID())
       .property("textures", "texture_value", "texture_signature")
       .build();

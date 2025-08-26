@@ -53,6 +53,7 @@ import net.kyori.adventure.text.format.StyleGetter;
 import net.kyori.adventure.text.format.StyleSetter;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.object.ObjectContents;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.translation.Translatable;
 import net.kyori.adventure.util.ARGBLike;
@@ -603,13 +604,13 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   /**
    * Creates an object component with the given contents.
    *
-   * @param contents the contents
+   * @param objectContents the contents
    * @return an object component
    * @since 4.25.0
    */
   @Contract(value = "_ -> new", pure = true)
-  static @NotNull ObjectComponent object(final ObjectComponent.@NotNull Contents contents) {
-    return ObjectComponentImpl.create(Collections.emptyList(), Style.empty(), contents);
+  static @NotNull ObjectComponent object(final @NotNull ObjectContents objectContents) {
+    return ObjectComponentImpl.create(Collections.emptyList(), Style.empty(), objectContents);
   }
 
   /*
