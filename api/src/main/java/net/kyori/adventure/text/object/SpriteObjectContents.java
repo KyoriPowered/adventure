@@ -33,8 +33,8 @@ import org.jetbrains.annotations.NotNull;
  *
  * <p>Represents a sprite in an atlas, such as a block texture.</p>
  *
- * @sinceMinecraft 1.21.9
  * @since 4.25.0
+ * @sinceMinecraft 1.21.9
  */
 public interface SpriteObjectContents extends ObjectContents {
   /**
