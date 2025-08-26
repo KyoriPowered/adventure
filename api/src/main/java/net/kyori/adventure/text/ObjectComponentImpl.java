@@ -34,21 +34,21 @@ import org.jetbrains.annotations.Nullable;
 import static java.util.Objects.requireNonNull;
 
 final class ObjectComponentImpl extends AbstractComponent implements ObjectComponent {
-  private final ObjectContents objectContents;
+  private final ObjectContents contents;
 
-  private ObjectComponentImpl(final @NotNull List<Component> children, final @NotNull Style style, final @NotNull ObjectContents objectContents) {
+  private ObjectComponentImpl(final @NotNull List<Component> children, final @NotNull Style style, final @NotNull ObjectContents contents) {
     super(children, style);
-    this.objectContents = objectContents;
+    this.contents = contents;
   }
 
   @Override
   public @NotNull ObjectContents contents() {
-    return this.objectContents;
+    return this.contents;
   }
 
   @Override
-  public @NotNull ObjectComponent contents(final @NotNull ObjectContents objectContents) {
-    return create(this.children, this.style, objectContents);
+  public @NotNull ObjectComponent contents(final @NotNull ObjectContents contents) {
+    return create(this.children, this.style, contents);
   }
 
   @Override
@@ -57,13 +57,13 @@ final class ObjectComponentImpl extends AbstractComponent implements ObjectCompo
     if (!(other instanceof ObjectComponent)) return false;
     if (!super.equals(other)) return false;
     final ObjectComponentImpl that = (ObjectComponentImpl) other;
-    return Objects.equals(this.objectContents, that.contents());
+    return Objects.equals(this.contents, that.contents());
   }
 
   @Override
   public int hashCode() {
     int result = super.hashCode();
-    result = (31 * result) + this.objectContents.hashCode();
+    result = (31 * result) + this.contents.hashCode();
     return result;
   }
 
@@ -87,12 +87,12 @@ final class ObjectComponentImpl extends AbstractComponent implements ObjectCompo
 
   @Override
   public @NotNull ObjectComponent children(final @NotNull List<? extends ComponentLike> children) {
-    return create(children, this.style, this.objectContents);
+    return create(children, this.style, this.contents);
   }
 
   @Override
   public @NotNull ObjectComponent style(final @NotNull Style style) {
-    return create(this.children, style, this.objectContents);
+    return create(this.children, style, this.contents);
   }
 
   static final class BuilderImpl extends AbstractComponentBuilder<ObjectComponent, ObjectComponent.Builder> implements ObjectComponent.Builder {
