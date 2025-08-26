@@ -46,9 +46,6 @@ final class PlayerHeadObjectContentsImpl implements PlayerHeadObjectContents {
     final @NotNull Map<String, ProfileProperty> properties,
     final boolean hat
   ) {
-    if (name == null && id == null && properties.isEmpty()) {
-      throw new IllegalArgumentException("At least one of name, id, or properties must be non-null/non-empty");
-    }
     this.name = name;
     this.id = id;
     if (properties.isEmpty()) {
