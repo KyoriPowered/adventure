@@ -23,12 +23,18 @@
  */
 package net.kyori.adventure.text;
 
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.util.PlatformAPI;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -69,7 +75,7 @@ public interface ObjectComponent extends BuildableComponent<ObjectComponent, Obj
    *
    * @since 4.25.0
    */
-  /*sealed*/ interface Contents extends Examinable /*permits SpriteContents*/ {
+  /*sealed*/ interface Contents extends Examinable /*permits SpriteContents, PlayerHeadContents*/ {
     /**
      * Creates a sprite contents with the given atlas and sprite.
      *
@@ -93,6 +99,39 @@ public interface ObjectComponent extends BuildableComponent<ObjectComponent, Obj
     @Contract(value = "_ -> new", pure = true)
     static @NotNull SpriteContents sprite(final @NotNull Key sprite) {
       return new ObjectComponentImpl.SpriteContentsImpl(SpriteContents.DEFAULT_ATLAS, requireNonNull(sprite, "sprite"));
+    }
+
+    /**
+     * Creates a player head contents builder.
+     *
+     * @return a player head contents builder
+     * @since 4.25.0
+     */
+    @Contract(value = "-> new", pure = true)
+    static PlayerHeadContents.@NotNull Builder playerHead() {
+      return new ObjectComponentImpl.PlayerHeadContentsBuilderImpl();
+    }
+
+    /**
+     * Creates a player head contents with the given parameters.
+     *
+     * @param name the player name, may be null
+     * @param id the player UUID, may be null
+     * @param properties the player properties, must not be null
+     * @param hat whether to show the hat layer
+     * @return a player head contents
+     * @since 4.25.0
+     */
+    @Contract(value = "_, _, _, _ -> new", pure = true)
+    static @NotNull PlayerHeadContents playerHead(final @Nullable String name, final @Nullable UUID id, final @NotNull Map<String, PlayerHeadContents.ProfileProperty> properties, final boolean hat) {
+      return new ObjectComponentImpl.PlayerHeadContentsImpl(name, id, requireNonNull(properties, "properties"), hat);
+    }
+
+    @Contract(value = "_, _ -> new", pure = true)
+    static @NotNull PlayerHeadContents playerHead(final PlayerHeadContents.@NotNull SkinSource skinSource, final boolean hat) {
+      final PlayerHeadContents.Builder builder = playerHead();
+      skinSource.applySkinToPlayerHeadContents(builder);
+      return builder.hat(hat).build();
     }
   }
 
@@ -134,6 +173,76 @@ public interface ObjectComponent extends BuildableComponent<ObjectComponent, Obj
         ExaminableProperty.of("atlas", this.atlas()),
         ExaminableProperty.of("sprite", this.sprite())
       );
+    }
+  }
+
+  /**
+   * A player head contents.
+   *
+   * @since 4.25.0
+   * @sinceMinecraft 1.21.9
+   */
+  interface PlayerHeadContents extends Contents {
+    @Nullable String name();
+
+    @Nullable UUID id();
+
+    @Unmodifiable
+    @NotNull Map<String, ProfileProperty> properties();
+
+    boolean hat();
+
+    static ProfileProperty property(final @NotNull String value, final @Nullable String signature) {
+      return new ObjectComponentImpl.ProfilePropertyImpl(requireNonNull(value, "value"), signature);
+    }
+
+    interface ProfileProperty extends Examinable {
+      @NotNull String value();
+
+      @Nullable String signature();
+
+      @Override
+      default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+        return Stream.of(
+          ExaminableProperty.of("value", this.value()),
+          ExaminableProperty.of("signature", this.signature())
+        );
+      }
+    }
+
+    @Override
+    default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+      return Stream.of(
+        ExaminableProperty.of("name", this.name()),
+        ExaminableProperty.of("id", this.id()),
+        ExaminableProperty.of("properties", this.properties())
+      );
+    }
+
+    interface Builder {
+      @Contract(value = "_ -> this")
+      @NotNull Builder name(final @Nullable String name);
+
+      @Contract(value = "_ -> this")
+      @NotNull Builder id(final @Nullable UUID id);
+
+      @Contract(value = "_, _ -> this")
+      @NotNull Builder property(final @NotNull String name, final @NotNull ProfileProperty property);
+
+      @Contract(value = "_ -> this")
+      @NotNull Builder properties(final @NotNull Map<String, ProfileProperty> properties);
+
+      @Contract(value = "_ -> this")
+      @NotNull Builder hat(final boolean hat);
+
+      @Contract(value = "-> new", pure = true)
+      @NotNull PlayerHeadContents build();
+    }
+
+    interface SkinSource {
+      @PlatformAPI
+      @ApiStatus.Internal
+      void applySkinToPlayerHeadContents(PlayerHeadContents.@NotNull Builder builder);
     }
   }
 
