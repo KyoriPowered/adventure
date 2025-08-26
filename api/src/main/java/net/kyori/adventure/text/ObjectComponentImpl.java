@@ -269,7 +269,6 @@ final class ObjectComponentImpl extends AbstractComponent implements ObjectCompo
 
     @Override
     public PlayerHeadContents.@NotNull Builder properties(final @NotNull Map<String, PlayerHeadContents.ProfileProperty> properties) {
-      this.properties.clear();
       this.properties.putAll(requireNonNull(properties, "properties"));
       return this;
     }
