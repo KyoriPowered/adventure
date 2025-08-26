@@ -31,6 +31,7 @@ import java.util.stream.Collector;
 import java.util.stream.Stream;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -149,18 +150,21 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
     return new CompoundTagBuilder();
   }
 
+  /**
+   * Creates a builder, pre-filled with the contents of {@code existing}.
+   *
+   * @param existing the compound to pre-fill the builder with
+   * @return a new builder
+   * @since 4.25.0
+   */
+  static @NotNull Builder builder(final @NotNull CompoundBinaryTag existing) {
+    return new CompoundTagBuilder(existing);
+  }
+
   @Override
   default @NotNull BinaryTagType<CompoundBinaryTag> type() {
     return BinaryTagTypes.COMPOUND;
   }
-
-  /**
-   * Creates a builder, pre-filled with the contents of this compound.
-   *
-   * @return a new builder
-   * @since 4.25.0
-   */
-  Builder createBuilder();
 
   /**
    * Gets a set of all keys.
@@ -169,6 +173,14 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    * @since 4.0.0
    */
   @NotNull Set<String> keySet();
+
+  /**
+   * Returns an unmodifiable map representing the contents of this compound.
+   *
+   * @return an unmodifiable map of contents
+   * @since 4.25.0
+   */
+  @Unmodifiable @NotNull Map<String, BinaryTag> asMap();
 
   /**
    * Gets a tag.

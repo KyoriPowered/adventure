@@ -35,8 +35,8 @@ final class CompoundTagBuilder implements CompoundBinaryTag.Builder {
   CompoundTagBuilder() {
   }
 
-  CompoundTagBuilder(final Map<String, BinaryTag> tags) {
-    this.tags = tags;
+  CompoundTagBuilder(final CompoundBinaryTag existing) {
+    this.tags = new HashMap<>(existing.asMap()); // explicitly copy
   }
 
   private Map<String, BinaryTag> tags() {
