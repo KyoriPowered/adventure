@@ -82,13 +82,12 @@ public /*sealed*/ interface ObjectContents extends Examinable /*permits SpriteOb
    *
    * @param name the player name, may be null
    * @param id   the player UUID, may be null
-   * @param hat  whether to show the hat layer
    * @return a player head contents
    * @since 4.25.0
    */
-  @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull PlayerHeadObjectContents playerHead(final @Nullable String name, final @Nullable UUID id, final boolean hat) {
-    return new PlayerHeadObjectContentsImpl(name, id, Collections.emptyMap(), hat);
+  @Contract(value = "_, _ -> new", pure = true)
+  static @NotNull PlayerHeadObjectContents playerHead(final @Nullable String name, final @Nullable UUID id) {
+    return new PlayerHeadObjectContentsImpl(name, id, Collections.emptyMap(), true);
   }
 
   /**
@@ -97,25 +96,23 @@ public /*sealed*/ interface ObjectContents extends Examinable /*permits SpriteOb
    * @param name       the player name, may be null
    * @param id         the player UUID, may be null
    * @param properties the player properties, must not be null
-   * @param hat        whether to show the hat layer
    * @return a player head contents
    * @since 4.25.0
    */
-  @Contract(value = "_, _, _, _ -> new", pure = true)
-  static @NotNull PlayerHeadObjectContents playerHead(final @Nullable String name, final @Nullable UUID id, final @NotNull Map<String, PlayerHeadObjectContents.ProfileProperty> properties, final boolean hat) {
-    return new PlayerHeadObjectContentsImpl(name, id, requireNonNull(properties, "properties"), hat);
+  @Contract(value = "_, _, _ -> new", pure = true)
+  static @NotNull PlayerHeadObjectContents playerHead(final @Nullable String name, final @Nullable UUID id, final @NotNull Map<String, PlayerHeadObjectContents.ProfileProperty> properties) {
+    return new PlayerHeadObjectContentsImpl(name, id, requireNonNull(properties, "properties"), true);
   }
 
   /**
    * Creates a player head contents with the given parameters.
    *
    * @param skinSource the skin source
-   * @param hat        whether to show the hat layer
    * @return a player head contents
    * @since 4.25.0
    */
-  @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull PlayerHeadObjectContents playerHead(final PlayerHeadObjectContents.@NotNull SkinSource skinSource, final boolean hat) {
-    return playerHead().skin(skinSource).hat(hat).build();
+  @Contract(value = "_ -> new", pure = true)
+  static @NotNull PlayerHeadObjectContents playerHead(final PlayerHeadObjectContents.@NotNull SkinSource skinSource) {
+    return playerHead().skin(skinSource).build();
   }
 }

@@ -144,7 +144,7 @@ final class PlayerHeadObjectContentsImpl implements PlayerHeadObjectContents {
     private @Nullable String name;
     private @Nullable UUID id;
     private final Map<String, PlayerHeadObjectContents.ProfileProperty> properties = new HashMap<>();
-    private boolean hat;
+    private boolean hat = true;
 
     BuilderImpl() {
     }

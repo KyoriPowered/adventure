@@ -239,6 +239,8 @@ public interface PlayerHeadObjectContents extends ObjectContents {
     /**
      * Sets whether the player head should render the player's hat layer.
      *
+     * <p>Default is {@code true}.</p>
+     *
      * @param hat whether to render the hat layer
      * @return this builder
      * @since 4.25.0
@@ -260,7 +262,7 @@ public interface PlayerHeadObjectContents extends ObjectContents {
    * A source of player skin data.
    *
    * @see Builder#skin(SkinSource)
-   * @see ObjectContents#playerHead(SkinSource, boolean)
+   * @see ObjectContents#playerHead(SkinSource)
    * @since 4.25.0
    */
   interface SkinSource {
