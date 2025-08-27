@@ -21,58 +21,50 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text;
+package net.kyori.adventure.text.object;
 
 import java.util.stream.Stream;
-import net.kyori.adventure.text.object.ObjectContents;
+import net.kyori.adventure.key.Key;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Displays a non-text object.
+ * A sprite contents.
+ *
+ * <p>Represents a sprite in an atlas, such as a block texture.</p>
  *
  * @since 4.25.0
  * @sinceMinecraft 1.21.9
  */
-public interface ObjectComponent extends BuildableComponent<ObjectComponent, ObjectComponent.Builder>, ScopedComponent<ObjectComponent> {
+public interface SpriteObjectContents extends ObjectContents {
   /**
-   * Gets the contents of this object component.
+   * The default atlas key for sprites, used by vanilla when the atlas is not specified in a serialized object component.
    *
-   * @return the contents
    * @since 4.25.0
    */
-  @NotNull ObjectContents contents();
+  Key DEFAULT_ATLAS = Key.key("minecraft:blocks");
 
   /**
-   * Creates a copy of this object component with the given contents.
+   * Gets the atlas key.
    *
-   * @param contents the contents to set
-   * @return new object component
+   * @return the atlas key
    * @since 4.25.0
    */
-  @NotNull ObjectComponent contents(@NotNull ObjectContents contents);
+  @NotNull Key atlas();
+
+  /**
+   * Gets the sprite key.
+   *
+   * @return the sprite key
+   * @since 4.25.0
+   */
+  @NotNull Key sprite();
 
   @Override
   default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.concat(
-      Stream.of(ExaminableProperty.of("contents", this.contents())),
-      BuildableComponent.super.examinableProperties()
+    return Stream.of(
+      ExaminableProperty.of("atlas", this.atlas()),
+      ExaminableProperty.of("sprite", this.sprite())
     );
-  }
-
-  /**
-   * An object component builder.
-   *
-   * @since 4.25.0
-   */
-  interface Builder extends ComponentBuilder<ObjectComponent, Builder> {
-    /**
-     * Sets the contents of this object component builder.
-     *
-     * @param objectContents the contents to set
-     * @return this builder
-     * @since 4.25.0
-     */
-    @NotNull Builder contents(@NotNull ObjectContents objectContents);
   }
 }
