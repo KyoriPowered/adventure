@@ -23,8 +23,9 @@
  */
 package net.kyori.adventure.text.object;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.Map;
 import java.util.UUID;
 import net.kyori.adventure.key.Key;
 import net.kyori.examination.Examinable;
@@ -87,7 +88,7 @@ public /*sealed*/ interface ObjectContents extends Examinable /*permits SpriteOb
    */
   @Contract(value = "_, _ -> new", pure = true)
   static @NotNull PlayerHeadObjectContents playerHead(final @Nullable String name, final @Nullable UUID id) {
-    return new PlayerHeadObjectContentsImpl(name, id, Collections.emptyMap(), true);
+    return new PlayerHeadObjectContentsImpl(name, id, Collections.emptyList(), true);
   }
 
   /**
@@ -100,8 +101,8 @@ public /*sealed*/ interface ObjectContents extends Examinable /*permits SpriteOb
    * @since 4.25.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull PlayerHeadObjectContents playerHead(final @Nullable String name, final @Nullable UUID id, final @NotNull Map<String, PlayerHeadObjectContents.ProfileProperty> properties) {
-    return new PlayerHeadObjectContentsImpl(name, id, requireNonNull(properties, "properties"), true);
+  static @NotNull PlayerHeadObjectContents playerHead(final @Nullable String name, final @Nullable UUID id, final @NotNull Collection<PlayerHeadObjectContents.ProfileProperty> properties) {
+    return new PlayerHeadObjectContentsImpl(name, id, new ArrayList<>(requireNonNull(properties, "properties")), true);
   }
 
   /**

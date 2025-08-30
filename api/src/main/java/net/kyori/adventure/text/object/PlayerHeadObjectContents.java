@@ -23,7 +23,8 @@
  */
 package net.kyori.adventure.text.object;
 
-import java.util.Map;
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 import net.kyori.adventure.util.PlatformAPI;
@@ -72,7 +73,7 @@ public interface PlayerHeadObjectContents extends ObjectContents {
    * @since 4.25.0
    */
   @Unmodifiable
-  @NotNull Map<String, ProfileProperty> profileProperties();
+  @NotNull List<ProfileProperty> profileProperties();
 
   /**
    * Whether the player head should render the player's hat layer.
@@ -94,26 +95,28 @@ public interface PlayerHeadObjectContents extends ObjectContents {
   /**
    * Creates a profile property with the given value and no signature.
    *
+   * @param name  the name
    * @param value the value
    * @return a profile property
    * @since 4.25.0
    */
-  @Contract(value = "_ -> new", pure = true)
-  static ProfileProperty property(final @NotNull String value) {
-    return new PlayerHeadObjectContentsImpl.ProfilePropertyImpl(requireNonNull(value, "value"), null);
+  @Contract(value = "_, _ -> new", pure = true)
+  static ProfileProperty property(final @NotNull String name, final @NotNull String value) {
+    return new PlayerHeadObjectContentsImpl.ProfilePropertyImpl(requireNonNull(name, "name"), requireNonNull(value, "value"), null);
   }
 
   /**
    * Creates a profile property with the given value and signature.
    *
+   * @param name      the name
    * @param value     the value
    * @param signature the signature, may be null
    * @return a profile property
    * @since 4.25.0
    */
-  @Contract(value = "_, _ -> new", pure = true)
-  static ProfileProperty property(final @NotNull String value, final @Nullable String signature) {
-    return new PlayerHeadObjectContentsImpl.ProfilePropertyImpl(requireNonNull(value, "value"), signature);
+  @Contract(value = "_, _, _ -> new", pure = true)
+  static ProfileProperty property(final @NotNull String name, final @NotNull String value, final @Nullable String signature) {
+    return new PlayerHeadObjectContentsImpl.ProfilePropertyImpl(requireNonNull(name, "name"), requireNonNull(value, "value"), signature);
   }
 
   /**
@@ -122,6 +125,14 @@ public interface PlayerHeadObjectContents extends ObjectContents {
    * @since 4.25.0
    */
   interface ProfileProperty extends Examinable {
+    /**
+     * Gets the name of the property.
+     *
+     * @return the name
+     * @since 4.25.0
+     */
+    @NotNull String name();
+
     /**
      * Gets the value of the property.
      *
@@ -141,6 +152,7 @@ public interface PlayerHeadObjectContents extends ObjectContents {
     @Override
     default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
       return Stream.of(
+        ExaminableProperty.of("name", this.name()),
         ExaminableProperty.of("value", this.value()),
         ExaminableProperty.of("signature", this.signature())
       );
@@ -185,36 +197,12 @@ public interface PlayerHeadObjectContents extends ObjectContents {
     /**
      * Sets a profile property.
      *
-     * @param name the name of the property
      * @param property the property
      * @return this builder
      * @since 4.25.0
      */
-    @Contract(value = "_, _ -> this")
-    @NotNull Builder profileProperty(final @NotNull String name, final @NotNull ProfileProperty property);
-
-    /**
-     * Sets a profile property with the given value and optional signature.
-     *
-     * @param name the name of the property
-     * @param value the value of the property
-     * @param signature the signature of the property, may be null
-     * @return this builder
-     * @since 4.25.0
-     */
-    @Contract(value = "_, _, _ -> this")
-    @NotNull Builder profileProperty(final @NotNull String name, final @NotNull String value, final @Nullable String signature);
-
-    /**
-     * Sets a profile property with the given value and no signature.
-     *
-     * @param name the name of the property
-     * @param value the value of the property
-     * @return this builder
-     * @since 4.25.0
-     */
-    @Contract(value = "_, _ -> this")
-    @NotNull Builder profileProperty(final @NotNull String name, final @NotNull String value);
+    @Contract(value = "_ -> this")
+    @NotNull Builder profileProperty(final @NotNull ProfileProperty property);
 
     /**
      * Sets multiple profile properties.
@@ -224,7 +212,7 @@ public interface PlayerHeadObjectContents extends ObjectContents {
      * @since 4.25.0
      */
     @Contract(value = "_ -> this")
-    @NotNull Builder profileProperties(final @NotNull Map<String, ProfileProperty> properties);
+    @NotNull Builder profileProperties(final @NotNull Collection<ProfileProperty> properties);
 
     /**
      * Sets the skin (name, id, and properties) from the given source, overriding any existing values.
