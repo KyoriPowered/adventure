@@ -23,9 +23,10 @@
  */
 package net.kyori.adventure.text.object;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import net.kyori.adventure.internal.Internals;
@@ -37,21 +38,21 @@ import static java.util.Objects.requireNonNull;
 final class PlayerHeadObjectContentsImpl implements PlayerHeadObjectContents {
   private final @Nullable String name;
   private final @Nullable UUID id;
-  private final Map<String, ProfileProperty> properties;
+  private final List<ProfileProperty> properties;
   private final boolean hat;
 
   PlayerHeadObjectContentsImpl(
     final @Nullable String name,
     final @Nullable UUID id,
-    final @NotNull Map<String, ProfileProperty> properties,
+    final @NotNull List<ProfileProperty> properties,
     final boolean hat
   ) {
     this.name = name;
     this.id = id;
     if (properties.isEmpty()) {
-      this.properties = Collections.emptyMap();
+      this.properties = Collections.emptyList();
     } else {
-      this.properties = Collections.unmodifiableMap(new HashMap<>(requireNonNull(properties, "properties")));
+      this.properties = Collections.unmodifiableList(new ArrayList<>(requireNonNull(properties, "properties")));
     }
     this.hat = hat;
   }
@@ -67,7 +68,7 @@ final class PlayerHeadObjectContentsImpl implements PlayerHeadObjectContents {
   }
 
   @Override
-  public @NotNull Map<String, ProfileProperty> profileProperties() {
+  public @NotNull List<ProfileProperty> profileProperties() {
     return this.properties;
   }
 
@@ -102,12 +103,19 @@ final class PlayerHeadObjectContentsImpl implements PlayerHeadObjectContents {
   }
 
   static final class ProfilePropertyImpl implements PlayerHeadObjectContents.ProfileProperty {
+    private final String name;
     private final String value;
     private final @Nullable String signature;
 
-    ProfilePropertyImpl(final @NotNull String value, final @Nullable String signature) {
+    ProfilePropertyImpl(final @NotNull String name, final @NotNull String value, final @Nullable String signature) {
+      this.name = name;
       this.value = value;
       this.signature = signature;
+    }
+
+    @Override
+    public @NotNull String name() {
+      return this.name;
     }
 
     @Override
@@ -125,13 +133,14 @@ final class PlayerHeadObjectContentsImpl implements PlayerHeadObjectContents {
       if (this == other) return true;
       if (!(other instanceof ProfilePropertyImpl)) return false;
       final ProfilePropertyImpl that = (ProfilePropertyImpl) other;
-      return Objects.equals(this.value, that.value)
+      return Objects.equals(this.name, that.name)
+        && Objects.equals(this.value, that.value)
         && Objects.equals(this.signature, that.signature);
     }
 
     @Override
     public int hashCode() {
-      return Objects.hash(this.value, this.signature);
+      return Objects.hash(this.name, this.value, this.signature);
     }
 
     @Override
@@ -143,7 +152,7 @@ final class PlayerHeadObjectContentsImpl implements PlayerHeadObjectContents {
   static final class BuilderImpl implements PlayerHeadObjectContents.Builder {
     private @Nullable String name;
     private @Nullable UUID id;
-    private final Map<String, PlayerHeadObjectContents.ProfileProperty> properties = new HashMap<>();
+    private final List<PlayerHeadObjectContents.ProfileProperty> properties = new ArrayList<>();
     private boolean hat = true;
 
     BuilderImpl() {
@@ -152,7 +161,7 @@ final class PlayerHeadObjectContentsImpl implements PlayerHeadObjectContents {
     BuilderImpl(final @NotNull PlayerHeadObjectContentsImpl playerHeadObjectContents) {
       this.name = playerHeadObjectContents.name;
       this.id = playerHeadObjectContents.id;
-      this.properties.putAll(playerHeadObjectContents.properties);
+      this.properties.addAll(playerHeadObjectContents.properties);
       this.hat = playerHeadObjectContents.hat;
     }
 
@@ -169,26 +178,16 @@ final class PlayerHeadObjectContentsImpl implements PlayerHeadObjectContents {
     }
 
     @Override
-    public PlayerHeadObjectContents.@NotNull Builder profileProperty(final @NotNull String name, final PlayerHeadObjectContents.@NotNull ProfileProperty property) {
-      this.properties.put(requireNonNull(name, "name"), requireNonNull(property, "property"));
+    public PlayerHeadObjectContents.@NotNull Builder profileProperty(final PlayerHeadObjectContents.@NotNull ProfileProperty property) {
+      this.properties.add(requireNonNull(property, "property"));
       return this;
     }
 
     @Override
-    public PlayerHeadObjectContents.@NotNull Builder profileProperty(final @NotNull String name, final @NotNull String value, final @Nullable String signature) {
-      this.properties.put(requireNonNull(name, "name"), new ProfilePropertyImpl(requireNonNull(value, "value"), signature));
-      return this;
-    }
-
-    @Override
-    public PlayerHeadObjectContents.@NotNull Builder profileProperty(final @NotNull String name, final @NotNull String value) {
-      this.properties.put(requireNonNull(name, "name"), new ProfilePropertyImpl(requireNonNull(value, "value"), null));
-      return this;
-    }
-
-    @Override
-    public PlayerHeadObjectContents.@NotNull Builder profileProperties(final @NotNull Map<String, PlayerHeadObjectContents.ProfileProperty> properties) {
-      this.properties.putAll(requireNonNull(properties, "properties"));
+    public PlayerHeadObjectContents.@NotNull Builder profileProperties(final @NotNull Collection<ProfileProperty> properties) {
+      for (final ProfileProperty property : requireNonNull(properties, "properties")) {
+        this.profileProperty(property);
+      }
       return this;
     }
 

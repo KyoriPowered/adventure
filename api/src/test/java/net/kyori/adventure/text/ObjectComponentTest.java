@@ -30,6 +30,7 @@ import net.kyori.adventure.text.object.PlayerHeadObjectContents;
 import net.kyori.adventure.text.object.SpriteObjectContents;
 import org.junit.jupiter.api.Test;
 
+import static net.kyori.adventure.text.object.PlayerHeadObjectContents.property;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ObjectComponentTest extends AbstractComponentTest<ObjectComponent, ObjectComponent.Builder> {
@@ -57,7 +58,7 @@ class ObjectComponentTest extends AbstractComponentTest<ObjectComponent, ObjectC
 
     final PlayerHeadObjectContents head1 = ObjectContents.playerHead()
       .id(UUID.randomUUID())
-      .profileProperty("textures", "texture_value", "texture_signature")
+      .profileProperty(property("textures", "texture_value", "texture_signature"))
       .build();
     final ObjectComponent c1 = c0.contents(head1);
     assertEquals(head1, c1.contents());
