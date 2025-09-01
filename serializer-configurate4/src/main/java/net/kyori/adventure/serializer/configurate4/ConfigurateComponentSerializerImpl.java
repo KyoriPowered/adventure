@@ -34,6 +34,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.ShadowColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.object.PlayerHeadObjectContents;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.title.Title;
 import org.jetbrains.annotations.NotNull;
@@ -110,6 +111,7 @@ final class ConfigurateComponentSerializerImpl implements ConfigurateComponentSe
       .registerExact(HoverEvent.ShowItem.class, HoverEventShowItemSerializer.INSTANCE)
       .register(ConfigurateDataComponentValue.class, ConfigurateDataComponentValueTypeSerializer.INSTANCE)
       .register(ShadowColor.class, ShadowColorSerializer.INSTACE)
+      .register(PlayerHeadObjectContents.ProfileProperty.class, ProfilePropertySerializer.INSTANCE)
       .build();
   }
 

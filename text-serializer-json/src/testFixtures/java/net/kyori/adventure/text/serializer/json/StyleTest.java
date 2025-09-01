@@ -166,12 +166,7 @@ class StyleTest extends SerializerTest {
         json.add(ComponentTreeConstants.HOVER_EVENT_SNAKE, object(hoverEvent -> {
           hoverEvent.addProperty(ComponentTreeConstants.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ENTITY));
           hoverEvent.addProperty(ComponentTreeConstants.SHOW_ENTITY_ID, "minecraft:pig");
-          hoverEvent.add(ComponentTreeConstants.SHOW_ENTITY_UUID, array(arr -> {
-            arr.add(dolores.getMostSignificantBits() >> 32);
-            arr.add((int) (dolores.getMostSignificantBits() & 0xffffffffl));
-            arr.add(dolores.getLeastSignificantBits() >> 32);
-            arr.add((int) (dolores.getLeastSignificantBits() & 0xffffffffl));
-          }));
+          hoverEvent.add(ComponentTreeConstants.SHOW_ENTITY_UUID, uuidArray(dolores));
           hoverEvent.add(ComponentTreeConstants.SHOW_ENTITY_NAME, object(name -> {
             name.addProperty(ComponentTreeConstants.TEXT, "Dolores");
             name.addProperty(ComponentTreeConstants.COLOR, "#0A1AB9");
