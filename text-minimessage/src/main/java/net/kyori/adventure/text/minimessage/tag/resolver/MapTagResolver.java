@@ -42,6 +42,11 @@ final class MapTagResolver implements TagResolver.WithoutArguments, MappableReso
   }
 
   @Override
+  public boolean has(final @NotNull String name) {
+    return this.tagMap.containsKey(name);
+  }
+
+  @Override
   public boolean contributeToMap(final @NotNull Map<String, Tag> map) {
     map.putAll(this.tagMap);
     return true;
