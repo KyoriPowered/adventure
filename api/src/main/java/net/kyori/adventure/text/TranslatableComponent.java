@@ -308,6 +308,18 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
     }
 
     /**
+     * Adds a single translation arg.
+     *
+     * <p>Non-{@link Component} arguments can be wrapped in {@link TranslationArgument}, or represented with a {@link TranslationArgumentLike}.</p>
+     *
+     * @param like the translation arg
+     * @return this builder
+     * @since 4.25.0
+     */
+    @Contract("_ -> this")
+    @NotNull Builder addArgument(final @NotNull ComponentLike like);
+
+    /**
      * Sets the translation args.
      *
      * <p>Non-{@link Component} arguments can be wrapped in {@link TranslationArgument}, or represented with a {@link TranslationArgumentLike}.</p>
