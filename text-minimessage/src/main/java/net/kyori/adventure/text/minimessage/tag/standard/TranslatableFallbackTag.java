@@ -26,7 +26,9 @@ package net.kyori.adventure.text.minimessage.tag.standard;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import net.kyori.adventure.pointer.Pointered;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.TranslationArgument;
 import net.kyori.adventure.text.minimessage.Context;
@@ -36,6 +38,7 @@ import net.kyori.adventure.text.minimessage.internal.serializer.SerializableReso
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.kyori.adventure.text.minimessage.translation.Argument;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -61,14 +64,20 @@ final class TranslatableFallbackTag {
   static Tag create(final ArgumentQueue args, final Context ctx) throws ParsingException {
     final String key = args.popOr("A translation key is required").value();
     final String fallback = args.popOr("A fallback messages is required").value();
-    final List<Component> with;
+    final Pointered pointered = ctx.target();
+    final List<ComponentLike> with;
     if (args.hasNext()) {
       with = new ArrayList<>();
       while (args.hasNext()) {
         with.add(ctx.deserialize(args.pop().value()));
       }
+      if (pointered != null) {
+        with.add(Argument.target(pointered));
+      }
     } else {
-      with = Collections.emptyList();
+      with = pointered == null
+        ? Collections.emptyList()
+        : Collections.singletonList(Argument.target(pointered));
     }
 
     return Tag.inserting(Component.translatable(key, fallback, with));
