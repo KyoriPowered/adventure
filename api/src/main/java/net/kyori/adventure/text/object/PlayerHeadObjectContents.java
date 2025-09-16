@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.util.PlatformAPI;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
@@ -82,6 +83,19 @@ public interface PlayerHeadObjectContents extends ObjectContents {
    * @since 4.25.0
    */
   boolean hat();
+
+  /**
+   * Optional namespaced ID of the skin texture to use for rendering.
+   *
+   * <p>The skin is specified relative to the textures folder and with a .png suffix
+   * e.g. entity/player/wide/steve will use the default wide Steve skin.</p>
+   *
+   * <p>Overrides the skin specified by the profile properties if present.</p>
+   *
+   * @return the texture key
+   * @since 4.25.0
+   */
+  @Nullable Key texture();
 
   /**
    * Creates a builder from the state of this object.
@@ -164,7 +178,9 @@ public interface PlayerHeadObjectContents extends ObjectContents {
     return Stream.of(
       ExaminableProperty.of("name", this.name()),
       ExaminableProperty.of("id", this.id()),
-      ExaminableProperty.of("profileProperties", this.profileProperties())
+      ExaminableProperty.of("profileProperties", this.profileProperties()),
+      ExaminableProperty.of("hat", this.hat()),
+      ExaminableProperty.of("texture", this.texture())
     );
   }
 
@@ -235,6 +251,21 @@ public interface PlayerHeadObjectContents extends ObjectContents {
      */
     @Contract(value = "_ -> this")
     @NotNull Builder hat(final boolean hat);
+
+    /**
+     * Sets the optional namespaced ID of the skin texture to use for rendering.
+     *
+     * <p>The skin is specified relative to the textures folder and with a .png suffix
+     * e.g. entity/player/wide/steve will use the default wide Steve skin.</p>
+     *
+     * <p>Overrides the skin specified by the profile properties if present.</p>
+     *
+     * @param texture the texture key or null
+     * @return this builder
+     * @since 4.25.0
+     */
+    @Contract(value = "_ -> this")
+    @NotNull Builder texture(final @Nullable Key texture);
 
     /**
      * Builds the player head contents.

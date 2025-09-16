@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import net.kyori.adventure.internal.Internals;
+import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,12 +41,14 @@ final class PlayerHeadObjectContentsImpl implements PlayerHeadObjectContents {
   private final @Nullable UUID id;
   private final List<ProfileProperty> properties;
   private final boolean hat;
+  private final @Nullable Key texture;
 
   PlayerHeadObjectContentsImpl(
     final @Nullable String name,
     final @Nullable UUID id,
     final @NotNull List<ProfileProperty> properties,
-    final boolean hat
+    final boolean hat,
+    final @Nullable Key texture
   ) {
     this.name = name;
     this.id = id;
@@ -55,6 +58,7 @@ final class PlayerHeadObjectContentsImpl implements PlayerHeadObjectContents {
       this.properties = Collections.unmodifiableList(new ArrayList<>(requireNonNull(properties, "properties")));
     }
     this.hat = hat;
+    this.texture = texture;
   }
 
   @Override
@@ -78,6 +82,11 @@ final class PlayerHeadObjectContentsImpl implements PlayerHeadObjectContents {
   }
 
   @Override
+  public @Nullable Key texture() {
+    return this.texture;
+  }
+
+  @Override
   public @NotNull Builder toBuilder() {
     return new BuilderImpl(this);
   }
@@ -89,12 +98,14 @@ final class PlayerHeadObjectContentsImpl implements PlayerHeadObjectContents {
     final PlayerHeadObjectContentsImpl that = (PlayerHeadObjectContentsImpl) other;
     return Objects.equals(this.name, that.name)
       && Objects.equals(this.id, that.id)
-      && Objects.equals(this.properties, that.properties);
+      && Objects.equals(this.properties, that.properties)
+      && this.hat == that.hat
+      && Objects.equals(this.texture, that.texture);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.name, this.id, this.properties);
+    return Objects.hash(this.name, this.id, this.properties, this.hat, this.texture);
   }
 
   @Override
@@ -154,6 +165,7 @@ final class PlayerHeadObjectContentsImpl implements PlayerHeadObjectContents {
     private @Nullable UUID id;
     private final List<PlayerHeadObjectContents.ProfileProperty> properties = new ArrayList<>();
     private boolean hat = true;
+    private @Nullable Key texture;
 
     BuilderImpl() {
     }
@@ -211,8 +223,14 @@ final class PlayerHeadObjectContentsImpl implements PlayerHeadObjectContents {
     }
 
     @Override
+    public PlayerHeadObjectContents.@NotNull Builder texture(final @Nullable Key texture) {
+      this.texture = texture;
+      return this;
+    }
+
+    @Override
     public @NotNull PlayerHeadObjectContents build() {
-      return new PlayerHeadObjectContentsImpl(this.name, this.id, this.properties, this.hat);
+      return new PlayerHeadObjectContentsImpl(this.name, this.id, this.properties, this.hat, this.texture);
     }
   }
 }

@@ -52,7 +52,7 @@ class ObjectComponentTest extends AbstractComponentTest<ObjectComponent, ObjectC
 
   @Test
   void testPlayerHeadContents() {
-    final PlayerHeadObjectContents head = ObjectContents.playerHead("fortnite", UUID.randomUUID());
+    final PlayerHeadObjectContents head = ObjectContents.playerHead().name("fortnite").id(UUID.randomUUID()).build();
     final ObjectComponent c0 = Component.object(head);
     assertEquals(head, c0.contents());
 
