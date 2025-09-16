@@ -23,15 +23,12 @@
  */
 package net.kyori.adventure.text.object;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.UUID;
 import net.kyori.adventure.key.Key;
 import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -79,30 +76,27 @@ public /*sealed*/ interface ObjectContents extends Examinable /*permits SpriteOb
   }
 
   /**
-   * Creates a player head contents with the given parameters.
+   * Creates a player head contents with the given name.
    *
-   * @param name the player name, may be null
-   * @param id   the player UUID, may be null
+   * @param name the player name
    * @return a player head contents
    * @since 4.25.0
    */
-  @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull PlayerHeadObjectContents playerHead(final @Nullable String name, final @Nullable UUID id) {
-    return new PlayerHeadObjectContentsImpl(name, id, Collections.emptyList(), true);
+  @Contract(value = "_ -> new", pure = true)
+  static @NotNull PlayerHeadObjectContents playerHead(final @NotNull String name) {
+    return new PlayerHeadObjectContentsImpl(name, null, Collections.emptyList(), true, null);
   }
 
   /**
-   * Creates a player head contents with the given parameters.
+   * Creates a player head contents with the given id.
    *
-   * @param name       the player name, may be null
-   * @param id         the player UUID, may be null
-   * @param properties the player properties, must not be null
+   * @param id the player UUID
    * @return a player head contents
    * @since 4.25.0
    */
-  @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull PlayerHeadObjectContents playerHead(final @Nullable String name, final @Nullable UUID id, final @NotNull Collection<PlayerHeadObjectContents.ProfileProperty> properties) {
-    return new PlayerHeadObjectContentsImpl(name, id, new ArrayList<>(requireNonNull(properties, "properties")), true);
+  @Contract(value = "_ -> new", pure = true)
+  static @NotNull PlayerHeadObjectContents playerHead(final @NotNull UUID id) {
+    return new PlayerHeadObjectContentsImpl(null, id, Collections.emptyList(), true, null);
   }
 
   /**
