@@ -231,7 +231,7 @@ public interface PlayerHeadObjectContents extends ObjectContents {
     @NotNull Builder profileProperties(final @NotNull Collection<ProfileProperty> properties);
 
     /**
-     * Sets the skin (name, id, and properties) from the given source, overriding any existing values.
+     * Sets the skin (name, id, properties, and texture) from the given source, overriding any existing values.
      *
      * @param skinSource the skin source
      * @return this builder

@@ -208,6 +208,7 @@ final class PlayerHeadObjectContentsImpl implements PlayerHeadObjectContents {
       this.name = null;
       this.id = null;
       this.properties.clear();
+      this.texture = null;
     }
 
     @Override
