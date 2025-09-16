@@ -175,6 +175,7 @@ final class PlayerHeadObjectContentsImpl implements PlayerHeadObjectContents {
       this.id = playerHeadObjectContents.id;
       this.properties.addAll(playerHeadObjectContents.properties);
       this.hat = playerHeadObjectContents.hat;
+      this.texture = playerHeadObjectContents.texture;
     }
 
     @Override
