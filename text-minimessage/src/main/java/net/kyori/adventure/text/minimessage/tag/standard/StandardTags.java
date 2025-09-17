@@ -296,7 +296,7 @@ public final class StandardTags {
    * @since 4.25.0
    * @sinceMinecraft 1.21.9
    */
-  public static @NotNull TagResolver spriteTag() {
+  public static @NotNull TagResolver sprite() {
     return SpriteTag.RESOLVER;
   }
 

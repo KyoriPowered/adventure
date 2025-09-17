@@ -33,14 +33,16 @@ import net.kyori.adventure.text.minimessage.internal.serializer.SerializableReso
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.kyori.adventure.text.object.ObjectContents;
+import net.kyori.adventure.text.object.SpriteObjectContents;
 import org.intellij.lang.annotations.Subst;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * A sprite object tag.
  *
- * @since 4.25.0
  * @sinceMinecraft 1.21.9
+ * @since 4.25.0
  */
 final class SpriteTag {
   private static final String SPRITE = "sprite";
@@ -59,12 +61,18 @@ final class SpriteTag {
     final @Subst("empty") String secondArg = args.hasNext() ? args.pop().value() : null;
 
     if (secondArg == null) {
-      return Tag.selfClosingInserting(Component.object(ObjectComponent.Contents.sprite(Key.key(firstArg))));
+      return Tag.selfClosingInserting(Component.object(
+        ObjectContents.sprite(
+          Key.key(firstArg)
+        )
+      ));
     }
-    return Tag.selfClosingInserting(Component.object(ObjectComponent.Contents.sprite(
-      Key.key(firstArg),
-      Key.key(secondArg)
-    )));
+    return Tag.selfClosingInserting(Component.object(
+      ObjectContents.sprite(
+        Key.key(firstArg),
+        Key.key(secondArg)
+      )
+    ));
   }
 
   static @Nullable Emitable claimComponent(final Component input) {
@@ -72,15 +80,17 @@ final class SpriteTag {
       return null;
     }
 
-    final ObjectComponent.Contents contents = ((ObjectComponent) input).contents();
-    if (!(contents instanceof ObjectComponent.SpriteContents)) {
+    final ObjectContents contents = ((ObjectComponent) input).contents();
+    if (!(contents instanceof SpriteObjectContents)) {
       return null;
     }
 
-    final Key atlas = ((ObjectComponent.SpriteContents) contents).atlas();
-    final Key key = ((ObjectComponent.SpriteContents) contents).sprite();
+    final SpriteObjectContents sprite = ((SpriteObjectContents) contents);
 
-    if (atlas == ObjectComponent.SpriteContents.DEFAULT_ATLAS) {
+    final Key atlas = sprite.atlas();
+    final Key key = sprite.sprite();
+
+    if (atlas == SpriteObjectContents.DEFAULT_ATLAS) {
       return emit -> emit.tag(SPRITE).argument(key.asString());
     }
 
