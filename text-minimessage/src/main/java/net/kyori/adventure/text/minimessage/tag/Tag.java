@@ -217,4 +217,8 @@ public /* sealed */ interface Tag /* permits Inserting, Modifying, ParserDirecti
       }
     }
   }
+
+  interface NamedArgument extends Argument {
+    @NotNull String name();
+  }
 }

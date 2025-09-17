@@ -127,9 +127,31 @@ public interface TagResolver {
     }
     requireNonNull(handler, "handler");
 
-    return new TagResolver() {
+    return new TagResolver.Queued() {
       @Override
       public @Nullable Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) throws ParsingException {
+        if (!names.contains(name)) return null;
+
+        return handler.apply(arguments, ctx);
+      }
+
+      @Override
+      public boolean has(final @NotNull String name) {
+        return names.contains(name);
+      }
+    };
+  }
+
+  static @NotNull TagResolver namedResolver(final @NotNull Set<String> names, final @NotNull BiFunction<NamedArgumentMap, Context, Tag> handler) {
+    final Set<String> ownNames = new HashSet<>(names);
+    for (final String name : ownNames) {
+      TagInternals.assertValidTagName(name);
+    }
+    requireNonNull(handler, "handler");
+
+    return new TagResolver.Named() {
+      @Override
+      public @Nullable Tag resolveNamed(final @NotNull String name, final @NotNull NamedArgumentMap arguments, final @NotNull Context ctx) throws ParsingException {
         if (!names.contains(name)) return null;
 
         return handler.apply(arguments, ctx);
@@ -223,6 +245,8 @@ public interface TagResolver {
    */
   @Nullable Tag resolve(@TagPattern final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) throws ParsingException;
 
+  @Nullable Tag resolveNamed(@TagPattern final @NotNull String name, final @NotNull NamedArgumentMap arguments, final @NotNull Context ctx) throws ParsingException;
+
   /**
    * Get whether this resolver handles tags with a certain name.
    *
@@ -280,7 +304,7 @@ public interface TagResolver {
    * @since 4.10.0
    */
   @FunctionalInterface
-  interface WithoutArguments extends TagResolver {
+  interface WithoutArguments extends TagResolver.Queued {
     /**
      * Resolve a tag based only on the provided name.
      *
@@ -309,6 +333,22 @@ public interface TagResolver {
         throw ctx.newException("Tag '<" + name + ">' does not accept any arguments");
       }
       return resolved;
+    }
+  }
+
+  interface Queued extends TagResolver {
+    @Override
+    @Nullable
+    default Tag resolveNamed(final @NotNull String name, final @NotNull NamedArgumentMap arguments, final @NotNull Context ctx) throws ParsingException {
+      throw new UnsupportedOperationException();
+    }
+  }
+
+  interface Named extends TagResolver {
+    @Override
+    @Nullable
+    default Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) throws ParsingException {
+      throw new UnsupportedOperationException();
     }
   }
 
@@ -352,6 +392,14 @@ public interface TagResolver {
      */
     default @NotNull Builder tag(final @NotNull Set<String> names, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler) {
       return this.resolver(TagResolver.resolver(names, handler));
+    }
+
+    default @NotNull Builder namedArgumentsTag(@TagPattern final @NotNull String name, final @NotNull BiFunction<NamedArgumentMap, Context, Tag> handler) {
+      return this.namedArgumentsTag(Collections.singleton(name), handler);
+    }
+
+    default @NotNull Builder namedArgumentsTag(final @NotNull Set<String> names, final @NotNull BiFunction<NamedArgumentMap, Context, Tag> handler) {
+      return this.resolver(TagResolver.namedResolver(names, handler));
     }
 
     /**
