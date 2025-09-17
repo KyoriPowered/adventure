@@ -547,7 +547,7 @@ public final class TokenParser {
    * @param openParts The parts of the open tag
    * @return {@code true} if the given close parts closes the open tag parts.
    */
-  private static boolean tagCloses(final List<String> closeParts, final List<TagPart> openParts) {
+  private static <T extends TagPart> boolean tagCloses(final List<String> closeParts, final List<T> openParts) {
     if (closeParts.size() > openParts.size()) {
       return false;
     }
@@ -664,7 +664,7 @@ public final class TokenParser {
    * @since 4.10.0
    */
   @ApiStatus.Internal
-  public interface TagProvider {
+  public interface TagProvider<T extends Tag.Argument> {
     /**
      * Look up a tag.
      *
@@ -676,7 +676,7 @@ public final class TokenParser {
      * @return a tag
      * @since 4.10.0
      */
-    @Nullable Tag resolve(final @NotNull String name, final @NotNull List<? extends Tag.Argument> trimmedArgs, final @Nullable Token token);
+    @Nullable Tag resolve(final @NotNull String name, final @NotNull List<T> trimmedArgs, final @Nullable Token token);
 
     /**
      * Resolve by sanitized name.
@@ -699,7 +699,7 @@ public final class TokenParser {
     default @Nullable Tag resolve(final @NotNull TagNode node) {
       return this.resolve(
         sanitizePlaceholderName(node.name()),
-        node.parts().subList(1, node.parts().size()),
+        (List<T>) node.parts().subList(1, node.parts().size()),
         node.token()
       );
     }

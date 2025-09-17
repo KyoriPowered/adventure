@@ -38,8 +38,8 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 4.10.0
  */
-public final class TagNode extends ElementNode {
-  private final List<TagPart> parts;
+public final class TagNode<T extends TagPart> extends ElementNode {
+  private final List<T> parts;
   private @Nullable Tag tag = null;
 
   /**
@@ -66,12 +66,12 @@ public final class TagNode extends ElementNode {
     }
   }
 
-  private static @NotNull List<TagPart> genParts(
+  private static <T extends TagPart> @NotNull List<T> genParts(
     final @NotNull Token token,
     final @NotNull String sourceMessage,
     final TokenParser.@NotNull TagProvider tagProvider
   ) {
-    final ArrayList<TagPart> parts = new ArrayList<>();
+    final ArrayList<T> parts = new ArrayList<>();
 
     if (token.childTokens() != null) {
       for (final Token childToken : token.childTokens()) {

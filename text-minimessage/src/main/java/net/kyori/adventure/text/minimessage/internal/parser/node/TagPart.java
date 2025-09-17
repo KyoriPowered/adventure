@@ -33,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 4.10.0
  */
-public final class TagPart implements Tag.Argument {
+public /* sealed */ class TagPart implements Tag.Argument /* permits NamedTagPart */ {
   private final String value;
   private final Token token;
 
