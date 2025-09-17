@@ -28,6 +28,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ObjectComponent;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.AbstractTest;
+import net.kyori.adventure.text.object.ObjectContents;
+import net.kyori.adventure.text.object.SpriteObjectContents;
 import org.junit.jupiter.api.Test;
 
 class SpriteTagTest extends AbstractTest {
@@ -37,7 +39,7 @@ class SpriteTagTest extends AbstractTest {
 
     final TextComponent.Builder builder = Component.text()
       .append(Component.text("This sentence is "))
-      .append(Component.object(ObjectComponent.Contents.sprite(Key.key("block/fire_0"))))
+      .append(Component.object(ObjectContents.sprite(Key.key("block/fire_0"))))
       .append(Component.text("!"));
 
     this.assertSerializedEquals(expected, builder);
@@ -47,7 +49,7 @@ class SpriteTagTest extends AbstractTest {
   void testSprite() {
     final String input = "<sprite:block/stone> is hard.";
     final Component expected = Component.text()
-      .append(Component.object(ObjectComponent.Contents.sprite(Key.key("block/stone"))))
+      .append(Component.object(ObjectContents.sprite(Key.key("block/stone"))))
       .append(Component.text(" is hard."))
       .build();
 
@@ -60,7 +62,7 @@ class SpriteTagTest extends AbstractTest {
 
     final TextComponent.Builder builder = Component.text()
       .append(Component.text("This sentence is "))
-      .append(Component.object(ObjectComponent.Contents.sprite(Key.key("items"), Key.key("item/emerald"))))
+      .append(Component.object(ObjectContents.sprite(Key.key("items"), Key.key("item/emerald"))))
       .append(Component.text("!"));
 
     this.assertSerializedEquals(expected, builder);
@@ -71,7 +73,7 @@ class SpriteTagTest extends AbstractTest {
     final String input = "A <sprite:items:item/diamond_sword> is strong.";
     final Component expected = Component.text()
       .append(Component.text("A "))
-      .append(Component.object(ObjectComponent.Contents.sprite(Key.key("items"), Key.key("item/diamond_sword"))))
+      .append(Component.object(ObjectContents.sprite(Key.key("items"), Key.key("item/diamond_sword"))))
       .append(Component.text(" is strong."))
       .build();
 
