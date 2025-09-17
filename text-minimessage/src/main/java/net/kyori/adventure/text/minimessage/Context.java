@@ -26,6 +26,7 @@ package net.kyori.adventure.text.minimessage;
 import net.kyori.adventure.pointer.Pointered;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
+import net.kyori.adventure.text.minimessage.tag.resolver.NamedArgumentMap;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -139,6 +140,12 @@ public interface Context {
     final @NotNull String message,
     final @Nullable Throwable cause,
     final @NotNull ArgumentQueue args
+  );
+
+  @NotNull ParsingException newException(
+    final @NotNull String message,
+    final @Nullable Throwable cause,
+    final @NotNull NamedArgumentMap args
   );
 
   /**
