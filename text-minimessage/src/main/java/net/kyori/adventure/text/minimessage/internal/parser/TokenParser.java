@@ -308,6 +308,7 @@ public final class TokenParser {
       char currentStringChar = 0;
 
       TriState namedArguments = TriState.NOT_SET;
+      boolean nextNormalIsArgumentValue = false;
 
       // Marker is the starting index for the current token
       int marker = startIndex;
@@ -385,13 +386,15 @@ public final class TokenParser {
                 break;
               }
 
-              insert(token, new Token(marker, i, TokenType.TAG_VALUE));
+              insert(token, new Token(marker, i, nextNormalIsArgumentValue ? TokenType.TAG_VALUE : TokenType.TAG_VALUE_TOGGLE));
               marker = i + 1;
+              nextNormalIsArgumentValue = false;
             } else if (codePoint == NAME_VALUE_SEPARATOR) {
               if (namedArguments != TriState.TRUE) {
                 break;
               }
 
+              nextNormalIsArgumentValue = true;
               insert(token, new Token(marker, i, TokenType.TAG_VALUE_NAME));
               marker = i + 1;
             }
