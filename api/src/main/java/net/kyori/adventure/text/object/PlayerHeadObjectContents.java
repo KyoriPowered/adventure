@@ -52,6 +52,13 @@ import static java.util.Objects.requireNonNull;
  */
 public interface PlayerHeadObjectContents extends ObjectContents {
   /**
+   * The default value for whether the player's hat layer should render.
+   *
+   * @since 4.25.0
+   */
+  boolean HAT_DEFAULT = true;
+
+  /**
    * Gets the name of the player if present.
    *
    * @return the name of the player or null

@@ -164,7 +164,7 @@ final class PlayerHeadObjectContentsImpl implements PlayerHeadObjectContents {
     private @Nullable String name;
     private @Nullable UUID id;
     private final List<PlayerHeadObjectContents.ProfileProperty> properties = new ArrayList<>();
-    private boolean hat = true;
+    private boolean hat = HAT_DEFAULT;
     private @Nullable Key texture;
 
     BuilderImpl() {

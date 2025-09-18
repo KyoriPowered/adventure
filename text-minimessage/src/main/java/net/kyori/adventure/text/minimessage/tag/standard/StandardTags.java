@@ -66,7 +66,8 @@ public final class StandardTags {
         NbtTag.RESOLVER,
         PrideTag.RESOLVER,
         ShadowColorTag.RESOLVER,
-        SpriteTag.RESOLVER
+        SpriteTag.RESOLVER,
+        HeadTag.RESOLVER
       )
       .build();
 
@@ -293,11 +294,22 @@ public final class StandardTags {
    * Get a resolver for the {@value SpriteTag#SPRITE} tag.
    *
    * @return a resolver for the {@value SpriteTag#SPRITE} tag.
-   * @since 4.25.0
    * @sinceMinecraft 1.21.9
+   * @since 4.25.0
    */
   public static @NotNull TagResolver sprite() {
     return SpriteTag.RESOLVER;
+  }
+
+  /**
+   * Get a resolver for the {@value HeadTag#HEAD} tag.
+   *
+   * @return a resolver for the {@value HeadTag#HEAD} tag.
+   * @sinceMinecraft 1.21.9
+   * @since 4.25.0
+   */
+  public static @NotNull TagResolver head() {
+    return HeadTag.RESOLVER;
   }
 
   /**
