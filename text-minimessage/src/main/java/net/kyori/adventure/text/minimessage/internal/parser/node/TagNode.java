@@ -26,6 +26,7 @@ package net.kyori.adventure.text.minimessage.internal.parser.node;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
 import net.kyori.adventure.text.minimessage.internal.parser.ParsingExceptionImpl;
 import net.kyori.adventure.text.minimessage.internal.parser.Token;
 import net.kyori.adventure.text.minimessage.internal.parser.TokenParser;
@@ -38,8 +39,8 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 4.10.0
  */
-public final class TagNode<T extends TagPart> extends ElementNode {
-  private final List<T> parts;
+public final class TagNode extends ElementNode {
+  private final List<TagPart> parts;
   private @Nullable Tag tag = null;
 
   /**
@@ -66,12 +67,12 @@ public final class TagNode<T extends TagPart> extends ElementNode {
     }
   }
 
-  private static <T extends TagPart> @NotNull List<T> genParts(
+  private static @NotNull List<TagPart> genParts(
     final @NotNull Token token,
     final @NotNull String sourceMessage,
     final TokenParser.@NotNull TagProvider tagProvider
   ) {
-    final ArrayList<T> parts = new ArrayList<>();
+    final ArrayList<TagPart> parts = new ArrayList<>();
 
     if (token.childTokens() != null) {
       for (final Token childToken : token.childTokens()) {

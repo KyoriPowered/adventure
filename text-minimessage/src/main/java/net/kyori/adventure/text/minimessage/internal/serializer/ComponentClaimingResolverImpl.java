@@ -35,7 +35,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-class ComponentClaimingResolverImpl implements TagResolver, SerializableResolver.Single {
+class ComponentClaimingResolverImpl implements TagResolver.Queued, SerializableResolver.Single {
   private final @NotNull Set<String> names;
   private final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler;
   private final @NotNull Function<Component, @Nullable Emitable> componentClaim;

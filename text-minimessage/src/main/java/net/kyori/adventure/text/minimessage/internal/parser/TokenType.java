@@ -33,5 +33,6 @@ public enum TokenType {
   OPEN_TAG,
   OPEN_CLOSE_TAG, // one token that both opens and closes a tag
   CLOSE_TAG,
+  TAG_VALUE_NAME,
   TAG_VALUE;
 }
