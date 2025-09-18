@@ -58,7 +58,7 @@ public final class StringResolvingMatchedTokenConsumer extends MatchedTokenConsu
    */
   public StringResolvingMatchedTokenConsumer(
     final @NotNull String input,
-    final @NotNull TagProvider tagProvider
+    final @NotNull TokenParser.TagProvider tagProvider
   ) {
     super(input);
     this.builder = new StringBuilder(input.length());
@@ -90,12 +90,15 @@ public final class StringResolvingMatchedTokenConsumer extends MatchedTokenConsu
             parts.add(new TagPart(match, childs.get(i), this.tagProvider));
           }
         }
-        // we might care if it's a pre-process!
-        final @Nullable Tag replacement = this.tagProvider.resolve(TokenParser.TagProvider.sanitizePlaceholderName(tag), parts, tokens.get(0));
 
-        if (replacement instanceof PreProcess) {
-          this.builder.append(Objects.requireNonNull(((PreProcess) replacement).value(), "PreProcess replacements cannot return null"));
-          return;
+        // we might care if it's a pre-process!
+        if (this.tagProvider instanceof TokenParser.QueuedTagProvider) {
+          final @Nullable Tag replacement = this.tagProvider.resolve(TagProvider.sanitizePlaceholderName(tag), parts, tokens.get(0));
+
+          if (replacement instanceof PreProcess) {
+            this.builder.append(Objects.requireNonNull(((PreProcess) replacement).value(), "PreProcess replacements cannot return null"));
+            return;
+          }
         }
       }
 

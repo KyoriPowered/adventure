@@ -135,9 +135,16 @@ final class MiniMessageParser {
       debug.accept("\n");
     }
 
-    final TokenParser.TagProvider transformationFactory;
+    final TokenParser.QueuedTagProvider queueTransformationFactory;
+    final TokenParser.NamedTagProvider namedTransformationFactory = (name, args, token) -> {
+      try {
+        return combinedResolver.resolveNamed(name, new NamedArgumentMapImpl<>(context, args), context);
+      } catch (final ParsingException ignored) {
+        return null;
+      }
+    };
     if (debug != null) {
-      transformationFactory = (name, args, token) -> {
+      queueTransformationFactory = (name, args, token) -> {
         try {
           debug.accept("Attempting to match node '");
           debug.accept(name);
@@ -179,7 +186,7 @@ final class MiniMessageParser {
         }
       };
     } else {
-      transformationFactory = (name, args, token) -> {
+      queueTransformationFactory = (name, args, token) -> {
         try {
           return combinedResolver.resolve(name, new ArgumentQueueImpl<>(context, args), context);
         } catch (final ParsingException ignored) {
@@ -192,10 +199,10 @@ final class MiniMessageParser {
       return combinedResolver.has(sanitized);
     };
 
-    final String preProcessed = TokenParser.resolvePreProcessTags(processedMessage, transformationFactory);
+    final String preProcessed = TokenParser.resolvePreProcessTags(processedMessage, queueTransformationFactory);
     context.message(preProcessed);
     // Then, once MiniMessage placeholders have been inserted, we can do the real parse
-    final RootNode root = TokenParser.parse(transformationFactory, tagNameChecker, preProcessed, processedMessage, context.strict());
+    final RootNode root = TokenParser.parse(queueTransformationFactory, namedTransformationFactory, tagNameChecker, preProcessed, processedMessage, context.strict());
 
     if (debug != null) {
       debug.accept("Text parsed into element tree:\n");

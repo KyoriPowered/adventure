@@ -28,6 +28,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 import net.kyori.adventure.text.minimessage.ParsingException;
@@ -81,7 +83,8 @@ public final class TokenParser {
    * @since 4.10.0
    */
   public static RootNode parse(
-    final @NotNull TagProvider tagProvider,
+    final @NotNull TokenParser.TagProvider tagProvider,
+    final @NotNull TokenParser.NamedTagProvider namedTagProvider,
     final @NotNull Predicate<String> tagNameChecker,
     final @NotNull String message,
     final @NotNull String originalMessage,
@@ -91,7 +94,7 @@ public final class TokenParser {
     final List<Token> tokens = tokenize(message, false);
 
     // then build the tree!
-    return buildTree(tagProvider, tagNameChecker, tokens, message, originalMessage, strict);
+    return buildTree(tagProvider, namedTagProvider, tagNameChecker, tokens, message, originalMessage, strict);
   }
 
   /**
@@ -423,7 +426,8 @@ public final class TokenParser {
    * Build a tree from the OPEN_TAG and CLOSE_TAG tokens
    */
   private static RootNode buildTree(
-    final @NotNull TagProvider tagProvider,
+    final @NotNull TokenParser.TagProvider tagProvider,
+    final @NotNull TokenParser.NamedTagProvider namedTagProvider,
     final @NotNull Predicate<String> tagNameChecker,
     final @NotNull List<Token> tokens,
     final @NotNull String message,
@@ -703,7 +707,7 @@ public final class TokenParser {
    * @since 4.10.0
    */
   @ApiStatus.Internal
-  public interface TagProvider<T extends Tag.Argument> {
+  public interface TagProvider<S> {
     /**
      * Look up a tag.
      *
@@ -715,7 +719,11 @@ public final class TokenParser {
      * @return a tag
      * @since 4.10.0
      */
-    @Nullable Tag resolve(final @NotNull String name, final @NotNull List<T> trimmedArgs, final @Nullable Token token);
+    @Nullable Tag resolve(final @NotNull String name, final @NotNull S trimmedArgs, final @Nullable Token token);
+
+    S createEmptyArgs();
+
+    S createFromNode(TagNode node);
 
     /**
      * Resolve by sanitized name.
@@ -725,7 +733,7 @@ public final class TokenParser {
      * @since 4.10.0
      */
     default @Nullable Tag resolve(final @NotNull String name) {
-      return this.resolve(name, Collections.emptyList(), null);
+      return this.resolve(name, createEmptyArgs(), null);
     }
 
     /**
@@ -738,7 +746,7 @@ public final class TokenParser {
     default @Nullable Tag resolve(final @NotNull TagNode node) {
       return this.resolve(
         sanitizePlaceholderName(node.name()),
-        (List<T>) node.parts().subList(1, node.parts().size()),
+        createFromNode(node),
         node.token()
       );
     }
@@ -754,6 +762,55 @@ public final class TokenParser {
      */
     static @NotNull String sanitizePlaceholderName(final @NotNull String name) {
       return name.toLowerCase(Locale.ROOT);
+    }
+  }
+
+  @ApiStatus.Internal
+  public interface QueuedTagProvider<T extends Tag.Argument> extends TagProvider<List<T>> {
+
+    @Override
+    default List<T> createFromNode(TagNode node) {
+      return (List<T>) node.parts().subList(1, node.parts().size());
+    }
+
+    @Override
+    default List<T> createEmptyArgs() {
+      return Collections.emptyList();
+    }
+  }
+
+  @ApiStatus.Internal
+  public interface NamedTagProvider<T extends Tag.Argument> extends TagProvider<Map<String, T>> {
+
+    @Override
+    default Map<String, T> createEmptyArgs() {
+      return Collections.emptyMap();
+    }
+
+    @Override
+    default Map<String, T> createFromNode(TagNode node) {
+      final Map<String, T> map = new TreeMap<>();
+
+      @NotNull List<TagPart> parts = node.parts();
+      for (int i = 1, partsSize = parts.size(); i < partsSize; i++) {
+        final TagPart part = parts.get(i);
+
+        if (part.token().type() == TokenType.TAG_VALUE_NAME) {
+          if (i + 1 == partsSize || parts.get(i + 1).token().type() != TokenType.TAG_VALUE) {
+            throw new IllegalStateException("Somehow a tag name has no value afterwards.");
+          }
+
+          map.put(part.value(), (T) parts.get(i + 1));
+          i++;
+          continue;
+        }
+
+        if (part.token().type() == TokenType.TAG_VALUE_TOGGLE) {
+          map.put(part.value(), (T) part);
+        }
+      }
+
+      return map;
     }
   }
 }
