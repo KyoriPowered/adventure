@@ -32,7 +32,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-final class ArgumentTag implements TagResolver {
+final class ArgumentTag implements TagResolver.Queued {
   private static final String NAME = "argument";
   private static final String NAME_1 = "arg";
 

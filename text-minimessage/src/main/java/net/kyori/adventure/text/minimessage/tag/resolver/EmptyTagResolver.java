@@ -26,6 +26,7 @@ package net.kyori.adventure.text.minimessage.tag.resolver;
 import java.util.Map;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.Context;
+import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.internal.serializer.ClaimConsumer;
 import net.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
 import net.kyori.adventure.text.minimessage.tag.Tag;
@@ -40,6 +41,11 @@ final class EmptyTagResolver implements TagResolver, MappableResolver, Serializa
 
   @Override
   public @Nullable Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) {
+    return null;
+  }
+
+  @Override
+  public @Nullable Tag resolveNamed(final @NotNull String name, final @NotNull NamedArgumentMap arguments, final @NotNull Context ctx) throws ParsingException {
     return null;
   }
 
