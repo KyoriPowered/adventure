@@ -345,7 +345,7 @@ public class MiniMessageParserTest extends AbstractTest {
     final Token parentToken = new Token(0, booleanToggleInput.length(), TokenType.OPEN_TAG);
     parentToken.childTokens(new ArrayList<>());
     parentToken.childTokens().add(new Token(0, toggleLength, TokenType.TEXT));
-    parentToken.childTokens().add(new Token(toggleLength + 2, "enabled".length(), TokenType.TAG_VALUE));
+    parentToken.childTokens().add(new Token(toggleLength + 2, "enabled".length(), TokenType.TAG_VALUE_TOGGLE));
     expectedTokensBooleanToggleInput.add(parentToken);
     assertIterableEquals(expectedTokensBooleanToggleInput, TokenParser.tokenize(booleanToggleInput, false));
 
@@ -366,7 +366,7 @@ public class MiniMessageParserTest extends AbstractTest {
     parentTokenMixed.childTokens().add(new Token(0, 1, TokenType.TEXT));
     parentTokenMixed.childTokens().add(new Token(2, 1, TokenType.TAG_VALUE_NAME));
     parentTokenMixed.childTokens().add(new Token(4, 1, TokenType.TAG_VALUE));
-    parentTokenMixed.childTokens().add(new Token(6, toggleLength, TokenType.TAG_VALUE));
+    parentTokenMixed.childTokens().add(new Token(6, toggleLength, TokenType.TAG_VALUE_TOGGLE));
     expectedTokensMixedArgumentInput.add(parentTokenMixed);
     assertIterableEquals(expectedTokensMixedArgumentInput, TokenParser.tokenize(mixedArgumentInput, false));
   }
