@@ -43,7 +43,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 4.10.0
  */
-final class ColorTagResolver implements TagResolver, SerializableResolver.Single {
+final class ColorTagResolver implements TagResolver.Queued, SerializableResolver.Single {
   private static final String COLOR_3 = "c";
   private static final String COLOR_2 = "colour";
   private static final String COLOR = "color";

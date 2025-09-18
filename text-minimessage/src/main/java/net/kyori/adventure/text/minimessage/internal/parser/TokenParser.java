@@ -43,6 +43,7 @@ import net.kyori.adventure.text.minimessage.internal.parser.node.TextNode;
 import net.kyori.adventure.text.minimessage.tag.Inserting;
 import net.kyori.adventure.text.minimessage.tag.ParserDirective;
 import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.util.TriState;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -60,6 +61,7 @@ public final class TokenParser {
   public static final char TAG_END = '>';
   public static final char CLOSE_TAG = '/';
   public static final char SEPARATOR = ':';
+  public static final char NAME_VALUE_SEPARATOR = '=';
   // misc
   public static final char ESCAPE = '\\';
 
@@ -305,6 +307,8 @@ public final class TokenParser {
       boolean escaped = false;
       char currentStringChar = 0;
 
+      TriState namedArguments = TriState.NOT_SET;
+
       // Marker is the starting index for the current token
       int marker = startIndex;
 
@@ -344,6 +348,13 @@ public final class TokenParser {
           case NORMAL:
             // Values are split by : unless it's in a URL
             if (codePoint == SEPARATOR) {
+              if (namedArguments == TriState.NOT_SET) {
+                namedArguments = TriState.FALSE;
+              } else if (namedArguments == TriState.TRUE) {
+                // If the arguments are named, colons should be interpreted as plain text.
+                break;
+              }
+
               if (boundsCheck(message, i, 2) && message.charAt(i + 1) == '/' && message.charAt(i + 2) == '/') {
                 break;
               }
@@ -358,6 +369,31 @@ public final class TokenParser {
             } else if (codePoint == '\'' || codePoint == '"') {
               state = SecondPassState.STRING;
               currentStringChar = (char) codePoint;
+            } else if (codePoint == ' ') {
+              if (namedArguments == TriState.NOT_SET) {
+                namedArguments = TriState.TRUE;
+                marker = i;
+                break;
+              } else if (namedArguments == TriState.FALSE) {
+                // If the arguments are unnamed, spaces are to be interpreted literally
+                break;
+              }
+
+              if (marker == i) {
+                // If two whitespace follow up on each other, like <name  toggle>, we just want to move the marker up by one without creating a token
+                marker++;
+                break;
+              }
+
+              insert(token, new Token(marker, i, TokenType.TAG_VALUE));
+              marker = i + 1;
+            } else if (codePoint == NAME_VALUE_SEPARATOR) {
+              if (namedArguments != TriState.TRUE) {
+                break;
+              }
+
+              insert(token, new Token(marker, i, TokenType.TAG_VALUE_NAME));
+              marker = i + 1;
             }
             break;
           case STRING:

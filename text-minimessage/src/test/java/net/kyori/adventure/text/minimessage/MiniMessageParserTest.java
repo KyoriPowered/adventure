@@ -23,8 +23,6 @@
  */
 package net.kyori.adventure.text.minimessage;
 
-import java.util.Collections;
-import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -39,6 +37,10 @@ import net.kyori.adventure.text.minimessage.tree.Node;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
@@ -330,6 +332,45 @@ public class MiniMessageParserTest extends AbstractTest {
     this.assertParsedEquals(expected, escaped);
   }
 
+  @Test
+  void testNamedArgumentsTokens() {
+    final String basicInput = "<gold>";
+    final List<Token> expectedTokensBasicInput = Collections.singletonList(new Token(0, basicInput.length(), TokenType.OPEN_TAG));
+    assertIterableEquals(expectedTokensBasicInput, TokenParser.tokenize(basicInput, false));
+
+    final int toggleLength = "toggle".length();
+
+    final String booleanToggleInput = "<toggle  enabled>";
+    final List<Token> expectedTokensBooleanToggleInput = new ArrayList<>();
+    final Token parentToken = new Token(0, booleanToggleInput.length(), TokenType.OPEN_TAG);
+    parentToken.childTokens(new ArrayList<>());
+    parentToken.childTokens().add(new Token(0, toggleLength, TokenType.TEXT));
+    parentToken.childTokens().add(new Token(toggleLength + 2, "enabled".length(), TokenType.TAG_VALUE));
+    expectedTokensBooleanToggleInput.add(parentToken);
+    assertIterableEquals(expectedTokensBooleanToggleInput, TokenParser.tokenize(booleanToggleInput, false));
+
+    final String namedArgumentInput = "<a c=d>";
+    final List<Token> expectedTokensNamedArgumentInput = new ArrayList<>();
+    final Token parentTokenNamed = new Token(0, namedArgumentInput.length(), TokenType.OPEN_TAG);
+    parentTokenNamed.childTokens(new ArrayList<>());
+    parentTokenNamed.childTokens().add(new Token(0, 1, TokenType.TEXT));
+    parentTokenNamed.childTokens().add(new Token(2, 1, TokenType.TAG_VALUE_NAME));
+    parentTokenNamed.childTokens().add(new Token(4, 1, TokenType.TAG_VALUE));
+    expectedTokensNamedArgumentInput.add(parentTokenNamed);
+    assertIterableEquals(expectedTokensNamedArgumentInput, TokenParser.tokenize(namedArgumentInput, false));
+
+    final String mixedArgumentInput = "<a o=i toggle>";
+    final List<Token> expectedTokensMixedArgumentInput = new ArrayList<>();
+    final Token parentTokenMixed = new Token(0, mixedArgumentInput.length(), TokenType.OPEN_TAG);
+    parentTokenMixed.childTokens(new ArrayList<>());
+    parentTokenMixed.childTokens().add(new Token(0, 1, TokenType.TEXT));
+    parentTokenMixed.childTokens().add(new Token(2, 1, TokenType.TAG_VALUE_NAME));
+    parentTokenMixed.childTokens().add(new Token(4, 1, TokenType.TAG_VALUE));
+    parentTokenMixed.childTokens().add(new Token(6, toggleLength, TokenType.TAG_VALUE));
+    expectedTokensMixedArgumentInput.add(parentTokenMixed);
+    assertIterableEquals(expectedTokensMixedArgumentInput, TokenParser.tokenize(mixedArgumentInput, false));
+  }
+
   // GH-68, GH-93
   @Test
   void testAngleBracketsShit() {
@@ -379,9 +420,9 @@ public class MiniMessageParserTest extends AbstractTest {
   void testEscapeInsideOfContext() {
     final String input = "<hover:show_text:'Look at\\\\ this \\''>Test";
     final Component expected = text()
-            .content("Test")
-            .hoverEvent(text("Look at\\ this '"))
-            .build();
+      .content("Test")
+      .hoverEvent(text("Look at\\ this '"))
+      .build();
 
     this.assertParsedEquals(expected, input);
   }
@@ -530,7 +571,7 @@ public class MiniMessageParserTest extends AbstractTest {
   void invalidPreprocessTagNames() {
     final String input = "Some<##>of<>these<tag>are<3 >tags";
     final Component expected = Component.text("Some<##>of<>these(meow)are<3 >tags");
-    final TagResolver alwaysMatchingResolver = new TagResolver() {
+    final TagResolver alwaysMatchingResolver = new TagResolver.Queued() {
       @Override
       public Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) throws ParsingException {
         return Tag.preProcessParsed("(meow)");
