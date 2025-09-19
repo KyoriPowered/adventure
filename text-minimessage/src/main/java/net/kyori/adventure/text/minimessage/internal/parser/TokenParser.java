@@ -375,8 +375,18 @@ public final class TokenParser {
               currentStringChar = (char) codePoint;
             } else if (codePoint == ' ') {
               if (namedArguments == TriState.NOT_SET) {
+                // Having a whitespace here is nice and all, but there is a slight issue. In the event of a tag just looking like this <name >,
+                // it should not actually be interpreted as a named argument tag, since it has no arguments which would actually use that.
+                // We can simply check whether the remainer of this message is blank.
+                final String substring = message.substring(marker + 1, endIndex);
+                if (isBlank(substring)) {
+                  i += substring.length();
+                  break;
+                }
+
+                insert(token, new Token(marker, i, TokenType.TAG_VALUE));
                 namedArguments = TriState.TRUE;
-                marker = i;
+                marker = i + 1;
                 break;
               } else if (namedArguments == TriState.FALSE) {
                 // If the arguments are unnamed, spaces are to be interpreted literally
@@ -413,6 +423,17 @@ public final class TokenParser {
       // anything not matched is the final part
       if (token.childTokens() == null || token.childTokens().isEmpty()) {
         insert(token, new Token(startIndex, endIndex, TokenType.TAG_VALUE));
+      } else if (namedArguments == TriState.TRUE) {
+        if (marker < endIndex) {
+          if (nextNormalIsArgumentValue) {
+            insert(token, new Token(marker, endIndex, TokenType.TAG_VALUE_NAME));
+          } else {
+            // If there are only whitespace characters remaining, we do not want to create a new token here, as it would be empty
+            if (!isBlank(message.substring(marker, endIndex))) {
+              insert(token, new Token(marker, endIndex, TokenType.TAG_VALUE_TOGGLE));
+            }
+          }
+        }
       } else {
         final int end = token.childTokens().get(token.childTokens().size() - 1).endIndex();
         if (end != endIndex) {
@@ -420,6 +441,19 @@ public final class TokenParser {
         }
       }
     }
+  }
+
+  private static boolean isBlank(final CharSequence cs) {
+    int index = 0;
+    boolean isBlank = true;
+    while (index < cs.length()) {
+      if (!Character.isWhitespace(cs.charAt(index++))) {
+        isBlank = false;
+        break;
+      }
+    }
+
+    return isBlank;
   }
 
   /*

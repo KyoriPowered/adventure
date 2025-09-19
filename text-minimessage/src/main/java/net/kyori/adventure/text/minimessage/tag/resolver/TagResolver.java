@@ -142,6 +142,10 @@ public interface TagResolver {
     };
   }
 
+  static @NotNull TagResolver namedResolver(final @NotNull String name, final @NotNull BiFunction<NamedArgumentMap, Context, Tag> handler) {
+    return namedResolver(Collections.singleton(name), handler);
+  }
+
   static @NotNull TagResolver namedResolver(final @NotNull Set<String> names, final @NotNull BiFunction<NamedArgumentMap, Context, Tag> handler) {
     final Set<String> ownNames = new HashSet<>(names);
     for (final String name : ownNames) {
@@ -340,7 +344,7 @@ public interface TagResolver {
     @Override
     @Nullable
     default Tag resolveNamed(final @NotNull String name, final @NotNull NamedArgumentMap arguments, final @NotNull Context ctx) throws ParsingException {
-      throw new UnsupportedOperationException();
+      return null;
     }
   }
 
@@ -348,7 +352,7 @@ public interface TagResolver {
     @Override
     @Nullable
     default Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) throws ParsingException {
-      throw new UnsupportedOperationException();
+      return null;
     }
   }
 
