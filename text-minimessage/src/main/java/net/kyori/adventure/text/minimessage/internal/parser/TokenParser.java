@@ -83,7 +83,7 @@ public final class TokenParser {
    * @since 4.10.0
    */
   public static RootNode parse(
-    final TokenParser.@NotNull TagProvider tagProvider,
+    final @NotNull TagProvider tagProvider,
     final @NotNull Predicate<String> tagNameChecker,
     final @NotNull String message,
     final @NotNull String originalMessage,
@@ -459,7 +459,7 @@ public final class TokenParser {
    * Build a tree from the OPEN_TAG and CLOSE_TAG tokens
    */
   private static RootNode buildTree(
-    final TokenParser.@NotNull TagProvider tagProvider,
+    final @NotNull TagProvider tagProvider,
     final @NotNull Predicate<String> tagNameChecker,
     final @NotNull List<Token> tokens,
     final @NotNull String message,
@@ -530,7 +530,7 @@ public final class TokenParser {
           final String closeTagName = closeValues.get(0);
 
           if (tagNameChecker.test(closeTagName)) {
-            final Tag tag = tagProvider.resolveQueued(closeTagName);
+            final Tag tag = tagProvider.resolveSequential(closeTagName);
 
             if (tag == ParserDirective.RESET) {
               // This is a synthetic node, closing it means nothing in the context of building a tree
@@ -620,10 +620,9 @@ public final class TokenParser {
    *
    * @param closeParts The parts of the close tag
    * @param openParts The parts of the open tag
-   * @param <T> tag part
    * @return {@code true} if the given close parts closes the open tag parts.
    */
-  private static <T extends TagPart> boolean tagCloses(final List<String> closeParts, final List<T> openParts) {
+  private static boolean tagCloses(final List<String> closeParts, final List<TagPart> openParts) {
     if (closeParts.size() > openParts.size()) {
       return false;
     }
@@ -740,7 +739,7 @@ public final class TokenParser {
    * @param <T> argument
    */
   @ApiStatus.Internal
-  public interface QueuedTagProvider<T extends Tag.Argument> {
+  public interface SequentialTagProvider<T extends Tag.Argument> {
     /**
      * Look up a tag.
      *
@@ -752,7 +751,7 @@ public final class TokenParser {
      * @return a tag
      * @since 4.10.0
      */
-    @Nullable Tag resolveQueued(final @NotNull String name, final @NotNull List<T> trimmedArgs, final @Nullable Token token);
+    @Nullable Tag resolveSequential(final @NotNull String name, final @NotNull List<T> trimmedArgs, final @Nullable Token token);
   }
 
   /**
@@ -783,7 +782,7 @@ public final class TokenParser {
    * @since 4.10.0
    */
   @ApiStatus.Internal
-  public interface TagProvider<T extends Tag.Argument> extends QueuedTagProvider<T>, NamedTagProvider<T> {
+  public interface TagProvider<T extends Tag.Argument> extends SequentialTagProvider<T>, NamedTagProvider<T> {
 
     /**
      * Get whether a list of tokens contains a {@link TokenType#TAG_VALUE_NAME} or {@link TokenType#TAG_VALUE_TOGGLE}.
@@ -819,8 +818,8 @@ public final class TokenParser {
      * @return a tag, if any is available
      * @since 4.25.0
      */
-    default @Nullable Tag resolveQueued(final @NotNull String name) {
-      return this.resolveQueued(name, Collections.emptyList(), null);
+    default @Nullable Tag resolveSequential(final @NotNull String name) {
+      return this.resolveSequential(name, Collections.emptyList(), null);
     }
 
     /**
@@ -839,7 +838,7 @@ public final class TokenParser {
      *
      * <p>
      * This method first checks if the node is named and then routes
-     * the call to either {@link #resolveNamed(TagNode)} or {@link #resolveQueued(TagNode)}
+     * the call to either {@link #resolveNamed(TagNode)} or {@link #resolveSequential(TagNode)}
      * depending on the result.
      * </p>
      *
@@ -848,7 +847,7 @@ public final class TokenParser {
      * @since 4.25.0
      */
     default @Nullable Tag resolve(final @NotNull TagNode node) {
-      return this.isNamed(node) ? this.resolveNamed(node) : this.resolveQueued(node);
+      return this.isNamed(node) ? this.resolveNamed(node) : this.resolveSequential(node);
     }
 
     /**
@@ -858,8 +857,8 @@ public final class TokenParser {
      * @return a tag, if any is available
      * @since 4.25.0
      */
-    default @Nullable Tag resolveQueued(final @NotNull TagNode node) {
-      return this.resolveQueued(
+    default @Nullable Tag resolveSequential(final @NotNull TagNode node) {
+      return this.resolveSequential(
         TagProvider.sanitizePlaceholderName(node.name()),
         (List<T>) node.parts().subList(1, node.parts().size()),
         node.token()
@@ -924,18 +923,18 @@ public final class TokenParser {
    */
   @ApiStatus.Internal
   public static final class TagProviderImpl<T extends Tag.Argument> implements TagProvider<T> {
-    private final QueuedTagProvider<T> queued;
+    private final SequentialTagProvider<T> sequential;
     private final NamedTagProvider<T> named;
 
     /**
      * Construct a new {@link TagProviderImpl} object.
      *
-     * @param queued the queued provider
+     * @param sequential the sequential provider
      * @param named the named provider
      * @since 4.25.0
      */
-    public TagProviderImpl(final QueuedTagProvider<T> queued, final NamedTagProvider<T> named) {
-      this.queued = queued;
+    public TagProviderImpl(final SequentialTagProvider<T> sequential, final NamedTagProvider<T> named) {
+      this.sequential = sequential;
       this.named = named;
     }
 
@@ -955,8 +954,8 @@ public final class TokenParser {
      * @since 4.25.0
      */
     @Override
-    public @Nullable Tag resolveQueued(final @NotNull String name, final @NotNull List<T> trimmedArgs, final @Nullable Token token) {
-      return this.queued.resolveQueued(name, trimmedArgs, token);
+    public @Nullable Tag resolveSequential(final @NotNull String name, final @NotNull List<T> trimmedArgs, final @Nullable Token token) {
+      return this.sequential.resolveSequential(name, trimmedArgs, token);
     }
   }
 }

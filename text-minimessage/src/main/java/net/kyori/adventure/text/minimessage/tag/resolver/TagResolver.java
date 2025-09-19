@@ -127,7 +127,7 @@ public interface TagResolver {
     }
     requireNonNull(handler, "handler");
 
-    return new TagResolver.Queued() {
+    return new Sequential() {
       @Override
       public @Nullable Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) throws ParsingException {
         if (!names.contains(name)) return null;
@@ -342,7 +342,7 @@ public interface TagResolver {
    * @since 4.10.0
    */
   @FunctionalInterface
-  interface WithoutArguments extends TagResolver.Queued {
+  interface WithoutArguments extends Sequential {
     /**
      * Resolve a tag based only on the provided name.
      *
@@ -379,7 +379,7 @@ public interface TagResolver {
    *
    * @since 4.25.0
    */
-  interface Queued extends TagResolver {
+  interface Sequential extends TagResolver {
     @Override
     default @Nullable Tag resolveNamed(final @NotNull String name, final @NotNull NamedArgumentMap arguments, final @NotNull Context ctx) throws ParsingException {
       return null;
