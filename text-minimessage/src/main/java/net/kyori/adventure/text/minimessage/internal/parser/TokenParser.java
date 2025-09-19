@@ -23,15 +23,6 @@
  */
 package net.kyori.adventure.text.minimessage.internal.parser;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Locale;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.function.IntPredicate;
-import java.util.function.Predicate;
 import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.internal.TagInternals;
 import net.kyori.adventure.text.minimessage.internal.parser.match.MatchedTokenConsumer;
@@ -49,6 +40,16 @@ import net.kyori.adventure.util.TriState;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Locale;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.function.IntPredicate;
+import java.util.function.Predicate;
 
 /**
  * Handles parsing a string into a list of tokens and then into a tree of nodes.
@@ -84,7 +85,6 @@ public final class TokenParser {
    */
   public static RootNode parse(
     final @NotNull TokenParser.TagProvider tagProvider,
-    final @NotNull TokenParser.NamedTagProvider namedTagProvider,
     final @NotNull Predicate<String> tagNameChecker,
     final @NotNull String message,
     final @NotNull String originalMessage,
@@ -94,7 +94,7 @@ public final class TokenParser {
     final List<Token> tokens = tokenize(message, false);
 
     // then build the tree!
-    return buildTree(tagProvider, namedTagProvider, tagNameChecker, tokens, message, originalMessage, strict);
+    return buildTree(tagProvider, tagNameChecker, tokens, message, originalMessage, strict);
   }
 
   /**
@@ -427,7 +427,6 @@ public final class TokenParser {
    */
   private static RootNode buildTree(
     final @NotNull TokenParser.TagProvider tagProvider,
-    final @NotNull TokenParser.NamedTagProvider namedTagProvider,
     final @NotNull Predicate<String> tagNameChecker,
     final @NotNull List<Token> tokens,
     final @NotNull String message,
@@ -498,7 +497,7 @@ public final class TokenParser {
           final String closeTagName = closeValues.get(0);
 
           if (tagNameChecker.test(closeTagName)) {
-            final Tag tag = tagProvider.resolve(closeTagName);
+            final Tag tag = tagProvider.resolveQueued(closeTagName);
 
             if (tag == ParserDirective.RESET) {
               // This is a synthetic node, closing it means nothing in the context of building a tree
@@ -701,13 +700,8 @@ public final class TokenParser {
     return sb.toString();
   }
 
-  /**
-   * Normalizing provider for tag information.
-   *
-   * @since 4.10.0
-   */
   @ApiStatus.Internal
-  public interface TagProvider<S> {
+  public interface QueuedTagProvider<T extends Tag.Argument> {
     /**
      * Look up a tag.
      *
@@ -719,11 +713,45 @@ public final class TokenParser {
      * @return a tag
      * @since 4.10.0
      */
-    @Nullable Tag resolve(final @NotNull String name, final @NotNull S trimmedArgs, final @Nullable Token token);
+    @Nullable Tag resolveQueued(final @NotNull String name, final @NotNull List<T> trimmedArgs, final @Nullable Token token);
+  }
 
-    S createEmptyArgs();
+  @ApiStatus.Internal
+  public interface NamedTagProvider<T extends Tag.Argument> {
+    /**
+     * Look up a tag.
+     *
+     * <p>Parsing exceptions must be caught and handled within this method.</p>
+     *
+     * @param name the tag name, pre-sanitized
+     * @param trimmedArgs arguments, with the tag name trimmed off
+     * @param token the token, if this tag is from a parse stream
+     * @return a tag
+     * @since 4.10.0
+     */
+    @Nullable Tag resolveNamed(final @NotNull String name, final @NotNull Map<String, T> trimmedArgs, final @Nullable Token token);
+  }
 
-    S createFromNode(TagNode node);
+  /**
+   * Normalizing provider for tag information.
+   *
+   * @since 4.10.0
+   */
+  @ApiStatus.Internal
+  public interface TagProvider<T extends Tag.Argument> extends QueuedTagProvider<T>, NamedTagProvider<T> {
+
+    default boolean isNamed(final @NotNull List<Token> trimmedTokens) {
+      for (final Token trimmedToken : trimmedTokens) {
+        if (trimmedToken.type() == TokenType.TAG_VALUE_NAME || trimmedToken.type() == TokenType.TAG_VALUE_TOGGLE) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    default boolean isNamed(final @NotNull TagNode node) {
+      return isNamed(node.token().childTokens());
+    }
 
     /**
      * Resolve by sanitized name.
@@ -732,8 +760,23 @@ public final class TokenParser {
      * @return a tag, if any is available
      * @since 4.10.0
      */
-    default @Nullable Tag resolve(final @NotNull String name) {
-      return this.resolve(name, createEmptyArgs(), null);
+    default @Nullable Tag resolveQueued(final @NotNull String name) {
+      return this.resolveQueued(name, Collections.emptyList(), null);
+    }
+
+    /**
+     * Resolve by sanitized name.
+     *
+     * @param name sanitized name
+     * @return a tag, if any is available
+     * @since 4.10.0
+     */
+    default @Nullable Tag resolveNamed(final @NotNull String name) {
+      return this.resolveNamed(name, Collections.emptyMap(), null);
+    }
+
+    default @Nullable Tag resolve(final @NotNull TagNode node) {
+      return isNamed(node) ? resolveNamed(node) : resolveQueued(node);
     }
 
     /**
@@ -743,52 +786,22 @@ public final class TokenParser {
      * @return a tag, if any is available
      * @since 4.10.0
      */
-    default @Nullable Tag resolve(final @NotNull TagNode node) {
-      return this.resolve(
-        sanitizePlaceholderName(node.name()),
-        createFromNode(node),
+    default @Nullable Tag resolveQueued(final @NotNull TagNode node) {
+      return this.resolveQueued(
+        TagProvider.sanitizePlaceholderName(node.name()),
+        (List<T>) node.parts().subList(1, node.parts().size()),
         node.token()
       );
     }
 
     /**
-     * Sanitize placeholder names.
+     * Resolve by node.
      *
-     * <p>This makes all placeholder names lower-case.</p>
-     *
-     * @param name the raw name
-     * @return a sanitized name
+     * @param node tag node
+     * @return a tag, if any is available
      * @since 4.10.0
      */
-    static @NotNull String sanitizePlaceholderName(final @NotNull String name) {
-      return name.toLowerCase(Locale.ROOT);
-    }
-  }
-
-  @ApiStatus.Internal
-  public interface QueuedTagProvider<T extends Tag.Argument> extends TagProvider<List<T>> {
-
-    @Override
-    default List<T> createFromNode(TagNode node) {
-      return (List<T>) node.parts().subList(1, node.parts().size());
-    }
-
-    @Override
-    default List<T> createEmptyArgs() {
-      return Collections.emptyList();
-    }
-  }
-
-  @ApiStatus.Internal
-  public interface NamedTagProvider<T extends Tag.Argument> extends TagProvider<Map<String, T>> {
-
-    @Override
-    default Map<String, T> createEmptyArgs() {
-      return Collections.emptyMap();
-    }
-
-    @Override
-    default Map<String, T> createFromNode(TagNode node) {
+    default @Nullable Tag resolveNamed(final @NotNull TagNode node) {
       final Map<String, T> map = new TreeMap<>();
 
       @NotNull List<TagPart> parts = node.parts();
@@ -810,7 +823,45 @@ public final class TokenParser {
         }
       }
 
-      return map;
+      return this.resolveNamed(
+        TagProvider.sanitizePlaceholderName(node.name()),
+        map,
+        node.token()
+      );
+    }
+
+    /**
+     * Sanitize placeholder names.
+     *
+     * <p>This makes all placeholder names lower-case.</p>
+     *
+     * @param name the raw name
+     * @return a sanitized name
+     * @since 4.10.0
+     */
+    static @NotNull String sanitizePlaceholderName(final @NotNull String name) {
+      return name.toLowerCase(Locale.ROOT);
+    }
+  }
+
+  @ApiStatus.Internal
+  public static final class TagProviderImpl<T extends Tag.Argument> implements TagProvider<T> {
+    private final QueuedTagProvider<T> queued;
+    private final NamedTagProvider<T> named;
+
+    public TagProviderImpl(final QueuedTagProvider<T> queued, final NamedTagProvider<T> named) {
+      this.queued = queued;
+      this.named = named;
+    }
+
+    @Override
+    public @Nullable Tag resolveNamed(final @NotNull String name, final @NotNull Map<String, T> trimmedArgs, final @Nullable Token token) {
+      return named.resolveNamed(name, trimmedArgs, token);
+    }
+
+    @Override
+    public @Nullable Tag resolveQueued(final @NotNull String name, final @NotNull List<T> trimmedArgs, final @Nullable Token token) {
+      return queued.resolveQueued(name, trimmedArgs, token);
     }
   }
 }

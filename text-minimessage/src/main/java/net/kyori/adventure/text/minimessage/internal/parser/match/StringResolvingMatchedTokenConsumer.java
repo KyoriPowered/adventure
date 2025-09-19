@@ -93,7 +93,7 @@ public final class StringResolvingMatchedTokenConsumer extends MatchedTokenConsu
 
         // we might care if it's a pre-process!
         if (this.tagProvider instanceof TokenParser.QueuedTagProvider) {
-          final @Nullable Tag replacement = this.tagProvider.resolve(TagProvider.sanitizePlaceholderName(tag), parts, tokens.get(0));
+          final @Nullable Tag replacement = this.tagProvider.resolveQueued(TagProvider.sanitizePlaceholderName(tag), parts, tokens.get(0));
 
           if (replacement instanceof PreProcess) {
             this.builder.append(Objects.requireNonNull(((PreProcess) replacement).value(), "PreProcess replacements cannot return null"));
