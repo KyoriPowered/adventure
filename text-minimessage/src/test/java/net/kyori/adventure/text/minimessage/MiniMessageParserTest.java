@@ -31,11 +31,13 @@ import net.kyori.adventure.text.minimessage.internal.parser.TokenParser;
 import net.kyori.adventure.text.minimessage.internal.parser.TokenType;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
+import net.kyori.adventure.text.minimessage.tag.resolver.NamedArgumentMap;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.minimessage.tree.Node;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -571,19 +573,7 @@ public class MiniMessageParserTest extends AbstractTest {
   void invalidPreprocessTagNames() {
     final String input = "Some<##>of<>these<tag>are<3 >tags";
     final Component expected = Component.text("Some<##>of<>these(meow)are<3 >tags");
-    final TagResolver alwaysMatchingResolver = new TagResolver.Queued() {
-      @Override
-      public Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) throws ParsingException {
-        return Tag.preProcessParsed("(meow)");
-      }
-
-      @Override
-      public boolean has(final @NotNull String name) {
-        return true;
-      }
-    };
-
-    this.assertParsedEquals(expected, input, alwaysMatchingResolver);
+    this.assertParsedEquals(expected, input, new AlwaysMatchingResolver());
   }
 
   // https://github.com/KyoriPowered/adventure/issues/1011
@@ -593,5 +583,22 @@ public class MiniMessageParserTest extends AbstractTest {
     final Component expected = Component.text(input);
 
     this.assertParsedEquals(expected, input);
+  }
+
+  private static final class AlwaysMatchingResolver implements TagResolver.Queued, TagResolver.Named {
+    @Override
+    public @NotNull Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) throws ParsingException {
+      return Tag.preProcessParsed("(meow)");
+    }
+
+    @Override
+    public @NotNull Tag resolveNamed(final @NotNull String name, final @NotNull NamedArgumentMap arguments, final @NotNull Context ctx) throws ParsingException {
+      return Tag.preProcessParsed("(meow)");
+    }
+
+    @Override
+    public boolean has(final @NotNull String name) {
+      return true;
+    }
   }
 }
