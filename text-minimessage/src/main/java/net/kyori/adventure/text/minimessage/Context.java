@@ -142,6 +142,14 @@ public interface Context {
     final @NotNull ArgumentQueue args
   );
 
+  /**
+   * Create a new parsing exception.
+   *
+   * @param message a detail message describing the error
+   * @param cause the cause
+   * @param args arguments that caused the errors
+   * @return the new parsing exception
+   */
   @NotNull ParsingException newException(
     final @NotNull String message,
     final @Nullable Throwable cause,

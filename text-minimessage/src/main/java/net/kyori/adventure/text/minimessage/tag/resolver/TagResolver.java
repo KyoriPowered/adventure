@@ -142,10 +142,34 @@ public interface TagResolver {
     };
   }
 
+  /**
+   * Create a tag resolver that only responds to certain tag names, and whose value does not depend on that name.
+   *
+   * <p>
+   * This method creates a special resolver which listens to tags with named arguments instead of sequences ones.
+   * </p>
+   *
+   * @param name the name to respond to
+   * @param handler the tag handler, may throw {@link ParsingException} if provided arguments are in an invalid format
+   * @return a resolver that creates tags using the provided handler
+   * @since 4.25.0
+   */
   static @NotNull TagResolver namedResolver(final @NotNull String name, final @NotNull BiFunction<NamedArgumentMap, Context, Tag> handler) {
     return namedResolver(Collections.singleton(name), handler);
   }
 
+  /**
+   * Create a tag resolver that only responds to certain tag names, and whose value does not depend on that name.
+   *
+   * <p>
+   * This method creates a special resolver which listens to tags with named arguments instead of sequences ones.
+   * </p>
+   *
+   * @param names the names to respond to
+   * @param handler the tag handler, may throw {@link ParsingException} if provided arguments are in an invalid format
+   * @return a resolver that creates tags using the provided handler
+   * @since 4.25.0
+   */
   static @NotNull TagResolver namedResolver(final @NotNull Set<String> names, final @NotNull BiFunction<NamedArgumentMap, Context, Tag> handler) {
     final Set<String> ownNames = new HashSet<>(names);
     for (final String name : ownNames) {
@@ -249,6 +273,16 @@ public interface TagResolver {
    */
   @Nullable Tag resolve(@TagPattern final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) throws ParsingException;
 
+  /**
+   * Gets a tag with named arguments from this resolver based on the current state.
+   *
+   * @param name the tag name
+   * @param arguments the arguments passed to the tag
+   * @param ctx the parse context
+   * @return a possible tag
+   * @throws ParsingException if the provided arguments are invalid
+   * @since 4.25.0
+   */
   @Nullable Tag resolveNamed(@TagPattern final @NotNull String name, final @NotNull NamedArgumentMap arguments, final @NotNull Context ctx) throws ParsingException;
 
   /**
@@ -340,18 +374,26 @@ public interface TagResolver {
     }
   }
 
+  /**
+   * A {@link TagResolver} which only listens to sequential arguments.
+   *
+   * @since 4.25.0
+   */
   interface Queued extends TagResolver {
     @Override
-    @Nullable
-    default Tag resolveNamed(final @NotNull String name, final @NotNull NamedArgumentMap arguments, final @NotNull Context ctx) throws ParsingException {
+    default @Nullable Tag resolveNamed(final @NotNull String name, final @NotNull NamedArgumentMap arguments, final @NotNull Context ctx) throws ParsingException {
       return null;
     }
   }
 
+  /**
+   * A {@link TagResolver} which only listens to named arguments.
+   *
+   * @since 4.25.0
+   */
   interface Named extends TagResolver {
     @Override
-    @Nullable
-    default Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) throws ParsingException {
+    default @Nullable Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) throws ParsingException {
       return null;
     }
   }
@@ -398,10 +440,30 @@ public interface TagResolver {
       return this.resolver(TagResolver.resolver(names, handler));
     }
 
+    /**
+     * Add a single dynamically created tag to this resolver.
+     *
+     * <p>This method adds a special resolver which looks for named arguments instead of sequential arguments.</p>
+     *
+     * @param name the name to respond to
+     * @param handler the tag handler, may throw {@link ParsingException} if provided arguments are in an invalid format
+     * @return this builder
+     * @since 4.25.0
+     */
     default @NotNull Builder namedArgumentsTag(@TagPattern final @NotNull String name, final @NotNull BiFunction<NamedArgumentMap, Context, Tag> handler) {
       return this.namedArgumentsTag(Collections.singleton(name), handler);
     }
 
+    /**
+     * Add a single dynamically created tag to this resolver.
+     *
+     * <p>This method adds a special resolver which looks for named arguments instead of sequential arguments.</p>
+     *
+     * @param names the names to respond to
+     * @param handler the tag handler, may throw {@link ParsingException} if provided arguments are in an invalid format
+     * @return this builder
+     * @since 4.25.0
+     */
     default @NotNull Builder namedArgumentsTag(final @NotNull Set<String> names, final @NotNull BiFunction<NamedArgumentMap, Context, Tag> handler) {
       return this.resolver(TagResolver.namedResolver(names, handler));
     }

@@ -23,6 +23,10 @@
  */
 package net.kyori.adventure.text.minimessage;
 
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 import net.kyori.adventure.pointer.Pointered;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.internal.parser.ParsingExceptionImpl;
@@ -34,11 +38,6 @@ import net.kyori.adventure.text.minimessage.tag.resolver.NamedArgumentMap;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
-import java.util.function.UnaryOperator;
 
 import static java.util.Objects.requireNonNull;
 
