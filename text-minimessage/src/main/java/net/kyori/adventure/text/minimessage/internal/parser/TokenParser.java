@@ -426,7 +426,7 @@ public final class TokenParser {
       } else if (namedArguments == TriState.TRUE) {
         if (marker < endIndex) {
           if (nextNormalIsArgumentValue) {
-            insert(token, new Token(marker, endIndex, TokenType.TAG_VALUE_NAME));
+            insert(token, new Token(marker, endIndex, TokenType.TAG_VALUE));
           } else {
             // If there are only whitespace characters remaining, we do not want to create a new token here, as it would be empty
             if (!isBlank(message.substring(marker, endIndex))) {
