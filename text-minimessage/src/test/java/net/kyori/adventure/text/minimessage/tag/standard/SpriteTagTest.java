@@ -25,11 +25,9 @@ package net.kyori.adventure.text.minimessage.tag.standard;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.ObjectComponent;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.AbstractTest;
 import net.kyori.adventure.text.object.ObjectContents;
-import net.kyori.adventure.text.object.SpriteObjectContents;
 import org.junit.jupiter.api.Test;
 
 class SpriteTagTest extends AbstractTest {
