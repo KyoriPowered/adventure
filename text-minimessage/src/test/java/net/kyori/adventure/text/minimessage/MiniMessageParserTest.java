@@ -37,7 +37,6 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.minimessage.tree.Node;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -498,6 +497,20 @@ public class MiniMessageParserTest extends AbstractTest {
       "}\n";
 
     assertEquals(expected, tree.toString());
+  }
+
+  @Test
+  void testBasicInsertingNamedTagArguments() {
+    final String input = "<insert value=twentyfive>";
+    final Component parsed = MiniMessage.builder()
+      .tags(TagResolver.namedResolver("insert", (args, ctx) -> Tag.selfClosingInserting(
+        Component.text(args.getOrThrow("value", "value is missing").value())
+      )))
+      .build()
+      .deserialize(input);
+
+    final String parsedString = PlainTextComponentSerializer.plainText().serialize(parsed);
+    assertEquals("twentyfive", parsedString);
   }
 
   @Test
