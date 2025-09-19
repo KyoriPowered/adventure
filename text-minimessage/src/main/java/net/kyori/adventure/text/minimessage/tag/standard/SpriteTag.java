@@ -41,8 +41,8 @@ import org.jetbrains.annotations.Nullable;
 /**
  * A sprite object tag.
  *
- * @sinceMinecraft 1.21.9
  * @since 4.25.0
+ * @sinceMinecraft 1.21.9
  */
 final class SpriteTag {
   private static final String SPRITE = "sprite";
