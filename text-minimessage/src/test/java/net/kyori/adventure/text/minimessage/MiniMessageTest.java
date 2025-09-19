@@ -372,7 +372,7 @@ public class MiniMessageTest extends AbstractTest {
     final List<String> messages = Arrays.asList(sb.toString().split("\n"));
 
     assertTrue(messages.contains("Beginning parsing message <red> RED </red>"));
-    assertTrue(messages.contains("Attempting to match node 'red' at column 0"));
+    assertTrue(messages.contains("Attempting to match node as queued 'red' at column 0"));
     assertTrue(anyMatch(messages, it -> it.startsWith("Successfully matched node 'red' to tag ")));
     assertTrue(messages.contains("Text parsed into element tree:"));
     assertTrue(messages.contains("Node {"));
@@ -391,11 +391,11 @@ public class MiniMessageTest extends AbstractTest {
     final List<String> messages = Arrays.asList(sb.toString().split("\n"));
 
     assertTrue(messages.contains("Beginning parsing message <red> RED <blue> BLUE <click> bad click </click>"));
-    assertTrue(messages.contains("Attempting to match node 'red' at column 0"));
+    assertTrue(messages.contains("Attempting to match node as queued 'red' at column 0"));
     assertTrue(anyMatch(messages, it -> it.startsWith("Successfully matched node 'red' to tag ")));
-    assertTrue(messages.contains("Attempting to match node 'blue' at column 10"));
+    assertTrue(messages.contains("Attempting to match node as queued 'blue' at column 10"));
     assertTrue(anyMatch(messages, it -> it.startsWith("Successfully matched node 'blue' to tag ")));
-    assertTrue(messages.contains("Attempting to match node 'click' at column 22"));
+    assertTrue(messages.contains("Attempting to match node as queued 'click' at column 22"));
     assertTrue(messages.contains("Could not match node 'click' - A click tag requires an action of one of [run_command, open_file, custom, open_url, copy_to_clipboard, change_page, show_dialog, suggest_command]"));
     assertTrue(messages.contains("\t<red> RED <blue> BLUE <click> bad click </click>"));
     assertTrue(messages.contains("\t                      ^~~~~~^"));
@@ -419,11 +419,11 @@ public class MiniMessageTest extends AbstractTest {
     final List<String> messages = Arrays.asList(sb.toString().split("\n"));
 
     assertTrue(messages.contains("Beginning parsing message <red> RED <blue> BLUE <click:open_url:https://github.com> good click </click>"));
-    assertTrue(messages.contains("Attempting to match node 'red' at column 0"));
+    assertTrue(messages.contains("Attempting to match node as queued 'red' at column 0"));
     assertTrue(anyMatch(messages, it -> it.startsWith("Successfully matched node 'red' to tag ")));
-    assertTrue(messages.contains("Attempting to match node 'blue' at column 10"));
+    assertTrue(messages.contains("Attempting to match node as queued 'blue' at column 10"));
     assertTrue(anyMatch(messages, it -> it.startsWith("Successfully matched node 'blue' to tag ")));
-    assertTrue(messages.contains("Attempting to match node 'click' at column 22"));
+    assertTrue(messages.contains("Attempting to match node as queued 'click' at column 22"));
     assertTrue(anyMatch(messages, it -> it.startsWith("Successfully matched node 'click' to tag ")));
     assertTrue(messages.contains("Text parsed into element tree:"));
     assertTrue(messages.contains("Node {"));
