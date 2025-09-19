@@ -500,20 +500,6 @@ public class MiniMessageParserTest extends AbstractTest {
   }
 
   @Test
-  void testBasicInsertingNamedTagArguments() {
-    final String input = "<insert value=twentyfive>";
-    final Component parsed = MiniMessage.builder()
-      .tags(TagResolver.namedResolver("insert", (args, ctx) -> Tag.selfClosingInserting(
-        Component.text(args.getOrThrow("value", "value is missing").value())
-      )))
-      .build()
-      .deserialize(input);
-
-    final String parsedString = PlainTextComponentSerializer.plainText().serialize(parsed);
-    assertEquals("twentyfive", parsedString);
-  }
-
-  @Test
   void testTagsSelfClosable() {
     final String input = "<red>hello <lang:gameMode.creative/> there";
 

@@ -2,6 +2,7 @@ package net.kyori.adventure.text.minimessage.tag.resolver;
 
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
