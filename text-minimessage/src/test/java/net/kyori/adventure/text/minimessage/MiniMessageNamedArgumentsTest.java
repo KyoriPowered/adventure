@@ -136,6 +136,13 @@ public class MiniMessageNamedArgumentsTest extends AbstractTest {
   }
 
   @Test
+  void testWhitespaceBeforeQueued() {
+    final String input = "<test :argument>";
+    final Component expected = text("<test :argument>");
+    assertParsedEquals(expected, input);
+  }
+
+  @Test
   void testQueuedTreatedAsNamed() {
     final String input = "<red value=true>";
     final Component expected = text("<red value=true>");
