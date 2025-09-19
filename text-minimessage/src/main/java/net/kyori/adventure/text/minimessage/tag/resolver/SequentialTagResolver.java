@@ -44,7 +44,7 @@ final class SequentialTagResolver implements TagResolver, SerializableResolver {
   public @Nullable Tag resolveNamed(final @NotNull String name, final @NotNull NamedArgumentMap arguments, final @NotNull Context ctx) throws ParsingException {
     @Nullable ParsingException thrown = null;
     for (final TagResolver resolver : this.resolvers) {
-      if (!(resolver instanceof TagResolver.Named)) {
+      if (!(resolver instanceof Named)) {
         continue;
       }
 
@@ -78,7 +78,7 @@ final class SequentialTagResolver implements TagResolver, SerializableResolver {
   public @Nullable Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) throws ParsingException {
     @Nullable ParsingException thrown = null;
     for (final TagResolver resolver : this.resolvers) {
-      if (!(resolver instanceof TagResolver.Queued)) {
+      if (!(resolver instanceof Sequential)) {
         continue;
       }
 

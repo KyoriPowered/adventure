@@ -135,13 +135,13 @@ final class MiniMessageParser {
       debug.accept("\n");
     }
 
-    final TokenParser.QueuedTagProvider queuedTagProvider;
+    final TokenParser.SequentialTagProvider sequentialTagProvider;
     final TokenParser.NamedTagProvider namedTagProvider;
 
     if (debug != null) {
-      queuedTagProvider = (name, args, token) -> {
+      sequentialTagProvider = (name, args, token) -> {
         try {
-          debug.accept("Attempting to match node as queued '");
+          debug.accept("Attempting to match node as sequential '");
           debug.accept(name);
           debug.accept("'");
           if (token != null) {
@@ -222,7 +222,7 @@ final class MiniMessageParser {
         }
       };
     } else {
-      queuedTagProvider = (name, args, token) -> {
+      sequentialTagProvider = (name, args, token) -> {
         try {
           return combinedResolver.resolve(name, new ArgumentQueueImpl<>(context, args), context);
         } catch (final ParsingException ignored) {
@@ -238,7 +238,7 @@ final class MiniMessageParser {
       };
     }
 
-    final TokenParser.TagProvider transformationFactory = new TokenParser.TagProviderImpl(queuedTagProvider, namedTagProvider);
+    final TokenParser.TagProvider transformationFactory = new TokenParser.TagProviderImpl(sequentialTagProvider, namedTagProvider);
     final Predicate<String> tagNameChecker = name -> {
       final String sanitized = TokenParser.TagProvider.sanitizePlaceholderName(name);
       return combinedResolver.has(sanitized);
