@@ -23,6 +23,15 @@
  */
 package net.kyori.adventure.text.minimessage.internal.parser;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Locale;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.function.IntPredicate;
+import java.util.function.Predicate;
 import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.internal.TagInternals;
 import net.kyori.adventure.text.minimessage.internal.parser.match.MatchedTokenConsumer;
@@ -40,16 +49,6 @@ import net.kyori.adventure.util.TriState;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Locale;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.function.IntPredicate;
-import java.util.function.Predicate;
 
 /**
  * Handles parsing a string into a list of tokens and then into a tree of nodes.
@@ -84,7 +83,7 @@ public final class TokenParser {
    * @since 4.10.0
    */
   public static RootNode parse(
-    final @NotNull TokenParser.TagProvider tagProvider,
+    final TokenParser.@NotNull TagProvider tagProvider,
     final @NotNull Predicate<String> tagNameChecker,
     final @NotNull String message,
     final @NotNull String originalMessage,
@@ -460,7 +459,7 @@ public final class TokenParser {
    * Build a tree from the OPEN_TAG and CLOSE_TAG tokens
    */
   private static RootNode buildTree(
-    final @NotNull TokenParser.TagProvider tagProvider,
+    final TokenParser.@NotNull TagProvider tagProvider,
     final @NotNull Predicate<String> tagNameChecker,
     final @NotNull List<Token> tokens,
     final @NotNull String message,
@@ -621,6 +620,7 @@ public final class TokenParser {
    *
    * @param closeParts The parts of the close tag
    * @param openParts The parts of the open tag
+   * @param <T> tag part
    * @return {@code true} if the given close parts closes the open tag parts.
    */
   private static <T extends TagPart> boolean tagCloses(final List<String> closeParts, final List<T> openParts) {
@@ -734,6 +734,11 @@ public final class TokenParser {
     return sb.toString();
   }
 
+  /**
+   * A special tag provider for tags with queued arguments.
+   *
+   * @param <T> argument
+   */
   @ApiStatus.Internal
   public interface QueuedTagProvider<T extends Tag.Argument> {
     /**
@@ -750,6 +755,11 @@ public final class TokenParser {
     @Nullable Tag resolveQueued(final @NotNull String name, final @NotNull List<T> trimmedArgs, final @Nullable Token token);
   }
 
+  /**
+   * A special tag provider for tags with named arguments.
+   *
+   * @param <T> argument
+   */
   @ApiStatus.Internal
   public interface NamedTagProvider<T extends Tag.Argument> {
     /**
@@ -769,11 +779,19 @@ public final class TokenParser {
   /**
    * Normalizing provider for tag information.
    *
+   * @param <T> tag argument
    * @since 4.10.0
    */
   @ApiStatus.Internal
   public interface TagProvider<T extends Tag.Argument> extends QueuedTagProvider<T>, NamedTagProvider<T> {
 
+    /**
+     * Get whether a list of tokens contains a {@link TokenType#TAG_VALUE_NAME} or {@link TokenType#TAG_VALUE_TOGGLE}.
+     *
+     * @param trimmedTokens list of tokens
+     * @return whether a list of tokens contains a {@link TokenType#TAG_VALUE_NAME} or {@link TokenType#TAG_VALUE_TOGGLE}
+     * @since 4.25.0
+     */
     default boolean isNamed(final @NotNull List<Token> trimmedTokens) {
       for (final Token trimmedToken : trimmedTokens) {
         if (trimmedToken.type() == TokenType.TAG_VALUE_NAME || trimmedToken.type() == TokenType.TAG_VALUE_TOGGLE) {
@@ -783,8 +801,15 @@ public final class TokenParser {
       return false;
     }
 
+    /**
+     * Get whether this tag node has named arguments.
+     *
+     * @param node the node
+     * @return whether this tag node has named arguments
+     * @since 4.25.0
+     */
     default boolean isNamed(final @NotNull TagNode node) {
-      return isNamed(node.token().childTokens());
+      return this.isNamed(node.token().childTokens());
     }
 
     /**
@@ -792,7 +817,7 @@ public final class TokenParser {
      *
      * @param name sanitized name
      * @return a tag, if any is available
-     * @since 4.10.0
+     * @since 4.25.0
      */
     default @Nullable Tag resolveQueued(final @NotNull String name) {
       return this.resolveQueued(name, Collections.emptyList(), null);
@@ -803,14 +828,27 @@ public final class TokenParser {
      *
      * @param name sanitized name
      * @return a tag, if any is available
-     * @since 4.10.0
+     * @since 4.25.0
      */
     default @Nullable Tag resolveNamed(final @NotNull String name) {
       return this.resolveNamed(name, Collections.emptyMap(), null);
     }
 
+    /**
+     * Resolve the provided node smartly.
+     *
+     * <p>
+     * This method first checks if the node is named and then routes
+     * the call to either {@link #resolveNamed(TagNode)} or {@link #resolveQueued(TagNode)}
+     * depending on the result.
+     * </p>
+     *
+     * @param node the node
+     * @return the resolved tag, or null
+     * @since 4.25.0
+     */
     default @Nullable Tag resolve(final @NotNull TagNode node) {
-      return isNamed(node) ? resolveNamed(node) : resolveQueued(node);
+      return this.isNamed(node) ? this.resolveNamed(node) : this.resolveQueued(node);
     }
 
     /**
@@ -818,7 +856,7 @@ public final class TokenParser {
      *
      * @param node tag node
      * @return a tag, if any is available
-     * @since 4.10.0
+     * @since 4.25.0
      */
     default @Nullable Tag resolveQueued(final @NotNull TagNode node) {
       return this.resolveQueued(
@@ -833,12 +871,12 @@ public final class TokenParser {
      *
      * @param node tag node
      * @return a tag, if any is available
-     * @since 4.10.0
+     * @since 4.25.0
      */
     default @Nullable Tag resolveNamed(final @NotNull TagNode node) {
       final Map<String, T> map = new TreeMap<>();
 
-      @NotNull List<TagPart> parts = node.parts();
+      final List<TagPart> parts = node.parts();
       for (int i = 1, partsSize = parts.size(); i < partsSize; i++) {
         final TagPart part = parts.get(i);
 
@@ -878,24 +916,47 @@ public final class TokenParser {
     }
   }
 
+  /**
+   * A basic implementation of a {@link TagProvider} for convenience.
+   *
+   * @param <T> tag argument
+   * @since 4.25.0
+   */
   @ApiStatus.Internal
   public static final class TagProviderImpl<T extends Tag.Argument> implements TagProvider<T> {
     private final QueuedTagProvider<T> queued;
     private final NamedTagProvider<T> named;
 
+    /**
+     * Construct a new {@link TagProviderImpl} object.
+     *
+     * @param queued the queued provider
+     * @param named the named provider
+     * @since 4.25.0
+     */
     public TagProviderImpl(final QueuedTagProvider<T> queued, final NamedTagProvider<T> named) {
       this.queued = queued;
       this.named = named;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 4.25.0
+     */
     @Override
     public @Nullable Tag resolveNamed(final @NotNull String name, final @NotNull Map<String, T> trimmedArgs, final @Nullable Token token) {
-      return named.resolveNamed(name, trimmedArgs, token);
+      return this.named.resolveNamed(name, trimmedArgs, token);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 4.25.0
+     */
     @Override
     public @Nullable Tag resolveQueued(final @NotNull String name, final @NotNull List<T> trimmedArgs, final @Nullable Token token) {
-      return queued.resolveQueued(name, trimmedArgs, token);
+      return this.queued.resolveQueued(name, trimmedArgs, token);
     }
   }
 }
