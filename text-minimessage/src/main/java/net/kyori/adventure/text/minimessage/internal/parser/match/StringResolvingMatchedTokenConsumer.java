@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Objects;
 import net.kyori.adventure.text.minimessage.internal.TagInternals;
 import net.kyori.adventure.text.minimessage.internal.parser.Token;
-import net.kyori.adventure.text.minimessage.internal.parser.TokenParser;
 import net.kyori.adventure.text.minimessage.internal.parser.TokenParser.TagProvider;
 import net.kyori.adventure.text.minimessage.internal.parser.TokenType;
 import net.kyori.adventure.text.minimessage.internal.parser.node.TagPart;
@@ -58,7 +57,7 @@ public final class StringResolvingMatchedTokenConsumer extends MatchedTokenConsu
    */
   public StringResolvingMatchedTokenConsumer(
     final @NotNull String input,
-    final TokenParser.@NotNull TagProvider tagProvider
+    final @NotNull TagProvider tagProvider
   ) {
     super(input);
     this.builder = new StringBuilder(input.length());
@@ -90,9 +89,8 @@ public final class StringResolvingMatchedTokenConsumer extends MatchedTokenConsu
             parts.add(new TagPart(match, childs.get(i), this.tagProvider));
           }
         }
-
         // we might care if it's a pre-process!
-        final @Nullable Tag replacement = this.tagProvider.resolveQueued(TagProvider.sanitizePlaceholderName(tag), parts, tokens.get(0));
+        final @Nullable Tag replacement = this.tagProvider.resolveSequential(TagProvider.sanitizePlaceholderName(tag), parts, tokens.get(0));
 
         if (replacement instanceof PreProcess) {
           this.builder.append(Objects.requireNonNull(((PreProcess) replacement).value(), "PreProcess replacements cannot return null"));

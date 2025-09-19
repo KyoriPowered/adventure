@@ -583,7 +583,7 @@ public class MiniMessageParserTest extends AbstractTest {
     this.assertParsedEquals(expected, input);
   }
 
-  private static final class AlwaysMatchingResolver implements TagResolver.Queued, TagResolver.Named {
+  private static final class AlwaysMatchingResolver implements TagResolver.Sequential, TagResolver.Named {
     @Override
     public @NotNull Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) throws ParsingException {
       return Tag.preProcessParsed("(meow)");
