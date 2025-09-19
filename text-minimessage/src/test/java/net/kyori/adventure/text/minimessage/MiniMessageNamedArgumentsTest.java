@@ -111,4 +111,38 @@ public class MiniMessageNamedArgumentsTest extends AbstractTest {
       .debug(System.out::print)
       .build(), expected, input, INSERT_VALUE_RESOLVER);
   }
+
+  @Test
+  void testQueuedTreatedAsNamed() {
+    final String input = "<red value=true>";
+    final Component expected = text("<red value=true>");
+    assertParsedEquals(expected, input);
+  }
+
+  @Test
+  void testNamedTreatedAsQueued() {
+    final String input = "<named:valone:valtwo>";
+    final Component expected = text("<named:valone:valtwo>");
+    assertParsedEquals(MiniMessage.miniMessage(), expected, input, TagResolver.namedResolver("named", (args, ctx) -> Tag.inserting(text("wrong!"))));
+  }
+
+  @Test
+  void testNoArgsAlwaysTreatedAsQueued() {
+    final String input = "<test>";
+    final Component expected = text("pass");
+    assertParsedEquals(MiniMessage.miniMessage(), expected, input,
+      TagResolver.namedResolver("test", (args, ctx) -> Tag.inserting(text("fail"))),
+      TagResolver.resolver("test", (args, ctx) -> Tag.inserting(text("pass")))
+    );
+  }
+
+  @Test
+  void testNamedQueuedCanCoexist() {
+    final String input = "<test> <test this_is_needed_for_it_to_be_recognized_correctly>";
+    final Component expected = text("Hello World!");
+    assertParsedEquals(MiniMessage.miniMessage(), expected, input,
+      TagResolver.resolver("test", (args, ctx) -> Tag.inserting(text("Hello"))),
+      TagResolver.namedResolver("test", (args, ctx) -> Tag.inserting(text("World!")))
+    );
+  }
 }
