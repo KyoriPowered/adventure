@@ -91,4 +91,24 @@ public class MiniMessageNamedArgumentsTest extends AbstractTest {
       }))
     );
   }
+
+  @Test
+  void testWithExtraWhitespace() {
+    final String input = "<insert                                  value=\"too much?\">";
+    final Component expected = text("too much?");
+    assertParsedEquals(MiniMessage.miniMessage(), expected, input, INSERT_VALUE_RESOLVER);
+  }
+
+  @Test
+  void testWithQueuedAndExtraWhitespace() {
+    final String input = "This <red > tag does not count, this <insert value='<red>'> does not either, but the <red>red one does!";
+    final Component expected = text()
+      .append(text("This <red > tag does not count, this <red> does not either, but the "))
+      .append(text("red one does!", RED))
+      .build();
+    assertParsedEquals(MiniMessage
+      .builder()
+      .debug(System.out::print)
+      .build(), expected, input, INSERT_VALUE_RESOLVER);
+  }
 }
