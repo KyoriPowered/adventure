@@ -58,7 +58,7 @@ public final class StringResolvingMatchedTokenConsumer extends MatchedTokenConsu
    */
   public StringResolvingMatchedTokenConsumer(
     final @NotNull String input,
-    final @NotNull TokenParser.TagProvider tagProvider
+    final TokenParser.@NotNull TagProvider tagProvider
   ) {
     super(input);
     this.builder = new StringBuilder(input.length());
