@@ -378,7 +378,7 @@ public final class TokenParser {
                 // Having a whitespace here is nice and all, but there is a slight issue. In the event of a tag just looking like this <name >,
                 // it should not actually be interpreted as a named argument tag, since it has no arguments which would actually use that.
                 // We can simply check whether the remainer of this message is blank.
-                final String substring = message.substring(marker + 1, endIndex);
+                final String substring = message.substring(i, endIndex);
                 if (isBlank(substring)) {
                   i += substring.length();
                   break;
