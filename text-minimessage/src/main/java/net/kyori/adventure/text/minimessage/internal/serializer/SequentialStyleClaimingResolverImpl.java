@@ -33,12 +33,12 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-final class StyleClaimingResolverImpl implements TagResolver.Sequential, SerializableResolver.Single {
+final class SequentialStyleClaimingResolverImpl implements TagResolver.Sequential, SerializableResolver.Single {
   private final @NotNull Set<String> names;
   private final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler;
   private final @NotNull StyleClaim<?> styleClaim;
 
-  StyleClaimingResolverImpl(final @NotNull Set<String> names, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler, final @NotNull StyleClaim<?> styleClaim) {
+  SequentialStyleClaimingResolverImpl(final @NotNull Set<String> names, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler, final @NotNull StyleClaim<?> styleClaim) {
     this.names = names;
     this.handler = handler;
     this.styleClaim = styleClaim;
