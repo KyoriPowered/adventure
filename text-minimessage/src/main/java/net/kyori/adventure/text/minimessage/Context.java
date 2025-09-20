@@ -119,6 +119,19 @@ public interface Context {
   );
 
   /**
+   * Create a new parsing exception.
+   *
+   * @param message a detail message describing the error
+   * @param tags the tag parts which caused the error
+   * @return the new parsing exception
+   * @since 4.25.0
+   */
+  @NotNull ParsingException newException(
+    final @NotNull String message,
+    final @NotNull NamedArgumentMap tags
+  );
+
+  /**
    * Create a new parsing exception without reference to a specific location.
    *
    * @param message a detail message describing the error
