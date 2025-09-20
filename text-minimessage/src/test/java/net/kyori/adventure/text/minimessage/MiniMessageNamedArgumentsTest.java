@@ -231,8 +231,8 @@ public class MiniMessageNamedArgumentsTest extends AbstractTest {
 
   @Test
   void testWhitespaceAroundEquals() {
-    final String input = "<input text = 'lol'>";
-    final Component expected = text("<input text = 'lol'>");
+    final String input = "<insert text = 'lol'>";
+    final Component expected = text("<insert text = 'lol'>");
     assertParsedEquals(MiniMessage.miniMessage(), expected, input, INSERT_VALUE_RESOLVER);
   }
 }
