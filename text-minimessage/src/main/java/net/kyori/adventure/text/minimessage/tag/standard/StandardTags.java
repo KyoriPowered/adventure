@@ -65,7 +65,8 @@ public final class StandardTags {
         ScoreTag.RESOLVER,
         NbtTag.RESOLVER,
         PrideTag.RESOLVER,
-        ShadowColorTag.RESOLVER
+        ShadowColorTag.RESOLVER,
+        StyleTag.RESOLVER
       )
       .build();
 
@@ -286,6 +287,16 @@ public final class StandardTags {
    */
   public static @NotNull TagResolver shadowColor() {
     return ShadowColorTag.RESOLVER;
+  }
+
+  /**
+   * Get a resolver for the {@value StyleTag#STYLE} tags.
+   *
+   * @return a resolver for the {@value StyleTag#STYLE} tags
+   * @since 4.25.0
+   */
+  public static @NotNull TagResolver style() {
+    return StyleTag.RESOLVER;
   }
 
   /**

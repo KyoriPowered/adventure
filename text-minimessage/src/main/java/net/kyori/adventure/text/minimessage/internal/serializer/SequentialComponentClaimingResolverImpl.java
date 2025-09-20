@@ -25,6 +25,8 @@ package net.kyori.adventure.text.minimessage.internal.serializer;
 
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.function.Function;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.tag.Tag;
@@ -33,15 +35,15 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-final class StyleClaimingResolverImpl implements TagResolver, SerializableResolver.Single {
+class SequentialComponentClaimingResolverImpl implements TagResolver.Sequential, SerializableResolver.Single {
   private final @NotNull Set<String> names;
   private final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler;
-  private final @NotNull StyleClaim<?> styleClaim;
+  private final @NotNull Function<Component, @Nullable Emitable> componentClaim;
 
-  StyleClaimingResolverImpl(final @NotNull Set<String> names, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler, final @NotNull StyleClaim<?> styleClaim) {
+  SequentialComponentClaimingResolverImpl(final Set<String> names, final BiFunction<ArgumentQueue, Context, Tag> handler, final Function<Component, @Nullable Emitable> componentClaim) {
     this.names = names;
     this.handler = handler;
-    this.styleClaim = styleClaim;
+    this.componentClaim = componentClaim;
   }
 
   @Override
@@ -57,7 +59,7 @@ final class StyleClaimingResolverImpl implements TagResolver, SerializableResolv
   }
 
   @Override
-  public @Nullable StyleClaim<?> claimStyle() {
-    return this.styleClaim;
+  public @Nullable Emitable claimComponent(final @NotNull Component component) {
+    return this.componentClaim.apply(component);
   }
 }

@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.minimessage;
 
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.pointer.Pointered;
@@ -33,6 +34,7 @@ import net.kyori.adventure.text.minimessage.internal.parser.Token;
 import net.kyori.adventure.text.minimessage.internal.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
+import net.kyori.adventure.text.minimessage.tag.resolver.NamedArgumentMap;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -149,7 +151,7 @@ class ContextImpl implements Context {
   }
 
   @Override
-  public @NotNull Component deserialize(final @NotNull String message, final @NotNull TagResolver@NotNull... resolvers) {
+  public @NotNull Component deserialize(final @NotNull String message, final @NotNull TagResolver @NotNull ... resolvers) {
     requireNonNull(message, "message");
     final TagResolver combinedResolver = TagResolver.builder().resolver(this.tagResolver).resolvers(resolvers).build();
     return this.deserializeWithOptionalTarget(message, combinedResolver);
@@ -166,8 +168,18 @@ class ContextImpl implements Context {
   }
 
   @Override
+  public @NotNull ParsingException newException(final @NotNull String message, final @NotNull NamedArgumentMap tags) {
+    return new ParsingExceptionImpl(message, this.message, null, false, tagsToTokens(((NamedArgumentMapImpl<?>) tags).args));
+  }
+
+  @Override
   public @NotNull ParsingException newException(final @NotNull String message, final @Nullable Throwable cause, final @NotNull ArgumentQueue tags) {
     return new ParsingExceptionImpl(message, this.message, cause, false, tagsToTokens(((ArgumentQueueImpl<?>) tags).args));
+  }
+
+  @Override
+  public @NotNull ParsingException newException(final @NotNull String message, final @Nullable Throwable cause, final @NotNull NamedArgumentMap args) {
+    return new ParsingExceptionImpl(message, this.message, cause, false, tagsToTokens(((NamedArgumentMapImpl<?>) args).args));
   }
 
   private @NotNull Component deserializeWithOptionalTarget(final @NotNull String message, final @NotNull TagResolver tagResolver) {
@@ -186,4 +198,13 @@ class ContextImpl implements Context {
     return tokens;
   }
 
+  private static Token[] tagsToTokens(final Map<String, ? extends Tag.Argument> tags) {
+    final Token[] tokens = new Token[tags.size()];
+
+    int index = 0;
+    for (final Tag.Argument value : tags.values()) {
+      tokens[index++] = ((TagPart) value).token();
+    }
+    return tokens;
+  }
 }
