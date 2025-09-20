@@ -23,11 +23,13 @@
  */
 package net.kyori.adventure.text.minimessage;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import net.kyori.adventure.util.TriState;
 import org.junit.jupiter.api.Test;
 
 import static net.kyori.adventure.text.Component.text;
@@ -35,12 +37,11 @@ import static net.kyori.adventure.text.format.NamedTextColor.BLUE;
 import static net.kyori.adventure.text.format.NamedTextColor.RED;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 import static net.kyori.adventure.text.format.TextDecoration.ITALIC;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MiniMessageNamedArgumentsTest extends AbstractTest {
 
   private static final TagResolver INSERT_VALUE_RESOLVER = TagResolver.namedResolver("insert", (args, ctx) -> Tag.selfClosingInserting(
-    text(args.elseThrow("value", "value is missing").value())
+    text(args.orThrow("value", "value is missing").value())
   ));
 
   @Test
@@ -71,7 +72,7 @@ public class MiniMessageNamedArgumentsTest extends AbstractTest {
     assertParsedEquals(MiniMessage.miniMessage(), expected, input, TagResolver.namedResolver("repeat",
       (args, ctx) -> {
         final int amount = args.isPresent("amount") ? args.get("amount").asInt().getAsInt() : 1;
-        final String text = args.elseThrow("text", "text is missing").value();
+        final String text = args.orThrow("text", "text is missing").value();
         final StringBuilder builder = new StringBuilder();
         for (int i = 0; i < amount; i++) {
           builder.append(text);
@@ -96,7 +97,7 @@ public class MiniMessageNamedArgumentsTest extends AbstractTest {
     assertParsedEquals(MiniMessage.miniMessage(), expected, input, TagResolver.namedResolver("styled",
       (args, ctx) -> Tag.styling(builder -> {
         if (args.isPresent("color")) {
-          builder.color(TextColor.fromCSSHexString(args.elseThrow("color", "color is missing").value()));
+          builder.color(TextColor.fromCSSHexString(args.orThrow("color", "color is missing").value()));
         }
 
         if (args.isPresent("bold")) {
@@ -189,6 +190,40 @@ public class MiniMessageNamedArgumentsTest extends AbstractTest {
   void testStringValue() {
     final String input = "<insert value='This is great =)'>";
     final Component expected = text("This is great =)");
+    assertParsedEquals(MiniMessage.miniMessage(), expected, input, INSERT_VALUE_RESOLVER);
+  }
+
+  @Test
+  void testInvertedFlags() {
+    final String input = "<test flag other_flag> <test !flag !other_flag>!";
+    final Component expected = text("Adventure is very cool!");
+    assertParsedEquals(MiniMessage.miniMessage(), expected, input, TagResolver.namedResolver(
+      "test", (args, ctx) -> {
+        final List<String> strings = new ArrayList<>();
+        final TriState flag = args.flag("flag");
+        final TriState otherFlag = args.flag("other_flag");
+
+        if (flag == TriState.TRUE) {
+          strings.add("Adventure");
+        } else if (flag == TriState.FALSE) {
+          strings.add("very");
+        }
+
+        if (otherFlag == TriState.TRUE) {
+          strings.add("is");
+        } else if (otherFlag == TriState.FALSE) {
+          strings.add("cool");
+        }
+
+        return Tag.selfClosingInserting(text(String.join(" ", strings)));
+      }
+    ));
+  }
+
+  @Test
+  void testWhitespaceAroundEquals() {
+    final String input = "<input text = 'lol'>";
+    final Component expected = text("<input text = 'lol'>");
     assertParsedEquals(MiniMessage.miniMessage(), expected, input, INSERT_VALUE_RESOLVER);
   }
 }

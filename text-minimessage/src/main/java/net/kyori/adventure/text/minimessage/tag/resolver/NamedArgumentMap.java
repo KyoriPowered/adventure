@@ -25,6 +25,7 @@ package net.kyori.adventure.text.minimessage.tag.resolver;
 
 import java.util.function.Supplier;
 import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.util.TriState;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -64,14 +65,27 @@ public interface NamedArgumentMap {
   Tag.@Nullable Argument get(@NotNull String name);
 
   /**
+   * Get the value of a flag. If a flag is present {@code flag},
+   * this method return {@link TriState#TRUE}. If a flag
+   * is inverted {@code !flag}, {@link TriState#FALSE} is returned.
+   * Otherwise, {@link TriState#NOT_SET} is returned.
+   *
+   * @param name the name of the flag
+   * @return its presence status in the tag
+   * @since 4.25.0
+   */
+  @NotNull TriState flag(@NotNull String name);
+
+  /**
    * Get an argument by its name, throwing an exception if no argument with that name was present.
    *
    * @param name name of the argument
-   * @param errorMessage the error to throw if an argument with that name is not present
    * @return the argument
    * @since 4.25.0
    */
-  Tag.@NotNull Argument elseThrow(@NotNull String name, @NotNull String errorMessage);
+  default Tag.@NotNull Argument orThrow(final @NotNull String name) {
+    return this.orThrow(name, name + " is not present");
+  }
 
   /**
    * Get an argument by its name, throwing an exception if no argument with that name was present.
@@ -81,5 +95,15 @@ public interface NamedArgumentMap {
    * @return the argument
    * @since 4.25.0
    */
-  Tag.@NotNull Argument elseThrow(@NotNull String name, @NotNull Supplier<String> errorMessage);
+  Tag.@NotNull Argument orThrow(@NotNull String name, @NotNull String errorMessage);
+
+  /**
+   * Get an argument by its name, throwing an exception if no argument with that name was present.
+   *
+   * @param name name of the argument
+   * @param errorMessage the error to throw if an argument with that name is not present
+   * @return the argument
+   * @since 4.25.0
+   */
+  Tag.@NotNull Argument orThrow(@NotNull String name, @NotNull Supplier<String> errorMessage);
 }
