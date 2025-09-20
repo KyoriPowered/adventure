@@ -46,13 +46,8 @@ public class MiniMessageNamedArgumentsTest extends AbstractTest {
   @Test
   void testBasicInsertingNamedTagArguments() {
     final String input = "<insert value=twentyfive>";
-    final Component parsed = MiniMessage.builder()
-      .editTags(b -> b.resolver(INSERT_VALUE_RESOLVER))
-      .build()
-      .deserialize(input);
-
-    final String parsedString = PlainTextComponentSerializer.plainText().serialize(parsed);
-    assertEquals("twentyfive", parsedString);
+    final Component expected = text("twentyfive");
+    assertParsedEquals(MiniMessage.miniMessage(), expected, input, INSERT_VALUE_RESOLVER);
   }
 
   @Test
@@ -174,5 +169,26 @@ public class MiniMessageNamedArgumentsTest extends AbstractTest {
       TagResolver.resolver("test", (args, ctx) -> Tag.inserting(text("Hello"))),
       TagResolver.namedResolver("test", (args, ctx) -> Tag.inserting(text("World!")))
     );
+  }
+
+  @Test
+  void testUrlInNamedArgs() {
+    final String input = "<insert value=https://github.com/KyoriPowered/adventure>";
+    final Component expected = text("https://github.com/KyoriPowered/adventure");
+    assertParsedEquals(MiniMessage.miniMessage(), expected, input, INSERT_VALUE_RESOLVER);
+  }
+
+  @Test
+  void testABunchOfMoreSymbolsAreArguments() {
+    final String input = "<insert value=H%%^Is@@cool;;://>"; // The last / is interpreted as an explicit self-closing tag.
+    final Component expected = text("H%%^Is@@cool;;:/");
+    assertParsedEquals(MiniMessage.miniMessage(), expected, input, INSERT_VALUE_RESOLVER);
+  }
+
+  @Test
+  void testStringValue() {
+    final String input = "<insert value='This is great =)'>";
+    final Component expected = text("This is great =)");
+    assertParsedEquals(MiniMessage.miniMessage(), expected, input, INSERT_VALUE_RESOLVER);
   }
 }
