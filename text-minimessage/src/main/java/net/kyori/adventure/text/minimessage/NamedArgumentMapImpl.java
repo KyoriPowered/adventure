@@ -76,6 +76,14 @@ final class NamedArgumentMapImpl<T extends Tag.Argument> implements NamedArgumen
   }
 
   @Override
+  public boolean isFlagPresent(final @NotNull String name) {
+    if (this.isPresent(name)) {
+      return true;
+    }
+    return this.isPresent('!' + name);
+  }
+
+  @Override
   public Tag.@NotNull Argument orThrow(final @NotNull String name, final @NotNull String errorMessage) {
     requireNonNull(errorMessage, "errorMessage");
     final Tag.Argument arg = this.get(name);

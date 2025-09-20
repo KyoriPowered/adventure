@@ -77,6 +77,15 @@ public interface NamedArgumentMap {
   @NotNull TriState flag(@NotNull String name);
 
   /**
+   * Get whether this flag is set, inverted or not.
+   *
+   * @param name the name of the flag
+   * @return whether it is present
+   * @since 4.25.0
+   */
+  boolean isFlagPresent(@NotNull String name);
+
+  /**
    * Get an argument by its name, throwing an exception if no argument with that name was present.
    *
    * @param name name of the argument
