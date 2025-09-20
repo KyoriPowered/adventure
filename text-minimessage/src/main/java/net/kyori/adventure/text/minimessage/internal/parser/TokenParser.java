@@ -847,7 +847,17 @@ public final class TokenParser {
      * @since 4.25.0
      */
     default @Nullable Tag resolve(final @NotNull TagNode node) {
-      return this.isNamed(node) ? this.resolveNamed(node) : this.resolveSequential(node);
+      if (this.isNamed(node)) {
+        return this.resolveNamed(node);
+      }
+
+      final Tag out = this.resolveSequential(node);
+      if (node.parts().size() == 1 && out == null) {
+        // This might be a named tag which has no arguments provided.
+        return this.resolveNamed(node);
+      }
+
+      return out;
     }
 
     /**
