@@ -173,6 +173,15 @@ public class MiniMessageNamedArgumentsTest extends AbstractTest {
   }
 
   @Test
+  void testArgumentlessNamedTag() {
+    final String input = "<no_args>";
+    final Component expected = text("Works!");
+    assertParsedEquals(MiniMessage.miniMessage(), expected, input, TagResolver.namedResolver(
+      "no_args", (args, ctx) -> Tag.inserting(text("Works!"))
+    ));
+  }
+
+  @Test
   void testUrlInNamedArgs() {
     final String input = "<insert value=https://github.com/KyoriPowered/adventure>";
     final Component expected = text("https://github.com/KyoriPowered/adventure");
