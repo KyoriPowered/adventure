@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.NamedArgumentMap;
+import net.kyori.adventure.util.TriState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -59,7 +60,23 @@ final class NamedArgumentMapImpl<T extends Tag.Argument> implements NamedArgumen
   }
 
   @Override
-  public Tag.@NotNull Argument elseThrow(final @NotNull String name, final @NotNull String errorMessage) {
+  public @NotNull TriState flag(final @NotNull String name) {
+    final Tag.Argument argument = this.get(name);
+    if (argument == null) {
+      // The normal flag is not preset, so try the inverted flag
+      final Tag.Argument invertedArgument = this.get('!' + name);
+      if (invertedArgument == null) {
+        return TriState.NOT_SET;
+      }
+
+      return TriState.FALSE;
+    }
+
+    return TriState.TRUE;
+  }
+
+  @Override
+  public Tag.@NotNull Argument orThrow(final @NotNull String name, final @NotNull String errorMessage) {
     requireNonNull(errorMessage, "errorMessage");
     final Tag.Argument arg = this.get(name);
     if (arg == null) {
@@ -69,7 +86,7 @@ final class NamedArgumentMapImpl<T extends Tag.Argument> implements NamedArgumen
   }
 
   @Override
-  public Tag.@NotNull Argument elseThrow(final @NotNull String name, final @NotNull Supplier<String> errorMessage) {
+  public Tag.@NotNull Argument orThrow(final @NotNull String name, final @NotNull Supplier<String> errorMessage) {
     requireNonNull(errorMessage, "errorMessage");
     final Tag.Argument arg = this.get(name);
     if (arg == null) {
