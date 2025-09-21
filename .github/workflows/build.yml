@@ -9,4 +9,6 @@ on:
 jobs:
   call-build:
     uses: "KyoriPowered/.github/.github/workflows/shared-ci.yaml@trunk"
+    with:
+      runtime_version: 21
     secrets: "inherit"
