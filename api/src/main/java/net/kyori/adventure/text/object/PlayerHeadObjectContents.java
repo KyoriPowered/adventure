@@ -56,7 +56,7 @@ public interface PlayerHeadObjectContents extends ObjectContents {
    *
    * @since 4.25.0
    */
-  boolean HAT_DEFAULT = true;
+  boolean DEFAULT_HAT = true;
 
   /**
    * Gets the name of the player if present.

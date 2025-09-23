@@ -66,7 +66,7 @@ final class HeadTag {
       ));
     }
 
-    final boolean hat = args.flag("hat").toBooleanOrElse(PlayerHeadObjectContents.HAT_DEFAULT);
+    final boolean hat = args.flag("hat").toBooleanOrElse(PlayerHeadObjectContents.DEFAULT_HAT);
 
     if (args.isPresent("texture")) {
       final @Subst("empty") String texture = args.orThrow("texture").value();
@@ -126,7 +126,7 @@ final class HeadTag {
         emit.namedArgument("texture", texture.asMinimalString());
       }
 
-      if (playerHead.hat() != PlayerHeadObjectContents.HAT_DEFAULT) {
+      if (playerHead.hat() != PlayerHeadObjectContents.DEFAULT_HAT) {
         emit.flag("hat", playerHead.hat());
       }
     };
