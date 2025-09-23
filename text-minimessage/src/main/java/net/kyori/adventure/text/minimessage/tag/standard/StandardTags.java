@@ -67,7 +67,8 @@ public final class StandardTags {
         PrideTag.RESOLVER,
         ShadowColorTag.RESOLVER,
         SpriteTag.RESOLVER,
-        HeadTag.RESOLVER
+        HeadTag.RESOLVER,
+        SimplifiedHeadTag.RESOLVER // this NEEDS to be below the HeadTag for the component claiming to work as expected
       )
       .build();
 
@@ -310,6 +311,20 @@ public final class StandardTags {
    */
   public static @NotNull TagResolver head() {
     return HeadTag.RESOLVER;
+  }
+
+  /**
+   * Get a resolver for the {@value SimplifiedHeadTag#HEAD} tag.
+   *
+   * <p>This variant of the {@link #head()} tag handles an alternative shorthand
+   * way of writing the head tag {@code <head:name|uuid|texture>}.</p>
+   *
+   * @return a resolver for the {@value SimplifiedHeadTag#HEAD} tag.
+   * @since 4.25.0
+   * @sinceMinecraft 1.21.9
+   */
+  public static @NotNull TagResolver simplifiedHead() {
+    return SimplifiedHeadTag.RESOLVER;
   }
 
   /**

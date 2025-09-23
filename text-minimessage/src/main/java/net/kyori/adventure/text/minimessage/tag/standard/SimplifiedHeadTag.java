@@ -23,9 +23,9 @@
  */
 package net.kyori.adventure.text.minimessage.tag.standard;
 
+import java.util.Objects;
 import java.util.UUID;
-import java.util.regex.Pattern;
-import net.kyori.adventure.key.Key;
+import java.util.function.Function;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ObjectComponent;
 import net.kyori.adventure.text.minimessage.Context;
@@ -33,65 +33,63 @@ import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.internal.serializer.Emitable;
 import net.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
 import net.kyori.adventure.text.minimessage.tag.Tag;
-import net.kyori.adventure.text.minimessage.tag.resolver.NamedArgumentMap;
+import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.object.ObjectContents;
 import net.kyori.adventure.text.object.PlayerHeadObjectContents;
-import org.intellij.lang.annotations.Subst;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * A head object tag.
+ * A simplified head object tag for only setting either the name,
+ * uuid, or texture key of a head object component.
  *
- * @since 4.25.0
  * @sinceMinecraft 1.21.9
+ * @since 4.25.0
  */
-final class HeadTag {
+final class SimplifiedHeadTag {
   private static final String HEAD = "head";
-  static final Pattern UUIDv4_PATTERN = Pattern.compile("[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ABCD][0-9a-f]{3}-[0-9a-f]{12}", Pattern.CASE_INSENSITIVE);
 
-  static final TagResolver RESOLVER = SerializableResolver.claimingComponentNamed(
+  static final TagResolver RESOLVER = SerializableResolver.claimingComponent(
     HEAD,
-    HeadTag::create,
-    HeadTag::claimComponent
+    SimplifiedHeadTag::create,
+    SimplifiedHeadTag::claimComponent
   );
 
-  private HeadTag() {
+  private SimplifiedHeadTag() {
   }
 
-  static Tag create(final NamedArgumentMap args, final Context ctx) throws ParsingException {
-    if (args.size() == 0) {
+  static Tag create(final ArgumentQueue args, final Context ctx) throws ParsingException {
+    if (!args.hasNext()) {
       return Tag.selfClosingInserting(Component.object(
         ObjectContents.playerHead().build()
       ));
     }
 
-    final boolean hat = args.flag("hat").toBooleanOrElse(PlayerHeadObjectContents.DEFAULT_HAT);
+    final String argument = args.pop().value();
 
-    if (args.isPresent("texture")) {
-      final @Subst("empty") String texture = args.orThrow("texture").value();
-      if (!Key.parseable(texture)) {
-        throw ctx.newException("invalid textures key: '" + texture + "'");
-      }
+    if (args.hasNext()) {
+      throw ctx.newException("Too many arguments present", args);
+    }
 
+    if (HeadTag.UUIDv4_PATTERN.matcher(argument).matches()) {
       return Tag.selfClosingInserting(Component.object(
         ObjectContents.playerHead()
-          .texture(Key.key(texture))
-          .hat(hat)
+          .id(UUID.fromString(argument))
           .build()
       ));
     }
 
-    final String uuidString = args.isPresent("uuid") ? args.orThrow("uuid").value() : "";
-    final UUID uuid = UUIDv4_PATTERN.matcher(uuidString).matches() ? UUID.fromString(uuidString) : null;
-
-    final String name = args.isPresent("name") ? args.orThrow("name").value() : null;
+    if (argument.contains("/")) {
+      return Tag.selfClosingInserting(Component.object(
+        ObjectContents.playerHead()
+          .id(UUID.fromString(argument))
+          .build()
+      ));
+    }
 
     return Tag.selfClosingInserting(Component.object(
       ObjectContents.playerHead()
-        .id(uuid)
-        .name(name)
-        .hat(hat)
+        .name(argument)
         .build()
     ));
   }
@@ -107,28 +105,57 @@ final class HeadTag {
     }
 
     final PlayerHeadObjectContents playerHead = ((PlayerHeadObjectContents) contents);
+
+    if (playerHead.hat() != PlayerHeadObjectContents.DEFAULT_HAT) {
+      return null;
+    }
+
+    PresentType present = null;
+
+    if (playerHead.name() != null) {
+      present = PresentType.NAME;
+    }
+
+    if (playerHead.id() != null) {
+      if (present != null) {
+        return null;
+      }
+      present = PresentType.ID;
+    }
+
+    if (playerHead.texture() != null) {
+      if (present != null) {
+        return null;
+      }
+      present = PresentType.TEXTURE;
+    }
+
+    if (present == null) {
+      return null;
+    }
+
+    final PresentType finalPresent = present;
     return emit -> {
       emit.tag(HEAD);
 
-      final String name = playerHead.name();
-      final UUID id = playerHead.id();
-      final Key texture = playerHead.texture();
-
-      if (name != null) {
-        emit.namedArgument("name", name);
-      }
-
-      if (id != null) {
-        emit.namedArgument("uuid", id.toString());
-      }
-
-      if (texture != null) {
-        emit.namedArgument("texture", texture.asMinimalString());
-      }
-
-      if (playerHead.hat() != PlayerHeadObjectContents.DEFAULT_HAT) {
-        emit.flag("hat", playerHead.hat());
-      }
+      final String value = finalPresent.map(playerHead);
+      emit.argument(value);
     };
+  }
+
+  private enum PresentType {
+    NAME(PlayerHeadObjectContents::name),
+    ID(obj -> Objects.requireNonNull(obj.id()).toString()),
+    TEXTURE(obj -> Objects.requireNonNull(obj.texture()).asMinimalString());
+
+    private final Function<PlayerHeadObjectContents, String> mappingFunction;
+
+    PresentType(Function<PlayerHeadObjectContents, String> mappingFunction) {
+      this.mappingFunction = mappingFunction;
+    }
+
+    public String map(PlayerHeadObjectContents obj) {
+      return mappingFunction.apply(obj);
+    }
   }
 }

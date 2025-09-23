@@ -30,7 +30,7 @@ import net.kyori.adventure.text.minimessage.AbstractTest;
 import net.kyori.adventure.text.object.ObjectContents;
 import org.junit.jupiter.api.Test;
 
-class HeadTagTest extends AbstractTest {
+class HeadTagsTest extends AbstractTest {
 
   @Test
   void testEmptySerialization() {
@@ -55,7 +55,7 @@ class HeadTagTest extends AbstractTest {
 
   @Test
   void testWithTexturesSerialization() {
-    final String expected = "<head texture=entity/player/wide/steve>";
+    final String expected = "<head:entity/player/wide/steve>";
 
     final Component component = Component.object(
       ObjectContents.playerHead()
@@ -94,7 +94,7 @@ class HeadTagTest extends AbstractTest {
 
   @Test
   void testWithNameSerialisation() {
-    final String expected = "<head name=electronicboy>";
+    final String expected = "<head:electronicboy>";
 
     final Component component = Component.object(
       ObjectContents.playerHead("electronicboy")
@@ -109,13 +109,13 @@ class HeadTagTest extends AbstractTest {
       ObjectContents.playerHead("electronicboy")
     );
 
-    final String input = "<head name=electronicboy>";
+    final String input = "<head:electronicboy>";
     this.assertParsedEquals(expected, input);
   }
 
   @Test
   void testWithUuidSerialisation() {
-    final String expected = "<head uuid=ef82a52d-c5a4-4b64-a811-2c28828cc120>";
+    final String expected = "<head:ef82a52d-c5a4-4b64-a811-2c28828cc120>";
 
     final Component component = Component.object(
       ObjectContents.playerHead(UUID.fromString("ef82a52d-c5a4-4b64-a811-2c28828cc120"))
@@ -130,7 +130,7 @@ class HeadTagTest extends AbstractTest {
       ObjectContents.playerHead(UUID.fromString("ef82a52d-c5a4-4b64-a811-2c28828cc120"))
     );
 
-    final String input = "<head uuid=ef82a52d-c5a4-4b64-a811-2c28828cc120>";
+    final String input = "<head:ef82a52d-c5a4-4b64-a811-2c28828cc120>";
     this.assertParsedEquals(expected, input);
   }
 
