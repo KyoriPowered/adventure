@@ -737,6 +737,7 @@ public final class TokenParser {
    * A special tag provider for tags with queued arguments.
    *
    * @param <T> argument
+   * @since 4.25.0
    */
   @ApiStatus.Internal
   public interface SequentialTagProvider<T extends Tag.Argument> {
@@ -758,6 +759,7 @@ public final class TokenParser {
    * A special tag provider for tags with named arguments.
    *
    * @param <T> argument
+   * @since 4.25.0
    */
   @ApiStatus.Internal
   public interface NamedTagProvider<T extends Tag.Argument> {
