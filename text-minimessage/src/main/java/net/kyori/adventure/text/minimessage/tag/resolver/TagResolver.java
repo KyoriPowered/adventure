@@ -271,7 +271,9 @@ public interface TagResolver {
    * @throws ParsingException if the provided arguments are invalid
    * @since 4.10.0
    */
-  @Nullable Tag resolve(@TagPattern final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) throws ParsingException;
+  default @Nullable Tag resolve(@TagPattern final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) throws ParsingException {
+    return null;
+  }
 
   /**
    * Gets a tag with named arguments from this resolver based on the current state.
@@ -283,7 +285,9 @@ public interface TagResolver {
    * @throws ParsingException if the provided arguments are invalid
    * @since 4.25.0
    */
-  @Nullable Tag resolveNamed(@TagPattern final @NotNull String name, final @NotNull NamedArgumentMap arguments, final @NotNull Context ctx) throws ParsingException;
+  default @Nullable Tag resolveNamed(@TagPattern final @NotNull String name, final @NotNull NamedArgumentMap arguments, final @NotNull Context ctx) throws ParsingException {
+    return null;
+  }
 
   /**
    * Get whether this resolver handles tags with a certain name.
@@ -381,9 +385,7 @@ public interface TagResolver {
    */
   interface Sequential extends TagResolver {
     @Override
-    default @Nullable Tag resolveNamed(final @NotNull String name, final @NotNull NamedArgumentMap arguments, final @NotNull Context ctx) throws ParsingException {
-      return null;
-    }
+    @Nullable Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) throws ParsingException;
   }
 
   /**
@@ -393,9 +395,7 @@ public interface TagResolver {
    */
   interface Named extends TagResolver {
     @Override
-    default @Nullable Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) throws ParsingException {
-      return null;
-    }
+    @Nullable Tag resolveNamed(final @NotNull String name, final @NotNull NamedArgumentMap arguments, final @NotNull Context ctx) throws ParsingException;
   }
 
   /**
