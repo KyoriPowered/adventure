@@ -200,7 +200,7 @@ class StyleTest extends SerializerTest {
     this.testClickEvent(serializerWithSchema, "https://kezz.gay");
   }
 
-  private void testClickEvent(final JSONComponentSerializer serializer, String url) {
+  private void testClickEvent(final JSONComponentSerializer serializer, final String url) {
     final JsonObject object = object(json -> {
       json.addProperty(ComponentTreeConstants.TEXT, "");
       json.add(ComponentTreeConstants.CLICK_EVENT_SNAKE, object(clickEvent -> {
