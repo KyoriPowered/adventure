@@ -1,3 +1,26 @@
+/*
+ * This file is part of adventure, licensed under the MIT License.
+ *
+ * Copyright (c) 2017-2025 KyoriPowered
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package net.kyori.adventure.text.minimessage.tag.standard;
 
 import java.util.UUID;
@@ -32,7 +55,7 @@ class HeadTagTest extends AbstractTest {
 
   @Test
   void testWithTexturesSerialization() {
-    final String expected = "<head:entity/player/wide/steve>";
+    final String expected = "<head texture=entity/player/wide/steve>";
 
     final Component component = Component.object(
       ObjectContents.playerHead()
@@ -51,13 +74,13 @@ class HeadTagTest extends AbstractTest {
         .build()
     );
 
-    final String input = "<head:entity/player/wide/steve>";
+    final String input = "<head texture=entity/player/wide/steve>";
     this.assertParsedEquals(expected, input);
   }
 
   @Test
   void testWithTexturesAndHatSerialization() {
-    final String expected = "<head:entity/player/wide/steve:false>";
+    final String expected = "<head texture=entity/player/wide/steve !hat>";
 
     final Component component = Component.object(
       ObjectContents.playerHead()
@@ -71,7 +94,7 @@ class HeadTagTest extends AbstractTest {
 
   @Test
   void testWithNameSerialisation() {
-    final String expected = "<head:electronicboy>";
+    final String expected = "<head name=electronicboy>";
 
     final Component component = Component.object(
       ObjectContents.playerHead("electronicboy")
@@ -86,13 +109,13 @@ class HeadTagTest extends AbstractTest {
       ObjectContents.playerHead("electronicboy")
     );
 
-    final String input = "<head:electronicboy>";
+    final String input = "<head name=electronicboy>";
     this.assertParsedEquals(expected, input);
   }
 
   @Test
   void testWithUuidSerialisation() {
-    final String expected = "<head:ef82a52d-c5a4-4b64-a811-2c28828cc120>";
+    final String expected = "<head uuid=ef82a52d-c5a4-4b64-a811-2c28828cc120>";
 
     final Component component = Component.object(
       ObjectContents.playerHead(UUID.fromString("ef82a52d-c5a4-4b64-a811-2c28828cc120"))
@@ -107,13 +130,13 @@ class HeadTagTest extends AbstractTest {
       ObjectContents.playerHead(UUID.fromString("ef82a52d-c5a4-4b64-a811-2c28828cc120"))
     );
 
-    final String input = "<head:ef82a52d-c5a4-4b64-a811-2c28828cc120>";
+    final String input = "<head uuid=ef82a52d-c5a4-4b64-a811-2c28828cc120>";
     this.assertParsedEquals(expected, input);
   }
 
   @Test
   void testWithNameAndUuidSerialisation() {
-    final String expected = "<head:Strokkur24:ef82a52d-c5a4-4b64-a811-2c28828cc120>";
+    final String expected = "<head name=Strokkur24 uuid=ef82a52d-c5a4-4b64-a811-2c28828cc120>";
 
     final Component component = Component.object(
       ObjectContents.playerHead()
@@ -134,7 +157,7 @@ class HeadTagTest extends AbstractTest {
         .build()
     );
 
-    final String input = "<head:Strokkur24:ef82a52d-c5a4-4b64-a811-2c28828cc120>";
+    final String input = "<head name=Strokkur24 uuid=ef82a52d-c5a4-4b64-a811-2c28828cc120>";
     this.assertParsedEquals(expected, input);
   }
 
@@ -147,13 +170,13 @@ class HeadTagTest extends AbstractTest {
         .build()
     );
 
-    final String input = "<head:ef82a52d-c5a4-4b64-a811-2c28828cc120:Strokkur24>";
+    final String input = "<head uuid=ef82a52d-c5a4-4b64-a811-2c28828cc120 name=Strokkur24>";
     this.assertParsedEquals(expected, input);
   }
 
   @Test
   void testWithNameAndTexturesAndHatSerialisation() {
-    final String expected = "<head:Strokkur24:ef82a52d-c5a4-4b64-a811-2c28828cc120:false>";
+    final String expected = "<head name=Strokkur24 uuid=ef82a52d-c5a4-4b64-a811-2c28828cc120 !hat>";
 
     final Component component = Component.object(
       ObjectContents.playerHead()
@@ -168,7 +191,7 @@ class HeadTagTest extends AbstractTest {
 
   @Test
   void testWithNameAndHatDeserialization() {
-    final String expected = "<head:Strokkur24:false>";
+    final String expected = "<head name=Strokkur24 !hat>";
 
     final Component component = Component.object(
       ObjectContents.playerHead()
@@ -182,7 +205,7 @@ class HeadTagTest extends AbstractTest {
 
   @Test
   void testWithUuidAndHatDeserialization() {
-    final String expected = "<head:ef82a52d-c5a4-4b64-a811-2c28828cc120:false>";
+    final String expected = "<head uuid=ef82a52d-c5a4-4b64-a811-2c28828cc120 !hat>";
 
     final Component component = Component.object(
       ObjectContents.playerHead()
@@ -204,7 +227,7 @@ class HeadTagTest extends AbstractTest {
         .build()
     );
 
-    final String input = "<head:Strokkur24:ef82a52d-c5a4-4b64-a811-2c28828cc120:false>";
+    final String input = "<head name=Strokkur24 uuid=ef82a52d-c5a4-4b64-a811-2c28828cc120 !hat>";
     this.assertParsedEquals(expected, input);
   }
 }
