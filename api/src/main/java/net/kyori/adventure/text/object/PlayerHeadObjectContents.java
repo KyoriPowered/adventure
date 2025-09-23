@@ -50,6 +50,7 @@ import static java.util.Objects.requireNonNull;
  * @since 4.25.0
  * @sinceMinecraft 1.21.9
  */
+@ApiStatus.NonExtendable
 public interface PlayerHeadObjectContents extends ObjectContents {
   /**
    * Gets the name of the player if present.
