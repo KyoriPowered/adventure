@@ -11,6 +11,7 @@ import net.kyori.adventure.text.minimessage.internal.serializer.Emitable;
 import net.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
+import net.kyori.adventure.text.minimessage.tag.resolver.NamedArgumentMap;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.object.ObjectContents;
 import net.kyori.adventure.text.object.PlayerHeadObjectContents;
@@ -27,7 +28,7 @@ final class HeadTag {
   private static final String HEAD = "head";
   private static final Pattern UUIDv4_PATTERN = Pattern.compile("[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ABCD][0-9a-f]{3}-[0-9a-f]{12}", Pattern.CASE_INSENSITIVE);
 
-  static final TagResolver RESOLVER = SerializableResolver.claimingComponent(
+  static final TagResolver RESOLVER = SerializableResolver.claimingComponentNamed(
     HEAD,
     HeadTag::create,
     HeadTag::claimComponent
@@ -36,97 +37,39 @@ final class HeadTag {
   private HeadTag() {
   }
 
-  static Tag create(final ArgumentQueue args, final Context ctx) throws ParsingException {
-    if (!args.hasNext()) {
+  static Tag create(final NamedArgumentMap args, final Context ctx) throws ParsingException {
+    if (args.size() == 0) {
       return Tag.selfClosingInserting(Component.object(
         ObjectContents.playerHead().build()
       ));
     }
 
-    UUID id = null;
-    String name = null;
-    Boolean hat = null;
+    final boolean hat = args.flag("hat").toBooleanOrElse(PlayerHeadObjectContents.HAT_DEFAULT);
 
-    final @Subst("empty") String firstArgString = args.pop().value();
-    final @Nullable Tag.Argument secondArg = args.hasNext() ? args.pop() : null;
-    final @Nullable Tag.Argument thirdArg = args.hasNext() ? args.pop() : null;
-
-    // Special handling for textures
-    if ((firstArgString.contains("/") || firstArgString.contains(":")) && thirdArg == null) {
-      if (secondArg != null) {
-        if (secondArg.isTrue() || secondArg.isFalse()) {
-          hat = secondArg.isTrue();
-        } else {
-          throw ctx.newException("The second argument after a texture path must be a boolean.");
-        }
-      }
-
-      if (!Key.parseable(firstArgString)) {
-        throw ctx.newException("Could not parse texture path as a key.");
+    if (args.isPresent("texture")) {
+      final @Subst("empty") String texture = args.orThrow("texture").value();
+      if (!Key.parseable(texture)) {
+        throw ctx.newException("invalid textures key: '" + texture + "'");
       }
 
       return Tag.selfClosingInserting(Component.object(
         ObjectContents.playerHead()
-          .texture(Key.key(firstArgString))
-          .hat(hat == null ? PlayerHeadObjectContents.HAT_DEFAULT : hat)
+          .texture(Key.key(texture))
+          .hat(hat)
           .build()
       ));
     }
 
-    if (UUIDv4_PATTERN.matcher(firstArgString).matches()) {
-      id = UUID.fromString(firstArgString);
-    } else {
-      name = firstArgString;
-    }
+    final String uuidString = args.isPresent("uuid") ? args.orThrow("uuid").value() : "";
+    final UUID uuid = UUIDv4_PATTERN.matcher(uuidString).matches() ? UUID.fromString(uuidString) : null;
 
-    if (secondArg == null) {
-      // Only one argument was provided, meaning we can early return.
-      return Tag.selfClosingInserting(Component.object(
-        id == null
-          ? ObjectContents.playerHead(name)
-          : ObjectContents.playerHead(id)
-      ));
-    }
-
-    if (thirdArg == null) {
-      if (secondArg.isFalse() || secondArg.isTrue()) {
-        hat = secondArg.isTrue();
-      } else if (id == null) {
-        // There are two arguments, where the first one is a name and the second one is not a boolean.
-        // Parse it as an UUID.
-        if (UUIDv4_PATTERN.matcher(secondArg.value()).matches()) {
-          id = UUID.fromString(secondArg.value());
-        } else {
-          throw ctx.newException("The second argument must either be a valid boolean or UUID.");
-        }
-      } else {
-        // There are two arguments, where the first one is an UUID and the second one is not a boolean.
-        // Parse it as a name.
-        name = secondArg.value();
-      }
-    } else {
-      if (!thirdArg.isFalse() && !thirdArg.isTrue()) {
-        throw ctx.newException("The third argument must be a boolean.");
-      }
-      hat = thirdArg.isTrue();
-
-      if (id == null) {
-        // The second arg should be interpreted as an UUID.
-        if (UUIDv4_PATTERN.matcher(secondArg.value()).matches()) {
-          id = UUID.fromString(secondArg.value());
-        } else {
-          throw ctx.newException("The second argument must be a valid UUID.");
-        }
-      } else {
-        name = secondArg.value();
-      }
-    }
+    final String name = args.isPresent("name") ? args.orThrow("name").value() : null;
 
     return Tag.selfClosingInserting(Component.object(
       ObjectContents.playerHead()
-        .id(id)
+        .id(uuid)
         .name(name)
-        .hat(hat == null ? PlayerHeadObjectContents.HAT_DEFAULT : hat)
+        .hat(hat)
         .build()
     ));
   }
@@ -145,28 +88,24 @@ final class HeadTag {
     return emit -> {
       emit.tag(HEAD);
 
-      final UUID id = playerHead.id();
       final String name = playerHead.name();
+      final UUID id = playerHead.id();
       final Key texture = playerHead.texture();
 
-      if (id == null && name == null && texture != null) {
-        emit.argument(texture.asMinimalString());
-        if (playerHead.hat() != PlayerHeadObjectContents.HAT_DEFAULT) {
-          emit.argument(Boolean.toString(playerHead.hat()));
-        }
-        return;
-      }
-
       if (name != null) {
-        emit.argument(name);
+        emit.namedArgument("name", name);
       }
 
       if (id != null) {
-        emit.argument(id.toString());
+        emit.namedArgument("uuid", id.toString());
+      }
+
+      if (texture != null) {
+        emit.namedArgument("texture", texture.asMinimalString());
       }
 
       if (playerHead.hat() != PlayerHeadObjectContents.HAT_DEFAULT) {
-        emit.argument(Boolean.toString(playerHead.hat()));
+        emit.flag("hat", playerHead.hat());
       }
     };
   }
