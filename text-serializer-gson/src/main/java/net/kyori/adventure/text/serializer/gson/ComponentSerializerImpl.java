@@ -207,12 +207,13 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
         sprite = this.gson.fromJson(in, SerializerFactory.KEY_TYPE);
       } else if (fieldName.equals(OBJECT_PLAYER)) {
         if (playerHeadContents == null) playerHeadContents = ObjectContents.playerHead();
-        playerHeadContentsHasProfile = true;
         final JsonToken playerToken = in.peek();
         // `player` can be either just the name or a partial profile
         if (playerToken == JsonToken.STRING) {
+          playerHeadContentsHasProfile = true;
           playerHeadContents.name(in.nextString());
         } else if (playerToken == JsonToken.BEGIN_OBJECT) {
+          playerHeadContentsHasProfile = true;
           in.beginObject();
           while (in.hasNext()) {
             final String playerHeadFieldName = in.nextName();
