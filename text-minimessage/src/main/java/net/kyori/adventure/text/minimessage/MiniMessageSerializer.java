@@ -246,6 +246,16 @@ final class MiniMessageSerializer {
     }
 
     @Override
+    public @NotNull TokenEmitter flag(final @NotNull String name, final boolean value) {
+      if (!this.tagState.isTag) {
+        throw new IllegalStateException("Not within a tag!");
+      }
+      this.consumer.append(' ');
+      this.consumer.append(value ? name : '!' + name);
+      return this;
+    }
+
+    @Override
     public @NotNull Collector text(final @NotNull String text) {
       this.completeTag();
       // escape '\' and '<'

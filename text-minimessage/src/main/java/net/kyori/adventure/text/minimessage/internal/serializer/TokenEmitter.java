@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.minimessage.internal.serializer;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.util.TriState;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -138,6 +139,18 @@ public interface TokenEmitter {
    * @since 4.25.0
    */
   @NotNull TokenEmitter namedArgument(final @NotNull String name, final @NotNull Component arg);
+
+  /**
+   * Adds a flag argument to the current tag.
+   *
+   * <p>Must be called after {@link #tag(String)}, but before any call to {@link #text(String)}.</p>
+   *
+   * @param name the name of the flag
+   * @param value the value to set the flag to
+   * @return this emitter
+   * @since 4.25.0
+   */
+  @NotNull TokenEmitter flag(final @NotNull String name, final boolean value);
 
   /**
    * Emit literal text.
