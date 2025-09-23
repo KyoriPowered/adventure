@@ -211,12 +211,7 @@ final class StyleSerializer extends TypeAdapter<Style> {
         if (action != null && action.readable()) {
           switch (action) {
             case OPEN_URL:
-              if (value != null) {
-                if (this.emitClickUrlHttps && !StyleSerializer.isValidUrlScheme(value)) {
-                  value = StyleSerializer.FALLBACK_URL_PROTOCOL + value;
-                }
-                style.clickEvent(ClickEvent.openUrl(value));
-              }
+              if (value != null) style.clickEvent(ClickEvent.openUrl(value));
               break;
             case RUN_COMMAND:
               if (value != null) style.clickEvent(ClickEvent.runCommand(value));

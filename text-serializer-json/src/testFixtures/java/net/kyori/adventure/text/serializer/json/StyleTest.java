@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.serializer.json;
 
 import com.google.gson.JsonNull;
+import com.google.gson.JsonObject;
 import java.util.UUID;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
@@ -37,6 +38,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -179,5 +181,34 @@ class StyleTest extends SerializerTest {
         }));
       }
     );
+  }
+
+  @Test
+  void testClickUrlSchema() {
+    final JSONComponentSerializer serializerWithoutSchema = JSONComponentSerializer.builder()
+      .editOptions(b -> b.value(JSONOptions.EMIT_CLICK_URL_HTTPS, false))
+      .build();
+    final JSONComponentSerializer serializerWithSchema = JSONComponentSerializer.builder()
+      .editOptions(editor -> editor.value(JSONOptions.EMIT_CLICK_URL_HTTPS, true))
+      .build();
+
+    this.testClickEvent(serializerWithoutSchema, "kezz.gay");
+    this.testClickEvent(serializerWithoutSchema, "http://kezz.gay");
+    this.testClickEvent(serializerWithoutSchema, "https://kezz.gay");
+    this.testClickEvent(serializerWithSchema, "https://kezz.gay");
+    this.testClickEvent(serializerWithSchema, "http://kezz.gay");
+    this.testClickEvent(serializerWithSchema, "https://kezz.gay");
+  }
+
+  private void testClickEvent(final JSONComponentSerializer serializer, String url) {
+    final JsonObject object = object(json -> {
+      json.addProperty(ComponentTreeConstants.TEXT, "");
+      json.add(ComponentTreeConstants.CLICK_EVENT_SNAKE, object(clickEvent -> {
+        clickEvent.addProperty(ComponentTreeConstants.CLICK_EVENT_ACTION, name(ClickEvent.Action.OPEN_URL));
+        clickEvent.addProperty(ComponentTreeConstants.CLICK_EVENT_URL, url);
+      }));
+    });
+
+    assertEquals(object, serialize(serializer, Component.text("").clickEvent(ClickEvent.openUrl(url))));
   }
 }
