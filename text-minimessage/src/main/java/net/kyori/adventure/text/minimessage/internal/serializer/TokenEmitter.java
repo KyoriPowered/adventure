@@ -24,7 +24,6 @@
 package net.kyori.adventure.text.minimessage.internal.serializer;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.util.TriState;
 import org.jetbrains.annotations.NotNull;
 
 /**
