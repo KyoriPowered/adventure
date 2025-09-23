@@ -200,6 +200,18 @@ final class MiniMessageSerializer {
     }
 
     @Override
+    public @NotNull TokenEmitter namedArgument(final @NotNull String name, final @NotNull String arg) {
+      if (!this.tagState.isTag) {
+        throw new IllegalStateException("Not within a tag!");
+      }
+      this.consumer.append(' ');
+      this.consumer.append(name);
+      this.consumer.append(TokenParser.NAME_VALUE_SEPARATOR);
+      this.escapeTagContent(arg, null);
+      return this;
+    }
+
+    @Override
     public @NotNull TokenEmitter argument(final @NotNull String arg, final @NotNull QuotingOverride quotingPreference) {
       if (!this.tagState.isTag) {
         throw new IllegalStateException("Not within a tag!");
@@ -210,9 +222,27 @@ final class MiniMessageSerializer {
     }
 
     @Override
+    public @NotNull TokenEmitter namedArgument(final @NotNull String name, final @NotNull String arg, final @NotNull QuotingOverride quotingPreference) {
+      if (!this.tagState.isTag) {
+        throw new IllegalStateException("Not within a tag!");
+      }
+      this.consumer.append(' ');
+      this.consumer.append(name);
+      this.consumer.append(TokenParser.NAME_VALUE_SEPARATOR);
+      this.escapeTagContent(arg, requireNonNull(quotingPreference, "quotingPreference"));
+      return this;
+    }
+
+    @Override
     public @NotNull TokenEmitter argument(final @NotNull Component arg) {
       final String serialized = MiniMessageSerializer.serialize(arg, this.resolver, this.strict);
       return this.argument(serialized, QuotingOverride.QUOTED); // always quote tokens
+    }
+
+    @Override
+    public @NotNull TokenEmitter namedArgument(final @NotNull String name, final @NotNull Component arg) {
+      final String serialized = MiniMessageSerializer.serialize(arg, this.resolver, this.strict);
+      return this.namedArgument(name, serialized, QuotingOverride.QUOTED); // always quote tokens
     }
 
     @Override
