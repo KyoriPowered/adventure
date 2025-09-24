@@ -146,7 +146,7 @@ public interface TagResolver {
    * Create a tag resolver that only responds to certain tag names, and whose value does not depend on that name.
    *
    * <p>
-   * This method creates a special resolver which listens to tags with named arguments instead of sequences ones.
+   * This method creates a special resolver which listens to tags with named arguments instead of sequential ones.
    * </p>
    *
    * @param name the name to respond to
@@ -162,7 +162,7 @@ public interface TagResolver {
    * Create a tag resolver that only responds to certain tag names, and whose value does not depend on that name.
    *
    * <p>
-   * This method creates a special resolver which listens to tags with named arguments instead of sequences ones.
+   * This method creates a special resolver which listens to tags with named arguments instead of sequential ones.
    * </p>
    *
    * @param names the names to respond to

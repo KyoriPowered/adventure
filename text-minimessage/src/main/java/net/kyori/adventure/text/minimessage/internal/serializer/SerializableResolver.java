@@ -63,7 +63,7 @@ public interface SerializableResolver {
   /**
    * Create a tag resolver that only responds to a single tag name, and whose value does not depend on that name.
    *
-   * <p>The resolver created is a special resolver which listens to named arguments instead of sequenced ones.</p>
+   * <p>The resolver created is a special resolver, which listens to named arguments instead of sequential ones.</p>
    *
    * @param name the name to respond to
    * @param handler the tag handler, may throw {@link ParsingException} if provided arguments are in an invalid format
@@ -96,7 +96,7 @@ public interface SerializableResolver {
   /**
    * Create a tag resolver that only responds to certain tag names, and whose value does not depend on that name.
    *
-   * <p>The resolver created is a special resolver which listens to named arguments instead of sequenced ones.</p>
+   * <p>The resolver created is a special resolver, which listens to named arguments instead of sequential ones.</p>
    *
    * @param names the names to respond to
    * @param handler the tag handler, may throw {@link ParsingException} if provided arguments are in an invalid format
@@ -129,7 +129,7 @@ public interface SerializableResolver {
   /**
    * Create a tag resolver that only responds to a single tag name, and whose value does not depend on that name.
    *
-   * <p>The resolver created is a special resolver which listens to named arguments instead of sequenced ones.</p>
+   * <p>The resolver created is a special resolver, which listens to named arguments instead of sequential ones.</p>
    *
    * @param name the name to respond to
    * @param handler the tag handler, may throw {@link ParsingException} if provided arguments are in an invalid format
@@ -162,7 +162,7 @@ public interface SerializableResolver {
   /**
    * Create a tag resolver that only responds to certain tag names, and whose value does not depend on that name.
    *
-   * <p>The resolver created is a special resolver which listens to named arguments instead of sequenced ones.</p>
+   * <p>The resolver created is a special resolver, which listens to named arguments instead of sequential ones.</p>
    *
    * @param names the names to respond to
    * @param handler the tag handler, may throw {@link ParsingException} if provided arguments are in an invalid format
