@@ -38,6 +38,7 @@ import net.kyori.adventure.text.format.ShadowColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.object.PlayerHeadObjectContents;
 import net.kyori.adventure.text.serializer.json.JSONOptions;
 import net.kyori.option.OptionState;
 import org.jetbrains.annotations.Nullable;
@@ -58,6 +59,7 @@ final class SerializerFactory implements TypeAdapterFactory {
   static final Class<BlockNBTComponent.Pos> BLOCK_NBT_POS_TYPE = BlockNBTComponent.Pos.class;
   static final Class<UUID> UUID_TYPE = UUID.class;
   static final Class<TranslationArgument> TRANSLATION_ARGUMENT_TYPE = TranslationArgument.class;
+  static final Class<PlayerHeadObjectContents.ProfileProperty> PROFILE_PROPERTY_TYPE = PlayerHeadObjectContents.ProfileProperty.class;
 
   private final OptionState features;
   private final net.kyori.adventure.text.serializer.json.LegacyHoverEventSerializer legacyHoverSerializer;
@@ -99,6 +101,8 @@ final class SerializerFactory implements TypeAdapterFactory {
       return (TypeAdapter<T>) UUIDSerializer.uuidSerializer(this.features);
     } else if (TRANSLATION_ARGUMENT_TYPE.isAssignableFrom(rawType)) {
       return (TypeAdapter<T>) TranslationArgumentSerializer.create(gson);
+    } else if (PROFILE_PROPERTY_TYPE.isAssignableFrom(rawType)) {
+      return (TypeAdapter<T>) ProfilePropertySerializer.INSTANCE;
     } else {
       return null;
     }

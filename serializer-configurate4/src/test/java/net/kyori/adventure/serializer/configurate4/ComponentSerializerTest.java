@@ -23,14 +23,19 @@
  */
 package net.kyori.adventure.serializer.configurate4;
 
+import java.util.Collections;
+import java.util.UUID;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.object.ObjectContents;
+import net.kyori.adventure.text.object.PlayerHeadObjectContents;
 import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.junit.jupiter.api.Test;
+import org.spongepowered.configurate.BasicConfigurationNode;
 import org.spongepowered.configurate.ConfigurationNode;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -197,5 +202,106 @@ class ComponentSerializerTest implements ConfigurateTestBase {
       .append(Component.translatable("keys.second", TextColor.color(0xdeadca)));
 
     assertEquals(deserialized, this.deserialize(serialized));
+  }
+
+  @Test
+  void testSprite() {
+    this.assertRoundtrippable(
+      Component.object(ObjectContents.sprite(Key.key("item/diamond_sword"))),
+      this.node(n -> n.node(ComponentTreeConstants.OBJECT_SPRITE).raw("minecraft:item/diamond_sword"))
+    );
+  }
+
+  @Test
+  void testSpriteAtlas() {
+    this.assertRoundtrippable(
+      Component.object(ObjectContents.sprite(Key.key("gui"), Key.key("icon/checkmark"))),
+      this.node(n -> {
+        n.node(ComponentTreeConstants.OBJECT_ATLAS).raw("minecraft:gui");
+        n.node(ComponentTreeConstants.OBJECT_SPRITE).raw("minecraft:icon/checkmark");
+      })
+    );
+  }
+
+  @Test
+  void testPlayerEmpty() {
+    this.assertRoundtrippable(
+      Component.object(ObjectContents.playerHead().build()),
+      this.node(n -> {
+        n.node(ComponentTreeConstants.OBJECT_PLAYER).raw(Collections.emptyMap());
+        n.node(ComponentTreeConstants.OBJECT_HAT).raw(true);
+      })
+    );
+  }
+
+  @Test
+  void testPlayerName() {
+    this.assertRoundtrippable(
+      Component.object(ObjectContents.playerHead().name("Player123").build()),
+      this.node(n -> {
+        n.node(ComponentTreeConstants.OBJECT_PLAYER).raw("Player123");
+        n.node(ComponentTreeConstants.OBJECT_HAT).raw(true);
+      })
+    );
+  }
+
+  @Test
+  void testPlayerId() {
+    final UUID id = UUID.randomUUID();
+    this.assertRoundtrippable(
+      Component.object(ObjectContents.playerHead().id(id).build()),
+      this.node(n -> {
+        n.node(ComponentTreeConstants.OBJECT_PLAYER).node(ComponentTreeConstants.OBJECT_PLAYER_ID).raw(id.toString());
+        n.node(ComponentTreeConstants.OBJECT_HAT).raw(true);
+      })
+    );
+  }
+
+  @Test
+  void testPlayerProperties() {
+    this.assertRoundtrippable(
+      Component.object(ObjectContents.playerHead().profileProperty(
+        PlayerHeadObjectContents.property("textures", "cool_value", "cool_signature")
+      ).build()),
+      this.node(n -> {
+        final BasicConfigurationNode property = n.node(ComponentTreeConstants.OBJECT_PLAYER)
+          .node(ComponentTreeConstants.OBJECT_PLAYER_PROPERTIES)
+          .appendListNode();
+        property.node(ComponentTreeConstants.PROFILE_PROPERTY_NAME).raw("textures");
+        property.node(ComponentTreeConstants.PROFILE_PROPERTY_VALUE).raw("cool_value");
+        property.node(ComponentTreeConstants.PROFILE_PROPERTY_SIGNATURE).raw("cool_signature");
+        n.node(ComponentTreeConstants.OBJECT_HAT).raw(true);
+      })
+    );
+  }
+
+  @Test
+  void testPlayerMapPropertyFormat() {
+    assertEquals(
+      Component.object(ObjectContents.playerHead()
+        .profileProperty(PlayerHeadObjectContents.property("textures", "cool_value"))
+        .profileProperty(PlayerHeadObjectContents.property("textures", "cooler_value"))
+        .build()),
+      this.deserialize(this.node(n -> {
+        final BasicConfigurationNode textures = n.node(ComponentTreeConstants.OBJECT_PLAYER)
+          .node(ComponentTreeConstants.OBJECT_PLAYER_PROPERTIES)
+          .node("textures");
+        textures.appendListNode().raw("cool_value");
+        textures.appendListNode().raw("cooler_value");
+      }))
+    );
+  }
+
+  @Test
+  void testPlayerTexture() {
+    this.assertRoundtrippable(
+      Component.object(ObjectContents.playerHead().texture(Key.key("entity/player/wide/steve")).build()),
+      this.node(n -> {
+        n.node(ComponentTreeConstants.OBJECT_PLAYER)
+          .node(ComponentTreeConstants.OBJECT_PLAYER_TEXTURE)
+          .raw("minecraft:entity/player/wide/steve");
+        n.node(ComponentTreeConstants.OBJECT_HAT).raw(true);
+      })
+    );
   }
 }

@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.BlockNBTComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.NBTComponent;
@@ -38,6 +39,7 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.object.ObjectContents;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Assertions;
@@ -263,6 +265,32 @@ class ComponentFlattenerTest {
       .assertBalanced()
       .assertPushesAndPops(1)
       .assertContents(""); // cannot get rendered value as we don't have a context available
+  }
+
+  @Test
+  void testObjectSpriteContents() {
+    this.testFlatten(ComponentFlattener.basic(), Component.object(ObjectContents.sprite(Key.key("gui"), Key.key("icon/checkmark"))))
+      .assertBalanced()
+      .assertPushesAndPops(1)
+      .assertContents("[icon/checkmark@gui]");
+
+    this.testFlatten(ComponentFlattener.basic(), Component.object(ObjectContents.sprite(Key.key("item/diamond_sword"))))
+      .assertBalanced()
+      .assertPushesAndPops(1)
+      .assertContents("[item/diamond_sword]");
+  }
+
+  @Test
+  void testObjectPlayerHeadContents() {
+    this.testFlatten(ComponentFlattener.basic(), Component.object(ObjectContents.playerHead().build()))
+      .assertBalanced()
+      .assertPushesAndPops(1)
+      .assertContents("[unknown player head]");
+
+    this.testFlatten(ComponentFlattener.basic(), Component.object(ObjectContents.playerHead().name("Player123").build()))
+      .assertBalanced()
+      .assertPushesAndPops(1)
+      .assertContents("[Player123 head]");
   }
 
   @Test

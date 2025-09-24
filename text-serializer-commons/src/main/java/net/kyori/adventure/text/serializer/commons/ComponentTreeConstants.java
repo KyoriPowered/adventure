@@ -47,6 +47,17 @@ public final class ComponentTreeConstants {
   public static final String NBT_ENTITY = "entity";
   public static final String NBT_STORAGE = "storage";
   public static final String SEPARATOR = "separator";
+  public static final String OBJECT_ATLAS = "atlas";
+  public static final String OBJECT_SPRITE = "sprite";
+  public static final String OBJECT_HAT = "hat";
+  public static final String OBJECT_PLAYER = "player";
+  public static final String OBJECT_PLAYER_NAME = "name";
+  public static final String OBJECT_PLAYER_ID = "id";
+  public static final String OBJECT_PLAYER_PROPERTIES = "properties";
+  public static final String OBJECT_PLAYER_TEXTURE = "texture";
+  public static final String PROFILE_PROPERTY_NAME = "name";
+  public static final String PROFILE_PROPERTY_VALUE = "value";
+  public static final String PROFILE_PROPERTY_SIGNATURE = "signature";
   public static final String FONT = "font";
   public static final String COLOR = "color";
   public static final String SHADOW_COLOR = "shadow_color";

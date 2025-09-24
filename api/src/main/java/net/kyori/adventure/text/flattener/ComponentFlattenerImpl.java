@@ -30,13 +30,18 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import net.kyori.adventure.internal.properties.AdventureProperties;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.KeybindComponent;
+import net.kyori.adventure.text.ObjectComponent;
 import net.kyori.adventure.text.ScoreComponent;
 import net.kyori.adventure.text.SelectorComponent;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.object.ObjectContents;
+import net.kyori.adventure.text.object.PlayerHeadObjectContents;
+import net.kyori.adventure.text.object.SpriteObjectContents;
 import net.kyori.adventure.util.InheritanceAwareMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -58,6 +63,20 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
     .mapper(TranslatableComponent.class, component -> {
       final @Nullable String fallback = component.fallback();
       return fallback != null ? fallback : component.key();
+    })
+    .mapper(ObjectComponent.class, component -> {
+      final ObjectContents contents = component.contents();
+      if (contents instanceof SpriteObjectContents) {
+        final SpriteObjectContents spriteContents = (SpriteObjectContents) contents;
+        final Key atlas = spriteContents.atlas();
+        return "[" + spriteContents.sprite().asMinimalString()
+          + (!atlas.equals(SpriteObjectContents.DEFAULT_ATLAS) ? "@" + atlas.asMinimalString() : "")
+          + "]";
+      } else if (contents instanceof PlayerHeadObjectContents) {
+        final PlayerHeadObjectContents playerHeadContents = (PlayerHeadObjectContents) contents;
+        return "[" + (playerHeadContents.name() != null ? playerHeadContents.name() : "unknown player") + " head]";
+      }
+      return "";
     })
     // The Vanilla game will not print NBT components, expecting those to be resolved with sender context
     .build();
