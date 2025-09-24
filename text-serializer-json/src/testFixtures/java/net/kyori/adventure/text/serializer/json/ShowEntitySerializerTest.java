@@ -56,12 +56,7 @@ final class ShowEntitySerializerTest extends SerializerTest {
         comp.add(ComponentTreeConstants.HOVER_EVENT_SNAKE, object(hover -> {
           hover.addProperty(ComponentTreeConstants.HOVER_EVENT_ACTION, "show_entity");
           hover.addProperty(ComponentTreeConstants.SHOW_ENTITY_ID, "minecraft:zombie");
-          hover.add(ComponentTreeConstants.SHOW_ENTITY_UUID, array(idArray -> {
-            idArray.add((int) (id.getMostSignificantBits() >> 32));
-            idArray.add((int) (id.getMostSignificantBits() & 0xffffffffl));
-            idArray.add((int) (id.getLeastSignificantBits() >> 32));
-            idArray.add((int) (id.getLeastSignificantBits() & 0xffffffffl));
-          }));
+          hover.add(ComponentTreeConstants.SHOW_ENTITY_UUID, uuidArray(id));
         }));
       }
     );

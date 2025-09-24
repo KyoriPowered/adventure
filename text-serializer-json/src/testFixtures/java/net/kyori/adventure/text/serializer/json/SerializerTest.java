@@ -27,6 +27,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import java.util.UUID;
 import java.util.function.Consumer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -102,6 +103,15 @@ public abstract class SerializerTest {
     final JsonArray json = new JsonArray();
     consumer.accept(json);
     return json;
+  }
+
+  static JsonArray uuidArray(final UUID id) {
+    return array(idArray -> {
+      idArray.add((int) (id.getMostSignificantBits() >> 32));
+      idArray.add((int) (id.getMostSignificantBits() & 0xffffffffl));
+      idArray.add((int) (id.getLeastSignificantBits() >> 32));
+      idArray.add((int) (id.getLeastSignificantBits() & 0xffffffffl));
+    });
   }
 
   static JsonObject object(final Consumer<? super JsonObject> consumer) {

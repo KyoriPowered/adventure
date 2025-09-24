@@ -25,8 +25,11 @@ package net.kyori.adventure.serializer.configurate4;
 
 import io.leangen.geantyref.TypeToken;
 import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.BlockNBTComponent;
 import net.kyori.adventure.text.BuildableComponent;
 import net.kyori.adventure.text.Component;
@@ -35,6 +38,7 @@ import net.kyori.adventure.text.EntityNBTComponent;
 import net.kyori.adventure.text.KeybindComponent;
 import net.kyori.adventure.text.NBTComponent;
 import net.kyori.adventure.text.NBTComponentBuilder;
+import net.kyori.adventure.text.ObjectComponent;
 import net.kyori.adventure.text.ScoreComponent;
 import net.kyori.adventure.text.SelectorComponent;
 import net.kyori.adventure.text.StorageNBTComponent;
@@ -42,6 +46,9 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.TranslationArgument;
 import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.object.ObjectContents;
+import net.kyori.adventure.text.object.PlayerHeadObjectContents;
+import net.kyori.adventure.text.object.SpriteObjectContents;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -56,6 +63,14 @@ import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NBT_ENTITY;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NBT_INTERPRET;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NBT_STORAGE;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.OBJECT_ATLAS;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.OBJECT_HAT;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.OBJECT_PLAYER;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.OBJECT_PLAYER_ID;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.OBJECT_PLAYER_NAME;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.OBJECT_PLAYER_PROPERTIES;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.OBJECT_PLAYER_TEXTURE;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.OBJECT_SPRITE;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SCORE;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SCORE_NAME;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SCORE_OBJECTIVE;
@@ -68,6 +83,7 @@ import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants
 
 final class ComponentTypeSerializer implements TypeSerializer<Component> {
   static final TypeToken<List<Component>> LIST_TYPE = new TypeToken<List<Component>>() {};
+  static final TypeToken<List<PlayerHeadObjectContents.ProfileProperty>> PROPERTY_LIST_TYPE = new TypeToken<List<PlayerHeadObjectContents.ProfileProperty>>() {};
 
   private final @Nullable ComponentSerializer<Component, ? extends Component, String> stringSerial;
   private final boolean preferString;
@@ -170,6 +186,50 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
       } else {
         throw notSureHowToDeserialize(value);
       }
+    } else if (children.containsKey(OBJECT_SPRITE)) {
+      component = Component.object().contents(ObjectContents.sprite(
+        children.containsKey(OBJECT_ATLAS) ? children.get(OBJECT_ATLAS).get(KeySerializer.INSTANCE.type()) : SpriteObjectContents.DEFAULT_ATLAS,
+        children.get(OBJECT_SPRITE).get(KeySerializer.INSTANCE.type())
+      ));
+    } else if (children.containsKey(OBJECT_PLAYER)) {
+      final PlayerHeadObjectContents.Builder playerHeadContents = ObjectContents.playerHead();
+      if (children.containsKey(OBJECT_HAT)) {
+        playerHeadContents.hat(children.get(OBJECT_HAT).getBoolean());
+      }
+      final ConfigurationNode player = children.get(OBJECT_PLAYER);
+      if (player.isMap()) {
+        final Map<Object, ? extends ConfigurationNode> playerProfile = player.childrenMap();
+        if (playerProfile.containsKey(OBJECT_PLAYER_NAME)) {
+          playerHeadContents.name(playerProfile.get(OBJECT_PLAYER_NAME).getString());
+        }
+        if (playerProfile.containsKey(OBJECT_PLAYER_ID)) {
+          playerHeadContents.id(playerProfile.get(OBJECT_PLAYER_ID).get(UUID.class));
+        }
+        if (playerProfile.containsKey(OBJECT_PLAYER_PROPERTIES)) {
+          final ConfigurationNode properties = playerProfile.get(OBJECT_PLAYER_PROPERTIES);
+          if (properties.isList()) {
+            playerHeadContents.profileProperties(properties.get(PROPERTY_LIST_TYPE));
+          } else if (properties.isMap()) {
+            final Map<Object, ? extends ConfigurationNode> propertyMap = properties.childrenMap();
+            for (final Map.Entry<Object, ? extends ConfigurationNode> entry : propertyMap.entrySet()) {
+              for (final ConfigurationNode propertyValue : entry.getValue().childrenList()) {
+                playerHeadContents.profileProperty(PlayerHeadObjectContents.property(
+                  entry.getKey().toString(), propertyValue.getString()
+                ));
+              }
+            }
+          }
+        }
+        if (playerProfile.containsKey(OBJECT_PLAYER_TEXTURE)) {
+          playerHeadContents.texture(playerProfile.get(OBJECT_PLAYER_TEXTURE).get(KeySerializer.INSTANCE.type()));
+        }
+      } else if (!player.isList()) {
+        playerHeadContents.name(player.getString());
+      } else {
+        throw notSureHowToDeserialize(value);
+      }
+
+      component = Component.object().contents(playerHeadContents.build());
     } else {
       throw notSureHowToDeserialize(value);
     }
@@ -237,6 +297,46 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
         value.node(NBT_ENTITY).set(((EntityNBTComponent) nc).selector());
       } else if (src instanceof StorageNBTComponent) {
         value.node(NBT_STORAGE).set(KeySerializer.INSTANCE.type(), ((StorageNBTComponent) nc).storage());
+      } else {
+        throw notSureHowToSerialize(src);
+      }
+    } else if (src instanceof ObjectComponent) {
+      final ObjectComponent objectComponent = (ObjectComponent) src;
+      final ObjectContents contents = objectComponent.contents();
+      if (contents instanceof SpriteObjectContents) {
+        final SpriteObjectContents spriteContents = (SpriteObjectContents) contents;
+        if (!spriteContents.atlas().equals(SpriteObjectContents.DEFAULT_ATLAS)) {
+          value.node(OBJECT_ATLAS).set(KeySerializer.INSTANCE.type(), spriteContents.atlas());
+        }
+        value.node(OBJECT_SPRITE).set(KeySerializer.INSTANCE.type(), spriteContents.sprite());
+      } else if (contents instanceof PlayerHeadObjectContents) {
+        final PlayerHeadObjectContents playerHeadContents = (PlayerHeadObjectContents) contents;
+        value.node(OBJECT_HAT).set(playerHeadContents.hat());
+        final String playerName = playerHeadContents.name();
+        final UUID playerId = playerHeadContents.id();
+        final List<PlayerHeadObjectContents.ProfileProperty> properties = playerHeadContents.profileProperties();
+        final Key texture = playerHeadContents.texture();
+        final ConfigurationNode player = value.node(OBJECT_PLAYER);
+        if (playerId == null && properties.isEmpty() && texture == null) {
+          if (playerName != null) {
+            player.set(playerName);
+          } else {
+            player.set(Collections.emptyMap());
+          }
+        } else {
+          if (playerName != null) {
+            player.node(OBJECT_PLAYER_NAME).set(playerName);
+          }
+          if (playerId != null) {
+            player.node(OBJECT_PLAYER_ID).set(playerId);
+          }
+          if (!properties.isEmpty()) {
+            player.node(OBJECT_PLAYER_PROPERTIES).set(PROPERTY_LIST_TYPE, properties);
+          }
+          if (texture != null) {
+            player.node(OBJECT_PLAYER_TEXTURE).set(KeySerializer.INSTANCE.type(), texture);
+          }
+        }
       } else {
         throw notSureHowToSerialize(src);
       }
