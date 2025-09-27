@@ -31,8 +31,8 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.stream.Collector;
 import net.kyori.adventure.text.minimessage.Context;
-import net.kyori.adventure.text.minimessage.SerializationContext;
 import net.kyori.adventure.text.minimessage.ParsingException;
+import net.kyori.adventure.text.minimessage.SerializationContext;
 import net.kyori.adventure.text.minimessage.internal.TagInternals;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.TagPattern;
@@ -233,6 +233,7 @@ public interface TagResolver {
    * @return whether this resolver has a tag with this name
    * @since 4.10.0
    */
+  @ApiStatus.Obsolete
   boolean has(final @NotNull String name);
 
   /**
@@ -241,11 +242,12 @@ public interface TagResolver {
    * <p>This does not allow validating arguments.</p>
    *
    * @param name the tag name
+   * @param context the serialization context
    * @return whether this resolver has a tag with this name
-   * @since 4.10.0
+   * @since 4.26.0
    */
   default boolean has(final @NotNull String name, final SerializationContext context) {
-    return has(name);
+    return this.has(name);
   }
 
   /**

@@ -174,12 +174,12 @@ class ContextImpl implements Context {
   }
 
   @Override
-  public @NotNull @Unmodifiable Map<String, TextColor> namedColors() {
+  public @Unmodifiable @NotNull Map<String, TextColor> namedColors() {
     return this.miniMessage.namedColors();
   }
 
   @Override
-  public @NotNull @Unmodifiable Map<String, String> namedColorAliases() {
+  public @Unmodifiable @NotNull Map<String, String> namedColorAliases() {
     return this.miniMessage.namedColorAliases();
   }
 
@@ -198,5 +198,4 @@ class ContextImpl implements Context {
     }
     return tokens;
   }
-
 }

@@ -35,10 +35,12 @@ import net.kyori.adventure.pointer.Pointered;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.minimessage.internal.TagInternals;
 import net.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.minimessage.tree.Node;
 import net.kyori.adventure.util.Services;
+import org.intellij.lang.annotations.Subst;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
@@ -84,8 +86,8 @@ final class MiniMessageImpl implements MiniMessage {
     this.debugOutput = debugOutput;
     this.preProcessor = preProcessor;
     this.postProcessor = postProcessor;
-    this.namedColors = namedColors;
-    this.namedColorAliases = namedColorAliases;
+    this.namedColors = Collections.unmodifiableMap(namedColors);
+    this.namedColorAliases = Collections.unmodifiableMap(namedColorAliases);
   }
 
   private static @NotNull Map<String, TextColor> defaultNamedColors() {
@@ -180,13 +182,13 @@ final class MiniMessageImpl implements MiniMessage {
   }
 
   @Override
-  public @NotNull @Unmodifiable Map<String, TextColor> namedColors() {
-    return Collections.unmodifiableMap(this.namedColors);
+  public @Unmodifiable @NotNull Map<String, TextColor> namedColors() {
+    return this.namedColors;
   }
 
   @Override
-  public @NotNull @Unmodifiable Map<String, String> namedColorAliases() {
-    return Collections.unmodifiableMap(this.namedColorAliases);
+  public @Unmodifiable @NotNull Map<String, String> namedColorAliases() {
+    return this.namedColorAliases;
   }
 
   @Override
@@ -244,6 +246,9 @@ final class MiniMessageImpl implements MiniMessage {
 
     @Override
     public @NotNull Builder namedColors(final @NotNull Map<String, TextColor> colors) {
+      for (final @Subst("color") String name : colors.keySet()) {
+        TagInternals.assertValidTagName(name);
+      }
       this.namedColors.clear();
       this.namedColors.putAll(colors);
       return this;
@@ -251,31 +256,38 @@ final class MiniMessageImpl implements MiniMessage {
 
     @Override
     public @NotNull Builder namedColor(final @NotNull String name, final @NotNull TextColor color) {
+      TagInternals.assertValidTagName(name);
       this.namedColors.put(name, color);
       return this;
     }
 
     @Override
     public @NotNull Builder removeNamedColor(final @NotNull String name) {
+      TagInternals.assertValidTagName(name);
       this.namedColors.remove(name);
       return this;
     }
 
     @Override
-    public @NotNull Builder namedColorAliases(@NotNull final Map<String, String> aliases) {
+    public @NotNull Builder namedColorAliases(final @NotNull Map<String, String> aliases) {
+      for (final @Subst("color") String name : aliases.keySet()) {
+        TagInternals.assertValidTagName(name);
+      }
       this.namedColorAliases.clear();
       this.namedColorAliases.putAll(aliases);
       return this;
     }
 
     @Override
-    public @NotNull Builder namedColorAlias(@NotNull final String name, @NotNull final String color) {
+    public @NotNull Builder namedColorAlias(final @NotNull String name, final @NotNull String color) {
+      TagInternals.assertValidTagName(name);
       this.namedColorAliases.put(name, color);
       return this;
     }
 
     @Override
-    public @NotNull Builder removeNamedColorAlias(@NotNull final String name) {
+    public @NotNull Builder removeNamedColorAlias(final @NotNull String name) {
+      TagInternals.assertValidTagName(name);
       this.namedColorAliases.remove(name);
       return this;
     }

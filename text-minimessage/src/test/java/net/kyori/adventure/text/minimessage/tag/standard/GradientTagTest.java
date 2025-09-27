@@ -49,7 +49,6 @@ import static net.kyori.adventure.text.format.Style.style;
 import static net.kyori.adventure.text.format.TextColor.color;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.component;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class GradientTagTest extends AbstractTest {

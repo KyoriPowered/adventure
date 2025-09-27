@@ -334,17 +334,70 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
      */
     @NotNull Builder editTags(final @NotNull Consumer<TagResolver.Builder> adder);
 
+    /**
+     * Set the known named colors of this MiniMessage instance.
+     *
+     * @param colors the colors to use
+     * @return this builder
+     * @since 4.26.0
+     */
     @NotNull Builder namedColors(@NotNull Map<String, TextColor> colors);
 
-    @NotNull Builder namedColor(@NotNull @TagPattern String name, @NotNull TextColor color);
+    /**
+     * Add to the set of known named colors of this MiniMessage instance.
+     *
+     * @param name the name of the color
+     * @param color the color
+     * @return this builder
+     * @since 4.26.0
+     */
+    @NotNull Builder namedColor(@TagPattern @NotNull String name, @NotNull TextColor color);
 
-    @NotNull Builder removeNamedColor(@NotNull @TagPattern String name);
+    /**
+     * Remove from the set of known named colors of this MiniMessage instance.
+     *
+     * @param name the name of the color to remove
+     * @return this builder
+     * @since 4.26.0
+     */
+    @NotNull Builder removeNamedColor(@TagPattern @NotNull String name);
 
+    /**
+     * Set the known named color aliases of this MiniMessage instance.
+     *
+     * <p>Named color aliases point to another color name. If the name does not exist, the aliases is silently ignored.
+     * Aliases not tied to a specific color value and are never serialized.</p>
+     *
+     * @param aliases the aliases to use
+     * @return this builder
+     * @since 4.26.0
+     */
     @NotNull Builder namedColorAliases(@NotNull Map<String, String> aliases);
 
-    @NotNull Builder namedColorAlias(@NotNull @TagPattern String name, @NotNull @TagPattern String color);
+    /**
+     * Add to the set of known named color aliases of this MiniMessage instance.
+     *
+     * <p>Named color aliases point to another color name. If the name does not exist, the aliases is silently ignored.
+     * Aliases not tied to a specific color value and are never serialized.</p>
+     *
+     * @param name the name of the color alias
+     * @param color the name of the named color
+     * @return this builder
+     * @since 4.26.0
+     */
+    @NotNull Builder namedColorAlias(@TagPattern @NotNull String name, @TagPattern @NotNull String color);
 
-    @NotNull Builder removeNamedColorAlias(@NotNull @TagPattern String name);
+    /**
+     * Remove from the set of known named color aliases of this MiniMessage instance.
+     *
+     * <p>Named color aliases point to another color name. If the name does not exist, the aliases is silently ignored.
+     * Aliases not tied to a specific color value and are never serialized.</p>
+     *
+     * @param name the name of the color alias
+     * @return this builder
+     * @since 4.26.0
+     */
+    @NotNull Builder removeNamedColorAlias(@TagPattern @NotNull String name);
 
     /**
      * Enables strict mode (disabled by default).
