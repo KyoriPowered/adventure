@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.OptionalDouble;
 import java.util.stream.Stream;
@@ -65,7 +66,7 @@ public final class TransitionTag implements Inserting, Examinable {
 
         // Determine if this is a color first. Double#parseDouble is "slow" in cases where we hit a string.
         final String argValue = arg.value();
-        final TextColor color = ColorTagResolver.resolveColorOrNull(argValue);
+        final TextColor color = ColorTagResolver.resolveColorOrNull(argValue, ctx);
 
         if (color != null) {
           textColors.add(color);

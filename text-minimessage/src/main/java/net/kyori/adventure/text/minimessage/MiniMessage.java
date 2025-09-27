@@ -23,11 +23,14 @@
  */
 package net.kyori.adventure.text.minimessage;
 
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.pointer.Pointered;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.minimessage.tag.TagPattern;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.minimessage.tree.Node;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
@@ -44,7 +47,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 4.10.0
  */
-public interface MiniMessage extends ComponentSerializer<Component, Component, String> {
+public interface MiniMessage extends ComponentSerializer<Component, Component, String>, SerializationContext {
   /**
    * Gets a simple instance with default settings.
    *
@@ -330,6 +333,18 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
      * @since 4.10.0
      */
     @NotNull Builder editTags(final @NotNull Consumer<TagResolver.Builder> adder);
+
+    @NotNull Builder namedColors(@NotNull Map<String, TextColor> colors);
+
+    @NotNull Builder namedColor(@NotNull @TagPattern String name, @NotNull TextColor color);
+
+    @NotNull Builder removeNamedColor(@NotNull @TagPattern String name);
+
+    @NotNull Builder namedColorAliases(@NotNull Map<String, String> aliases);
+
+    @NotNull Builder namedColorAlias(@NotNull @TagPattern String name, @NotNull @TagPattern String color);
+
+    @NotNull Builder removeNamedColorAlias(@NotNull @TagPattern String name);
 
     /**
      * Enables strict mode (disabled by default).

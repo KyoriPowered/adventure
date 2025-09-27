@@ -113,7 +113,7 @@ final class MiniMessageParser {
             continue;
           }
           final String sanitized = TokenParser.TagProvider.sanitizePlaceholderName(token.childTokens().get(0).get(richMessage).toString());
-          if (combinedResolver.has(sanitized)) {
+          if (combinedResolver.has(sanitized, context)) {
             tagHandler.accept(token, sb);
           } else {
             sb.append(richMessage, token.startIndex(), token.endIndex());
@@ -189,7 +189,7 @@ final class MiniMessageParser {
     }
     final Predicate<String> tagNameChecker = name -> {
       final String sanitized = TokenParser.TagProvider.sanitizePlaceholderName(name);
-      return combinedResolver.has(sanitized);
+      return combinedResolver.has(sanitized, context);
     };
 
     final String preProcessed = TokenParser.resolvePreProcessTags(processedMessage, transformationFactory);

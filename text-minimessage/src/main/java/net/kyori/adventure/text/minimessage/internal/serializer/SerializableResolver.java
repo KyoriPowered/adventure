@@ -30,6 +30,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.Context;
+import net.kyori.adventure.text.minimessage.SerializationContext;
 import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.internal.TagInternals;
 import net.kyori.adventure.text.minimessage.tag.Tag;
@@ -117,6 +118,10 @@ public interface SerializableResolver {
    */
   void handle(final @NotNull Component serializable, final @NotNull ClaimConsumer consumer);
 
+  default void handle(final @NotNull Component serializable, final @NotNull ClaimConsumer consumer, final @NotNull SerializationContext serializationContext) {
+    this.handle(serializable, consumer);
+  }
+
   /**
    * A subinterface for resolvers that only handle one single tag.
    *
@@ -125,9 +130,14 @@ public interface SerializableResolver {
   interface Single extends SerializableResolver {
     @Override
     default void handle(final @NotNull Component serializable, final @NotNull ClaimConsumer consumer) {
+      throw new IllegalStateException("TagResolver#has(String) should not be called if TagResolver#has(String,SerializationContext) is present!");
+    }
+
+    @Override
+    default void handle(final @NotNull Component serializable, final @NotNull ClaimConsumer consumer, final @NotNull SerializationContext ctx) {
       final @Nullable StyleClaim<?> style = this.claimStyle();
       if (style != null && !consumer.styleClaimed(style.claimKey())) {
-        final @Nullable Emitable applied = style.apply(serializable.style());
+        final @Nullable Emitable applied = style.apply(serializable.style(), ctx);
         if (applied != null) {
           consumer.style(style.claimKey(), applied);
         }

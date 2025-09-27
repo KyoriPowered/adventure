@@ -89,8 +89,12 @@ class SerializerCollectorTest {
   }
 
   String serializeToString(final Consumer<MiniMessageSerializer.Collector> handler) {
+    return serializeToString(handler, MiniMessage.miniMessage());
+  }
+
+  String serializeToString(final Consumer<MiniMessageSerializer.Collector> handler, SerializationContext ctx) {
     final StringBuilder output = new StringBuilder();
-    final MiniMessageSerializer.Collector collector = new MiniMessageSerializer.Collector((SerializableResolver) StandardTags.defaults(), false, output);
+    final MiniMessageSerializer.Collector collector = new MiniMessageSerializer.Collector((SerializableResolver) StandardTags.defaults(), false, output, ctx);
     handler.accept(collector);
 
     return output.toString();

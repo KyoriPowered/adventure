@@ -32,6 +32,14 @@ import org.jetbrains.annotations.Range;
  * @since 4.0.0
  */
 public interface RGBLike {
+  static RGBLike of(final @Range(from = 0x0, to = 0xff) int red, final @Range(from = 0x0, to = 0xff) int green, final @Range(from = 0x0, to = 0xff) int blue) {
+    return new RGBLikeImpl(red, green, blue);
+  }
+
+  static RGBLike of(final @Range(from = 0x0, to = 0xffffff) int value) {
+    return new RGBLikeImpl(value);
+  }
+
   /**
    * Gets the red component.
    *

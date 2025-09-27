@@ -24,10 +24,12 @@
 package net.kyori.adventure.text.minimessage;
 
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.pointer.Pointered;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.internal.parser.ParsingExceptionImpl;
 import net.kyori.adventure.text.minimessage.internal.parser.Token;
 import net.kyori.adventure.text.minimessage.internal.parser.node.TagPart;
@@ -36,6 +38,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -168,6 +171,16 @@ class ContextImpl implements Context {
   @Override
   public @NotNull ParsingException newException(final @NotNull String message, final @Nullable Throwable cause, final @NotNull ArgumentQueue tags) {
     return new ParsingExceptionImpl(message, this.message, cause, false, tagsToTokens(((ArgumentQueueImpl<?>) tags).args));
+  }
+
+  @Override
+  public @NotNull @Unmodifiable Map<String, TextColor> namedColors() {
+    return this.miniMessage.namedColors();
+  }
+
+  @Override
+  public @NotNull @Unmodifiable Map<String, String> namedColorAliases() {
+    return this.miniMessage.namedColorAliases();
   }
 
   private @NotNull Component deserializeWithOptionalTarget(final @NotNull String message, final @NotNull TagResolver tagResolver) {
