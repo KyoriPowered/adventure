@@ -26,6 +26,7 @@ package net.kyori.adventure.text.minimessage.tag.standard;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.AbstractTest;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.junit.jupiter.api.Test;
 
 import static net.kyori.adventure.text.Component.text;
@@ -44,5 +45,17 @@ class TransitionTagTest extends AbstractTest {
       final Component expected = text("", colors[i]).append(text("Hello World"));
       this.assertParsedEquals(expected, input);
     }
+  }
+
+  @Test
+  void testTransitionWithCustomColors() {
+    final MiniMessage mm = MiniMessage.builder()
+      .namedColor("leadership", TextColor.color(0xFE305A))
+      .namedColor("community", TextColor.color(0xD56377))
+      .build();
+
+    final String input = "<transition:leadership:community:0.5>Is this development team?";
+    final Component expected = mm.deserialize("<transition:#FE305A:#D56377:0.5>Is this development team?");
+    this.assertParsedEquals(mm, expected, input);
   }
 }

@@ -26,6 +26,7 @@ package net.kyori.adventure.text.minimessage;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;
 
@@ -78,4 +79,16 @@ public class MiniMessageSerializerTest extends AbstractTest {
     this.assertParsedEquals(component, expected);
   }
 
+  @Test
+  void testCustomColors() {
+    final MiniMessage mm = MiniMessage.builder()
+      .namedColor("orange", TextColor.color(0xFFBB00))
+      .build();
+
+    final String input = "<orange>Some text!";
+    final Component component = Component.text("Some text!", TextColor.color(0xFFBB00));
+
+    assertEquals(input, mm.serialize(component));
+    assertParsedEquals(mm, component, input);
+  }
 }
