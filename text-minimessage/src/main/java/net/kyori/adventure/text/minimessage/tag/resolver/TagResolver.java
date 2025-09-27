@@ -229,6 +229,8 @@ public interface TagResolver {
    *
    * <p>This does not allow validating arguments.</p>
    *
+   * <p>This method should never be called directly but is safe to override.</p>
+   *
    * @param name the tag name
    * @return whether this resolver has a tag with this name
    * @since 4.10.0
