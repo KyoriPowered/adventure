@@ -297,6 +297,8 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     private @Nullable TextFormat lastWritten;
     private StyleState[] styles = new StyleState[8];
     private int head = -1;
+    private boolean applyTrailingStyle = false;
+    private int tail = -1;
 
     @Override
     public void pushStyle(final @NotNull Style pushed) {
@@ -308,6 +310,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
 
       if (state == null) {
         this.styles[idx] = state = new StyleState();
+        this.tail = Math.max(this.tail, idx);
       }
 
       if (idx > 0) {
@@ -323,12 +326,17 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
 
     @Override
     public void component(final @NotNull String text) {
-      if (!text.isEmpty()) {
-        if (this.head < 0) throw new IllegalStateException("No style has been pushed!");
-
-        this.styles[this.head].applyFormat();
-        this.sb.append(text);
+      if (text.isEmpty()) {
+        if (this.head == 0) {
+          this.applyTrailingStyle = true;
+        }
+        return;
       }
+
+      if (this.head < 0) throw new IllegalStateException("No style has been pushed!");
+
+      this.styles[this.head].applyFormat();
+      this.sb.append(text);
     }
 
     @Override
@@ -351,6 +359,10 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
 
     @Override
     public String toString() {
+      if (this.applyTrailingStyle) {
+        this.styles[this.tail].applyFormat();
+      }
+
       return this.sb.toString();
     }
 
