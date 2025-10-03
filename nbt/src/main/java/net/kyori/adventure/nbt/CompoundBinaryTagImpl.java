@@ -59,6 +59,11 @@ final class CompoundBinaryTagImpl extends AbstractBinaryTag implements CompoundB
   }
 
   @Override
+  public @NotNull Map<String, BinaryTag> asMap() {
+    return this.tags;
+  }
+
+  @Override
   public @Nullable BinaryTag get(final String key) {
     return this.tags.get(key);
   }
