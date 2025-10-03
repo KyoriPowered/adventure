@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -377,7 +378,8 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    * @return the array of bytes, or {@code defaultValue}
    * @since 4.0.0
    */
-  byte@NotNull[] getByteArray(final @NotNull String key, final byte@NotNull[] defaultValue);
+  @Contract("_, !null -> !null")
+  byte@Nullable[] getByteArray(final @NotNull String key, final byte@Nullable[] defaultValue);
 
   /**
    * Gets a string.
@@ -400,7 +402,8 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    *     with the specified key, or has a tag with a different type
    * @since 4.0.0
    */
-  @NotNull String getString(final @NotNull String key, final @NotNull String defaultValue);
+  @Contract("_, !null -> !null")
+  @Nullable String getString(final @NotNull String key, final @Nullable String defaultValue);
 
   /**
    * Gets a list.
@@ -423,7 +426,8 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    *     with the specified key, or has a tag with a different type
    * @since 4.0.0
    */
-  @NotNull ListBinaryTag getList(final @NotNull String key, final @NotNull ListBinaryTag defaultValue);
+  @Contract("_, !null -> !null")
+  @Nullable ListBinaryTag getList(final @NotNull String key, final @Nullable ListBinaryTag defaultValue);
 
   /**
    * Gets a list, ensuring that the type is the same as {@code type}.
@@ -450,7 +454,8 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    *     does not match {@code expectedType}
    * @since 4.0.0
    */
-  @NotNull ListBinaryTag getList(final @NotNull String key, final @NotNull BinaryTagType<? extends BinaryTag> expectedType, final @NotNull ListBinaryTag defaultValue);
+  @Contract("_, _, !null -> !null")
+  @Nullable ListBinaryTag getList(final @NotNull String key, final @NotNull BinaryTagType<? extends BinaryTag> expectedType, final @Nullable ListBinaryTag defaultValue);
 
   /**
    * Gets a compound.
@@ -473,7 +478,8 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    *     with the specified key, or has a tag with a different type
    * @since 4.0.0
    */
-  @NotNull CompoundBinaryTag getCompound(final @NotNull String key, final @NotNull CompoundBinaryTag defaultValue);
+  @Contract("_, !null -> !null")
+  @Nullable CompoundBinaryTag getCompound(final @NotNull String key, final @Nullable CompoundBinaryTag defaultValue);
 
   /**
    * Gets an array of ints.
@@ -493,7 +499,8 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    * @return the array of ints, or {@code defaultValue}
    * @since 4.0.0
    */
-  int@NotNull[] getIntArray(final @NotNull String key, final int@NotNull[] defaultValue);
+  @Contract("_, !null -> !null")
+  int@Nullable[] getIntArray(final @NotNull String key, final int@Nullable[] defaultValue);
 
   /**
    * Gets an array of longs.
@@ -513,7 +520,8 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    * @return the array of longs, or {@code defaultValue}
    * @since 4.0.0
    */
-  long@NotNull[] getLongArray(final @NotNull String key, final long@NotNull[] defaultValue);
+  @Contract("_, !null -> !null")
+  long@Nullable[] getLongArray(final @NotNull String key, final long@Nullable[] defaultValue);
 
   /**
    * Gets a stream of entries in this compound tag.

@@ -29,6 +29,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -418,7 +419,8 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @return the array of bytes, or {@code defaultValue}
    * @since 4.0.0
    */
-  default byte@NotNull[] getByteArray(final @Range(from = 0, to = Integer.MAX_VALUE) int index, final byte@NotNull[] defaultValue) {
+  @Contract("_, !null -> !null")
+  default byte@Nullable[] getByteArray(final @Range(from = 0, to = Integer.MAX_VALUE) int index, final byte@Nullable[] defaultValue) {
     final BinaryTag tag = this.get(index);
     if (tag.type() == BinaryTagTypes.BYTE_ARRAY) {
       return ((ByteArrayBinaryTag) tag).value();
@@ -445,7 +447,8 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @return the string value, or {@code defaultValue}
    * @since 4.0.0
    */
-  default @NotNull String getString(final @Range(from = 0, to = Integer.MAX_VALUE) int index, final @NotNull String defaultValue) {
+  @Contract("_, !null -> !null")
+  default @Nullable String getString(final @Range(from = 0, to = Integer.MAX_VALUE) int index, final @Nullable String defaultValue) {
     final BinaryTag tag = this.get(index);
     if (tag.type() == BinaryTagTypes.STRING) {
       return ((StringBinaryTag) tag).value();
@@ -484,7 +487,8 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @return the list, or {@code defaultValue} if the tag at index {@code index} is not a list tag
    * @since 4.4.0
    */
-  default @NotNull ListBinaryTag getList(final @Range(from = 0, to = Integer.MAX_VALUE) int index, final @NotNull ListBinaryTag defaultValue) {
+  @Contract("_, !null -> !null")
+  default @Nullable ListBinaryTag getList(final @Range(from = 0, to = Integer.MAX_VALUE) int index, final @Nullable ListBinaryTag defaultValue) {
     return this.getList(index, null, defaultValue);
   }
 
@@ -499,7 +503,8 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @return the list, or {@code defaultValue} if the tag at index {@code index} is not a list tag, or if the list tag's element type is not {@code elementType}
    * @since 4.4.0
    */
-  default @NotNull ListBinaryTag getList(final @Range(from = 0, to = Integer.MAX_VALUE) int index, final @Nullable BinaryTagType<?> elementType, final @NotNull ListBinaryTag defaultValue) {
+  @Contract("_, _, !null -> !null")
+  default @Nullable ListBinaryTag getList(final @Range(from = 0, to = Integer.MAX_VALUE) int index, final @Nullable BinaryTagType<?> elementType, final @Nullable ListBinaryTag defaultValue) {
     final BinaryTag tag = this.get(index);
     if (tag.type() == BinaryTagTypes.LIST) {
       final ListBinaryTag list = (ListBinaryTag) tag;
@@ -529,7 +534,8 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @return the compound, or {@code defaultValue}
    * @since 4.0.0
    */
-  default @NotNull CompoundBinaryTag getCompound(final @Range(from = 0, to = Integer.MAX_VALUE) int index, final @NotNull CompoundBinaryTag defaultValue) {
+  @Contract("_, !null -> !null")
+  default @Nullable CompoundBinaryTag getCompound(final @Range(from = 0, to = Integer.MAX_VALUE) int index, final @Nullable CompoundBinaryTag defaultValue) {
     final BinaryTag tag = this.get(index);
     if (tag.type() == BinaryTagTypes.COMPOUND) {
       return (CompoundBinaryTag) tag;
@@ -560,7 +566,8 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @return the array of ints, or {@code defaultValue}
    * @since 4.0.0
    */
-  default int@NotNull[] getIntArray(final @Range(from = 0, to = Integer.MAX_VALUE) int index, final int@NotNull[] defaultValue) {
+  @Contract("_, !null -> !null")
+  default int@Nullable[] getIntArray(final @Range(from = 0, to = Integer.MAX_VALUE) int index, final int@Nullable[] defaultValue) {
     final BinaryTag tag = this.get(index);
     if (tag.type() == BinaryTagTypes.INT_ARRAY) {
       return ((IntArrayBinaryTag) tag).value();
@@ -591,7 +598,8 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @return the array of longs, or {@code defaultValue}
    * @since 4.0.0
    */
-  default long@NotNull[] getLongArray(final @Range(from = 0, to = Integer.MAX_VALUE) int index, final long@NotNull[] defaultValue) {
+  @Contract("_, !null -> !null")
+  default long@Nullable[] getLongArray(final @Range(from = 0, to = Integer.MAX_VALUE) int index, final long@Nullable[] defaultValue) {
     final BinaryTag tag = this.get(index);
     if (tag.type() == BinaryTagTypes.LONG_ARRAY) {
       return ((LongArrayBinaryTag) tag).value();
