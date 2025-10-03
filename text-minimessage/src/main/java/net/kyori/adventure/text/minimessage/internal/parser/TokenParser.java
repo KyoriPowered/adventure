@@ -603,6 +603,26 @@ public final class TokenParser {
   }
 
   /**
+   * Determines if the character at {@code charIndex} in {@code text} is escaped by a backslash, considering only
+   * backslashes between {@code boundIndex} (inclusive) and {@code charIndex} (exclusive).
+   * @param text the input text
+   * @param charIndex the index of the character to check
+   * @param boundIndex the lower bound index for checking backslashes
+   * @return {@code true} if the character is escaped, {@code false} otherwise
+   */
+  public static boolean isEscaped(final String text, final int charIndex, final int boundIndex) {
+    int backslashCount = 0;
+    for (int i = charIndex - 1; i >= boundIndex; i--) {
+      if (text.charAt(i) == ESCAPE) {
+        backslashCount++;
+      } else {
+        break;
+      }
+    }
+    return (backslashCount & 1) != 0;
+  }
+
+  /**
    * Removes escaping {@code '\`} characters from a substring where the subsequent character matches a given predicate.
    *
    * @param text the input text
