@@ -254,8 +254,14 @@ public final class TokenParser {
             case '\'':
             case '"':
               currentStringChar = (char) codePoint;
-              // Look ahead if the quote being opened is ever closed
-              if (message.indexOf(codePoint, i + 1) != -1) {
+              // Look ahead if the quote being opened is ever closed and not escaped
+              int fromIndex = i + 1;
+              int closingQuoteIndex = message.indexOf(codePoint, fromIndex);
+              while (closingQuoteIndex != -1 && isEscaped(message, closingQuoteIndex, fromIndex)) {
+                fromIndex = closingQuoteIndex + 1;
+                closingQuoteIndex = message.indexOf(codePoint, fromIndex);
+              }
+              if (closingQuoteIndex != -1) {
                 state = FirstPassState.STRING;
               }
               break;
