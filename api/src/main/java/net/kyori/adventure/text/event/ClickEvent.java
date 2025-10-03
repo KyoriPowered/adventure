@@ -55,6 +55,8 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
   /**
    * Creates a click event that opens a url.
    *
+   * <p>Since <em>Minecraft: Java Edition</em> 1.21.5 the url will fail to parse if not a {@code http://} or {@code https://} scheme.</p>
+   *
    * @param url the url to open
    * @return a click event
    * @since 4.0.0
