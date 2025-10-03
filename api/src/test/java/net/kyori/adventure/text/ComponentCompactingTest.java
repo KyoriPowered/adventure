@@ -426,4 +426,11 @@ class ComponentCompactingTest {
     assertEquals(expectedComponent, expectedComponent.compact());
   }
 
+  @Test
+  void testCompactingWithParentStyle() {
+    final Component expectedComponent = text("meow");
+    final Component notCompact = text("meow").style(style(TextDecoration.BOLD));
+
+    assertEquals(expectedComponent, notCompact.compact(Style.style(TextDecoration.BOLD)));
+  }
 }
