@@ -138,4 +138,42 @@ class LinkingLegacyComponentSerializerTest {
       .build();
     assertEquals(expectedManyUrls, serializer.deserialize(manyUrls));
   }
+
+  @Test
+  void testLinkifyWithFollowingInvalidChars() {
+    final String bareUrl = "https://www.example.com/";
+    final String withSurroundingBrackets = "did you hear about <https://www.example.com/>? they're really cool";
+    final TextComponent expectedWithSurroundingBrackets = Component.text().content("did you hear about <")
+      .append(Component.text(bareUrl).clickEvent(ClickEvent.openUrl(bareUrl)))
+      .append(Component.text(">? they're really cool"))
+      .build();
+    assertEquals(expectedWithSurroundingBrackets, LegacyComponentSerializer.builder().character('&').extractUrls().build().deserialize(withSurroundingBrackets));
+
+    final String bareUrlWithPath = "https://www.example.com/hello_world";
+    final String withSpace = "did you hear about <https://www.example.com/hello_world test>? they're really cool";
+    final TextComponent expectedWithSpace = Component.text().content("did you hear about <")
+      .append(Component.text(bareUrlWithPath).clickEvent(ClickEvent.openUrl(bareUrlWithPath)))
+      .append(Component.text(" test>? they're really cool"))
+      .build();
+    assertEquals(expectedWithSpace, LegacyComponentSerializer.builder().character('&').extractUrls().build().deserialize(withSpace));
+
+    final String bareUrlWithPathAndSuffix = "https://www.example.com/hello/:world$_:";
+    final String withUnsafeChars = "did you hear about <https://www.example.com/hello/:world$_:^)>? they're really cool";
+    final TextComponent expectedWithPathAndSuffix = Component.text().content("did you hear about <")
+      .append(Component.text(bareUrlWithPathAndSuffix).clickEvent(ClickEvent.openUrl(bareUrlWithPathAndSuffix)))
+      .append(Component.text("^)>? they're really cool"))
+      .build();
+    assertEquals(expectedWithPathAndSuffix, LegacyComponentSerializer.builder().character('&').extractUrls().build().deserialize(withUnsafeChars));
+  }
+
+  @Test
+  void testLinkifyWithPercentEncodedChars() {
+    final String bareUrl = "https://www.example.com/hello/:world$_:%5E)/test";
+    final String withSurroundingBrackets = "did you hear about https://www.example.com/hello/:world$_:%5E)/test? they're really cool";
+    final TextComponent expectedWithSurroundingBrackets = Component.text().content("did you hear about ")
+      .append(Component.text(bareUrl).clickEvent(ClickEvent.openUrl(bareUrl)))
+      .append(Component.text("? they're really cool"))
+      .build();
+    assertEquals(expectedWithSurroundingBrackets, LegacyComponentSerializer.builder().character('&').extractUrls().build().deserialize(withSurroundingBrackets));
+  }
 }
