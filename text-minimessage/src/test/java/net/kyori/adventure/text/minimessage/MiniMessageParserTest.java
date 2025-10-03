@@ -553,4 +553,14 @@ public class MiniMessageParserTest extends AbstractTest {
 
     this.assertParsedEquals(expected, input);
   }
+
+  // https://github.com/KyoriPowered/adventure/issues/1315
+  @Test
+  void testEscapedTerminatingQuoteArgument() {
+    final String input = "<hover:show_text:'Foo\\'>Bar";
+    final Component expected = Component.text("Bar").hoverEvent(Component.text("Foo\\"));
+
+    this.assertParsedEquals(expected, input);
+  }
+
 }
