@@ -48,6 +48,11 @@ final class SingleResolver implements TagResolver.Single, MappableResolver {
   }
 
   @Override
+  public boolean has(final @NotNull String name) {
+    return this.key.equals(name);
+  }
+
+  @Override
   public boolean contributeToMap(final @NotNull Map<String, Tag> map) {
     map.put(this.key, this.tag);
     return true;

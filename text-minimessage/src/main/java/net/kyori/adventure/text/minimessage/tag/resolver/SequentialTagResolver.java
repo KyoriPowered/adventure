@@ -45,6 +45,7 @@ final class SequentialTagResolver implements TagResolver, SerializableResolver {
     @Nullable ParsingException thrown = null;
     for (final TagResolver resolver : this.resolvers) {
       try {
+        if (!resolver.has(name)) continue;
         final @Nullable Tag placeholder = resolver.resolve(name, arguments, ctx);
 
         if (placeholder != null) return placeholder;
