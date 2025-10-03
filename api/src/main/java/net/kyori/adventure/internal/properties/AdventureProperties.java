@@ -142,12 +142,12 @@ public final class AdventureProperties {
     /**
      * Overrides the default value for a property.
      *
-     * @param name the name of the property
+     * @param property the property
      * @param existingDefault the current default value
      * @return the new default value
      * @param <T> the value type
      * @since 4.24.0
      */
-    <T> @Nullable T overrideDefault(final @NotNull String name, final @Nullable T existingDefault);
+    <T> @Nullable T overrideDefault(final @NotNull Property<T> property, final @Nullable T existingDefault);
   }
 }

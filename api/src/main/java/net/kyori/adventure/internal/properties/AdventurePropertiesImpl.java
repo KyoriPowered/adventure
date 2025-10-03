@@ -103,7 +103,7 @@ final class AdventurePropertiesImpl {
         if (this.value == null) {
           if (this.allowProviderDefaultOverride) {
             this.value = Providers.DEFAULT_PROVIDER
-              .map(provider -> provider.overrideDefault(this.name, this.defaultValue))
+              .map(provider -> provider.overrideDefault(this, this.defaultValue))
               .orElse(this.defaultValue);
           } else {
             this.value = this.defaultValue;
