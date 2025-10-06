@@ -40,8 +40,7 @@ import org.jetbrains.annotations.Unmodifiable;
  *
  * @since 4.14.0
  */
-@ApiStatus.NonExtendable
-public interface CharacterAndFormat extends Examinable {
+public sealed interface CharacterAndFormat extends Examinable permits CharacterAndFormatImpl {
   /**
    * Character and format pair representing {@link NamedTextColorImpl#BLACK}.
    *

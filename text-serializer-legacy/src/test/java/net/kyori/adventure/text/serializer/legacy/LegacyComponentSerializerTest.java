@@ -330,7 +330,7 @@ class LegacyComponentSerializerTest {
 
     final Component strikethough = Component.text("Hello World", Style.style(TextDecoration.STRIKETHROUGH));
     final String serialized = serializer.serialize(strikethough);
-    assertEquals(serialized, "Hello World");
+    assertEquals("Hello World", serialized);
   }
 
   // https://github.com/KyoriPowered/adventure/issues/1043
