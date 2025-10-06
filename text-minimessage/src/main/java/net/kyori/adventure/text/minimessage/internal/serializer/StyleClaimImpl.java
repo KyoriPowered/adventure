@@ -65,8 +65,7 @@ class StyleClaimImpl<V> implements StyleClaim<V> {
   @Override
   public boolean equals(final @Nullable Object other) {
     if (this == other) return true;
-    if (!(other instanceof StyleClaimImpl)) return false;
-    final StyleClaimImpl<?> that = (StyleClaimImpl<?>) other;
+    if (!(other instanceof final StyleClaimImpl<?> that)) return false;
     return Objects.equals(this.claimKey, that.claimKey);
   }
 }

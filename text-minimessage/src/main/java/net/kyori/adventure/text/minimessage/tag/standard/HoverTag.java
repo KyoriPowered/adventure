@@ -130,13 +130,11 @@ final class HoverTag {
         final Key key = Key.key(args.popOr("Show item hover needs at least an item ID").value());
         final int count = args.hasNext() ? args.pop().asInt().orElseThrow(() -> ctx.newException("The count argument was not a valid integer")) : 1;
         if (args.hasNext()) {
-          // Compatibility with legacy versions:
-          // if the value starts with a '{' we assume it's SNBT, and parse it as such to create a legacy holder
-          // otherwise, we'll parse argument pairs as a map of ResourceLocation -> SNBT value
+          // if the value starts with a '{' we assume it's SNBT. The previous behavior of legacy parsing has
+          // been removed in Adventure 5.0.0.
           final String value = args.peek().value();
           if (value.startsWith("{")) {
-            args.pop();
-            return legacyShowItem(key, count, value);
+            throw ctx.newException("Legacy SNBT serializing is since Adventure 5.0.0 no longer supported.");
           }
 
           final Map<Key, DataComponentValue> datas = new HashMap<>();
@@ -153,11 +151,6 @@ final class HoverTag {
       } catch (final InvalidKeyException | NumberFormatException ex) {
         throw ctx.newException("Exception parsing show_item hover", ex, args);
       }
-    }
-
-    @SuppressWarnings("deprecation")
-    private static HoverEvent.@NotNull ShowItem legacyShowItem(final Key id, final int count, final String value) {
-      return HoverEvent.ShowItem.showItem(id, count, BinaryTagHolder.binaryTagHolder(value));
     }
 
     @Override

@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage.internal.parser;
 
+import java.io.Serial;
 import java.util.Arrays;
 import net.kyori.adventure.text.minimessage.ParsingException;
 import org.jetbrains.annotations.ApiStatus;
@@ -36,7 +37,7 @@ import org.jetbrains.annotations.Nullable;
  */
 @ApiStatus.Internal
 public class ParsingExceptionImpl extends ParsingException {
-  private static final long serialVersionUID = 2507190809441787202L;
+  private static final @Serial long serialVersionUID = 2507190809441787202L;
 
   private final String originalText;
   private Token @NotNull [] tokens;

@@ -112,7 +112,7 @@ final class MiniMessageParser {
             sb.append(richMessage, token.startIndex(), token.endIndex());
             continue;
           }
-          final String sanitized = TokenParser.TagProvider.sanitizePlaceholderName(token.childTokens().get(0).get(richMessage).toString());
+          final String sanitized = TokenParser.TagProvider.sanitizePlaceholderName(token.childTokens().getFirst().get(richMessage).toString());
           if (combinedResolver.has(sanitized)) {
             tagHandler.accept(token, sb);
           } else {
@@ -164,8 +164,7 @@ final class MiniMessageParser {
 
           return transformation;
         } catch (final ParsingException e) {
-          if (token != null && e instanceof ParsingExceptionImpl) {
-            final ParsingExceptionImpl impl = (ParsingExceptionImpl) e;
+          if (token != null && e instanceof final ParsingExceptionImpl impl) {
             if (impl.tokens().length == 0) {
               impl.tokens(new Token[] {token});
             }
@@ -215,14 +214,12 @@ final class MiniMessageParser {
     Tag tag = null;
     if (node instanceof ValueNode) {
       comp = Component.text(((ValueNode) node).value());
-    } else if (node instanceof TagNode) {
-      final TagNode tagNode = (TagNode) node;
+    } else if (node instanceof final TagNode tagNode) {
 
       tag = tagNode.tag();
 
       // special case for gradient and stuff
-      if (tag instanceof Modifying) {
-        final Modifying modTransformation = (Modifying) tag;
+      if (tag instanceof final Modifying modTransformation) {
 
         // first walk the tree
         this.visitModifying(modTransformation, tagNode, 0);

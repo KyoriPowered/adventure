@@ -64,7 +64,7 @@ final class RainbowTag extends AbstractColorChangingTag {
         reversed = true;
         value = value.substring(REVERSE.length());
       }
-      if (value.length() > 0) {
+      if (!value.isEmpty()) {
         try {
           phase = Integer.parseInt(value);
         } catch (final NumberFormatException ex) {

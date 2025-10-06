@@ -319,16 +319,14 @@ public final class TokenParser {
           if (codePoint == ESCAPE && i + 1 < message.length()) {
             final int nextCodePoint = message.codePointAt(i + 1);
 
-            switch (state) {
-              case NORMAL:
+            escaped = switch (state) {
+              case NORMAL ->
                 // allow escaping open tokens
-                escaped = nextCodePoint == TAG_START || nextCodePoint == ESCAPE;
-                break;
-              case STRING:
+                nextCodePoint == TAG_START || nextCodePoint == ESCAPE;
+              case STRING ->
                 // allow escaping closing string chars
-                escaped = currentStringChar == nextCodePoint || nextCodePoint == ESCAPE;
-                break;
-            }
+                currentStringChar == nextCodePoint || nextCodePoint == ESCAPE;
+            };
 
             // only escape if we need to
             if (escaped) {
@@ -372,7 +370,7 @@ public final class TokenParser {
       if (token.childTokens() == null || token.childTokens().isEmpty()) {
         insert(token, new Token(startIndex, endIndex, TokenType.TAG_VALUE));
       } else {
-        final int end = token.childTokens().get(token.childTokens().size() - 1).endIndex();
+        final int end = token.childTokens().getLast().endIndex();
         if (end != endIndex) {
           insert(token, new Token(end + 1, endIndex, TokenType.TAG_VALUE));
         }
@@ -404,7 +402,7 @@ public final class TokenParser {
         case OPEN_TAG:
         case OPEN_CLOSE_TAG:
           // Check if this even is a valid tag
-          final Token tagNamePart = token.childTokens().get(0);
+          final Token tagNamePart = token.childTokens().getFirst();
           final String tagName = message.substring(tagNamePart.startIndex(), tagNamePart.endIndex());
           if (!TagInternals.sanitizeAndCheckValidTagName(tagName)) {
             // This wouldn't be a valid tag, just parse it as text instead!
@@ -452,7 +450,7 @@ public final class TokenParser {
             closeValues.add(TagPart.unquoteAndEscape(message, childToken.startIndex(), childToken.endIndex()));
           }
 
-          final String closeTagName = closeValues.get(0);
+          final String closeTagName = closeValues.getFirst();
 
           if (tagNameChecker.test(closeTagName)) {
             final Tag tag = tagProvider.resolve(closeTagName);
@@ -474,7 +472,7 @@ public final class TokenParser {
             if (tagCloses(closeValues, openParts)) {
               if (parentNode != node && strict) {
                 final String msg = "Unclosed tag encountered; " + ((TagNode) node).name() + " is not closed, because " +
-                  closeValues.get(0) + " was closed first.";
+                  closeValues.getFirst() + " was closed first.";
                 throw new ParsingExceptionImpl(msg, message, parentNode.token(), node.token(), token);
               }
 
@@ -552,7 +550,7 @@ public final class TokenParser {
       return false;
     }
     // The tag name is case-insensitive, but the tag values are not
-    if (!closeParts.get(0).equalsIgnoreCase(openParts.get(0).value())) {
+    if (!closeParts.getFirst().equalsIgnoreCase(openParts.getFirst().value())) {
       return false;
     }
     for (int i = 1; i < closeParts.size(); i++) {
@@ -589,7 +587,7 @@ public final class TokenParser {
     }
     if (token.childTokens().size() == 1) {
       final ArrayList<Token> list = new ArrayList<>(3);
-      list.add(token.childTokens().get(0));
+      list.add(token.childTokens().getFirst());
       list.add(value);
       token.childTokens(list);
     } else {

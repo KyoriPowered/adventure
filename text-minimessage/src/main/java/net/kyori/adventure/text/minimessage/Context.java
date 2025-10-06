@@ -38,8 +38,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 4.10.0
  */
-@ApiStatus.NonExtendable
-public interface Context {
+public sealed interface Context permits ContextImpl {
 
   /**
    * The target of the parse context, if provided.
@@ -48,7 +47,7 @@ public interface Context {
    * @return the target, if provided
    * @since 4.17.0
    */
-  public @Nullable Pointered target();
+  @Nullable Pointered target();
 
   /**
    * The target of the parse context.
@@ -59,7 +58,7 @@ public interface Context {
    * @return the target, if provided
    * @since 4.17.0
    */
-  public @NotNull Pointered targetOrThrow();
+  @NotNull Pointered targetOrThrow();
 
   /**
    * The target of the parse context, casted to a provided type.
@@ -73,7 +72,7 @@ public interface Context {
    * @return the target
    * @since 4.17.0
    */
-  public <T extends Pointered> @NotNull T targetAsType(final @NotNull Class<T> targetClass);
+  <T extends Pointered> @NotNull T targetAsType(final @NotNull Class<T> targetClass);
 
   /**
    * Deserializes a MiniMessage string using all the settings of this context.

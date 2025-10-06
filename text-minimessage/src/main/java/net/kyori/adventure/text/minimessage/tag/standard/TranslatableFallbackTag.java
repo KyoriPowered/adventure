@@ -61,6 +61,10 @@ final class TranslatableFallbackTag {
   static Tag create(final ArgumentQueue args, final Context ctx) throws ParsingException {
     final String key = args.popOr("A translation key is required").value();
     final String fallback = args.popOr("A fallback messages is required").value();
+    return Tag.inserting(Component.translatable(key, fallback, constructWith(args, ctx)));
+  }
+
+  static List<Component> constructWith(final ArgumentQueue args, final Context ctx) {
     final List<Component> with;
     if (args.hasNext()) {
       with = new ArrayList<>();
@@ -70,14 +74,12 @@ final class TranslatableFallbackTag {
     } else {
       with = Collections.emptyList();
     }
-
-    return Tag.inserting(Component.translatable(key, fallback, with));
+    return with;
   }
 
   static @Nullable Emitable claim(final Component input) {
-    if (!(input instanceof TranslatableComponent) || ((TranslatableComponent) input).fallback() == null) return null;
+    if (!(input instanceof final TranslatableComponent tr) || tr.fallback() == null) return null;
 
-    final TranslatableComponent tr = (TranslatableComponent) input;
     return emit -> {
       emit.tag(LANG_OR);
       emit.argument(tr.key());

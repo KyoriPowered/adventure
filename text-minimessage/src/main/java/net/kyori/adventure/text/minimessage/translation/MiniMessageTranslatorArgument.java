@@ -54,8 +54,8 @@ final class MiniMessageTranslatorArgument<T> implements VirtualComponentRenderer
 
   @Override
   public @UnknownNullability ComponentLike apply(final @NotNull Void context) {
-    if (this.data instanceof ComponentLike) {
-      return (ComponentLike) this.data;
+    if (this.data instanceof ComponentLike componentLike) {
+      return componentLike;
     } else {
       return null;
     }

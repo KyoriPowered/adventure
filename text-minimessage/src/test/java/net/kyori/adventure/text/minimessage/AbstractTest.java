@@ -83,12 +83,7 @@ public abstract class AbstractTest {
   }
 
   public static Component virtualOfChildren(final ComponentLike... children) {
-    return Component.virtual(Void.class, new VirtualComponentRenderer<Void>() {
-        @Override
-        public @UnknownNullability ComponentLike apply(final @NotNull Void context) {
-          return Component.empty();
-        }
-      }) // not part of equality... should it be?
+    return Component.virtual(Void.class, context -> Component.empty()) // not part of equality... should it be?
       .children(Arrays.asList(children));
   }
 }

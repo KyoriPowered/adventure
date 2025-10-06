@@ -31,8 +31,7 @@ import org.jetbrains.annotations.ApiStatus;
  * @see #RESET
  * @since 4.10.0
  */
-@ApiStatus.NonExtendable
-public /* sealed */ interface ParserDirective extends Tag {
+public sealed interface ParserDirective extends Tag permits ResetParserDirective {
   /**
    * Instructs the parser to reset all style, events, insertions, etc.
    *
@@ -41,10 +40,5 @@ public /* sealed */ interface ParserDirective extends Tag {
    *
    * @since 4.10.0
    */
-  Tag RESET = new ParserDirective() {
-    @Override
-    public String toString() {
-      return "ParserDirective.RESET";
-    }
-  };
+  Tag RESET = new ResetParserDirective();
 }

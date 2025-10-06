@@ -31,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 4.10.0
  */
-public /* non-sealed */ interface Inserting extends Tag {
+public non-sealed interface Inserting extends Tag {
   /**
    * Returns the component this tag produces.
    *

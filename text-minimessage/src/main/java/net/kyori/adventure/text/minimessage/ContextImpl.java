@@ -45,7 +45,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 4.10.0
  */
-class ContextImpl implements Context {
+final class ContextImpl implements Context {
   private static final Token[] EMPTY_TOKEN_ARRAY = new Token[0];
 
   private final boolean strict;
@@ -185,5 +185,4 @@ class ContextImpl implements Context {
     }
     return tokens;
   }
-
 }

@@ -49,13 +49,10 @@ final class ScoreTag {
   }
 
   static @Nullable Emitable emit(final Component component) {
-    if (!(component instanceof ScoreComponent)) return null;
-
-    final ScoreComponent score = (ScoreComponent) component;
+    if (!(component instanceof final ScoreComponent score)) return null;
 
     return emit -> emit.tag(SCORE)
       .argument(score.name())
       .argument(score.objective());
   }
-
 }

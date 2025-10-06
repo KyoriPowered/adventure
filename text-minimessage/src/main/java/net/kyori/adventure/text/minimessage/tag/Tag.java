@@ -32,6 +32,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.StyleBuilderApplicable;
+import net.kyori.adventure.text.minimessage.internal.parser.node.TagPart;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
@@ -45,7 +46,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 4.10.0
  */
-public /* sealed */ interface Tag /* permits Inserting, Modifying, ParserDirective, PreProcess, /internal/ AbstractTag */ {
+public sealed interface Tag permits Inserting, Modifying, ParserDirective, PreProcess, /* internal */ AbstractTag {
 
   /**
    * Create a tag that inserts the content literally into the parse string.
@@ -143,8 +144,7 @@ public /* sealed */ interface Tag /* permits Inserting, Modifying, ParserDirecti
    *
    * @since 4.10.0
    */
-  @ApiStatus.NonExtendable
-  interface Argument {
+  sealed interface Argument permits TagPart {
     /**
      * Returns the value of this argument.
      *

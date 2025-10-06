@@ -23,9 +23,6 @@
  */
 package net.kyori.adventure.text.minimessage.tag.standard;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.TranslationArgument;
@@ -59,23 +56,12 @@ final class TranslatableTag {
 
   static Tag create(final ArgumentQueue args, final Context ctx) throws ParsingException {
     final String key = args.popOr("A translation key is required").value();
-    final List<Component> with;
-    if (args.hasNext()) {
-      with = new ArrayList<>();
-      while (args.hasNext()) {
-        with.add(ctx.deserialize(args.pop().value()));
-      }
-    } else {
-      with = Collections.emptyList();
-    }
-
-    return Tag.inserting(Component.translatable(key, with));
+    return Tag.inserting(Component.translatable(key, TranslatableFallbackTag.constructWith(args, ctx)));
   }
 
   static @Nullable Emitable claim(final Component input) {
-    if (!(input instanceof TranslatableComponent) || ((TranslatableComponent) input).fallback() != null) return null;
+    if (!(input instanceof final TranslatableComponent tr) || tr.fallback() != null) return null;
 
-    final TranslatableComponent tr = (TranslatableComponent) input;
     return emit -> {
       emit.tag(LANG);
       emit.argument(tr.key());

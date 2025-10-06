@@ -59,8 +59,8 @@ final class TagResolverBuilderImpl implements TagResolver.Builder {
 
   @Override
   public TagResolver.@NotNull Builder resolver(final @NotNull TagResolver resolver) {
-    if (resolver instanceof SequentialTagResolver) {
-      this.resolvers(((SequentialTagResolver) resolver).resolvers, false);
+    if (resolver instanceof SequentialTagResolver(TagResolver[] sequentialResolvers)) {
+      this.resolvers(sequentialResolvers, false);
     } else if (!this.consumePotentialMappable(resolver)) {
       this.popMap();
       this.resolvers.add(requireNonNull(resolver, "resolver"));
@@ -98,8 +98,8 @@ final class TagResolverBuilderImpl implements TagResolver.Builder {
   }
 
   private boolean single(final TagResolver resolver, final boolean popped) {
-    if (resolver instanceof SequentialTagResolver) {
-      this.resolvers(((SequentialTagResolver) resolver).resolvers, false);
+    if (resolver instanceof SequentialTagResolver(TagResolver[] sequentialTagResolver)) {
+      this.resolvers(sequentialTagResolver, false);
     } else if (!this.consumePotentialMappable(resolver)) {
       if (!popped) {
         this.popMap();
@@ -118,8 +118,8 @@ final class TagResolverBuilderImpl implements TagResolver.Builder {
   }
 
   private boolean consumePotentialMappable(final TagResolver resolver) {
-    if (resolver instanceof MappableResolver) {
-      return ((MappableResolver) resolver).contributeToMap(this.replacements);
+    if (resolver instanceof MappableResolver mappable) {
+      return mappable.contributeToMap(this.replacements);
     } else {
       return false;
     }
@@ -128,15 +128,16 @@ final class TagResolverBuilderImpl implements TagResolver.Builder {
   @Override
   public @NotNull TagResolver build() {
     this.popMap();
-    if (this.resolvers.size() == 0) {
+    if (this.resolvers.isEmpty()) {
       return EmptyTagResolver.INSTANCE;
-    } else if (this.resolvers.size() == 1) {
-      return this.resolvers.get(0);
-    } else {
-      final TagResolver[] resolvers = this.resolvers.toArray(new TagResolver[0]);
-      Collections.reverse(Arrays.asList(resolvers));
-      return new SequentialTagResolver(resolvers);
     }
-  }
 
+    if (this.resolvers.size() == 1) {
+      return this.resolvers.getFirst();
+    }
+
+    final TagResolver[] resolvers = this.resolvers.toArray(new TagResolver[0]);
+    Collections.reverse(Arrays.asList(resolvers));
+    return new SequentialTagResolver(resolvers);
+  }
 }

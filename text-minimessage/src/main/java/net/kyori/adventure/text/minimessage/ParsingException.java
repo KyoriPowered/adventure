@@ -27,6 +27,8 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serial;
+
 /**
  * An exception thrown when an error occurs while parsing a MiniMessage string.
  *
@@ -34,7 +36,7 @@ import org.jetbrains.annotations.Nullable;
  */
 @ApiStatus.NonExtendable
 public abstract class ParsingException extends RuntimeException {
-  private static final long serialVersionUID = 4502774670340827070L;
+  private static final @Serial long serialVersionUID = 4502774670340827070L;
 
   public static final int LOCATION_UNKNOWN = -1;
 

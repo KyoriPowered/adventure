@@ -89,8 +89,7 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
     if (current instanceof ValueNode) {
       final String value = ((ValueNode) current).value();
       this.size += value.codePointCount(0, value.length());
-    } else if (current instanceof TagNode) {
-      final TagNode tag = (TagNode) current;
+    } else if (current instanceof final TagNode tag) {
       if (tag.tag() instanceof Inserting) {
         // ComponentTransformation.apply() returns the value of the component placeholder
         LENGTH_CALCULATOR.flatten(((Inserting) tag.tag()).value(), s -> this.size += s.codePointCount(0, s.length()));
@@ -131,8 +130,7 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
       this.skipColorForLengthOf(((VirtualComponent) current).content());
 
       return current.children(Collections.emptyList());
-    } else if (current instanceof TextComponent && ((TextComponent) current).content().length() > 0) {
-      final TextComponent textComponent = (TextComponent) current;
+    } else if (current instanceof final TextComponent textComponent && !textComponent.content().isEmpty()) {
       final String content = textComponent.content();
 
       final TextComponent.Builder parent = Component.text();
@@ -205,15 +203,7 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
   @Override
   public abstract int hashCode();
 
-  static final class TagInfoHolder implements VirtualComponentRenderer<Void>, Emitable {
-    private final Consumer<TokenEmitter> output;
-    private final Component originalComp;
-
-    TagInfoHolder(final Consumer<TokenEmitter> output, final Component originalComp) {
-      this.output = output;
-      this.originalComp = originalComp;
-    }
-
+  private record TagInfoHolder(Consumer<TokenEmitter> output, Component originalComp) implements VirtualComponentRenderer<Void>, Emitable {
     @Override
     public @UnknownNullability ComponentLike apply(final @NotNull Void context) {
       return this.originalComp;

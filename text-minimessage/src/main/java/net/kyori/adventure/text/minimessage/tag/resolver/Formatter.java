@@ -201,5 +201,4 @@ public final class Formatter {
   public static TagResolver joining(@TagPattern final @NotNull String key, final @NotNull ComponentLike@NotNull... components) {
     return joining(key, Arrays.asList(components));
   }
-
 }

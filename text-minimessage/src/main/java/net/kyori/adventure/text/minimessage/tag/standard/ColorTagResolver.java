@@ -52,8 +52,8 @@ final class ColorTagResolver implements TagResolver, SerializableResolver.Single
   private static final StyleClaim<TextColor> STYLE = StyleClaim.claim(COLOR, Style::color, (color, emitter) -> {
     // TODO: custom aliases
     // TODO: compact vs expanded format? COLOR vs color:COLOR vs c:COLOR
-    if (color instanceof NamedTextColor) {
-      emitter.tag(NamedTextColor.NAMES.key((NamedTextColor) color));
+    if (color instanceof NamedTextColor namedColor) {
+      emitter.tag(NamedTextColor.NAMES.key(namedColor));
     } else {
       emitter.tag(color.asHexString());
     }

@@ -355,5 +355,4 @@ final class MiniMessageSerializer {
       return ret;
     }
   }
-
 }

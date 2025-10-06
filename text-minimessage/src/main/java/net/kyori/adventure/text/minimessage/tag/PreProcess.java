@@ -32,7 +32,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 4.10.0
  */
-public /* non-sealed */ interface PreProcess extends Tag {
+public non-sealed interface PreProcess extends Tag {
   /**
    * The value to insert at the pre-process phase.
    *

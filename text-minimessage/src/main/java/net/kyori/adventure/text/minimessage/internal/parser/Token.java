@@ -130,8 +130,7 @@ public final class Token implements Examinable {
   @Override
   public boolean equals(final Object other) {
     if (this == other) return true;
-    if (!(other instanceof Token)) return false;
-    final Token that = (Token) other;
+    if (!(other instanceof final Token that)) return false;
     return this.startIndex == that.startIndex && this.endIndex == that.endIndex && this.type == that.type;
   }
 
