@@ -48,7 +48,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 4.0.0
  */
-public interface LegacyComponentSerializer extends ComponentSerializer<Component, TextComponent, String>, Buildable<LegacyComponentSerializer, LegacyComponentSerializer.Builder> {
+public interface LegacyComponentSerializer extends ComponentSerializer<Component, TextComponent, String> /* Buildable<LegacyComponentSerializer, LegacyComponentSerializer.Builder> */ {
   /**
    * Gets a component serializer for legacy-based serialization and deserialization. Note that this
    * serializer works exactly like vanilla Minecraft and does not detect any links. If you want to
@@ -155,12 +155,15 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
   @Override
   @NotNull String serialize(final @NotNull Component component);
 
+  // TODO: new common builder interface?
+  @NotNull Builder toBuilder();
+
   /**
    * A builder for {@link LegacyComponentSerializer}.
    *
    * @since 4.0.0
    */
-  interface Builder extends AbstractBuilder<LegacyComponentSerializer>, Buildable.Builder<LegacyComponentSerializer> {
+  interface Builder extends AbstractBuilder<LegacyComponentSerializer> {
     /**
      * Sets the legacy character used by the serializer.
      *

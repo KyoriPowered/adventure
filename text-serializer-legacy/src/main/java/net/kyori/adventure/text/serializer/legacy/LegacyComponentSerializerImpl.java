@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -51,6 +52,7 @@ import org.jetbrains.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
+@SuppressWarnings("ClassCanBeRecord")
 final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   static final Pattern DEFAULT_URL_PATTERN = Pattern.compile("(?:(https?)://)?([-\\w_.]+\\.\\w{2,})(/([A-Za-z0-9\\-._~!$&'()*+,;=:@/]|%[0-9A-Fa-f]{2})*)?");
   static final Pattern URL_SCHEME_PATTERN = Pattern.compile("^[a-z][a-z0-9+\\-.]*:");
@@ -106,23 +108,22 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
     if (legacy == this.hexCharacter && input.length() - pos >= 6) {
       return FormatCodeType.KYORI_HEX;
-    } else if (this.formats.characters.indexOf(legacy) != -1) {
+    } else if (this.formats.characters().indexOf(legacy) != -1) {
       return FormatCodeType.MOJANG_LEGACY;
     }
     return null;
   }
 
   static @Nullable LegacyFormat legacyFormat(final char character) {
-    final int index = CharacterAndFormatSet.DEFAULT.characters.indexOf(character);
+    final int index = CharacterAndFormatSet.DEFAULT.characters().indexOf(character);
     if (index != -1) {
-      final TextFormat format = CharacterAndFormatSet.DEFAULT.formats.get(index);
-      if (format instanceof NamedTextColor) {
-        return new LegacyFormat((NamedTextColor) format);
-      } else if (format instanceof TextDecoration) {
-        return new LegacyFormat((TextDecoration) format);
-      } else if (format instanceof Reset) {
-        return LegacyFormat.RESET;
-      }
+      final TextFormat format = CharacterAndFormatSet.DEFAULT.formats().get(index);
+      return switch (format) {
+        case NamedTextColor namedTextColor -> new LegacyFormat(namedTextColor);
+        case TextDecoration textDecoration -> new LegacyFormat(textDecoration);
+        case Reset reset -> LegacyFormat.RESET;
+        default -> null;
+      };
     }
     return null;
   }
@@ -132,21 +133,25 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     if (foundFormat == null) {
       return null;
     }
-    if (foundFormat == FormatCodeType.KYORI_HEX) {
-      final @Nullable TextColor parsed = tryParseHexColor(input.substring(pos, pos + 6));
-      if (parsed != null) {
-        return new DecodedFormat(foundFormat, parsed);
+    switch (foundFormat) {
+      case KYORI_HEX -> {
+        final @Nullable TextColor parsed = tryParseHexColor(input.substring(pos, pos + 6));
+        if (parsed != null) {
+          return new DecodedFormat(foundFormat, parsed);
+        }
       }
-    } else if (foundFormat == FormatCodeType.MOJANG_LEGACY) {
-      return new DecodedFormat(foundFormat, this.formats.formats.get(this.formats.characters.indexOf(legacy)));
-    } else if (foundFormat == FormatCodeType.BUNGEECORD_UNUSUAL_HEX) {
-      final StringBuilder foundHex = new StringBuilder(6);
-      for (int i = pos - 1; i >= pos - 11; i -= 2) {
-        foundHex.append(input.charAt(i));
+      case MOJANG_LEGACY -> {
+        return new DecodedFormat(foundFormat, this.formats.formats().get(this.formats.characters().indexOf(legacy)));
       }
-      final @Nullable TextColor parsed = tryParseHexColor(foundHex.reverse().toString());
-      if (parsed != null) {
-        return new DecodedFormat(foundFormat, parsed);
+      case BUNGEECORD_UNUSUAL_HEX -> {
+        final StringBuilder foundHex = new StringBuilder(6);
+        for (int i = pos - 1; i >= pos - 11; i -= 2) {
+          foundHex.append(input.charAt(i));
+        }
+        final @Nullable TextColor parsed = tryParseHexColor(foundHex.reverse().toString());
+        if (parsed != null) {
+          return new DecodedFormat(foundFormat, parsed);
+        }
       }
     }
     return null;
@@ -185,16 +190,16 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
         if (!(color instanceof NamedTextColor)) {
           // if we are not using hex colours, then convert the hex colour
           // to the "nearest" possible named/standard text colour
-          format = TextColor.nearestColorTo(this.formats.colors, color);
+          format = TextColor.nearestColorTo(this.formats.colors(), color);
         }
       }
     }
-    final int index = this.formats.formats.indexOf(format);
+    final int index = this.formats.formats().indexOf(format);
     if (index == -1) {
       // this format was removed from the formats list
       return null;
     }
-    return Character.toString(this.formats.characters.charAt(index));
+    return Character.toString(this.formats.characters().charAt(index));
   }
 
   private TextComponent extractUrl(final TextComponent component) {
@@ -260,7 +265,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
 
     final String remaining = pos > 0 ? input.substring(0, pos) : "";
     if (parts.size() == 1 && remaining.isEmpty()) {
-      return this.extractUrl(parts.get(0));
+      return this.extractUrl(parts.getFirst());
     } else {
       Collections.reverse(parts);
       return this.extractUrl(Component.text().content(remaining).append(parts).build());
@@ -275,16 +280,18 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   }
 
   private static boolean applyFormat(final TextComponent.@NotNull Builder builder, final @NotNull TextFormat format) {
-    if (format instanceof TextColor) {
-      builder.colorIfAbsent((TextColor) format);
-      return true;
-    } else if (format instanceof TextDecoration) {
-      builder.decoration((TextDecoration) format, TextDecoration.State.TRUE);
-      return false;
-    } else if (format instanceof Reset) {
-      return true;
-    }
-    throw new IllegalArgumentException(String.format("unknown format '%s'", format.getClass()));
+    return switch (format) {
+      case TextColor textColor -> {
+        builder.colorIfAbsent(textColor);
+        yield true;
+      }
+      case TextDecoration textDecoration -> {
+        builder.decoration(textDecoration, TextDecoration.State.TRUE);
+        yield false;
+      }
+      case Reset ignored -> true;
+      default -> throw new IllegalArgumentException(String.format("unknown format '%s'", format.getClass()));
+    };
   }
 
   @Override
@@ -382,18 +389,14 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
           this.color = color;
         }
 
-        for (int i = 0, length = DECORATIONS.length; i < length; i++) {
-          final TextDecoration decoration = DECORATIONS[i];
+        for (final TextDecoration decoration : DECORATIONS) {
           switch (component.decoration(decoration)) {
-            case TRUE:
-              this.decorations.add(decoration);
-              break;
-            case FALSE:
+            case TRUE -> this.decorations.add(decoration);
+            case FALSE -> {
               if (this.decorations.remove(decoration)) {
                 this.needsReset = true;
               }
-              break;
-            default: break; // ignored
+            }
           }
         }
       }
@@ -430,11 +433,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
       }
 
       private void applyFullFormat() {
-        if (this.color != null) {
-          Cereal.this.append(this.color);
-        } else {
-          Cereal.this.append(Reset.INSTANCE);
-        }
+        Cereal.this.append(Objects.requireNonNullElse(this.color, Reset.INSTANCE));
         Cereal.this.style.color = this.color;
 
         for (final TextDecoration decoration : this.decorations) {
@@ -556,16 +555,11 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     BUNGEECORD_UNUSUAL_HEX;
   }
 
-  static final class DecodedFormat {
-    final FormatCodeType encodedFormat;
-    final TextFormat format;
-
-    private DecodedFormat(final FormatCodeType encodedFormat, final TextFormat format) {
+  record DecodedFormat(FormatCodeType encodedFormat, TextFormat format) {
+    DecodedFormat {
       if (format == null) {
         throw new IllegalStateException("No format found");
       }
-      this.encodedFormat = encodedFormat;
-      this.format = format;
     }
   }
 }
