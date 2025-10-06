@@ -66,7 +66,8 @@ public final class StandardTags {
         NbtTag.RESOLVER,
         PrideTag.RESOLVER,
         ShadowColorTag.RESOLVER,
-        SpriteTag.RESOLVER
+        SpriteTag.RESOLVER,
+        SequentialHeadTag.RESOLVER
       )
       .build();
 
@@ -135,6 +136,20 @@ public final class StandardTags {
    */
   public static @NotNull TagResolver keybind() {
     return KeybindTag.RESOLVER;
+  }
+
+  /**
+   * Get a resolver for the {@value SequentialHeadTag#HEAD} tag.
+   *
+   * <p>This variant of the head tag handles an alternative shorthand
+   * way of writing the head tag {@code <head:name|uuid|texture:[outer_layer]>}.</p>
+   *
+   * @return a resolver for the {@value SequentialHeadTag#HEAD} tag.
+   * @since 4.25.0
+   * @sinceMinecraft 1.21.9
+   */
+  public static @NotNull TagResolver sequentialHead() {
+    return SequentialHeadTag.RESOLVER;
   }
 
   /**
