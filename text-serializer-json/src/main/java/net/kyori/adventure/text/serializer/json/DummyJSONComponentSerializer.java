@@ -31,11 +31,11 @@ import org.jetbrains.annotations.Nullable;
 
 final class DummyJSONComponentSerializer implements JSONComponentSerializer {
   static final JSONComponentSerializer INSTANCE = new DummyJSONComponentSerializer();
-  private static final String UNSUPPORTED_MESSAGE =
-    "No JsonComponentSerializer implementation found\n" +
-      "\n" +
-      "Are you missing an implementation artifact like adventure-text-serializer-gson?\n" +
-      "Is your environment configured in a way that causes ServiceLoader to malfunction?";
+  private static final String UNSUPPORTED_MESSAGE = """
+    No JsonComponentSerializer implementation found
+
+    Are you missing an implementation artifact like adventure-text-serializer-gson?
+    Is your environment configured in a way that causes ServiceLoader to malfunction?""";
 
   @Override
   public @NotNull Component deserialize(final @NotNull String input) {
@@ -60,19 +60,7 @@ final class DummyJSONComponentSerializer implements JSONComponentSerializer {
     }
 
     @Override
-    @Deprecated
-    public @NotNull Builder downsampleColors() {
-      return this;
-    }
-
-    @Override
     public @NotNull Builder legacyHoverEventSerializer(final @Nullable LegacyHoverEventSerializer serializer) {
-      return this;
-    }
-
-    @Override
-    @Deprecated
-    public @NotNull Builder emitLegacyHoverEvent() {
       return this;
     }
 
