@@ -40,9 +40,7 @@ import java.util.Set;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.ClickEventImpl;
 import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.event.HoverEventImpl;
 import net.kyori.adventure.text.format.ShadowColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
@@ -183,57 +181,56 @@ final class StyleSerializer extends TypeAdapter<Style> {
         Integer page = null;
         while (in.hasNext()) {
           final String clickEventField = in.nextName();
-          if (clickEventField.equals(CLICK_EVENT_ACTION)) {
-            action = this.gson.fromJson(in, SerializerFactory.CLICK_ACTION_TYPE);
-          } else if (clickEventField.equals(CLICK_EVENT_PAGE)) {
-            if (in.peek() == JsonToken.NUMBER) {
-              page = in.nextInt();
-            } else if (in.peek() == JsonToken.STRING) {
-              page = Integer.parseInt(in.nextString());
-            } else if (in.peek() == JsonToken.NULL) {
-              throw ComponentSerializerImpl.notSureHowToDeserialize(clickEventField);
-            } else {
-              in.skipValue();
-            }
-          } else if (clickEventField.equals(CLICK_EVENT_VALUE) || clickEventField.equals(CLICK_EVENT_URL) || clickEventField.equals(CLICK_EVENT_PATH) || clickEventField.equals(CLICK_EVENT_COMMAND) || clickEventField.equals(CLICK_EVENT_PAYLOAD)) {
-            if (in.peek() == JsonToken.NULL) {
-              if (this.strictEventValues) {
+          switch (clickEventField) {
+            case CLICK_EVENT_ACTION -> action = this.gson.fromJson(in, SerializerFactory.CLICK_ACTION_TYPE);
+            case CLICK_EVENT_PAGE -> {
+              if (in.peek() == JsonToken.NUMBER) {
+                page = in.nextInt();
+              } else if (in.peek() == JsonToken.STRING) {
+                page = Integer.parseInt(in.nextString());
+              } else if (in.peek() == JsonToken.NULL) {
                 throw ComponentSerializerImpl.notSureHowToDeserialize(clickEventField);
+              } else {
+                in.skipValue();
               }
-              in.nextNull();
-            } else {
-              value = in.nextString();
             }
-          } else if (clickEventField.equals(CLICK_EVENT_ID)) {
-            key = Key.key(in.nextString());
-          } else {
-            in.skipValue();
+            case CLICK_EVENT_VALUE, CLICK_EVENT_URL, CLICK_EVENT_PATH, CLICK_EVENT_COMMAND, CLICK_EVENT_PAYLOAD -> {
+              if (in.peek() == JsonToken.NULL) {
+                if (this.strictEventValues) {
+                  throw ComponentSerializerImpl.notSureHowToDeserialize(clickEventField);
+                }
+                in.nextNull();
+              } else {
+                value = in.nextString();
+              }
+            }
+            case CLICK_EVENT_ID -> key = Key.key(in.nextString());
+            default -> in.skipValue();
           }
         }
         if (action != null && action.readable()) {
           switch (action) {
-            case OPEN_URL:
+            case OPEN_URL -> {
               if (value != null) style.clickEvent(ClickEvent.openUrl(value));
-              break;
-            case RUN_COMMAND:
+            }
+            case RUN_COMMAND -> {
               if (value != null) style.clickEvent(ClickEvent.runCommand(value));
-              break;
-            case SUGGEST_COMMAND:
+            }
+            case SUGGEST_COMMAND -> {
               if (value != null) style.clickEvent(ClickEvent.suggestCommand(value));
-              break;
-            case CHANGE_PAGE:
+            }
+            case CHANGE_PAGE -> {
               if (page != null) style.clickEvent(ClickEvent.changePage(page));
-              break;
-            case COPY_TO_CLIPBOARD:
+            }
+            case COPY_TO_CLIPBOARD -> {
               if (value != null) style.clickEvent(ClickEvent.copyToClipboard(value));
-              break;
-            case CUSTOM:
+            }
+            case CUSTOM -> {
               if (key != null && value != null) style.clickEvent(ClickEvent.custom(key, value));
-              break;
+            }
             // Not readable.
-            case SHOW_DIALOG:
-            case OPEN_FILE:
-              break;
+            case SHOW_DIALOG, OPEN_FILE -> {
+            }
           }
         }
         in.endObject();
@@ -336,8 +333,7 @@ final class StyleSerializer extends TypeAdapter<Style> {
   public void write(final JsonWriter out, final Style value) throws IOException {
     out.beginObject();
 
-    for (int i = 0, length = DECORATIONS.length; i < length; i++) {
-      final TextDecoration decoration = DECORATIONS[i];
+    for (final TextDecoration decoration : DECORATIONS) {
       final TextDecoration.State state = value.decoration(decoration);
       if (state != TextDecoration.State.NOT_SET) {
         final String name = TextDecoration.NAMES.key(decoration);
@@ -378,37 +374,41 @@ final class StyleSerializer extends TypeAdapter<Style> {
         if (action.readable()) {
           final ClickEvent.Payload payload = clickEvent.payload();
 
-          if (payload instanceof ClickEvent.Payload.Text) {
-            switch (action) {
-              case OPEN_URL:
-                out.name(CLICK_EVENT_URL);
-                break;
-              case RUN_COMMAND:
-              case SUGGEST_COMMAND:
-                out.name(CLICK_EVENT_COMMAND);
-                break;
-              case COPY_TO_CLIPBOARD:
-                out.name(CLICK_EVENT_VALUE);
-                break;
+          switch (payload) {
+            case ClickEvent.Payload.Text text -> {
+              switch (action) {
+                case OPEN_URL:
+                  out.name(CLICK_EVENT_URL);
+                  break;
+                case RUN_COMMAND:
+                case SUGGEST_COMMAND:
+                  out.name(CLICK_EVENT_COMMAND);
+                  break;
+                case COPY_TO_CLIPBOARD:
+                  out.name(CLICK_EVENT_VALUE);
+                  break;
+              }
+              String payloadValue = text.value();
+              if (action == ClickEvent.Action.OPEN_URL && this.emitClickUrlHttps && !StyleSerializer.isValidUrlScheme(payloadValue)) {
+                payloadValue = StyleSerializer.FALLBACK_URL_PROTOCOL + payloadValue;
+              }
+              out.value(payloadValue);
             }
-            String payloadValue = ((ClickEvent.Payload.Text) payload).value();
-            if (action == ClickEvent.Action.OPEN_URL && this.emitClickUrlHttps && !StyleSerializer.isValidUrlScheme(payloadValue)) {
-              payloadValue = StyleSerializer.FALLBACK_URL_PROTOCOL + payloadValue;
+            case ClickEvent.Payload.Custom customPayload -> {
+              out.name(CLICK_EVENT_ID);
+              this.gson.toJson(customPayload.key(), SerializerFactory.KEY_TYPE, out);
+              out.name(CLICK_EVENT_PAYLOAD);
+              out.value(customPayload.data());
             }
-            out.value(payloadValue);
-          } else if (payload instanceof ClickEventImpl.Payload.Custom) {
-            final ClickEventImpl.Payload.Custom customPayload = (ClickEventImpl.Payload.Custom) payload;
-            out.name(CLICK_EVENT_ID);
-            this.gson.toJson(customPayload.key(), SerializerFactory.KEY_TYPE, out);
-            out.name(CLICK_EVENT_PAYLOAD);
-            out.value(customPayload.data());
-          } else if (payload instanceof ClickEvent.Payload.Int) {
-            final ClickEvent.Payload.Int intPayload = (ClickEventImpl.Payload.Int) payload;
-            out.name(CLICK_EVENT_PAGE);
-            if (this.emitStringPage) {
-              out.value(String.valueOf(intPayload.integer()));
-            } else {
-              out.value(intPayload.integer());
+            case ClickEvent.Payload.Int intPayload -> {
+              out.name(CLICK_EVENT_PAGE);
+              if (this.emitStringPage) {
+                out.value(String.valueOf(intPayload.integer()));
+              } else {
+                out.value(intPayload.integer());
+              }
+            }
+            default -> {
             }
           }
         }
@@ -432,7 +432,7 @@ final class StyleSerializer extends TypeAdapter<Style> {
     }
 
     final @Nullable HoverEvent<?> hoverEvent = value.hoverEvent();
-    if (hoverEvent != null && (((this.emitSnakeCaseHover || this.emitCamelCaseHover) && hoverEvent.action() != HoverEventImpl.Action.SHOW_ACHIEVEMENT) || this.emitValueFieldHover)) {
+    if (hoverEvent != null && (((this.emitSnakeCaseHover || this.emitCamelCaseHover) && hoverEvent.action() != HoverEvent.Action.SHOW_ACHIEVEMENT) || this.emitValueFieldHover)) {
       final HoverEvent.Action<?> action = hoverEvent.action();
 
       if (this.emitSnakeCaseHover && action != HoverEvent.Action.SHOW_ACHIEVEMENT) {
@@ -509,9 +509,9 @@ final class StyleSerializer extends TypeAdapter<Style> {
       Component serialized = null;
       try {
         if (hoverEvent.action() == HoverEvent.Action.SHOW_ENTITY) {
-          serialized = this.legacyHover.serializeShowEntity((HoverEventImpl.ShowEntity) hoverEvent.value(), this.encoder());
+          serialized = this.legacyHover.serializeShowEntity((HoverEvent.ShowEntity) hoverEvent.value(), this.encoder());
         } else if (hoverEvent.action() == HoverEvent.Action.SHOW_ITEM) {
-          serialized = this.legacyHover.serializeShowItem((HoverEventImpl.ShowItem) hoverEvent.value());
+          serialized = this.legacyHover.serializeShowItem((HoverEvent.ShowItem) hoverEvent.value());
         }
       } catch (final IOException ex) {
         throw new JsonSyntaxException(ex);

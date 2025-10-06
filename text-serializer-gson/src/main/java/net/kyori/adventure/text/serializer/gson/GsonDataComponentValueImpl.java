@@ -33,7 +33,7 @@ import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-class GsonDataComponentValueImpl implements GsonDataComponentValue {
+sealed class GsonDataComponentValueImpl implements GsonDataComponentValue {
   private final JsonElement element;
 
   GsonDataComponentValueImpl(final @NotNull JsonElement element) {

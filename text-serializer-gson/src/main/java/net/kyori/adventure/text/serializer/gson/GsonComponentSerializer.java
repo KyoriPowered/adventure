@@ -30,9 +30,7 @@ import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.HoverEventImpl;
 import net.kyori.adventure.text.serializer.json.JSONComponentSerializer;
-import net.kyori.adventure.text.serializer.json.JSONOptions;
 import net.kyori.adventure.util.PlatformAPI;
 import net.kyori.option.OptionState;
 import org.jetbrains.annotations.ApiStatus;
@@ -50,7 +48,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 4.0.0
  */
-public interface GsonComponentSerializer extends JSONComponentSerializer, Buildable<GsonComponentSerializer, GsonComponentSerializer.Builder> {
+public interface GsonComponentSerializer extends JSONComponentSerializer {
   /**
    * Gets a component serializer for gson serialization and deserialization.
    *
@@ -65,7 +63,7 @@ public interface GsonComponentSerializer extends JSONComponentSerializer, Builda
    * Gets a component serializer for gson serialization and deserialization.
    *
    * <p>Hex colors are coerced to the nearest named color, and legacy hover events are
-   * emitted for action {@link HoverEventImpl.Action#SHOW_TEXT}.</p>
+   * emitted for action {@link net.kyori.adventure.text.event.HoverEvent.Action#SHOW_TEXT}.</p>
    *
    * @return a gson component serializer
    * @since 4.0.0
@@ -123,52 +121,15 @@ public interface GsonComponentSerializer extends JSONComponentSerializer, Builda
    *
    * @since 4.0.0
    */
-  interface Builder extends AbstractBuilder<GsonComponentSerializer>, Buildable.Builder<GsonComponentSerializer>, JSONComponentSerializer.Builder {
+  interface Builder extends AbstractBuilder<GsonComponentSerializer>, JSONComponentSerializer.Builder {
     @Override
     @NotNull Builder options(final @NotNull OptionState flags);
 
     @Override
     @NotNull Builder editOptions(final @NotNull Consumer<OptionState.Builder> optionEditor);
 
-    /**
-     * Sets that the serializer should downsample hex colors to named colors.
-     *
-     * @return this builder
-     * @since 4.0.0
-     */
-    @Override
-    default @NotNull Builder downsampleColors() {
-      return this.editOptions(features -> features.value(JSONOptions.EMIT_RGB, false));
-    }
-
-    /**
-     * Sets a serializer that will be used to interpret legacy hover event {@code value} payloads.
-     * If the serializer is {@code null}, then only {@link HoverEventImpl.Action#SHOW_TEXT}
-     * legacy hover events can be deserialized.
-     *
-     * @param serializer serializer
-     * @return this builder
-     * @since 4.0.0
-     * @deprecated for removal since 4.14.0, use {@link #legacyHoverEventSerializer(net.kyori.adventure.text.serializer.json.LegacyHoverEventSerializer)} instead
-     */
-    @Deprecated
-    default @NotNull Builder legacyHoverEventSerializer(final @Nullable LegacyHoverEventSerializer serializer) {
-      return this.legacyHoverEventSerializer((net.kyori.adventure.text.serializer.json.LegacyHoverEventSerializer) serializer);
-    }
-
     @Override
     @NotNull Builder legacyHoverEventSerializer(final net.kyori.adventure.text.serializer.json.@Nullable LegacyHoverEventSerializer serializer);
-
-    /**
-     * {@inheritDoc}
-     *
-     * @since 4.0.0
-     */
-    @Deprecated
-    @Override
-    default @NotNull Builder emitLegacyHoverEvent() {
-      return this.editOptions(b -> b.value(JSONOptions.EMIT_HOVER_EVENT_TYPE, JSONOptions.HoverEventValueMode.ALL));
-    }
 
     /**
      * Builds the serializer.

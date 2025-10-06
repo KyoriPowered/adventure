@@ -26,7 +26,6 @@ package net.kyori.adventure.text.serializer.gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import net.kyori.adventure.text.event.DataComponentValue;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import static java.util.Objects.requireNonNull;
@@ -38,8 +37,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 4.17.0
  */
-@ApiStatus.NonExtendable
-public interface GsonDataComponentValue extends DataComponentValue {
+public sealed interface GsonDataComponentValue extends DataComponentValue permits GsonDataComponentValueImpl {
   /**
    * Create a box for item data that can be understood by the gson serializer.
    *
