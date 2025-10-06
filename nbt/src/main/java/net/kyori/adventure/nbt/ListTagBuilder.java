@@ -29,6 +29,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 final class ListTagBuilder<T extends BinaryTag> implements ListBinaryTag.Builder<T> {
+  private static final int DEFAULT_CAPACITY = -1;
+
   private @Nullable List<BinaryTag> tags;
   private final boolean permitsHeterogeneity;
   private BinaryTagType<? extends BinaryTag> elementType;
@@ -43,7 +45,7 @@ final class ListTagBuilder<T extends BinaryTag> implements ListBinaryTag.Builder
   }
 
   ListTagBuilder(final boolean permitsHeterogeneity, final BinaryTagType<? extends BinaryTag> type) {
-    this(permitsHeterogeneity, type, -1);
+    this(permitsHeterogeneity, type, DEFAULT_CAPACITY);
   }
 
   ListTagBuilder(final boolean permitsHeterogeneity, final BinaryTagType<? extends BinaryTag> type, final int initialCapacity) {
@@ -57,7 +59,12 @@ final class ListTagBuilder<T extends BinaryTag> implements ListBinaryTag.Builder
     // check after changing from an empty tag
     this.elementType = ListBinaryTagImpl.validateTagType(tag, this.elementType, this.permitsHeterogeneity);
     if (this.tags == null) {
-      this.tags = this.initialCapacity != -1 ? new ArrayList<>(this.initialCapacity) : new ArrayList<>();
+      if (this.initialCapacity != DEFAULT_CAPACITY) {
+        if (this.initialCapacity < 0) throw new IllegalArgumentException("initialCapacity cannot be less than 0, was " + this.initialCapacity);
+        this.tags = new ArrayList<>(this.initialCapacity);
+      } else {
+        this.tags = new ArrayList<>();
+      }
     }
     this.tags.add(tag);
     return this;

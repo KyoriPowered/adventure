@@ -30,11 +30,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 final class CompoundTagBuilder implements CompoundBinaryTag.Builder {
+  private static final int DEFAULT_CAPACITY = -1;
+
   private @Nullable Map<String, BinaryTag> tags;
   private final int initialCapacity;
 
   CompoundTagBuilder() {
-    this(-1);
+    this(DEFAULT_CAPACITY);
   }
 
   CompoundTagBuilder(final int initialCapacity) {
@@ -43,7 +45,12 @@ final class CompoundTagBuilder implements CompoundBinaryTag.Builder {
 
   private Map<String, BinaryTag> tags() {
     if (this.tags == null) {
-      this.tags = this.initialCapacity != -1 ? new HashMap<>(this.initialCapacity) : new HashMap<>();
+      if (this.initialCapacity != DEFAULT_CAPACITY) {
+        if (this.initialCapacity < 0) throw new IllegalArgumentException("initialCapacity cannot be less than 0, was " + this.initialCapacity);
+        this.tags = new HashMap<>(this.initialCapacity);
+      } else {
+        this.tags = new HashMap<>();
+      }
     }
     return this.tags;
   }
