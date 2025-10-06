@@ -89,6 +89,9 @@ public sealed interface ComponentFlattener permits ComponentFlattenerImpl {
    */
   void flatten(final @NotNull Component input, final @NotNull FlattenerListener listener);
 
+  // TODO: common builder interface?
+  @NotNull Builder toBuilder();
+
   /**
    * A builder for a component flattener.
    *
