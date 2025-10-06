@@ -108,9 +108,9 @@ public abstract class SerializerTest {
   static JsonArray uuidArray(final UUID id) {
     return array(idArray -> {
       idArray.add((int) (id.getMostSignificantBits() >> 32));
-      idArray.add((int) (id.getMostSignificantBits() & 0xffffffffl));
+      idArray.add((int) (id.getMostSignificantBits() & 0xffffffffL));
       idArray.add((int) (id.getLeastSignificantBits() >> 32));
-      idArray.add((int) (id.getLeastSignificantBits() & 0xffffffffl));
+      idArray.add((int) (id.getLeastSignificantBits() & 0xffffffffL));
     });
   }
 

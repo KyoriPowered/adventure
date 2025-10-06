@@ -279,26 +279,7 @@ public final class JSONOptions {
      *
      * @since 4.15.0
      */
-    ALL;
-
-    /**
-     * Only emit the 1.16+ hover events using the {@code hoverEvent} field.
-     *
-     * @deprecated use {@link #CAMEL_CASE} instead
-     */
-    public static final @Deprecated HoverEventValueMode MODERN_ONLY = CAMEL_CASE;
-    /**
-     * Only emit the pre-1.16 hover event {@code value} field.
-     *
-     * @deprecated use {@link #VALUE_FIELD} instead
-     */
-    public static final @Deprecated HoverEventValueMode LEGACY_ONLY = VALUE_FIELD;
-    /**
-     * Include all hover event fields, for maximum compatibility.
-     *
-     * @deprecated use {@link #ALL} instead
-     */
-    public static final @Deprecated HoverEventValueMode BOTH = ALL;
+    ALL
   }
 
   /**
@@ -376,6 +357,5 @@ public final class JSONOptions {
      * @since 4.18.0
      */
     EMIT_ARRAY
-
   }
 }
