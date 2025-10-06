@@ -38,7 +38,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 4.10.0
  */
-public class ElementNode implements Node {
+public sealed class ElementNode implements Node permits RootNode, TagNode, ValueNode {
   private final @Nullable ElementNode parent;
   private final @Nullable Token token;
   private final String sourceMessage;

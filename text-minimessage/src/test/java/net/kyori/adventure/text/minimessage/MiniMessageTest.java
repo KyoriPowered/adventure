@@ -319,48 +319,52 @@ public class MiniMessageTest extends AbstractTest {
   void unclosedTagStrict() {
     final String input = "<red>RED<green>GREEN</green>RED<blue>BLUE";
 
-    final String errorMessage = "All tags must be explicitly closed while in strict mode. End of string found with open tags: red, blue\n" +
-        "\t<red>RED<green>GREEN</green>RED<blue>BLUE\n" +
-        "\t^~~~^                          ^~~~~^";
+    final String errorMessage = """
+      All tags must be explicitly closed while in strict mode. End of string found with open tags: red, blue
+      \t<red>RED<green>GREEN</green>RED<blue>BLUE
+      \t^~~~^                          ^~~~~^""";
 
     final ParsingException thrown = assertThrows(ParsingException.class, () -> MiniMessage.builder().strict(true).build().deserialize(input));
-    assertEquals(thrown.getMessage(), errorMessage);
+    assertEquals(errorMessage, thrown.getMessage());
   }
 
   @Test
   void implicitCloseStrict() {
     final String input = "<red>RED<green>GREEN</red>NO COLOR<blue>BLUE</blue>";
 
-    final String errorMessage = "Unclosed tag encountered; green is not closed, because red was closed first.\n" +
-        "\t<red>RED<green>GREEN</red>NO COLOR<blue>BLUE</blue>\n" +
-        "\t^~~~^   ^~~~~~^     ^~~~~^";
+    final String errorMessage = """
+      Unclosed tag encountered; green is not closed, because red was closed first.
+      \t<red>RED<green>GREEN</red>NO COLOR<blue>BLUE</blue>
+      \t^~~~^   ^~~~~~^     ^~~~~^""";
 
     final ParsingException thrown = assertThrows(ParsingException.class, () -> MiniMessage.builder().strict(true).build().deserialize(input));
-    assertEquals(thrown.getMessage(), errorMessage);
+    assertEquals(errorMessage, thrown.getMessage());
   }
 
   @Test
   void implicitCloseNestedStrict() {
     final String input = "<red>RED<green>GREEN<blue>BLUE<yellow>YELLOW</green>";
 
-    final String errorMessage = "Unclosed tag encountered; yellow is not closed, because green was closed first.\n" +
-        "\t<red>RED<green>GREEN<blue>BLUE<yellow>YELLOW</green>\n" +
-        "\t        ^~~~~~^               ^~~~~~~^      ^~~~~~~^";
+    final String errorMessage = """
+      Unclosed tag encountered; yellow is not closed, because green was closed first.
+      \t<red>RED<green>GREEN<blue>BLUE<yellow>YELLOW</green>
+      \t        ^~~~~~^               ^~~~~~~^      ^~~~~~~^""";
 
     final ParsingException thrown = assertThrows(ParsingException.class, () -> MiniMessage.builder().strict(true).build().deserialize(input));
-    assertEquals(thrown.getMessage(), errorMessage);
+    assertEquals(errorMessage, thrown.getMessage());
   }
 
   @Test
   void resetWhileStrict() {
     final String input = "<red>RED<green>GREEN<reset>NO COLOR<blue>BLUE</blue>";
 
-    final String errorMessage = "<reset> tags are not allowed when strict mode is enabled\n" +
-        "\t<red>RED<green>GREEN<reset>NO COLOR<blue>BLUE</blue>\n" +
-        "\t                    ^~~~~~^";
+    final String errorMessage = """
+      <reset> tags are not allowed when strict mode is enabled
+      \t<red>RED<green>GREEN<reset>NO COLOR<blue>BLUE</blue>
+      \t                    ^~~~~~^""";
 
     final ParsingException thrown = assertThrows(ParsingException.class, () -> MiniMessage.builder().strict(true).build().deserialize(input));
-    assertEquals(thrown.getMessage(), errorMessage);
+    assertEquals(errorMessage, thrown.getMessage());
   }
 
   @Test

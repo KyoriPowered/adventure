@@ -66,22 +66,21 @@ final class NbtTag {
   static Tag resolve(final ArgumentQueue args, final Context ctx) throws ParsingException {
     final String type = args.popOr("a type of block, entity, or storage is required").lowerValue();
     final NBTComponentBuilder<?, ?> builder;
-    if (BLOCK.equals(type)) {
-      final String pos = args.popOr("A position is required").value();
-      try {
-        builder = Component.blockNBT()
-          .pos(BlockNBTComponent.Pos.fromString(pos));
-      } catch (final IllegalArgumentException ex) {
-        throw ctx.newException(ex.getMessage(), args);
+    switch (type) {
+      case BLOCK -> {
+        final String pos = args.popOr("A position is required").value();
+        try {
+          builder = Component.blockNBT()
+            .pos(BlockNBTComponent.Pos.fromString(pos));
+        } catch (final IllegalArgumentException ex) {
+          throw ctx.newException(ex.getMessage(), args);
+        }
       }
-    } else if (ENTITY.equals(type)) {
-      builder = Component.entityNBT()
+      case ENTITY -> builder = Component.entityNBT()
         .selector(args.popOr("A selector is required").value());
-    } else if (STORAGE.equals(type)) {
-      builder = Component.storageNBT()
+      case STORAGE -> builder = Component.storageNBT()
         .storage(Key.key(args.popOr("A storage key is required").value()));
-    } else {
-      throw ctx.newException("Unknown nbt tag type '" + type + "'", args);
+      default -> throw ctx.newException("Unknown nbt tag type '" + type + "'", args);
     }
 
     builder.nbtPath(args.popOr("An NBT path is required").value());
@@ -106,17 +105,22 @@ final class NbtTag {
   static @Nullable Emitable emit(final Component comp) {
     final String type;
     final String id;
-    if (comp instanceof BlockNBTComponent) {
-      type = BLOCK;
-      id = ((BlockNBTComponent) comp).pos().asString();
-    } else if (comp instanceof EntityNBTComponent) {
-      type = ENTITY;
-      id = ((EntityNBTComponent) comp).selector();
-    } else if (comp instanceof StorageNBTComponent) {
-      type = STORAGE;
-      id = ((StorageNBTComponent) comp).storage().asString();
-    } else {
-      return null;
+    switch (comp) {
+      case BlockNBTComponent blockNBTComponent -> {
+        type = BLOCK;
+        id = blockNBTComponent.pos().asString();
+      }
+      case EntityNBTComponent entityNBTComponent -> {
+        type = ENTITY;
+        id = entityNBTComponent.selector();
+      }
+      case StorageNBTComponent storageNBTComponent -> {
+        type = STORAGE;
+        id = storageNBTComponent.storage().asString();
+      }
+      case null, default -> {
+        return null;
+      }
     }
 
     return out -> {

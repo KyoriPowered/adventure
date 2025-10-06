@@ -165,8 +165,8 @@ public abstract class MiniMessageTranslator implements Translator {
       for (final TranslationArgument argument : translationArguments) {
         final Object value = argument.value();
 
-        if (value instanceof VirtualComponent) {
-          final VirtualComponentRenderer<?> renderer = ((VirtualComponent) value).renderer();
+        if (value instanceof final VirtualComponent virtual) {
+          final VirtualComponentRenderer<?> renderer = virtual.renderer();
 
           if (renderer instanceof MiniMessageTranslatorTarget) {
             if (targetAlreadyOverridden) {
@@ -176,24 +176,23 @@ public abstract class MiniMessageTranslator implements Translator {
             target = ((MiniMessageTranslatorTarget) renderer).pointered();
             targetAlreadyOverridden = true;
             continue;
-          } else if (renderer instanceof MiniMessageTranslatorArgument<?>) {
-            final MiniMessageTranslatorArgument<?> translatorArgument = (MiniMessageTranslatorArgument<?>) renderer;
+          } else if (renderer instanceof MiniMessageTranslatorArgument<?> translatorArgument) {
             final Object data = translatorArgument.data();
-
-            if (data instanceof TranslationArgumentLike) {
-              final Tag tag = Tag.selfClosingInserting((TranslationArgumentLike) data);
-              tagResolverBuilder.tag(translatorArgument.name(), tag);
-              indexedArguments.add(tag);
-              continue;
-            } else if (data instanceof Tag) {
-              final Tag tag = (Tag) data;
-              tagResolverBuilder.tag(translatorArgument.name(), tag);
-              indexedArguments.add(tag);
-              continue;
-            } else if (data instanceof TagResolver) {
-              tagResolverBuilder.resolvers((TagResolver) data);
-            } else {
-              throw new IllegalArgumentException("Unknown translator argument type: " + data.getClass());
+            final String name = translatorArgument.name();
+            switch (data) {
+              case TranslationArgumentLike translationArgumentLike -> {
+                final Tag tag = Tag.selfClosingInserting(translationArgumentLike);
+                tagResolverBuilder.tag(name, tag);
+                indexedArguments.add(tag);
+                continue;
+              }
+              case Tag tag -> {
+                tagResolverBuilder.tag(name, tag);
+                indexedArguments.add(tag);
+                continue;
+              }
+              case TagResolver tagResolver -> tagResolverBuilder.resolvers(tagResolver);
+              default -> throw new IllegalArgumentException("Unknown translator argument type: " + data.getClass());
             }
           }
         }

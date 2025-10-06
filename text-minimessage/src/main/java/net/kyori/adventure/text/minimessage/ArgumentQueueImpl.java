@@ -27,12 +27,14 @@ import java.util.List;
 import java.util.function.Supplier;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-final class ArgumentQueueImpl<T extends Tag.Argument> implements ArgumentQueue {
+@ApiStatus.Internal
+public final class ArgumentQueueImpl<T extends Tag.Argument> implements ArgumentQueue {
   private final Context context;
   final List<T> args;
   private int ptr = 0;

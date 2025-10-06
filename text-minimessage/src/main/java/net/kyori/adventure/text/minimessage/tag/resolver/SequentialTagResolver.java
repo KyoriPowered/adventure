@@ -33,10 +33,8 @@ import net.kyori.adventure.text.minimessage.tag.Tag;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-final class SequentialTagResolver implements TagResolver, SerializableResolver {
-  final TagResolver[] resolvers;
-
-  SequentialTagResolver(final @NotNull TagResolver@NotNull[] resolvers) {
+record SequentialTagResolver(TagResolver[] resolvers) implements TagResolver, SerializableResolver {
+  SequentialTagResolver(final @NotNull TagResolver @NotNull [] resolvers) {
     this.resolvers = resolvers;
   }
 
@@ -48,7 +46,9 @@ final class SequentialTagResolver implements TagResolver, SerializableResolver {
         if (!resolver.has(name)) continue;
         final @Nullable Tag placeholder = resolver.resolve(name, arguments, ctx);
 
-        if (placeholder != null) return placeholder;
+        if (placeholder != null) {
+          return placeholder;
+        }
       } catch (final ParsingException ex) {
         arguments.reset();
         if (thrown == null) {
@@ -97,10 +97,9 @@ final class SequentialTagResolver implements TagResolver, SerializableResolver {
     if (other == this) {
       return true;
     }
-    if (!(other instanceof SequentialTagResolver)) {
+    if (!(other instanceof final SequentialTagResolver that)) {
       return false;
     }
-    final SequentialTagResolver that = (SequentialTagResolver) other;
     return Arrays.equals(this.resolvers, that.resolvers);
   }
 

@@ -34,7 +34,7 @@ import org.jetbrains.annotations.Nullable;
  * @since 4.10.0
  */
 
-public abstract class ValueNode extends ElementNode {
+public sealed abstract class ValueNode extends ElementNode permits TextNode {
   private final String value;
 
   /**

@@ -37,8 +37,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 4.20.0
  */
-@ApiStatus.NonExtendable
-public interface MiniMessageTranslationStore extends TranslationStore.StringBased<String> {
+public sealed interface MiniMessageTranslationStore extends TranslationStore.StringBased<String> permits MiniMessageTranslationStoreImpl {
 
   /**
    * Creates a MiniMessage translation store, backed by the default MiniMessage instance.

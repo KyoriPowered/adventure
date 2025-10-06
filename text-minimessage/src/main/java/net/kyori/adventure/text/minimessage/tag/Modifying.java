@@ -34,7 +34,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.10.0
  */
 @ApiStatus.OverrideOnly
-public /* non-sealed */ interface Modifying extends Tag {
+public non-sealed interface Modifying extends Tag {
   /**
    * Method called once for every element in the subtree, allowing calculations to be made before {@link #apply(Component, int) application}.
    *

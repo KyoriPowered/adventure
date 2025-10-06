@@ -24,6 +24,8 @@
 package net.kyori.adventure.text.minimessage.tag.resolver;
 
 import java.util.function.Supplier;
+
+import net.kyori.adventure.text.minimessage.ArgumentQueueImpl;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -34,8 +36,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 4.10.0
  */
-@ApiStatus.NonExtendable
-public interface ArgumentQueue {
+public sealed interface ArgumentQueue permits ArgumentQueueImpl {
   /**
    * Pop an argument, throwing an exception if no argument was present.
    *

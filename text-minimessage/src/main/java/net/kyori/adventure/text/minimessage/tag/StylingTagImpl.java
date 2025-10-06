@@ -52,8 +52,7 @@ final class StylingTagImpl extends AbstractTag implements Inserting {
   @Override
   public boolean equals(final @Nullable Object other) {
     if (this == other) return true;
-    if (!(other instanceof StylingTagImpl)) return false;
-    final StylingTagImpl that = (StylingTagImpl) other;
+    if (!(other instanceof final StylingTagImpl that)) return false;
     return Arrays.equals(this.styles, that.styles);
   }
 

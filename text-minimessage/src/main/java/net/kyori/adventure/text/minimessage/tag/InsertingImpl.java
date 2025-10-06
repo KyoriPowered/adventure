@@ -57,8 +57,7 @@ final class InsertingImpl extends AbstractTag implements Inserting {
   @Override
   public boolean equals(final @Nullable Object other) {
     if (this == other) return true;
-    if (!(other instanceof InsertingImpl)) return false;
-    final InsertingImpl that = (InsertingImpl) other;
+    if (!(other instanceof final InsertingImpl that)) return false;
     return this.allowsChildren == that.allowsChildren && Objects.equals(this.value, that.value);
   }
 

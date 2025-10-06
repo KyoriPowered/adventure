@@ -58,5 +58,4 @@ final class KeybindTag {
 
     return emit -> emit.tag(KEYBIND).argument(key);
   }
-
 }

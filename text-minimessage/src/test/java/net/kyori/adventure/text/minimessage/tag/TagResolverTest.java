@@ -63,12 +63,10 @@ class TagResolverTest {
       Placeholder.component("foo", Component.text("fizz")),
       Placeholder.parsed("overlapping", "from list")
     );
-    final TagResolver.WithoutArguments resolver = key -> {
-      switch (key) {
-        case "one": return Tag.preProcessParsed("fish");
-        case "overlapping": return Tag.preProcessParsed("from resolver");
-        default: return null;
-      }
+    final TagResolver.WithoutArguments resolver = key -> switch (key) {
+      case "one" -> Tag.preProcessParsed("fish");
+      case "overlapping" -> Tag.preProcessParsed("from resolver");
+      default -> null;
     };
 
     final TagResolver built = TagResolver.builder()
@@ -176,5 +174,4 @@ class TagResolverTest {
       throw new RuntimeException(ex);
     }
   }
-
 }

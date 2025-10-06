@@ -240,8 +240,7 @@ public interface TagResolver {
    * @see TagResolver#resolver(String, Tag)
    * @since 4.10.0
    */
-  @ApiStatus.NonExtendable
-  interface Single extends TagResolver.WithoutArguments {
+  sealed interface Single extends TagResolver.WithoutArguments permits SingleResolver {
     /**
      * The key this resolver matches.
      *

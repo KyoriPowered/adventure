@@ -77,5 +77,4 @@ public class MiniMessageSerializerTest extends AbstractTest {
     this.assertSerializedEquals(expected, component);
     this.assertParsedEquals(component, expected);
   }
-
 }

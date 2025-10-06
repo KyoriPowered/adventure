@@ -64,9 +64,8 @@ final class SelectorTag {
   }
 
   static @Nullable Emitable claim(final Component input) {
-    if (!(input instanceof SelectorComponent)) return null;
+    if (!(input instanceof final SelectorComponent st)) return null;
 
-    final SelectorComponent st = (SelectorComponent) input;
     return emit -> {
       emit.tag(SEL);
       emit.argument(st.pattern());

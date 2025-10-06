@@ -26,7 +26,6 @@ package net.kyori.adventure.text.minimessage.tag.standard;
 import java.util.HashMap;
 import java.util.Map;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.NamedTextColorImpl;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.Context;
@@ -53,8 +52,8 @@ final class ColorTagResolver implements TagResolver, SerializableResolver.Single
   private static final StyleClaim<TextColor> STYLE = StyleClaim.claim(COLOR, Style::color, (color, emitter) -> {
     // TODO: custom aliases
     // TODO: compact vs expanded format? COLOR vs color:COLOR vs c:COLOR
-    if (color instanceof NamedTextColorImpl) {
-      emitter.tag(NamedTextColor.NAMES.key((NamedTextColor) color));
+    if (color instanceof NamedTextColor namedColor) {
+      emitter.tag(NamedTextColor.NAMES.key(namedColor));
     } else {
       emitter.tag(color.asHexString());
     }

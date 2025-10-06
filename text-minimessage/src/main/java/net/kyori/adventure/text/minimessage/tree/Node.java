@@ -24,6 +24,9 @@
 package net.kyori.adventure.text.minimessage.tree;
 
 import java.util.List;
+
+import net.kyori.adventure.text.minimessage.internal.parser.node.ElementNode;
+import net.kyori.adventure.text.minimessage.internal.parser.node.RootNode;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -35,8 +38,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 4.10.0
  */
-@ApiStatus.NonExtendable
-public interface Node {
+public sealed interface Node permits ElementNode, Node.Root {
   /**
    * Get a human-readable representation of this node and its descendants for debugging purposes.
    *
@@ -71,8 +73,7 @@ public interface Node {
    *
    * @since 4.10.0
    */
-  @ApiStatus.NonExtendable
-  interface Root extends Node {
+  sealed interface Root extends Node permits RootNode {
     /**
      * Get the original provided message which produced this node.
      *
