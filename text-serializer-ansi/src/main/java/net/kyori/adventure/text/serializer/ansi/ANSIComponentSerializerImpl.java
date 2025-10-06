@@ -72,15 +72,11 @@ final class ANSIComponentSerializerImpl implements ANSIComponentSerializer {
   }
 
   static StyleOps.State mapState(final TextDecoration.State state) {
-    switch (state) {
-      case NOT_SET:
-        return StyleOps.State.UNSET;
-      case FALSE:
-        return StyleOps.State.FALSE;
-      case TRUE:
-        return StyleOps.State.TRUE;
-    }
-    throw new IllegalStateException("Decoration state is not valid");
+    return switch (state) {
+      case NOT_SET -> StyleOps.State.UNSET;
+      case FALSE -> StyleOps.State.FALSE;
+      case TRUE -> StyleOps.State.TRUE;
+    };
   }
 
   static class ComponentStyleOps implements StyleOps<Style> {
