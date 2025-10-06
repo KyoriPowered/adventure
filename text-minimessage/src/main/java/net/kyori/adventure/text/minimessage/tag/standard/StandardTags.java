@@ -142,7 +142,7 @@ public final class StandardTags {
    * Get a resolver for the {@value SequentialHeadTag#HEAD} tag.
    *
    * <p>This variant of the head tag handles an alternative shorthand
-   * way of writing the head tag {@code <head:name|uuid|texture:[outer_layer}>}.</p>
+   * way of writing the head tag {@code <head:name|uuid|texture:[outer_layer]>}.</p>
    *
    * @return a resolver for the {@value SequentialHeadTag#HEAD} tag.
    * @since 4.25.0
