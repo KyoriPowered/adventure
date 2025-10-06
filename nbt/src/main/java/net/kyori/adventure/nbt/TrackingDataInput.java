@@ -182,5 +182,4 @@ final class TrackingDataInput implements DataInput, BinaryTagScope {
   public void close() throws IOException {
     this.exit();
   }
-
 }

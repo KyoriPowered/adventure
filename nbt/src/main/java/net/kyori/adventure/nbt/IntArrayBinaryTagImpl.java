@@ -91,8 +91,8 @@ final class IntArrayBinaryTagImpl extends ArrayBinaryTagImpl implements IntArray
 
   @Override
   public void forEachInt(final @NotNull IntConsumer action) {
-    for (int i = 0, length = this.value.length; i < length; i++) {
-      action.accept(this.value[i]);
+    for (final int j : this.value) {
+      action.accept(j);
     }
   }
 

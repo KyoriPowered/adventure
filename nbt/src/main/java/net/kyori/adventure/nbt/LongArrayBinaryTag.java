@@ -27,7 +27,6 @@ import java.util.PrimitiveIterator;
 import java.util.Spliterator;
 import java.util.function.LongConsumer;
 import java.util.stream.LongStream;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -45,20 +44,6 @@ public interface LongArrayBinaryTag extends ArrayBinaryTag, Iterable<Long> {
    * @since 4.14.0
    */
   static @NotNull LongArrayBinaryTag longArrayBinaryTag(final long@NotNull... value) {
-    return new LongArrayBinaryTagImpl(value);
-  }
-
-  /**
-   * Creates a binary tag holding a {@code long}-array value.
-   *
-   * @param value the value
-   * @return a binary tag
-   * @since 4.0.0
-   * @deprecated for removal since 4.14.0, use {@link #longArrayBinaryTag(long...)} instead.
-   */
-  @Deprecated
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  static @NotNull LongArrayBinaryTag of(final long@NotNull... value) {
     return new LongArrayBinaryTagImpl(value);
   }
 

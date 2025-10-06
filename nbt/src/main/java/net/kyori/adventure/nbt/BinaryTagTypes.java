@@ -176,8 +176,8 @@ public final class BinaryTagTypes {
     final int[] value = IntArrayBinaryTagImpl.value(tag);
     final int length = value.length;
     output.writeInt(length);
-    for (int i = 0; i < length; i++) {
-      output.writeInt(value[i]);
+    for (final int j : value) {
+      output.writeInt(j);
     }
   });
   /**
@@ -200,8 +200,8 @@ public final class BinaryTagTypes {
     final long[] value = LongArrayBinaryTagImpl.value(tag);
     final int length = value.length;
     output.writeInt(length);
-    for (int i = 0; i < length; i++) {
-      output.writeLong(value[i]);
+    for (final long l : value) {
+      output.writeLong(l);
     }
   });
   /**

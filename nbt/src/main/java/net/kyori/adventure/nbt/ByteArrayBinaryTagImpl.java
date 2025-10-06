@@ -79,8 +79,8 @@ final class ByteArrayBinaryTagImpl extends ArrayBinaryTagImpl implements ByteArr
   }
 
   @Override
-  public Iterator<Byte> iterator() {
-    return new Iterator<Byte>() {
+  public @NotNull Iterator<Byte> iterator() {
+    return new Iterator<>() {
       private int index;
 
       @Override

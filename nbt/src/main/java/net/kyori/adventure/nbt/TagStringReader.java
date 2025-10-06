@@ -258,7 +258,7 @@ final class TagStringReader {
       }
       builder.append(current);
     }
-    if (builder.length() == 0) {
+    if (builder.isEmpty()) {
       throw this.buffer.makeError("Expected a value but got nothing");
     }
     final String original = builder.toString(); // use unmodified string when number parsing fails
@@ -354,29 +354,27 @@ final class TagStringReader {
   }
 
   private @Nullable NumberBinaryTag parseNumberTag(final String s, final char typeToken, final int radix, final boolean signed) {
-    switch (typeToken) {
-      case Tokens.TYPE_BYTE:
-        return ByteBinaryTag.byteBinaryTag(this.parseByte(s, radix, signed));
-      case Tokens.TYPE_SHORT:
-        return ShortBinaryTag.shortBinaryTag(this.parseShort(s, radix, signed));
-      case Tokens.TYPE_INT:
-        return IntBinaryTag.intBinaryTag(this.parseInt(s, radix, signed));
-      case Tokens.TYPE_LONG:
-        return LongBinaryTag.longBinaryTag(this.parseLong(s, radix, signed));
-      case Tokens.TYPE_FLOAT:
+    return switch (typeToken) {
+      case Tokens.TYPE_BYTE -> ByteBinaryTag.byteBinaryTag(this.parseByte(s, radix, signed));
+      case Tokens.TYPE_SHORT -> ShortBinaryTag.shortBinaryTag(this.parseShort(s, radix, signed));
+      case Tokens.TYPE_INT -> IntBinaryTag.intBinaryTag(this.parseInt(s, radix, signed));
+      case Tokens.TYPE_LONG -> LongBinaryTag.longBinaryTag(this.parseLong(s, radix, signed));
+      case Tokens.TYPE_FLOAT -> {
         final float floatValue = Float.parseFloat(s);
         if (Float.isFinite(floatValue)) { // don't accept NaN and Infinity
-          return FloatBinaryTag.floatBinaryTag(floatValue);
+          yield FloatBinaryTag.floatBinaryTag(floatValue);
         }
-        break;
-      case Tokens.TYPE_DOUBLE:
+        yield null;
+      }
+      case Tokens.TYPE_DOUBLE -> {
         final double doubleValue = Double.parseDouble(s);
         if (Double.isFinite(doubleValue)) { // don't accept NaN and Infinity
-          return DoubleBinaryTag.doubleBinaryTag(doubleValue);
+          yield DoubleBinaryTag.doubleBinaryTag(doubleValue);
         }
-        break;
-    }
-    return null;
+        yield null;
+      }
+      default -> null;
+    };
   }
 
   private byte parseByte(final String s, final int radix, final boolean signed) {

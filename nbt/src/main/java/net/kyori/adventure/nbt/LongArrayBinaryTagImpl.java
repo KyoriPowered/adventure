@@ -91,8 +91,8 @@ final class LongArrayBinaryTagImpl extends ArrayBinaryTagImpl implements LongArr
 
   @Override
   public void forEachLong(final @NotNull LongConsumer action) {
-    for (int i = 0, length = this.value.length; i < length; i++) {
-      action.accept(this.value[i]);
+    for (final long l : this.value) {
+      action.accept(l);
     }
   }
 
