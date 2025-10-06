@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -55,8 +56,8 @@ final class CompoundBinaryTagImpl extends AbstractBinaryTag implements CompoundB
 
   @Override
   public boolean contains(final @NotNull String key, final @NotNull BinaryTagType<?> type) {
-    final @Nullable BinaryTag tag = this.tags.get(key);
-    return tag != null && type.test(tag.type());
+    final BinaryTag tag = this.tags.get(Objects.requireNonNull(key, "key"));
+    return tag != null && Objects.requireNonNull(type, "type").test(tag.type());
   }
 
   @Override

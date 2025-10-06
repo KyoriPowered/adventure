@@ -164,11 +164,11 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
   boolean contains(final @NotNull String key);
 
   /**
-   * Returns whether the compound contains a tag of a specific type under a key.
+   * Returns whether the compound contains a tag of a specific type with a key.
    *
    * @param key the key to check for
    * @param type the type to check for
-   * @return whether there is a tag of <code>type</code> under <code>key</code>
+   * @return whether there is a tag of {@code type} with {@code key}
    * @since 4.25.0
    */
   boolean contains(final @NotNull String key, final @NotNull BinaryTagType<?> type);
