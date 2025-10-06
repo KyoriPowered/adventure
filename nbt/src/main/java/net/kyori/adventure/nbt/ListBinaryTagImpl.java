@@ -217,7 +217,7 @@ final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag
   @Override
   public @NotNull Iterator<BinaryTag> iterator() {
     final Iterator<BinaryTag> iterator = this.tags.iterator();
-    return new Iterator<BinaryTag>() {
+    return new Iterator<>() {
       @Override
       public boolean hasNext() {
         return iterator.hasNext();
@@ -288,11 +288,10 @@ final class ListBinaryTag0 {
   }
 
   private static boolean needsBox(final BinaryTag tag) {
-    if (!(tag instanceof CompoundBinaryTag)) {
+    if (!(tag instanceof final CompoundBinaryTag compound)) {
       return true;
     }
 
-    final CompoundBinaryTag compound = (CompoundBinaryTag) tag;
     return compound.size() == 1 && compound.get(WRAPPER_KEY) != null;
   }
 }

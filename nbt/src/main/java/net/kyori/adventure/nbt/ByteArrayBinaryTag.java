@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.nbt;
 
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -40,20 +39,6 @@ public interface ByteArrayBinaryTag extends ArrayBinaryTag, Iterable<Byte> {
    * @since 4.14.0
    */
   static @NotNull ByteArrayBinaryTag byteArrayBinaryTag(final byte@NotNull... value) {
-    return new ByteArrayBinaryTagImpl(value);
-  }
-
-  /**
-   * Creates a binary tag holding a {@code byte}-array value.
-   *
-   * @param value the value
-   * @return a binary tag
-   * @since 4.0.0
-   * @deprecated for removal since 4.14.0, use {@link #byteArrayBinaryTag(byte...)}  instead.
-   */
-  @Deprecated
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  static @NotNull ByteArrayBinaryTag of(final byte@NotNull... value) {
     return new ByteArrayBinaryTagImpl(value);
   }
 

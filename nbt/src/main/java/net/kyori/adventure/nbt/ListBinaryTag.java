@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -154,24 +153,6 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
   }
 
   /**
-   * Creates a tag.
-   *
-   * <p>If {@code tags} is empty, {@link #empty()} will be returned.</p>
-   *
-   * @param type the element type
-   * @param tags the elements
-   * @return a tag
-   * @throws IllegalArgumentException if {@code type} is {@link BinaryTagTypes#END}
-   * @since 4.0.0
-   * @deprecated for removal since 4.14.0, use {@link #listBinaryTag(BinaryTagType, List)} instead.
-   */
-  @Deprecated
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  static @NotNull ListBinaryTag of(final @NotNull BinaryTagType<? extends BinaryTag> type, final @NotNull List<BinaryTag> tags) {
-    return listBinaryTag(type, tags);
-  }
-
-  /**
    * Create a {@link Collector} to consume streams of list tags.
    *
    * @return a collector of tags
@@ -202,18 +183,6 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
   @Override
   default @NotNull BinaryTagType<ListBinaryTag> type() {
     return BinaryTagTypes.LIST;
-  }
-
-  /**
-   * Gets the type of element stored in this list.
-   *
-   * @return the type
-   * @since 4.0.0
-   * @deprecated since 4.4.0, use {@link #elementType()} instead
-   */
-  @Deprecated
-  default @NotNull BinaryTagType<? extends BinaryTag> listType() {
-    return this.elementType();
   }
 
   /**

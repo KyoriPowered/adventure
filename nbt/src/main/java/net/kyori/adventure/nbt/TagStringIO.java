@@ -38,18 +38,6 @@ public final class TagStringIO {
   private static final TagStringIO INSTANCE = new TagStringIO(new Builder());
 
   /**
-   * Get an instance of {@link TagStringIO} that reads and writes using standard options.
-   *
-   * @return the basic instance
-   * @since 4.0.0
-   * @deprecated For removal since 4.22.0, use {@link #tagStringIO()} instead
-   */
-  @Deprecated
-  public static @NotNull TagStringIO get() {
-    return tagStringIO();
-  }
-
-  /**
    * Gets an instance of {@link TagStringIO} that reads and writes using standard options.
    *
    * @return the basic instance

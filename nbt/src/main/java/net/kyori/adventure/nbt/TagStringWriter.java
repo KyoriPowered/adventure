@@ -61,35 +61,21 @@ final class TagStringWriter implements AutoCloseable {
   // NBT-specific
 
   public TagStringWriter writeTag(final BinaryTag tag) throws IOException {
-    final BinaryTagType<?> type = tag.type();
-    if (type == BinaryTagTypes.COMPOUND) {
-      return this.writeCompound((CompoundBinaryTag) tag);
-    } else if (type == BinaryTagTypes.LIST) {
-      return this.writeList((ListBinaryTag) tag);
-    } else if (type == BinaryTagTypes.BYTE_ARRAY) {
-      return this.writeByteArray((ByteArrayBinaryTag) tag);
-    } else if (type == BinaryTagTypes.INT_ARRAY) {
-      return this.writeIntArray((IntArrayBinaryTag) tag);
-    } else if (type == BinaryTagTypes.LONG_ARRAY) {
-      return this.writeLongArray((LongArrayBinaryTag) tag);
-    } else if (type == BinaryTagTypes.STRING) {
-      return this.value(((StringBinaryTag) tag).value(), Tokens.EOF);
-    } else if (type == BinaryTagTypes.BYTE) {
-      return this.value(Byte.toString(((ByteBinaryTag) tag).value()), Tokens.TYPE_BYTE);
-    } else if (type == BinaryTagTypes.SHORT) {
-      return this.value(Short.toString(((ShortBinaryTag) tag).value()), Tokens.TYPE_SHORT);
-    } else if (type == BinaryTagTypes.INT) {
-      return this.value(Integer.toString(((IntBinaryTag) tag).value()), Tokens.TYPE_INT);
-    } else if (type == BinaryTagTypes.LONG) {
-      return this.value(Long.toString(((LongBinaryTag) tag).value()), Character.toUpperCase(Tokens.TYPE_LONG)); // special-case
-    } else if (type == BinaryTagTypes.FLOAT) {
-      return this.value(Float.toString(((FloatBinaryTag) tag).value()), Tokens.TYPE_FLOAT);
-    } else if (type == BinaryTagTypes.DOUBLE) {
-      return this.value(Double.toString(((DoubleBinaryTag) tag).value()), Tokens.TYPE_DOUBLE);
-    } else {
-      throw new IOException("Unknown tag type: " + type);
-      // unknown!
-    }
+    return switch (tag) {
+      case CompoundBinaryTag compoundTag -> this.writeCompound(compoundTag);
+      case ListBinaryTag listTag -> this.writeList(listTag);
+      case ByteArrayBinaryTag byteArrayTag -> this.writeByteArray(byteArrayTag);
+      case IntArrayBinaryTag intArrayTag -> this.writeIntArray(intArrayTag);
+      case LongArrayBinaryTag longArrayTag -> this.writeLongArray(longArrayTag);
+      case StringBinaryTag stringTag -> this.value((stringTag).value(), Tokens.EOF);
+      case ByteBinaryTag byteTag -> this.value(Byte.toString((byteTag).value()), Tokens.TYPE_BYTE);
+      case ShortBinaryTag shortTag -> this.value(Short.toString((shortTag).value()), Tokens.TYPE_SHORT);
+      case IntBinaryTag intTag -> this.value(Integer.toString((intTag).value()), Tokens.TYPE_INT);
+      case LongBinaryTag longTag -> this.value(Long.toString((longTag).value()), Character.toUpperCase(Tokens.TYPE_LONG)); // special-case
+      case FloatBinaryTag floatTag -> this.value(Float.toString((floatTag).value()), Tokens.TYPE_FLOAT);
+      case DoubleBinaryTag doubleTag -> this.value(Double.toString((doubleTag).value()), Tokens.TYPE_DOUBLE);
+      default -> throw new IOException("Unknown tag type: " + tag.type());
+    };
   }
 
   private TagStringWriter writeCompound(final CompoundBinaryTag tag) throws IOException {
@@ -131,9 +117,9 @@ final class TagStringWriter implements AutoCloseable {
 
     final char byteArrayType = Character.toUpperCase(Tokens.TYPE_BYTE); // special case to match vanilla format
     final byte[] value = ByteArrayBinaryTagImpl.value(tag);
-    for (int i = 0, length = value.length; i < length; i++) {
+    for (final byte b : value) {
       this.printAndResetSeparator(true);
-      this.value(Byte.toString(value[i]), byteArrayType);
+      this.value(Byte.toString(b), byteArrayType);
     }
     this.endArray();
     return this;
@@ -147,9 +133,9 @@ final class TagStringWriter implements AutoCloseable {
     }
 
     final int[] value = IntArrayBinaryTagImpl.value(tag);
-    for (int i = 0, length = value.length; i < length; i++) {
+    for (final int j : value) {
       this.printAndResetSeparator(true);
-      this.value(Integer.toString(value[i]), Tokens.TYPE_INT);
+      this.value(Integer.toString(j), Tokens.TYPE_INT);
     }
     this.endArray();
     return this;
@@ -162,9 +148,9 @@ final class TagStringWriter implements AutoCloseable {
     this.beginArray(Tokens.TYPE_LONG);
 
     final long[] value = LongArrayBinaryTagImpl.value(tag);
-    for (int i = 0, length = value.length; i < length; i++) {
+    for (final long l : value) {
       this.printAndResetSeparator(true);
-      this.value(Long.toString(value[i]), Tokens.TYPE_LONG);
+      this.value(Long.toString(l), Tokens.TYPE_LONG);
     }
     this.endArray();
     return this;
@@ -293,7 +279,7 @@ final class TagStringWriter implements AutoCloseable {
   }
 
   private boolean prettyPrinting() {
-    return this.indent.length() > 0;
+    return !this.indent.isEmpty();
   }
 
   private void newlineIndent() throws IOException {
