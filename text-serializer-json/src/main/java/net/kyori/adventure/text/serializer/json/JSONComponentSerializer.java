@@ -91,16 +91,6 @@ public interface JSONComponentSerializer extends ComponentSerializer<Component, 
     @NotNull Builder editOptions(final @NotNull Consumer<OptionState.Builder> optionEditor);
 
     /**
-     * Sets that the serializer should downsample hex colors to named colors.
-     *
-     * @return this builder
-     * @since 4.14.0
-     * @deprecated for removal since 4.15.0, change the {@link JSONOptions#EMIT_RGB} flag instead
-     */
-    @Deprecated
-    @NotNull Builder downsampleColors();
-
-    /**
      * Sets a serializer that will be used to interpret legacy hover event {@code value} payloads.
      * If the serializer is {@code null}, then only {@link net.kyori.adventure.text.event.HoverEvent.Action#SHOW_TEXT}
      * legacy hover events can be deserialized.
@@ -110,19 +100,6 @@ public interface JSONComponentSerializer extends ComponentSerializer<Component, 
      * @since 4.14.0
      */
     @NotNull Builder legacyHoverEventSerializer(final @Nullable LegacyHoverEventSerializer serializer);
-
-    /**
-     * Output a legacy hover event {@code value} in addition to the modern {@code contents}.
-     *
-     * <p>A {@link #legacyHoverEventSerializer(LegacyHoverEventSerializer) legacy hover serializer} must also be set
-     * to serialize any hover events beyond those with action {@link net.kyori.adventure.text.event.HoverEvent.Action#SHOW_TEXT}</p>
-     *
-     * @return this builder
-     * @since 4.14.0
-     * @deprecated for removal since 4.15.0, change the {@link JSONOptions#EMIT_HOVER_EVENT_TYPE} flag instead
-     */
-    @Deprecated
-    @NotNull Builder emitLegacyHoverEvent();
 
     /**
      * Create a finished serializer instance.

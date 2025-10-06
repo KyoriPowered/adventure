@@ -45,23 +45,20 @@ final class TranslationArgumentSerializer extends TypeAdapter<TranslationArgumen
   @Override
   public void write(final JsonWriter out, final TranslationArgument value) throws IOException {
     final Object raw = value.value();
-    if (raw instanceof Boolean) {
-      out.value((Boolean) raw);
-    } else if (raw instanceof Number) {
-      out.value((Number) raw);
-    } else if (raw instanceof Component) {
-      this.gson.toJson(raw, SerializerFactory.COMPONENT_TYPE, out);
-    } else {
-      throw new IllegalStateException("Unable to serialize translatable argument of type " + raw.getClass() + ": " + raw);
+    switch (raw) {
+      case Boolean b -> out.value(b);
+      case Number number -> out.value(number);
+      case Component ignored -> this.gson.toJson(raw, SerializerFactory.COMPONENT_TYPE, out);
+      default -> throw new IllegalStateException("Unable to serialize translatable argument of type " + raw.getClass() + ": " + raw);
     }
   }
 
   @Override
   public TranslationArgument read(final JsonReader in) throws IOException {
-    switch (in.peek()) {
-      case BOOLEAN: return TranslationArgument.bool(in.nextBoolean());
-      case NUMBER: return TranslationArgument.numeric(this.gson.fromJson(in, Number.class));
-      default: return TranslationArgument.component(this.gson.fromJson(in, SerializerFactory.COMPONENT_TYPE));
-    }
+    return switch (in.peek()) {
+      case BOOLEAN -> TranslationArgument.bool(in.nextBoolean());
+      case NUMBER -> TranslationArgument.numeric(this.gson.fromJson(in, Number.class));
+      default -> TranslationArgument.component(this.gson.fromJson(in, SerializerFactory.COMPONENT_TYPE));
+    };
   }
 }

@@ -69,7 +69,7 @@ final class ShowEntitySerializer extends TypeAdapter<HoverEvent.ShowEntity> {
       final String fieldName = in.nextName();
 
       switch (fieldName) {
-        case SHOW_ENTITY_ID:
+        case SHOW_ENTITY_ID -> {
           if (in.peek() == JsonToken.BEGIN_ARRAY) {
             // If it is an array, we know this is a UUID encoded.
             id = this.gson.fromJson(in, UUID.class);
@@ -93,19 +93,11 @@ final class ShowEntitySerializer extends TypeAdapter<HoverEvent.ShowEntity> {
               }
             }
           }
-          break;
-        case SHOW_ENTITY_TYPE:
-          type = this.gson.fromJson(in, Key.class);
-          break;
-        case SHOW_ENTITY_UUID:
-          id = this.gson.fromJson(in, UUID.class);
-          break;
-        case SHOW_ENTITY_NAME:
-          name = this.gson.fromJson(in, SerializerFactory.COMPONENT_TYPE);
-          break;
-        default:
-          in.skipValue();
-          break;
+        }
+        case SHOW_ENTITY_TYPE -> type = this.gson.fromJson(in, Key.class);
+        case SHOW_ENTITY_UUID -> id = this.gson.fromJson(in, UUID.class);
+        case SHOW_ENTITY_NAME -> name = this.gson.fromJson(in, SerializerFactory.COMPONENT_TYPE);
+        default -> in.skipValue();
       }
     }
 

@@ -43,25 +43,20 @@ final class GsonHacks {
 
   static boolean readBoolean(final JsonReader in) throws IOException {
     final JsonToken peek = in.peek();
-    if (peek == JsonToken.BOOLEAN) {
-      return in.nextBoolean();
-    } else if (peek == JsonToken.STRING) {
-      return Boolean.parseBoolean(in.nextString());
-    } else if (peek == JsonToken.NUMBER) {
-      return in.nextString().equals("1");
-    } else {
-      throw new JsonParseException("Token of type " + peek + " cannot be interpreted as a boolean");
-    }
+    return switch (peek) {
+      case BOOLEAN -> in.nextBoolean();
+      case STRING -> Boolean.parseBoolean(in.nextString());
+      case NUMBER -> in.nextString().equals("1");
+      case null, default -> throw new JsonParseException("Token of type " + peek + " cannot be interpreted as a boolean");
+    };
   }
 
   static String readString(final JsonReader in) throws IOException {
     final JsonToken peek = in.peek();
-    if (peek == JsonToken.STRING || peek == JsonToken.NUMBER) {
-      return in.nextString();
-    } else if (peek == JsonToken.BOOLEAN) {
-      return String.valueOf(in.nextBoolean());
-    } else {
-      throw new JsonParseException("Token of type " + peek + " cannot be interpreted as a string");
-    }
+    return switch (peek) {
+      case STRING, NUMBER -> in.nextString();
+      case BOOLEAN -> String.valueOf(in.nextBoolean());
+      case null, default -> throw new JsonParseException("Token of type " + peek + " cannot be interpreted as a string");
+    };
   }
 }

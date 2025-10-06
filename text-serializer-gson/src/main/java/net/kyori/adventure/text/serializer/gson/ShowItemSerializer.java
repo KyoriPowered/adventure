@@ -78,44 +78,44 @@ final class ShowItemSerializer extends TypeAdapter<HoverEvent.ShowItem> {
 
     while (in.hasNext()) {
       final String fieldName = in.nextName();
-      if (fieldName.equals(SHOW_ITEM_ID)) {
-        key = this.gson.fromJson(in, SerializerFactory.KEY_TYPE);
-      } else if (fieldName.equals(SHOW_ITEM_COUNT)) {
-        count = in.nextInt();
-      } else if (fieldName.equals(LEGACY_SHOW_ITEM_TAG)) {
-        final JsonToken token = in.peek();
-        if (token == JsonToken.STRING || token == JsonToken.NUMBER) {
-          nbt = BinaryTagHolder.binaryTagHolder(in.nextString());
-        } else if (token == JsonToken.BOOLEAN) {
-          nbt = BinaryTagHolder.binaryTagHolder(String.valueOf(in.nextBoolean()));
-        } else if (token == JsonToken.NULL) {
-          in.nextNull();
-        } else {
-          throw new JsonParseException("Expected " + LEGACY_SHOW_ITEM_TAG + " to be a string");
-        }
-      } else if (fieldName.equals(SHOW_ITEM_COMPONENTS)) {
-        in.beginObject();
-        while (in.peek() != JsonToken.END_OBJECT) {
-          final String name = in.nextName();
-          final Key id;
-          final boolean removed;
-          if (name.startsWith(DATA_COMPONENT_REMOVAL_PREFIX)) {
-            id = Key.key(name.substring(1));
-            removed = true;
+      switch (fieldName) {
+        case SHOW_ITEM_ID -> key = this.gson.fromJson(in, SerializerFactory.KEY_TYPE);
+        case SHOW_ITEM_COUNT -> count = in.nextInt();
+        case LEGACY_SHOW_ITEM_TAG -> {
+          final JsonToken token = in.peek();
+          if (token == JsonToken.STRING || token == JsonToken.NUMBER) {
+            nbt = BinaryTagHolder.binaryTagHolder(in.nextString());
+          } else if (token == JsonToken.BOOLEAN) {
+            nbt = BinaryTagHolder.binaryTagHolder(String.valueOf(in.nextBoolean()));
+          } else if (token == JsonToken.NULL) {
+            in.nextNull();
           } else {
-            id = Key.key(name);
-            removed = false;
+            throw new JsonParseException("Expected " + LEGACY_SHOW_ITEM_TAG + " to be a string");
           }
-
-          final JsonElement tree = this.gson.fromJson(in, JsonElement.class);
-          if (dataComponents == null) {
-            dataComponents = new HashMap<>();
-          }
-          dataComponents.put(id, removed ? DataComponentValue.removed() : GsonDataComponentValue.gsonDataComponentValue(tree));
         }
-        in.endObject();
-      } else {
-        in.skipValue();
+        case SHOW_ITEM_COMPONENTS -> {
+          in.beginObject();
+          while (in.peek() != JsonToken.END_OBJECT) {
+            final String name = in.nextName();
+            final Key id;
+            final boolean removed;
+            if (name.startsWith(DATA_COMPONENT_REMOVAL_PREFIX)) {
+              id = Key.key(name.substring(1));
+              removed = true;
+            } else {
+              id = Key.key(name);
+              removed = false;
+            }
+
+            final JsonElement tree = this.gson.fromJson(in, JsonElement.class);
+            if (dataComponents == null) {
+              dataComponents = new HashMap<>();
+            }
+            dataComponents.put(id, removed ? DataComponentValue.removed() : GsonDataComponentValue.gsonDataComponentValue(tree));
+          }
+          in.endObject();
+        }
+        default -> in.skipValue();
       }
     }
 
