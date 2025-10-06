@@ -80,6 +80,7 @@ import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.TRANSLATE_FALLBACK;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.TRANSLATE_WITH;
 
+@SuppressWarnings("ClassCanBeRecord")
 final class ComponentTypeSerializer implements TypeSerializer<Component> {
   static final TypeToken<List<Component>> LIST_TYPE = new TypeToken<List<Component>>() {};
   static final TypeToken<List<PlayerHeadObjectContents.ProfileProperty>> PROPERTY_LIST_TYPE = new TypeToken<List<PlayerHeadObjectContents.ProfileProperty>>() {};
@@ -263,8 +264,7 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
     }
     if (src instanceof TextComponent) {
       value.node(TEXT).set(((TextComponent) src).content());
-    } else if (src instanceof TranslatableComponent) {
-      final TranslatableComponent tc = (TranslatableComponent) src;
+    } else if (src instanceof final TranslatableComponent tc) {
       value.node(TRANSLATE).set(tc.key());
       if (!tc.arguments().isEmpty()) {
         final ConfigurationNode with = value.node(TRANSLATE_WITH);
@@ -273,8 +273,7 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
         }
       }
       value.node(TRANSLATE_FALLBACK).set(tc.fallback());
-    } else if (src instanceof ScoreComponent) {
-      final ScoreComponent sc = (ScoreComponent) src;
+    } else if (src instanceof final ScoreComponent sc) {
       final ConfigurationNode score = value.node(SCORE);
       score.node(SCORE_NAME).set(sc.name());
       score.node(SCORE_OBJECTIVE).set(sc.objective());
@@ -286,18 +285,14 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
       value.node(SELECTOR).set(((SelectorComponent) src).pattern());
     } else if (src instanceof KeybindComponent) {
       value.node(KEYBIND).set(((KeybindComponent) src).keybind());
-    } else if (src instanceof NBTComponent) {
-      final NBTComponent<?, ?> nc = (NBTComponent<?, ?>) src;
+    } else if (src instanceof final NBTComponent<?, ?> nc) {
       value.node(NBT).set(nc.nbtPath());
       value.node(NBT_INTERPRET).set(nc.interpret());
-      if (src instanceof BlockNBTComponent) {
-        value.node(NBT_BLOCK).set(BlockNBTPosSerializer.INSTANCE.type(), ((BlockNBTComponent) nc).pos());
-      } else if (src instanceof EntityNBTComponent) {
-        value.node(NBT_ENTITY).set(((EntityNBTComponent) nc).selector());
-      } else if (src instanceof StorageNBTComponent) {
-        value.node(NBT_STORAGE).set(KeySerializer.INSTANCE.type(), ((StorageNBTComponent) nc).storage());
-      } else {
-        throw notSureHowToSerialize(src);
+      switch (src) {
+        case BlockNBTComponent blockNBTComponent -> value.node(NBT_BLOCK).set(BlockNBTPosSerializer.INSTANCE.type(), blockNBTComponent.pos());
+        case EntityNBTComponent ignored -> value.node(NBT_ENTITY).set(((EntityNBTComponent) nc).selector());
+        case StorageNBTComponent storageNBTComponent -> value.node(NBT_STORAGE).set(KeySerializer.INSTANCE.type(), storageNBTComponent.storage());
+        default -> throw notSureHowToSerialize(src);
       }
     } else if (src instanceof ObjectComponent) {
       final ObjectComponent objectComponent = (ObjectComponent) src;

@@ -39,14 +39,11 @@ final class TranslationArgumentTypeSerializer implements TypeSerializer<Translat
 
   @Override
   public TranslationArgument deserialize(final Type type, final ConfigurationNode node) throws SerializationException {
-    final Object raw = node.rawScalar();
-    if (raw instanceof Boolean) {
-      return TranslationArgument.bool((Boolean) raw);
-    } else if (raw instanceof Number) {
-      return TranslationArgument.numeric((Number) raw);
-    } else {
-      return TranslationArgument.component(node.require(Component.class));
-    }
+    return switch (node.rawScalar()) {
+      case Boolean bool -> TranslationArgument.bool(bool);
+      case Number number -> TranslationArgument.numeric(number);
+      default -> TranslationArgument.component(node.require(Component.class));
+    };
   }
 
   @Override
@@ -57,12 +54,11 @@ final class TranslationArgumentTypeSerializer implements TypeSerializer<Translat
     }
 
     final Object value = obj.value();
-    if (value instanceof Boolean || value instanceof Number) {
-      node.set(value);
-    } else if (value instanceof Component) {
-      node.set(Component.class, value);
-    } else {
-      throw new SerializationException(node, type, "Unknown translation arg value of type " + value.getClass() + ": " + value);
+    switch (obj.value()) {
+      case Boolean bool -> node.set(bool);
+      case Number num -> node.set(num);
+      case Component component -> node.set(Component.class, component);
+      default -> throw new SerializationException(node, type, "Unknown translation arg value of type " + value.getClass() + ": " + value);
     }
   }
 }
