@@ -41,11 +41,11 @@ final class KeySerializer extends ScalarSerializer<Key> {
 
   @Override
   public @NotNull Key deserialize(final @NotNull Type type, final @NotNull Object obj) throws SerializationException {
-    if (!(obj instanceof CharSequence)) {
+    if (!(obj instanceof CharSequence seq)) {
       throw new CoercionFailedException(obj, "string");
     }
     try {
-      return Key.key(obj.toString());
+      return Key.key(seq.toString());
     } catch (final InvalidKeyException ex) {
       throw new SerializationException(ex);
     }
