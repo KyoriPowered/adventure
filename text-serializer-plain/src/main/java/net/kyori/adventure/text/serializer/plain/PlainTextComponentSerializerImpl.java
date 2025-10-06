@@ -32,6 +32,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static java.util.Objects.requireNonNull;
 
+@SuppressWarnings("ClassCanBeRecord")
 final class PlainTextComponentSerializerImpl implements PlainTextComponentSerializer {
   private static final ComponentFlattener DEFAULT_FLATTENER = ComponentFlattener.basic().toBuilder()
     .unknownMapper(component -> {

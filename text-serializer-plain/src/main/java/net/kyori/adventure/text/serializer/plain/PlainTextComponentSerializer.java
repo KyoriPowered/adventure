@@ -43,7 +43,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 4.8.0
  */
-public interface PlainTextComponentSerializer extends ComponentSerializer<Component, TextComponent, String>, Buildable<PlainTextComponentSerializer, PlainTextComponentSerializer.Builder> {
+public interface PlainTextComponentSerializer extends ComponentSerializer<Component, TextComponent, String> /* Buildable<PlainTextComponentSerializer, PlainTextComponentSerializer.Builder> */ {
   /**
    * A component serializer for plain-based serialization and deserialization.
    *
@@ -85,12 +85,15 @@ public interface PlainTextComponentSerializer extends ComponentSerializer<Compon
    */
   void serialize(final @NotNull StringBuilder sb, final @NotNull Component component);
 
+  // TODO: common builder interface?
+  @NotNull Builder toBuilder();
+
   /**
    * A builder for the plain-text component serializer.
    *
    * @since 4.8.0
    */
-  interface Builder extends AbstractBuilder<PlainTextComponentSerializer>, Buildable.Builder<PlainTextComponentSerializer> {
+  interface Builder extends AbstractBuilder<PlainTextComponentSerializer> {
     /**
      * Set the component flattener to use.
      *
