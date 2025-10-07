@@ -23,11 +23,10 @@
  */
 package net.kyori.adventure.text.minimessage;
 
+import java.io.Serial;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.io.Serial;
 
 /**
  * An exception thrown when an error occurs while parsing a MiniMessage string.

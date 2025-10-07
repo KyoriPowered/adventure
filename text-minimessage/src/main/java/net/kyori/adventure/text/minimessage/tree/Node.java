@@ -24,7 +24,6 @@
 package net.kyori.adventure.text.minimessage.tree;
 
 import java.util.List;
-
 import net.kyori.adventure.text.minimessage.internal.parser.node.ElementNode;
 import net.kyori.adventure.text.minimessage.internal.parser.node.RootNode;
 import org.jetbrains.annotations.ApiStatus;
