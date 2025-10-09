@@ -135,11 +135,13 @@ final class MiniMessageParser {
       debug.accept("\n");
     }
 
-    final TokenParser.TagProvider transformationFactory;
+    final TokenParser.SequentialTagProvider sequentialTagProvider;
+    final TokenParser.NamedTagProvider namedTagProvider;
+
     if (debug != null) {
-      transformationFactory = (name, args, token) -> {
+      sequentialTagProvider = (name, args, token) -> {
         try {
-          debug.accept("Attempting to match node '");
+          debug.accept("Attempting to match node as sequential '");
           debug.accept(name);
           debug.accept("'");
           if (token != null) {
@@ -167,7 +169,48 @@ final class MiniMessageParser {
           if (token != null && e instanceof ParsingExceptionImpl) {
             final ParsingExceptionImpl impl = (ParsingExceptionImpl) e;
             if (impl.tokens().length == 0) {
-              impl.tokens(new Token[] {token});
+              impl.tokens(new Token[]{token});
+            }
+          }
+          debug.accept("Could not match node '");
+          debug.accept(name);
+          debug.accept("' - ");
+          debug.accept(e.getMessage());
+          debug.accept("\n");
+          return null;
+        }
+      };
+      namedTagProvider = (name, args, token) -> {
+        try {
+          debug.accept("Attempting to match node as named '");
+          debug.accept(name);
+          debug.accept("'");
+          if (token != null) {
+            debug.accept(" at column ");
+            debug.accept(String.valueOf(token.startIndex()));
+          }
+          debug.accept("\n");
+
+          final @Nullable Tag transformation = combinedResolver.resolveNamed(name, new NamedArgumentMapImpl<>(context, args), context);
+
+          if (transformation == null) {
+            debug.accept("Could not match node '");
+            debug.accept(name);
+            debug.accept("'\n");
+          } else {
+            debug.accept("Successfully matched node '");
+            debug.accept(name);
+            debug.accept("' to tag ");
+            debug.accept(transformation instanceof Examinable ? ((Examinable) transformation).examinableName() : transformation.getClass().getName());
+            debug.accept("\n");
+          }
+
+          return transformation;
+        } catch (final ParsingException e) {
+          if (token != null && e instanceof ParsingExceptionImpl) {
+            final ParsingExceptionImpl impl = (ParsingExceptionImpl) e;
+            if (impl.tokens().length == 0) {
+              impl.tokens(new Token[]{token});
             }
           }
           debug.accept("Could not match node '");
@@ -179,14 +222,23 @@ final class MiniMessageParser {
         }
       };
     } else {
-      transformationFactory = (name, args, token) -> {
+      sequentialTagProvider = (name, args, token) -> {
         try {
           return combinedResolver.resolve(name, new ArgumentQueueImpl<>(context, args), context);
         } catch (final ParsingException ignored) {
           return null;
         }
       };
+      namedTagProvider = (name, args, token) -> {
+        try {
+          return combinedResolver.resolveNamed(name, new NamedArgumentMapImpl<>(context, args), context);
+        } catch (final ParsingException ignored) {
+          return null;
+        }
+      };
     }
+
+    final TokenParser.TagProvider transformationFactory = new TokenParser.TagProviderImpl(sequentialTagProvider, namedTagProvider);
     final Predicate<String> tagNameChecker = name -> {
       final String sanitized = TokenParser.TagProvider.sanitizePlaceholderName(name);
       return combinedResolver.has(sanitized);

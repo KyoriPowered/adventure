@@ -21,45 +21,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.tag.resolver;
+package net.kyori.adventure.text.minimessage.internal.serializer;
 
-import java.util.Map;
-import net.kyori.adventure.text.Component;
+import java.util.Set;
+import java.util.function.BiFunction;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
-import net.kyori.adventure.text.minimessage.internal.serializer.ClaimConsumer;
-import net.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
 import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.NamedArgumentMap;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-final class EmptyTagResolver implements TagResolver, MappableResolver, SerializableResolver {
-  static final EmptyTagResolver INSTANCE = new EmptyTagResolver();
+final class NamedStyleClaimingResolverImpl implements TagResolver.Named, SerializableResolver.Single {
+  private final @NotNull Set<String> names;
+  private final @NotNull BiFunction<NamedArgumentMap, Context, Tag> handler;
+  private final @NotNull StyleClaim<?> styleClaim;
 
-  private EmptyTagResolver() {
-  }
-
-  @Override
-  public @Nullable Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) {
-    return null;
+  NamedStyleClaimingResolverImpl(final @NotNull Set<String> names, final @NotNull BiFunction<NamedArgumentMap, Context, Tag> handler, final @NotNull StyleClaim<?> styleClaim) {
+    this.names = names;
+    this.handler = handler;
+    this.styleClaim = styleClaim;
   }
 
   @Override
   public @Nullable Tag resolveNamed(final @NotNull String name, final @NotNull NamedArgumentMap arguments, final @NotNull Context ctx) throws ParsingException {
-    return null;
+    if (!this.names.contains(name)) return null;
+
+    return this.handler.apply(arguments, ctx);
   }
 
   @Override
   public boolean has(final @NotNull String name) {
-    return false;
+    return this.names.contains(name);
   }
 
   @Override
-  public boolean contributeToMap(final @NotNull Map<String, Tag> map) {
-    return true;
-  }
-
-  @Override
-  public void handle(final @NotNull Component serializable, final @NotNull ClaimConsumer consumer) {
+  public StyleClaim<?> claimStyle() {
+    return this.styleClaim;
   }
 }

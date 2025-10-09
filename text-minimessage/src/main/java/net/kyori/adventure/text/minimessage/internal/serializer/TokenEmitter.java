@@ -80,6 +80,18 @@ public interface TokenEmitter {
   @NotNull TokenEmitter argument(final @NotNull String arg);
 
   /**
+   * Add a single named argument to the current tag.
+   *
+   * <p>Must be called after {@link #tag(String)}, but before any call to {@link #text(String)}.</p>
+   *
+   * @param name name of the argument
+   * @param arg argument value
+   * @return this emitter
+   * @since 4.25.0
+   */
+  @NotNull TokenEmitter namedArgument(final @NotNull String name, final @NotNull String arg);
+
+  /**
    * Add a single argument to the current tag.
    *
    * <p>Must be called after {@link #tag(String)}, but before any call to {@link #text(String)}.</p>
@@ -92,6 +104,19 @@ public interface TokenEmitter {
   @NotNull TokenEmitter argument(final @NotNull String arg, final @NotNull QuotingOverride quotingPreference);
 
   /**
+   * Add a single named argument to the current tag.
+   *
+   * <p>Must be called after {@link #tag(String)}, but before any call to {@link #text(String)}.</p>
+   *
+   * @param name name of the argument
+   * @param arg argument value
+   * @param quotingPreference an argument-specific quoting instruction
+   * @return this emitter
+   * @since 4.25.0
+   */
+  @NotNull TokenEmitter namedArgument(final @NotNull String name, final @NotNull String arg, final @NotNull QuotingOverride quotingPreference);
+
+  /**
    * Add a single argument to the current tag.
    *
    * <p>Must be called after {@link #tag(String)}, but before any call to {@link #text(String)}.</p>
@@ -101,6 +126,30 @@ public interface TokenEmitter {
    * @since 4.10.0
    */
   @NotNull TokenEmitter argument(final @NotNull Component arg);
+
+  /**
+   * Add a single named argument to the current tag.
+   *
+   * <p>Must be called after {@link #tag(String)}, but before any call to {@link #text(String)}.</p>
+   *
+   * @param name name of the argument
+   * @param arg argument value, serialized as a nested MiniMessage string
+   * @return this emitter
+   * @since 4.25.0
+   */
+  @NotNull TokenEmitter namedArgument(final @NotNull String name, final @NotNull Component arg);
+
+  /**
+   * Adds a flag argument to the current tag.
+   *
+   * <p>Must be called after {@link #tag(String)}, but before any call to {@link #text(String)}.</p>
+   *
+   * @param name the name of the flag
+   * @param value the value to set the flag to
+   * @return this emitter
+   * @since 4.25.0
+   */
+  @NotNull TokenEmitter flag(final @NotNull String name, final boolean value);
 
   /**
    * Emit literal text.

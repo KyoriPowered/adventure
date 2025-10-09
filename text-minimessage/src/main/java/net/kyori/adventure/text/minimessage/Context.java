@@ -26,6 +26,7 @@ package net.kyori.adventure.text.minimessage;
 import net.kyori.adventure.pointer.Pointered;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
+import net.kyori.adventure.text.minimessage.tag.resolver.NamedArgumentMap;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -118,6 +119,19 @@ public interface Context {
   );
 
   /**
+   * Create a new parsing exception.
+   *
+   * @param message a detail message describing the error
+   * @param tags the tag parts which caused the error
+   * @return the new parsing exception
+   * @since 4.25.0
+   */
+  @NotNull ParsingException newException(
+    final @NotNull String message,
+    final @NotNull NamedArgumentMap tags
+  );
+
+  /**
    * Create a new parsing exception without reference to a specific location.
    *
    * @param message a detail message describing the error
@@ -139,6 +153,20 @@ public interface Context {
     final @NotNull String message,
     final @Nullable Throwable cause,
     final @NotNull ArgumentQueue args
+  );
+
+  /**
+   * Create a new parsing exception.
+   *
+   * @param message a detail message describing the error
+   * @param cause the cause
+   * @param args arguments that caused the errors
+   * @return the new parsing exception
+   */
+  @NotNull ParsingException newException(
+    final @NotNull String message,
+    final @Nullable Throwable cause,
+    final @NotNull NamedArgumentMap args
   );
 
   /**

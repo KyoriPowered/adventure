@@ -41,6 +41,36 @@ final class SequentialTagResolver implements TagResolver, SerializableResolver {
   }
 
   @Override
+  public @Nullable Tag resolveNamed(final @NotNull String name, final @NotNull NamedArgumentMap arguments, final @NotNull Context ctx) throws ParsingException {
+    @Nullable ParsingException thrown = null;
+    for (final TagResolver resolver : this.resolvers) {
+      try {
+        final @Nullable Tag placeholder = resolver.resolveNamed(name, arguments, ctx);
+
+        if (placeholder != null) return placeholder;
+      } catch (final ParsingException ex) {
+        if (thrown == null) {
+          thrown = ex;
+        } else {
+          thrown.addSuppressed(ex);
+        }
+      } catch (final Exception ex) {
+        final ParsingException err = ctx.newException("Exception thrown while parsing <" + name + ">", ex, arguments);
+        if (thrown == null) {
+          thrown = err;
+        } else {
+          thrown.addSuppressed(err);
+        }
+      }
+    }
+
+    if (thrown != null) {
+      throw thrown;
+    }
+    return null;
+  }
+
+  @Override
   public @Nullable Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) throws ParsingException {
     @Nullable ParsingException thrown = null;
     for (final TagResolver resolver : this.resolvers) {
