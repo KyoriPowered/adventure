@@ -28,8 +28,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.OptionalInt;
-import java.util.stream.Stream;
-import net.kyori.examination.ExaminableProperty;
 import org.intellij.lang.annotations.RegExp;
 
 import static java.util.Objects.requireNonNull;
@@ -76,14 +74,6 @@ record KeyImpl(String namespace, String value) implements Key {
   @Override
   public String toString() {
     return this.asString();
-  }
-
-  @Override
-  public Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("namespace", this.namespace),
-      ExaminableProperty.of("value", this.value)
-    );
   }
 
   @Override

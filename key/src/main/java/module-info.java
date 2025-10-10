@@ -5,8 +5,8 @@ import org.jspecify.annotations.NullMarked;
  */
 @NullMarked
 module net.kyori.adventure.key {
-  requires transitive net.kyori.examination.string;
   requires static org.jspecify;
+  requires static org.jetbrains.annotations;
 
   exports net.kyori.adventure.key;
 }

@@ -23,31 +23,13 @@
  */
 package net.kyori.adventure.key;
 
-import java.util.stream.Stream;
-import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
-import net.kyori.examination.string.StringExaminer;
 import org.jspecify.annotations.Nullable;
 
-record KeyedValueImpl<T>(Key key, T value) implements Examinable, KeyedValue<T> {
-
+record KeyedValueImpl<T>(Key key, T value) implements KeyedValue<T> {
   @Override
   public boolean equals(final @Nullable Object other) {
     if (this == other) return true;
     if (!(other instanceof KeyedValue<?> that)) return false;
     return this.key.equals(that.key()) && this.value.equals(that.value());
-  }
-
-  @Override
-  public Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("key", this.key),
-      ExaminableProperty.of("value", this.value)
-    );
-  }
-
-  @Override
-  public String toString() {
-    return this.examine(StringExaminer.simpleEscaping());
   }
 }

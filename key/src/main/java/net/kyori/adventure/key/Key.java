@@ -26,9 +26,6 @@ package net.kyori.adventure.key;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.OptionalInt;
-import java.util.stream.Stream;
-import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -56,7 +53,7 @@ import org.jspecify.annotations.Nullable;
  *
  * @since 4.0.0
  */
-public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
+public interface Key extends Comparable<Key>, Namespaced, Keyed {
   /**
    * The namespace for Minecraft.
    *
@@ -288,14 +285,6 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
       return this.value();
     }
     return this.asString();
-  }
-
-  @Override
-  default Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("namespace", this.namespace()),
-      ExaminableProperty.of("value", this.value())
-    );
   }
 
   @Override
