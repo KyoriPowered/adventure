@@ -77,6 +77,9 @@ public sealed interface SelectorComponent extends ScopedComponent<SelectorCompon
    */
   SelectorComponent separator(final @Nullable ComponentLike separator);
 
+  @Override
+  Builder toBuilder();
+
   /**
    * A selector component builder.
    *

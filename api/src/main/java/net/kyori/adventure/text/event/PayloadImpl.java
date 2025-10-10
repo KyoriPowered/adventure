@@ -31,15 +31,15 @@ final class PayloadImpl {
   private PayloadImpl() {
   }
 
-  record TextImpl(String value) implements ClickEventImpl.Payload.Text {
+  record TextImpl(String value) implements ClickEvent.Payload.Text {
   }
 
-  record IntImpl(int integer) implements ClickEventImpl.Payload.Int {
+  record IntImpl(int integer) implements ClickEvent.Payload.Int {
   }
 
-  record DialogImpl(DialogLike dialog) implements ClickEventImpl.Payload.Dialog {
+  record DialogImpl(DialogLike dialog) implements ClickEvent.Payload.Dialog {
   }
 
-  record CustomImpl(Key key, BinaryTagHolder nbt) implements ClickEventImpl.Payload.Custom {
+  record CustomImpl(Key key, BinaryTagHolder nbt) implements ClickEvent.Payload.Custom {
   }
 }

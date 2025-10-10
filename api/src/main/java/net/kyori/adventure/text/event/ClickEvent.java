@@ -54,7 +54,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends StyleBu
    * @return a click event
    * @since 4.0.0
    */
-  static ClickEvent<Payload.Text> openUrl(String url) {
+  static ClickEvent<Payload.Text> openUrl(final String url) {
     return ClickEventImpl.create(Action.OPEN_URL, Payload.string(url));
   }
 
@@ -65,7 +65,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends StyleBu
    * @return a click event
    * @since 4.0.0
    */
-  static ClickEvent<Payload.Text> openUrl(URL url) {
+  static ClickEvent<Payload.Text> openUrl(final URL url) {
     return openUrl(url.toExternalForm());
   }
 
@@ -78,7 +78,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends StyleBu
    * @return a click event
    * @since 4.0.0
    */
-  static ClickEvent<Payload.Text> openFile(String file) {
+  static ClickEvent<Payload.Text> openFile(final String file) {
     return ClickEventImpl.create(Action.OPEN_FILE, Payload.string(file));
   }
 
@@ -89,7 +89,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends StyleBu
    * @return a click event
    * @since 4.0.0
    */
-  static ClickEvent<Payload.Text> runCommand(String command) {
+  static ClickEvent<Payload.Text> runCommand(final String command) {
     return ClickEventImpl.create(Action.RUN_COMMAND, Payload.string(command));
   }
 
@@ -100,7 +100,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends StyleBu
    * @return a click event
    * @since 4.0.0
    */
-  static ClickEvent<Payload.Text> suggestCommand(String command) {
+  static ClickEvent<Payload.Text> suggestCommand(final String command) {
     return ClickEventImpl.create(Action.SUGGEST_COMMAND, Payload.string(command));
   }
 
@@ -111,7 +111,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends StyleBu
    * @return a click event
    * @since 4.0.0
    */
-  static ClickEvent<Payload.Int> changePage(int page) {
+  static ClickEvent<Payload.Int> changePage(final int page) {
     return ClickEventImpl.create(Action.CHANGE_PAGE, Payload.integer(page));
   }
 
@@ -120,10 +120,10 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends StyleBu
    *
    * @param text the text to copy to the clipboard
    * @return a click event
-   * @sinceMinecraft 1.15
    * @since 4.0.0
+   * @sinceMinecraft 1.15
    */
-  static ClickEvent<Payload.Text> copyToClipboard(String text) {
+  static ClickEvent<Payload.Text> copyToClipboard(final String text) {
     return ClickEventImpl.create(Action.COPY_TO_CLIPBOARD, Payload.string(text));
   }
 
@@ -136,7 +136,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends StyleBu
    * @return a callback click event
    * @since 4.13.0
    */
-  static ClickEvent<?> callback(ClickCallback<Audience> function) {
+  static ClickEvent<?> callback(final ClickCallback<Audience> function) {
     return ClickCallbackInternals.PROVIDER.create(requireNonNull(function, "function"), ClickCallbackOptionsImpl.DEFAULT);
   }
 
@@ -148,7 +148,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends StyleBu
    * @return a callback click event
    * @since 4.13.0
    */
-  static ClickEvent<?> callback(ClickCallback<Audience> function, ClickCallback.Options options) {
+  static ClickEvent<?> callback(final ClickCallback<Audience> function, final ClickCallback.Options options) {
     return ClickCallbackInternals.PROVIDER.create(requireNonNull(function, "function"), requireNonNull(options, "options"));
   }
 
@@ -160,7 +160,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends StyleBu
    * @return a callback click event
    * @since 4.13.0
    */
-  static ClickEvent<?> callback(ClickCallback<Audience> function, Consumer<ClickCallback.Options.Builder> optionsBuilder) {
+  static ClickEvent<?> callback(final ClickCallback<Audience> function, final Consumer<ClickCallback.Options.Builder> optionsBuilder) {
     return ClickCallbackInternals.PROVIDER.create(
       requireNonNull(function, "function"),
       AbstractBuilder.configureAndBuild(ClickCallback.Options.builder(), requireNonNull(optionsBuilder, "optionsBuilder"))
@@ -174,7 +174,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends StyleBu
    * @return the click event
    * @since 4.22.0
    */
-  static ClickEvent<Payload.Dialog> showDialog(DialogLike dialog) {
+  static ClickEvent<Payload.Dialog> showDialog(final DialogLike dialog) {
     requireNonNull(dialog, "dialog");
     return ClickEventImpl.create(Action.SHOW_DIALOG, Payload.dialog(dialog));
   }
@@ -190,7 +190,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends StyleBu
    * @return the click event
    * @since 4.23.0
    */
-  static ClickEvent<Payload.Custom> custom(Key key, BinaryTagHolder nbt) {
+  static ClickEvent<Payload.Custom> custom(final Key key, final BinaryTagHolder nbt) {
     requireNonNull(key, "key");
     requireNonNull(nbt, "nbt");
     return ClickEventImpl.create(Action.CUSTOM, Payload.custom(key, nbt));
@@ -201,6 +201,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends StyleBu
    *
    * @param action the action
    * @param payload the payload
+   * @param <T> the payload type
    * @return a click event
    * @throws IllegalArgumentException if the action does not support that payload
    * @since 4.25.0
@@ -272,8 +273,8 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends StyleBu
     /**
      * Copies text to the clipboard.
      *
-     * @sinceMinecraft 1.15
      * @since 4.0.0
+     * @sinceMinecraft 1.15
      */
     Action<Payload.Text> COPY_TO_CLIPBOARD = new ClickEventImpl.ActionImpl<>("copy_to_clipboard", true, Payload.Text.class);
 
@@ -282,16 +283,16 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends StyleBu
      *
      * <p>This action is not readable at this time until Adventure has a full Dialog API.</p>
      *
-     * @sinceMinecraft 1.21.6
      * @since 4.22.0
+     * @sinceMinecraft 1.21.6
      */
     Action<Payload.Dialog> SHOW_DIALOG = new ClickEventImpl.ActionImpl<>("show_dialog", false, Payload.Dialog.class);
 
     /**
      * Sends a custom event to the server.
      *
-     * @sinceMinecraft 1.21.6
      * @since 4.22.0
+     * @sinceMinecraft 1.21.6
      */
     Action<Payload.Custom> CUSTOM = new ClickEventImpl.ActionImpl<>("custom", true, Payload.Custom.class);
 
@@ -300,13 +301,13 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends StyleBu
      *
      * @since 4.0.0
      */
-    Index<String, ClickEventImpl.Action<?>> NAMES = Index.create(Action::toString, OPEN_URL, OPEN_FILE, RUN_COMMAND, SUGGEST_COMMAND, CHANGE_PAGE, COPY_TO_CLIPBOARD, SHOW_DIALOG, CUSTOM);
+    Index<String, ClickEvent.Action<?>> NAMES = Index.create(Action::toString, OPEN_URL, OPEN_FILE, RUN_COMMAND, SUGGEST_COMMAND, CHANGE_PAGE, COPY_TO_CLIPBOARD, SHOW_DIALOG, CUSTOM);
 
     /**
      * Tests if this action is readable.
      *
      * @return {@code true} if this action is readable, {@code false} if this
-     * action is not readable
+     *     action is not readable
      * @since 4.0.0
      */
     boolean readable();
@@ -336,7 +337,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends StyleBu
    *
    * @since 4.22.0
    */
-  sealed interface Payload permits ClickEventImpl.Payload.Custom, ClickEventImpl.Payload.Dialog, ClickEventImpl.Payload.Int, ClickEventImpl.Payload.Text {
+  sealed interface Payload permits ClickEvent.Payload.Custom, ClickEvent.Payload.Dialog, ClickEvent.Payload.Int, ClickEvent.Payload.Text {
     /**
      * Creates a text payload.
      *
@@ -367,7 +368,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends StyleBu
      * @return the payload
      * @since 4.22.0
      */
-    static ClickEventImpl.Payload.Dialog dialog(final DialogLike dialog) {
+    static ClickEvent.Payload.Dialog dialog(final DialogLike dialog) {
       requireNonNull(dialog, "dialog");
       return new PayloadImpl.DialogImpl(dialog);
     }
@@ -383,7 +384,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends StyleBu
      * @return the payload
      * @since 4.23.0
      */
-    static ClickEventImpl.Payload.Custom custom(final Key key, final BinaryTagHolder nbt) {
+    static ClickEvent.Payload.Custom custom(final Key key, final BinaryTagHolder nbt) {
       requireNonNull(key, "key");
       requireNonNull(nbt, "nbt");
       return new PayloadImpl.CustomImpl(key, nbt);

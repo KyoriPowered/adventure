@@ -545,6 +545,7 @@ public sealed interface Style extends StyleGetter, StyleSetter<Style> permits St
    * Create a builder from this style.
    *
    * @return a builder
+   * @since 4.0.0
    */
   Builder toBuilder();
 

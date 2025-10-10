@@ -146,6 +146,9 @@ public sealed interface TranslatableComponent extends ScopedComponent<Translatab
   @Contract(pure = true)
   TranslatableComponent fallback(final @Nullable String fallback);
 
+  @Override
+  Builder toBuilder();
+
   /**
    * A text component builder.
    *

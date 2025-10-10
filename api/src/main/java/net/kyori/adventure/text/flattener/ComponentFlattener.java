@@ -88,7 +88,12 @@ public sealed interface ComponentFlattener permits ComponentFlattenerImpl {
    */
   void flatten(final Component input, final FlattenerListener listener);
 
-  // TODO: common builder interface?
+  /**
+   * Create a new builder with the same configuration as this flattener.
+   *
+   * @return the builder
+   * @since 4.7.0
+   */
   Builder toBuilder();
 
   /**

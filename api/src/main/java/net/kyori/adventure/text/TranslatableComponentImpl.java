@@ -34,7 +34,7 @@ import org.jspecify.annotations.Nullable;
 import static java.util.Objects.requireNonNull;
 
 record TranslatableComponentImpl(List<Component> children, Style style, String key, @Nullable String fallback, List<TranslationArgument> args) implements TranslatableComponent {
-  static TranslatableComponent create(final List<Component> children, final Style style, final String key, final @Nullable String fallback, final ComponentLike [] args) {
+  static TranslatableComponent create(final List<Component> children, final Style style, final String key, final @Nullable String fallback, final ComponentLike[] args) {
     requireNonNull(args, "args");
     return create(children, style, key, fallback, Arrays.asList(args));
   }

@@ -103,7 +103,7 @@ public interface ChatType extends Keyed {
    * @since 4.12.0
    */
   static ChatType chatType(final Keyed key) {
-    return key instanceof ChatType ? (ChatType) key : new ChatTypeImpl(requireNonNull(key, "key").key());
+    return key instanceof final ChatType ct ? ct : new ChatTypeImpl(requireNonNull(key, "key").key());
   }
 
   /**

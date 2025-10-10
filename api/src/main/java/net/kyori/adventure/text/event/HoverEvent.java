@@ -58,7 +58,7 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
    * @return a hover event
    * @since 4.2.0
    */
-  static HoverEvent<Component> showText(ComponentLike text) {
+  static HoverEvent<Component> showText(final ComponentLike text) {
     return showText(text.asComponent());
   }
 
@@ -69,7 +69,7 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
    * @return a hover event
    * @since 4.0.0
    */
-  static HoverEvent<Component> showText(Component text) {
+  static HoverEvent<Component> showText(final Component text) {
     return new HoverEventImpl<>(Action.SHOW_TEXT, text);
   }
 
@@ -81,7 +81,7 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
    * @return a hover event
    * @since 4.0.0
    */
-  static HoverEvent<ShowItem> showItem(Key item, @Range(from = 0, to = Integer.MAX_VALUE) int count) {
+  static HoverEvent<ShowItem> showItem(final Key item, @Range(from = 0, to = Integer.MAX_VALUE) final int count) {
     return showItem(item, count, Collections.emptyMap());
   }
 
@@ -93,7 +93,7 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
    * @return a hover event
    * @since 4.6.0
    */
-  static HoverEvent<ShowItem> showItem(Keyed item, @Range(from = 0, to = Integer.MAX_VALUE) int count) {
+  static HoverEvent<ShowItem> showItem(final Keyed item, @Range(from = 0, to = Integer.MAX_VALUE) final int count) {
     return showItem(item, count, Collections.emptyMap());
   }
 
@@ -108,7 +108,7 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
    * @deprecated since Minecraft 1.20.5 and replaced with data components, not scheduled for removal
    */
   @Deprecated
-  static HoverEvent<ShowItem> showItem(Key item, @Range(from = 0, to = Integer.MAX_VALUE) int count, @Nullable BinaryTagHolder nbt) {
+  static HoverEvent<ShowItem> showItem(final Key item, @Range(from = 0, to = Integer.MAX_VALUE) final int count, final @Nullable BinaryTagHolder nbt) {
     return showItem(ShowItem.showItem(item, count, nbt));
   }
 
@@ -123,7 +123,7 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
    * @deprecated since Minecraft 1.20.5 and replaced with data components, not scheduled for removal
    */
   @Deprecated
-  static HoverEvent<ShowItem> showItem(Keyed item, @Range(from = 0, to = Integer.MAX_VALUE) int count, @Nullable BinaryTagHolder nbt) {
+  static HoverEvent<ShowItem> showItem(final Keyed item, @Range(from = 0, to = Integer.MAX_VALUE) final int count, final @Nullable BinaryTagHolder nbt) {
     return showItem(ShowItem.showItem(item, count, nbt));
   }
 
@@ -136,7 +136,7 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
    * @return a hover event
    * @since 4.17.0
    */
-  static HoverEvent<ShowItem> showItem(Keyed item, @Range(from = 0, to = Integer.MAX_VALUE) int count, Map<Key, ? extends DataComponentValue> dataComponents) {
+  static HoverEvent<ShowItem> showItem(final Keyed item, @Range(from = 0, to = Integer.MAX_VALUE) final int count, final Map<Key, ? extends DataComponentValue> dataComponents) {
     return showItem(ShowItem.showItem(item, count, dataComponents));
   }
 
@@ -147,7 +147,7 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
    * @return a hover event
    * @since 4.0.0
    */
-  static HoverEvent<ShowItem> showItem(ShowItem item) {
+  static HoverEvent<ShowItem> showItem(final ShowItem item) {
     return new HoverEventImpl<>(Action.SHOW_ITEM, item);
   }
 
@@ -161,7 +161,7 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
    * @return a {@code ShowEntity}
    * @since 4.0.0
    */
-  static HoverEvent<ShowEntity> showEntity(Key type, UUID id) {
+  static HoverEvent<ShowEntity> showEntity(final Key type, final UUID id) {
     return showEntity(type, id, null);
   }
 
@@ -175,7 +175,7 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
    * @return a {@code ShowEntity}
    * @since 4.6.0
    */
-  static HoverEvent<ShowEntity> showEntity(Keyed type, UUID id) {
+  static HoverEvent<ShowEntity> showEntity(final Keyed type, final UUID id) {
     return showEntity(type, id, null);
   }
 
@@ -190,7 +190,7 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
    * @return a {@code ShowEntity}
    * @since 4.0.0
    */
-  static HoverEvent<ShowEntity> showEntity(Key type, UUID id, @Nullable Component name) {
+  static HoverEvent<ShowEntity> showEntity(final Key type, final UUID id, final @Nullable Component name) {
     return showEntity(ShowEntity.showEntity(type, id, name));
   }
 
@@ -205,7 +205,7 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
    * @return a {@code ShowEntity}
    * @since 4.6.0
    */
-  static HoverEvent<ShowEntity> showEntity(Keyed type, UUID id, @Nullable Component name) {
+  static HoverEvent<ShowEntity> showEntity(final Keyed type, final UUID id, final @Nullable Component name) {
     return showEntity(ShowEntity.showEntity(type, id, name));
   }
 
@@ -218,7 +218,7 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
    * @return a hover event
    * @since 4.0.0
    */
-  static HoverEvent<ShowEntity> showEntity(ShowEntity entity) {
+  static HoverEvent<ShowEntity> showEntity(final ShowEntity entity) {
     return new HoverEventImpl<>(Action.SHOW_ENTITY, entity);
   }
 
@@ -231,7 +231,7 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
    * @deprecated Removed in Vanilla 1.12, but we keep it for backwards compatibility
    */
   @Deprecated
-  static HoverEvent<String> showAchievement(String value) {
+  static HoverEvent<String> showAchievement(final String value) {
     return new HoverEventImpl<>(Action.SHOW_ACHIEVEMENT, value);
   }
 
@@ -244,7 +244,7 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
    * @return a click event
    * @since 4.0.0
    */
-  static <V> HoverEvent<V> hoverEvent(Action<V> action, V value) {
+  static <V> HoverEvent<V> hoverEvent(final Action<V> action, final V value) {
     return new HoverEventImpl<>(action, value);
   }
 
@@ -352,8 +352,8 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      * @param count the count
      * @param dataComponents the data components
      * @return a {@code ShowItem}
-     * @sinceMinecraft 1.20.5
      * @since 4.17.0
+     * @sinceMinecraft 1.20.5
      */
     static ShowItem showItem(final Keyed item, final @Range(from = 0, to = Integer.MAX_VALUE) int count, final Map<Key, ? extends DataComponentValue> dataComponents) {
       return new HoverEventImpl.ShowItemImpl(requireNonNull(item, "item").key(), count, null, Map.copyOf(requireNonNull(dataComponents, "dataComponents")));
@@ -424,8 +424,8 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      * <p>If there is NBT data on this item, it will never have any data components set.</p>
      *
      * @return an unmodifiable map of data components
-     * @sinceMinecraft 1.20.5
      * @since 4.17.0
+     * @sinceMinecraft 1.20.5
      */
     Map<Key, DataComponentValue> dataComponents();
 
@@ -436,6 +436,7 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      *
      * @param holder the new data components to set
      * @return a show item data object that has the provided components
+     * @since 4.17.0
      * @sinceMinecraft 1.20.5
      */
     ShowItem dataComponents(final Map<Key, DataComponentValue> holder);
@@ -449,6 +450,7 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      * @param <V> the new data component value type
      * @return the unmodifiable map
      * @since 4.17.0
+     * @sinceMinecraft 1.20.5
      */
     <V extends DataComponentValue> Map<Key, V> dataComponentsAs(final Class<V> targetType);
   }
@@ -633,7 +635,7 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      *
      * @since 4.0.0
      */
-    Index<String, HoverEventImpl.Action<?>> NAMES = Index.create(Action::toString, SHOW_TEXT, SHOW_ITEM, SHOW_ENTITY, SHOW_ACHIEVEMENT);
+    Index<String, HoverEvent.Action<?>> NAMES = Index.create(Action::toString, SHOW_TEXT, SHOW_ITEM, SHOW_ENTITY, SHOW_ACHIEVEMENT);
 
     /**
      * Gets the value type.
@@ -646,8 +648,7 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
     /**
      * Tests if this action is readable.
      *
-     * @return {@code true} if this action is readable, {@code false} if this
-     * action is not readable
+     * @return {@code true} if this action is readable, {@code false} if this action is not readable
      * @since 4.0.0
      */
     boolean readable();

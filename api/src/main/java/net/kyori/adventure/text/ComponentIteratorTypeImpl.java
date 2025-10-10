@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Set;
 import net.kyori.adventure.text.event.HoverEvent;
 
-class ComponentIteratorTypeImpl {
+final class ComponentIteratorTypeImpl {
   private ComponentIteratorTypeImpl() {
   }
 
@@ -36,7 +36,7 @@ class ComponentIteratorTypeImpl {
     static final ComponentIteratorType INSTANCE = new DepthFirst();
 
     @Override
-    public void populate(Component component, Deque<Component> deque, Set<ComponentIteratorFlag> flags) {
+    public void populate(final Component component, final Deque<Component> deque, final Set<ComponentIteratorFlag> flags) {
       if (flags.contains(ComponentIteratorFlag.INCLUDE_TRANSLATABLE_COMPONENT_ARGUMENTS) && component instanceof TranslatableComponent translatable) {
         final List<? extends ComponentLike> args = translatable.arguments();
 
@@ -67,9 +67,9 @@ class ComponentIteratorTypeImpl {
     static final ComponentIteratorType INSTANCE = new BreadthFirst();
 
     @Override
-    public void populate(Component component, Deque<Component> deque, Set<ComponentIteratorFlag> flags) {
-      if (flags.contains(ComponentIteratorFlag.INCLUDE_TRANSLATABLE_COMPONENT_ARGUMENTS) && component instanceof TranslatableComponent) {
-        for (final TranslationArgument argument : ((TranslatableComponent) component).arguments()) {
+    public void populate(final Component component, final Deque<Component> deque, final Set<ComponentIteratorFlag> flags) {
+      if (flags.contains(ComponentIteratorFlag.INCLUDE_TRANSLATABLE_COMPONENT_ARGUMENTS) && component instanceof TranslatableComponent tc) {
+        for (final TranslationArgument argument : tc.arguments()) {
           deque.add(argument.asComponent());
         }
       }
@@ -79,7 +79,10 @@ class ComponentIteratorTypeImpl {
         final HoverEvent.Action<?> action = hoverEvent.action();
 
         if (flags.contains(ComponentIteratorFlag.INCLUDE_HOVER_SHOW_ENTITY_NAME) && action == HoverEvent.Action.SHOW_ENTITY) {
-          deque.addLast(((HoverEvent.ShowEntity) hoverEvent.value()).name());
+          final Component name = ((HoverEvent.ShowEntity) hoverEvent.value()).name();
+          if (name != null) {
+            deque.addLast(name);
+          }
         } else if (flags.contains(ComponentIteratorFlag.INCLUDE_HOVER_SHOW_TEXT_COMPONENT) && action == HoverEvent.Action.SHOW_TEXT) {
           deque.addLast((Component) hoverEvent.value());
         }

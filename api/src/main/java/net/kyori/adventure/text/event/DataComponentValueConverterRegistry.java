@@ -102,6 +102,7 @@ public final class DataComponentValueConverterRegistry {
    * @since 4.17.0
    */
   @ApiStatus.NonExtendable
+  @ApiStatus.Internal
   @PlatformAPI
   public interface Provider {
     /**
@@ -247,6 +248,6 @@ public final class DataComponentValueConverterRegistry {
   }
 
   record RegisteredConversion(@Nullable Key provider, @Nullable Conversion<?, ?> conversion) {
-      static final RegisteredConversion NONE = new RegisteredConversion(null, null);
+    static final RegisteredConversion NONE = new RegisteredConversion(null, null);
   }
 }

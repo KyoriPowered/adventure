@@ -111,7 +111,7 @@ public interface StyleGetter {
    * @return the click event
    * @since 4.10.0
    */
-  @Nullable ClickEvent clickEvent();
+  @Nullable ClickEvent<?> clickEvent();
 
   /**
    * Gets the hover event.

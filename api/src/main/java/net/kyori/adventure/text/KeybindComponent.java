@@ -69,6 +69,9 @@ public sealed interface KeybindComponent extends ScopedComponent<KeybindComponen
     return this.keybind(Objects.requireNonNull(keybind, "keybind").asKeybind());
   }
 
+  @Override
+  Builder toBuilder();
+
   /**
    * Something that can provide a keybind identifier.
    *

@@ -23,22 +23,11 @@
  */
 package net.kyori.adventure.chat;
 
-import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.jspecify.annotations.Nullable;
 
 record ChatTypeImpl(Key key) implements ChatType {
-
-  @Override
-  public String toString() {
-    return Internals.toString(this);
-  }
-
   record BoundImpl(ChatType type, Component name, @Nullable Component target) implements Bound {
-    @Override
-    public String toString() {
-      return Internals.toString(this);
-    }
   }
 }

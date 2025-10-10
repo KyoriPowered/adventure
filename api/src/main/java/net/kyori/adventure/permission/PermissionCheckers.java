@@ -34,14 +34,14 @@ final class PermissionCheckers {
   }
 
   private record Always(TriState value) implements PermissionChecker {
-      @Override
-      public TriState value(final String permission) {
-        return this.value;
-      }
+    @Override
+    public TriState value(final String permission) {
+      return this.value;
+    }
 
-      @Override
-      public String toString() {
-        return PermissionChecker.class.getSimpleName() + ".always(" + this.value + ")";
-      }
+    @Override
+    public String toString() {
+      return PermissionChecker.class.getSimpleName() + ".always(" + this.value + ")";
+    }
   }
 }

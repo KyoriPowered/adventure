@@ -41,8 +41,8 @@ public interface ComponentMessageThrowable {
    */
   @SuppressWarnings("checkstyle:MethodName")
   static @Nullable Component getMessage(final @Nullable Throwable throwable) {
-    if (throwable instanceof ComponentMessageThrowable) {
-      return ((ComponentMessageThrowable) throwable).componentMessage();
+    if (throwable instanceof ComponentMessageThrowable cmt) {
+      return cmt.componentMessage();
     }
     return null;
   }
@@ -56,8 +56,8 @@ public interface ComponentMessageThrowable {
    */
   @SuppressWarnings("checkstyle:MethodName")
   static @Nullable Component getOrConvertMessage(final @Nullable Throwable throwable) {
-    if (throwable instanceof ComponentMessageThrowable) {
-      return ((ComponentMessageThrowable) throwable).componentMessage();
+    if (throwable instanceof ComponentMessageThrowable cmt) {
+      return cmt.componentMessage();
     } else if (throwable != null) {
       final String message = throwable.getMessage();
       if (message != null) {

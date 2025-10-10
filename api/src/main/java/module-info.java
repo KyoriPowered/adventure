@@ -9,9 +9,8 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 module net.kyori.adventure.api {
   requires transitive net.kyori.adventure.key;
-
-  requires static org.jspecify;
-  requires static org.jetbrains.annotations;
+  requires transitive org.jspecify;
+  requires transitive org.jetbrains.annotations;
 
   exports net.kyori.adventure;
   exports net.kyori.adventure.audience;
@@ -20,7 +19,6 @@ module net.kyori.adventure.api {
   exports net.kyori.adventure.chat;
   exports net.kyori.adventure.dialog;
   exports net.kyori.adventure.identity;
-  exports net.kyori.adventure.internal;
   exports net.kyori.adventure.inventory;
   exports net.kyori.adventure.nbt.api;
   exports net.kyori.adventure.permission;

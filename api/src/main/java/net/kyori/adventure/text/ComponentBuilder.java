@@ -347,7 +347,7 @@ public sealed interface ComponentBuilder<C extends Component, B extends Componen
    */
   @Contract("_ -> this")
   @Override
-  B clickEvent(final @Nullable ClickEvent event);
+  B clickEvent(final @Nullable ClickEvent<?> event);
 
   /**
    * Sets the hover event of this component.

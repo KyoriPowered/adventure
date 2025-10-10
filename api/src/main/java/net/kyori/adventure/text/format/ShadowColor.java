@@ -141,8 +141,8 @@ public interface ShadowColor extends StyleBuilderApplicable, ARGBLike {
    * @since 4.18.0
    */
   static ShadowColor shadowColor(final ARGBLike argb) {
-    if (argb instanceof ShadowColor) {
-      return (ShadowColor) argb;
+    if (argb instanceof ShadowColor shadow) {
+      return shadow;
     }
 
     return shadowColor(argb.red(), argb.green(), argb.blue(), argb.alpha());

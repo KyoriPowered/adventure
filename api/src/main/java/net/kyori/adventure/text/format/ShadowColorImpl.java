@@ -23,9 +23,7 @@
  */
 package net.kyori.adventure.text.format;
 
-/**
- * @param value ARGB
- */
+// value is argb
 record ShadowColorImpl(int value) implements ShadowColor {
   static final int NONE_VALUE = 0;
   static final ShadowColorImpl NONE = new ShadowColorImpl(NONE_VALUE);

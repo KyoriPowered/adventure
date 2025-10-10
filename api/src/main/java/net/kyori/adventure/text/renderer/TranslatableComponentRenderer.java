@@ -146,7 +146,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
     return this.mergeStyleAndOptionallyDeepRender(component, builder, context);
   }
 
-  protected <O extends NBTComponent<O, B>, B extends NBTComponentBuilder<O, B>> B nbt(final C context, final B builder, final O oldComponent) {
+  protected <O extends NBTComponent<O>, B extends NBTComponentBuilder<O, B>> B nbt(final C context, final B builder, final O oldComponent) {
     builder
       .nbtPath(oldComponent.nbtPath())
       .interpret(oldComponent.interpret());
@@ -164,11 +164,10 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
   }
 
   @Override
-  @SuppressWarnings("deprecation")
   protected Component renderScore(final ScoreComponent component, final C context) {
     final ScoreComponent.Builder builder = Component.score()
       .name(component.name())
-      .objective(component.objective())
+      .objective(component.objective());
     return this.mergeStyleAndOptionallyDeepRender(component, builder, context);
   }
 
@@ -260,12 +259,12 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
     return component.children(rendered);
   }
 
-  protected <O extends BuildableComponent<O, B>, B extends ComponentBuilder<O, B>> O mergeStyleAndOptionallyDeepRender(final Component component, final B builder, final C context) {
+  protected <O extends Component, B extends ComponentBuilder<O, B>> O mergeStyleAndOptionallyDeepRender(final Component component, final B builder, final C context) {
     this.mergeStyle(component, builder, context);
     return this.optionallyRenderChildrenAppendAndBuild(component.children(), builder, context);
   }
 
-  protected <O extends BuildableComponent<O, B>, B extends ComponentBuilder<O, B>> O optionallyRenderChildrenAppendAndBuild(final List<Component> children, final B builder, final C context) {
+  protected <O extends Component, B extends ComponentBuilder<O, B>> O optionallyRenderChildrenAppendAndBuild(final List<Component> children, final B builder, final C context) {
     if (!children.isEmpty()) {
       children.forEach(child -> builder.append(this.render(child, context)));
     }

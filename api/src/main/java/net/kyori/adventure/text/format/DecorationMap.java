@@ -75,6 +75,7 @@ import org.jspecify.annotations.Nullable;
  * a single {@code byte}, I however am not doing that because it's more effort than my time's worth.</p>
  */
 @Unmodifiable
+@SuppressWarnings("EnumOrdinal") // This class basically requires it.
 final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.State> {
   static final TextDecoration[] DECORATIONS = TextDecoration.values();
   private static final TextDecoration.State[] STATES = TextDecoration.State.values();
@@ -86,7 +87,7 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
   private static final KeySet KEY_SET = new KeySet();
 
   static DecorationMap fromMap(final Map<TextDecoration, TextDecoration.State> decorationMap) {
-    if (decorationMap instanceof DecorationMap) return (DecorationMap) decorationMap;
+    if (decorationMap instanceof final DecorationMap dm) return dm;
     int bitSet = 0;
     for (final TextDecoration decoration : DECORATIONS) {
       bitSet |= decorationMap.getOrDefault(decoration, TextDecoration.State.NOT_SET).ordinal() * offset(decoration);
@@ -249,7 +250,7 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T [] toArray(final T [] dest) {
+    public <T> T[] toArray(final T[] dest) {
       if (dest.length < MAP_SIZE) {
         return (T[]) Arrays.copyOf(this.toArray(), MAP_SIZE, dest.getClass());
       }
@@ -284,13 +285,13 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
     }
 
     @Override
-    public Object [] toArray() {
+    public Object[] toArray() {
       return Arrays.copyOf(DECORATIONS, MAP_SIZE, Object[].class);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T [] toArray(final T [] dest) {
+    public <T> T[] toArray(final T[] dest) {
       if (dest.length < MAP_SIZE) {
         return (T[]) Arrays.copyOf(DECORATIONS, MAP_SIZE, dest.getClass());
       }

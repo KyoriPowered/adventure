@@ -371,6 +371,7 @@ public sealed interface BossBar permits BossBarImpl {
    * @since 4.0.0
    */
   @ApiStatus.NonExtendable
+  @ApiStatus.Internal
   @PlatformAPI
   interface Listener {
     /**

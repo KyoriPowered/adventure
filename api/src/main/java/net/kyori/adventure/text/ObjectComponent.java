@@ -23,9 +23,7 @@
  */
 package net.kyori.adventure.text;
 
-import java.util.stream.Stream;
 import net.kyori.adventure.text.object.ObjectContents;
-import net.kyori.examination.ExaminableProperty;
 
 /**
  * Displays a non-text object.
@@ -50,6 +48,9 @@ public sealed interface ObjectComponent extends ScopedComponent<ObjectComponent>
    * @since 4.25.0
    */
   ObjectComponent contents(ObjectContents contents);
+
+  @Override
+  Builder toBuilder();
 
   /**
    * An object component builder.

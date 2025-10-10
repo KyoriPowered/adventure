@@ -60,5 +60,6 @@ public sealed interface Pointer<V> extends Keyed permits PointerImpl {
    * @return the key
    * @since 4.8.0
    */
+  @Override
   Key key();
 }

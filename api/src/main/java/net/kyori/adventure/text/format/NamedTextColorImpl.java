@@ -26,7 +26,7 @@ package net.kyori.adventure.text.format;
 import java.util.List;
 import net.kyori.adventure.util.HSVLike;
 
-public record NamedTextColorImpl(String name, int value) implements NamedTextColor {
+record NamedTextColorImpl(String name, int value) implements NamedTextColor {
   static final int BLACK_VALUE = 0x000000;
   static final int DARK_BLUE_VALUE = 0x0000aa;
   static final int DARK_GREEN_VALUE = 0x00aa00;

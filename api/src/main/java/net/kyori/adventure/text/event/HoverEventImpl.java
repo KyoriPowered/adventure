@@ -41,7 +41,7 @@ import static java.util.Objects.requireNonNull;
 
 record HoverEventImpl<V>(Action<V> action, V value) implements HoverEvent<V> {
 
-  public HoverEventImpl(final Action<V> action, final V value) {
+  HoverEventImpl(final Action<V> action, final V value) {
     this.action = requireNonNull(action, "action");
     this.value = requireNonNull(value, "value");
   }
@@ -51,15 +51,6 @@ record HoverEventImpl<V>(Action<V> action, V value) implements HoverEvent<V> {
     return new HoverEventImpl<>(this.action, value);
   }
 
-  /**
-   * Returns a hover event with the value rendered using {@code renderer} when possible.
-   *
-   * @param renderer the renderer
-   * @param context  the render context
-   * @param <C>      the context type
-   * @return a hover event
-   * @since 4.0.0
-   */
   @Override
   public <C> HoverEvent<V> withRenderedValue(final ComponentRenderer<C> renderer, final C context) {
     final V oldValue = this.value;
@@ -84,7 +75,7 @@ record HoverEventImpl<V>(Action<V> action, V value) implements HoverEvent<V> {
     style.hoverEvent(this);
   }
 
-  record ShowItemImpl(Key item, int count, BinaryTagHolder nbt, Map<Key, DataComponentValue> dataComponents) implements ShowItem {
+  record ShowItemImpl(Key item, int count, @Nullable BinaryTagHolder nbt, Map<Key, DataComponentValue> dataComponents) implements ShowItem {
     @Override
     public ShowItem item(final Key item) {
       if (requireNonNull(item, "item").equals(this.item)) return this;
@@ -123,7 +114,7 @@ record HoverEventImpl<V>(Action<V> action, V value) implements HoverEvent<V> {
     }
   }
 
-  record ShowEntityImpl(Key type, UUID id, Component name) implements ShowEntity {
+  record ShowEntityImpl(Key type, UUID id, @Nullable Component name) implements ShowEntity {
     @Override
     public ShowEntity type(final Key type) {
       if (requireNonNull(type, "type").equals(this.type)) return this;

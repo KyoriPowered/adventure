@@ -116,6 +116,9 @@ public sealed interface BlockNBTComponent extends NBTComponent<BlockNBTComponent
     return this.worldPos(WorldPos.Coordinate.relative(x), WorldPos.Coordinate.relative(y), WorldPos.Coordinate.relative(z));
   }
 
+  @Override
+  Builder toBuilder();
+
   /**
    * An NBT component builder.
    *

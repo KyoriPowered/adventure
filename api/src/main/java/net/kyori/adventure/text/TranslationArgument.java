@@ -64,7 +64,7 @@ public sealed interface TranslationArgument extends TranslationArgumentLike perm
    * @sinceMinecraft 1.20.3
    */
   static TranslationArgument component(final ComponentLike value) {
-    if (value instanceof TranslationArgumentLike) return ((TranslationArgumentLike) value).asTranslationArgument();
+    if (value instanceof TranslationArgumentLike tal) return tal.asTranslationArgument();
     return new TranslationArgumentImpl(requireNonNull(requireNonNull(value, "value").asComponent(), "value.asComponent()"));
   }
 

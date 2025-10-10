@@ -42,7 +42,7 @@ final class StyleImpl implements Style {
   final @Nullable TextColor color;
   final @Nullable ShadowColor shadowColor;
   final DecorationMap decorations;
-  final @Nullable ClickEvent clickEvent;
+  final @Nullable ClickEvent<?> clickEvent;
   final @Nullable HoverEvent<?> hoverEvent;
   final @Nullable String insertion;
 
@@ -51,7 +51,7 @@ final class StyleImpl implements Style {
     final @Nullable TextColor color,
     final @Nullable ShadowColor shadowColor,
     final Map<TextDecoration, TextDecoration.State> decorations,
-    final @Nullable ClickEvent clickEvent,
+    final @Nullable ClickEvent<?> clickEvent,
     final @Nullable HoverEvent<?> hoverEvent,
     final @Nullable String insertion
   ) {
@@ -154,12 +154,12 @@ final class StyleImpl implements Style {
   }
 
   @Override
-  public @Nullable ClickEvent clickEvent() {
+  public @Nullable ClickEvent<?> clickEvent() {
     return this.clickEvent;
   }
 
   @Override
-  public Style clickEvent(final @Nullable ClickEvent event) {
+  public Style clickEvent(final @Nullable ClickEvent<?> event) {
     return new StyleImpl(this.font, this.color, this.shadowColor, this.decorations, event, this.hoverEvent, this.insertion);
   }
 
@@ -292,7 +292,7 @@ final class StyleImpl implements Style {
     @Nullable TextColor color;
     @Nullable ShadowColor shadowColor;
     DecorationMap decorations;
-    @Nullable ClickEvent clickEvent;
+    @Nullable ClickEvent<?> clickEvent;
     @Nullable HoverEvent<?> hoverEvent;
     @Nullable String insertion;
 
@@ -366,7 +366,7 @@ final class StyleImpl implements Style {
     }
 
     @Override
-    public Builder clickEvent(final @Nullable ClickEvent event) {
+    public Builder clickEvent(final @Nullable ClickEvent<?> event) {
       this.clickEvent = event;
       return this;
     }
@@ -426,7 +426,7 @@ final class StyleImpl implements Style {
       }
 
       if (merges.contains(Merge.EVENTS)) {
-        final ClickEvent clickEvent = that.clickEvent();
+        final ClickEvent<?> clickEvent = that.clickEvent();
         if (clickEvent != null) {
           if (strategy == Merge.Strategy.ALWAYS || (strategy == Merge.Strategy.IF_ABSENT_ON_TARGET && this.clickEvent == null)) {
             this.clickEvent(clickEvent);

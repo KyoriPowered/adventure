@@ -26,10 +26,7 @@ package net.kyori.adventure.text;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
-import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.format.Style;
-import net.kyori.examination.ExaminableProperty;
 import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
@@ -86,11 +83,6 @@ record BlockNBTComponentImpl(
   }
 
   @Override
-  public String toString() {
-    return Internals.toString(this);
-  }
-
-  @Override
   public Builder toBuilder() {
     return new BuilderImpl(this);
   }
@@ -122,15 +114,6 @@ record BlockNBTComponentImpl(
 
   record LocalPosImpl(double left, double up, double forwards) implements LocalPos {
     @Override
-    public Stream<? extends ExaminableProperty> examinableProperties() {
-      return Stream.of(
-        ExaminableProperty.of("left", this.left),
-        ExaminableProperty.of("up", this.up),
-        ExaminableProperty.of("forwards", this.forwards)
-      );
-    }
-
-    @Override
     public String toString() {
       return String.format("^%f ^%f ^%f", this.left, this.up, this.forwards);
     }
@@ -149,15 +132,6 @@ record BlockNBTComponentImpl(
     }
 
     @Override
-    public Stream<? extends ExaminableProperty> examinableProperties() {
-      return Stream.of(
-        ExaminableProperty.of("x", this.x),
-        ExaminableProperty.of("y", this.y),
-        ExaminableProperty.of("z", this.z)
-      );
-    }
-
-    @Override
     public String toString() {
       return this.x.toString() + ' ' + this.y.toString() + ' ' + this.z.toString();
     }
@@ -171,14 +145,6 @@ record BlockNBTComponentImpl(
       CoordinateImpl(final int value, final Type type) {
         this.value = value;
         this.type = requireNonNull(type, "type");
-      }
-
-      @Override
-      public Stream<? extends ExaminableProperty> examinableProperties() {
-        return Stream.of(
-          ExaminableProperty.of("value", this.value),
-          ExaminableProperty.of("type", this.type)
-        );
       }
 
       @Override

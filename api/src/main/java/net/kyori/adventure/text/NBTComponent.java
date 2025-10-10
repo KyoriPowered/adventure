@@ -23,8 +23,6 @@
  */
 package net.kyori.adventure.text;
 
-import java.util.stream.Stream;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
 
@@ -46,7 +44,6 @@ import org.jspecify.annotations.Nullable;
  * platform for more info</p>
  *
  * @param <C> component type
- * @param <B> builder type
  * @since 4.0.0
  * @sinceMinecraft 1.14
  */
@@ -110,16 +107,4 @@ public sealed interface NBTComponent<C extends NBTComponent<C>> extends Componen
    * @since 4.8.0
    */
   C separator(final @Nullable ComponentLike separator);
-
-  @Override
-  default Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.concat(
-      Stream.of(
-        ExaminableProperty.of("nbtPath", this.nbtPath()),
-        ExaminableProperty.of("interpret", this.interpret()),
-        ExaminableProperty.of("separator", this.separator())
-      ),
-      ScopedComponent.super.examinableProperties()
-    );
-  }
 }

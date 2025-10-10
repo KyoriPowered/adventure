@@ -40,7 +40,7 @@ import org.jspecify.annotations.Nullable;
  * @param <V> the value type
  * @since 4.0.0
  */
-sealed interface Index<K, V> permits IndexImpl {
+public sealed interface Index<K, V> permits IndexImpl {
 
   /**
    * Creates an index map.
@@ -53,7 +53,7 @@ sealed interface Index<K, V> permits IndexImpl {
    * @since 4.0.0
    */
   static <K, V extends Enum<V>> Index<K, V> create(final Class<V> type, final Function<? super V, ? extends K> keyFunction) {
-    return IndexImpl.create(type, keyFunction, type.getEnumConstants());
+    return create(type, keyFunction, type.getEnumConstants());
   }
 
   /**

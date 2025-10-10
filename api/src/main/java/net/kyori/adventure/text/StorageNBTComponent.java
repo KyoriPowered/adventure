@@ -60,6 +60,9 @@ public sealed interface StorageNBTComponent extends NBTComponent<StorageNBTCompo
   @Contract(pure = true)
   StorageNBTComponent storage(final Key storage);
 
+  @Override
+  Builder toBuilder();
+
   /**
    * A command storage NBT component builder.
    *

@@ -142,7 +142,7 @@ public sealed interface NamedTextColor extends TextColor permits NamedTextColorI
    * @return the matched color, or null
    * @since 4.10.0
    */
-  static @Nullable NamedTextColor namedColor(int value) {
+  static @Nullable NamedTextColor namedColor(final int value) {
     return switch (value) {
       case NamedTextColorImpl.BLACK_VALUE -> BLACK;
       case NamedTextColorImpl.DARK_BLUE_VALUE -> DARK_BLUE;

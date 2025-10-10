@@ -60,7 +60,7 @@ record ClickCallbackOptionsImpl(int uses, Duration lifetime) implements ClickCal
 
     @Override
     public Builder lifetime(final TemporalAmount lifetime) {
-      this.lifetime = lifetime instanceof Duration ? (Duration) lifetime : Duration.from(requireNonNull(lifetime, "lifetime"));
+      this.lifetime = lifetime instanceof final Duration duration ? duration : Duration.from(requireNonNull(lifetime, "lifetime"));
       return this;
     }
   }

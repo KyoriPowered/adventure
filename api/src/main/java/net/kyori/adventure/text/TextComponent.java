@@ -55,6 +55,9 @@ public sealed interface TextComponent extends ScopedComponent<TextComponent> per
   @Contract(pure = true)
   TextComponent content(final String content);
 
+  @Override
+  Builder toBuilder();
+
   /**
    * A text component builder.
    *

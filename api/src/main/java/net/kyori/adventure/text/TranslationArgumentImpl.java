@@ -29,10 +29,10 @@ record TranslationArgumentImpl(Object value) implements TranslationArgument {
 
   @Override
   public Component asComponent() {
-    if (this.value instanceof Component) {
-      return (Component) this.value;
-    } else if (this.value instanceof Boolean) {
-      return (Boolean) this.value ? TRUE : FALSE;
+    if (this.value instanceof final Component component) {
+      return component;
+    } else if (this.value instanceof final Boolean bool) {
+      return bool ? TRUE : FALSE;
     } else {
       return Component.text(String.valueOf(this.value));
     }

@@ -35,7 +35,6 @@ record IndexImpl<K, V>(Map<K, V> keyToValue, Map<V, K> valueToKey) implements In
     return new IndexImpl<>(Collections.unmodifiableMap(keyToValue), Collections.unmodifiableMap(valueToKey));
   }
 
-
   @Override
   public Set<K> keys() {
     return Collections.unmodifiableSet(this.keyToValue.keySet());

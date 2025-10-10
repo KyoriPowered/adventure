@@ -25,6 +25,8 @@ package net.kyori.adventure.chat;
 
 import java.security.SecureRandom;
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.Objects;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.text.Component;
 import org.jspecify.annotations.Nullable;
@@ -47,6 +49,22 @@ record SignedMessageImpl(String message, Component unsignedContent, Instant time
     return Identity.nil();
   }
 
+  @SuppressWarnings("ArrayRecordComponent") // We handle equals/hashCode/toString ourselves.
   record SignatureImpl(byte[] bytes) implements Signature {
+    @Override
+    public boolean equals(final Object o) {
+      if (!(o instanceof SignatureImpl(byte[] bytes1))) return false;
+      return Objects.deepEquals(this.bytes, bytes1);
+    }
+
+    @Override
+    public int hashCode() {
+      return Arrays.hashCode(this.bytes);
+    }
+
+    @Override
+    public String toString() {
+      return "SignatureImpl{bytes=" + Arrays.toString(this.bytes) + '}';
+    }
   }
 }

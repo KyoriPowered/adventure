@@ -59,6 +59,9 @@ public sealed interface EntityNBTComponent extends NBTComponent<EntityNBTCompone
   @Contract(pure = true)
   EntityNBTComponent selector(final String selector);
 
+  @Override
+  Builder toBuilder();
+
   /**
    * An entity NBT component builder.
    *

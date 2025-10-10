@@ -78,7 +78,7 @@ public interface TextColor extends Comparable<TextColor>, RGBLike, StyleBuilderA
    * @since 4.0.0
    */
   static TextColor color(final RGBLike rgb) {
-    if (rgb instanceof TextColor) return (TextColor) rgb;
+    if (rgb instanceof TextColor tc) return tc;
     return color(rgb.red(), rgb.green(), rgb.blue());
   }
 

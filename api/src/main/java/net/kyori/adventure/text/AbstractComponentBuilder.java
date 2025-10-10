@@ -256,7 +256,7 @@ abstract sealed class AbstractComponentBuilder<C extends Component, B extends Co
 
   @Override
   @SuppressWarnings("unchecked")
-  public B clickEvent(final @Nullable ClickEvent event) {
+  public B clickEvent(final @Nullable ClickEvent<?> event) {
     this.styleBuilder().clickEvent(event);
     return (B) this;
   }

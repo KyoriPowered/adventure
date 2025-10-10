@@ -114,10 +114,10 @@ sealed abstract class SoundImpl implements Sound permits SoundImpl.Eager, SoundI
     }
 
     BuilderImpl(final Sound existing) {
-      if (existing instanceof Eager) {
-        this.type(((Eager) existing).name);
-      } else if (existing instanceof Lazy) {
-        this.type(((Lazy) existing).supplier);
+      if (existing instanceof Eager eager) {
+        this.type(eager.name);
+      } else if (existing instanceof Lazy lazy) {
+        this.type(lazy.supplier);
       } else {
         throw new IllegalArgumentException("Unknown sound type " + existing + ", must be Eager or Lazy");
       }

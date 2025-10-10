@@ -43,6 +43,7 @@ public interface StyleBuilderApplicable extends ComponentBuilderApplicable {
   @Contract(mutates = "param")
   void styleApply(final Style.Builder style);
 
+  @SuppressWarnings("FunctionalInterfaceMethodChanged") // it's fine
   @Override
   default void componentBuilderApply(final ComponentBuilder<?, ?> component) {
     component.style(this::styleApply);

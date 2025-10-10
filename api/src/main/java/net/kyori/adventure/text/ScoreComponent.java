@@ -84,6 +84,9 @@ public sealed interface ScoreComponent extends ScopedComponent<ScoreComponent> p
   @Contract(pure = true)
   ScoreComponent objective(final String objective);
 
+  @Override
+  Builder toBuilder();
+
   /**
    * A score component builder.
    *

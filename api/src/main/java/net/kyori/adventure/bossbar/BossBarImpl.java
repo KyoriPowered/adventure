@@ -283,12 +283,12 @@ final class BossBarImpl extends HackyBossBarPlatformBridge implements BossBar {
   @Override
   public String toString() {
     return "BossBarImpl{" +
-      "listeners=" + listeners +
-      ", name=" + name +
-      ", progress=" + progress +
-      ", color=" + color +
-      ", overlay=" + overlay +
-      ", flags=" + flags +
+      "listeners=" + this.listeners +
+      ", name=" + this.name +
+      ", progress=" + this.progress +
+      ", color=" + this.color +
+      ", overlay=" + this.overlay +
+      ", flags=" + this.flags +
       '}';
   }
 }

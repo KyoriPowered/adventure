@@ -55,8 +55,8 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
     List<Component> children = null;
     Component modified = component;
     // replace the component itself
-    if (component instanceof TextComponent) {
-      final String content = ((TextComponent) component).content();
+    if (component instanceof TextComponent tc) {
+      final String content = tc.content();
       final Matcher matcher = state.pattern.matcher(content);
       int replacedUntil = 0; // last index handled
       while (matcher.find()) {
