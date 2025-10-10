@@ -34,7 +34,6 @@ import java.util.function.Function;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.UTF8ResourceBundleControl;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * A store of translation values.
@@ -57,7 +56,7 @@ public interface TranslationStore<T> extends Translator {
    * @return the translation store
    * @since 4.20.0
    */
-  static @NotNull TranslationStore<Component> component(final @NotNull Key name) {
+  static TranslationStore<Component> component(final Key name) {
     return new ComponentTranslationStore(Objects.requireNonNull(name, "name"));
   }
 
@@ -68,7 +67,7 @@ public interface TranslationStore<T> extends Translator {
    * @return the translation store
    * @since 4.20.0
    */
-  static TranslationStore.@NotNull StringBased<MessageFormat> messageFormat(final @NotNull Key name) {
+  static TranslationStore.StringBased<MessageFormat> messageFormat(final Key name) {
     return new MessageFormatTranslationStore(Objects.requireNonNull(name, "name"));
   }
 
@@ -79,7 +78,7 @@ public interface TranslationStore<T> extends Translator {
    * @return whether the store contains a value for the translation key
    * @since 4.20.0
    */
-  boolean contains(final @NotNull String key);
+  boolean contains(final String key);
 
   /**
    * Checks if any translations are explicitly registered for the specified key and locale.
@@ -97,7 +96,7 @@ public interface TranslationStore<T> extends Translator {
    * @see #canTranslate(String, Locale)
    * @since 4.20.0
    */
-  boolean contains(final @NotNull String key, final @NotNull Locale locale);
+  boolean contains(final String key, final Locale locale);
 
   /**
    * {@inheritDoc}
@@ -115,7 +114,7 @@ public interface TranslationStore<T> extends Translator {
    * @since 4.20.0
    */
   @Override
-  default boolean canTranslate(final @NotNull String key, final @NotNull Locale locale) {
+  default boolean canTranslate(final String key, final Locale locale) {
     return Translator.super.canTranslate(key, locale);
   }
 
@@ -125,7 +124,7 @@ public interface TranslationStore<T> extends Translator {
    * @param locale the locale to use a default
    * @since 4.20.0
    */
-  void defaultLocale(final @NotNull Locale locale);
+  void defaultLocale(final Locale locale);
 
   /**
    * Registers a translation.
@@ -136,7 +135,7 @@ public interface TranslationStore<T> extends Translator {
    * @throws IllegalArgumentException if the translation key already exists
    * @since 4.20.0
    */
-  void register(final @NotNull String key, final @NotNull Locale locale, final T translation);
+  void register(final String key, final Locale locale, final T translation);
 
   /**
    * Registers a map of translations.
@@ -147,7 +146,7 @@ public interface TranslationStore<T> extends Translator {
    * @see #register(String, Locale, T)
    * @since 4.20.0
    */
-  void registerAll(final @NotNull Locale locale, final @NotNull Map<String, T> translations);
+  void registerAll(final Locale locale, final Map<String, T> translations);
 
   /**
    * Registers translations with a set of keys and a mapping function to produce the translation from the key.
@@ -158,7 +157,7 @@ public interface TranslationStore<T> extends Translator {
    * @throws IllegalArgumentException if a translation key already exists
    * @since 4.20.0
    */
-  void registerAll(final @NotNull Locale locale, final @NotNull Set<String> keys, Function<String, T> function);
+  void registerAll(final Locale locale, final Set<String> keys, Function<String, T> function);
 
   /**
    * Unregisters a translation key.
@@ -166,7 +165,7 @@ public interface TranslationStore<T> extends Translator {
    * @param key a translation key
    * @since 4.0.0
    */
-  void unregister(final @NotNull String key);
+  void unregister(final String key);
 
   /**
    * An abstract, string-based translation store.
@@ -188,7 +187,7 @@ public interface TranslationStore<T> extends Translator {
      * @see #registerAll(Locale, ResourceBundle, boolean)
      * @since 4.20.0
      */
-    void registerAll(final @NotNull Locale locale, final @NotNull Path path, final boolean escapeSingleQuotes);
+    void registerAll(final Locale locale, final Path path, final boolean escapeSingleQuotes);
 
     /**
      * Registers a resource bundle of translations.
@@ -208,6 +207,6 @@ public interface TranslationStore<T> extends Translator {
      * @see UTF8ResourceBundleControl
      * @since 4.20.0
      */
-    void registerAll(final @NotNull Locale locale, final @NotNull ResourceBundle bundle, final boolean escapeSingleQuotes);
+    void registerAll(final Locale locale, final ResourceBundle bundle, final boolean escapeSingleQuotes);
   }
 }

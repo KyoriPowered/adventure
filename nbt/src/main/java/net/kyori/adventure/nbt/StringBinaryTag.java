@@ -23,8 +23,6 @@
  */
 package net.kyori.adventure.nbt;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * A binary tag holding a {@link String} value.
  *
@@ -38,12 +36,12 @@ public interface StringBinaryTag extends BinaryTag {
    * @return a binary tag
    * @since 4.14.0
    */
-  static @NotNull StringBinaryTag stringBinaryTag(final @NotNull String value) {
+  static StringBinaryTag stringBinaryTag(final String value) {
     return new StringBinaryTagImpl(value);
   }
 
   @Override
-  default @NotNull BinaryTagType<StringBinaryTag> type() {
+  default BinaryTagType<StringBinaryTag> type() {
     return BinaryTagTypes.STRING;
   }
 
@@ -53,5 +51,5 @@ public interface StringBinaryTag extends BinaryTag {
    * @return the value
    * @since 4.0.0
    */
-  @NotNull String value();
+  String value();
 }

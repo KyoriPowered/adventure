@@ -34,7 +34,6 @@ import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.format.StyleBuilderApplicable;
 import net.kyori.adventure.util.Index;
 import net.kyori.examination.Examinable;
-import org.jetbrains.annotations.NotNull;
 
 import static java.util.Objects.requireNonNull;
 
@@ -56,7 +55,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends Examina
    * @return a click event
    * @since 4.0.0
    */
-  static @NotNull ClickEvent<Payload.Text> openUrl(@NotNull String url) {
+  static ClickEvent<Payload.Text> openUrl(String url) {
     return ClickEventImpl.create(Action.OPEN_URL, Payload.string(url));
   }
 
@@ -67,7 +66,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends Examina
    * @return a click event
    * @since 4.0.0
    */
-  static @NotNull ClickEvent<Payload.Text> openUrl(@NotNull URL url) {
+  static ClickEvent<Payload.Text> openUrl(URL url) {
     return openUrl(url.toExternalForm());
   }
 
@@ -80,7 +79,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends Examina
    * @return a click event
    * @since 4.0.0
    */
-  static @NotNull ClickEvent<Payload.Text> openFile(@NotNull String file) {
+  static ClickEvent<Payload.Text> openFile(String file) {
     return ClickEventImpl.create(Action.OPEN_FILE, Payload.string(file));
   }
 
@@ -91,7 +90,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends Examina
    * @return a click event
    * @since 4.0.0
    */
-  static @NotNull ClickEvent<Payload.Text> runCommand(@NotNull String command) {
+  static ClickEvent<Payload.Text> runCommand(String command) {
     return ClickEventImpl.create(Action.RUN_COMMAND, Payload.string(command));
   }
 
@@ -102,7 +101,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends Examina
    * @return a click event
    * @since 4.0.0
    */
-  static @NotNull ClickEvent<Payload.Text> suggestCommand(@NotNull String command) {
+  static ClickEvent<Payload.Text> suggestCommand(String command) {
     return ClickEventImpl.create(Action.SUGGEST_COMMAND, Payload.string(command));
   }
 
@@ -113,7 +112,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends Examina
    * @return a click event
    * @since 4.0.0
    */
-  static @NotNull ClickEvent<Payload.Int> changePage(int page) {
+  static ClickEvent<Payload.Int> changePage(int page) {
     return ClickEventImpl.create(Action.CHANGE_PAGE, Payload.integer(page));
   }
 
@@ -125,7 +124,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends Examina
    * @sinceMinecraft 1.15
    * @since 4.0.0
    */
-  static @NotNull ClickEvent<Payload.Text> copyToClipboard(@NotNull String text) {
+  static ClickEvent<Payload.Text> copyToClipboard(String text) {
     return ClickEventImpl.create(Action.COPY_TO_CLIPBOARD, Payload.string(text));
   }
 
@@ -138,7 +137,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends Examina
    * @return a callback click event
    * @since 4.13.0
    */
-  static @NotNull ClickEvent<?> callback(@NotNull ClickCallback<Audience> function) {
+  static ClickEvent<?> callback(ClickCallback<Audience> function) {
     return ClickCallbackInternals.PROVIDER.create(requireNonNull(function, "function"), ClickCallbackOptionsImpl.DEFAULT);
   }
 
@@ -150,7 +149,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends Examina
    * @return a callback click event
    * @since 4.13.0
    */
-  static @NotNull ClickEvent<?> callback(@NotNull ClickCallback<Audience> function, ClickCallback.@NotNull Options options) {
+  static ClickEvent<?> callback(ClickCallback<Audience> function, ClickCallback.Options options) {
     return ClickCallbackInternals.PROVIDER.create(requireNonNull(function, "function"), requireNonNull(options, "options"));
   }
 
@@ -162,7 +161,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends Examina
    * @return a callback click event
    * @since 4.13.0
    */
-  static @NotNull ClickEvent<?> callback(@NotNull ClickCallback<Audience> function, @NotNull Consumer<ClickCallback.Options.@NotNull Builder> optionsBuilder) {
+  static ClickEvent<?> callback(ClickCallback<Audience> function, Consumer<ClickCallback.Options.Builder> optionsBuilder) {
     return ClickCallbackInternals.PROVIDER.create(
       requireNonNull(function, "function"),
       AbstractBuilder.configureAndBuild(ClickCallback.Options.builder(), requireNonNull(optionsBuilder, "optionsBuilder"))
@@ -176,7 +175,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends Examina
    * @return the click event
    * @since 4.22.0
    */
-  static @NotNull ClickEvent<Payload.Dialog> showDialog(@NotNull DialogLike dialog) {
+  static ClickEvent<Payload.Dialog> showDialog(DialogLike dialog) {
     requireNonNull(dialog, "dialog");
     return ClickEventImpl.create(Action.SHOW_DIALOG, Payload.dialog(dialog));
   }
@@ -192,7 +191,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends Examina
    * @return the click event
    * @since 4.23.0
    */
-  static @NotNull ClickEvent<Payload.Custom> custom(@NotNull Key key, @NotNull BinaryTagHolder nbt) {
+  static ClickEvent<Payload.Custom> custom(Key key, BinaryTagHolder nbt) {
     requireNonNull(key, "key");
     requireNonNull(nbt, "nbt");
     return ClickEventImpl.create(Action.CUSTOM, Payload.custom(key, nbt));
@@ -207,7 +206,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends Examina
    * @throws IllegalArgumentException if the action does not support that payload
    * @since 4.25.0
    */
-  static <T extends ClickEvent.Payload> @NotNull ClickEvent<T> clickEvent(final @NotNull Action<T> action, final @NotNull T payload) {
+  static <T extends ClickEvent.Payload> ClickEvent<T> clickEvent(final Action<T> action, final T payload) {
     return ClickEventImpl.create(action, payload);
   }
 
@@ -217,7 +216,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends Examina
    * @return the click event action
    * @since 4.0.0
    */
-  @NotNull Action<T> action();
+  Action<T> action();
 
   /**
    * Gets the payload associated with this click event.
@@ -225,7 +224,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends Examina
    * @return the payload
    * @since 4.22.0
    */
-  @NotNull Payload payload();
+  Payload payload();
 
   /**
    * An enumeration of click event actions.
@@ -320,7 +319,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends Examina
      * @return {@code true} if this action supports the payload
      * @since 4.22.0
      */
-    boolean supports(final @NotNull Payload payload);
+    boolean supports(final Payload payload);
 
     /**
      * The type of the payload this click event supports.
@@ -330,7 +329,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends Examina
      * @deprecated For removal, action now supports generics.
      */
     @Deprecated(since = "5.0.0", forRemoval = true)
-    @NotNull Class<? extends Payload> payloadType();
+    Class<? extends Payload> payloadType();
   }
 
   /**
@@ -346,7 +345,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends Examina
      * @return the payload
      * @since 4.22.0
      */
-    static ClickEvent.Payload.@NotNull Text string(final @NotNull String value) {
+    static ClickEvent.Payload.Text string(final String value) {
       requireNonNull(value, "value");
       return new PayloadImpl.TextImpl(value);
     }
@@ -358,7 +357,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends Examina
      * @return the payload
      * @since 4.22.0
      */
-    static ClickEvent.Payload.@NotNull Int integer(final int integer) {
+    static ClickEvent.Payload.Int integer(final int integer) {
       return new PayloadImpl.IntImpl(integer);
     }
 
@@ -369,7 +368,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends Examina
      * @return the payload
      * @since 4.22.0
      */
-    static ClickEventImpl.Payload.@NotNull Dialog dialog(final @NotNull DialogLike dialog) {
+    static ClickEventImpl.Payload.Dialog dialog(final DialogLike dialog) {
       requireNonNull(dialog, "dialog");
       return new PayloadImpl.DialogImpl(dialog);
     }
@@ -385,7 +384,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends Examina
      * @return the payload
      * @since 4.23.0
      */
-    static ClickEventImpl.Payload.@NotNull Custom custom(final @NotNull Key key, final @NotNull BinaryTagHolder nbt) {
+    static ClickEventImpl.Payload.Custom custom(final Key key, final BinaryTagHolder nbt) {
       requireNonNull(key, "key");
       requireNonNull(nbt, "nbt");
       return new PayloadImpl.CustomImpl(key, nbt);
@@ -403,7 +402,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends Examina
        * @return the string
        * @since 4.22.0
        */
-      @NotNull String value();
+      String value();
     }
 
     /**
@@ -434,7 +433,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends Examina
        * @return the dialog
        * @since 4.22.0
        */
-      @NotNull DialogLike dialog();
+      DialogLike dialog();
     }
 
     /**
@@ -452,7 +451,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends Examina
        * @return the data
        * @since 4.23.0
        */
-      @NotNull BinaryTagHolder nbt();
+      BinaryTagHolder nbt();
     }
   }
 }

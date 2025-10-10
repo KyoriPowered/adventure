@@ -27,8 +27,7 @@ import java.util.function.Supplier;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.key.Key;
 import net.kyori.examination.Examinable;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -50,7 +49,7 @@ public sealed interface SoundStop extends Examinable permits SoundStopImpl {
    * @return a sound stopper
    * @since 4.0.0
    */
-  static @NotNull SoundStop all() {
+  static SoundStop all() {
     return SoundStopImpl.ALL;
   }
 
@@ -61,7 +60,7 @@ public sealed interface SoundStop extends Examinable permits SoundStopImpl {
    * @return a sound stopper
    * @since 4.0.0
    */
-  static @NotNull SoundStop named(final @NotNull Key sound) {
+  static SoundStop named(final Key sound) {
     requireNonNull(sound, "sound");
     return new SoundStopImpl(sound, null);
   }
@@ -73,7 +72,7 @@ public sealed interface SoundStop extends Examinable permits SoundStopImpl {
    * @return a sound stopper
    * @since 4.0.0
    */
-  static @NotNull SoundStop named(final Sound.@NotNull Type sound) {
+  static SoundStop named(final Sound.Type sound) {
     requireNonNull(sound, "sound");
     return new SoundStopImpl(sound.key(), null);
   }
@@ -85,7 +84,7 @@ public sealed interface SoundStop extends Examinable permits SoundStopImpl {
    * @return a sound stopper
    * @since 4.0.0
    */
-  static @NotNull SoundStop named(final @NotNull Supplier<? extends Sound.Type> sound) {
+  static SoundStop named(final Supplier<? extends Sound.Type> sound) {
     requireNonNull(sound, "sound");
     return new SoundStopImpl(sound.get().key(), null);
   }
@@ -97,7 +96,7 @@ public sealed interface SoundStop extends Examinable permits SoundStopImpl {
    * @return a sound stopper
    * @since 4.0.0
    */
-  static @NotNull SoundStop source(final Sound.@NotNull Source source) {
+  static SoundStop source(final Sound.Source source) {
     requireNonNull(source, "source");
     return new SoundStopImpl(null, source);
   }
@@ -110,7 +109,7 @@ public sealed interface SoundStop extends Examinable permits SoundStopImpl {
    * @return a sound stopper
    * @since 4.0.0
    */
-  static @NotNull SoundStop namedOnSource(final @NotNull Key sound, final Sound.@NotNull Source source) {
+  static SoundStop namedOnSource(final Key sound, final Sound.Source source) {
     requireNonNull(sound, "sound");
     requireNonNull(source, "source");
     return new SoundStopImpl(sound, source);
@@ -124,7 +123,7 @@ public sealed interface SoundStop extends Examinable permits SoundStopImpl {
    * @return a sound stopper
    * @since 4.0.0
    */
-  static @NotNull SoundStop namedOnSource(final Sound.@NotNull Type sound, final Sound.@NotNull Source source) {
+  static SoundStop namedOnSource(final Sound.Type sound, final Sound.Source source) {
     requireNonNull(sound, "sound");
     return namedOnSource(sound.key(), source);
   }
@@ -137,7 +136,7 @@ public sealed interface SoundStop extends Examinable permits SoundStopImpl {
    * @return a sound stopper
    * @since 4.0.0
    */
-  static @NotNull SoundStop namedOnSource(final @NotNull Supplier<? extends Sound.Type> sound, final Sound.@NotNull Source source) {
+  static SoundStop namedOnSource(final Supplier<? extends Sound.Type> sound, final Sound.Source source) {
     requireNonNull(sound, "sound");
     requireNonNull(source, "source");
     return new SoundStopImpl(sound.get().key(), source);

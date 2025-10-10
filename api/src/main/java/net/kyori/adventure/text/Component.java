@@ -60,9 +60,8 @@ import net.kyori.adventure.util.MonkeyBars;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -132,7 +131,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @return an empty component
    * @since 4.0.0
    */
-  static @NotNull TextComponent empty() {
+  static TextComponent empty() {
     return TextComponentImpl.EMPTY;
   }
 
@@ -142,7 +141,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @return a text component with a new line character as the content
    * @since 4.0.0
    */
-  static @NotNull TextComponent newline() {
+  static TextComponent newline() {
     return TextComponentImpl.NEWLINE;
   }
 
@@ -152,7 +151,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @return a text component with a single space as the content
    * @since 4.0.0
    */
-  static @NotNull TextComponent space() {
+  static TextComponent space() {
     return TextComponentImpl.SPACE;
   }
 
@@ -168,7 +167,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.14.0
    */
   @Contract(pure = true)
-  static @NotNull Component join(final JoinConfiguration.@NotNull Builder configBuilder, final @NotNull ComponentLike@NotNull... components) {
+  static Component join(final JoinConfiguration.Builder configBuilder, final ComponentLike... components) {
     return join(configBuilder, Arrays.asList(components));
   }
 
@@ -184,7 +183,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.14.0
    */
   @Contract(pure = true)
-  static @NotNull Component join(final JoinConfiguration.@NotNull Builder configBuilder, final @NotNull Iterable<? extends ComponentLike> components) {
+  static Component join(final JoinConfiguration.Builder configBuilder, final Iterable<? extends ComponentLike> components) {
     return JoinConfigurationImpl.join(configBuilder.build(), components);
   }
 
@@ -200,7 +199,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.9.0
    */
   @Contract(pure = true)
-  static @NotNull Component join(final @NotNull JoinConfiguration config, final @NotNull ComponentLike@NotNull... components) {
+  static Component join(final JoinConfiguration config, final ComponentLike... components) {
     return join(config, Arrays.asList(components));
   }
 
@@ -216,7 +215,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.9.0
    */
   @Contract(pure = true)
-  static @NotNull Component join(final @NotNull JoinConfiguration config, final @NotNull Iterable<? extends ComponentLike> components) {
+  static Component join(final JoinConfiguration config, final Iterable<? extends ComponentLike> components) {
     return JoinConfigurationImpl.join(config, components);
   }
 
@@ -226,7 +225,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @return a collector that can join components
    * @since 4.6.0
    */
-  static @NotNull Collector<Component, ? extends ComponentBuilder<?, ?>, Component> toComponent() {
+  static Collector<Component, ? extends ComponentBuilder<?, ?>, Component> toComponent() {
     return toComponent(Component.empty());
   }
 
@@ -237,7 +236,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @return a collector that can join components
    * @since 4.6.0
    */
-  static @NotNull Collector<Component, ? extends ComponentBuilder<?, ?>, Component> toComponent(final @NotNull Component separator) {
+  static Collector<Component, ? extends ComponentBuilder<?, ?>, Component> toComponent(final Component separator) {
     return Collector.of(
       Component::text,
       (builder, add) -> {
@@ -271,7 +270,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(pure = true)
-  static BlockNBTComponent.@NotNull Builder blockNBT() {
+  static BlockNBTComponent.Builder blockNBT() {
     return new BlockNBTComponentImpl.BuilderImpl();
   }
 
@@ -283,7 +282,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract("_ -> new")
-  static @NotNull BlockNBTComponent blockNBT(final @NotNull Consumer<? super BlockNBTComponent.Builder> consumer) {
+  static BlockNBTComponent blockNBT(final Consumer<? super BlockNBTComponent.Builder> consumer) {
     return AbstractBuilder.configureAndBuild(blockNBT(), consumer);
   }
 
@@ -296,7 +295,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull BlockNBTComponent blockNBT(final @NotNull String nbtPath, final BlockNBTComponent.@NotNull Pos pos) {
+  static BlockNBTComponent blockNBT(final String nbtPath, final BlockNBTComponent.Pos pos) {
     return blockNBT(nbtPath, NBTComponent.INTERPRET_DEFAULT, pos);
   }
 
@@ -310,7 +309,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull BlockNBTComponent blockNBT(final @NotNull String nbtPath, final boolean interpret, final BlockNBTComponent.@NotNull Pos pos) {
+  static BlockNBTComponent blockNBT(final String nbtPath, final boolean interpret, final BlockNBTComponent.Pos pos) {
     return blockNBT(nbtPath, interpret, null, pos);
   }
 
@@ -325,7 +324,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.8.0
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
-  static @NotNull BlockNBTComponent blockNBT(final @NotNull String nbtPath, final boolean interpret, final @Nullable ComponentLike separator, final BlockNBTComponent.@NotNull Pos pos) {
+  static BlockNBTComponent blockNBT(final String nbtPath, final boolean interpret, final @Nullable ComponentLike separator, final BlockNBTComponent.Pos pos) {
     return BlockNBTComponentImpl.create(Collections.emptyList(), Style.empty(), nbtPath, interpret, separator, pos);
   }
 
@@ -342,7 +341,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(pure = true)
-  static EntityNBTComponent.@NotNull Builder entityNBT() {
+  static EntityNBTComponent.Builder entityNBT() {
     return new EntityNBTComponentImpl.BuilderImpl();
   }
 
@@ -354,7 +353,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract("_ -> new")
-  static @NotNull EntityNBTComponent entityNBT(final @NotNull Consumer<? super EntityNBTComponent.Builder> consumer) {
+  static EntityNBTComponent entityNBT(final Consumer<? super EntityNBTComponent.Builder> consumer) {
     return AbstractBuilder.configureAndBuild(entityNBT(), consumer);
   }
 
@@ -367,7 +366,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract("_, _ -> new")
-  static @NotNull EntityNBTComponent entityNBT(final @NotNull String nbtPath, final @NotNull String selector) {
+  static EntityNBTComponent entityNBT(final String nbtPath, final String selector) {
     return entityNBT().nbtPath(nbtPath).selector(selector).build();
   }
 
@@ -384,7 +383,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(pure = true)
-  static KeybindComponent.@NotNull Builder keybind() {
+  static KeybindComponent.Builder keybind() {
     return new KeybindComponentImpl.BuilderImpl();
   }
 
@@ -396,7 +395,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract("_ -> new")
-  static @NotNull KeybindComponent keybind(final @NotNull Consumer<? super KeybindComponent.Builder> consumer) {
+  static KeybindComponent keybind(final Consumer<? super KeybindComponent.Builder> consumer) {
     return AbstractBuilder.configureAndBuild(keybind(), consumer);
   }
 
@@ -408,7 +407,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_ -> new", pure = true)
-  static @NotNull KeybindComponent keybind(final @NotNull String keybind) {
+  static KeybindComponent keybind(final String keybind) {
     return keybind(keybind, Style.empty());
   }
 
@@ -420,7 +419,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.9.0
    */
   @Contract(value = "_ -> new", pure = true)
-  static @NotNull KeybindComponent keybind(final KeybindComponent.@NotNull KeybindLike keybind) {
+  static KeybindComponent keybind(final KeybindComponent.KeybindLike keybind) {
     return keybind(requireNonNull(keybind, "keybind").asKeybind(), Style.empty());
   }
 
@@ -433,7 +432,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull KeybindComponent keybind(final @NotNull String keybind, final @NotNull Style style) {
+  static KeybindComponent keybind(final String keybind, final Style style) {
     return KeybindComponentImpl.create(Collections.emptyList(), requireNonNull(style, "style"), keybind);
   }
 
@@ -446,7 +445,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.9.0
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull KeybindComponent keybind(final KeybindComponent.@NotNull KeybindLike keybind, final @NotNull Style style) {
+  static KeybindComponent keybind(final KeybindComponent.KeybindLike keybind, final Style style) {
     return KeybindComponentImpl.create(Collections.emptyList(), requireNonNull(style, "style"), requireNonNull(keybind, "keybind").asKeybind());
   }
 
@@ -459,7 +458,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull KeybindComponent keybind(final @NotNull String keybind, final @Nullable TextColor color) {
+  static KeybindComponent keybind(final String keybind, final @Nullable TextColor color) {
     return keybind(keybind, Style.style(color));
   }
 
@@ -472,7 +471,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.9.0
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull KeybindComponent keybind(final KeybindComponent.@NotNull KeybindLike keybind, final @Nullable TextColor color) {
+  static KeybindComponent keybind(final KeybindComponent.KeybindLike keybind, final @Nullable TextColor color) {
     return keybind(requireNonNull(keybind, "keybind").asKeybind(), Style.style(color));
   }
 
@@ -486,7 +485,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull KeybindComponent keybind(final @NotNull String keybind, final @Nullable TextColor color, final TextDecoration@NotNull... decorations) {
+  static KeybindComponent keybind(final String keybind, final @Nullable TextColor color, final TextDecoration... decorations) {
     return keybind(keybind, Style.style(color, decorations));
   }
 
@@ -500,7 +499,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.9.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull KeybindComponent keybind(final KeybindComponent.@NotNull KeybindLike keybind, final @Nullable TextColor color, final TextDecoration@NotNull... decorations) {
+  static KeybindComponent keybind(final KeybindComponent.KeybindLike keybind, final @Nullable TextColor color, final TextDecoration... decorations) {
     return keybind(requireNonNull(keybind, "keybind").asKeybind(), Style.style(color, decorations));
   }
 
@@ -514,7 +513,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull KeybindComponent keybind(final @NotNull String keybind, final @Nullable TextColor color, final @NotNull Set<TextDecoration> decorations) {
+  static KeybindComponent keybind(final String keybind, final @Nullable TextColor color, final Set<TextDecoration> decorations) {
     return keybind(keybind, Style.style(color, decorations));
   }
 
@@ -528,7 +527,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.9.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull KeybindComponent keybind(final KeybindComponent.@NotNull KeybindLike keybind, final @Nullable TextColor color, final @NotNull Set<TextDecoration> decorations) {
+  static KeybindComponent keybind(final KeybindComponent.KeybindLike keybind, final @Nullable TextColor color, final Set<TextDecoration> decorations) {
     return keybind(requireNonNull(keybind, "keybind").asKeybind(), Style.style(color, decorations));
   }
 
@@ -545,7 +544,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.25.0
    */
   @Contract(pure = true)
-  static ObjectComponent.@NotNull Builder object() {
+  static ObjectComponent.Builder object() {
     return new ObjectComponentImpl.BuilderImpl();
   }
 
@@ -557,7 +556,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.25.0
    */
   @Contract("_ -> new")
-  static @NotNull ObjectComponent object(final @NotNull Consumer<? super ObjectComponent.Builder> consumer) {
+  static ObjectComponent object(final Consumer<? super ObjectComponent.Builder> consumer) {
     return AbstractBuilder.configureAndBuild(object(), consumer);
   }
 
@@ -569,7 +568,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.25.0
    */
   @Contract(value = "_ -> new", pure = true)
-  static @NotNull ObjectComponent object(final @NotNull ObjectContents objectContents) {
+  static ObjectComponent object(final ObjectContents objectContents) {
     return ObjectComponentImpl.create(Collections.emptyList(), Style.empty(), objectContents);
   }
 
@@ -586,7 +585,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(pure = true)
-  static ScoreComponent.@NotNull Builder score() {
+  static ScoreComponent.Builder score() {
     return new ScoreComponentImpl.BuilderImpl();
   }
 
@@ -598,7 +597,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract("_ -> new")
-  static @NotNull ScoreComponent score(final @NotNull Consumer<? super ScoreComponent.Builder> consumer) {
+  static ScoreComponent score(final Consumer<? super ScoreComponent.Builder> consumer) {
     return AbstractBuilder.configureAndBuild(score(), consumer);
   }
 
@@ -611,7 +610,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull ScoreComponent score(final @NotNull String name, final @NotNull String objective) {
+  static ScoreComponent score(final String name, final String objective) {
     return ScoreComponentImpl.create(Collections.emptyList(), Style.empty(), name, objective);
   }
 
@@ -628,7 +627,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(pure = true)
-  static SelectorComponent.@NotNull Builder selector() {
+  static SelectorComponent.Builder selector() {
     return new SelectorComponentImpl.BuilderImpl();
   }
 
@@ -640,7 +639,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract("_ -> new")
-  static @NotNull SelectorComponent selector(final @NotNull Consumer<? super SelectorComponent.Builder> consumer) {
+  static SelectorComponent selector(final Consumer<? super SelectorComponent.Builder> consumer) {
     return AbstractBuilder.configureAndBuild(selector(), consumer);
   }
 
@@ -652,7 +651,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_ -> new", pure = true)
-  static @NotNull SelectorComponent selector(final @NotNull String pattern) {
+  static SelectorComponent selector(final String pattern) {
     return selector(pattern, null);
   }
 
@@ -665,7 +664,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.8.0
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull SelectorComponent selector(final @NotNull String pattern, final @Nullable ComponentLike separator) {
+  static SelectorComponent selector(final String pattern, final @Nullable ComponentLike separator) {
     return SelectorComponentImpl.create(Collections.emptyList(), Style.empty(), pattern, separator);
   }
 
@@ -682,7 +681,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(pure = true)
-  static StorageNBTComponent.@NotNull Builder storageNBT() {
+  static StorageNBTComponent.Builder storageNBT() {
     return new StorageNBTComponentImpl.BuilderImpl();
   }
 
@@ -694,7 +693,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract("_ -> new")
-  static @NotNull StorageNBTComponent storageNBT(final @NotNull Consumer<? super StorageNBTComponent.Builder> consumer) {
+  static StorageNBTComponent storageNBT(final Consumer<? super StorageNBTComponent.Builder> consumer) {
     return AbstractBuilder.configureAndBuild(storageNBT(), consumer);
   }
 
@@ -707,7 +706,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull StorageNBTComponent storageNBT(final @NotNull String nbtPath, final @NotNull Key storage) {
+  static StorageNBTComponent storageNBT(final String nbtPath, final Key storage) {
     return storageNBT(nbtPath, NBTComponent.INTERPRET_DEFAULT, storage);
   }
 
@@ -721,7 +720,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull StorageNBTComponent storageNBT(final @NotNull String nbtPath, final boolean interpret, final @NotNull Key storage) {
+  static StorageNBTComponent storageNBT(final String nbtPath, final boolean interpret, final Key storage) {
     return storageNBT(nbtPath, interpret, null, storage);
   }
 
@@ -736,7 +735,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.8.0
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
-  static @NotNull StorageNBTComponent storageNBT(final @NotNull String nbtPath, final boolean interpret, final @Nullable ComponentLike separator, final @NotNull Key storage) {
+  static StorageNBTComponent storageNBT(final String nbtPath, final boolean interpret, final @Nullable ComponentLike separator, final Key storage) {
     return StorageNBTComponentImpl.create(Collections.emptyList(), Style.empty(), nbtPath, interpret, separator, storage);
   }
 
@@ -753,7 +752,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(pure = true)
-  static TextComponent.@NotNull Builder text() {
+  static TextComponent.Builder text() {
     return new TextComponentImpl.BuilderImpl();
   }
 
@@ -764,7 +763,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @return a text component
    * @since 4.10.0
    */
-  static @NotNull TextComponent textOfChildren(final @NotNull ComponentLike@NotNull... components) {
+  static TextComponent textOfChildren(final ComponentLike... components) {
     if (components.length == 0) return empty();
     return TextComponentImpl.create(Arrays.asList(components), Style.empty(), "");
   }
@@ -777,7 +776,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract("_ -> new")
-  static @NotNull TextComponent text(final @NotNull Consumer<? super TextComponent.Builder> consumer) {
+  static TextComponent text(final Consumer<? super TextComponent.Builder> consumer) {
     return AbstractBuilder.configureAndBuild(text(), consumer);
   }
 
@@ -789,7 +788,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_ -> new", pure = true)
-  static @NotNull TextComponent text(final @NotNull String content) {
+  static TextComponent text(final String content) {
     if (content.isEmpty()) return empty();
     return text(content, Style.empty());
   }
@@ -803,7 +802,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull TextComponent text(final @NotNull String content, final @NotNull Style style) {
+  static TextComponent text(final String content, final Style style) {
     return TextComponentImpl.create(Collections.emptyList(), requireNonNull(style, "style"), content);
   }
 
@@ -816,7 +815,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull TextComponent text(final @NotNull String content, final @Nullable TextColor color) {
+  static TextComponent text(final String content, final @Nullable TextColor color) {
     return text(content, Style.style(color));
   }
 
@@ -830,7 +829,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull TextComponent text(final @NotNull String content, final @Nullable TextColor color, final TextDecoration@NotNull... decorations) {
+  static TextComponent text(final String content, final @Nullable TextColor color, final TextDecoration... decorations) {
     return text(content, Style.style(color, decorations));
   }
 
@@ -844,7 +843,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull TextComponent text(final @NotNull String content, final @Nullable TextColor color, final @NotNull Set<TextDecoration> decorations) {
+  static TextComponent text(final String content, final @Nullable TextColor color, final Set<TextDecoration> decorations) {
     return text(content, Style.style(color, decorations));
   }
 
@@ -856,7 +855,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_ -> new", pure = true)
-  static @NotNull TextComponent text(final boolean value) {
+  static TextComponent text(final boolean value) {
     return text(String.valueOf(value));
   }
 
@@ -869,7 +868,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull TextComponent text(final boolean value, final @NotNull Style style) {
+  static TextComponent text(final boolean value, final Style style) {
     return text(String.valueOf(value), style);
   }
 
@@ -882,7 +881,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull TextComponent text(final boolean value, final @Nullable TextColor color) {
+  static TextComponent text(final boolean value, final @Nullable TextColor color) {
     return text(String.valueOf(value), color);
   }
 
@@ -896,7 +895,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull TextComponent text(final boolean value, final @Nullable TextColor color, final TextDecoration@NotNull... decorations) {
+  static TextComponent text(final boolean value, final @Nullable TextColor color, final TextDecoration... decorations) {
     return text(String.valueOf(value), color, decorations);
   }
 
@@ -910,7 +909,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull TextComponent text(final boolean value, final @Nullable TextColor color, final @NotNull Set<TextDecoration> decorations) {
+  static TextComponent text(final boolean value, final @Nullable TextColor color, final Set<TextDecoration> decorations) {
     return text(String.valueOf(value), color, decorations);
   }
 
@@ -922,7 +921,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(pure = true)
-  static @NotNull TextComponent text(final char value) {
+  static TextComponent text(final char value) {
     if (value == '\n') return newline();
     if (value == ' ') return space();
     return text(String.valueOf(value));
@@ -937,7 +936,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull TextComponent text(final char value, final @NotNull Style style) {
+  static TextComponent text(final char value, final Style style) {
     return text(String.valueOf(value), style);
   }
 
@@ -950,7 +949,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull TextComponent text(final char value, final @Nullable TextColor color) {
+  static TextComponent text(final char value, final @Nullable TextColor color) {
     return text(String.valueOf(value), color);
   }
 
@@ -964,7 +963,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull TextComponent text(final char value, final @Nullable TextColor color, final TextDecoration@NotNull... decorations) {
+  static TextComponent text(final char value, final @Nullable TextColor color, final TextDecoration... decorations) {
     return text(String.valueOf(value), color, decorations);
   }
 
@@ -978,7 +977,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull TextComponent text(final char value, final @Nullable TextColor color, final @NotNull Set<TextDecoration> decorations) {
+  static TextComponent text(final char value, final @Nullable TextColor color, final Set<TextDecoration> decorations) {
     return text(String.valueOf(value), color, decorations);
   }
 
@@ -990,7 +989,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_ -> new", pure = true)
-  static @NotNull TextComponent text(final double value) {
+  static TextComponent text(final double value) {
     return text(String.valueOf(value));
   }
 
@@ -1003,7 +1002,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull TextComponent text(final double value, final @NotNull Style style) {
+  static TextComponent text(final double value, final Style style) {
     return text(String.valueOf(value), style);
   }
 
@@ -1016,7 +1015,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull TextComponent text(final double value, final @Nullable TextColor color) {
+  static TextComponent text(final double value, final @Nullable TextColor color) {
     return text(String.valueOf(value), color);
   }
 
@@ -1030,7 +1029,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull TextComponent text(final double value, final @Nullable TextColor color, final TextDecoration@NotNull... decorations) {
+  static TextComponent text(final double value, final @Nullable TextColor color, final TextDecoration... decorations) {
     return text(String.valueOf(value), color, decorations);
   }
 
@@ -1044,7 +1043,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull TextComponent text(final double value, final @Nullable TextColor color, final @NotNull Set<TextDecoration> decorations) {
+  static TextComponent text(final double value, final @Nullable TextColor color, final Set<TextDecoration> decorations) {
     return text(String.valueOf(value), color, decorations);
   }
 
@@ -1056,7 +1055,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_ -> new", pure = true)
-  static @NotNull TextComponent text(final float value) {
+  static TextComponent text(final float value) {
     return text(String.valueOf(value));
   }
 
@@ -1069,7 +1068,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull TextComponent text(final float value, final @NotNull Style style) {
+  static TextComponent text(final float value, final Style style) {
     return text(String.valueOf(value), style);
   }
 
@@ -1082,7 +1081,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull TextComponent text(final float value, final @Nullable TextColor color) {
+  static TextComponent text(final float value, final @Nullable TextColor color) {
     return text(String.valueOf(value), color);
   }
 
@@ -1096,7 +1095,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull TextComponent text(final float value, final @Nullable TextColor color, final TextDecoration@NotNull... decorations) {
+  static TextComponent text(final float value, final @Nullable TextColor color, final TextDecoration... decorations) {
     return text(String.valueOf(value), color, decorations);
   }
 
@@ -1110,7 +1109,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull TextComponent text(final float value, final @Nullable TextColor color, final @NotNull Set<TextDecoration> decorations) {
+  static TextComponent text(final float value, final @Nullable TextColor color, final Set<TextDecoration> decorations) {
     return text(String.valueOf(value), color, decorations);
   }
 
@@ -1122,7 +1121,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_ -> new", pure = true)
-  static @NotNull TextComponent text(final int value) {
+  static TextComponent text(final int value) {
     return text(String.valueOf(value));
   }
 
@@ -1135,7 +1134,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull TextComponent text(final int value, final @NotNull Style style) {
+  static TextComponent text(final int value, final Style style) {
     return text(String.valueOf(value), style);
   }
 
@@ -1148,7 +1147,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull TextComponent text(final int value, final @Nullable TextColor color) {
+  static TextComponent text(final int value, final @Nullable TextColor color) {
     return text(String.valueOf(value), color);
   }
 
@@ -1162,7 +1161,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull TextComponent text(final int value, final @Nullable TextColor color, final TextDecoration@NotNull... decorations) {
+  static TextComponent text(final int value, final @Nullable TextColor color, final TextDecoration... decorations) {
     return text(String.valueOf(value), color, decorations);
   }
 
@@ -1176,7 +1175,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull TextComponent text(final int value, final @Nullable TextColor color, final @NotNull Set<TextDecoration> decorations) {
+  static TextComponent text(final int value, final @Nullable TextColor color, final Set<TextDecoration> decorations) {
     return text(String.valueOf(value), color, decorations);
   }
 
@@ -1188,7 +1187,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_ -> new", pure = true)
-  static @NotNull TextComponent text(final long value) {
+  static TextComponent text(final long value) {
     return text(String.valueOf(value));
   }
 
@@ -1201,7 +1200,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull TextComponent text(final long value, final @NotNull Style style) {
+  static TextComponent text(final long value, final Style style) {
     return text(String.valueOf(value), style);
   }
 
@@ -1214,7 +1213,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull TextComponent text(final long value, final @Nullable TextColor color) {
+  static TextComponent text(final long value, final @Nullable TextColor color) {
     return text(String.valueOf(value), color);
   }
 
@@ -1228,7 +1227,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull TextComponent text(final long value, final @Nullable TextColor color, final TextDecoration@NotNull... decorations) {
+  static TextComponent text(final long value, final @Nullable TextColor color, final TextDecoration... decorations) {
     return text(String.valueOf(value), color, decorations);
   }
 
@@ -1242,7 +1241,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull TextComponent text(final long value, final @Nullable TextColor color, final @NotNull Set<TextDecoration> decorations) {
+  static TextComponent text(final long value, final @Nullable TextColor color, final Set<TextDecoration> decorations) {
     return text(String.valueOf(value), color, decorations);
   }
 
@@ -1262,7 +1261,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.18.0
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static <C> @NotNull VirtualComponent virtual(final @NotNull Class<C> contextType, final @NotNull VirtualComponentRenderer<C> renderer) {
+  static <C> VirtualComponent virtual(final Class<C> contextType, final VirtualComponentRenderer<C> renderer) {
     requireNonNull(contextType, "context type");
     requireNonNull(renderer, "renderer");
     return VirtualComponentImpl.createVirtual(contextType, renderer);
@@ -1279,7 +1278,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.18.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static <C> @NotNull VirtualComponent virtual(final @NotNull Class<C> contextType, final @NotNull VirtualComponentRenderer<C> renderer, final @NotNull Style style) {
+  static <C> VirtualComponent virtual(final Class<C> contextType, final VirtualComponentRenderer<C> renderer, final Style style) {
     requireNonNull(contextType, "context type");
     requireNonNull(renderer, "renderer");
     return VirtualComponentImpl.createVirtual(contextType, renderer, Collections.emptyList(), style);
@@ -1296,7 +1295,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.18.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static <C> @NotNull VirtualComponent virtual(final @NotNull Class<C> contextType, final @NotNull VirtualComponentRenderer<C> renderer, final @NotNull StyleBuilderApplicable... style) {
+  static <C> VirtualComponent virtual(final Class<C> contextType, final VirtualComponentRenderer<C> renderer, final StyleBuilderApplicable... style) {
     requireNonNull(contextType, "context type");
     requireNonNull(renderer, "renderer");
     return VirtualComponentImpl.createVirtual(contextType, renderer, Collections.emptyList(), Style.style(style));
@@ -1313,7 +1312,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.18.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static <C> @NotNull VirtualComponent virtual(final @NotNull Class<C> contextType, final @NotNull VirtualComponentRenderer<C> renderer, final @NotNull Iterable<StyleBuilderApplicable> style) {
+  static <C> VirtualComponent virtual(final Class<C> contextType, final VirtualComponentRenderer<C> renderer, final Iterable<StyleBuilderApplicable> style) {
     requireNonNull(contextType, "context type");
     requireNonNull(renderer, "renderer");
     return VirtualComponentImpl.createVirtual(contextType, renderer, Collections.emptyList(), Style.style(style));
@@ -1332,7 +1331,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(pure = true)
-  static TranslatableComponent.@NotNull Builder translatable() {
+  static TranslatableComponent.Builder translatable() {
     return new TranslatableComponentImpl.BuilderImpl();
   }
 
@@ -1344,7 +1343,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract("_ -> new")
-  static @NotNull TranslatableComponent translatable(final @NotNull Consumer<? super TranslatableComponent.Builder> consumer) {
+  static TranslatableComponent translatable(final Consumer<? super TranslatableComponent.Builder> consumer) {
     return AbstractBuilder.configureAndBuild(translatable(), consumer);
   }
 
@@ -1356,7 +1355,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull String key) {
+  static TranslatableComponent translatable(final String key) {
     return translatable(key, Style.empty());
   }
 
@@ -1368,7 +1367,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.8.0
    */
   @Contract(value = "_ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable) {
+  static TranslatableComponent translatable(final Translatable translatable) {
     return translatable(requireNonNull(translatable, "translatable").translationKey(), Style.empty());
   }
 
@@ -1382,7 +1381,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull String key, final @Nullable String fallback) {
+  static TranslatableComponent translatable(final String key, final @Nullable String fallback) {
     return translatable(key, fallback, Style.empty());
   }
 
@@ -1396,7 +1395,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @Nullable String fallback) {
+  static TranslatableComponent translatable(final Translatable translatable, final @Nullable String fallback) {
     return translatable(requireNonNull(translatable, "translatable").translationKey(), fallback, Style.empty());
   }
 
@@ -1409,7 +1408,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull String key, final @NotNull Style style) {
+  static TranslatableComponent translatable(final String key, final Style style) {
     return TranslatableComponentImpl.create(Collections.emptyList(), requireNonNull(style, "style"), key, null, Collections.emptyList());
   }
 
@@ -1422,7 +1421,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.8.0
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @NotNull Style style) {
+  static TranslatableComponent translatable(final Translatable translatable, final Style style) {
     return translatable(requireNonNull(translatable, "translatable").translationKey(), style);
   }
 
@@ -1437,7 +1436,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull String key, final @Nullable String fallback, final @NotNull Style style) {
+  static TranslatableComponent translatable(final String key, final @Nullable String fallback, final Style style) {
     return TranslatableComponentImpl.create(Collections.emptyList(), requireNonNull(style, "style"), key, fallback, Collections.emptyList());
   }
 
@@ -1452,7 +1451,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @Nullable String fallback, final @NotNull Style style) {
+  static TranslatableComponent translatable(final Translatable translatable, final @Nullable String fallback, final Style style) {
     return translatable(requireNonNull(translatable, "translatable").translationKey(), fallback, style);
   }
 
@@ -1467,7 +1466,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull String key, final @Nullable String fallback, final @NotNull StyleBuilderApplicable... style) {
+  static TranslatableComponent translatable(final String key, final @Nullable String fallback, final StyleBuilderApplicable... style) {
     return translatable(requireNonNull(key, "key"), fallback, Style.style(style));
   }
 
@@ -1482,7 +1481,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @Nullable String fallback, final @NotNull Iterable<StyleBuilderApplicable> style) {
+  static TranslatableComponent translatable(final Translatable translatable, final @Nullable String fallback, final Iterable<StyleBuilderApplicable> style) {
     return translatable(requireNonNull(translatable, "translatable").translationKey(), fallback, Style.style(style));
   }
 
@@ -1497,7 +1496,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull String key, final @Nullable String fallback, final @NotNull ComponentLike@NotNull... args) {
+  static TranslatableComponent translatable(final String key, final @Nullable String fallback, final ComponentLike... args) {
     return translatable(key, fallback, Style.empty(), args);
   }
 
@@ -1512,7 +1511,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @Nullable String fallback, final @NotNull ComponentLike@NotNull... args) {
+  static TranslatableComponent translatable(final Translatable translatable, final @Nullable String fallback, final ComponentLike... args) {
     return translatable(requireNonNull(translatable, "translatable").translationKey(), fallback, args);
   }
 
@@ -1528,7 +1527,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull String key, final @Nullable String fallback, final @NotNull Style style, final @NotNull ComponentLike@NotNull... args) {
+  static TranslatableComponent translatable(final String key, final @Nullable String fallback, final Style style, final ComponentLike... args) {
     return TranslatableComponentImpl.create(Collections.emptyList(), requireNonNull(style, "style"), key, fallback, requireNonNull(args, "args"));
   }
 
@@ -1544,7 +1543,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @Nullable String fallback, final @NotNull Style style, final @NotNull ComponentLike@NotNull... args) {
+  static TranslatableComponent translatable(final Translatable translatable, final @Nullable String fallback, final Style style, final ComponentLike... args) {
     return translatable(requireNonNull(translatable, "translatable").translationKey(), fallback, style, args);
   }
 
@@ -1560,7 +1559,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull String key, final @Nullable String fallback, final @NotNull Style style, final @NotNull List<? extends ComponentLike> args) {
+  static TranslatableComponent translatable(final String key, final @Nullable String fallback, final Style style, final List<? extends ComponentLike> args) {
     return TranslatableComponentImpl.create(Collections.emptyList(), style, key, fallback, requireNonNull(args, "args"));
   }
 
@@ -1576,7 +1575,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @Nullable String fallback, final @NotNull Style style, final @NotNull List<? extends ComponentLike> args) {
+  static TranslatableComponent translatable(final Translatable translatable, final @Nullable String fallback, final Style style, final List<? extends ComponentLike> args) {
     return translatable(requireNonNull(translatable, "translatable").translationKey(), fallback, style, args);
   }
 
@@ -1592,7 +1591,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull String key, final @Nullable String fallback, final @NotNull List<? extends ComponentLike> args, final @NotNull Iterable<StyleBuilderApplicable> style) {
+  static TranslatableComponent translatable(final String key, final @Nullable String fallback, final List<? extends ComponentLike> args, final Iterable<StyleBuilderApplicable> style) {
     return TranslatableComponentImpl.create(Collections.emptyList(), Style.style(style), key, fallback, requireNonNull(args, "args"));
   }
 
@@ -1608,7 +1607,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @Nullable String fallback, final @NotNull List<? extends ComponentLike> args, final @NotNull Iterable<StyleBuilderApplicable> style) {
+  static TranslatableComponent translatable(final Translatable translatable, final @Nullable String fallback, final List<? extends ComponentLike> args, final Iterable<StyleBuilderApplicable> style) {
     return translatable(requireNonNull(translatable, "translatable").translationKey(), fallback, args, style);
   }
 
@@ -1624,7 +1623,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull String key, final @Nullable String fallback, final @NotNull List<? extends ComponentLike> args, final @NotNull StyleBuilderApplicable... style) {
+  static TranslatableComponent translatable(final String key, final @Nullable String fallback, final List<? extends ComponentLike> args, final StyleBuilderApplicable... style) {
     return TranslatableComponentImpl.create(Collections.emptyList(), Style.style(style), key, fallback, requireNonNull(args, "args"));
   }
 
@@ -1640,7 +1639,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @Nullable String fallback, final @NotNull List<? extends ComponentLike> args, final @NotNull StyleBuilderApplicable... style) {
+  static TranslatableComponent translatable(final Translatable translatable, final @Nullable String fallback, final List<? extends ComponentLike> args, final StyleBuilderApplicable... style) {
     return translatable(requireNonNull(translatable, "translatable").translationKey(), fallback, args, style);
   }
 
@@ -1653,7 +1652,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull String key, final @Nullable TextColor color) {
+  static TranslatableComponent translatable(final String key, final @Nullable TextColor color) {
     return translatable(key, Style.style(color));
   }
 
@@ -1666,7 +1665,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.8.0
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @Nullable TextColor color) {
+  static TranslatableComponent translatable(final Translatable translatable, final @Nullable TextColor color) {
     return translatable(requireNonNull(translatable, "translatable").translationKey(), color);
   }
 
@@ -1680,7 +1679,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull String key, final @Nullable TextColor color, final TextDecoration@NotNull... decorations) {
+  static TranslatableComponent translatable(final String key, final @Nullable TextColor color, final TextDecoration... decorations) {
     return translatable(key, Style.style(color, decorations));
   }
 
@@ -1694,7 +1693,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.8.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @Nullable TextColor color, final TextDecoration@NotNull... decorations) {
+  static TranslatableComponent translatable(final Translatable translatable, final @Nullable TextColor color, final TextDecoration... decorations) {
     return translatable(requireNonNull(translatable, "translatable").translationKey(), color, decorations);
   }
 
@@ -1708,7 +1707,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull String key, final @Nullable TextColor color, final @NotNull Set<TextDecoration> decorations) {
+  static TranslatableComponent translatable(final String key, final @Nullable TextColor color, final Set<TextDecoration> decorations) {
     return translatable(key, Style.style(color, decorations));
   }
 
@@ -1722,7 +1721,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.8.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @Nullable TextColor color, final @NotNull Set<TextDecoration> decorations) {
+  static TranslatableComponent translatable(final Translatable translatable, final @Nullable TextColor color, final Set<TextDecoration> decorations) {
     return translatable(requireNonNull(translatable, "translatable").translationKey(), color, decorations);
   }
 
@@ -1735,7 +1734,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull String key, final @NotNull ComponentLike@NotNull... args) {
+  static TranslatableComponent translatable(final String key, final ComponentLike... args) {
     return translatable(key, Style.empty(), args);
   }
 
@@ -1748,7 +1747,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.8.0
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @NotNull ComponentLike@NotNull... args) {
+  static TranslatableComponent translatable(final Translatable translatable, final ComponentLike... args) {
     return translatable(requireNonNull(translatable, "translatable").translationKey(), args);
   }
 
@@ -1762,7 +1761,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull String key, final @NotNull Style style, final @NotNull ComponentLike@NotNull... args) {
+  static TranslatableComponent translatable(final String key, final Style style, final ComponentLike... args) {
     return TranslatableComponentImpl.create(Collections.emptyList(), requireNonNull(style, "style"), key, null, requireNonNull(args, "args"));
   }
 
@@ -1776,7 +1775,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.8.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @NotNull Style style, final @NotNull ComponentLike@NotNull... args) {
+  static TranslatableComponent translatable(final Translatable translatable, final Style style, final ComponentLike... args) {
     return translatable(requireNonNull(translatable, "translatable").translationKey(), style, args);
   }
 
@@ -1790,7 +1789,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull String key, final @Nullable TextColor color, final @NotNull ComponentLike@NotNull... args) {
+  static TranslatableComponent translatable(final String key, final @Nullable TextColor color, final ComponentLike... args) {
     return translatable(key, Style.style(color), args);
   }
 
@@ -1804,7 +1803,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.8.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @Nullable TextColor color, final @NotNull ComponentLike@NotNull... args) {
+  static TranslatableComponent translatable(final Translatable translatable, final @Nullable TextColor color, final ComponentLike... args) {
     return translatable(requireNonNull(translatable, "translatable").translationKey(), color, args);
   }
 
@@ -1819,7 +1818,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull String key, final @Nullable TextColor color, final @NotNull Set<TextDecoration> decorations, final @NotNull ComponentLike@NotNull... args) {
+  static TranslatableComponent translatable(final String key, final @Nullable TextColor color, final Set<TextDecoration> decorations, final ComponentLike... args) {
     return translatable(key, Style.style(color, decorations), args);
   }
 
@@ -1834,7 +1833,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.8.0
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @Nullable TextColor color, final @NotNull Set<TextDecoration> decorations, final @NotNull ComponentLike@NotNull... args) {
+  static TranslatableComponent translatable(final Translatable translatable, final @Nullable TextColor color, final Set<TextDecoration> decorations, final ComponentLike... args) {
     return translatable(requireNonNull(translatable, "translatable").translationKey(), color, decorations, args);
   }
 
@@ -1847,7 +1846,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull String key, final @NotNull List<? extends ComponentLike> args) {
+  static TranslatableComponent translatable(final String key, final List<? extends ComponentLike> args) {
     return TranslatableComponentImpl.create(Collections.emptyList(), Style.empty(), key, null, requireNonNull(args, "args"));
   }
 
@@ -1860,7 +1859,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.8.0
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @NotNull List<? extends ComponentLike> args) {
+  static TranslatableComponent translatable(final Translatable translatable, final List<? extends ComponentLike> args) {
     return translatable(requireNonNull(translatable, "translatable").translationKey(), args);
   }
 
@@ -1874,7 +1873,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull String key, final @NotNull Style style, final @NotNull List<? extends ComponentLike> args) {
+  static TranslatableComponent translatable(final String key, final Style style, final List<? extends ComponentLike> args) {
     return TranslatableComponentImpl.create(Collections.emptyList(), requireNonNull(style, "style"), key, null, requireNonNull(args, "args"));
   }
 
@@ -1888,7 +1887,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.8.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @NotNull Style style, final @NotNull List<? extends ComponentLike> args) {
+  static TranslatableComponent translatable(final Translatable translatable, final Style style, final List<? extends ComponentLike> args) {
     return translatable(requireNonNull(translatable, "translatable").translationKey(), style, args);
   }
 
@@ -1902,7 +1901,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static TranslatableComponent translatable(final @NotNull String key, final @Nullable TextColor color, final @NotNull List<? extends ComponentLike> args) {
+  static TranslatableComponent translatable(final String key, final @Nullable TextColor color, final List<? extends ComponentLike> args) {
     return translatable(key, Style.style(color), args);
   }
 
@@ -1916,7 +1915,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.8.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static TranslatableComponent translatable(final @NotNull Translatable translatable, final @Nullable TextColor color, final @NotNull List<? extends ComponentLike> args) {
+  static TranslatableComponent translatable(final Translatable translatable, final @Nullable TextColor color, final List<? extends ComponentLike> args) {
     return translatable(requireNonNull(translatable, "translatable").translationKey(), color, args);
   }
 
@@ -1931,7 +1930,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull String key, final @Nullable TextColor color, final @NotNull Set<TextDecoration> decorations, final @NotNull List<? extends ComponentLike> args) {
+  static TranslatableComponent translatable(final String key, final @Nullable TextColor color, final Set<TextDecoration> decorations, final List<? extends ComponentLike> args) {
     return translatable(key, Style.style(color, decorations), args);
   }
 
@@ -1946,7 +1945,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.8.0
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @Nullable TextColor color, final @NotNull Set<TextDecoration> decorations, final @NotNull List<? extends ComponentLike> args) {
+  static TranslatableComponent translatable(final Translatable translatable, final @Nullable TextColor color, final Set<TextDecoration> decorations, final List<? extends ComponentLike> args) {
     return translatable(requireNonNull(translatable, "translatable").translationKey(), color, decorations, args);
   }
 
@@ -1956,7 +1955,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @return the unmodifiable list of children
    * @since 4.0.0
    */
-  @Unmodifiable @NotNull List<Component> children();
+  @Unmodifiable List<Component> children();
 
   /**
    * Sets the list of children.
@@ -1968,7 +1967,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(pure = true)
-  @NotNull Component children(final @NotNull List<? extends ComponentLike> children);
+  Component children(final List<? extends ComponentLike> children);
 
   /**
    * Checks if this component contains a component.
@@ -1981,7 +1980,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    *     component, {@code false} otherwise
    * @since 4.0.0
    */
-  default boolean contains(final @NotNull Component that) {
+  default boolean contains(final Component that) {
     return this.contains(that, EQUALS_IDENTITY);
   }
 
@@ -1994,7 +1993,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    *     component, {@code false} otherwise
    * @since 4.8.0
    */
-  default boolean contains(final @NotNull Component that, final @NotNull BiPredicate<? super Component, ? super Component> equals) {
+  default boolean contains(final Component that, final BiPredicate<? super Component, ? super Component> equals) {
     if (equals.test(this, that)) return true;
     for (final Component child : this.children()) {
       if (child.contains(that, equals)) return true;
@@ -2026,7 +2025,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(pure = true)
-  default @NotNull Component append(final @NotNull Component component) {
+  default Component append(final Component component) {
     return this.append((ComponentLike) component);
   }
 
@@ -2037,7 +2036,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @return a component with the component added
    * @since 4.0.0
    */
-  default @NotNull Component append(final @NotNull ComponentLike like) {
+  default Component append(final ComponentLike like) {
     requireNonNull(like, "like");
     final Component component = like.asComponent();
     requireNonNull(component, "component");
@@ -2054,7 +2053,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(pure = true)
-  default @NotNull Component append(final @NotNull ComponentBuilder<?, ?> builder) {
+  default Component append(final ComponentBuilder<?, ?> builder) {
     return this.append(builder.build());
   }
 
@@ -2065,7 +2064,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.12.0
    */
   @Contract(pure = true)
-  default @NotNull Component appendNewline() {
+  default Component appendNewline() {
     return this.append(newline());
   }
 
@@ -2076,7 +2075,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.12.0
    */
   @Contract(pure = true)
-  default @NotNull Component appendSpace() {
+  default Component appendSpace() {
     return this.append(space());
   }
 
@@ -2088,7 +2087,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.20.0
    */
   @Contract(pure = true)
-  default @NotNull Component append(final @NotNull ComponentLike @NotNull... components) {
+  default Component append(final ComponentLike ... components) {
     if (components.length == 0) return this;
 
     final List<ComponentLike> newChildren = new ArrayList<>(components.length + this.children().size());
@@ -2105,7 +2104,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.20.0
    */
   @Contract(pure = true)
-  default @NotNull Component append(final @NotNull List<? extends ComponentLike> components) {
+  default Component append(final List<? extends ComponentLike> components) {
     if (components.isEmpty()) return this;
     if (this.children().isEmpty()) return this.children(components);
 
@@ -2125,7 +2124,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.10.0
    */
   @Contract(pure = true)
-  default @NotNull Component applyFallbackStyle(final @NotNull Style style) {
+  default Component applyFallbackStyle(final Style style) {
     Objects.requireNonNull(style, "style");
     return this.style(this.style().merge(style, Style.Merge.Strategy.IF_ABSENT_ON_TARGET));
   }
@@ -2140,7 +2139,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.10.0
    */
   @Contract(pure = true)
-  default @NotNull Component applyFallbackStyle(final @NotNull StyleBuilderApplicable@NotNull... style) {
+  default Component applyFallbackStyle(final StyleBuilderApplicable... style) {
     return this.applyFallbackStyle(Style.style(style));
   }
 
@@ -2150,7 +2149,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @return the style of this component
    * @since 4.0.0
    */
-  @NotNull Style style();
+  Style style();
 
   /**
    * Sets the style of this component.
@@ -2160,7 +2159,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(pure = true)
-  @NotNull Component style(final @NotNull Style style);
+  Component style(final Style style);
 
   /**
    * Sets the style of this component.
@@ -2170,7 +2169,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(pure = true)
-  default @NotNull Component style(final @NotNull Consumer<Style.Builder> consumer) {
+  default Component style(final Consumer<Style.Builder> consumer) {
     return this.style(this.style().edit(consumer));
   }
 
@@ -2183,7 +2182,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(pure = true)
-  default @NotNull Component style(final @NotNull Consumer<Style.Builder> consumer, final Style.Merge.@NotNull Strategy strategy) {
+  default Component style(final Consumer<Style.Builder> consumer, final Style.Merge.Strategy strategy) {
     return this.style(this.style().edit(consumer, strategy));
   }
 
@@ -2195,7 +2194,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(pure = true)
-  default @NotNull Component style(final Style.@NotNull Builder style) {
+  default Component style(final Style.Builder style) {
     return this.style(style.build());
   }
 
@@ -2207,7 +2206,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(pure = true)
-  default @NotNull Component mergeStyle(final @NotNull Component that) {
+  default Component mergeStyle(final Component that) {
     return this.mergeStyle(that, Style.Merge.all());
   }
 
@@ -2220,7 +2219,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(pure = true)
-  default @NotNull Component mergeStyle(final @NotNull Component that, final Style.@NotNull Merge@NotNull... merges) {
+  default Component mergeStyle(final Component that, final Style.Merge... merges) {
     return this.mergeStyle(that, Style.Merge.merges(merges));
   }
 
@@ -2233,7 +2232,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Contract(pure = true)
-  default @NotNull Component mergeStyle(final @NotNull Component that, final @NotNull Set<Style.Merge> merges) {
+  default Component mergeStyle(final Component that, final Set<Style.Merge> merges) {
     return this.style(this.style().merge(that.style(), merges));
   }
 
@@ -2256,7 +2255,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.10.0
    */
   @Override
-  default @NotNull Component font(final @Nullable Key key) {
+  default Component font(final @Nullable Key key) {
     return this.style(this.style().font(key));
   }
 
@@ -2285,7 +2284,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    */
   @Contract(pure = true)
   @Override
-  default @NotNull Component color(final @Nullable TextColor color) {
+  default Component color(final @Nullable TextColor color) {
     return this.style(this.style().color(color));
   }
 
@@ -2298,7 +2297,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    */
   @Contract(pure = true)
   @Override
-  default @NotNull Component colorIfAbsent(final @Nullable TextColor color) {
+  default Component colorIfAbsent(final @Nullable TextColor color) {
     if (this.color() == null) return this.color(color);
     return this;
   }
@@ -2312,7 +2311,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    */
   @Contract(pure = true)
   @Override
-  default @NotNull Component shadowColor(final @Nullable ARGBLike argb) {
+  default Component shadowColor(final @Nullable ARGBLike argb) {
     return this.style(this.style().shadowColor(argb));
   }
 
@@ -2325,7 +2324,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    */
   @Contract(pure = true)
   @Override
-  default @NotNull Component shadowColorIfAbsent(final @Nullable ARGBLike argb) {
+  default Component shadowColorIfAbsent(final @Nullable ARGBLike argb) {
     if (this.shadowColor() == null) return this.shadowColor(argb);
     return this;
   }
@@ -2339,7 +2338,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Override
-  default boolean hasDecoration(final @NotNull TextDecoration decoration) {
+  default boolean hasDecoration(final TextDecoration decoration) {
     return StyleGetter.super.hasDecoration(decoration);
   }
 
@@ -2352,7 +2351,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    */
   @Contract(pure = true)
   @Override
-  default @NotNull Component decorate(final @NotNull TextDecoration decoration) {
+  default Component decorate(final TextDecoration decoration) {
     return StyleSetter.super.decorate(decoration);
   }
 
@@ -2366,7 +2365,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Override
-  default TextDecoration.@NotNull State decoration(final @NotNull TextDecoration decoration) {
+  default TextDecoration.State decoration(final TextDecoration decoration) {
     return this.style().decoration(decoration);
   }
 
@@ -2381,7 +2380,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    */
   @Contract(pure = true)
   @Override
-  default @NotNull Component decoration(final @NotNull TextDecoration decoration, final boolean flag) {
+  default Component decoration(final TextDecoration decoration, final boolean flag) {
     return StyleSetter.super.decoration(decoration, flag);
   }
 
@@ -2398,7 +2397,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    */
   @Contract(pure = true)
   @Override
-  default @NotNull Component decoration(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state) {
+  default Component decoration(final TextDecoration decoration, final TextDecoration.State state) {
     return this.style(this.style().decoration(decoration, state));
   }
 
@@ -2412,10 +2411,10 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.12.0
    */
   @Override
-  default @NotNull Component decorationIfAbsent(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state) {
+  default Component decorationIfAbsent(final TextDecoration decoration, final TextDecoration.State state) {
     requireNonNull(state, "state");
     // Not delegating this method prevents object creation if decoration is NOT absent
-    final TextDecoration.@NotNull State oldState = this.decoration(decoration);
+    final TextDecoration.State oldState = this.decoration(decoration);
     if (oldState == TextDecoration.State.NOT_SET) {
       return this.style(this.style().decoration(decoration, state));
     }
@@ -2429,7 +2428,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.0.0
    */
   @Override
-  default @NotNull Map<TextDecoration, TextDecoration.State> decorations() {
+  default Map<TextDecoration, TextDecoration.State> decorations() {
     return this.style().decorations();
   }
 
@@ -2444,7 +2443,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    */
   @Contract(pure = true)
   @Override
-  default @NotNull Component decorations(final @NotNull Map<TextDecoration, TextDecoration.State> decorations) {
+  default Component decorations(final Map<TextDecoration, TextDecoration.State> decorations) {
     return this.style(this.style().decorations(decorations));
   }
 
@@ -2468,7 +2467,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    */
   @Contract(pure = true)
   @Override
-  default @NotNull Component clickEvent(final @Nullable ClickEvent<?> event) {
+  default Component clickEvent(final @Nullable ClickEvent<?> event) {
     return this.style(this.style().clickEvent(event));
   }
 
@@ -2492,7 +2491,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    */
   @Contract(pure = true)
   @Override
-  default @NotNull Component hoverEvent(final @Nullable HoverEventSource<?> source) {
+  default Component hoverEvent(final @Nullable HoverEventSource<?> source) {
     return this.style(this.style().hoverEvent(source));
   }
 
@@ -2516,7 +2515,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    */
   @Contract(pure = true)
   @Override
-  default @NotNull Component insertion(final @Nullable String insertion) {
+  default Component insertion(final @Nullable String insertion) {
     return this.style(this.style().insertion(insertion));
   }
 
@@ -2540,7 +2539,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    */
   @Contract(pure = true)
   @ScopedComponentOverrideNotRequired
-  default @NotNull Component replaceText(final @NotNull Consumer<TextReplacementConfig.Builder> configurer) {
+  default Component replaceText(final Consumer<TextReplacementConfig.Builder> configurer) {
     requireNonNull(configurer, "configurer");
     return this.replaceText(AbstractBuilder.configureAndBuild(TextReplacementConfig.builder(), configurer));
   }
@@ -2554,7 +2553,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    */
   @Contract(pure = true)
   @ScopedComponentOverrideNotRequired
-  default @NotNull Component replaceText(final @NotNull TextReplacementConfig config) {
+  default Component replaceText(final TextReplacementConfig config) {
     requireNonNull(config, "replacement");
     return TextReplacementRenderer.INSTANCE.render(this, ((TextReplacementConfigImpl) config).createState());
   }
@@ -2566,7 +2565,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.9.0
    */
   @ScopedComponentOverrideNotRequired
-  default @NotNull Component compact() {
+  default Component compact() {
     return this.compact(null);
   }
 
@@ -2579,7 +2578,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.25.0
    */
   @ScopedComponentOverrideNotRequired
-  default @NotNull Component compact(final @Nullable Style parentStyle) {
+  default Component compact(final @Nullable Style parentStyle) {
     return ComponentCompaction.compact(this, parentStyle);
   }
 
@@ -2591,7 +2590,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @return the iterable
    * @since 4.9.0
    */
-  default @NotNull Iterable<Component> iterable(final @NotNull ComponentIteratorType type, final @NotNull ComponentIteratorFlag@Nullable... flags) {
+  default Iterable<Component> iterable(final ComponentIteratorType type, final ComponentIteratorFlag@Nullable... flags) {
     return this.iterable(type, flags == null ? Collections.emptySet() : MonkeyBars.enumSet(ComponentIteratorFlag.class, flags));
   }
 
@@ -2603,7 +2602,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @return the iterable
    * @since 4.9.0
    */
-  default @NotNull Iterable<Component> iterable(final @NotNull ComponentIteratorType type, final @NotNull Set<ComponentIteratorFlag> flags) {
+  default Iterable<Component> iterable(final ComponentIteratorType type, final Set<ComponentIteratorFlag> flags) {
     requireNonNull(type, "type");
     requireNonNull(flags, "flags");
     return new ForwardingIterator<>(() -> this.iterator(type, flags), () -> this.spliterator(type, flags));
@@ -2619,7 +2618,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @return the iterator
    * @since 4.9.0
    */
-  default @NotNull Iterator<Component> iterator(final @NotNull ComponentIteratorType type, final @NotNull ComponentIteratorFlag@Nullable... flags) {
+  default Iterator<Component> iterator(final ComponentIteratorType type, final ComponentIteratorFlag@Nullable... flags) {
     return this.iterator(type, flags == null ? Collections.emptySet() : MonkeyBars.enumSet(ComponentIteratorFlag.class, flags));
   }
 
@@ -2633,7 +2632,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @return the iterator
    * @since 4.9.0
    */
-  default @NotNull Iterator<Component> iterator(final @NotNull ComponentIteratorType type, final @NotNull Set<ComponentIteratorFlag> flags) {
+  default Iterator<Component> iterator(final ComponentIteratorType type, final Set<ComponentIteratorFlag> flags) {
     return new ComponentIterator(this, requireNonNull(type, "type"), requireNonNull(flags, "flags"));
   }
 
@@ -2647,7 +2646,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @return the spliterator
    * @since 4.9.0
    */
-  default @NotNull Spliterator<Component> spliterator(final @NotNull ComponentIteratorType type, final @NotNull ComponentIteratorFlag@Nullable... flags) {
+  default Spliterator<Component> spliterator(final ComponentIteratorType type, final ComponentIteratorFlag@Nullable... flags) {
     return this.spliterator(type, flags == null ? Collections.emptySet() : MonkeyBars.enumSet(ComponentIteratorFlag.class, flags));
   }
 
@@ -2661,7 +2660,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @return the spliterator
    * @since 4.9.0
    */
-  default @NotNull Spliterator<Component> spliterator(final @NotNull ComponentIteratorType type, final @NotNull Set<ComponentIteratorFlag> flags) {
+  default Spliterator<Component> spliterator(final ComponentIteratorType type, final Set<ComponentIteratorFlag> flags) {
     return Spliterators.spliteratorUnknownSize(this.iterator(type, flags), Spliterator.IMMUTABLE | Spliterator.NONNULL | Spliterator.ORDERED);
   }
 
@@ -2671,25 +2670,25 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @return the builder
    * @since 5.0.0
    */
-  @NotNull ComponentBuilder<?, ?> toBuilder();
+  ComponentBuilder<?, ?> toBuilder();
 
   @Override
-  default void componentBuilderApply(final @NotNull ComponentBuilder<?, ?> component) {
+  default void componentBuilderApply(final ComponentBuilder<?, ?> component) {
     component.append(this);
   }
 
   @Override
-  default @NotNull Component asComponent() {
+  default Component asComponent() {
     return this;
   }
 
   @Override
-  default @NotNull HoverEvent<Component> asHoverEvent(final @NotNull UnaryOperator<Component> op) {
+  default HoverEvent<Component> asHoverEvent(final UnaryOperator<Component> op) {
     return HoverEvent.showText(op.apply(this));
   }
 
   @Override
-  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  default Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("style", this.style()),
       ExaminableProperty.of("children", this.children())

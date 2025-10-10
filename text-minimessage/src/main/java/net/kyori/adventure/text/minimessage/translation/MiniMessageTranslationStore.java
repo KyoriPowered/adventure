@@ -26,8 +26,6 @@ package net.kyori.adventure.text.minimessage.translation;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.translation.TranslationStore;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * A MiniMessage translation store.
@@ -46,7 +44,7 @@ public sealed interface MiniMessageTranslationStore extends TranslationStore.Str
    * @return the translation store
    * @since 4.20.0
    */
-  static @NotNull MiniMessageTranslationStore create(final @NotNull Key name) {
+  static MiniMessageTranslationStore create(final Key name) {
     return create(name, MiniMessage.miniMessage());
   }
 
@@ -58,7 +56,7 @@ public sealed interface MiniMessageTranslationStore extends TranslationStore.Str
    * @return the translation store
    * @since 4.20.0
    */
-  static @NotNull MiniMessageTranslationStore create(final @NotNull Key name, final @NotNull MiniMessage miniMessage) {
+  static MiniMessageTranslationStore create(final Key name, final MiniMessage miniMessage) {
     return new MiniMessageTranslationStoreImpl(name, miniMessage);
   }
 }

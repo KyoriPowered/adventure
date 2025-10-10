@@ -32,8 +32,7 @@ import net.kyori.adventure.text.ComponentLike;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A signed chat message.
@@ -52,7 +51,7 @@ public sealed interface SignedMessage extends Identified, Examinable permits Sig
    * @sinceMinecraft 1.19
    */
   @Contract(value = "_ -> new", pure = true)
-  static @NotNull Signature signature(final byte[] signature) {
+  static Signature signature(final byte[] signature) {
     return new SignedMessageImpl.SignatureImpl(signature);
   }
 
@@ -66,7 +65,7 @@ public sealed interface SignedMessage extends Identified, Examinable permits Sig
    * @sinceMinecraft 1.19
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull SignedMessage system(final @NotNull String message, final @Nullable ComponentLike unsignedContent) {
+  static SignedMessage system(final String message, final @Nullable ComponentLike unsignedContent) {
     return new SignedMessageImpl(message, ComponentLike.unbox(unsignedContent));
   }
 
@@ -78,7 +77,7 @@ public sealed interface SignedMessage extends Identified, Examinable permits Sig
    * @sinceMinecraft 1.19
    */
   @Contract(pure = true)
-  @NotNull Instant timestamp();
+  Instant timestamp();
 
   /**
    * The salt.
@@ -118,7 +117,7 @@ public sealed interface SignedMessage extends Identified, Examinable permits Sig
    * @sinceMinecraft 1.19
    */
   @Contract(pure = true)
-  @NotNull String message();
+  String message();
 
   /**
    * Checks if this message is a system message.
@@ -145,7 +144,7 @@ public sealed interface SignedMessage extends Identified, Examinable permits Sig
   }
 
   @Override
-  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  default Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("timestamp", this.timestamp()),
       ExaminableProperty.of("salt", this.salt()),
@@ -174,7 +173,7 @@ public sealed interface SignedMessage extends Identified, Examinable permits Sig
     byte[] bytes();
 
     @Override
-    default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+    default Stream<? extends ExaminableProperty> examinableProperties() {
       return Stream.of(ExaminableProperty.of("bytes", this.bytes()));
     }
   }

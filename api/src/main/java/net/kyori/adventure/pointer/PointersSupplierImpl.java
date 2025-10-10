@@ -29,25 +29,24 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 final class PointersSupplierImpl<T> implements PointersSupplier<T> {
   private final @Nullable PointersSupplier<? super T> parent;
   private final Map<Pointer<?>, Function<T, ?>> resolvers;
 
-  PointersSupplierImpl(final @NotNull BuilderImpl<T> builder) {
+  PointersSupplierImpl(final BuilderImpl<T> builder) {
     this.parent = builder.parent;
     this.resolvers = Map.copyOf(builder.resolvers);
   }
 
   @Override
-  public @NotNull Pointers view(final @NotNull T instance) {
+  public Pointers view(final T instance) {
     return new ForwardingPointers<>(instance, this);
   }
 
   @Override
-  public <P> boolean supports(final @NotNull Pointer<P> pointer) {
+  public <P> boolean supports(final Pointer<P> pointer) {
     if (this.resolvers.containsKey(Objects.requireNonNull(pointer, "pointer"))) {
       return true;
     } else if (this.parent == null) {
@@ -59,7 +58,7 @@ final class PointersSupplierImpl<T> implements PointersSupplier<T> {
 
   @Override
   @SuppressWarnings("unchecked") // all values are checked on entry
-  public @Nullable <P> Function<? super T, P> resolver(final @NotNull Pointer<P> pointer) {
+  public @Nullable <P> Function<? super T, P> resolver(final Pointer<P> pointer) {
     final Function<? super T, ?> resolver = this.resolvers.get(Objects.requireNonNull(pointer, "pointer"));
 
     if (resolver != null) {
@@ -74,7 +73,7 @@ final class PointersSupplierImpl<T> implements PointersSupplier<T> {
   record ForwardingPointers<U>(U instance, PointersSupplierImpl<U> supplier) implements Pointers {
     @Override
     @SuppressWarnings("unchecked") // all values are checked on entry
-    public @NotNull <T> Optional<T> get(final @NotNull Pointer<T> pointer) {
+    public <T> Optional<T> get(final Pointer<T> pointer) {
       Function<? super U, ?> resolver = this.supplier.resolvers.get(Objects.requireNonNull(pointer, "pointer"));
 
       // Fallback to the parent.
@@ -94,13 +93,13 @@ final class PointersSupplierImpl<T> implements PointersSupplier<T> {
     }
 
     @Override
-    public <T> boolean supports(final @NotNull Pointer<T> pointer) {
+    public <T> boolean supports(final Pointer<T> pointer) {
       return this.supplier.supports(pointer);
     }
 
     @Override
     @SuppressWarnings({"unchecked", "rawtypes"}) // all values are checked on entry
-    public @NotNull Builder toBuilder() {
+    public Builder toBuilder() {
       final Pointers.Builder builder = this.supplier.parent == null ? Pointers.builder() : this.supplier.parent.view(this.instance).toBuilder();
 
       for (final Map.Entry<Pointer<?>, Function<U, ?>> entry : this.supplier.resolvers.entrySet()) {
@@ -120,19 +119,19 @@ final class PointersSupplierImpl<T> implements PointersSupplier<T> {
     }
 
     @Override
-    public @NotNull Builder<T> parent(final @Nullable PointersSupplier<? super T> parent) {
+    public Builder<T> parent(final @Nullable PointersSupplier<? super T> parent) {
       this.parent = parent;
       return this;
     }
 
     @Override
-    public @NotNull <P> Builder<T> resolving(final @NotNull Pointer<P> pointer, final @NotNull Function<T, P> resolver) {
+    public <P> Builder<T> resolving(final Pointer<P> pointer, final Function<T, P> resolver) {
       this.resolvers.put(pointer, resolver);
       return this;
     }
 
     @Override
-    public @NotNull PointersSupplier<T> build() {
+    public PointersSupplier<T> build() {
       return new PointersSupplierImpl<>(this);
     }
   }

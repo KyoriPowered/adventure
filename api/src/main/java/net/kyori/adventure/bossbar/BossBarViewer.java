@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.bossbar;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 
 /**
@@ -39,5 +38,5 @@ public interface BossBarViewer {
    * @since 4.14.0
    */
   @UnmodifiableView
-  @NotNull Iterable<? extends BossBar> activeBossBars();
+  Iterable<? extends BossBar> activeBossBars();
 }

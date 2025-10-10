@@ -32,7 +32,6 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents information about a resource pack that can be sent to players.
@@ -51,7 +50,7 @@ public sealed interface ResourcePackInfo extends Examinable, ResourcePackInfoLik
    * @return the resource pack request
    * @since 4.15.0
    */
-  static @NotNull ResourcePackInfo resourcePackInfo(final @NotNull UUID id, final @NotNull URI uri, final @NotNull String hash) {
+  static ResourcePackInfo resourcePackInfo(final UUID id, final URI uri, final String hash) {
     return new ResourcePackInfoImpl(id, uri, hash);
   }
 
@@ -61,7 +60,7 @@ public sealed interface ResourcePackInfo extends Examinable, ResourcePackInfoLik
    * @return a builder
    * @since 4.15.0
    */
-  static @NotNull Builder resourcePackInfo() {
+  static Builder resourcePackInfo() {
     return new ResourcePackInfoImpl.BuilderImpl();
   }
 
@@ -71,7 +70,7 @@ public sealed interface ResourcePackInfo extends Examinable, ResourcePackInfoLik
    * @return the id
    * @since 4.15.0
    */
-  @NotNull UUID id();
+  UUID id();
 
   /**
    * Gets the uri.
@@ -79,7 +78,7 @@ public sealed interface ResourcePackInfo extends Examinable, ResourcePackInfoLik
    * @return the uri
    * @since 4.15.0
    */
-  @NotNull URI uri();
+  URI uri();
 
   /**
    * Gets the SHA-1 hash.
@@ -87,10 +86,10 @@ public sealed interface ResourcePackInfo extends Examinable, ResourcePackInfoLik
    * @return the hash
    * @since 4.15.0
    */
-  @NotNull String hash();
+  String hash();
 
   @Override
-  default @NotNull ResourcePackInfo asResourcePackInfo() {
+  default ResourcePackInfo asResourcePackInfo() {
     return this;
   }
 
@@ -108,7 +107,7 @@ public sealed interface ResourcePackInfo extends Examinable, ResourcePackInfoLik
      * @since 4.15.0
      */
     @Contract("_ -> this")
-    @NotNull Builder id(final @NotNull UUID id);
+    Builder id(final UUID id);
 
     /**
      * Sets the uri.
@@ -122,7 +121,7 @@ public sealed interface ResourcePackInfo extends Examinable, ResourcePackInfoLik
      * @since 4.15.0
      */
     @Contract("_ -> this")
-    @NotNull Builder uri(final @NotNull URI uri);
+    Builder uri(final URI uri);
 
     /**
      * Sets the hash.
@@ -132,7 +131,7 @@ public sealed interface ResourcePackInfo extends Examinable, ResourcePackInfoLik
      * @since 4.15.0
      */
     @Contract("_ -> this")
-    @NotNull Builder hash(final @NotNull String hash);
+    Builder hash(final String hash);
 
     /**
      * Builds.
@@ -141,7 +140,7 @@ public sealed interface ResourcePackInfo extends Examinable, ResourcePackInfoLik
      * @since 4.15.0
      */
     @Override
-    @NotNull ResourcePackInfo build();
+    ResourcePackInfo build();
 
     /**
      * Builds, computing a hash based on the provided URL.
@@ -151,7 +150,7 @@ public sealed interface ResourcePackInfo extends Examinable, ResourcePackInfoLik
      * @return a future providing the new resource pack request
      * @since 4.15.0
      */
-    default @NotNull CompletableFuture<ResourcePackInfo> computeHashAndBuild() {
+    default CompletableFuture<ResourcePackInfo> computeHashAndBuild() {
       return this.computeHashAndBuild(ForkJoinPool.commonPool());
     }
 
@@ -164,10 +163,10 @@ public sealed interface ResourcePackInfo extends Examinable, ResourcePackInfoLik
      * @return a future providing the new resource pack request
      * @since 4.15.0
      */
-    @NotNull CompletableFuture<ResourcePackInfo> computeHashAndBuild(final @NotNull Executor executor);
+    CompletableFuture<ResourcePackInfo> computeHashAndBuild(final Executor executor);
 
     @Override
-    default @NotNull ResourcePackInfo asResourcePackInfo() {
+    default ResourcePackInfo asResourcePackInfo() {
       return this.build();
     }
   }

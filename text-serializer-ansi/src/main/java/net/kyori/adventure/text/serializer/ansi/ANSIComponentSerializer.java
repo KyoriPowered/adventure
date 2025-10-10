@@ -31,7 +31,6 @@ import net.kyori.adventure.text.serializer.ComponentEncoder;
 import net.kyori.adventure.util.PlatformAPI;
 import net.kyori.ansi.ColorLevel;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * A serializer which emits <a href="https://en.wikipedia.org/wiki/ANSI_escape_code">ANSI escape sequences</a>.
@@ -49,7 +48,7 @@ public interface ANSIComponentSerializer extends ComponentEncoder<Component, Str
    * @return a component serializer for serialization with ANSI escape sequences.
    * @since 4.14.0
    */
-  static @NotNull ANSIComponentSerializer ansi() {
+  static ANSIComponentSerializer ansi() {
     return ANSIComponentSerializerImpl.Instances.INSTANCE;
   }
 
@@ -59,7 +58,7 @@ public interface ANSIComponentSerializer extends ComponentEncoder<Component, Str
    * @return a new ANSI serializer builder
    * @since 4.14.0
    */
-  static ANSIComponentSerializer.@NotNull Builder builder() {
+  static ANSIComponentSerializer.Builder builder() {
     return new ANSIComponentSerializerImpl.BuilderImpl();
   }
 
@@ -79,7 +78,7 @@ public interface ANSIComponentSerializer extends ComponentEncoder<Component, Str
      * @see ColorLevel
      * @since 4.14.0
      */
-    @NotNull Builder colorLevel(final @NotNull ColorLevel colorLevel);
+    Builder colorLevel(final ColorLevel colorLevel);
 
     /**
      * Sets the component flattener instance to use when traversing the component for serialization.
@@ -90,7 +89,7 @@ public interface ANSIComponentSerializer extends ComponentEncoder<Component, Str
      * @return this builder
      * @since 4.14.0
      */
-    @NotNull Builder flattener(final @NotNull ComponentFlattener componentFlattener);
+    Builder flattener(final ComponentFlattener componentFlattener);
 
     /**
      * Builds the serializer.
@@ -98,7 +97,7 @@ public interface ANSIComponentSerializer extends ComponentEncoder<Component, Str
      * @return the built serializer
      */
     @Override
-    @NotNull ANSIComponentSerializer build();
+    ANSIComponentSerializer build();
   }
 
   /**
@@ -117,7 +116,7 @@ public interface ANSIComponentSerializer extends ComponentEncoder<Component, Str
      */
     @ApiStatus.Internal
     @PlatformAPI
-    @NotNull ANSIComponentSerializer ansi();
+    ANSIComponentSerializer ansi();
 
     /**
      * Completes the building process of {@link Builder}.
@@ -127,6 +126,6 @@ public interface ANSIComponentSerializer extends ComponentEncoder<Component, Str
      */
     @ApiStatus.Internal
     @PlatformAPI
-    @NotNull Consumer<Builder> builder();
+    Consumer<Builder> builder();
   }
 }

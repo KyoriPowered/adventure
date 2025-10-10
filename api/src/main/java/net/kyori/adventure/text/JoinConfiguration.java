@@ -29,8 +29,7 @@ import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A configuration for how a series of components can be joined.
@@ -88,7 +87,7 @@ public sealed interface JoinConfiguration extends Examinable permits JoinConfigu
    * @return a new builder
    * @since 4.9.0
    */
-  static @NotNull Builder builder() {
+  static Builder builder() {
     return new JoinConfigurationImpl.BuilderImpl();
   }
 
@@ -98,7 +97,7 @@ public sealed interface JoinConfiguration extends Examinable permits JoinConfigu
    * @return the join configuration
    * @since 4.9.0
    */
-  static @NotNull JoinConfiguration noSeparators() {
+  static JoinConfiguration noSeparators() {
     return JoinConfigurationImpl.NULL;
   }
 
@@ -111,7 +110,7 @@ public sealed interface JoinConfiguration extends Examinable permits JoinConfigu
    * @return the join configuration
    * @since 4.10.0
    */
-  static @NotNull JoinConfiguration newlines() {
+  static JoinConfiguration newlines() {
     return JoinConfigurationImpl.STANDARD_NEW_LINES;
   }
 
@@ -124,7 +123,7 @@ public sealed interface JoinConfiguration extends Examinable permits JoinConfigu
    * @return the join configuration
    * @since 4.15.0
    */
-  static @NotNull JoinConfiguration spaces() {
+  static JoinConfiguration spaces() {
     return JoinConfigurationImpl.STANDARD_SPACES;
   }
 
@@ -138,7 +137,7 @@ public sealed interface JoinConfiguration extends Examinable permits JoinConfigu
    * @return the join configuration
    * @since 4.10.0
    */
-  static @NotNull JoinConfiguration commas(final boolean spaces) {
+  static JoinConfiguration commas(final boolean spaces) {
     return spaces ? JoinConfigurationImpl.STANDARD_COMMA_SPACE_SEPARATED : JoinConfigurationImpl.STANDARD_COMMA_SEPARATED;
   }
 
@@ -153,7 +152,7 @@ public sealed interface JoinConfiguration extends Examinable permits JoinConfigu
    * @return the join configuration
    * @since 4.10.0
    */
-  static @NotNull JoinConfiguration arrayLike() {
+  static JoinConfiguration arrayLike() {
     return JoinConfigurationImpl.STANDARD_ARRAY_LIKE;
   }
 
@@ -164,7 +163,7 @@ public sealed interface JoinConfiguration extends Examinable permits JoinConfigu
    * @return the join configuration
    * @since 4.9.0
    */
-  static @NotNull JoinConfiguration separator(final @Nullable ComponentLike separator) {
+  static JoinConfiguration separator(final @Nullable ComponentLike separator) {
     if (separator == null) return JoinConfigurationImpl.NULL;
     return builder().separator(separator).build();
   }
@@ -177,7 +176,7 @@ public sealed interface JoinConfiguration extends Examinable permits JoinConfigu
    * @return the join configuration
    * @since 4.9.0
    */
-  static @NotNull JoinConfiguration separators(final @Nullable ComponentLike separator, final @Nullable ComponentLike lastSeparator) {
+  static JoinConfiguration separators(final @Nullable ComponentLike separator, final @Nullable ComponentLike lastSeparator) {
     if (separator == null && lastSeparator == null) return JoinConfigurationImpl.NULL;
     return builder().separator(separator).lastSeparator(lastSeparator).build();
   }
@@ -231,7 +230,7 @@ public sealed interface JoinConfiguration extends Examinable permits JoinConfigu
    * @return the operator
    * @since 4.9.0
    */
-  @NotNull Function<ComponentLike, Component> convertor();
+  Function<ComponentLike, Component> convertor();
 
   /**
    * Gets the predicate of this join configuration.
@@ -241,7 +240,7 @@ public sealed interface JoinConfiguration extends Examinable permits JoinConfigu
    * @return the predicate
    * @since 4.9.0
    */
-  @NotNull Predicate<ComponentLike> predicate();
+  Predicate<ComponentLike> predicate();
 
   /**
    * Gets the style of the parent component that contains the joined components.
@@ -249,7 +248,7 @@ public sealed interface JoinConfiguration extends Examinable permits JoinConfigu
    * @return the style
    * @since 4.11.0
    */
-  @NotNull Style parentStyle();
+  Style parentStyle();
 
   /**
    * A builder for join configurations.
@@ -265,7 +264,7 @@ public sealed interface JoinConfiguration extends Examinable permits JoinConfigu
      * @since 4.9.0
      */
     @Contract("_ -> this")
-    @NotNull Builder prefix(final @Nullable ComponentLike prefix);
+    Builder prefix(final @Nullable ComponentLike prefix);
 
     /**
      * Sets the suffix of this join configuration builder.
@@ -275,7 +274,7 @@ public sealed interface JoinConfiguration extends Examinable permits JoinConfigu
      * @since 4.9.0
      */
     @Contract("_ -> this")
-    @NotNull Builder suffix(final @Nullable ComponentLike suffix);
+    Builder suffix(final @Nullable ComponentLike suffix);
 
     /**
      * Sets the separator of this join configuration builder.
@@ -285,7 +284,7 @@ public sealed interface JoinConfiguration extends Examinable permits JoinConfigu
      * @since 4.9.0
      */
     @Contract("_ -> this")
-    @NotNull Builder separator(final @Nullable ComponentLike separator);
+    Builder separator(final @Nullable ComponentLike separator);
 
     /**
      * Sets the last separator of this join configuration builder.
@@ -295,7 +294,7 @@ public sealed interface JoinConfiguration extends Examinable permits JoinConfigu
      * @since 4.9.0
      */
     @Contract("_ -> this")
-    @NotNull Builder lastSeparator(final @Nullable ComponentLike lastSeparator);
+    Builder lastSeparator(final @Nullable ComponentLike lastSeparator);
 
     /**
      * Sets the last separator that will be used instead of the normal last separator in the case where there
@@ -308,7 +307,7 @@ public sealed interface JoinConfiguration extends Examinable permits JoinConfigu
      * @since 4.9.0
      */
     @Contract("_ -> this")
-    @NotNull Builder lastSeparatorIfSerial(final @Nullable ComponentLike lastSeparatorIfSerial);
+    Builder lastSeparatorIfSerial(final @Nullable ComponentLike lastSeparatorIfSerial);
 
     /**
      * Sets the convertor of this join configuration builder.
@@ -320,7 +319,7 @@ public sealed interface JoinConfiguration extends Examinable permits JoinConfigu
      * @since 4.9.0
      */
     @Contract("_ -> this")
-    @NotNull Builder convertor(final @NotNull Function<ComponentLike, Component> convertor);
+    Builder convertor(final Function<ComponentLike, Component> convertor);
 
     /**
      * Sets the predicate of this join configuration builder.
@@ -332,7 +331,7 @@ public sealed interface JoinConfiguration extends Examinable permits JoinConfigu
      * @since 4.9.0
      */
     @Contract("_ -> this")
-    @NotNull Builder predicate(final @NotNull Predicate<ComponentLike> predicate);
+    Builder predicate(final Predicate<ComponentLike> predicate);
 
     /**
      * Sets the style of the parent component that contains the joined components.
@@ -342,6 +341,6 @@ public sealed interface JoinConfiguration extends Examinable permits JoinConfigu
      * @since 4.11.0
      */
     @Contract("_ -> this")
-    @NotNull Builder parentStyle(final @NotNull Style parentStyle);
+    Builder parentStyle(final Style parentStyle);
   }
 }

@@ -24,7 +24,6 @@
 package net.kyori.adventure.serializer.configurate4;
 
 import net.kyori.adventure.text.event.DataComponentValue;
-import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurationNode;
 
 /**
@@ -40,7 +39,7 @@ public interface ConfigurateDataComponentValue extends DataComponentValue {
    * @return the captured value
    * @since 4.17.0
    */
-  static @NotNull ConfigurateDataComponentValue capturingDataComponentValue(final @NotNull ConfigurationNode existing) {
+  static ConfigurateDataComponentValue capturingDataComponentValue(final ConfigurationNode existing) {
     return SnapshottingConfigurateDataComponentValue.create(existing);
   }
 
@@ -50,5 +49,5 @@ public interface ConfigurateDataComponentValue extends DataComponentValue {
    * @param node the node to apply this value to
    * @since 4.17.0
    */
-  void applyTo(final @NotNull ConfigurationNode node);
+  void applyTo(final ConfigurationNode node);
 }

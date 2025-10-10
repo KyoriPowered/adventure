@@ -23,8 +23,6 @@
  */
 package net.kyori.adventure.nbt;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * An array binary tag.
  *
@@ -32,5 +30,5 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface ArrayBinaryTag extends BinaryTag {
   @Override
-  @NotNull BinaryTagType<? extends ArrayBinaryTag> type();
+  BinaryTagType<? extends ArrayBinaryTag> type();
 }

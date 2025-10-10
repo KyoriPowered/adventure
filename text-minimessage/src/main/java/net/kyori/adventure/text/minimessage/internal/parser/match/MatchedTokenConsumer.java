@@ -25,7 +25,6 @@ package net.kyori.adventure.text.minimessage.internal.parser.match;
 
 import net.kyori.adventure.text.minimessage.internal.parser.TokenType;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
 /**
@@ -45,7 +44,7 @@ public abstract class MatchedTokenConsumer<T> {
    * @param input the input
    * @since 4.10.0
    */
-  public MatchedTokenConsumer(final @NotNull String input) {
+  public MatchedTokenConsumer(final String input) {
     this.input = input;
   }
 
@@ -58,7 +57,7 @@ public abstract class MatchedTokenConsumer<T> {
    * @since 4.10.0
    */
   @MustBeInvokedByOverriders
-  public void accept(final int start, final int end, final @NotNull TokenType tokenType) {
+  public void accept(final int start, final int end, final TokenType tokenType) {
     this.lastIndex = end;
   }
 

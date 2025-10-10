@@ -37,21 +37,20 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.renderer.ComponentRenderer;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
 record HoverEventImpl<V>(Action<V> action, V value) implements HoverEvent<V> {
 
-  public HoverEventImpl(final @NotNull Action<V> action, final @NotNull V value) {
+  public HoverEventImpl(final Action<V> action, final V value) {
     this.action = requireNonNull(action, "action");
     this.value = requireNonNull(value, "value");
   }
 
   @Override
-  public @NotNull HoverEvent<V> value(final @NotNull V value) {
+  public HoverEvent<V> value(final V value) {
     return new HoverEventImpl<>(this.action, value);
   }
 
@@ -65,7 +64,7 @@ record HoverEventImpl<V>(Action<V> action, V value) implements HoverEvent<V> {
    * @since 4.0.0
    */
   @Override
-  public <C> @NotNull HoverEvent<V> withRenderedValue(final @NotNull ComponentRenderer<C> renderer, final @NotNull C context) {
+  public <C> HoverEvent<V> withRenderedValue(final ComponentRenderer<C> renderer, final C context) {
     final V oldValue = this.value;
     final V newValue = this.action.renderer().render(renderer, context, oldValue);
     if (newValue != oldValue) return new HoverEventImpl<>(this.action, newValue);
@@ -73,53 +72,53 @@ record HoverEventImpl<V>(Action<V> action, V value) implements HoverEvent<V> {
   }
 
   @Override
-  public @NotNull HoverEvent<V> asHoverEvent() {
+  public HoverEvent<V> asHoverEvent() {
     return this; // i already am a hover event! hehehehe
   }
 
   @Override
-  public @NotNull HoverEvent<V> asHoverEvent(final @NotNull UnaryOperator<V> op) {
+  public HoverEvent<V> asHoverEvent(final UnaryOperator<V> op) {
     if (op == UnaryOperator.<V>identity()) return this; // nothing to do, can return ourself
     return new HoverEventImpl<>(this.action, op.apply(this.value));
   }
 
   @Override
-  public void styleApply(final Style.@NotNull Builder style) {
+  public void styleApply(final Style.Builder style) {
     style.hoverEvent(this);
   }
 
   @Override
-  public @NotNull String toString() {
+  public String toString() {
     return Internals.toString(this);
   }
 
   record ShowItemImpl(Key item, int count, BinaryTagHolder nbt, Map<Key, DataComponentValue> dataComponents) implements ShowItem {
     @Override
-    public @NotNull ShowItem item(final @NotNull Key item) {
+    public ShowItem item(final Key item) {
       if (requireNonNull(item, "item").equals(this.item)) return this;
       return new ShowItemImpl(item, this.count, this.nbt, this.dataComponents);
     }
 
     @Override
-    public @NotNull ShowItem count(final @Range(from = 0, to = Integer.MAX_VALUE) int count) {
+    public ShowItem count(final @Range(from = 0, to = Integer.MAX_VALUE) int count) {
       if (count == this.count) return this;
       return new ShowItemImpl(this.item, count, this.nbt, this.dataComponents);
     }
 
     @Override
-    public @NotNull ShowItem nbt(final @Nullable BinaryTagHolder nbt) {
+    public ShowItem nbt(final @Nullable BinaryTagHolder nbt) {
       if (Objects.equals(nbt, this.nbt)) return this;
       return new ShowItemImpl(this.item, this.count, nbt, Collections.emptyMap());
     }
 
     @Override
-    public @NotNull ShowItem dataComponents(final @NotNull Map<Key, DataComponentValue> holder) {
+    public ShowItem dataComponents(final Map<Key, DataComponentValue> holder) {
       if (Objects.equals(this.dataComponents, holder)) return this;
       return new ShowItemImpl(this.item, this.count, null, holder.isEmpty() ? Collections.emptyMap() : Collections.unmodifiableMap(new HashMap<>(holder)));
     }
 
     @Override
-    public <V extends DataComponentValue> @NotNull Map<Key, V> dataComponentsAs(final @NotNull Class<V> targetType) {
+    public <V extends DataComponentValue> Map<Key, V> dataComponentsAs(final Class<V> targetType) {
       if (this.dataComponents.isEmpty()) {
         return Collections.emptyMap();
       } else {
@@ -132,7 +131,7 @@ record HoverEventImpl<V>(Action<V> action, V value) implements HoverEvent<V> {
     }
 
     @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+    public Stream<? extends ExaminableProperty> examinableProperties() {
       return Stream.of(
         ExaminableProperty.of("item", this.item),
         ExaminableProperty.of("count", this.count),
@@ -142,32 +141,32 @@ record HoverEventImpl<V>(Action<V> action, V value) implements HoverEvent<V> {
     }
 
     @Override
-    public @NotNull String toString() {
+    public String toString() {
       return Internals.toString(this);
     }
   }
 
   record ShowEntityImpl(Key type, UUID id, Component name) implements ShowEntity {
     @Override
-    public @NotNull ShowEntity type(final @NotNull Key type) {
+    public ShowEntity type(final Key type) {
       if (requireNonNull(type, "type").equals(this.type)) return this;
       return new ShowEntityImpl(type, this.id, this.name);
     }
 
     @Override
-    public @NotNull ShowEntity id(final @NotNull UUID id) {
+    public ShowEntity id(final UUID id) {
       if (requireNonNull(id).equals(this.id)) return this;
       return new ShowEntityImpl(this.type, id, this.name);
     }
 
     @Override
-    public @NotNull ShowEntity name(final @Nullable Component name) {
+    public ShowEntity name(final @Nullable Component name) {
       if (Objects.equals(name, this.name)) return this;
       return new ShowEntityImpl(this.type, this.id, name);
     }
 
     @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+    public Stream<? extends ExaminableProperty> examinableProperties() {
       return Stream.of(
         ExaminableProperty.of("type", this.type),
         ExaminableProperty.of("id", this.id),
@@ -176,14 +175,14 @@ record HoverEventImpl<V>(Action<V> action, V value) implements HoverEvent<V> {
     }
 
     @Override
-    public @NotNull String toString() {
+    public String toString() {
       return Internals.toString(this);
     }
   }
 
   record ActionImpl<V>(String name, Class<V> type, boolean readable, Renderer<V> renderer) implements Action<V> {
     @Override
-    public @NotNull String toString() {
+    public String toString() {
       return this.name;
     }
   }

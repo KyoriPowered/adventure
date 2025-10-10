@@ -23,8 +23,6 @@
  */
 package net.kyori.adventure.nbt;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * An end tag.
  *
@@ -37,12 +35,12 @@ public interface EndBinaryTag extends BinaryTag {
    * @return the end tag
    * @since 4.14.0
    */
-  static @NotNull EndBinaryTag endBinaryTag() {
+  static EndBinaryTag endBinaryTag() {
     return EndBinaryTagImpl.INSTANCE;
   }
 
   @Override
-  default @NotNull BinaryTagType<EndBinaryTag> type() {
+  default BinaryTagType<EndBinaryTag> type() {
     return BinaryTagTypes.END;
   }
 }

@@ -29,7 +29,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.renderer.TranslatableComponentRenderer;
 import net.kyori.examination.Examinable;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * A global source of translations. The global source is the default source used by adventure platforms
@@ -47,7 +46,7 @@ public interface GlobalTranslator extends Translator, Examinable {
    * @return the source
    * @since 4.10.0
    */
-  static @NotNull GlobalTranslator translator() {
+  static GlobalTranslator translator() {
     return GlobalTranslatorImpl.INSTANCE;
   }
 
@@ -57,7 +56,7 @@ public interface GlobalTranslator extends Translator, Examinable {
    * @return a renderer
    * @since 4.0.0
    */
-  static @NotNull TranslatableComponentRenderer<Locale> renderer() {
+  static TranslatableComponentRenderer<Locale> renderer() {
     return GlobalTranslatorImpl.INSTANCE.renderer;
   }
 
@@ -69,7 +68,7 @@ public interface GlobalTranslator extends Translator, Examinable {
    * @return the rendered component
    * @since 4.0.0
    */
-  static @NotNull Component render(final @NotNull Component component, final @NotNull Locale locale) {
+  static Component render(final Component component, final Locale locale) {
     return renderer().render(component, locale);
   }
 
@@ -79,7 +78,7 @@ public interface GlobalTranslator extends Translator, Examinable {
    * @return the sources
    * @since 4.0.0
    */
-  @NotNull Iterable<? extends Translator> sources();
+  Iterable<? extends Translator> sources();
 
   /**
    * Adds a translation source.
@@ -91,7 +90,7 @@ public interface GlobalTranslator extends Translator, Examinable {
    * @throws IllegalArgumentException if source is {@link GlobalTranslator}
    * @since 4.0.0
    */
-  boolean addSource(final @NotNull Translator source);
+  boolean addSource(final Translator source);
 
   /**
    * Removes a translation source.
@@ -100,5 +99,5 @@ public interface GlobalTranslator extends Translator, Examinable {
    * @return {@code true} if unregistered, {@code false} otherwise
    * @since 4.0.0
    */
-  boolean removeSource(final @NotNull Translator source);
+  boolean removeSource(final Translator source);
 }

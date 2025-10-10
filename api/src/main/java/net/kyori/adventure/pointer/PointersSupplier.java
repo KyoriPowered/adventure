@@ -26,8 +26,7 @@ package net.kyori.adventure.pointer;
 import java.util.function.Function;
 import net.kyori.adventure.builder.AbstractBuilder;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A supplier of {@link Pointers} that allows for the implementation of pointers
@@ -61,7 +60,7 @@ public sealed interface PointersSupplier<T> permits PointersSupplierImpl {
    * @return the builder
    * @since 4.17.0
    */
-  static <T> @NotNull Builder<T> builder() {
+  static <T> Builder<T> builder() {
     return new PointersSupplierImpl.BuilderImpl<>();
   }
 
@@ -72,7 +71,7 @@ public sealed interface PointersSupplier<T> permits PointersSupplierImpl {
    * @return the view
    * @since 4.17.0
    */
-  @NotNull Pointers view(final @NotNull T instance);
+  Pointers view(final T instance);
 
   /**
    * Checks if this supplier supports a given pointer.
@@ -82,7 +81,7 @@ public sealed interface PointersSupplier<T> permits PointersSupplierImpl {
    * @return if this supplier supports a given pointer
    * @since 4.17.0
    */
-  <P> boolean supports(final @NotNull Pointer<P> pointer);
+  <P> boolean supports(final Pointer<P> pointer);
 
   /**
    * Returns the resolver for a given pointer (if any).
@@ -92,7 +91,7 @@ public sealed interface PointersSupplier<T> permits PointersSupplierImpl {
    * @return the resolver, if any
    * @since 4.17.0
    */
-  <P> @Nullable Function<? super T, P> resolver(final @NotNull Pointer<P> pointer);
+  <P> @Nullable Function<? super T, P> resolver(final Pointer<P> pointer);
 
   /**
    * A builder for {@link PointersSupplier}.
@@ -110,7 +109,7 @@ public sealed interface PointersSupplier<T> permits PointersSupplierImpl {
      * @since 4.17.0
      */
     @Contract("_ -> this")
-    @NotNull Builder<T> parent(final @Nullable PointersSupplier<? super T> parent);
+    Builder<T> parent(final @Nullable PointersSupplier<? super T> parent);
 
     /**
      * Adds a resolver for a given pointer.
@@ -122,6 +121,6 @@ public sealed interface PointersSupplier<T> permits PointersSupplierImpl {
      * @since 4.17.0
      */
     @Contract("_, _ -> this")
-    <P> @NotNull Builder<T> resolving(final @NotNull Pointer<P> pointer, final @NotNull Function<T, P> resolver);
+    <P> Builder<T> resolving(final Pointer<P> pointer, final Function<T, P> resolver);
   }
 }

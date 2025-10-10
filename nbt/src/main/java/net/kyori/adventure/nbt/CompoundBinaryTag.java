@@ -30,9 +30,8 @@ import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -48,7 +47,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    * @return an empty tag
    * @since 4.0.0
    */
-  static @NotNull CompoundBinaryTag empty() {
+  static CompoundBinaryTag empty() {
     return CompoundBinaryTagImpl.EMPTY;
   }
 
@@ -61,7 +60,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    * @return a compound tag
    * @since 4.4.0
    */
-  static @NotNull CompoundBinaryTag from(final @NotNull Map<String, ? extends BinaryTag> tags) {
+  static CompoundBinaryTag from(final Map<String, ? extends BinaryTag> tags) {
     if (tags.isEmpty()) return empty();
     return new CompoundBinaryTagImpl(new HashMap<>(tags)); // explicitly copy
   }
@@ -74,7 +73,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    * @return a collector for map entries
    * @since 4.21.0
    */
-  static @NotNull Collector<Map.Entry<String, ? extends BinaryTag>, ?, CompoundBinaryTag> toCompoundTag() {
+  static Collector<Map.Entry<String, ? extends BinaryTag>, ?, CompoundBinaryTag> toCompoundTag() {
     return toCompoundTag(Map.Entry::getKey, Map.Entry::getValue);
   }
 
@@ -89,7 +88,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    * @return a collector creating compound tags
    * @since 4.21.0
    */
-  static <T> @NotNull Collector<T, ?, CompoundBinaryTag> toCompoundTag(final @NotNull Function<T, String> keyLens, final @NotNull Function<T, ? extends BinaryTag> valueLens) {
+  static <T> Collector<T, ?, CompoundBinaryTag> toCompoundTag(final Function<T, String> keyLens, final Function<T, ? extends BinaryTag> valueLens) {
     requireNonNull(keyLens, "keyLens");
     requireNonNull(valueLens, "valueLens");
 
@@ -111,7 +110,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    * @return a collector for map entries
    * @since 4.21.0
    */
-  static @NotNull Collector<Map.Entry<String, ? extends BinaryTag>, ?, CompoundBinaryTag> toCompoundTag(final @NotNull CompoundBinaryTag initial) {
+  static Collector<Map.Entry<String, ? extends BinaryTag>, ?, CompoundBinaryTag> toCompoundTag(final CompoundBinaryTag initial) {
     return toCompoundTag(initial, Map.Entry::getKey, Map.Entry::getValue);
   }
 
@@ -127,7 +126,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    * @return a collector creating compound tags
    * @since 4.21.0
    */
-  static <T> @NotNull Collector<T, ?, CompoundBinaryTag> toCompoundTag(final @NotNull CompoundBinaryTag initial, final @NotNull Function<T, String> keyLens, final @NotNull Function<T, ? extends BinaryTag> valueLens) {
+  static <T> Collector<T, ?, CompoundBinaryTag> toCompoundTag(final CompoundBinaryTag initial, final Function<T, String> keyLens, final Function<T, ? extends BinaryTag> valueLens) {
     requireNonNull(initial, "initial");
     requireNonNull(keyLens, "keyLens");
     requireNonNull(valueLens, "valueLens");
@@ -147,7 +146,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    * @return a new builder
    * @since 4.0.0
    */
-  static @NotNull Builder builder() {
+  static Builder builder() {
     return new CompoundTagBuilder();
   }
 
@@ -158,12 +157,12 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    * @return a new builder
    * @since 4.25.0
    */
-  static @NotNull Builder builder(final @Range(from = 0, to = Integer.MAX_VALUE) int initialCapacity) {
+  static Builder builder(final @Range(from = 0, to = Integer.MAX_VALUE) int initialCapacity) {
     return new CompoundTagBuilder(initialCapacity);
   }
 
   @Override
-  default @NotNull BinaryTagType<CompoundBinaryTag> type() {
+  default BinaryTagType<CompoundBinaryTag> type() {
     return BinaryTagTypes.COMPOUND;
   }
 
@@ -174,7 +173,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    * @return whether the compound contains the key
    * @since 4.25.0
    */
-  boolean contains(final @NotNull String key);
+  boolean contains(final String key);
 
   /**
    * Returns whether the compound contains a tag of a specific type with a key.
@@ -184,7 +183,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    * @return whether there is a tag of {@code type} with {@code key}
    * @since 4.25.0
    */
-  boolean contains(final @NotNull String key, final @NotNull BinaryTagType<?> type);
+  boolean contains(final String key, final BinaryTagType<?> type);
 
   /**
    * Gets a set of all keys.
@@ -192,7 +191,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    * @return the keys
    * @since 4.0.0
    */
-  @NotNull Set<String> keySet();
+  Set<String> keySet();
 
   /**
    * Gets a tag.
@@ -229,7 +228,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    *     with the specified key, or has a tag with a different type
    * @since 4.0.0
    */
-  default boolean getBoolean(final @NotNull String key) {
+  default boolean getBoolean(final String key) {
     return this.getBoolean(key, false);
   }
 
@@ -244,7 +243,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    *     with the specified key, or has a tag with a different type
    * @since 4.0.0
    */
-  default boolean getBoolean(final @NotNull String key, final boolean defaultValue) {
+  default boolean getBoolean(final String key, final boolean defaultValue) {
     final BinaryTag tag = this.get(key);
     if (tag instanceof ByteBinaryTag) {
       // != 0 might look weird, but it is what vanilla does
@@ -261,7 +260,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    *     with the specified key, or has a tag with a different type
    * @since 4.0.0
    */
-  default byte getByte(final @NotNull String key) {
+  default byte getByte(final String key) {
     return this.getByte(key, (byte) 0);
   }
 
@@ -274,7 +273,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    *     with the specified key, or has a tag with a different type
    * @since 4.0.0
    */
-  byte getByte(final @NotNull String key, final byte defaultValue);
+  byte getByte(final String key, final byte defaultValue);
 
   /**
    * Gets a short.
@@ -284,7 +283,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    *     with the specified key, or has a tag with a different type
    * @since 4.0.0
    */
-  default short getShort(final @NotNull String key) {
+  default short getShort(final String key) {
     return this.getShort(key, (short) 0);
   }
 
@@ -297,7 +296,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    *     with the specified key, or has a tag with a different type
    * @since 4.0.0
    */
-  short getShort(final @NotNull String key, final short defaultValue);
+  short getShort(final String key, final short defaultValue);
 
   /**
    * Gets an int.
@@ -307,7 +306,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    *     with the specified key, or has a tag with a different type
    * @since 4.0.0
    */
-  default int getInt(final @NotNull String key) {
+  default int getInt(final String key) {
     return this.getInt(key, 0);
   }
 
@@ -320,7 +319,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    *     with the specified key, or has a tag with a different type
    * @since 4.0.0
    */
-  int getInt(final @NotNull String key, final int defaultValue);
+  int getInt(final String key, final int defaultValue);
 
   /**
    * Gets a long.
@@ -330,7 +329,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    *     with the specified key, or has a tag with a different type
    * @since 4.0.0
    */
-  default long getLong(final @NotNull String key) {
+  default long getLong(final String key) {
     return this.getLong(key, 0L);
   }
 
@@ -343,7 +342,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    *     with the specified key, or has a tag with a different type
    * @since 4.0.0
    */
-  long getLong(final @NotNull String key, final long defaultValue);
+  long getLong(final String key, final long defaultValue);
 
   /**
    * Gets a float.
@@ -353,7 +352,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    *     with the specified key, or has a tag with a different type
    * @since 4.0.0
    */
-  default float getFloat(final @NotNull String key) {
+  default float getFloat(final String key) {
     return this.getFloat(key, 0f);
   }
 
@@ -366,7 +365,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    *     with the specified key, or has a tag with a different type
    * @since 4.0.0
    */
-  float getFloat(final @NotNull String key, final float defaultValue);
+  float getFloat(final String key, final float defaultValue);
 
   /**
    * Gets a double.
@@ -376,7 +375,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    *     with the specified key, or has a tag with a different type
    * @since 4.0.0
    */
-  default double getDouble(final @NotNull String key) {
+  default double getDouble(final String key) {
     return this.getDouble(key, 0d);
   }
 
@@ -389,7 +388,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    *     with the specified key, or has a tag with a different type
    * @since 4.0.0
    */
-  double getDouble(final @NotNull String key, final double defaultValue);
+  double getDouble(final String key, final double defaultValue);
 
   /**
    * Gets an array of bytes.
@@ -399,7 +398,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    *     with the specified key, or has a tag with a different type
    * @since 4.0.0
    */
-  byte@NotNull[] getByteArray(final @NotNull String key);
+  byte[] getByteArray(final String key);
 
   /**
    * Gets an array of bytes.
@@ -410,7 +409,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    * @since 4.0.0
    */
   @Contract("_, !null -> !null")
-  byte@Nullable[] getByteArray(final @NotNull String key, final byte@Nullable[] defaultValue);
+  byte@Nullable[] getByteArray(final String key, final byte@Nullable[] defaultValue);
 
   /**
    * Gets a string.
@@ -420,7 +419,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    *     with the specified key, or has a tag with a different type
    * @since 4.0.0
    */
-  default @NotNull String getString(final @NotNull String key) {
+  default String getString(final String key) {
     return this.getString(key, "");
   }
 
@@ -434,7 +433,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    * @since 4.0.0
    */
   @Contract("_, !null -> !null")
-  @Nullable String getString(final @NotNull String key, final @Nullable String defaultValue);
+  @Nullable String getString(final String key, final @Nullable String defaultValue);
 
   /**
    * Gets a list.
@@ -444,7 +443,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    *     with the specified key, or has a tag with a different type
    * @since 4.0.0
    */
-  default @NotNull ListBinaryTag getList(final @NotNull String key) {
+  default ListBinaryTag getList(final String key) {
     return this.getList(key, ListBinaryTag.empty());
   }
 
@@ -458,7 +457,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    * @since 4.0.0
    */
   @Contract("_, !null -> !null")
-  @Nullable ListBinaryTag getList(final @NotNull String key, final @Nullable ListBinaryTag defaultValue);
+  @Nullable ListBinaryTag getList(final String key, final @Nullable ListBinaryTag defaultValue);
 
   /**
    * Gets a list, ensuring that the type is the same as {@code type}.
@@ -470,7 +469,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    *     does not match {@code expectedType}
    * @since 4.0.0
    */
-  default @NotNull ListBinaryTag getList(final @NotNull String key, final @NotNull BinaryTagType<? extends BinaryTag> expectedType) {
+  default ListBinaryTag getList(final String key, final BinaryTagType<? extends BinaryTag> expectedType) {
     return this.getList(key, expectedType, ListBinaryTag.empty());
   }
 
@@ -486,7 +485,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    * @since 4.0.0
    */
   @Contract("_, _, !null -> !null")
-  @Nullable ListBinaryTag getList(final @NotNull String key, final @NotNull BinaryTagType<? extends BinaryTag> expectedType, final @Nullable ListBinaryTag defaultValue);
+  @Nullable ListBinaryTag getList(final String key, final BinaryTagType<? extends BinaryTag> expectedType, final @Nullable ListBinaryTag defaultValue);
 
   /**
    * Gets a compound.
@@ -496,7 +495,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    *     with the specified key, or has a tag with a different type
    * @since 4.0.0
    */
-  default @NotNull CompoundBinaryTag getCompound(final @NotNull String key) {
+  default CompoundBinaryTag getCompound(final String key) {
     return this.getCompound(key, empty());
   }
 
@@ -510,7 +509,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    * @since 4.0.0
    */
   @Contract("_, !null -> !null")
-  @Nullable CompoundBinaryTag getCompound(final @NotNull String key, final @Nullable CompoundBinaryTag defaultValue);
+  @Nullable CompoundBinaryTag getCompound(final String key, final @Nullable CompoundBinaryTag defaultValue);
 
   /**
    * Gets an array of ints.
@@ -520,7 +519,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    *     with the specified key, or has a tag with a different type
    * @since 4.0.0
    */
-  int@NotNull[] getIntArray(final @NotNull String key);
+  int[] getIntArray(final String key);
 
   /**
    * Gets an array of ints.
@@ -531,7 +530,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    * @since 4.0.0
    */
   @Contract("_, !null -> !null")
-  int@Nullable[] getIntArray(final @NotNull String key, final int@Nullable[] defaultValue);
+  int@Nullable[] getIntArray(final String key, final int@Nullable[] defaultValue);
 
   /**
    * Gets an array of longs.
@@ -541,7 +540,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    *     with the specified key, or has a tag with a different type
    * @since 4.0.0
    */
-  long@NotNull[] getLongArray(final @NotNull String key);
+  long[] getLongArray(final String key);
 
   /**
    * Gets an array of longs.
@@ -552,7 +551,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    * @since 4.0.0
    */
   @Contract("_, !null -> !null")
-  long@Nullable[] getLongArray(final @NotNull String key, final long@Nullable[] defaultValue);
+  long@Nullable[] getLongArray(final String key, final long@Nullable[] defaultValue);
 
   /**
    * Gets a stream of entries in this compound tag.
@@ -574,6 +573,6 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
      * @return a compound tag
      * @since 4.0.0
      */
-    @NotNull CompoundBinaryTag build();
+    CompoundBinaryTag build();
   }
 }

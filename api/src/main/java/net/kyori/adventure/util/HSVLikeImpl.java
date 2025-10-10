@@ -24,7 +24,6 @@
 package net.kyori.adventure.util;
 
 import net.kyori.adventure.internal.Internals;
-import org.jetbrains.annotations.NotNull;
 
 record HSVLikeImpl(float h, float s, float v) implements HSVLike {
   HSVLikeImpl {
@@ -41,7 +40,7 @@ record HSVLikeImpl(float h, float s, float v) implements HSVLike {
   }
 
   @Override
-  public @NotNull String toString() {
+  public String toString() {
     return Internals.toString(this);
   }
 }

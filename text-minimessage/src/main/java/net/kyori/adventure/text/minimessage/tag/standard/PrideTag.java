@@ -24,8 +24,6 @@
 package net.kyori.adventure.text.minimessage.tag.standard;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -38,8 +36,7 @@ import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Applies pride flags to a component.
@@ -107,13 +104,13 @@ final class PrideTag extends GradientTag {
 
   private final String flag;
 
-  PrideTag(final double phase, final @NotNull List<@NotNull TextColor> colors, final @NotNull String flag, final Context ctx) {
+  PrideTag(final double phase, final List<TextColor> colors, final String flag, final Context ctx) {
     super(phase, colors, ctx);
     this.flag = flag;
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("flag", this.flag),
       ExaminableProperty.of("phase", this.phase)
@@ -134,7 +131,7 @@ final class PrideTag extends GradientTag {
       && this.flag.equals(that.flag);
   }
 
-  private static @NotNull List<TextColor> colors(final int @NotNull ... colors) {
+  private static List<TextColor> colors(final int ... colors) {
     return Arrays.stream(colors).mapToObj(TextColor::color).collect(Collectors.toList());
   }
 }

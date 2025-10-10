@@ -26,8 +26,7 @@ package net.kyori.adventure.translation;
 import java.text.MessageFormat;
 import java.util.Locale;
 import net.kyori.adventure.key.Key;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 final class MessageFormatTranslationStore extends AbstractTranslationStore.StringBased<MessageFormat> {
 
@@ -36,12 +35,12 @@ final class MessageFormatTranslationStore extends AbstractTranslationStore.Strin
   }
 
   @Override
-  protected @NotNull MessageFormat parse(final @NotNull String string, final @NotNull Locale locale) {
+  protected MessageFormat parse(final String string, final Locale locale) {
     return new MessageFormat(string, locale);
   }
 
   @Override
-  public @Nullable MessageFormat translate(final @NotNull String key, final @NotNull Locale locale) {
+  public @Nullable MessageFormat translate(final String key, final Locale locale) {
     return this.translationValue(key, locale);
   }
 }

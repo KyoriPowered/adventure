@@ -25,7 +25,6 @@ package net.kyori.adventure.serializer.configurate4;
 
 import java.util.stream.Stream;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.AttributedConfigurationNode;
 import org.spongepowered.configurate.BasicConfigurationNode;
 import org.spongepowered.configurate.CommentedConfigurationNode;
@@ -35,7 +34,7 @@ final class SnapshottingConfigurateDataComponentValue implements ConfigurateData
   private final ConfigurationNode ownedNode;
 
   // capture the value of an existing node without exposing any mutable state
-  static @NotNull SnapshottingConfigurateDataComponentValue create(final ConfigurationNode existing) {
+  static SnapshottingConfigurateDataComponentValue create(final ConfigurationNode existing) {
     final ConfigurationNode owned;
     if (existing instanceof AttributedConfigurationNode) {
       owned = AttributedConfigurationNode.root(((AttributedConfigurationNode) existing).tagName(), existing.options());
@@ -55,12 +54,12 @@ final class SnapshottingConfigurateDataComponentValue implements ConfigurateData
   }
 
   @Override
-  public void applyTo(final @NotNull ConfigurationNode node) {
+  public void applyTo(final ConfigurationNode node) {
     node.from(this.ownedNode);
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("ownedNode", this.ownedNode)
     );

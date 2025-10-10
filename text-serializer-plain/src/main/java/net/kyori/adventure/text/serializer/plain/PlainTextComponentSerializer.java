@@ -33,7 +33,6 @@ import net.kyori.adventure.text.flattener.ComponentFlattener;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.PlatformAPI;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * A plain-text component serializer.
@@ -50,7 +49,7 @@ public interface PlainTextComponentSerializer extends ComponentSerializer<Compon
    * @return serializer instance
    * @since 4.8.0
    */
-  static @NotNull PlainTextComponentSerializer plainText() {
+  static PlainTextComponentSerializer plainText() {
     return PlainTextComponentSerializerImpl.Instances.INSTANCE;
   }
 
@@ -60,17 +59,17 @@ public interface PlainTextComponentSerializer extends ComponentSerializer<Compon
    * @return a new plain serializer builder
    * @since 4.8.0
    */
-  static PlainTextComponentSerializer.@NotNull Builder builder() {
+  static PlainTextComponentSerializer.Builder builder() {
     return new PlainTextComponentSerializerImpl.BuilderImpl();
   }
 
   @Override
-  default @NotNull TextComponent deserialize(final @NotNull String input) {
+  default TextComponent deserialize(final String input) {
     return Component.text(input);
   }
 
   @Override
-  default @NotNull String serialize(final @NotNull Component component) {
+  default String serialize(final Component component) {
     final StringBuilder sb = new StringBuilder();
     this.serialize(sb, component);
     return sb.toString();
@@ -83,10 +82,10 @@ public interface PlainTextComponentSerializer extends ComponentSerializer<Compon
    * @param component the component
    * @since 4.8.0
    */
-  void serialize(final @NotNull StringBuilder sb, final @NotNull Component component);
+  void serialize(final StringBuilder sb, final Component component);
 
   // TODO: common builder interface?
-  @NotNull Builder toBuilder();
+  Builder toBuilder();
 
   /**
    * A builder for the plain-text component serializer.
@@ -103,7 +102,7 @@ public interface PlainTextComponentSerializer extends ComponentSerializer<Compon
      * @return this builder
      * @since 4.8.0
      */
-    @NotNull Builder flattener(final @NotNull ComponentFlattener flattener);
+    Builder flattener(final ComponentFlattener flattener);
   }
 
   /**
@@ -122,7 +121,7 @@ public interface PlainTextComponentSerializer extends ComponentSerializer<Compon
      */
     @ApiStatus.Internal
     @PlatformAPI
-    @NotNull PlainTextComponentSerializer plainTextSimple();
+    PlainTextComponentSerializer plainTextSimple();
 
     /**
      * Completes the building process of {@link Builder}.
@@ -132,6 +131,6 @@ public interface PlainTextComponentSerializer extends ComponentSerializer<Compon
      */
     @ApiStatus.Internal
     @PlatformAPI
-    @NotNull Consumer<Builder> plainText();
+    Consumer<Builder> plainText();
   }
 }

@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.util;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
 /**
@@ -62,7 +61,7 @@ public interface RGBLike {
    * @return an HSVLike representing this RGBLike in the HSV color space
    * @since 4.6.0
    */
-  default @NotNull HSVLike asHSV() {
+  default HSVLike asHSV() {
     return HSVLike.fromRGB(this.red(), this.green(), this.blue());
   }
 }

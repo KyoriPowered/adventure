@@ -23,8 +23,6 @@
  */
 package net.kyori.adventure.nbt;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * A binary tag holding an {@code int} value.
  *
@@ -38,12 +36,12 @@ public interface IntBinaryTag extends NumberBinaryTag {
    * @return a binary tag
    * @since 4.14.0
    */
-  static @NotNull IntBinaryTag intBinaryTag(final int value) {
+  static IntBinaryTag intBinaryTag(final int value) {
     return new IntBinaryTagImpl(value);
   }
 
   @Override
-  default @NotNull BinaryTagType<IntBinaryTag> type() {
+  default BinaryTagType<IntBinaryTag> type() {
     return BinaryTagTypes.INT;
   }
 

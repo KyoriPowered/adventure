@@ -32,50 +32,49 @@ import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.translation.AbstractTranslationStore;
 import net.kyori.adventure.util.TriState;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 final class MiniMessageTranslationStoreImpl extends AbstractTranslationStore.StringBased<String> implements MiniMessageTranslationStore {
   private final Translator translator;
 
-  MiniMessageTranslationStoreImpl(final @NotNull Key name, final @NotNull MiniMessage miniMessage) {
+  MiniMessageTranslationStoreImpl(final Key name, final MiniMessage miniMessage) {
     super(name);
     this.translator = new Translator(Objects.requireNonNull(miniMessage, "miniMessage"));
   }
 
   @Override
-  protected @NotNull String parse(final @NotNull String string, final @NotNull Locale locale) {
+  protected String parse(final String string, final Locale locale) {
     return string;
   }
 
   @Override
-  public @Nullable MessageFormat translate(final @NotNull String key, final @NotNull Locale locale) {
+  public @Nullable MessageFormat translate(final String key, final Locale locale) {
     return null;
   }
 
   @Override
-  public @Nullable Component translate(final @NotNull TranslatableComponent component, final @NotNull Locale locale) {
+  public @Nullable Component translate(final TranslatableComponent component, final Locale locale) {
     return this.translator.translate(component, locale);
   }
 
   private final class Translator extends MiniMessageTranslator {
 
-    private Translator(final @NotNull MiniMessage miniMessage) {
+    private Translator(final MiniMessage miniMessage) {
       super(miniMessage);
     }
 
     @Override
-    protected @Nullable String getMiniMessageString(final @NotNull String key, final @NotNull Locale locale) {
+    protected @Nullable String getMiniMessageString(final String key, final Locale locale) {
       return MiniMessageTranslationStoreImpl.this.translationValue(key, locale);
     }
 
     @Override
-    public @NotNull Key name() {
+    public Key name() {
       return MiniMessageTranslationStoreImpl.this.name();
     }
 
     @Override
-    public @NotNull TriState hasAnyTranslations() {
+    public TriState hasAnyTranslations() {
       return MiniMessageTranslationStoreImpl.this.hasAnyTranslations();
     }
   }

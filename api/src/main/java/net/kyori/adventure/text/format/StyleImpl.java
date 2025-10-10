@@ -34,8 +34,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.util.ARGBLike;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -45,7 +44,7 @@ final class StyleImpl implements Style {
   final @Nullable Key font;
   final @Nullable TextColor color;
   final @Nullable ShadowColor shadowColor;
-  final @NotNull DecorationMap decorations;
+  final DecorationMap decorations;
   final @Nullable ClickEvent clickEvent;
   final @Nullable HoverEvent<?> hoverEvent;
   final @Nullable String insertion;
@@ -54,7 +53,7 @@ final class StyleImpl implements Style {
     final @Nullable Key font,
     final @Nullable TextColor color,
     final @Nullable ShadowColor shadowColor,
-    final @NotNull Map<TextDecoration, TextDecoration.State> decorations,
+    final Map<TextDecoration, TextDecoration.State> decorations,
     final @Nullable ClickEvent clickEvent,
     final @Nullable HoverEvent<?> hoverEvent,
     final @Nullable String insertion
@@ -74,7 +73,7 @@ final class StyleImpl implements Style {
   }
 
   @Override
-  public @NotNull Style font(final @Nullable Key font) {
+  public Style font(final @Nullable Key font) {
     if (Objects.equals(this.font, font)) return this;
     return new StyleImpl(font, this.color, this.shadowColor, this.decorations, this.clickEvent, this.hoverEvent, this.insertion);
   }
@@ -85,13 +84,13 @@ final class StyleImpl implements Style {
   }
 
   @Override
-  public @NotNull Style color(final @Nullable TextColor color) {
+  public Style color(final @Nullable TextColor color) {
     if (Objects.equals(this.color, color)) return this;
     return new StyleImpl(this.font, color, this.shadowColor, this.decorations, this.clickEvent, this.hoverEvent, this.insertion);
   }
 
   @Override
-  public @NotNull Style colorIfAbsent(final @Nullable TextColor color) {
+  public Style colorIfAbsent(final @Nullable TextColor color) {
     if (this.color == null) {
       return this.color(color);
     }
@@ -104,13 +103,13 @@ final class StyleImpl implements Style {
   }
 
   @Override
-  public @NotNull Style shadowColor(final @Nullable ARGBLike argb) {
+  public Style shadowColor(final @Nullable ARGBLike argb) {
     if (Objects.equals(this.shadowColor, argb)) return this;
     return new StyleImpl(this.font, this.color, argb == null ? null : ShadowColor.shadowColor(argb), this.decorations, this.clickEvent, this.hoverEvent, this.insertion);
   }
 
   @Override
-  public @NotNull Style shadowColorIfAbsent(final @Nullable ARGBLike argb) {
+  public Style shadowColorIfAbsent(final @Nullable ARGBLike argb) {
     if (this.shadowColor == null) {
       return this.shadowColor(argb);
     }
@@ -118,7 +117,7 @@ final class StyleImpl implements Style {
   }
 
   @Override
-  public TextDecoration.@NotNull State decoration(final @NotNull TextDecoration decoration) {
+  public TextDecoration.State decoration(final TextDecoration decoration) {
     // null -> null
     final TextDecoration.@Nullable State state = this.decorations.get(decoration);
     if (state != null) {
@@ -128,14 +127,14 @@ final class StyleImpl implements Style {
   }
 
   @Override
-  public @NotNull Style decoration(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state) {
+  public Style decoration(final TextDecoration decoration, final TextDecoration.State state) {
     requireNonNull(state, "state");
     if (this.decoration(decoration) == state) return this;
     return new StyleImpl(this.font, this.color, this.shadowColor, this.decorations.with(decoration, state), this.clickEvent, this.hoverEvent, this.insertion);
   }
 
   @Override
-  public @NotNull Style decorationIfAbsent(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state) {
+  public Style decorationIfAbsent(final TextDecoration decoration, final TextDecoration.State state) {
     requireNonNull(state, "state");
     final TextDecoration.@Nullable State oldState = this.decorations.get(decoration);
     if (oldState == TextDecoration.State.NOT_SET) {
@@ -148,12 +147,12 @@ final class StyleImpl implements Style {
   }
 
   @Override
-  public @NotNull Map<TextDecoration, TextDecoration.State> decorations() {
+  public Map<TextDecoration, TextDecoration.State> decorations() {
     return this.decorations;
   }
 
   @Override
-  public @NotNull Style decorations(final @NotNull Map<TextDecoration, TextDecoration.State> decorations) {
+  public Style decorations(final Map<TextDecoration, TextDecoration.State> decorations) {
     return new StyleImpl(this.font, this.color, this.shadowColor, DecorationMap.merge(decorations, this.decorations), this.clickEvent, this.hoverEvent, this.insertion);
   }
 
@@ -163,7 +162,7 @@ final class StyleImpl implements Style {
   }
 
   @Override
-  public @NotNull Style clickEvent(final @Nullable ClickEvent event) {
+  public Style clickEvent(final @Nullable ClickEvent event) {
     return new StyleImpl(this.font, this.color, this.shadowColor, this.decorations, event, this.hoverEvent, this.insertion);
   }
 
@@ -173,7 +172,7 @@ final class StyleImpl implements Style {
   }
 
   @Override
-  public @NotNull Style hoverEvent(final @Nullable HoverEventSource<?> source) {
+  public Style hoverEvent(final @Nullable HoverEventSource<?> source) {
     return new StyleImpl(this.font, this.color, this.shadowColor, this.decorations, this.clickEvent, HoverEventSource.unbox(source), this.insertion);
   }
 
@@ -183,13 +182,13 @@ final class StyleImpl implements Style {
   }
 
   @Override
-  public @NotNull Style insertion(final @Nullable String insertion) {
+  public Style insertion(final @Nullable String insertion) {
     if (Objects.equals(this.insertion, insertion)) return this;
     return new StyleImpl(this.font, this.color, this.shadowColor, this.decorations, this.clickEvent, this.hoverEvent, insertion);
   }
 
   @Override
-  public @NotNull Style merge(final @NotNull Style that, final Merge.@NotNull Strategy strategy, final @NotNull Set<Merge> merges) {
+  public Style merge(final Style that, final Merge.Strategy strategy, final Set<Merge> merges) {
     if (nothingToMerge(that, strategy, merges)) {
       return this;
     }
@@ -206,7 +205,7 @@ final class StyleImpl implements Style {
   }
 
   @Override
-  public @NotNull Style unmerge(final @NotNull Style that) {
+  public Style unmerge(final Style that) {
     if (this.isEmpty()) {
       // the target style is empty, so there is nothing to simplify
       return this;
@@ -249,7 +248,7 @@ final class StyleImpl implements Style {
   }
 
   @SuppressWarnings("RedundantIfStatement")
-  static boolean nothingToMerge(final @NotNull Style mergeFrom, final Merge.@NotNull Strategy strategy, final @NotNull Set<Merge> merges) {
+  static boolean nothingToMerge(final Style mergeFrom, final Merge.Strategy strategy, final Set<Merge> merges) {
     if (strategy == Merge.Strategy.NEVER) return true;
     if (mergeFrom.isEmpty()) return true;
     if (merges.isEmpty()) return true;
@@ -262,12 +261,12 @@ final class StyleImpl implements Style {
   }
 
   @Override
-  public @NotNull Builder toBuilder() {
+  public Builder toBuilder() {
     return new BuilderImpl(this);
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.concat(
       this.decorations.examinableProperties(),
       Stream.of(
@@ -282,7 +281,7 @@ final class StyleImpl implements Style {
   }
 
   @Override
-  public @NotNull String toString() {
+  public String toString() {
     return Internals.toString(this);
   }
 
@@ -324,7 +323,7 @@ final class StyleImpl implements Style {
       this.decorations = DecorationMap.EMPTY;
     }
 
-    BuilderImpl(final @NotNull StyleImpl style) {
+    BuilderImpl(final StyleImpl style) {
       this.color = style.color;
       this.shadowColor = style.shadowColor;
       this.decorations = style.decorations;
@@ -335,19 +334,19 @@ final class StyleImpl implements Style {
     }
 
     @Override
-    public @NotNull Builder font(final @Nullable Key font) {
+    public Builder font(final @Nullable Key font) {
       this.font = font;
       return this;
     }
 
     @Override
-    public @NotNull Builder color(final @Nullable TextColor color) {
+    public Builder color(final @Nullable TextColor color) {
       this.color = color;
       return this;
     }
 
     @Override
-    public @NotNull Builder colorIfAbsent(final @Nullable TextColor color) {
+    public Builder colorIfAbsent(final @Nullable TextColor color) {
       if (this.color == null) {
         this.color = color;
       }
@@ -355,13 +354,13 @@ final class StyleImpl implements Style {
     }
 
     @Override
-    public @NotNull Builder shadowColor(final @Nullable ARGBLike argb) {
+    public Builder shadowColor(final @Nullable ARGBLike argb) {
       this.shadowColor = argb == null ? null : ShadowColor.shadowColor(argb);
       return this;
     }
 
     @Override
-    public @NotNull Builder shadowColorIfAbsent(final @Nullable ARGBLike argb) {
+    public Builder shadowColorIfAbsent(final @Nullable ARGBLike argb) {
       if (this.shadowColor == null) {
         this.shadowColor = argb == null ? null : ShadowColor.shadowColor(argb);
       }
@@ -369,7 +368,7 @@ final class StyleImpl implements Style {
     }
 
     @Override
-    public @NotNull Builder decoration(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state) {
+    public Builder decoration(final TextDecoration decoration, final TextDecoration.State state) {
       requireNonNull(state, "state");
       requireNonNull(decoration, "decoration");
       this.decorations = this.decorations.with(decoration, state);
@@ -377,7 +376,7 @@ final class StyleImpl implements Style {
     }
 
     @Override
-    public @NotNull Builder decorationIfAbsent(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state) {
+    public Builder decorationIfAbsent(final TextDecoration decoration, final TextDecoration.State state) {
       requireNonNull(state, "state");
       final TextDecoration.@Nullable State oldState = this.decorations.get(decoration);
       if (oldState == TextDecoration.State.NOT_SET) {
@@ -390,25 +389,25 @@ final class StyleImpl implements Style {
     }
 
     @Override
-    public @NotNull Builder clickEvent(final @Nullable ClickEvent event) {
+    public Builder clickEvent(final @Nullable ClickEvent event) {
       this.clickEvent = event;
       return this;
     }
 
     @Override
-    public @NotNull Builder hoverEvent(final @Nullable HoverEventSource<?> source) {
+    public Builder hoverEvent(final @Nullable HoverEventSource<?> source) {
       this.hoverEvent = HoverEventSource.unbox(source);
       return this;
     }
 
     @Override
-    public @NotNull Builder insertion(final @Nullable String insertion) {
+    public Builder insertion(final @Nullable String insertion) {
       this.insertion = insertion;
       return this;
     }
 
     @Override
-    public @NotNull Builder merge(final @NotNull Style that, final Merge.@NotNull Strategy strategy, final @NotNull Set<Merge> merges) {
+    public Builder merge(final Style that, final Merge.Strategy strategy, final Set<Merge> merges) {
       requireNonNull(that, "style");
       requireNonNull(strategy, "strategy");
       requireNonNull(merges, "merges");
@@ -487,7 +486,7 @@ final class StyleImpl implements Style {
     }
 
     @Override
-    public @NotNull StyleImpl build() {
+    public StyleImpl build() {
       if (this.isEmpty()) {
         return EMPTY;
       }

@@ -24,7 +24,7 @@
 /**
  * Built-in tags shipped with MiniMessage.
  *
- * <p>The tags in {@link StandardTags} will be included in MiniMessage instances by default.</p>
+ * <p>The tags in {@link net.kyori.adventure.text.minimessage.tag.standard.StandardTags} will be included in MiniMessage instances by default.</p>
  *
  * @since 4.10.0
  */

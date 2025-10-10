@@ -23,8 +23,6 @@
  */
 package net.kyori.adventure.text.minimessage.tag;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * A tag that is applied at the tokenization stage, before the tree is constructed.
  *
@@ -39,5 +37,5 @@ public non-sealed interface PreProcess extends Tag {
    * @return the value to insert
    * @since 4.10.0
    */
-  @NotNull String value();
+  String value();
 }

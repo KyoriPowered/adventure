@@ -41,9 +41,8 @@ import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A transformation that applies a colour gradient.
@@ -154,7 +153,7 @@ class GradientTag extends AbstractColorChangingTag {
   }
 
   @Override
-  protected @NotNull Consumer<TokenEmitter> preserveData() {
+  protected Consumer<TokenEmitter> preserveData() {
     final TextColor[] colors;
     final double phase;
 
@@ -186,7 +185,7 @@ class GradientTag extends AbstractColorChangingTag {
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("phase", this.phase),
       ExaminableProperty.of("colors", this.colors)

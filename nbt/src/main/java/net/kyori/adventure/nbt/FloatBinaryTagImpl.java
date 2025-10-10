@@ -26,8 +26,7 @@ package net.kyori.adventure.nbt;
 import java.util.stream.Stream;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Debug;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 @Debug.Renderer(text = "String.valueOf(this.value) + \"f\"", hasChildren = "false")
 final class FloatBinaryTagImpl extends AbstractBinaryTag implements FloatBinaryTag {
@@ -73,7 +72,7 @@ final class FloatBinaryTagImpl extends AbstractBinaryTag implements FloatBinaryT
   }
 
   @Override
-  public @NotNull Number numberValue() {
+  public Number numberValue() {
     return this.value;
   }
 
@@ -91,7 +90,7 @@ final class FloatBinaryTagImpl extends AbstractBinaryTag implements FloatBinaryT
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(ExaminableProperty.of("value", this.value));
   }
 }

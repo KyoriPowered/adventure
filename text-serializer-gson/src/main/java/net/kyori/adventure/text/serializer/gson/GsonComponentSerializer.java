@@ -34,8 +34,7 @@ import net.kyori.adventure.text.serializer.json.JSONComponentSerializer;
 import net.kyori.adventure.util.PlatformAPI;
 import net.kyori.option.OptionState;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A gson component serializer.
@@ -55,7 +54,7 @@ public interface GsonComponentSerializer extends JSONComponentSerializer {
    * @return a gson component serializer
    * @since 4.0.0
    */
-  static @NotNull GsonComponentSerializer gson() {
+  static GsonComponentSerializer gson() {
     return GsonComponentSerializerImpl.Instances.INSTANCE;
   }
 
@@ -68,7 +67,7 @@ public interface GsonComponentSerializer extends JSONComponentSerializer {
    * @return a gson component serializer
    * @since 4.0.0
    */
-  static @NotNull GsonComponentSerializer colorDownsamplingGson() {
+  static GsonComponentSerializer colorDownsamplingGson() {
     return GsonComponentSerializerImpl.Instances.LEGACY_INSTANCE;
   }
 
@@ -88,7 +87,7 @@ public interface GsonComponentSerializer extends JSONComponentSerializer {
    * @return a gson serializer
    * @since 4.0.0
    */
-  @NotNull Gson serializer();
+  Gson serializer();
 
   /**
    * Gets the underlying gson populator.
@@ -96,7 +95,7 @@ public interface GsonComponentSerializer extends JSONComponentSerializer {
    * @return a gson populator
    * @since 4.0.0
    */
-  @NotNull UnaryOperator<GsonBuilder> populator();
+  UnaryOperator<GsonBuilder> populator();
 
   /**
    * Deserialize a component from input of type {@link JsonElement}.
@@ -105,7 +104,7 @@ public interface GsonComponentSerializer extends JSONComponentSerializer {
    * @return the component
    * @since 4.7.0
    */
-  @NotNull Component deserializeFromTree(final @NotNull JsonElement input);
+  Component deserializeFromTree(final JsonElement input);
 
   /**
    * Deserialize a component to output of type {@link JsonElement}.
@@ -114,7 +113,7 @@ public interface GsonComponentSerializer extends JSONComponentSerializer {
    * @return the json element
    * @since 4.7.0
    */
-  @NotNull JsonElement serializeToTree(final @NotNull Component component);
+  JsonElement serializeToTree(final Component component);
 
   /**
    * A builder for {@link GsonComponentSerializer}.
@@ -123,13 +122,13 @@ public interface GsonComponentSerializer extends JSONComponentSerializer {
    */
   interface Builder extends AbstractBuilder<GsonComponentSerializer>, JSONComponentSerializer.Builder {
     @Override
-    @NotNull Builder options(final @NotNull OptionState flags);
+    Builder options(final OptionState flags);
 
     @Override
-    @NotNull Builder editOptions(final @NotNull Consumer<OptionState.Builder> optionEditor);
+    Builder editOptions(final Consumer<OptionState.Builder> optionEditor);
 
     @Override
-    @NotNull Builder legacyHoverEventSerializer(final net.kyori.adventure.text.serializer.json.@Nullable LegacyHoverEventSerializer serializer);
+    Builder legacyHoverEventSerializer(final net.kyori.adventure.text.serializer.json.@Nullable LegacyHoverEventSerializer serializer);
 
     /**
      * Builds the serializer.
@@ -137,7 +136,7 @@ public interface GsonComponentSerializer extends JSONComponentSerializer {
      * @return the built serializer
      */
     @Override
-    @NotNull GsonComponentSerializer build();
+    GsonComponentSerializer build();
   }
 
   /**
@@ -156,7 +155,7 @@ public interface GsonComponentSerializer extends JSONComponentSerializer {
      */
     @ApiStatus.Internal
     @PlatformAPI
-    @NotNull GsonComponentSerializer gson();
+    GsonComponentSerializer gson();
 
     /**
      * Provides a legacy {@link GsonComponentSerializer}.
@@ -166,7 +165,7 @@ public interface GsonComponentSerializer extends JSONComponentSerializer {
      */
     @ApiStatus.Internal
     @PlatformAPI
-    @NotNull GsonComponentSerializer gsonLegacy();
+    GsonComponentSerializer gsonLegacy();
 
     /**
      * Completes the building process of {@link Builder}.
@@ -176,6 +175,6 @@ public interface GsonComponentSerializer extends JSONComponentSerializer {
      */
     @ApiStatus.Internal
     @PlatformAPI
-    @NotNull Consumer<Builder> builder();
+    Consumer<Builder> builder();
   }
 }

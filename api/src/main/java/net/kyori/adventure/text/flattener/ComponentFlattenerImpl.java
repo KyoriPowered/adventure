@@ -42,9 +42,8 @@ import net.kyori.adventure.text.object.ObjectContents;
 import net.kyori.adventure.text.object.PlayerHeadObjectContents;
 import net.kyori.adventure.text.object.SpriteObjectContents;
 import net.kyori.adventure.util.InheritanceAwareMap;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -80,11 +79,11 @@ record ComponentFlattenerImpl(InheritanceAwareMap<Component, Handler> flatteners
   }
 
   @Override
-  public void flatten(final @NotNull Component input, final @NotNull FlattenerListener listener) {
+  public void flatten(final Component input, final FlattenerListener listener) {
     this.flatten0(input, listener, 0, 0);
   }
 
-  private void flatten0(final @NotNull Component input, final @NotNull FlattenerListener listener, final int depth, final int nestedDepth) {
+  private void flatten0(final Component input, final FlattenerListener listener, final int depth, final int nestedDepth) {
     requireNonNull(input, "input");
     requireNonNull(listener, "listener");
     if (input == Component.empty()) return;
@@ -178,32 +177,32 @@ record ComponentFlattenerImpl(InheritanceAwareMap<Component, Handler> flatteners
     }
 
     @Override
-    public @NotNull ComponentFlattener build() {
+    public ComponentFlattener build() {
       return new ComponentFlattenerImpl(this.flatteners.build(), this.unknownHandler, this.maxNestedDepth);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public @NotNull <T extends Component> Builder mapper(final @NotNull Class<T> type, final @NotNull Function<T, String> converter) {
+    public <T extends Component> Builder mapper(final Class<T> type, final Function<T, String> converter) {
       this.flatteners.put(type, (self, component, listener, depth, nestedDepth) -> listener.component(converter.apply((T) component)));
       return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public @NotNull <T extends Component> Builder complexMapper(final @NotNull Class<T> type, final @NotNull BiConsumer<T, Consumer<Component>> converter) {
+    public <T extends Component> Builder complexMapper(final Class<T> type, final BiConsumer<T, Consumer<Component>> converter) {
       this.flatteners.put(type, (self, component, listener, depth, nestedDepth) -> converter.accept((T) component, c -> self.flatten0(c, listener, depth, nestedDepth + 1)));
       return this;
     }
 
     @Override
-    public @NotNull Builder unknownMapper(final @Nullable Function<Component, String> converter) {
+    public Builder unknownMapper(final @Nullable Function<Component, String> converter) {
       this.unknownHandler = converter;
       return this;
     }
 
     @Override
-    public @NotNull Builder nestingLimit(final @Range(from = 1, to = Integer.MAX_VALUE) int limit) {
+    public Builder nestingLimit(final @Range(from = 1, to = Integer.MAX_VALUE) int limit) {
       // noinspection ConstantValue (the Range annotation tells IDEA this will never happen, but API users could ignore that)
       if (limit != ComponentFlattener.NO_NESTING_LIMIT && limit < 1) throw new IllegalArgumentException("limit must be positive or ComponentFlattener.NO_NESTING_LIMIT");
       this.maxNestedDepth = limit;

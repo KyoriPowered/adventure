@@ -41,7 +41,7 @@ import net.kyori.adventure.text.object.ObjectContents;
 import net.kyori.adventure.text.object.PlayerHeadObjectContents;
 import net.kyori.adventure.util.TriState;
 import org.intellij.lang.annotations.Subst;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A simplified head object tag for only setting either the name,

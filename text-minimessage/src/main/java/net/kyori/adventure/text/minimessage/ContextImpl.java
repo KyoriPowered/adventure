@@ -34,8 +34,7 @@ import net.kyori.adventure.text.minimessage.internal.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -93,15 +92,15 @@ final class ContextImpl implements Context {
     return this.debugOutput;
   }
 
-  public @NotNull String message() {
+  public String message() {
     return this.message;
   }
 
-  void message(final @NotNull String message) {
+  void message(final String message) {
     this.message = message;
   }
 
-  public @NotNull TagResolver extraTags() {
+  public TagResolver extraTags() {
     return this.tagResolver;
   }
 
@@ -119,7 +118,7 @@ final class ContextImpl implements Context {
   }
 
   @Override
-  public @NotNull Pointered targetOrThrow() {
+  public Pointered targetOrThrow() {
     if (this.target == null) {
       throw this.newException("A target is required for this deserialization attempt");
     } else {
@@ -128,7 +127,7 @@ final class ContextImpl implements Context {
   }
 
   @Override
-  public <T extends Pointered> @NotNull T targetAsType(final @NotNull Class<T> targetClass) {
+  public <T extends Pointered> T targetAsType(final Class<T> targetClass) {
     if (requireNonNull(targetClass, "targetClass").isInstance(this.target)) {
       return targetClass.cast(this.target);
     } else {
@@ -137,40 +136,40 @@ final class ContextImpl implements Context {
   }
 
   @Override
-  public @NotNull Component deserialize(final @NotNull String message) {
+  public Component deserialize(final String message) {
     return this.deserializeWithOptionalTarget(requireNonNull(message, "message"), this.tagResolver);
   }
 
   @Override
-  public @NotNull Component deserialize(final @NotNull String message, final @NotNull TagResolver resolver) {
+  public Component deserialize(final String message, final TagResolver resolver) {
     requireNonNull(message, "message");
     final TagResolver combinedResolver = TagResolver.builder().resolver(this.tagResolver).resolver(resolver).build();
     return this.deserializeWithOptionalTarget(message, combinedResolver);
   }
 
   @Override
-  public @NotNull Component deserialize(final @NotNull String message, final @NotNull TagResolver@NotNull... resolvers) {
+  public Component deserialize(final String message, final TagResolver... resolvers) {
     requireNonNull(message, "message");
     final TagResolver combinedResolver = TagResolver.builder().resolver(this.tagResolver).resolvers(resolvers).build();
     return this.deserializeWithOptionalTarget(message, combinedResolver);
   }
 
   @Override
-  public @NotNull ParsingException newException(final @NotNull String message) {
+  public ParsingException newException(final String message) {
     return new ParsingExceptionImpl(message, this.message, null, false, EMPTY_TOKEN_ARRAY);
   }
 
   @Override
-  public @NotNull ParsingException newException(final @NotNull String message, final @NotNull ArgumentQueue tags) {
+  public ParsingException newException(final String message, final ArgumentQueue tags) {
     return new ParsingExceptionImpl(message, this.message, null, false, tagsToTokens(((ArgumentQueueImpl<?>) tags).args));
   }
 
   @Override
-  public @NotNull ParsingException newException(final @NotNull String message, final @Nullable Throwable cause, final @NotNull ArgumentQueue tags) {
+  public ParsingException newException(final String message, final @Nullable Throwable cause, final ArgumentQueue tags) {
     return new ParsingExceptionImpl(message, this.message, cause, false, tagsToTokens(((ArgumentQueueImpl<?>) tags).args));
   }
 
-  private @NotNull Component deserializeWithOptionalTarget(final @NotNull String message, final @NotNull TagResolver tagResolver) {
+  private Component deserializeWithOptionalTarget(final String message, final TagResolver tagResolver) {
     if (this.target != null) {
       return this.miniMessage.deserialize(message, this.target, tagResolver);
     } else {

@@ -31,8 +31,6 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextFormat;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
 /**
@@ -184,7 +182,7 @@ public sealed interface CharacterAndFormat extends Examinable permits CharacterA
    * @return a new character and format instance.
    * @since 4.14.0
    */
-  static @NotNull CharacterAndFormat characterAndFormat(final char character, final @NotNull TextFormat format) {
+  static CharacterAndFormat characterAndFormat(final char character, final TextFormat format) {
     return characterAndFormat(character, format, false);
   }
 
@@ -197,7 +195,7 @@ public sealed interface CharacterAndFormat extends Examinable permits CharacterA
    * @return a new character and format instance.
    * @since 4.17.0
    */
-  static @NotNull CharacterAndFormat characterAndFormat(final char character, final @NotNull TextFormat format, final boolean caseInsensitive) {
+  static CharacterAndFormat characterAndFormat(final char character, final TextFormat format, final boolean caseInsensitive) {
     return new CharacterAndFormatImpl(character, format, caseInsensitive);
   }
 
@@ -208,7 +206,7 @@ public sealed interface CharacterAndFormat extends Examinable permits CharacterA
    * @since 4.14.0
    */
   @Unmodifiable
-  static @NotNull List<CharacterAndFormat> defaults() {
+  static List<CharacterAndFormat> defaults() {
     return CharacterAndFormatImpl.Defaults.DEFAULTS;
   }
 
@@ -226,7 +224,7 @@ public sealed interface CharacterAndFormat extends Examinable permits CharacterA
    * @return the format
    * @since 4.14.0
    */
-  @NotNull TextFormat format();
+  TextFormat format();
 
   /**
    * If the {@link #character()} is case-insensitive.
@@ -237,7 +235,7 @@ public sealed interface CharacterAndFormat extends Examinable permits CharacterA
   boolean caseInsensitive();
 
   @Override
-  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  default Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("character", this.character()),
       ExaminableProperty.of("format", this.format()),

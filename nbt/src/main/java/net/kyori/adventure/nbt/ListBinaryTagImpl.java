@@ -35,9 +35,8 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Debug;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
 @Debug.Renderer(text = "\"ListBinaryTag[type=\" + this.type.toString() + \"]\"", childrenArray = "this.tags.toArray()", hasChildren = "!this.tags.isEmpty()")
 final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag {
@@ -55,7 +54,7 @@ final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag
   }
 
   @Override
-  public @NotNull BinaryTagType<? extends BinaryTag> elementType() {
+  public BinaryTagType<? extends BinaryTag> elementType() {
     return this.elementType;
   }
 
@@ -70,12 +69,12 @@ final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag
   }
 
   @Override
-  public @NotNull BinaryTag get(@Range(from = 0, to = Integer.MAX_VALUE) final int index) {
+  public BinaryTag get(@Range(from = 0, to = Integer.MAX_VALUE) final int index) {
     return this.tags.get(index);
   }
 
   @Override
-  public @NotNull ListBinaryTag set(final int index, final @NotNull BinaryTag newTag, final @Nullable Consumer<? super BinaryTag> removed) {
+  public ListBinaryTag set(final int index, final BinaryTag newTag, final @Nullable Consumer<? super BinaryTag> removed) {
     final BinaryTagType<?> targetType = ListBinaryTagImpl.validateTagType(newTag, this.elementType, this.permitsHeterogeneity);
     return this.edit(tags -> {
       final BinaryTag oldTag = tags.set(index, newTag);
@@ -86,7 +85,7 @@ final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag
   }
 
   @Override
-  public @NotNull ListBinaryTag remove(final int index, final @Nullable Consumer<? super BinaryTag> removed) {
+  public ListBinaryTag remove(final int index, final @Nullable Consumer<? super BinaryTag> removed) {
     return this.edit(tags -> {
       final BinaryTag oldTag = tags.remove(index);
       if (removed != null) {
@@ -96,13 +95,13 @@ final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag
   }
 
   @Override
-  public @NotNull ListBinaryTag add(final BinaryTag tag) {
+  public ListBinaryTag add(final BinaryTag tag) {
     final BinaryTagType<?> targetType = validateTagType(tag, this.elementType, this.permitsHeterogeneity);
     return this.edit(tags -> tags.add(tag), targetType);
   }
 
   @Override
-  public @NotNull ListBinaryTag add(final Iterable<? extends BinaryTag> tagsToAdd) {
+  public ListBinaryTag add(final Iterable<? extends BinaryTag> tagsToAdd) {
     if (tagsToAdd instanceof Collection<?> && ((Collection<?>) tagsToAdd).isEmpty()) {
       return this;
     }
@@ -164,12 +163,12 @@ final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag
   }
 
   @Override
-  public @NotNull Stream<BinaryTag> stream() {
+  public Stream<BinaryTag> stream() {
     return this.tags.stream();
   }
 
   @Override
-  public @NotNull ListBinaryTag unwrapHeterogeneity() {
+  public ListBinaryTag unwrapHeterogeneity() {
     // Unlock where it makes sense
     if (!this.permitsHeterogeneity) {
       if (this.elementType != BinaryTagTypes.COMPOUND) {
@@ -201,7 +200,7 @@ final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag
   }
 
   @Override
-  public @NotNull ListBinaryTag wrapHeterogeneity() {
+  public ListBinaryTag wrapHeterogeneity() {
     if (this.elementType != BinaryTagTypes.LIST_WILDCARD) {
       return this;
     }
@@ -215,7 +214,7 @@ final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag
   }
 
   @Override
-  public @NotNull Iterator<BinaryTag> iterator() {
+  public Iterator<BinaryTag> iterator() {
     final Iterator<BinaryTag> iterator = this.tags.iterator();
     return new Iterator<>() {
       @Override
@@ -256,7 +255,7 @@ final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("tags", this.tags),
       ExaminableProperty.of("type", this.elementType)

@@ -29,9 +29,8 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Reads style properties from an object.
@@ -74,7 +73,7 @@ public interface StyleGetter {
    *     stylable does not have the decoration
    * @since 4.10.0
    */
-  default boolean hasDecoration(final @NotNull TextDecoration decoration) {
+  default boolean hasDecoration(final TextDecoration decoration) {
     return this.decoration(decoration) == TextDecoration.State.TRUE;
   }
 
@@ -87,7 +86,7 @@ public interface StyleGetter {
    *     and {@link TextDecoration.State#NOT_SET} if not set
    * @since 4.10.0
    */
-  TextDecoration.@NotNull State decoration(final @NotNull TextDecoration decoration);
+  TextDecoration.State decoration(final TextDecoration decoration);
 
   /**
    * Gets a map of decorations this stylable has.
@@ -96,7 +95,7 @@ public interface StyleGetter {
    * @since 4.10.0
    */
   @SuppressWarnings("Duplicates")
-  default @Unmodifiable @NotNull Map<TextDecoration, TextDecoration.State> decorations() {
+  default @Unmodifiable Map<TextDecoration, TextDecoration.State> decorations() {
     final Map<TextDecoration, TextDecoration.State> decorations = new EnumMap<>(TextDecoration.class);
     for (int i = 0, length = DecorationMap.DECORATIONS.length; i < length; i++) {
       final TextDecoration decoration = DecorationMap.DECORATIONS[i];

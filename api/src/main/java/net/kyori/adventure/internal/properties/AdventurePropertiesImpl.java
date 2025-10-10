@@ -32,14 +32,13 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.function.Function;
 import net.kyori.adventure.util.Services;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
+import org.jspecify.annotations.Nullable;
 
 final class AdventurePropertiesImpl {
 
   static final class Providers {
-    static final @NotNull Optional<AdventureProperties.DefaultOverrideProvider> DEFAULT_PROVIDER = Services.service(AdventureProperties.DefaultOverrideProvider.class);
+    static final Optional<AdventureProperties.DefaultOverrideProvider> DEFAULT_PROVIDER = Services.service(AdventureProperties.DefaultOverrideProvider.class);
   }
 
   private static final String FILESYSTEM_DIRECTORY_NAME = "config";
@@ -69,11 +68,11 @@ final class AdventurePropertiesImpl {
   }
 
   @VisibleForTesting
-  static @NotNull String systemPropertyName(final String name) {
+  static String systemPropertyName(final String name) {
     return String.join(".", "net", "kyori", "adventure", name);
   }
 
-  static <T> AdventureProperties.@NotNull Property<T> property(final @NotNull String name, final @NotNull Function<String, T> parser, final @Nullable T defaultValue, final boolean allowProviderDefaultOverride) {
+  static <T> AdventureProperties.Property<T> property(final String name, final Function<String, T> parser, final @Nullable T defaultValue, final boolean allowProviderDefaultOverride) {
     return new PropertyImpl<>(name, parser, defaultValue, allowProviderDefaultOverride);
   }
 
@@ -85,7 +84,7 @@ final class AdventurePropertiesImpl {
     private boolean valueCalculated;
     private @Nullable T value;
 
-    PropertyImpl(final @NotNull String name, final @NotNull Function<String, T> parser, final @Nullable T defaultValue, final boolean allowProviderDefaultOverride) {
+    PropertyImpl(final String name, final Function<String, T> parser, final @Nullable T defaultValue, final boolean allowProviderDefaultOverride) {
       this.name = name;
       this.parser = parser;
       this.defaultValue = defaultValue;

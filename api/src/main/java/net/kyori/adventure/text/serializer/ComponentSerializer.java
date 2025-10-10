@@ -25,8 +25,7 @@ package net.kyori.adventure.text.serializer;
 
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A {@link Component} serializer and deserializer.
@@ -45,7 +44,7 @@ public interface ComponentSerializer<I extends Component, O extends Component, R
    * @since 4.0.0
    */
   @Override
-  @NotNull O deserialize(final @NotNull R input);
+  O deserialize(final R input);
 
   /**
    * Deserialize a component from input of type {@code R}.
@@ -86,7 +85,7 @@ public interface ComponentSerializer<I extends Component, O extends Component, R
    * @since 4.0.0
    */
   @Override
-  @NotNull R serialize(final @NotNull I component);
+  R serialize(final I component);
 
   /**
    * Serializes a component into an output of type {@code R}.

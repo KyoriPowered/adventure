@@ -26,20 +26,19 @@ package net.kyori.adventure.text.serializer.legacy;
 import java.util.List;
 import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.format.TextFormat;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
 record CharacterAndFormatImpl(char character, TextFormat format, boolean caseInsensitive) implements CharacterAndFormat {
-  CharacterAndFormatImpl(final char character, final @NotNull TextFormat format, final boolean caseInsensitive) {
+  CharacterAndFormatImpl(final char character, final TextFormat format, final boolean caseInsensitive) {
     this.character = character;
     this.format = requireNonNull(format, "format");
     this.caseInsensitive = caseInsensitive;
   }
 
   @Override
-  public @NotNull TextFormat format() {
+  public TextFormat format() {
     return this.format;
   }
 
@@ -65,7 +64,7 @@ record CharacterAndFormatImpl(char character, TextFormat format, boolean caseIns
   }
 
   @Override
-  public @NotNull String toString() {
+  public String toString() {
     return Internals.toString(this);
   }
 

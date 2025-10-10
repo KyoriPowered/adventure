@@ -23,8 +23,6 @@
  */
 package net.kyori.adventure.key;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * Something that has an associated {@link Key}.
  *
@@ -37,5 +35,5 @@ public interface Keyed {
    * @return the key
    * @since 4.0.0
    */
-  @NotNull Key key();
+  Key key();
 }

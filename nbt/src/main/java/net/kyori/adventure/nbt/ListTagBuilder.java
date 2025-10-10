@@ -25,8 +25,7 @@ package net.kyori.adventure.nbt;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 final class ListTagBuilder<T extends BinaryTag> implements ListBinaryTag.Builder<T> {
   private static final int DEFAULT_CAPACITY = -1;
@@ -55,7 +54,7 @@ final class ListTagBuilder<T extends BinaryTag> implements ListBinaryTag.Builder
   }
 
   @Override
-  public ListBinaryTag.@NotNull Builder<T> add(final BinaryTag tag) {
+  public ListBinaryTag.Builder<T> add(final BinaryTag tag) {
     // check after changing from an empty tag
     this.elementType = ListBinaryTagImpl.validateTagType(tag, this.elementType, this.permitsHeterogeneity);
     if (this.tags == null) {
@@ -71,7 +70,7 @@ final class ListTagBuilder<T extends BinaryTag> implements ListBinaryTag.Builder
   }
 
   @Override
-  public ListBinaryTag.@NotNull Builder<T> add(final Iterable<? extends T> tagsToAdd) {
+  public ListBinaryTag.Builder<T> add(final Iterable<? extends T> tagsToAdd) {
     for (final T tag : tagsToAdd) {
       this.add(tag);
     }
@@ -79,7 +78,7 @@ final class ListTagBuilder<T extends BinaryTag> implements ListBinaryTag.Builder
   }
 
   @Override
-  public @NotNull ListBinaryTag build() {
+  public ListBinaryTag build() {
     if (this.tags == null) return ListBinaryTag.empty();
     return new ListBinaryTagImpl(this.elementType, this.permitsHeterogeneity, new ArrayList<>(this.tags)); // explicitly copy
   }

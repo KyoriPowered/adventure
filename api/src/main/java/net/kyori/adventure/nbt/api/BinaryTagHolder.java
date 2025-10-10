@@ -25,7 +25,6 @@ package net.kyori.adventure.nbt.api;
 
 import net.kyori.adventure.text.event.DataComponentValue;
 import net.kyori.adventure.util.Codec;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Holds a compound binary tag.
@@ -49,7 +48,7 @@ public interface BinaryTagHolder extends DataComponentValue.TagSerializable {
    * @throws EX if an error occurred while encoding the binary tag
    * @since 4.0.0
    */
-  static <T, EX extends Exception> @NotNull BinaryTagHolder encode(final @NotNull T nbt, final @NotNull Codec<? super T, String, ?, EX> codec) throws EX {
+  static <T, EX extends Exception> BinaryTagHolder encode(final T nbt, final Codec<? super T, String, ?, EX> codec) throws EX {
     return new BinaryTagHolderImpl(codec.encode(nbt));
   }
 
@@ -60,7 +59,7 @@ public interface BinaryTagHolder extends DataComponentValue.TagSerializable {
    * @return the encoded binary tag
    * @since 4.10.0
    */
-  static @NotNull BinaryTagHolder binaryTagHolder(final @NotNull String string) {
+  static BinaryTagHolder binaryTagHolder(final String string) {
     return new BinaryTagHolderImpl(string);
   }
 
@@ -70,10 +69,10 @@ public interface BinaryTagHolder extends DataComponentValue.TagSerializable {
    * @return the raw string value
    * @since 4.0.0
    */
-  @NotNull String string();
+  String string();
 
   @Override
-  default @NotNull BinaryTagHolder asBinaryTag() {
+  default BinaryTagHolder asBinaryTag() {
     return this;
   }
 
@@ -87,5 +86,5 @@ public interface BinaryTagHolder extends DataComponentValue.TagSerializable {
    * @throws DX if an error occurred while retrieving the binary tag
    * @since 4.0.0
    */
-  <T, DX extends Exception> @NotNull T get(final @NotNull Codec<T, String, DX, ?> codec) throws DX;
+  <T, DX extends Exception> T get(final Codec<T, String, DX, ?> codec) throws DX;
 }

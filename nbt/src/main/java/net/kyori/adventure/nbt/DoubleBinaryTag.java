@@ -23,8 +23,6 @@
  */
 package net.kyori.adventure.nbt;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * A binary tag holding a {@code double} value.
  *
@@ -38,12 +36,12 @@ public interface DoubleBinaryTag extends NumberBinaryTag {
    * @return a binary tag
    * @since 4.14.0
    */
-  static @NotNull DoubleBinaryTag doubleBinaryTag(final double value) {
+  static DoubleBinaryTag doubleBinaryTag(final double value) {
     return new DoubleBinaryTagImpl(value);
   }
 
   @Override
-  default @NotNull BinaryTagType<DoubleBinaryTag> type() {
+  default BinaryTagType<DoubleBinaryTag> type() {
     return BinaryTagTypes.DOUBLE;
   }
 

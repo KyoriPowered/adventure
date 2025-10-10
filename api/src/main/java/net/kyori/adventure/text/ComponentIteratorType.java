@@ -25,7 +25,6 @@ package net.kyori.adventure.text;
 
 import java.util.Deque;
 import java.util.Set;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * The iterator types.
@@ -57,5 +56,5 @@ public sealed interface ComponentIteratorType permits ComponentIteratorTypeImpl.
    * @param flags the flags
    * @since 4.9.0
    */
-  void populate(final @NotNull Component component, final @NotNull Deque<Component> deque, final @NotNull Set<ComponentIteratorFlag> flags);
+  void populate(final Component component, final Deque<Component> deque, final Set<ComponentIteratorFlag> flags);
 }

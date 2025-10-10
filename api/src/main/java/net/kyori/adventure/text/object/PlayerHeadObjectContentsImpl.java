@@ -29,20 +29,19 @@ import java.util.List;
 import java.util.UUID;
 import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.key.Key;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-record PlayerHeadObjectContentsImpl(@Nullable String name, @Nullable UUID id, @NotNull List<ProfileProperty> profileProperties, boolean hat, @Nullable Key texture) implements PlayerHeadObjectContents {
+record PlayerHeadObjectContentsImpl(@Nullable String name, @Nullable UUID id, List<ProfileProperty> profileProperties, boolean hat, @Nullable Key texture) implements PlayerHeadObjectContents {
 
   @Override
-  public @NotNull Builder toBuilder() {
+  public Builder toBuilder() {
     return new BuilderImpl(this);
   }
 
   @Override
-  public @NotNull String toString() {
+  public String toString() {
     return Internals.toString(this);
   }
 
@@ -63,7 +62,7 @@ record PlayerHeadObjectContentsImpl(@Nullable String name, @Nullable UUID id, @N
     BuilderImpl() {
     }
 
-    BuilderImpl(final @NotNull PlayerHeadObjectContentsImpl playerHeadObjectContents) {
+    BuilderImpl(final PlayerHeadObjectContentsImpl playerHeadObjectContents) {
       this.name = playerHeadObjectContents.name;
       this.id = playerHeadObjectContents.id;
       this.properties.addAll(playerHeadObjectContents.profileProperties);
@@ -72,25 +71,25 @@ record PlayerHeadObjectContentsImpl(@Nullable String name, @Nullable UUID id, @N
     }
 
     @Override
-    public @NotNull Builder name(final @Nullable String name) {
+    public Builder name(final @Nullable String name) {
       this.name = name;
       return this;
     }
 
     @Override
-    public @NotNull Builder id(final @Nullable UUID id) {
+    public Builder id(final @Nullable UUID id) {
       this.id = id;
       return this;
     }
 
     @Override
-    public @NotNull Builder profileProperty(final @NotNull ProfileProperty property) {
+    public Builder profileProperty(final ProfileProperty property) {
       this.properties.add(requireNonNull(property, "property"));
       return this;
     }
 
     @Override
-    public @NotNull Builder profileProperties(final @NotNull Collection<ProfileProperty> properties) {
+    public Builder profileProperties(final Collection<ProfileProperty> properties) {
       for (final ProfileProperty property : requireNonNull(properties, "properties")) {
         this.profileProperty(property);
       }
@@ -105,26 +104,26 @@ record PlayerHeadObjectContentsImpl(@Nullable String name, @Nullable UUID id, @N
     }
 
     @Override
-    public @NotNull Builder skin(final @NotNull SkinSource skinSource) {
+    public Builder skin(final SkinSource skinSource) {
       this.clearProfile(); // intent of this method is to override any existing profile data
       requireNonNull(skinSource, "skinSource").applySkinToPlayerHeadContents(this);
       return this;
     }
 
     @Override
-    public @NotNull Builder hat(final boolean hat) {
+    public Builder hat(final boolean hat) {
       this.hat = hat;
       return this;
     }
 
     @Override
-    public @NotNull Builder texture(final @Nullable Key texture) {
+    public Builder texture(final @Nullable Key texture) {
       this.texture = texture;
       return this;
     }
 
     @Override
-    public @NotNull PlayerHeadObjectContents build() {
+    public PlayerHeadObjectContents build() {
       return new PlayerHeadObjectContentsImpl(this.name, this.id, List.copyOf(this.properties), this.hat, this.texture);
     }
   }

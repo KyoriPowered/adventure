@@ -26,7 +26,6 @@ package net.kyori.adventure.text.object;
 import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * A sprite contents.
@@ -50,7 +49,7 @@ public sealed interface SpriteObjectContents extends ObjectContents permits Spri
    * @return the atlas key
    * @since 4.25.0
    */
-  @NotNull Key atlas();
+  Key atlas();
 
   /**
    * Gets the sprite key.
@@ -58,10 +57,10 @@ public sealed interface SpriteObjectContents extends ObjectContents permits Spri
    * @return the sprite key
    * @since 4.25.0
    */
-  @NotNull Key sprite();
+  Key sprite();
 
   @Override
-  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  default Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("atlas", this.atlas()),
       ExaminableProperty.of("sprite", this.sprite())

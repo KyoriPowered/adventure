@@ -27,8 +27,7 @@ import java.util.stream.Stream;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 record KeyedValueImpl<T>(Key key, T value) implements Examinable, KeyedValue<T> {
 
@@ -40,7 +39,7 @@ record KeyedValueImpl<T>(Key key, T value) implements Examinable, KeyedValue<T> 
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("key", this.key),
       ExaminableProperty.of("value", this.value)
@@ -48,7 +47,7 @@ record KeyedValueImpl<T>(Key key, T value) implements Examinable, KeyedValue<T> 
   }
 
   @Override
-  public @NotNull String toString() {
+  public String toString() {
     return this.examine(StringExaminer.simpleEscaping());
   }
 }

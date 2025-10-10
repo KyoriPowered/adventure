@@ -31,7 +31,6 @@ import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 import java.util.Set;
 import net.kyori.adventure.internal.properties.AdventureProperties;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Tools for working with {@link ServiceLoader}s.
@@ -52,7 +51,7 @@ public final class Services {
    * @return a service, or {@link Optional#empty()}
    * @since 4.8.0
    */
-  public static <P> @NotNull Optional<P> service(final @NotNull Class<P> type) {
+  public static <P> Optional<P> service(final Class<P> type) {
     final ServiceLoader<P> loader = Services0.loader(type);
     final Iterator<P> it = loader.iterator();
     while (it.hasNext()) {
@@ -96,7 +95,7 @@ public final class Services {
    * @see Fallback
    * @since 4.14.0
    */
-  public static <P> @NotNull Optional<P> serviceWithFallback(final @NotNull Class<P> type) {
+  public static <P> Optional<P> serviceWithFallback(final Class<P> type) {
     final ServiceLoader<P> loader = Services0.loader(type);
     final Iterator<P> it = loader.iterator();
     P firstFallback = null;

@@ -23,8 +23,6 @@
  */
 package net.kyori.adventure.nbt;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * A binary tag holding a {@code float} value.
  *
@@ -38,12 +36,12 @@ public interface FloatBinaryTag extends NumberBinaryTag {
    * @return a binary tag
    * @since 4.14.0
    */
-  static @NotNull FloatBinaryTag floatBinaryTag(final float value) {
+  static FloatBinaryTag floatBinaryTag(final float value) {
     return new FloatBinaryTagImpl(value);
   }
 
   @Override
-  default @NotNull BinaryTagType<FloatBinaryTag> type() {
+  default BinaryTagType<FloatBinaryTag> type() {
     return BinaryTagTypes.FLOAT;
   }
 

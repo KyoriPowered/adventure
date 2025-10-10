@@ -28,8 +28,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import net.kyori.adventure.text.format.Style;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 class StyleClaimImpl<V> implements StyleClaim<V> {
   private final String claimKey;
@@ -45,12 +44,12 @@ class StyleClaimImpl<V> implements StyleClaim<V> {
   }
 
   @Override
-  public @NotNull String claimKey() {
+  public String claimKey() {
     return this.claimKey;
   }
 
   @Override
-  public @Nullable Emitable apply(final @NotNull Style style) {
+  public @Nullable Emitable apply(final Style style) {
     final V element = this.lens.apply(style);
     if (element == null || !this.filter.test(element)) return null;
 

@@ -26,8 +26,7 @@ package net.kyori.adventure.nbt;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 final class CompoundTagBuilder implements CompoundBinaryTag.Builder {
   private static final int DEFAULT_CAPACITY = -1;
@@ -56,13 +55,13 @@ final class CompoundTagBuilder implements CompoundBinaryTag.Builder {
   }
 
   @Override
-  public CompoundBinaryTag.@NotNull Builder put(final @NotNull String key, final @NotNull BinaryTag tag) {
+  public CompoundBinaryTag.Builder put(final String key, final BinaryTag tag) {
     this.tags().put(key, tag);
     return this;
   }
 
   @Override
-  public CompoundBinaryTag.@NotNull Builder put(final @NotNull CompoundBinaryTag tag) {
+  public CompoundBinaryTag.Builder put(final CompoundBinaryTag tag) {
     final Map<String, BinaryTag> tags = this.tags();
     for (final String key : tag.keySet()) {
       tags.put(key, tag.get(key));
@@ -71,13 +70,13 @@ final class CompoundTagBuilder implements CompoundBinaryTag.Builder {
   }
 
   @Override
-  public CompoundBinaryTag.@NotNull Builder put(final @NotNull Map<String, ? extends BinaryTag> tags) {
+  public CompoundBinaryTag.Builder put(final Map<String, ? extends BinaryTag> tags) {
     this.tags().putAll(tags);
     return this;
   }
 
   @Override
-  public CompoundBinaryTag.@NotNull Builder remove(final @NotNull String key, final @Nullable Consumer<? super BinaryTag> removed) {
+  public CompoundBinaryTag.Builder remove(final String key, final @Nullable Consumer<? super BinaryTag> removed) {
     if (this.tags != null) {
       final BinaryTag tag = this.tags.remove(key);
       if (removed != null) {
@@ -88,7 +87,7 @@ final class CompoundTagBuilder implements CompoundBinaryTag.Builder {
   }
 
   @Override
-  public @NotNull CompoundBinaryTag build() {
+  public CompoundBinaryTag build() {
     if (this.tags == null) return CompoundBinaryTag.empty();
     return new CompoundBinaryTagImpl(new HashMap<>(this.tags)); // explicitly copy
   }

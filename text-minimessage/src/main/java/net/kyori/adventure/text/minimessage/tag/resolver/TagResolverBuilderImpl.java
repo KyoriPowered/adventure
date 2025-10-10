@@ -32,7 +32,6 @@ import java.util.Map;
 import java.util.stream.Collector;
 import net.kyori.adventure.text.minimessage.internal.TagInternals;
 import net.kyori.adventure.text.minimessage.tag.Tag;
-import org.jetbrains.annotations.NotNull;
 
 import static java.util.Objects.requireNonNull;
 
@@ -48,7 +47,7 @@ final class TagResolverBuilderImpl implements TagResolver.Builder {
   private final List<TagResolver> resolvers = new ArrayList<>();
 
   @Override
-  public TagResolver.@NotNull Builder tag(final @NotNull String name, final @NotNull Tag tag) {
+  public TagResolver.Builder tag(final String name, final Tag tag) {
     TagInternals.assertValidTagName(requireNonNull(name, "name"));
     this.replacements.put(
       name,
@@ -58,7 +57,7 @@ final class TagResolverBuilderImpl implements TagResolver.Builder {
   }
 
   @Override
-  public TagResolver.@NotNull Builder resolver(final @NotNull TagResolver resolver) {
+  public TagResolver.Builder resolver(final TagResolver resolver) {
     if (resolver instanceof SequentialTagResolver(TagResolver[] sequentialResolvers)) {
       this.resolvers(sequentialResolvers, false);
     } else if (!this.consumePotentialMappable(resolver)) {
@@ -69,11 +68,11 @@ final class TagResolverBuilderImpl implements TagResolver.Builder {
   }
 
   @Override
-  public TagResolver.@NotNull Builder resolvers(final @NotNull TagResolver @NotNull... resolvers) {
+  public TagResolver.Builder resolvers(final TagResolver ... resolvers) {
     return this.resolvers(resolvers, true);
   }
 
-  private TagResolver.@NotNull Builder resolvers(final @NotNull TagResolver @NotNull[] resolvers, final boolean forwards) {
+  private TagResolver.Builder resolvers(final TagResolver [] resolvers, final boolean forwards) {
     boolean popped = false;
     requireNonNull(resolvers, "resolvers");
     if (forwards) {
@@ -89,7 +88,7 @@ final class TagResolverBuilderImpl implements TagResolver.Builder {
   }
 
   @Override
-  public TagResolver.@NotNull Builder resolvers(final @NotNull Iterable<? extends TagResolver> resolvers) {
+  public TagResolver.Builder resolvers(final Iterable<? extends TagResolver> resolvers) {
     boolean popped = false;
     for (final TagResolver resolver : requireNonNull(resolvers, "resolvers")) {
       popped = this.single(resolver, popped);
@@ -126,7 +125,7 @@ final class TagResolverBuilderImpl implements TagResolver.Builder {
   }
 
   @Override
-  public @NotNull TagResolver build() {
+  public TagResolver build() {
     this.popMap();
     if (this.resolvers.isEmpty()) {
       return EmptyTagResolver.INSTANCE;

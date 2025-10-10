@@ -24,8 +24,7 @@
 package net.kyori.adventure.identity;
 
 import java.util.UUID;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 final class NilIdentity implements Identity {
   static final UUID NIL_UUID = new UUID(0, 0);
@@ -35,7 +34,7 @@ final class NilIdentity implements Identity {
   }
 
   @Override
-  public @NotNull UUID uuid() {
+  public UUID uuid() {
     return NIL_UUID;
   }
 

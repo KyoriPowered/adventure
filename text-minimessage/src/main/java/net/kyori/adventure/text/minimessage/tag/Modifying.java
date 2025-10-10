@@ -26,7 +26,6 @@ package net.kyori.adventure.text.minimessage.tag;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tree.Node;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * A tag that can transform a whole subtree of nodes.
@@ -42,7 +41,7 @@ public non-sealed interface Modifying extends Tag {
    * @param depth depth in the tree this node is at
    * @since 4.10.0
    */
-  default void visit(final @NotNull Node current, final int depth) {
+  default void visit(final Node current, final int depth) {
   }
 
   /**
@@ -65,5 +64,5 @@ public non-sealed interface Modifying extends Tag {
    * @return the new parent
    * @since 4.10.0
    */
-  Component apply(final @NotNull Component current, final int depth);
+  Component apply(final Component current, final int depth);
 }

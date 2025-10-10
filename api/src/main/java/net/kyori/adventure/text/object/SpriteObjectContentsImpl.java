@@ -25,11 +25,10 @@ package net.kyori.adventure.text.object;
 
 import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.key.Key;
-import org.jetbrains.annotations.NotNull;
 
 record SpriteObjectContentsImpl(Key atlas, Key sprite) implements SpriteObjectContents {
   @Override
-  public @NotNull String toString() {
+  public String toString() {
     return Internals.toString(this);
   }
 }

@@ -23,8 +23,6 @@
  */
 package net.kyori.adventure.title;
 
-import org.jetbrains.annotations.NotNull;
-
 record TitlePartImpl<T>(String part) implements TitlePart<T> {
   @Override
   public boolean equals(final Object o) {
@@ -32,7 +30,7 @@ record TitlePartImpl<T>(String part) implements TitlePart<T> {
   }
 
   @Override
-  public @NotNull String toString() {
+  public String toString() {
     return "TitlePart." + this.part();
   }
 }

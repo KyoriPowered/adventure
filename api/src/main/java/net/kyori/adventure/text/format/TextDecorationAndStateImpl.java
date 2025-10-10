@@ -24,7 +24,6 @@
 package net.kyori.adventure.text.format;
 
 import net.kyori.adventure.internal.Internals;
-import org.jetbrains.annotations.NotNull;
 
 import static java.util.Objects.requireNonNull;
 
@@ -37,7 +36,7 @@ record TextDecorationAndStateImpl(TextDecoration decoration, TextDecoration.Stat
   }
 
   @Override
-  public @NotNull String toString() {
+  public String toString() {
     return Internals.toString(this);
   }
 }

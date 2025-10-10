@@ -33,9 +33,8 @@ import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -81,7 +80,7 @@ public sealed interface PlayerHeadObjectContents extends ObjectContents permits 
    * @since 4.25.0
    */
   @Unmodifiable
-  @NotNull List<ProfileProperty> profileProperties();
+  List<ProfileProperty> profileProperties();
 
   /**
    * Whether the player head should render the player's hat layer.
@@ -111,7 +110,7 @@ public sealed interface PlayerHeadObjectContents extends ObjectContents permits 
    * @since 4.25.0
    */
   @Contract(value = "-> new", pure = true)
-  @NotNull Builder toBuilder();
+  Builder toBuilder();
 
   /**
    * Creates a profile property with the given value and no signature.
@@ -122,7 +121,7 @@ public sealed interface PlayerHeadObjectContents extends ObjectContents permits 
    * @since 4.25.0
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static ProfileProperty property(final @NotNull String name, final @NotNull String value) {
+  static ProfileProperty property(final String name, final String value) {
     return new PlayerHeadObjectContentsImpl.ProfilePropertyImpl(requireNonNull(name, "name"), requireNonNull(value, "value"), null);
   }
 
@@ -136,7 +135,7 @@ public sealed interface PlayerHeadObjectContents extends ObjectContents permits 
    * @since 4.25.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static ProfileProperty property(final @NotNull String name, final @NotNull String value, final @Nullable String signature) {
+  static ProfileProperty property(final String name, final String value, final @Nullable String signature) {
     return new PlayerHeadObjectContentsImpl.ProfilePropertyImpl(requireNonNull(name, "name"), requireNonNull(value, "value"), signature);
   }
 
@@ -152,7 +151,7 @@ public sealed interface PlayerHeadObjectContents extends ObjectContents permits 
      * @return the name
      * @since 4.25.0
      */
-    @NotNull String name();
+    String name();
 
     /**
      * Gets the value of the property.
@@ -160,7 +159,7 @@ public sealed interface PlayerHeadObjectContents extends ObjectContents permits 
      * @return the value
      * @since 4.25.0
      */
-    @NotNull String value();
+    String value();
 
     /**
      * Gets the signature of the property, if present.
@@ -171,7 +170,7 @@ public sealed interface PlayerHeadObjectContents extends ObjectContents permits 
     @Nullable String signature();
 
     @Override
-    default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+    default Stream<? extends ExaminableProperty> examinableProperties() {
       return Stream.of(
         ExaminableProperty.of("name", this.name()),
         ExaminableProperty.of("value", this.value()),
@@ -181,7 +180,7 @@ public sealed interface PlayerHeadObjectContents extends ObjectContents permits 
   }
 
   @Override
-  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  default Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("name", this.name()),
       ExaminableProperty.of("id", this.id()),
@@ -205,7 +204,7 @@ public sealed interface PlayerHeadObjectContents extends ObjectContents permits 
      * @since 4.25.0
      */
     @Contract(value = "_ -> this")
-    @NotNull Builder name(final @Nullable String name);
+    Builder name(final @Nullable String name);
 
     /**
      * Sets the UUID of the player.
@@ -215,7 +214,7 @@ public sealed interface PlayerHeadObjectContents extends ObjectContents permits 
      * @since 4.25.0
      */
     @Contract(value = "_ -> this")
-    @NotNull Builder id(final @Nullable UUID id);
+    Builder id(final @Nullable UUID id);
 
     /**
      * Sets a profile property.
@@ -225,7 +224,7 @@ public sealed interface PlayerHeadObjectContents extends ObjectContents permits 
      * @since 4.25.0
      */
     @Contract(value = "_ -> this")
-    @NotNull Builder profileProperty(final @NotNull ProfileProperty property);
+    Builder profileProperty(final ProfileProperty property);
 
     /**
      * Sets multiple profile properties.
@@ -235,7 +234,7 @@ public sealed interface PlayerHeadObjectContents extends ObjectContents permits 
      * @since 4.25.0
      */
     @Contract(value = "_ -> this")
-    @NotNull Builder profileProperties(final @NotNull Collection<ProfileProperty> properties);
+    Builder profileProperties(final Collection<ProfileProperty> properties);
 
     /**
      * Sets the skin (name, id, properties, and texture) from the given source, overriding any existing values.
@@ -245,7 +244,7 @@ public sealed interface PlayerHeadObjectContents extends ObjectContents permits 
      * @since 4.25.0
      */
     @Contract(value = "_ -> this")
-    @NotNull Builder skin(final @NotNull SkinSource skinSource);
+    Builder skin(final SkinSource skinSource);
 
     /**
      * Sets whether the player head should render the player's hat layer.
@@ -257,7 +256,7 @@ public sealed interface PlayerHeadObjectContents extends ObjectContents permits 
      * @since 4.25.0
      */
     @Contract(value = "_ -> this")
-    @NotNull Builder hat(final boolean hat);
+    Builder hat(final boolean hat);
 
     /**
      * Sets the optional namespaced ID of the skin texture to use for rendering.
@@ -272,7 +271,7 @@ public sealed interface PlayerHeadObjectContents extends ObjectContents permits 
      * @since 4.25.0
      */
     @Contract(value = "_ -> this")
-    @NotNull Builder texture(final @Nullable Key texture);
+    Builder texture(final @Nullable Key texture);
 
     /**
      * Builds the player head contents.
@@ -281,7 +280,7 @@ public sealed interface PlayerHeadObjectContents extends ObjectContents permits 
      * @since 4.25.0
      */
     @Contract(value = "-> new", pure = true)
-    @NotNull PlayerHeadObjectContents build();
+    PlayerHeadObjectContents build();
   }
 
   /**
@@ -301,6 +300,6 @@ public sealed interface PlayerHeadObjectContents extends ObjectContents permits 
      */
     @PlatformAPI
     @ApiStatus.Internal
-    void applySkinToPlayerHeadContents(@NotNull Builder builder);
+    void applySkinToPlayerHeadContents(Builder builder);
   }
 }

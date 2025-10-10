@@ -28,8 +28,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -47,7 +46,7 @@ public interface ComponentLike {
    * @return the components
    * @since 4.8.0
    */
-  static @NotNull List<Component> asComponents(final @NotNull List<? extends ComponentLike> likes) {
+  static List<Component> asComponents(final List<? extends ComponentLike> likes) {
     return asComponents(likes, null);
   }
 
@@ -61,7 +60,7 @@ public interface ComponentLike {
    * @return the components
    * @since 4.8.0
    */
-  static @NotNull List<Component> asComponents(final @NotNull List<? extends ComponentLike> likes, final @Nullable Predicate<? super Component> filter) {
+  static List<Component> asComponents(final List<? extends ComponentLike> likes, final @Nullable Predicate<? super Component> filter) {
     requireNonNull(likes, "likes");
     final int size = likes.size();
     if (size == 0) {
@@ -109,5 +108,5 @@ public interface ComponentLike {
    * @since 4.0.0
    */
   @Contract(pure = true)
-  @NotNull Component asComponent();
+  Component asComponent();
 }

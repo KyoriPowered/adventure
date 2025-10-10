@@ -35,8 +35,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.util.HSVLike;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Applies rainbow color to a component.
@@ -110,7 +109,7 @@ final class RainbowTag extends AbstractColorChangingTag {
   }
 
   @Override
-  protected @NotNull Consumer<TokenEmitter> preserveData() {
+  protected Consumer<TokenEmitter> preserveData() {
     final boolean reversed = this.reversed;
     final int phase = (int) Math.round(this.dividedPhase * 10);
     return emit -> {
@@ -126,7 +125,7 @@ final class RainbowTag extends AbstractColorChangingTag {
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(ExaminableProperty.of("phase", this.dividedPhase));
   }
 

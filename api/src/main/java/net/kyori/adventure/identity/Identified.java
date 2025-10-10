@@ -23,8 +23,6 @@
  */
 package net.kyori.adventure.identity;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * Something that can be identified by an {@link Identity}.
  *
@@ -37,5 +35,5 @@ public interface Identified {
    * @return the identity
    * @since 4.0.0
    */
-  @NotNull Identity identity();
+  Identity identity();
 }

@@ -30,7 +30,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
-import org.jetbrains.annotations.NotNull;
 
 import static java.util.Objects.requireNonNull;
 
@@ -54,7 +53,7 @@ public final class MonkeyBars {
    */
   @SafeVarargs
   @SuppressWarnings("varargs")
-  public static <E extends Enum<E>> @NotNull Set<E> enumSet(final Class<E> type, final E@NotNull... constants) {
+  public static <E extends Enum<E>> Set<E> enumSet(final Class<E> type, final E... constants) {
     final Set<E> set = EnumSet.noneOf(type);
     Collections.addAll(set, constants);
     return Collections.unmodifiableSet(set);
@@ -71,7 +70,7 @@ public final class MonkeyBars {
    * @return a list
    * @since 4.8.0
    */
-  public static <T> @NotNull List<T> addOne(final @NotNull List<T> oldList, final T newElement) {
+  public static <T> List<T> addOne(final List<T> oldList, final T newElement) {
     if (oldList.isEmpty()) return List.of(newElement);
     final List<T> newList = new ArrayList<>(oldList.size() + 1);
     newList.addAll(oldList);
@@ -93,7 +92,7 @@ public final class MonkeyBars {
    * @since 4.15.0
    */
   @SafeVarargs
-  public static <I, O> @NotNull List<O> nonEmptyArrayToList(final @NotNull Function<I, O> mapper, final @NotNull I first, final @NotNull I@NotNull... others) {
+  public static <I, O> List<O> nonEmptyArrayToList(final Function<I, O> mapper, final I first, final I... others) {
     final List<O> ret = new ArrayList<>(others.length + 1);
     ret.add(mapper.apply(first));
     for (final I other : others) {
@@ -114,7 +113,7 @@ public final class MonkeyBars {
    * @return a mapped list
    * @since 4.15.0
    */
-  public static <I, O> @NotNull List<O> toUnmodifiableList(final @NotNull Function<I, O> mapper, final @NotNull Iterable<? extends I> source) {
+  public static <I, O> List<O> toUnmodifiableList(final Function<I, O> mapper, final Iterable<? extends I> source) {
     final ArrayList<O> ret = source instanceof Collection<?> ? new ArrayList<>(((Collection<?>) source).size()) : new ArrayList<>();
     for (final I el : source) {
       ret.add(requireNonNull(mapper.apply(requireNonNull(el, "source[?]")), "mapper(source[?])"));

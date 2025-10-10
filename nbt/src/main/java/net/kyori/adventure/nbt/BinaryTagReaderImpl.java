@@ -32,7 +32,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.AbstractMap;
 import java.util.Map;
-import org.jetbrains.annotations.NotNull;
 
 import static net.kyori.adventure.nbt.IOStreamUtil.closeShield;
 
@@ -47,25 +46,25 @@ final class BinaryTagReaderImpl implements BinaryTagIO.Reader {
   }
 
   @Override
-  public @NotNull CompoundBinaryTag read(final @NotNull Path path, final BinaryTagIO.@NotNull Compression compression) throws IOException {
+  public CompoundBinaryTag read(final Path path, final BinaryTagIO.Compression compression) throws IOException {
     try (final InputStream is = Files.newInputStream(path)) {
       return this.read(is, compression);
     }
   }
 
   @Override
-  public @NotNull CompoundBinaryTag read(final @NotNull InputStream input, final BinaryTagIO.@NotNull Compression compression) throws IOException {
+  public CompoundBinaryTag read(final InputStream input, final BinaryTagIO.Compression compression) throws IOException {
     try (final DataInputStream dis = new DataInputStream(new BufferedInputStream(compression.decompress(closeShield(input))))) {
       return this.read((DataInput) dis);
     }
   }
 
   @Override
-  public @NotNull CompoundBinaryTag read(final @NotNull DataInput input) throws IOException {
+  public CompoundBinaryTag read(final DataInput input) throws IOException {
     return this.read(input, true);
   }
 
-  private @NotNull CompoundBinaryTag read(@NotNull DataInput input, final boolean named) throws IOException {
+  private CompoundBinaryTag read(DataInput input, final boolean named) throws IOException {
     if (!(input instanceof TrackingDataInput)) {
       input = new TrackingDataInput(input, this.maxBytes);
     }
@@ -79,40 +78,40 @@ final class BinaryTagReaderImpl implements BinaryTagIO.Reader {
   }
 
   @Override
-  public @NotNull CompoundBinaryTag readNameless(final @NotNull Path path, final BinaryTagIO.@NotNull Compression compression) throws IOException {
+  public CompoundBinaryTag readNameless(final Path path, final BinaryTagIO.Compression compression) throws IOException {
     try (final InputStream is = Files.newInputStream(path)) {
       return this.readNameless(is, compression);
     }
   }
 
   @Override
-  public @NotNull CompoundBinaryTag readNameless(final @NotNull InputStream input, final BinaryTagIO.@NotNull Compression compression) throws IOException {
+  public CompoundBinaryTag readNameless(final InputStream input, final BinaryTagIO.Compression compression) throws IOException {
     try (final DataInputStream dis = new DataInputStream(new BufferedInputStream(compression.decompress(closeShield(input))))) {
       return this.readNameless((DataInput) dis);
     }
   }
 
   @Override
-  public @NotNull CompoundBinaryTag readNameless(final @NotNull DataInput input) throws IOException {
+  public CompoundBinaryTag readNameless(final DataInput input) throws IOException {
     return this.read(input, false);
   }
 
   @Override
-  public Map.@NotNull Entry<String, CompoundBinaryTag> readNamed(final @NotNull Path path, final BinaryTagIO.@NotNull Compression compression) throws IOException {
+  public Map.Entry<String, CompoundBinaryTag> readNamed(final Path path, final BinaryTagIO.Compression compression) throws IOException {
     try (final InputStream is = Files.newInputStream(path)) {
       return this.readNamed(is, compression);
     }
   }
 
   @Override
-  public Map.@NotNull Entry<String, CompoundBinaryTag> readNamed(final @NotNull InputStream input, final BinaryTagIO.@NotNull Compression compression) throws IOException {
+  public Map.Entry<String, CompoundBinaryTag> readNamed(final InputStream input, final BinaryTagIO.Compression compression) throws IOException {
     try (final DataInputStream dis = new DataInputStream(new BufferedInputStream(compression.decompress(closeShield(input))))) {
       return this.readNamed((DataInput) dis);
     }
   }
 
   @Override
-  public Map.@NotNull Entry<String, CompoundBinaryTag> readNamed(final @NotNull DataInput input) throws IOException {
+  public Map.Entry<String, CompoundBinaryTag> readNamed(final DataInput input) throws IOException {
     final BinaryTagType<? extends BinaryTag> type = BinaryTagType.binaryTagType(input.readByte());
     requireCompound(type);
     final String name = input.readUTF();

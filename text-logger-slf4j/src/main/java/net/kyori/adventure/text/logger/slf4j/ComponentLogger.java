@@ -24,8 +24,7 @@
 package net.kyori.adventure.text.logger.slf4j;
 
 import net.kyori.adventure.text.Component;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 
@@ -51,7 +50,7 @@ public interface ComponentLogger extends Logger {
    * @return a logger with the name of the calling class
    * @since 4.11.0
    */
-  static @NotNull ComponentLogger logger() {
+  static ComponentLogger logger() {
     return logger(CallerClassFinder.callingClassName());
   }
 
@@ -64,7 +63,7 @@ public interface ComponentLogger extends Logger {
    * @return a logger with the provided name
    * @since 4.11.0
    */
-  static @NotNull ComponentLogger logger(final @NotNull String name) {
+  static ComponentLogger logger(final String name) {
     return Handler.logger(requireNonNull(name, "name"));
   }
 
@@ -77,7 +76,7 @@ public interface ComponentLogger extends Logger {
    * @return a logger with the name of the calling class
    * @since 4.11.0
    */
-  static @NotNull ComponentLogger logger(final @NotNull Class<?> clazz) {
+  static ComponentLogger logger(final Class<?> clazz) {
     return logger(clazz.getName());
   }
 
@@ -87,7 +86,7 @@ public interface ComponentLogger extends Logger {
    * @param msg the message string to be logged
    * @since 4.11.0
    */
-  void trace(final @NotNull Component msg);
+  void trace(final Component msg);
 
   /**
    * Log a message at the TRACE level according to the specified format
@@ -100,7 +99,7 @@ public interface ComponentLogger extends Logger {
    * @param arg the argument
    * @since 4.11.0
    */
-  void trace(final @NotNull Component format, final @Nullable Object arg);
+  void trace(final Component format, final @Nullable Object arg);
 
   /**
    * Log a message at the TRACE level according to the specified format
@@ -114,7 +113,7 @@ public interface ComponentLogger extends Logger {
    * @param arg2 the second argument
    * @since 4.11.0
    */
-  void trace(final @NotNull Component format, final @Nullable Object arg1, final @Nullable Object arg2);
+  void trace(final Component format, final @Nullable Object arg1, final @Nullable Object arg2);
 
   /**
    * Log a message at the TRACE level according to the specified format
@@ -130,7 +129,7 @@ public interface ComponentLogger extends Logger {
    * @param arguments a list of 3 or more arguments
    * @since 4.11.0
    */
-  void trace(final @NotNull Component format, final @Nullable Object @NotNull... arguments);
+  void trace(final Component format, final @Nullable Object ... arguments);
 
   /**
    * Log an exception (throwable) at the TRACE level with an
@@ -140,7 +139,7 @@ public interface ComponentLogger extends Logger {
    * @param t the exception (throwable) to log
    * @since 4.11.0
    */
-  void trace(final @NotNull Component msg, final @Nullable Throwable t);
+  void trace(final Component msg, final @Nullable Throwable t);
 
   /**
    * Log a message with the specific Marker at the TRACE level.
@@ -149,7 +148,7 @@ public interface ComponentLogger extends Logger {
    * @param msg the message string to be logged
    * @since 4.11.0
    */
-  void trace(final @NotNull Marker marker, final @NotNull Component msg);
+  void trace(final Marker marker, final Component msg);
 
   /**
    * This method is similar to {@link #trace(Component, Object)} method except that the
@@ -160,7 +159,7 @@ public interface ComponentLogger extends Logger {
    * @param arg the argument
    * @since 4.11.0
    */
-  void trace(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object arg);
+  void trace(final Marker marker, final Component format, final @Nullable Object arg);
 
   /**
    * This method is similar to {@link #trace(Component, Object, Object)}
@@ -173,7 +172,7 @@ public interface ComponentLogger extends Logger {
    * @param arg2 the second argument
    * @since 4.11.0
    */
-  void trace(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object arg1, final @Nullable Object arg2);
+  void trace(final Marker marker, final Component format, final @Nullable Object arg1, final @Nullable Object arg2);
 
   /**
    * This method is similar to {@link #trace(Component, Object...)}
@@ -185,7 +184,7 @@ public interface ComponentLogger extends Logger {
    * @param argArray an array of arguments
    * @since 4.11.0
    */
-  void trace(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object @NotNull... argArray);
+  void trace(final Marker marker, final Component format, final @Nullable Object ... argArray);
 
   /**
    * This method is similar to {@link #trace(Component, Throwable)} method except that the
@@ -196,7 +195,7 @@ public interface ComponentLogger extends Logger {
    * @param t the exception (throwable) to log
    * @since 4.11.0
    */
-  void trace(final @NotNull Marker marker, final @NotNull Component msg, final @Nullable Throwable t);
+  void trace(final Marker marker, final Component msg, final @Nullable Throwable t);
 
   /**
    * Log a message at the DEBUG level.
@@ -204,7 +203,7 @@ public interface ComponentLogger extends Logger {
    * @param msg the message string to be logged
    * @since 4.11.0
    */
-  void debug(final @NotNull Component msg);
+  void debug(final Component msg);
 
   /**
    * Log a message at the DEBUG level according to the specified format
@@ -217,7 +216,7 @@ public interface ComponentLogger extends Logger {
    * @param arg the argument
    * @since 4.11.0
    */
-  void debug(final @NotNull Component format, final @Nullable Object arg);
+  void debug(final Component format, final @Nullable Object arg);
 
   /**
    * Log a message at the DEBUG level according to the specified format
@@ -231,7 +230,7 @@ public interface ComponentLogger extends Logger {
    * @param arg2 the second argument
    * @since 4.11.0
    */
-  void debug(final @NotNull Component format, final @Nullable Object arg1, final @Nullable Object arg2);
+  void debug(final Component format, final @Nullable Object arg1, final @Nullable Object arg2);
 
   /**
    * Log a message at the DEBUG level according to the specified format
@@ -248,7 +247,7 @@ public interface ComponentLogger extends Logger {
    * @param arguments a list of 3 or more arguments
    * @since 4.11.0
    */
-  void debug(final @NotNull Component format, final @Nullable Object @NotNull... arguments);
+  void debug(final Component format, final @Nullable Object ... arguments);
 
   /**
    * Log an exception (throwable) at the DEBUG level with an
@@ -258,7 +257,7 @@ public interface ComponentLogger extends Logger {
    * @param t the exception (throwable) to log
    * @since 4.11.0
    */
-  void debug(final @NotNull Component msg, final @Nullable Throwable t);
+  void debug(final Component msg, final @Nullable Throwable t);
 
   /**
    * Log a message with the specific Marker at the DEBUG level.
@@ -267,7 +266,7 @@ public interface ComponentLogger extends Logger {
    * @param msg the message string to be logged
    * @since 4.11.0
    */
-  void debug(final @NotNull Marker marker, final @NotNull Component msg);
+  void debug(final Marker marker, final Component msg);
 
   /**
    * This method is similar to {@link #debug(Component, Object)} method except that the
@@ -278,7 +277,7 @@ public interface ComponentLogger extends Logger {
    * @param arg the argument
    * @since 4.11.0
    */
-  void debug(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object arg);
+  void debug(final Marker marker, final Component format, final @Nullable Object arg);
 
   /**
    * This method is similar to {@link #debug(Component, Object, Object)}
@@ -291,7 +290,7 @@ public interface ComponentLogger extends Logger {
    * @param arg2 the second argument
    * @since 4.11.0
    */
-  void debug(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object arg1, final @Nullable Object arg2);
+  void debug(final Marker marker, final Component format, final @Nullable Object arg1, final @Nullable Object arg2);
 
   /**
    * This method is similar to {@link #debug(Component, Object...)}
@@ -303,7 +302,7 @@ public interface ComponentLogger extends Logger {
    * @param arguments a list of 3 or more arguments
    * @since 4.11.0
    */
-  void debug(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object @NotNull... arguments);
+  void debug(final Marker marker, final Component format, final @Nullable Object ... arguments);
 
   /**
    * This method is similar to {@link #debug(Component, Throwable)} method except that the
@@ -314,7 +313,7 @@ public interface ComponentLogger extends Logger {
    * @param t the exception (throwable) to log
    * @since 4.11.0
    */
-  void debug(final @NotNull Marker marker, final @NotNull Component msg, final @Nullable Throwable t);
+  void debug(final Marker marker, final Component msg, final @Nullable Throwable t);
 
   /**
    * Log a message at the INFO level.
@@ -322,7 +321,7 @@ public interface ComponentLogger extends Logger {
    * @param msg the message string to be logged
    * @since 4.11.0
    */
-  void info(final @NotNull Component msg);
+  void info(final Component msg);
 
   /**
    * Log a message at the INFO level according to the specified format
@@ -335,7 +334,7 @@ public interface ComponentLogger extends Logger {
    * @param arg the argument
    * @since 4.11.0
    */
-  void info(final @NotNull Component format, final @Nullable Object arg);
+  void info(final Component format, final @Nullable Object arg);
 
   /**
    * Log a message at the INFO level according to the specified format
@@ -349,7 +348,7 @@ public interface ComponentLogger extends Logger {
    * @param arg2 the second argument
    * @since 4.11.0
    */
-  void info(final @NotNull Component format, final @Nullable Object arg1, final @Nullable Object arg2);
+  void info(final Component format, final @Nullable Object arg1, final @Nullable Object arg2);
 
   /**
    * Log a message at the INFO level according to the specified format
@@ -366,7 +365,7 @@ public interface ComponentLogger extends Logger {
    * @param arguments a list of 3 or more arguments
    * @since 4.11.0
    */
-  void info(final @NotNull Component format, final @Nullable Object@NotNull... arguments);
+  void info(final Component format, final @Nullable Object... arguments);
 
   /**
    * Log an exception (throwable) at the INFO level with an
@@ -376,7 +375,7 @@ public interface ComponentLogger extends Logger {
    * @param t the exception (throwable) to log
    * @since 4.11.0
    */
-  void info(final @NotNull Component msg, final @Nullable Throwable t);
+  void info(final Component msg, final @Nullable Throwable t);
 
   /**
    * Log a message with the specific Marker at the INFO level.
@@ -385,7 +384,7 @@ public interface ComponentLogger extends Logger {
    * @param msg the message string to be logged
    * @since 4.11.0
    */
-  void info(final @NotNull Marker marker, final @NotNull Component msg);
+  void info(final Marker marker, final Component msg);
 
   /**
    * This method is similar to {@link #info(Component, Object)} method except that the
@@ -396,7 +395,7 @@ public interface ComponentLogger extends Logger {
    * @param arg the argument
    * @since 4.11.0
    */
-  void info(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object arg);
+  void info(final Marker marker, final Component format, final @Nullable Object arg);
 
   /**
    * This method is similar to {@link #info(Component, Object, Object)}
@@ -409,7 +408,7 @@ public interface ComponentLogger extends Logger {
    * @param arg2 the second argument
    * @since 4.11.0
    */
-  void info(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object arg1, final @Nullable Object arg2);
+  void info(final Marker marker, final Component format, final @Nullable Object arg1, final @Nullable Object arg2);
 
   /**
    * This method is similar to {@link #info(Component, Object...)}
@@ -421,7 +420,7 @@ public interface ComponentLogger extends Logger {
    * @param arguments a list of 3 or more arguments
    * @since 4.11.0
    */
-  void info(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object@NotNull... arguments);
+  void info(final Marker marker, final Component format, final @Nullable Object... arguments);
 
   /**
    * This method is similar to {@link #info(Component, Throwable)} method
@@ -432,7 +431,7 @@ public interface ComponentLogger extends Logger {
    * @param t the exception (throwable) to log
    * @since 4.11.0
    */
-  void info(final @NotNull Marker marker, final @NotNull Component msg, final @NotNull Throwable t);
+  void info(final Marker marker, final Component msg, final Throwable t);
 
   /**
    * Log a message at the WARN level.
@@ -440,7 +439,7 @@ public interface ComponentLogger extends Logger {
    * @param msg the message string to be logged
    * @since 4.11.0
    */
-  void warn(final @NotNull Component msg);
+  void warn(final Component msg);
 
   /**
    * Log a message at the WARN level according to the specified format
@@ -453,7 +452,7 @@ public interface ComponentLogger extends Logger {
    * @param arg the argument
    * @since 4.11.0
    */
-  void warn(final @NotNull Component format, final @Nullable Object arg);
+  void warn(final Component format, final @Nullable Object arg);
 
   /**
    * Log a message at the WARN level according to the specified format
@@ -470,7 +469,7 @@ public interface ComponentLogger extends Logger {
    * @param arguments a list of 3 or more arguments
    * @since 4.11.0
    */
-  void warn(final @NotNull Component format, final @Nullable Object@NotNull... arguments);
+  void warn(final Component format, final @Nullable Object... arguments);
 
   /**
    * Log a message at the WARN level according to the specified format
@@ -484,7 +483,7 @@ public interface ComponentLogger extends Logger {
    * @param arg2 the second argument
    * @since 4.11.0
    */
-  void warn(final @NotNull Component format, final @Nullable Object arg1, final @Nullable Object arg2);
+  void warn(final Component format, final @Nullable Object arg1, final @Nullable Object arg2);
 
   /**
    * Log an exception (throwable) at the WARN level with an
@@ -494,16 +493,16 @@ public interface ComponentLogger extends Logger {
    * @param t the exception (throwable) to log
    * @since 4.11.0
    */
-  void warn(final @NotNull Component msg, final @NotNull Throwable t);
+  void warn(final Component msg, final Throwable t);
 
   /**
-   * Log a message with the specific final @NotNull Marker at the WARN level.
+   * Log a message with the specific final Marker at the WARN level.
    *
    * @param marker The marker specific to this log statement
    * @param msg the message string to be logged
    * @since 4.11.0
    */
-  void warn(final @NotNull Marker marker, final @NotNull Component msg);
+  void warn(final Marker marker, final Component msg);
 
   /**
    * This method is similar to {@link #warn(Component, Object)} method except that the
@@ -514,7 +513,7 @@ public interface ComponentLogger extends Logger {
    * @param arg the argument
    * @since 4.11.0
    */
-  void warn(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object arg);
+  void warn(final Marker marker, final Component format, final @Nullable Object arg);
 
   /**
    * This method is similar to {@link #warn(Component, Object, Object)}
@@ -527,7 +526,7 @@ public interface ComponentLogger extends Logger {
    * @param arg2 the second argument
    * @since 4.11.0
    */
-  void warn(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object arg1, final @Nullable Object arg2);
+  void warn(final Marker marker, final Component format, final @Nullable Object arg1, final @Nullable Object arg2);
 
   /**
    * This method is similar to {@link #warn(Component, Object...)}
@@ -539,7 +538,7 @@ public interface ComponentLogger extends Logger {
    * @param arguments a list of 3 or more arguments
    * @since 4.11.0
    */
-  void warn(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object@NotNull... arguments);
+  void warn(final Marker marker, final Component format, final @Nullable Object... arguments);
 
   /**
    * This method is similar to {@link #warn(Component, Throwable)} method
@@ -550,7 +549,7 @@ public interface ComponentLogger extends Logger {
    * @param t the exception (throwable) to log
    * @since 4.11.0
    */
-  void warn(final @NotNull Marker marker, final @NotNull Component msg, final @NotNull Throwable t);
+  void warn(final Marker marker, final Component msg, final Throwable t);
 
   /**
    * Log a message at the ERROR level.
@@ -558,7 +557,7 @@ public interface ComponentLogger extends Logger {
    * @param msg the message string to be logged
    * @since 4.11.0
    */
-  void error(final @NotNull Component msg);
+  void error(final Component msg);
 
   /**
    * Log a message at the ERROR level according to the specified format
@@ -571,7 +570,7 @@ public interface ComponentLogger extends Logger {
    * @param arg the argument
    * @since 4.11.0
    */
-  void error(final @NotNull Component format, final @Nullable Object arg);
+  void error(final Component format, final @Nullable Object arg);
 
   /**
    * Log a message at the ERROR level according to the specified format
@@ -585,7 +584,7 @@ public interface ComponentLogger extends Logger {
    * @param arg2 the second argument
    * @since 4.11.0
    */
-  void error(final @NotNull Component format, final @Nullable Object arg1, final @Nullable Object arg2);
+  void error(final Component format, final @Nullable Object arg1, final @Nullable Object arg2);
 
   /**
    * Log a message at the ERROR level according to the specified format
@@ -602,7 +601,7 @@ public interface ComponentLogger extends Logger {
    * @param arguments a list of 3 or more arguments
    * @since 4.11.0
    */
-  void error(final @NotNull Component format, final @Nullable Object@NotNull... arguments);
+  void error(final Component format, final @Nullable Object... arguments);
 
   /**
    * Log an exception (throwable) at the ERROR level with an
@@ -612,16 +611,16 @@ public interface ComponentLogger extends Logger {
    * @param t the exception (throwable) to log
    * @since 4.11.0
    */
-  void error(final @NotNull Component msg, final @NotNull Throwable t);
+  void error(final Component msg, final Throwable t);
 
   /**
-   * Log a message with the specific final @NotNull Marker at the ERROR level.
+   * Log a message with the specific final Marker at the ERROR level.
    *
    * @param marker The marker specific to this log statement
    * @param msg the message string to be logged
    * @since 4.11.0
    */
-  void error(final @NotNull Marker marker, final @NotNull Component msg);
+  void error(final Marker marker, final Component msg);
 
   /**
    * This method is similar to {@link #error(Component, Object)} method except that the
@@ -632,7 +631,7 @@ public interface ComponentLogger extends Logger {
    * @param arg the argument
    * @since 4.11.0
    */
-  void error(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object arg);
+  void error(final Marker marker, final Component format, final @Nullable Object arg);
 
   /**
    * This method is similar to {@link #error(Component, Object, Object)}
@@ -645,7 +644,7 @@ public interface ComponentLogger extends Logger {
    * @param arg2 the second argument
    * @since 4.11.0
    */
-  void error(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object arg1, final @Nullable Object arg2);
+  void error(final Marker marker, final Component format, final @Nullable Object arg1, final @Nullable Object arg2);
 
   /**
    * This method is similar to {@link #error(Component, Object...)}
@@ -657,7 +656,7 @@ public interface ComponentLogger extends Logger {
    * @param arguments a list of 3 or more arguments
    * @since 4.11.0
    */
-  void error(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object@NotNull... arguments);
+  void error(final Marker marker, final Component format, final @Nullable Object... arguments);
 
   /**
    * This method is similar to {@link #error(Component, Throwable)}
@@ -669,5 +668,5 @@ public interface ComponentLogger extends Logger {
    * @param t the exception (throwable) to log
    * @since 4.11.0
    */
-  void error(final @NotNull Marker marker, final @NotNull Component msg, final @NotNull Throwable t);
+  void error(final Marker marker, final Component msg, final Throwable t);
 }

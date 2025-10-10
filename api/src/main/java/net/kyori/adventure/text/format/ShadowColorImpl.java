@@ -27,7 +27,6 @@ import java.util.stream.Stream;
 import net.kyori.adventure.internal.Internals;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * @param value ARGB
@@ -37,12 +36,12 @@ record ShadowColorImpl(int value) implements ShadowColor, Examinable {
   static final ShadowColorImpl NONE = new ShadowColorImpl(NONE_VALUE);
 
   @Override
-  public @NotNull String toString() {
+  public String toString() {
     return Internals.toString(this);
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("value", this.value) // todo: represent as hex?
     );
