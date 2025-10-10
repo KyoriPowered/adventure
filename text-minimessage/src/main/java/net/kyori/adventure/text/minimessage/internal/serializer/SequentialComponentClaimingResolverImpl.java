@@ -27,6 +27,8 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.CompletionContext;
+import net.kyori.adventure.text.minimessage.CompletionResult;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.tag.Tag;
@@ -56,6 +58,15 @@ class SequentialComponentClaimingResolverImpl implements TagResolver.Sequential,
   @Override
   public boolean has(final @NotNull String name) {
     return this.names.contains(name);
+  }
+
+  @Override
+  public void complete(final @NotNull CompletionContext completionContext, final CompletionResult.@NotNull Builder builder) {
+    if (completionContext.completionState() == CompletionContext.CompletionState.TAG_NAME) {
+      this.names.stream()
+        .filter(name -> name.toLowerCase().startsWith(completionContext.partial().toLowerCase()))
+        .forEach(builder::add);
+    }
   }
 
   @Override

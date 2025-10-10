@@ -30,6 +30,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.stream.Collector;
+import net.kyori.adventure.text.minimessage.CompletionContext;
+import net.kyori.adventure.text.minimessage.CompletionResult;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.internal.TagInternals;
@@ -301,6 +303,17 @@ public interface TagResolver {
   boolean has(final @NotNull String name);
 
   /**
+   * Add completions to builder from context.
+   *
+   * @param completionContext the context
+   * @param builder the builder
+   * @since 123.123.123
+   */
+  default void complete(final @NotNull CompletionContext completionContext, final CompletionResult.@NotNull Builder builder) {
+
+  }
+
+  /**
    * A resolver that only handles a single tag key.
    *
    * @see TagResolver#resolver(String, Tag)
@@ -332,6 +345,15 @@ public interface TagResolver {
         return this.tag();
       }
       return null;
+    }
+
+    @Override
+    default void complete(final @NotNull CompletionContext completionContext, final CompletionResult.@NotNull Builder builder) {
+      if (completionContext.completionState() == CompletionContext.CompletionState.TAG_NAME) {
+        if (this.key().toLowerCase().startsWith(completionContext.partial().toLowerCase())) {
+          builder.add(this.key());
+        }
+      }
     }
 
     @Override

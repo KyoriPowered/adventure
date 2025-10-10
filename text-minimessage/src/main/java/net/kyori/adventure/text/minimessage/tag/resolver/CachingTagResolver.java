@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.CompletionContext;
+import net.kyori.adventure.text.minimessage.CompletionResult;
 import net.kyori.adventure.text.minimessage.internal.serializer.ClaimConsumer;
 import net.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
 import net.kyori.adventure.text.minimessage.tag.Inserting;
@@ -62,6 +64,11 @@ final class CachingTagResolver implements TagResolver.WithoutArguments, Mappable
   @Override
   public boolean has(final @NotNull String name) {
     return this.query(name) != NULL_REPLACEMENT;
+  }
+
+  @Override
+  public void complete(final @NotNull CompletionContext completionContext, final CompletionResult.@NotNull Builder builder) {
+    this.resolver.complete(completionContext, builder);
   }
 
   @Override

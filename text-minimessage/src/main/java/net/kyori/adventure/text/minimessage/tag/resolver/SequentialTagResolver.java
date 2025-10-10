@@ -25,6 +25,8 @@ package net.kyori.adventure.text.minimessage.tag.resolver;
 
 import java.util.Arrays;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.CompletionContext;
+import net.kyori.adventure.text.minimessage.CompletionResult;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.internal.serializer.ClaimConsumer;
@@ -111,6 +113,13 @@ final class SequentialTagResolver implements TagResolver, SerializableResolver {
       }
     }
     return false;
+  }
+
+  @Override
+  public void complete(final @NotNull CompletionContext completionContext, final CompletionResult.@NotNull Builder builder) {
+    for (final TagResolver resolver : this.resolvers) {
+      resolver.complete(completionContext, builder);
+    }
   }
 
   @Override

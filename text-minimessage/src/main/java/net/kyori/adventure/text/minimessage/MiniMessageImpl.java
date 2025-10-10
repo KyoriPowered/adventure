@@ -118,6 +118,14 @@ final class MiniMessageImpl implements MiniMessage {
   }
 
   @Override
+  public CompletionResult complete(final @NotNull String partialTag) {
+    final CompletionContextImpl context = new CompletionContextImpl(partialTag);
+    final CompletionResultImpl.BuilderImpl builder = new CompletionResultImpl.BuilderImpl();
+    this.tags().complete(context, builder);
+    return builder.build(context);
+  }
+
+  @Override
   public @NotNull String serialize(final @NotNull Component component) {
     return MiniMessageSerializer.serialize(component, this.serialResolver(null), this.strict);
   }

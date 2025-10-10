@@ -277,6 +277,15 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
   }
 
   /**
+   * Get completions for the given tag. Assumes the string starts after the opening character '&lt;'
+   *
+   * @param partialTag the partial tag
+   * @return a completion result for the given partial tag
+   * @since 123.123.123
+   */
+  CompletionResult complete(final @NotNull String partialTag);
+
+  /**
    * Returns if this MiniMessage instance is in strict mode.
    *
    * @return if the instance is in strict mode
