@@ -37,6 +37,9 @@ import static net.kyori.adventure.nbt.IOStreamUtil.closeShield;
 final class BinaryTagWriterImpl implements BinaryTagIO.Writer {
   static final BinaryTagIO.Writer INSTANCE = new BinaryTagWriterImpl();
 
+  private BinaryTagWriterImpl() {
+  }
+
   @Override
   public void write(final CompoundBinaryTag tag, final Path path, final BinaryTagIO.Compression compression) throws IOException {
     try (final OutputStream os = Files.newOutputStream(path)) {

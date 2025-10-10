@@ -39,50 +39,50 @@ public final class BinaryTagTypes {
    *
    * @since 4.0.0
    */
-  public static final BinaryTagType<EndBinaryTag> END = BinaryTagType.register(EndBinaryTag.class, (byte) 0, input -> EndBinaryTag.endBinaryTag(), null); // nothing to write
+  public static final BinaryTagType<EndBinaryTag> END = BinaryTagTypeImpl.register(EndBinaryTag.class, (byte) 0, input -> EndBinaryTag.endBinaryTag(), null); // nothing to write
   /**
    * {@link ByteBinaryTag}.
    *
    * @since 4.0.0
    */
-  public static final BinaryTagType<ByteBinaryTag> BYTE = BinaryTagType.registerNumeric(ByteBinaryTag.class, (byte) 1, input -> ByteBinaryTag.byteBinaryTag(input.readByte()), (tag, output) -> output.writeByte(tag.value()));
+  public static final BinaryTagType<ByteBinaryTag> BYTE = BinaryTagTypeImpl.registerNumeric(ByteBinaryTag.class, (byte) 1, input -> ByteBinaryTag.byteBinaryTag(input.readByte()), (tag, output) -> output.writeByte(tag.value()));
   /**
    * {@link ShortBinaryTag}.
    *
    * @since 4.0.0
    */
-  public static final BinaryTagType<ShortBinaryTag> SHORT = BinaryTagType.registerNumeric(ShortBinaryTag.class, (byte) 2, input -> ShortBinaryTag.shortBinaryTag(input.readShort()), (tag, output) -> output.writeShort(tag.value()));
+  public static final BinaryTagType<ShortBinaryTag> SHORT = BinaryTagTypeImpl.registerNumeric(ShortBinaryTag.class, (byte) 2, input -> ShortBinaryTag.shortBinaryTag(input.readShort()), (tag, output) -> output.writeShort(tag.value()));
   /**
    * {@link IntBinaryTag}.
    *
    * @since 4.0.0
    */
-  public static final BinaryTagType<IntBinaryTag> INT = BinaryTagType.registerNumeric(IntBinaryTag.class, (byte) 3, input -> IntBinaryTag.intBinaryTag(input.readInt()), (tag, output) -> output.writeInt(tag.value()));
+  public static final BinaryTagType<IntBinaryTag> INT = BinaryTagTypeImpl.registerNumeric(IntBinaryTag.class, (byte) 3, input -> IntBinaryTag.intBinaryTag(input.readInt()), (tag, output) -> output.writeInt(tag.value()));
   /**
    * {@link LongBinaryTag}.
    *
    * @since 4.0.0
    */
-  public static final BinaryTagType<LongBinaryTag> LONG = BinaryTagType.registerNumeric(LongBinaryTag.class, (byte) 4, input -> LongBinaryTag.longBinaryTag(input.readLong()), (tag, output) -> output.writeLong(tag.value()));
+  public static final BinaryTagType<LongBinaryTag> LONG = BinaryTagTypeImpl.registerNumeric(LongBinaryTag.class, (byte) 4, input -> LongBinaryTag.longBinaryTag(input.readLong()), (tag, output) -> output.writeLong(tag.value()));
   /**
    * {@link FloatBinaryTag}.
    *
    * @since 4.0.0
    */
-  public static final BinaryTagType<FloatBinaryTag> FLOAT = BinaryTagType.registerNumeric(FloatBinaryTag.class, (byte) 5, input -> FloatBinaryTag.floatBinaryTag(input.readFloat()), (tag, output) -> output.writeFloat(tag.value()));
+  public static final BinaryTagType<FloatBinaryTag> FLOAT = BinaryTagTypeImpl.registerNumeric(FloatBinaryTag.class, (byte) 5, input -> FloatBinaryTag.floatBinaryTag(input.readFloat()), (tag, output) -> output.writeFloat(tag.value()));
   /**
    * {@link DoubleBinaryTag}.
    *
    * @since 4.0.0
    */
-  public static final BinaryTagType<DoubleBinaryTag> DOUBLE = BinaryTagType.registerNumeric(DoubleBinaryTag.class, (byte) 6, input -> DoubleBinaryTag.doubleBinaryTag(input.readDouble()), (tag, output) -> output.writeDouble(tag.value()));
+  public static final BinaryTagType<DoubleBinaryTag> DOUBLE = BinaryTagTypeImpl.registerNumeric(DoubleBinaryTag.class, (byte) 6, input -> DoubleBinaryTag.doubleBinaryTag(input.readDouble()), (tag, output) -> output.writeDouble(tag.value()));
   /**
    * {@link ByteArrayBinaryTag}.
    *
    * @since 4.0.0
    */
   @SuppressWarnings("try")
-  public static final BinaryTagType<ByteArrayBinaryTag> BYTE_ARRAY = BinaryTagType.register(ByteArrayBinaryTag.class, (byte) 7, input -> {
+  public static final BinaryTagType<ByteArrayBinaryTag> BYTE_ARRAY = BinaryTagTypeImpl.register(ByteArrayBinaryTag.class, (byte) 7, input -> {
     final int length = input.readInt();
     try (final BinaryTagScope ignored = TrackingDataInput.enter(input, length)) {
       final byte[] value = new byte[length];
@@ -99,14 +99,14 @@ public final class BinaryTagTypes {
    *
    * @since 4.0.0
    */
-  public static final BinaryTagType<StringBinaryTag> STRING = BinaryTagType.register(StringBinaryTag.class, (byte) 8, input -> StringBinaryTag.stringBinaryTag(input.readUTF()), (tag, output) -> output.writeUTF(tag.value()));
+  public static final BinaryTagType<StringBinaryTag> STRING = BinaryTagTypeImpl.register(StringBinaryTag.class, (byte) 8, input -> StringBinaryTag.stringBinaryTag(input.readUTF()), (tag, output) -> output.writeUTF(tag.value()));
   /**
    * {@link ListBinaryTag}.
    *
    * @since 4.0.0
    */
   @SuppressWarnings("try")
-  public static final BinaryTagType<ListBinaryTag> LIST = BinaryTagType.register(ListBinaryTag.class, (byte) 9, input -> {
+  public static final BinaryTagType<ListBinaryTag> LIST = BinaryTagTypeImpl.register(ListBinaryTag.class, (byte) 9, input -> {
     final BinaryTagType<? extends BinaryTag> type = BinaryTagType.binaryTagType(input.readByte());
     final int length = input.readInt();
     try (final BinaryTagScope ignored = TrackingDataInput.enter(input, length * 8L)) {
@@ -122,7 +122,7 @@ public final class BinaryTagTypes {
     final int size = tag.size();
     output.writeInt(size);
     for (final BinaryTag item : tag) {
-      BinaryTagType.writeUntyped(item.type(), item, output);
+      BinaryTagTypeImpl.writeUntyped(item.type(), item, output);
     }
   });
   /**
@@ -131,7 +131,7 @@ public final class BinaryTagTypes {
    * @since 4.0.0
    */
   @SuppressWarnings("try")
-  public static final BinaryTagType<CompoundBinaryTag> COMPOUND = BinaryTagType.register(CompoundBinaryTag.class, (byte) 10, input -> {
+  public static final BinaryTagType<CompoundBinaryTag> COMPOUND = BinaryTagTypeImpl.register(CompoundBinaryTag.class, (byte) 10, input -> {
     try (final BinaryTagScope ignored = TrackingDataInput.enter(input)) {
       final Map<String, BinaryTag> tags = new HashMap<>();
       BinaryTagType<? extends BinaryTag> type;
@@ -140,7 +140,7 @@ public final class BinaryTagTypes {
         final BinaryTag tag = type.read(input);
         tags.put(key, tag);
       }
-      return new CompoundBinaryTagImpl(tags);
+      return CompoundBinaryTagImpl.create(tags);
     }
   }, (tag, output) -> {
     for (final Map.Entry<String, ? extends BinaryTag> entry : tag) {
@@ -150,7 +150,7 @@ public final class BinaryTagTypes {
         output.writeByte(type.id());
         if (type != BinaryTagTypes.END) {
           output.writeUTF(entry.getKey());
-          BinaryTagType.writeUntyped(type, value, output);
+          BinaryTagTypeImpl.writeUntyped(type, value, output);
         }
       }
     }
@@ -163,7 +163,7 @@ public final class BinaryTagTypes {
    * @sinceMinecraft 1.2.1
    */
   @SuppressWarnings("try")
-  public static final BinaryTagType<IntArrayBinaryTag> INT_ARRAY = BinaryTagType.register(IntArrayBinaryTag.class, (byte) 11, input -> {
+  public static final BinaryTagType<IntArrayBinaryTag> INT_ARRAY = BinaryTagTypeImpl.register(IntArrayBinaryTag.class, (byte) 11, input -> {
     final int length = input.readInt();
     try (final BinaryTagScope ignored = TrackingDataInput.enter(input, length * 4L)) {
       final int[] value = new int[length];
@@ -187,7 +187,7 @@ public final class BinaryTagTypes {
    * @sinceMinecraft 1.12
    */
   @SuppressWarnings("try")
-  public static final BinaryTagType<LongArrayBinaryTag> LONG_ARRAY = BinaryTagType.register(LongArrayBinaryTag.class, (byte) 12, input -> {
+  public static final BinaryTagType<LongArrayBinaryTag> LONG_ARRAY = BinaryTagTypeImpl.register(LongArrayBinaryTag.class, (byte) 12, input -> {
     final int length = input.readInt();
     try (final BinaryTagScope ignored = TrackingDataInput.enter(input, length * 8L)) {
       final long[] value = new long[length];
@@ -211,11 +211,11 @@ public final class BinaryTagTypes {
    *
    * @since 4.21.0
    */
-  public static final BinaryTagType<BinaryTag> LIST_WILDCARD = new BinaryTagType.Impl<>(BinaryTag.class, Byte.MAX_VALUE, input -> {
+  public static final BinaryTagType<BinaryTag> LIST_WILDCARD = new BinaryTagTypeImpl<>(BinaryTag.class, Byte.MAX_VALUE, input -> {
     throw new IllegalArgumentException("Unable to read values of placeholder type. This tag type exists only to indicate heterogeneous lists");
   }, (tag, output) -> {
     throw new IllegalArgumentException("Unable to write values of placeholder type. This tag type exists only to indicate heterogeneous lists");
-  });
+  }, false);
 
   private BinaryTagTypes() {
   }

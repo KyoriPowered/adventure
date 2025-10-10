@@ -28,7 +28,7 @@ package net.kyori.adventure.nbt;
  *
  * @since 4.0.0
  */
-public interface StringBinaryTag extends BinaryTag {
+public sealed interface StringBinaryTag extends BinaryTag permits StringBinaryTagImpl {
   /**
    * Creates a binary tag holding a {@link String} value.
    *

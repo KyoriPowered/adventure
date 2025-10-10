@@ -25,15 +25,10 @@ package net.kyori.adventure.nbt;
 
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.stream.Stream;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Debug;
-import org.jspecify.annotations.Nullable;
 
 @Debug.Renderer(text = "\"byte[\" + this.value.length + \"]\"", childrenArray = "this.value", hasChildren = "this.value.length > 0")
-final class ByteArrayBinaryTagImpl extends ArrayBinaryTagImpl implements ByteArrayBinaryTag {
-  final byte[] value;
-
+record ByteArrayBinaryTagImpl(byte[] value) implements ByteArrayBinaryTag {
   ByteArrayBinaryTagImpl(final byte[] value) {
     this.value = Arrays.copyOf(value, value.length);
   }
@@ -50,31 +45,13 @@ final class ByteArrayBinaryTagImpl extends ArrayBinaryTagImpl implements ByteArr
 
   @Override
   public byte get(final int index) {
-    checkIndex(index, this.value.length);
+    ShadyPines.checkIndex(index, this.value.length);
     return this.value[index];
   }
 
   // to avoid copying array internally
   static byte[] value(final ByteArrayBinaryTag tag) {
     return (tag instanceof ByteArrayBinaryTagImpl) ? ((ByteArrayBinaryTagImpl) tag).value : tag.value();
-  }
-
-  @Override
-  public boolean equals(final @Nullable Object other) {
-    if (this == other) return true;
-    if (other == null || this.getClass() != other.getClass()) return false;
-    final ByteArrayBinaryTagImpl that = (ByteArrayBinaryTagImpl) other;
-    return Arrays.equals(this.value, that.value);
-  }
-
-  @Override
-  public int hashCode() {
-    return Arrays.hashCode(this.value);
-  }
-
-  @Override
-  public Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(ExaminableProperty.of("value", this.value));
   }
 
   @Override

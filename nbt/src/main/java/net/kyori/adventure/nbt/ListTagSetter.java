@@ -30,7 +30,7 @@ package net.kyori.adventure.nbt;
  * @param <T> the element type
  * @since 4.0.0
  */
-public interface ListTagSetter<R, T extends BinaryTag> {
+public sealed interface ListTagSetter<R, T extends BinaryTag> permits ListBinaryTag, ListBinaryTag.Builder {
   /**
    * Adds a tag.
    *

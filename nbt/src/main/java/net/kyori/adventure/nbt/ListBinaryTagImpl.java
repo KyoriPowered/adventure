@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Consumer;
@@ -280,7 +281,7 @@ final class ListBinaryTag0 {
 
   static CompoundBinaryTag box(final BinaryTag tag) {
     if (needsBox(tag)) {
-      return new CompoundBinaryTagImpl(Collections.singletonMap(WRAPPER_KEY, tag));
+      return new CompoundBinaryTagImpl(Map.of(WRAPPER_KEY, tag));
     } else {
       return (CompoundBinaryTag) tag;
     }

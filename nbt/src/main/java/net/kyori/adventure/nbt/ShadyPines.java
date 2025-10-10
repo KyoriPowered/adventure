@@ -36,4 +36,10 @@ final class ShadyPines {
     final int iv = (int) fv;
     return fv < (float) iv ? iv - 1 : iv;
   }
+
+  static void checkIndex(final int index, final int length) {
+    if (index < 0 || index >= length) {
+      throw new IndexOutOfBoundsException("Index out of bounds: " + index);
+    }
+  }
 }

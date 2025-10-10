@@ -28,7 +28,7 @@ package net.kyori.adventure.nbt;
  *
  * @since 4.0.0
  */
-public interface DoubleBinaryTag extends NumberBinaryTag {
+public sealed interface DoubleBinaryTag extends NumberBinaryTag permits DoubleBinaryTagImpl {
   /**
    * Creates a binary tag holding a {@code double} value.
    *

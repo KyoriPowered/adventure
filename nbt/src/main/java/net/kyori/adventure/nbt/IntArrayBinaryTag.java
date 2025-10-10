@@ -34,7 +34,7 @@ import java.util.stream.IntStream;
  * @since 4.0.0
  * @sinceMinecraft 1.2.1
  */
-public interface IntArrayBinaryTag extends ArrayBinaryTag, Iterable<Integer> {
+public sealed interface IntArrayBinaryTag extends ArrayBinaryTag, Iterable<Integer> permits IntArrayBinaryTagImpl {
   /**
    * Creates a binary tag holding an {@code int}-array value.
    *

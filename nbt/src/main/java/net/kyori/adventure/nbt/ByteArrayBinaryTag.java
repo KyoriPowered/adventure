@@ -28,7 +28,7 @@ package net.kyori.adventure.nbt;
  *
  * @since 4.0.0
  */
-public interface ByteArrayBinaryTag extends ArrayBinaryTag, Iterable<Byte> {
+public sealed interface ByteArrayBinaryTag extends ArrayBinaryTag, Iterable<Byte> permits ByteArrayBinaryTagImpl {
   /**
    * Creates a binary tag holding a {@code byte}-array value.
    *

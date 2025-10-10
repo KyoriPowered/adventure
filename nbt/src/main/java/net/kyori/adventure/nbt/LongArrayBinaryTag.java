@@ -34,7 +34,7 @@ import java.util.stream.LongStream;
  * @since 4.0.0
  * @sinceMinecraft 1.12
  */
-public interface LongArrayBinaryTag extends ArrayBinaryTag, Iterable<Long> {
+public sealed interface LongArrayBinaryTag extends ArrayBinaryTag, Iterable<Long> permits LongArrayBinaryTagImpl {
   /**
    * Creates a binary tag holding a {@code long}-array value.
    *

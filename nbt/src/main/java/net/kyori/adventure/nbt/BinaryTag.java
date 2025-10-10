@@ -23,14 +23,12 @@
  */
 package net.kyori.adventure.nbt;
 
-import net.kyori.examination.Examinable;
-
 /**
  * A binary tag.
  *
  * @since 4.0.0
  */
-public interface BinaryTag extends BinaryTagLike, Examinable {
+public sealed interface BinaryTag extends BinaryTagLike permits ArrayBinaryTag, CompoundBinaryTag, EndBinaryTag, ListBinaryTag, NumberBinaryTag, StringBinaryTag {
   /**
    * Gets the tag type.
    *

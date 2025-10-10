@@ -28,7 +28,7 @@ package net.kyori.adventure.nbt;
  *
  * @since 4.0.0
  */
-public interface LongBinaryTag extends NumberBinaryTag {
+public sealed interface LongBinaryTag extends NumberBinaryTag permits LongBinaryTagImpl {
   /**
    * Creates a binary tag holding a {@code long} value.
    *

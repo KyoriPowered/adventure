@@ -592,8 +592,24 @@ public final class BinaryTagIO {
       }
     };
 
+    /**
+     * Decompresses an input stream.
+     *
+     * @param is the input stream
+     * @return the decompressed input stream
+     * @throws IOException if an exception was encountered while decompressing the stream
+     * @since 4.4.0
+     */
     abstract InputStream decompress(final InputStream is) throws IOException;
 
+    /**
+     * Compresses an output stream.
+     *
+     * @param os the output stream
+     * @return the compressed output stream
+     * @throws IOException if an exception was encountered while compressing the stream
+     * @since 4.4.0
+     */
     abstract OutputStream compress(final OutputStream os) throws IOException;
   }
 }

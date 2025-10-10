@@ -40,7 +40,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 4.0.0
  */
-public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<CompoundBinaryTag>, Iterable<Map.Entry<String, ? extends BinaryTag>> {
+public sealed interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<CompoundBinaryTag>, Iterable<Map.Entry<String, ? extends BinaryTag>> permits CompoundBinaryTagImpl {
   /**
    * Gets an empty compound tag.
    *
@@ -409,7 +409,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    * @since 4.0.0
    */
   @Contract("_, !null -> !null")
-  byte@Nullable[] getByteArray(final String key, final byte@Nullable[] defaultValue);
+  byte @Nullable [] getByteArray(final String key, final byte @Nullable [] defaultValue);
 
   /**
    * Gets a string.
@@ -530,7 +530,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    * @since 4.0.0
    */
   @Contract("_, !null -> !null")
-  int@Nullable[] getIntArray(final String key, final int@Nullable[] defaultValue);
+  int @Nullable [] getIntArray(final String key, final int @Nullable [] defaultValue);
 
   /**
    * Gets an array of longs.
@@ -551,7 +551,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    * @since 4.0.0
    */
   @Contract("_, !null -> !null")
-  long@Nullable[] getLongArray(final String key, final long@Nullable[] defaultValue);
+  long @Nullable [] getLongArray(final String key, final long @Nullable [] defaultValue);
 
   /**
    * Gets a stream of entries in this compound tag.
@@ -566,7 +566,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    *
    * @since 4.0.0
    */
-  interface Builder extends CompoundTagSetter<Builder> {
+  sealed interface Builder extends CompoundTagSetter<Builder> permits CompoundTagBuilder {
     /**
      * Builds.
      *

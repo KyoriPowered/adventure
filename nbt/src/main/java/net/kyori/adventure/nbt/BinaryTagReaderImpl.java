@@ -35,15 +35,9 @@ import java.util.Map;
 
 import static net.kyori.adventure.nbt.IOStreamUtil.closeShield;
 
-@SuppressWarnings("DuplicatedCode")
-final class BinaryTagReaderImpl implements BinaryTagIO.Reader {
-  private final long maxBytes;
+record BinaryTagReaderImpl(long maxBytes) implements BinaryTagIO.Reader {
   static final BinaryTagIO.Reader UNLIMITED = new BinaryTagReaderImpl(-1L);
   static final BinaryTagIO.Reader DEFAULT_LIMIT = new BinaryTagReaderImpl(0x20_00a);
-
-  BinaryTagReaderImpl(final long maxBytes) {
-    this.maxBytes = maxBytes;
-  }
 
   @Override
   public CompoundBinaryTag read(final Path path, final BinaryTagIO.Compression compression) throws IOException {

@@ -27,26 +27,22 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Debug;
 import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
 @Debug.Renderer(text = "\"CompoundBinaryTag[length=\" + this.tags.size() + \"]\"", childrenArray = "this.tags.entrySet().toArray()", hasChildren = "!this.tags.isEmpty()")
-final class CompoundBinaryTagImpl extends AbstractBinaryTag implements CompoundBinaryTag {
-  static final CompoundBinaryTag EMPTY = new CompoundBinaryTagImpl(Collections.emptyMap());
-  private final Map<String, BinaryTag> tags;
-  private final int hashCode;
+record CompoundBinaryTagImpl(Map<String, BinaryTag> tags) implements CompoundBinaryTag {
 
-  CompoundBinaryTagImpl(final Map<String, BinaryTag> tags) {
-    this.tags = Collections.unmodifiableMap(tags);
-    this.hashCode = tags.hashCode();
+  static CompoundBinaryTag create(final Map<String, BinaryTag> tags) {
+    return new CompoundBinaryTagImpl(Map.copyOf(tags));
   }
+
+  static final CompoundBinaryTag EMPTY = new CompoundBinaryTagImpl(Collections.emptyMap());
 
   @Override
   public boolean contains(final String key) {
@@ -55,8 +51,8 @@ final class CompoundBinaryTagImpl extends AbstractBinaryTag implements CompoundB
 
   @Override
   public boolean contains(final String key, final BinaryTagType<?> type) {
-    final BinaryTag tag = this.tags.get(Objects.requireNonNull(key, "key"));
-    return tag != null && Objects.requireNonNull(type, "type").test(tag.type());
+    final BinaryTag tag = this.tags.get(requireNonNull(key, "key"));
+    return tag != null && requireNonNull(type, "type").test(tag.type());
   }
 
   @Override
@@ -168,7 +164,7 @@ final class CompoundBinaryTagImpl extends AbstractBinaryTag implements CompoundB
   }
 
   @Override
-  public byte[] getByteArray(final String key, final byte[] defaultValue) {
+  public byte @Nullable [] getByteArray(final String key, final byte @Nullable [] defaultValue) {
     if (this.contains(key, BinaryTagTypes.BYTE_ARRAY)) {
       return ((ByteArrayBinaryTag) this.tags.get(key)).value();
     }
@@ -176,7 +172,7 @@ final class CompoundBinaryTagImpl extends AbstractBinaryTag implements CompoundB
   }
 
   @Override
-  public String getString(final String key, final String defaultValue) {
+  public @Nullable String getString(final String key, final @Nullable String defaultValue) {
     if (this.contains(key, BinaryTagTypes.STRING)) {
       return ((StringBinaryTag) this.tags.get(key)).value();
     }
@@ -184,7 +180,7 @@ final class CompoundBinaryTagImpl extends AbstractBinaryTag implements CompoundB
   }
 
   @Override
-  public ListBinaryTag getList(final String key, final ListBinaryTag defaultValue) {
+  public @Nullable ListBinaryTag getList(final String key, final @Nullable ListBinaryTag defaultValue) {
     if (this.contains(key, BinaryTagTypes.LIST)) {
       return (ListBinaryTag) this.tags.get(key);
     }
@@ -192,7 +188,7 @@ final class CompoundBinaryTagImpl extends AbstractBinaryTag implements CompoundB
   }
 
   @Override
-  public ListBinaryTag getList(final String key, final BinaryTagType<? extends BinaryTag> expectedType, final ListBinaryTag defaultValue) {
+  public @Nullable ListBinaryTag getList(final String key, final BinaryTagType<? extends BinaryTag> expectedType, final @Nullable ListBinaryTag defaultValue) {
     if (this.contains(key, BinaryTagTypes.LIST)) {
       final ListBinaryTag tag = (ListBinaryTag) this.tags.get(key);
       if (expectedType.test(tag.elementType())) {
@@ -203,7 +199,7 @@ final class CompoundBinaryTagImpl extends AbstractBinaryTag implements CompoundB
   }
 
   @Override
-  public CompoundBinaryTag getCompound(final String key, final CompoundBinaryTag defaultValue) {
+  public @Nullable CompoundBinaryTag getCompound(final String key, final @Nullable CompoundBinaryTag defaultValue) {
     if (this.contains(key, BinaryTagTypes.COMPOUND)) {
       return (CompoundBinaryTag) this.tags.get(key);
     }
@@ -219,7 +215,7 @@ final class CompoundBinaryTagImpl extends AbstractBinaryTag implements CompoundB
   }
 
   @Override
-  public int[] getIntArray(final String key, final int[] defaultValue) {
+  public int @Nullable [] getIntArray(final String key, final int @Nullable [] defaultValue) {
     if (this.contains(key, BinaryTagTypes.INT_ARRAY)) {
       return ((IntArrayBinaryTag) this.tags.get(key)).value();
     }
@@ -235,7 +231,7 @@ final class CompoundBinaryTagImpl extends AbstractBinaryTag implements CompoundB
   }
 
   @Override
-  public long[] getLongArray(final String key, final long[] defaultValue) {
+  public long @Nullable [] getLongArray(final String key, final long @Nullable [] defaultValue) {
     if (this.contains(key, BinaryTagTypes.LONG_ARRAY)) {
       return ((LongArrayBinaryTag) this.tags.get(key)).value();
     }
@@ -252,21 +248,6 @@ final class CompoundBinaryTagImpl extends AbstractBinaryTag implements CompoundB
     final Map<String, BinaryTag> tags = new HashMap<>(this.tags);
     consumer.accept(tags);
     return new CompoundBinaryTagImpl(new HashMap<>(tags)); // explicitly copy
-  }
-
-  @Override
-  public boolean equals(final Object that) {
-    return this == that || (that instanceof CompoundBinaryTagImpl && this.tags.equals(((CompoundBinaryTagImpl) that).tags));
-  }
-
-  @Override
-  public int hashCode() {
-    return this.hashCode;
-  }
-
-  @Override
-  public Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(ExaminableProperty.of("tags", this.tags));
   }
 
   @Override

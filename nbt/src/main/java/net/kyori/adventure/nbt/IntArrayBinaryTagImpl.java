@@ -29,14 +29,10 @@ import java.util.PrimitiveIterator;
 import java.util.Spliterator;
 import java.util.function.IntConsumer;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Debug;
-import org.jspecify.annotations.Nullable;
 
 @Debug.Renderer(text = "\"int[\" + this.value.length + \"]\"", childrenArray = "this.value", hasChildren = "this.value.length > 0")
-final class IntArrayBinaryTagImpl extends ArrayBinaryTagImpl implements IntArrayBinaryTag {
-  final int[] value;
+record IntArrayBinaryTagImpl(int... value) implements IntArrayBinaryTag {
 
   IntArrayBinaryTagImpl(final int... value) {
     this.value = Arrays.copyOf(value, value.length);
@@ -54,7 +50,7 @@ final class IntArrayBinaryTagImpl extends ArrayBinaryTagImpl implements IntArray
 
   @Override
   public int get(final int index) {
-    checkIndex(index, this.value.length);
+    ShadyPines.checkIndex(index, this.value.length);
     return this.value[index];
   }
 
@@ -98,23 +94,5 @@ final class IntArrayBinaryTagImpl extends ArrayBinaryTagImpl implements IntArray
   // to avoid copying array internally
   static int[] value(final IntArrayBinaryTag tag) {
     return (tag instanceof IntArrayBinaryTagImpl) ? ((IntArrayBinaryTagImpl) tag).value : tag.value();
-  }
-
-  @Override
-  public boolean equals(final @Nullable Object other) {
-    if (this == other) return true;
-    if (other == null || this.getClass() != other.getClass()) return false;
-    final IntArrayBinaryTagImpl that = (IntArrayBinaryTagImpl) other;
-    return Arrays.equals(this.value, that.value);
-  }
-
-  @Override
-  public int hashCode() {
-    return Arrays.hashCode(this.value);
-  }
-
-  @Override
-  public Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(ExaminableProperty.of("value", this.value));
   }
 }

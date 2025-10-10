@@ -33,11 +33,11 @@ import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.Nullable;
 
 /**
- * A list of zero or more values of a single tag type.
+ * A list of a single tag type.
  *
  * @since 4.0.0
  */
-public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, BinaryTag, Iterable<BinaryTag> {
+public sealed interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, BinaryTag, Iterable<BinaryTag> permits ListBinaryTagImpl {
   /**
    * Gets an empty list tag.
    *
@@ -425,7 +425,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @since 4.0.0
    */
   @Contract("_, !null -> !null")
-  default byte@Nullable[] getByteArray(final @Range(from = 0, to = Integer.MAX_VALUE) int index, final byte@Nullable[] defaultValue) {
+  default byte @Nullable [] getByteArray(final @Range(from = 0, to = Integer.MAX_VALUE) int index, final byte @Nullable [] defaultValue) {
     final BinaryTag tag = this.get(index);
     if (tag.type() == BinaryTagTypes.BYTE_ARRAY) {
       return ((ByteArrayBinaryTag) tag).value();
@@ -572,7 +572,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @since 4.0.0
    */
   @Contract("_, !null -> !null")
-  default int@Nullable[] getIntArray(final @Range(from = 0, to = Integer.MAX_VALUE) int index, final int@Nullable[] defaultValue) {
+  default int @Nullable [] getIntArray(final @Range(from = 0, to = Integer.MAX_VALUE) int index, final int @Nullable [] defaultValue) {
     final BinaryTag tag = this.get(index);
     if (tag.type() == BinaryTagTypes.INT_ARRAY) {
       return ((IntArrayBinaryTag) tag).value();
@@ -604,7 +604,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @since 4.0.0
    */
   @Contract("_, !null -> !null")
-  default long@Nullable[] getLongArray(final @Range(from = 0, to = Integer.MAX_VALUE) int index, final long@Nullable[] defaultValue) {
+  default long @Nullable [] getLongArray(final @Range(from = 0, to = Integer.MAX_VALUE) int index, final long @Nullable [] defaultValue) {
     final BinaryTag tag = this.get(index);
     if (tag.type() == BinaryTagTypes.LONG_ARRAY) {
       return ((LongArrayBinaryTag) tag).value();
@@ -642,7 +642,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @param <T> the element type
    * @since 4.0.0
    */
-  interface Builder<T extends BinaryTag> extends ListTagSetter<Builder<T>, T> {
+  sealed interface Builder<T extends BinaryTag> extends ListTagSetter<Builder<T>, T> permits ListTagBuilder {
     /**
      * Builds.
      *

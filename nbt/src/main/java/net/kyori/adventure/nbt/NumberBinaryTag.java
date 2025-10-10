@@ -28,7 +28,7 @@ package net.kyori.adventure.nbt;
  *
  * @since 4.0.0
  */
-public interface NumberBinaryTag extends BinaryTag {
+public sealed interface NumberBinaryTag extends BinaryTag permits ByteBinaryTag, DoubleBinaryTag, FloatBinaryTag, IntBinaryTag, LongBinaryTag, ShortBinaryTag {
   @Override
   BinaryTagType<? extends NumberBinaryTag> type();
 

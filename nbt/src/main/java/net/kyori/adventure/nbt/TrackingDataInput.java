@@ -43,7 +43,7 @@ final class TrackingDataInput implements DataInput, BinaryTagScope {
     if (input instanceof TrackingDataInput) {
       return ((TrackingDataInput) input).enter();
     } else {
-      return NoOp.INSTANCE;
+      return BinaryTagScope.noOp();
     }
   }
 
@@ -51,7 +51,7 @@ final class TrackingDataInput implements DataInput, BinaryTagScope {
     if (input instanceof TrackingDataInput) {
       return ((TrackingDataInput) input).enter(expectedSize);
     } else {
-      return NoOp.INSTANCE;
+      return BinaryTagScope.noOp();
     }
   }
 
@@ -163,7 +163,7 @@ final class TrackingDataInput implements DataInput, BinaryTagScope {
 
   @Override
   public @Nullable String readLine() throws IOException {
-    final @Nullable String result = this.input.readLine();
+    final String result = this.input.readLine();
     if (result != null) {
       this.counter += result.length() + 1;
     }

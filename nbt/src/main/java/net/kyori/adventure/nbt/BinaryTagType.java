@@ -26,10 +26,7 @@ package net.kyori.adventure.nbt;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Predicate;
-import org.jspecify.annotations.Nullable;
 
 /**
  * A binary tag type.
@@ -37,8 +34,22 @@ import org.jspecify.annotations.Nullable;
  * @param <T> the tag type
  * @since 4.0.0
  */
-public abstract class BinaryTagType<T extends BinaryTag> implements Predicate<BinaryTagType<? extends BinaryTag>> {
-  private static final List<BinaryTagType<? extends BinaryTag>> TYPES = new ArrayList<>();
+public sealed interface BinaryTagType<T extends BinaryTag> extends Predicate<BinaryTagType<? extends BinaryTag>> permits BinaryTagTypeImpl {
+  /**
+   * Returns the binary tag type for the given id.
+   *
+   * @param id the id
+   * @return the binary tag type
+   * @since 4.0.0
+   */
+  static BinaryTagType<? extends BinaryTag> binaryTagType(final byte id) {
+    for (final BinaryTagType<? extends BinaryTag> type : BinaryTagTypeImpl.TYPES) {
+      if (type.id() == id) {
+        return type;
+      }
+    }
+    throw new IllegalArgumentException(String.valueOf(id));
+  }
 
   /**
    * Gets the id.
@@ -46,9 +57,15 @@ public abstract class BinaryTagType<T extends BinaryTag> implements Predicate<Bi
    * @return the id
    * @since 4.0.0
    */
-  public abstract byte id();
+  byte id();
 
-  abstract boolean numeric();
+  /**
+   * If this tag type is numeric.
+   *
+   * @return if this tag type numeric
+   * @since 4.0.0
+   */
+  boolean numeric();
 
   /**
    * Reads a tag.
@@ -58,7 +75,7 @@ public abstract class BinaryTagType<T extends BinaryTag> implements Predicate<Bi
    * @throws IOException if an exception was encountered while reading
    * @since 4.0.0
    */
-  public abstract T read(final DataInput input) throws IOException;
+  T read(final DataInput input) throws IOException;
 
   /**
    * Writes a tag.
@@ -68,34 +85,7 @@ public abstract class BinaryTagType<T extends BinaryTag> implements Predicate<Bi
    * @throws IOException if an exception was encountered while writing
    * @since 4.0.0
    */
-  public abstract void write(final T tag, final DataOutput output) throws IOException;
-
-  @SuppressWarnings("unchecked") // HACK: generics suck
-  static <T extends BinaryTag> void writeUntyped(final BinaryTagType<? extends BinaryTag> type, final T tag, final DataOutput output) throws IOException {
-    ((BinaryTagType<T>) type).write(tag, output);
-  }
-
-  static BinaryTagType<? extends BinaryTag> binaryTagType(final byte id) {
-    for (final BinaryTagType<? extends BinaryTag> type : TYPES) {
-      if (type.id() == id) {
-        return type;
-      }
-    }
-    throw new IllegalArgumentException(String.valueOf(id));
-  }
-
-  static <T extends BinaryTag> BinaryTagType<T> register(final Class<T> type, final byte id, final Reader<T> reader, final @Nullable Writer<T> writer) {
-    return register(new Impl<>(type, id, reader, writer));
-  }
-
-  static <T extends NumberBinaryTag> BinaryTagType<T> registerNumeric(final Class<T> type, final byte id, final Reader<T> reader, final Writer<T> writer) {
-    return register(new Impl.Numeric<>(type, id, reader, writer));
-  }
-
-  private static <T extends BinaryTag, Y extends BinaryTagType<T>> Y register(final Y type) {
-    TYPES.add(type);
-    return type;
-  }
+  void write(final T tag, final DataOutput output) throws IOException;
 
   /**
    * A binary tag reader.
@@ -104,6 +94,14 @@ public abstract class BinaryTagType<T extends BinaryTag> implements Predicate<Bi
    * @since 4.0.0
    */
   interface Reader<T extends BinaryTag> {
+    /**
+     * Reads a tag.
+     *
+     * @param input the input
+     * @return the tag
+     * @throws IOException if an exception was encountered while reading
+     * @since 4.0.0
+     */
     T read(final DataInput input) throws IOException;
   }
 
@@ -114,66 +112,14 @@ public abstract class BinaryTagType<T extends BinaryTag> implements Predicate<Bi
    * @since 4.0.0
    */
   interface Writer<T extends BinaryTag> {
+    /**
+     * Writes a tag.
+     *
+     * @param tag the tag to write
+     * @param output the output to write to
+     * @throws IOException if an exception was encountered while writing
+     * @since 4.0.0
+     */
     void write(final T tag, final DataOutput output) throws IOException;
-  }
-
-  @Override
-  public boolean test(final BinaryTagType<? extends BinaryTag> that) {
-    return this == that || (this.numeric() && that.numeric());
-  }
-
-  static class Impl<T extends BinaryTag> extends BinaryTagType<T> {
-    final Class<T> type;
-    final byte id;
-    private final Reader<T> reader;
-    private final @Nullable Writer<T> writer;
-
-    Impl(final Class<T> type, final byte id, final Reader<T> reader, final @Nullable Writer<T> writer) {
-      this.type = type;
-      this.id = id;
-      this.reader = reader;
-      this.writer = writer;
-    }
-
-    @Override
-    public final T read(final DataInput input) throws IOException {
-      return this.reader.read(input);
-    }
-
-    @Override
-    public final void write(final T tag, final DataOutput output) throws IOException {
-      if (this.writer != null) this.writer.write(tag, output);
-    }
-
-    @Override
-    public final byte id() {
-      return this.id;
-    }
-
-    @Override
-    boolean numeric() {
-      return false;
-    }
-
-    @Override
-    public String toString() {
-      return BinaryTagType.class.getSimpleName() + '[' + this.type.getSimpleName() + " " + this.id + "]";
-    }
-
-    static class Numeric<T extends BinaryTag> extends Impl<T> {
-      Numeric(final Class<T> type, final byte id, final Reader<T> reader, final @Nullable Writer<T> writer) {
-        super(type, id, reader, writer);
-      }
-
-      @Override
-      boolean numeric() {
-        return true;
-      }
-
-      @Override
-      public String toString() {
-        return BinaryTagType.class.getSimpleName() + '[' + this.type.getSimpleName() + " " + this.id + " (numeric)]";
-      }
-    }
   }
 }

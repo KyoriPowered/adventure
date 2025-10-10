@@ -33,7 +33,7 @@ import org.jspecify.annotations.Nullable;
  * @param <R> the return type
  * @since 4.0.0
  */
-public interface CompoundTagSetter<R> {
+public sealed interface CompoundTagSetter<R> permits CompoundBinaryTag, CompoundBinaryTag.Builder {
   /**
    * Inserts a tag.
    *

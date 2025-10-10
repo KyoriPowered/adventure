@@ -28,7 +28,7 @@ package net.kyori.adventure.nbt;
  *
  * @since 4.0.0
  */
-public interface ShortBinaryTag extends NumberBinaryTag {
+public sealed interface ShortBinaryTag extends NumberBinaryTag permits ShortBinaryTagImpl {
   /**
    * Creates a binary tag holding a {@code short} value.
    *

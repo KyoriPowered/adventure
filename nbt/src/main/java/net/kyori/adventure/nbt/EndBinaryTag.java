@@ -28,7 +28,7 @@ package net.kyori.adventure.nbt;
  *
  * @since 4.0.0
  */
-public interface EndBinaryTag extends BinaryTag {
+public sealed interface EndBinaryTag extends BinaryTag permits EndBinaryTagImpl {
   /**
    * Gets the end tag.
    *
