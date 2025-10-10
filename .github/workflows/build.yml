@@ -14,4 +14,5 @@ jobs:
     with:
       publish_releases: true
       publish_release_javadoc: true
+      runtime_version: 21
     secrets: "inherit"
