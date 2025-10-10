@@ -27,6 +27,8 @@ import org.jetbrains.annotations.Debug;
 
 @Debug.Renderer(text = "\"0x\" + Integer.toString(this.value, 16)", hasChildren = "false")
 record ByteBinaryTagImpl(byte value) implements ByteBinaryTag {
+  static ByteBinaryTag ZERO = new ByteBinaryTagImpl((byte) 0);
+  static ByteBinaryTag ONE = new ByteBinaryTagImpl((byte) 1);
 
   @Override
   public byte byteValue() {

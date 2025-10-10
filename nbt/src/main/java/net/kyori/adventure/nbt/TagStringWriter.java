@@ -67,13 +67,13 @@ final class TagStringWriter implements AutoCloseable {
       case ByteArrayBinaryTag byteArrayTag -> this.writeByteArray(byteArrayTag);
       case IntArrayBinaryTag intArrayTag -> this.writeIntArray(intArrayTag);
       case LongArrayBinaryTag longArrayTag -> this.writeLongArray(longArrayTag);
-      case StringBinaryTag stringTag -> this.value((stringTag).value(), Tokens.EOF);
-      case ByteBinaryTag byteTag -> this.value(Byte.toString((byteTag).value()), Tokens.TYPE_BYTE);
-      case ShortBinaryTag shortTag -> this.value(Short.toString((shortTag).value()), Tokens.TYPE_SHORT);
-      case IntBinaryTag intTag -> this.value(Integer.toString((intTag).value()), Tokens.TYPE_INT);
-      case LongBinaryTag longTag -> this.value(Long.toString((longTag).value()), Character.toUpperCase(Tokens.TYPE_LONG)); // special-case
-      case FloatBinaryTag floatTag -> this.value(Float.toString((floatTag).value()), Tokens.TYPE_FLOAT);
-      case DoubleBinaryTag doubleTag -> this.value(Double.toString((doubleTag).value()), Tokens.TYPE_DOUBLE);
+      case StringBinaryTag stringTag -> this.value(stringTag.value(), Tokens.EOF);
+      case ByteBinaryTag byteTag -> this.value(Byte.toString(byteTag.value()), Tokens.TYPE_BYTE);
+      case ShortBinaryTag shortTag -> this.value(Short.toString(shortTag.value()), Tokens.TYPE_SHORT);
+      case IntBinaryTag intTag -> this.value(Integer.toString(intTag.value()), Tokens.TYPE_INT);
+      case LongBinaryTag longTag -> this.value(Long.toString(longTag.value()), Character.toUpperCase(Tokens.TYPE_LONG)); // special-case
+      case FloatBinaryTag floatTag -> this.value(Float.toString(floatTag.value()), Tokens.TYPE_FLOAT);
+      case DoubleBinaryTag doubleTag -> this.value(Double.toString(doubleTag.value()), Tokens.TYPE_DOUBLE);
       default -> throw new IOException("Unknown tag type: " + tag.type());
     };
   }
@@ -304,8 +304,8 @@ final class TagStringWriter implements AutoCloseable {
     if (this.level != 0) {
       throw new IllegalStateException("Document finished with unbalanced start and end objects");
     }
-    if (this.out instanceof Writer) {
-      ((Writer) this.out).flush();
+    if (this.out instanceof Writer writer) {
+      writer.flush();
     }
   }
 }

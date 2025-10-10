@@ -143,10 +143,10 @@ final class TagStringReader {
     final IntStream.Builder builder = IntStream.builder();
     while (this.buffer.hasMore()) {
       final BinaryTag value = this.tag();
-      if (!(value instanceof IntBinaryTag)) {
+      if (!(value instanceof final IntBinaryTag ibt)) {
         throw this.buffer.makeError("All elements of an int array must be ints!");
       }
-      builder.add(((IntBinaryTag) value).intValue());
+      builder.add(ibt.intValue());
       if (this.separatorOrCompleteWith(Tokens.ARRAY_END)) {
         return builder.build().toArray();
       }
@@ -213,25 +213,24 @@ final class TagStringReader {
     }
     try {
       final char startToken = this.buffer.skipWhitespace().peek();
-      switch (startToken) {
-        case Tokens.COMPOUND_BEGIN:
-          return this.compound();
-        case Tokens.ARRAY_BEGIN:
+      return switch (startToken) {
+        case Tokens.COMPOUND_BEGIN -> this.compound();
+        case Tokens.ARRAY_BEGIN -> {
           // TODO: legacy-format int arrays are ambiguous with new format int lists
           // Maybe add in a legacy-only mode to read those?
           if (this.buffer.hasMore(2) && this.buffer.peek(2) == ';') { // we know we're an array tag
-            return this.array(this.buffer.peek(1));
+            yield this.array(this.buffer.peek(1));
           } else {
-            return this.list();
+            yield this.list();
           }
-        case Tokens.SINGLE_QUOTE:
-        case Tokens.DOUBLE_QUOTE:
+        }
+        case Tokens.SINGLE_QUOTE, Tokens.DOUBLE_QUOTE -> {
           // definitely a string tag
           this.buffer.advance();
-          return StringBinaryTag.stringBinaryTag(unescape(this.buffer.takeUntil(startToken).toString()));
-        default: // scalar
-          return this.scalar();
-      }
+          yield StringBinaryTag.stringBinaryTag(unescape(this.buffer.takeUntil(startToken).toString()));
+        }
+        default -> this.scalar();
+      };
     } finally {
       this.depth--;
     }

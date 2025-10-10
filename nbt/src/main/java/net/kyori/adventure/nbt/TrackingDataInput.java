@@ -40,16 +40,16 @@ final class TrackingDataInput implements DataInput, BinaryTagScope {
   }
 
   public static BinaryTagScope enter(final DataInput input) throws IOException {
-    if (input instanceof TrackingDataInput) {
-      return ((TrackingDataInput) input).enter();
+    if (input instanceof TrackingDataInput tdi) {
+      return tdi.enter();
     } else {
       return BinaryTagScope.noOp();
     }
   }
 
   public static BinaryTagScope enter(final DataInput input, final long expectedSize) throws IOException {
-    if (input instanceof TrackingDataInput) {
-      return ((TrackingDataInput) input).enter(expectedSize);
+    if (input instanceof TrackingDataInput tdi) {
+      return tdi.enter(expectedSize);
     } else {
       return BinaryTagScope.noOp();
     }

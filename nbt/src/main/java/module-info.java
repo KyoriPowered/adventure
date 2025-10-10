@@ -8,8 +8,8 @@ import org.jspecify.annotations.NullMarked;
  */
 @NullMarked
 module net.kyori.adventure.nbt {
-  requires static org.jspecify;
-  requires static org.jetbrains.annotations;
+  requires transitive org.jspecify;
+  requires transitive org.jetbrains.annotations;
 
   exports net.kyori.adventure.nbt;
 }

@@ -25,8 +25,10 @@ package net.kyori.adventure.nbt;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Objects;
 import org.jetbrains.annotations.Debug;
 
+@SuppressWarnings("ArrayRecordComponent") // We override equals/hashCode/toString.
 @Debug.Renderer(text = "\"byte[\" + this.value.length + \"]\"", childrenArray = "this.value", hasChildren = "this.value.length > 0")
 record ByteArrayBinaryTagImpl(byte[] value) implements ByteArrayBinaryTag {
   ByteArrayBinaryTagImpl(final byte[] value) {
@@ -51,7 +53,25 @@ record ByteArrayBinaryTagImpl(byte[] value) implements ByteArrayBinaryTag {
 
   // to avoid copying array internally
   static byte[] value(final ByteArrayBinaryTag tag) {
-    return (tag instanceof ByteArrayBinaryTagImpl) ? ((ByteArrayBinaryTagImpl) tag).value : tag.value();
+    return (tag instanceof ByteArrayBinaryTagImpl(byte[] value1)) ? value1 : tag.value();
+  }
+
+  @Override
+  public boolean equals(final Object o) {
+    if (!(o instanceof ByteArrayBinaryTagImpl(byte[] value1))) return false;
+    return Objects.deepEquals(this.value, value1);
+  }
+
+  @Override
+  public int hashCode() {
+    return Arrays.hashCode(this.value);
+  }
+
+  @Override
+  public String toString() {
+    return "ByteArrayBinaryTagImpl{" +
+      "value=" + Arrays.toString(this.value) +
+      '}';
   }
 
   @Override

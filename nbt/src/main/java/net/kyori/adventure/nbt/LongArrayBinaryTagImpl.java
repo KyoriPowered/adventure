@@ -25,12 +25,14 @@ package net.kyori.adventure.nbt;
 
 import java.util.Arrays;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.PrimitiveIterator;
 import java.util.Spliterator;
 import java.util.function.LongConsumer;
 import java.util.stream.LongStream;
 import org.jetbrains.annotations.Debug;
 
+@SuppressWarnings("ArrayRecordComponent") // We override equals/hashCode/toString.
 @Debug.Renderer(text = "\"long[\" + this.value.length + \"]\"", childrenArray = "this.value", hasChildren = "this.value.length > 0")
 record LongArrayBinaryTagImpl(long[] value) implements LongArrayBinaryTag {
 
@@ -91,8 +93,26 @@ record LongArrayBinaryTagImpl(long[] value) implements LongArrayBinaryTag {
     }
   }
 
+  @Override
+  public boolean equals(final Object o) {
+    if (!(o instanceof LongArrayBinaryTagImpl(long[] value1))) return false;
+    return Objects.deepEquals(this.value, value1);
+  }
+
+  @Override
+  public int hashCode() {
+    return Arrays.hashCode(this.value);
+  }
+
+  @Override
+  public String toString() {
+    return "LongArrayBinaryTagImpl{" +
+      "value=" + Arrays.toString(this.value) +
+      '}';
+  }
+
   // to avoid copying array internally
   static long[] value(final LongArrayBinaryTag tag) {
-    return (tag instanceof LongArrayBinaryTagImpl) ? ((LongArrayBinaryTagImpl) tag).value : tag.value();
+    return (tag instanceof LongArrayBinaryTagImpl(long[] value1)) ? value1 : tag.value();
   }
 }

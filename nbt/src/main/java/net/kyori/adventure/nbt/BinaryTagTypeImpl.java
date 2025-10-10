@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.jspecify.annotations.Nullable;
 
-public record BinaryTagTypeImpl<T extends BinaryTag>(
+record BinaryTagTypeImpl<T extends BinaryTag>(
   Class<T> type,
   byte id,
   Reader<T> reader,

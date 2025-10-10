@@ -33,6 +33,7 @@ import java.io.IOException;
 interface BinaryTagScope extends AutoCloseable {
   /**
    * A no-op depth tracker.
+   *
    * @return the depth tracker
    * @since 4.25.0
    */

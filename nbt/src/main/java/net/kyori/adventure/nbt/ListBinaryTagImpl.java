@@ -34,29 +34,18 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Debug;
 import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.Nullable;
 
 @Debug.Renderer(text = "\"ListBinaryTag[type=\" + this.type.toString() + \"]\"", childrenArray = "this.tags.toArray()", hasChildren = "!this.tags.isEmpty()")
-final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag {
+record ListBinaryTagImpl(BinaryTagType<? extends BinaryTag> elementType, boolean permitsHeterogeneity, List<BinaryTag> tags) implements ListBinaryTag {
   static final ListBinaryTag EMPTY = new ListBinaryTagImpl(BinaryTagTypes.END, false, Collections.emptyList());
-  private final List<BinaryTag> tags;
-  private final boolean permitsHeterogeneity;
-  private final BinaryTagType<? extends BinaryTag> elementType;
-  private final int hashCode;
 
   ListBinaryTagImpl(final BinaryTagType<? extends BinaryTag> elementType, final boolean permitsHeterogeneity, final List<BinaryTag> tags) {
     this.tags = Collections.unmodifiableList(tags);
     this.permitsHeterogeneity = permitsHeterogeneity;
     this.elementType = elementType;
-    this.hashCode = tags.hashCode();
-  }
-
-  @Override
-  public BinaryTagType<? extends BinaryTag> elementType() {
-    return this.elementType;
   }
 
   @Override
@@ -247,20 +236,7 @@ final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag
 
   @Override
   public boolean equals(final Object that) {
-    return this == that || (that instanceof ListBinaryTagImpl && this.tags.equals(((ListBinaryTagImpl) that).tags));
-  }
-
-  @Override
-  public int hashCode() {
-    return this.hashCode;
-  }
-
-  @Override
-  public Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("tags", this.tags),
-      ExaminableProperty.of("type", this.elementType)
-    );
+    return this == that || (that instanceof final ListBinaryTagImpl lat && this.tags.equals(lat.tags));
   }
 }
 

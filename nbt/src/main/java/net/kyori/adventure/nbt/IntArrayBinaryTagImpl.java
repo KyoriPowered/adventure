@@ -25,12 +25,14 @@ package net.kyori.adventure.nbt;
 
 import java.util.Arrays;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.PrimitiveIterator;
 import java.util.Spliterator;
 import java.util.function.IntConsumer;
 import java.util.stream.IntStream;
 import org.jetbrains.annotations.Debug;
 
+@SuppressWarnings("ArrayRecordComponent") // We override equals/hashCode/toString.
 @Debug.Renderer(text = "\"int[\" + this.value.length + \"]\"", childrenArray = "this.value", hasChildren = "this.value.length > 0")
 record IntArrayBinaryTagImpl(int... value) implements IntArrayBinaryTag {
 
@@ -91,8 +93,26 @@ record IntArrayBinaryTagImpl(int... value) implements IntArrayBinaryTag {
     }
   }
 
+  @Override
+  public boolean equals(final Object o) {
+    if (!(o instanceof IntArrayBinaryTagImpl(int[] value1))) return false;
+    return Objects.deepEquals(this.value, value1);
+  }
+
+  @Override
+  public int hashCode() {
+    return Arrays.hashCode(this.value);
+  }
+
+  @Override
+  public String toString() {
+    return "IntArrayBinaryTagImpl{" +
+      "value=" + Arrays.toString(this.value) +
+      '}';
+  }
+
   // to avoid copying array internally
   static int[] value(final IntArrayBinaryTag tag) {
-    return (tag instanceof IntArrayBinaryTagImpl) ? ((IntArrayBinaryTagImpl) tag).value : tag.value();
+    return (tag instanceof IntArrayBinaryTagImpl(int[] value1)) ? value1 : tag.value();
   }
 }

@@ -245,9 +245,9 @@ public sealed interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<C
    */
   default boolean getBoolean(final String key, final boolean defaultValue) {
     final BinaryTag tag = this.get(key);
-    if (tag instanceof ByteBinaryTag) {
+    if (tag instanceof final ByteBinaryTag bbt) {
       // != 0 might look weird, but it is what vanilla does
-      return ((ByteBinaryTag) tag).value() != 0;
+      return bbt.value() != 0;
     }
     return defaultValue;
   }
