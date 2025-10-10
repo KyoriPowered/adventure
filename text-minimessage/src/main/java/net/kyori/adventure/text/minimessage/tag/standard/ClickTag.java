@@ -50,7 +50,14 @@ final class ClickTag {
       emitter.tag(CLICK)
         .argument(ClickEvent.Action.NAMES.key(event.action()))
         .argument(event.value(), QuotingOverride.QUOTED);
-    })
+    }),
+    (context, builder) -> {
+      if (context.arguments().isEmpty()) {
+        ClickEvent.Action.NAMES.keys().stream()
+          .filter(key -> key.toLowerCase().startsWith(context.partial().toLowerCase()))
+          .forEach(builder::add);
+      }
+    }
   );
 
   private ClickTag() {

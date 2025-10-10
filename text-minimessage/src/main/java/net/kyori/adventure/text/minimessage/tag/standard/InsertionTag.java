@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage.tag.standard;
 
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;

@@ -30,6 +30,7 @@ import net.kyori.adventure.key.InvalidKeyException;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.DataComponentValue;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.Style;
@@ -55,7 +56,15 @@ final class HoverTag {
   static final TagResolver RESOLVER = SerializableResolver.claimingStyle(
     HOVER,
     HoverTag::create,
-    StyleClaim.claim(HOVER, Style::hoverEvent, HoverTag::emit)
+    StyleClaim.claim(HOVER, Style::hoverEvent, HoverTag::emit),
+    (context, builder) -> {
+      if (context.arguments().isEmpty()) {
+        HoverEvent.Action.NAMES.keys().stream()
+          .filter(key -> key.toLowerCase().startsWith(context.partial().toLowerCase()))
+          .forEach(builder::add);
+      }
+    }
+
   );
 
   private HoverTag() {

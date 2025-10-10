@@ -25,6 +25,7 @@ package net.kyori.adventure.text.minimessage.tag.resolver;
 
 import java.util.Map;
 import java.util.Objects;
+import net.kyori.adventure.text.minimessage.Completer;
 import net.kyori.adventure.text.minimessage.CompletionContext;
 import net.kyori.adventure.text.minimessage.CompletionResult;
 import net.kyori.adventure.text.minimessage.tag.Tag;
@@ -50,11 +51,7 @@ final class MapTagResolver implements TagResolver.WithoutArguments, MappableReso
 
   @Override
   public void complete(final @NotNull CompletionContext completionContext, final CompletionResult.@NotNull Builder builder) {
-    if (completionContext.completionState() == CompletionContext.CompletionState.TAG_NAME) {
-      this.tagMap.keySet().stream()
-        .filter(name -> name.toLowerCase().startsWith(completionContext.partial().toLowerCase()))
-        .forEach(builder::add);
-    }
+    Completer.noArgs(this.tagMap.keySet()).complete(completionContext, builder);
   }
 
   @Override

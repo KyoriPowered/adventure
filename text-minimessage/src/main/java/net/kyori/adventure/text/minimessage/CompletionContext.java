@@ -45,58 +45,95 @@ public interface CompletionContext {
   @NotNull String partial();
 
   /**
-   * Return whether this is a closing tag. Returns false for empty string completion
+   * Completion context for a tag key.
    *
-   * @return Whether this is a closing tag
    * @since 123.123.123
    */
-  boolean isClosingTag();
+  interface TagKey extends CompletionContext {
+  }
 
   /**
-   * Get the tag name.
-   * Will be null if still in TAG_NAME completion state.
+   * Completion context for the value of a sequential argument.
    *
-   * @return the tag name
    * @since 123.123.123
    */
-  @Nullable String tagName();
+  interface SequentialArgumentValue extends CompletionContext {
+    /**
+     * Get the tag key.
+     *
+     * @return the tag key
+     * @since 123.123.123
+     */
+    @NotNull String tagKey();
+
+    /**
+     * Get the arguments list.
+     *
+     * @return the list of arguments
+     * @since 123.123.123
+     */
+    @NotNull List<String> arguments();
+  }
 
   /**
-   * Get the arguments list.
-   * Can be null if no positional arguments have been input.
+   * Completion context for a named argument key.
    *
-   * @return the list of arguments
    * @since 123.123.123
    */
-  @Nullable List<String> arguments();
+  interface NamedArgumentKey extends CompletionContext {
+    /**
+     * Get the tag key.
+     *
+     * @return the tag key
+     * @since 123.123.123
+     */
+    @NotNull String tagKey();
+
+    /**
+     * Get the arguments list.
+     *
+     * @return the map of named arguments
+     * @since 123.123.123
+     */
+    @NotNull Map<String, String> arguments();
+  }
 
   /**
-   * Get the named arguments map.
-   * Can be null if no named arguments have been input.
+   * Completion context for the value of a named argument.
    *
-   * @return the named arguments map.
    * @since 123.123.123
    */
-  @Nullable Map<String, String> namedArguments();
+  interface NamedArgumentValue extends CompletionContext {
+    /**
+     * Get the tag key.
+     *
+     * @return the tag key
+     * @since 123.123.123
+     */
+    @NotNull String tagKey();
+
+    /**
+     * Get the arguments list.
+     *
+     * @return the map of named arguments
+     * @since 123.123.123
+     */
+    @NotNull Map<String, String> arguments();
+
+    /**
+     * Get the key of the argument whose value is currently being parsed.
+     * Returns null in every state except NAMED_TAG_VALUE
+     *
+     * @return the argument key
+     */
+    @Nullable String argKey();
+  }
 
   /**
-   * Get the completion state.
-   *
-   * @return the completion type
-   * @since 123.123.123
-   */
-  @NotNull CompletionState completionState();
-
-  /**
-   * The completion states.
+   * Completion context generation when bad syntax is encountered.
    *
    * @since 123.123.123
    */
-  enum CompletionState {
-    TAG_NAME,
-    NAMED_ARGUMENT_NAME,
-    NAMED_ARGUMENT_VALUE,
-    ARGUMENT_VALUE,
-    BAD_SYNTAX
+  interface BadSyntax extends CompletionContext {
   }
 }

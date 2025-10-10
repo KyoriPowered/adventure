@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.Completer;
 import net.kyori.adventure.text.minimessage.CompletionContext;
 import net.kyori.adventure.text.minimessage.CompletionResult;
 import net.kyori.adventure.text.minimessage.Context;
@@ -41,11 +42,13 @@ class NamedComponentClaimingResolverImpl implements TagResolver.Named, Serializa
   private final @NotNull Set<String> names;
   private final @NotNull BiFunction<NamedArgumentMap, Context, Tag> handler;
   private final @NotNull Function<Component, @Nullable Emitable> componentClaim;
+  private final @NotNull Completer completer;
 
-  NamedComponentClaimingResolverImpl(final Set<String> names, final BiFunction<NamedArgumentMap, Context, Tag> handler, final Function<Component, @Nullable Emitable> componentClaim) {
+  NamedComponentClaimingResolverImpl(final Set<String> names, final BiFunction<NamedArgumentMap, Context, Tag> handler, final Function<Component, @Nullable Emitable> componentClaim, final @Nullable Completer completer) {
     this.names = names;
     this.handler = handler;
     this.componentClaim = componentClaim;
+    this.completer = completer != null ? completer : Completer.noArgs(names);
   }
 
   @Override
@@ -62,11 +65,7 @@ class NamedComponentClaimingResolverImpl implements TagResolver.Named, Serializa
 
   @Override
   public void complete(final @NotNull CompletionContext completionContext, final CompletionResult.@NotNull Builder builder) {
-    if (completionContext.completionState() == CompletionContext.CompletionState.TAG_NAME) {
-      this.names.stream()
-        .filter(name -> name.toLowerCase().startsWith(completionContext.partial().toLowerCase()))
-        .forEach(builder::add);
-    }
+    this.completer.complete(completionContext, builder);
   }
 
   @Override

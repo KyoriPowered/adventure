@@ -26,9 +26,13 @@ package net.kyori.adventure.text.minimessage.internal.serializer;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.Completer;
+import net.kyori.adventure.text.minimessage.CompletionContext;
+import net.kyori.adventure.text.minimessage.CompletionResult;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.internal.TagInternals;
@@ -110,7 +114,30 @@ public interface SerializableResolver {
       TagInternals.assertValidTagName(name);
     }
     requireNonNull(handler, "handler");
-    return new NamedComponentClaimingResolverImpl(ownNames, handler, componentClaim);
+    return new NamedComponentClaimingResolverImpl(ownNames, handler, componentClaim, null);
+  }
+
+  /**
+   * Create a tag resolver that only responds to certain tag names, and whose value does not depend on that name.
+   * With additional autocompletion information.
+   *
+   * <p>The resolver created is a special resolver, which listens to named arguments instead of sequential ones.</p>
+   *
+   * @param names the names to respond to
+   * @param handler the tag handler, may throw {@link ParsingException} if provided arguments are in an invalid format
+   * @param componentClaim the claim to test components against
+   * @param argumentNames the possible argument names for autocompletion
+   * @param argumentValueCompleter a consumer that adds argument value completions to the CompletionResult Builder.
+   * @return a resolver that creates tags using the provided handler
+   * @since 123.123.123
+   */
+  static @NotNull TagResolver claimingComponentNamed(final @NotNull Set<String> names, final @NotNull BiFunction<NamedArgumentMap, Context, Tag> handler, final @NotNull Function<Component, @Nullable Emitable> componentClaim, final @NotNull Set<String> argumentNames, final @NotNull BiConsumer<CompletionContext.NamedArgumentValue, CompletionResult.Builder> argumentValueCompleter) {
+    final Set<String> ownNames = new HashSet<>(names);
+    for (final String name : ownNames) {
+      TagInternals.assertValidTagName(name);
+    }
+    requireNonNull(handler, "handler");
+    return new NamedComponentClaimingResolverImpl(ownNames, handler, componentClaim, Completer.named(names, argumentNames, argumentValueCompleter));
   }
 
   /**
@@ -124,6 +151,21 @@ public interface SerializableResolver {
    */
   static @NotNull TagResolver claimingStyle(final @NotNull String name, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler, final @NotNull StyleClaim<?> styleClaim) {
     return claimingStyle(Collections.singleton(name), handler, styleClaim);
+  }
+
+  /**
+   * Create a tag resolver that only responds to a single tag name, and whose value does not depend on that name.
+   * With additional autocompletion information.
+   *
+   * @param name the name to respond to
+   * @param handler the tag handler, may throw {@link ParsingException} if provided arguments are in an invalid format
+   * @param styleClaim the extractor for style claims on components
+   * @param argumentValueCompleter argument value completer
+   * @return a resolver that creates tags using the provided handler
+   * @since 123.123.123
+   */
+  static @NotNull TagResolver claimingStyle(final @NotNull String name, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler, final @NotNull StyleClaim<?> styleClaim, final @NotNull BiConsumer<CompletionContext.SequentialArgumentValue, CompletionResult.Builder> argumentValueCompleter) {
+    return claimingStyle(Collections.singleton(name), handler, styleClaim, argumentValueCompleter);
   }
 
   /**
@@ -156,7 +198,27 @@ public interface SerializableResolver {
       TagInternals.assertValidTagName(name);
     }
     requireNonNull(handler, "handler");
-    return new SequentialStyleClaimingResolverImpl(ownNames, handler, styleClaim);
+    return new SequentialStyleClaimingResolverImpl(ownNames, handler, styleClaim, null);
+  }
+
+  /**
+   * Create a tag resolver that only responds to certain tag names, and whose value does not depend on that name.
+   * With additional autocompletion information.
+   *
+   * @param names the names to respond to
+   * @param handler the tag handler, may throw {@link ParsingException} if provided arguments are in an invalid format
+   * @param styleClaim the extractor for style claims on components
+   * @param argumentValueCompleter argument value completer
+   * @return a resolver that creates tags using the provided handler
+   * @since 123.123.123
+   */
+  static @NotNull TagResolver claimingStyle(final @NotNull Set<String> names, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler, final @NotNull StyleClaim<?> styleClaim, final @NotNull BiConsumer<CompletionContext.SequentialArgumentValue, CompletionResult.Builder> argumentValueCompleter) {
+    final Set<String> ownNames = new HashSet<>(names);
+    for (final String name : ownNames) {
+      TagInternals.assertValidTagName(name);
+    }
+    requireNonNull(handler, "handler");
+    return new SequentialStyleClaimingResolverImpl(ownNames, handler, styleClaim, Completer.sequential(names, argumentValueCompleter));
   }
 
   /**

@@ -47,7 +47,14 @@ final class ShadowColorTag {
     SerializableResolver.claimingStyle(
       SHADOW_COLOR,
       ShadowColorTag::create,
-      StyleClaim.claim(SHADOW_COLOR, Style::shadowColor, ShadowColorTag::emit)
+      StyleClaim.claim(SHADOW_COLOR, Style::shadowColor, ShadowColorTag::emit),
+      (context, builder) -> {
+        if (context.arguments().isEmpty()) {
+          builder.add("#RRGGBBAA");
+        } else if  (context.arguments().size() == 1) {
+          builder.add("0.25");
+        }
+      }
     ),
     TagResolver.resolver(SHADOW_NONE, Tag.styling(ShadowColor.none()))
   );

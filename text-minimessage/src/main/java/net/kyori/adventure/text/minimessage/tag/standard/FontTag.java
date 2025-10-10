@@ -47,7 +47,14 @@ final class FontTag {
   static final TagResolver RESOLVER = SerializableResolver.claimingStyle(
     FontTag.FONT,
     FontTag::create,
-    StyleClaim.claim(FONT, Style::font, FontTag::emit)
+    StyleClaim.claim(FONT, Style::font, FontTag::emit),
+    (context, builder) -> {
+      if (context.arguments().isEmpty()) {
+        builder.add("<namespace or value>");
+      } else if (context.arguments().size() == 1) {
+        builder.add("<value>");
+      }
+    }
   );
 
   private FontTag() {

@@ -30,26 +30,21 @@ import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static net.kyori.adventure.text.minimessage.CompletionContext.CompletionState.ARGUMENT_VALUE;
-import static net.kyori.adventure.text.minimessage.CompletionContext.CompletionState.NAMED_ARGUMENT_NAME;
-import static net.kyori.adventure.text.minimessage.CompletionContext.CompletionState.NAMED_ARGUMENT_VALUE;
-import static net.kyori.adventure.text.minimessage.CompletionContext.CompletionState.TAG_NAME;
-
 class CompletionContextImpl implements CompletionContext {
-  private final boolean isClosingTag;
-  private final String tagName;
-  private final Map<String, String> namedArguments;
-  private final List<String> arguments;
-  private final CompletionState state;
-  private final String partial;
-  private final int offset;
+  final int marker;
+  final String partial;
 
-  CompletionContextImpl(final String partialTag) {
+  private CompletionContextImpl(final int marker, final String partial) {
+    this.marker = marker;
+    this.partial = partial;
+  }
+
+  static CompletionContextImpl create(final String partialTag) {
     boolean isClosingTag = false;
     String tagName = null;
     final Map<String, String> namedArguments = new HashMap<>();
     final List<String> arguments = new ArrayList<>();
-    CompletionState state = TAG_NAME;
+    CompletionState state = CompletionState.TAG_NAME;
     boolean escaped = false;
     boolean string = false;
     int stringChar = -1;
@@ -73,12 +68,12 @@ class CompletionContextImpl implements CompletionContext {
           case TAG_NAME:
             switch (codePoint) {
               case ' ':
-                state = NAMED_ARGUMENT_NAME;
+                state = CompletionState.NAMED_ARGUMENT_NAME;
                 tagName = partialTag.substring(marker, i);
                 marker = i + 1;
                 break;
               case ':':
-                state = ARGUMENT_VALUE;
+                state = CompletionState.ARGUMENT_VALUE;
                 tagName = partialTag.substring(marker, i);
                 marker = i + 1;
                 break;
@@ -89,7 +84,7 @@ class CompletionContextImpl implements CompletionContext {
             if (codePoint == '=') {
               argName = partialTag.substring(marker, i);
               marker = i + 1;
-              state = NAMED_ARGUMENT_VALUE;
+              state = CompletionState.NAMED_ARGUMENT_VALUE;
             }
             break;
 
@@ -109,14 +104,14 @@ class CompletionContextImpl implements CompletionContext {
                 }
                 break;
               case ' ':
-                if (state == NAMED_ARGUMENT_VALUE && !string) {
+                if (state == CompletionState.NAMED_ARGUMENT_VALUE && !string) {
                   namedArguments.put(argName, partialTag.substring(marker, i));
                   marker = i + 1;
-                  state = NAMED_ARGUMENT_NAME;
+                  state = CompletionState.NAMED_ARGUMENT_NAME;
                 }
                 break;
               case ':':
-                if (state == ARGUMENT_VALUE && !string) {
+                if (state == CompletionState.ARGUMENT_VALUE && !string) {
                   arguments.add(partialTag.substring(marker, i));
                   marker = i + 1;
                 }
@@ -130,17 +125,25 @@ class CompletionContextImpl implements CompletionContext {
       escaped = codePoint == '\\';
     }
 
-    this.offset = marker;
-    this.partial = partialTag.substring(marker, length);
-    this.isClosingTag = isClosingTag;
-    this.tagName = tagName;
-    this.namedArguments = namedArguments;
-    this.arguments = arguments;
-    this.state = state;
+    final String partial = partialTag.substring(marker, length);
+
+    switch (state) {
+      case TAG_NAME:
+        return new TagKeyImpl(marker, partial);
+      case ARGUMENT_VALUE:
+        return new SeqArgValueImpl(marker, partial, tagName, arguments);
+      case NAMED_ARGUMENT_NAME:
+        return new NamedArgKeyImpl(marker, partial, tagName, namedArguments);
+      case NAMED_ARGUMENT_VALUE:
+        return new NamedArgValueImpl(marker, partial, tagName, namedArguments, argName);
+    }
+
+    // Error state
+    return new BadSyntaxImpl(marker, partial);
   }
 
   int offset() {
-    return this.offset;
+    return this.marker;
   }
 
   @Override
@@ -148,28 +151,93 @@ class CompletionContextImpl implements CompletionContext {
     return this.partial;
   }
 
-  @Override
-  public boolean isClosingTag() {
-    return this.isClosingTag;
+  final static class TagKeyImpl extends CompletionContextImpl implements TagKey {
+    private TagKeyImpl(final int marker, final String partial) {
+      super(marker, partial);
+    }
   }
 
-  @Override
-  public @Nullable String tagName() {
-    return this.tagName;
+  final static class SeqArgValueImpl extends CompletionContextImpl implements SequentialArgumentValue {
+    private final String tagKey;
+    private final List<String> arguments;
+
+    private SeqArgValueImpl(final int marker, final String partial, final String tagKey, final List<String> arguments) {
+      super(marker, partial);
+      this.tagKey = tagKey;
+      this.arguments = arguments;
+    }
+
+    @Override
+    public @NotNull String tagKey() {
+      return this.tagKey;
+    }
+
+    @Override
+    public @NotNull List<String> arguments() {
+      return this.arguments;
+    }
   }
 
-  @Override
-  public @Nullable List<String> arguments() {
-    return this.arguments.isEmpty() ? null : this.arguments;
+  final static class NamedArgKeyImpl extends CompletionContextImpl implements NamedArgumentKey {
+    private final String tagKey;
+    private final Map<String, String> arguments;
+
+    private NamedArgKeyImpl(final int marker, final String partial, final String tagKey, final Map<String, String> arguments) {
+      super(marker, partial);
+      this.tagKey = tagKey;
+      this.arguments = arguments;
+    }
+
+    @Override
+    public @NotNull String tagKey() {
+      return this.tagKey;
+    }
+
+    @Override
+    public @NotNull Map<String, String> arguments() {
+      return this.arguments;
+    }
   }
 
-  @Override
-  public @Nullable Map<String, String> namedArguments() {
-    return this.namedArguments.isEmpty() ? null : this.namedArguments;
+  final static class NamedArgValueImpl extends CompletionContextImpl implements NamedArgumentValue {
+    private final String tagKey;
+    private final Map<String, String> arguments;
+    private final String argumentKey;
+
+    private NamedArgValueImpl(final int marker, final String partial, final String tagKey, final Map<String, String> arguments, final String argumentKey) {
+      super(marker, partial);
+      this.tagKey = tagKey;
+      this.arguments = arguments;
+      this.argumentKey = argumentKey;
+    }
+
+    @Override
+    public @NotNull String tagKey() {
+      return this.tagKey;
+    }
+
+    @Override
+    public @NotNull Map<String, String> arguments() {
+      return this.arguments;
+    }
+
+    @Override
+    public @Nullable String argKey() {
+      return this.argumentKey;
+    }
   }
 
-  @Override
-  public @NotNull CompletionState completionState() {
-    return this.state;
+  final static class BadSyntaxImpl extends CompletionContextImpl implements BadSyntax {
+    BadSyntaxImpl(final int marker, final String partial) {
+      super(marker, partial);
+    }
+  }
+
+  enum CompletionState {
+    TAG_NAME,
+    NAMED_ARGUMENT_NAME,
+    NAMED_ARGUMENT_VALUE,
+    ARGUMENT_VALUE,
+    BAD_SYNTAX
   }
 }

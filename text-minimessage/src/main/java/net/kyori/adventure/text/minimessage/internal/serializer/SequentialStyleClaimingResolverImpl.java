@@ -25,6 +25,7 @@ package net.kyori.adventure.text.minimessage.internal.serializer;
 
 import java.util.Set;
 import java.util.function.BiFunction;
+import net.kyori.adventure.text.minimessage.Completer;
 import net.kyori.adventure.text.minimessage.CompletionContext;
 import net.kyori.adventure.text.minimessage.CompletionResult;
 import net.kyori.adventure.text.minimessage.Context;
@@ -39,11 +40,13 @@ final class SequentialStyleClaimingResolverImpl implements TagResolver.Sequentia
   private final @NotNull Set<String> names;
   private final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler;
   private final @NotNull StyleClaim<?> styleClaim;
+  private final @NotNull Completer completer;
 
-  SequentialStyleClaimingResolverImpl(final @NotNull Set<String> names, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler, final @NotNull StyleClaim<?> styleClaim) {
+  SequentialStyleClaimingResolverImpl(final @NotNull Set<String> names, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler, final @NotNull StyleClaim<?> styleClaim, final @Nullable Completer completer) {
     this.names = names;
     this.handler = handler;
     this.styleClaim = styleClaim;
+    this.completer = completer != null ? completer : Completer.noArgs(names);
   }
 
   @Override
@@ -60,11 +63,7 @@ final class SequentialStyleClaimingResolverImpl implements TagResolver.Sequentia
 
   @Override
   public void complete(final @NotNull CompletionContext completionContext, final CompletionResult.@NotNull Builder builder) {
-    if (completionContext.completionState() == CompletionContext.CompletionState.TAG_NAME) {
-      this.names.stream()
-        .filter(name -> name.toLowerCase().startsWith(completionContext.partial().toLowerCase()))
-        .forEach(builder::add);
-    }
+    this.completer.complete(completionContext, builder);
   }
 
   @Override

@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.stream.Collector;
 import net.kyori.adventure.text.minimessage.CompletionContext;
@@ -111,7 +112,20 @@ public interface TagResolver {
    * @since 4.10.0
    */
   static @NotNull TagResolver resolver(@TagPattern final @NotNull String name, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler) {
-    return resolver(Collections.singleton(name), handler);
+    return resolver(Collections.singleton(name), handler, null);
+  }
+
+  /**
+   * Create a tag resolver that only responds to a single tag name, and whose value does not depend on that name.
+   *
+   * @param name the name to respond to
+   * @param handler the tag handler, may throw {@link ParsingException} if provided arguments are in an invalid format
+   * @param completionHandler the completion handler
+   * @return a resolver that creates tags using the provided handler
+   * @since 123.123.123
+   */
+  static @NotNull TagResolver resolver(@TagPattern final @NotNull String name, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler, final @Nullable BiConsumer<CompletionContext, CompletionResult.Builder> completionHandler) {
+    return resolver(Collections.singleton(name), handler, completionHandler);
   }
 
   /**
@@ -123,6 +137,19 @@ public interface TagResolver {
    * @since 4.10.0
    */
   static @NotNull TagResolver resolver(final @NotNull Set<String> names, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler) {
+    return resolver(names, handler, null);
+  }
+
+  /**
+   * Create a tag resolver that only responds to certain tag names, and whose value does not depend on that name.
+   *
+   * @param names the names to respond to
+   * @param handler the tag handler, may throw {@link ParsingException} if provided arguments are in an invalid format
+   * @param completionHandler completion handler
+   * @return a resolver that creates tags using the provided handler
+   * @since 4.10.0
+   */
+  static @NotNull TagResolver resolver(final @NotNull Set<String> names, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler, final @Nullable BiConsumer<CompletionContext, CompletionResult.Builder> completionHandler) {
     final Set<String> ownNames = new HashSet<>(names);
     for (final String name : ownNames) {
       TagInternals.assertValidTagName(name);
@@ -157,7 +184,24 @@ public interface TagResolver {
    * @since 4.25.0
    */
   static @NotNull TagResolver namedResolver(final @NotNull String name, final @NotNull BiFunction<NamedArgumentMap, Context, Tag> handler) {
-    return namedResolver(Collections.singleton(name), handler);
+    return namedResolver(Collections.singleton(name), handler, null);
+  }
+
+  /**
+   * Create a tag resolver that only responds to certain tag names, and whose value does not depend on that name.
+   *
+   * <p>
+   * This method creates a special resolver which listens to tags with named arguments instead of sequential ones.
+   * </p>
+   *
+   * @param name the name to respond to
+   * @param handler the tag handler, may throw {@link ParsingException} if provided arguments are in an invalid format
+   * @param completionHandler the completion handler
+   * @return a resolver that creates tags using the provided handler
+   * @since 123.123.123
+   */
+  static @NotNull TagResolver namedResolver(final @NotNull String name, final @NotNull BiFunction<NamedArgumentMap, Context, Tag> handler, final @NotNull BiConsumer<CompletionContext, CompletionResult.Builder> completionHandler) {
+    return namedResolver(Collections.singleton(name), handler, completionHandler);
   }
 
   /**
@@ -173,6 +217,23 @@ public interface TagResolver {
    * @since 4.25.0
    */
   static @NotNull TagResolver namedResolver(final @NotNull Set<String> names, final @NotNull BiFunction<NamedArgumentMap, Context, Tag> handler) {
+    return namedResolver(names, handler, null);
+  }
+
+  /**
+   * Create a tag resolver that only responds to certain tag names, and whose value does not depend on that name.
+   *
+   * <p>
+   * This method creates a special resolver which listens to tags with named arguments instead of sequential ones.
+   * </p>
+   *
+   * @param names the names to respond to
+   * @param handler the tag handler, may throw {@link ParsingException} if provided arguments are in an invalid format
+   * @param completionHandler the completion handler
+   * @return a resolver that creates tags using the provided handler
+   * @since 123.123.123
+   */
+  static @NotNull TagResolver namedResolver(final @NotNull Set<String> names, final @NotNull BiFunction<NamedArgumentMap, Context, Tag> handler, final @Nullable BiConsumer<CompletionContext, CompletionResult.Builder> completionHandler) {
     final Set<String> ownNames = new HashSet<>(names);
     for (final String name : ownNames) {
       TagInternals.assertValidTagName(name);
@@ -348,15 +409,6 @@ public interface TagResolver {
     }
 
     @Override
-    default void complete(final @NotNull CompletionContext completionContext, final CompletionResult.@NotNull Builder builder) {
-      if (completionContext.completionState() == CompletionContext.CompletionState.TAG_NAME) {
-        if (this.key().toLowerCase().startsWith(completionContext.partial().toLowerCase())) {
-          builder.add(this.key());
-        }
-      }
-    }
-
-    @Override
     default boolean has(final @NotNull String name) {
       return name.equalsIgnoreCase(this.key());
     }
@@ -447,7 +499,20 @@ public interface TagResolver {
      * @since 4.10.0
      */
     default @NotNull Builder tag(@TagPattern final @NotNull String name, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler) {
-      return this.tag(Collections.singleton(name), handler);
+      return this.tag(Collections.singleton(name), handler, null);
+    }
+
+    /**
+     * Add a single dynamically created tag to this resolver.
+     *
+     * @param name the name to respond to
+     * @param handler the tag handler, may throw {@link ParsingException} if provided arguments are in an invalid format
+     * @param completionHandler the completion handler.
+     * @return this builder
+     * @since 123.123.123
+     */
+    default @NotNull Builder tag(@TagPattern final @NotNull String name, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler, final @Nullable BiConsumer<CompletionContext, CompletionResult.Builder> completionHandler) {
+      return this.tag(Collections.singleton(name), handler, completionHandler);
     }
 
     /**
@@ -459,7 +524,20 @@ public interface TagResolver {
      * @since 4.10.0
      */
     default @NotNull Builder tag(final @NotNull Set<String> names, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler) {
-      return this.resolver(TagResolver.resolver(names, handler));
+      return this.tag(names, handler, null);
+    }
+
+    /**
+     * Add a single dynamically created tag to this resolver.
+     *
+     * @param names the names to respond to
+     * @param handler the tag handler, may throw {@link ParsingException} if provided arguments are in an invalid format
+     * @param completionHandler the completion handler.
+     * @return this builder
+     * @since 123.123.123
+     */
+    default @NotNull Builder tag(final @NotNull Set<String> names, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler, final @Nullable BiConsumer<CompletionContext, CompletionResult.Builder> completionHandler) {
+      throw new UnsupportedOperationException();
     }
 
     /**
@@ -473,7 +551,22 @@ public interface TagResolver {
      * @since 4.25.0
      */
     default @NotNull Builder namedArgumentsTag(@TagPattern final @NotNull String name, final @NotNull BiFunction<NamedArgumentMap, Context, Tag> handler) {
-      return this.namedArgumentsTag(Collections.singleton(name), handler);
+      return this.namedArgumentsTag(Collections.singleton(name), handler, null);
+    }
+
+    /**
+     * Add a single dynamically created tag to this resolver.
+     *
+     * <p>This method adds a special resolver which looks for named arguments instead of sequential arguments.</p>
+     *
+     * @param name the name to respond to
+     * @param handler the tag handler, may throw {@link ParsingException} if provided arguments are in an invalid format
+     * @param completionHandler the completion handler.
+     * @return this builder
+     * @since 123.123.123
+     */
+    default @NotNull Builder namedArgumentsTag(@TagPattern final @NotNull String name, final @NotNull BiFunction<NamedArgumentMap, Context, Tag> handler, final @Nullable BiConsumer<CompletionContext, CompletionResult.Builder> completionHandler) {
+      return this.namedArgumentsTag(Collections.singleton(name), handler, completionHandler);
     }
 
     /**
@@ -487,7 +580,22 @@ public interface TagResolver {
      * @since 4.25.0
      */
     default @NotNull Builder namedArgumentsTag(final @NotNull Set<String> names, final @NotNull BiFunction<NamedArgumentMap, Context, Tag> handler) {
-      return this.resolver(TagResolver.namedResolver(names, handler));
+      return this.namedArgumentsTag(names, handler, null);
+    }
+
+    /**
+     * Add a single dynamically created tag to this resolver.
+     *
+     * <p>This method adds a special resolver which looks for named arguments instead of sequential arguments.</p>
+     *
+     * @param names the names to respond to
+     * @param handler the tag handler, may throw {@link ParsingException} if provided arguments are in an invalid format
+     * @param completionHandler the completion handler.
+     * @return this builder
+     * @since 123.123.123
+     */
+    default @NotNull Builder namedArgumentsTag(final @NotNull Set<String> names, final @NotNull BiFunction<NamedArgumentMap, Context, Tag> handler, final @Nullable BiConsumer<CompletionContext, CompletionResult.Builder> completionHandler) {
+      return this.resolver(TagResolver.namedResolver(names, handler, completionHandler));
     }
 
     /**

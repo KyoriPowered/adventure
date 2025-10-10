@@ -60,11 +60,7 @@ final class NamedStyleClaimingResolverImpl implements TagResolver.Named, Seriali
 
   @Override
   public void complete(final @NotNull CompletionContext completionContext, final CompletionResult.@NotNull Builder builder) {
-    if (completionContext.completionState() == CompletionContext.CompletionState.TAG_NAME) {
-      this.names.stream()
-        .filter(name -> name.toLowerCase().startsWith(completionContext.partial().toLowerCase()))
-        .forEach(builder::add);
-    }
+
   }
 
   @Override
