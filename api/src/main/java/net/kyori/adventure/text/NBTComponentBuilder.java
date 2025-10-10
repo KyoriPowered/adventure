@@ -38,7 +38,7 @@ import org.jetbrains.annotations.Nullable;
  * @param <B> builder type
  * @since 4.0.0
  */
-public interface NBTComponentBuilder<C extends NBTComponent<C, B>, B extends NBTComponentBuilder<C, B>> extends ComponentBuilder<C, B> {
+public sealed interface NBTComponentBuilder<C extends NBTComponent<C>, B extends NBTComponentBuilder<C, B>> extends ComponentBuilder<C, B> permits AbstractNBTComponentBuilder, BlockNBTComponent.Builder, EntityNBTComponent.Builder, StorageNBTComponent.Builder {
   /**
    * Sets the NBT path content.
    *

@@ -24,10 +24,10 @@
 package net.kyori.adventure.text.serializer.gson;
 
 import com.google.gson.TypeAdapter;
-import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.event.HoverEventImpl;
 
 final class HoverEventActionSerializer {
-  static final TypeAdapter<HoverEvent.Action<?>> INSTANCE = IndexedSerializer.lenient("hover action", HoverEvent.Action.NAMES);
+  static final TypeAdapter<HoverEventImpl.Action<?>> INSTANCE = IndexedSerializer.lenient("hover action", HoverEventImpl.Action.NAMES);
 
   private HoverEventActionSerializer() {
   }

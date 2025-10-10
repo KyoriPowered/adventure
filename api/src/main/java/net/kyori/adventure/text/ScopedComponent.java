@@ -44,7 +44,7 @@ import org.jetbrains.annotations.Nullable;
  * @param <C> the component type
  * @since 4.0.0
  */
-public interface ScopedComponent<C extends Component> extends Component {
+public sealed interface ScopedComponent<C extends Component> extends Component permits BlockNBTComponent, EntityNBTComponent, KeybindComponent, ObjectComponent, ScoreComponent, SelectorComponent, StorageNBTComponent, TextComponent, TranslatableComponent {
   @Override
   @SuppressWarnings("unchecked")
   default @NotNull C asComponent() {
@@ -203,7 +203,7 @@ public interface ScopedComponent<C extends Component> extends Component {
 
   @Override
   @SuppressWarnings("unchecked")
-  default @NotNull C clickEvent(final @Nullable ClickEvent event) {
+  default @NotNull C clickEvent(final @Nullable ClickEvent<?> event) {
     return (C) Component.super.clickEvent(event);
   }
 

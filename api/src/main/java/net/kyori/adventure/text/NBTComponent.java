@@ -51,7 +51,14 @@ import org.jetbrains.annotations.Nullable;
  * @since 4.0.0
  * @sinceMinecraft 1.14
  */
-public interface NBTComponent<C extends NBTComponent<C, B>, B extends NBTComponentBuilder<C, B>> extends BuildableComponent<C, B> {
+public sealed interface NBTComponent<C extends NBTComponent<C>> extends Component permits BlockNBTComponent, EntityNBTComponent, StorageNBTComponent {
+  /**
+   * The default value for {@link #interpret()}.
+   *
+   * @since 5.0.0
+   */
+  boolean INTERPRET_DEFAULT = true;
+
   /**
    * Gets the NBT path.
    *
@@ -113,7 +120,7 @@ public interface NBTComponent<C extends NBTComponent<C, B>, B extends NBTCompone
         ExaminableProperty.of("interpret", this.interpret()),
         ExaminableProperty.of("separator", this.separator())
       ),
-      BuildableComponent.super.examinableProperties()
+      ScopedComponent.super.examinableProperties()
     );
   }
 }

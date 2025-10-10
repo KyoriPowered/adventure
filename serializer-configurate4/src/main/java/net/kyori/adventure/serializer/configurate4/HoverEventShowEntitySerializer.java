@@ -27,7 +27,7 @@ import java.lang.reflect.Type;
 import java.util.UUID;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.event.HoverEventImpl;
 import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -35,14 +35,14 @@ import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
 
-final class HoverEventShowEntitySerializer implements TypeSerializer<HoverEvent.ShowEntity> {
+final class HoverEventShowEntitySerializer implements TypeSerializer<HoverEventImpl.ShowEntity> {
   static final HoverEventShowEntitySerializer INSTANCE = new HoverEventShowEntitySerializer();
 
   private HoverEventShowEntitySerializer() {
   }
 
   @Override
-  public HoverEvent.ShowEntity deserialize(final @NotNull Type type, final @NotNull ConfigurationNode value) throws SerializationException {
+  public HoverEventImpl.ShowEntity deserialize(final @NotNull Type type, final @NotNull ConfigurationNode value) throws SerializationException {
     final Key typeId = value.node(ComponentTreeConstants.SHOW_ENTITY_TYPE).get(Key.class);
     final UUID id = value.node(ComponentTreeConstants.SHOW_ENTITY_ID).get(UUID.class);
     if (typeId == null || id == null) {
@@ -50,11 +50,11 @@ final class HoverEventShowEntitySerializer implements TypeSerializer<HoverEvent.
     }
     final @Nullable Component name = value.node(ComponentTreeConstants.SHOW_ENTITY_NAME).get(Component.class);
 
-    return HoverEvent.ShowEntity.showEntity(typeId, id, name);
+    return HoverEventImpl.ShowEntity.showEntity(typeId, id, name);
   }
 
   @Override
-  public void serialize(final @NotNull Type type, final HoverEvent.@Nullable ShowEntity obj, final @NotNull ConfigurationNode value) throws SerializationException {
+  public void serialize(final @NotNull Type type, final HoverEventImpl.@Nullable ShowEntity obj, final @NotNull ConfigurationNode value) throws SerializationException {
     if (obj == null) {
       value.set(null);
       return;

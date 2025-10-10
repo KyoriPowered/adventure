@@ -32,10 +32,7 @@ import org.jetbrains.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-final class SelectorComponentImpl extends AbstractComponent implements SelectorComponent {
-  private final String pattern;
-  private final @Nullable Component separator;
-
+record SelectorComponentImpl(List<Component> children, Style style, String pattern, @Nullable Component separator) implements SelectorComponent {
   static SelectorComponent create(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final @NotNull String pattern, final @Nullable ComponentLike separator) {
     return new SelectorComponentImpl(
       ComponentLike.asComponents(children, IS_NOT_EMPTY),
@@ -45,26 +42,10 @@ final class SelectorComponentImpl extends AbstractComponent implements SelectorC
     );
   }
 
-  SelectorComponentImpl(final @NotNull List<Component> children, final @NotNull Style style, final @NotNull String pattern, final @Nullable Component separator) {
-    super(children, style);
-    this.pattern = pattern;
-    this.separator = separator;
-  }
-
-  @Override
-  public @NotNull String pattern() {
-    return this.pattern;
-  }
-
   @Override
   public @NotNull SelectorComponent pattern(final @NotNull String pattern) {
     if (Objects.equals(this.pattern, pattern)) return this;
     return create(this.children, this.style, pattern, this.separator);
-  }
-
-  @Override
-  public @Nullable Component separator() {
-    return this.separator;
   }
 
   @Override
@@ -83,24 +64,7 @@ final class SelectorComponentImpl extends AbstractComponent implements SelectorC
   }
 
   @Override
-  public boolean equals(final @Nullable Object other) {
-    if (this == other) return true;
-    if (!(other instanceof SelectorComponent)) return false;
-    if (!super.equals(other)) return false;
-    final SelectorComponent that = (SelectorComponent) other;
-    return Objects.equals(this.pattern, that.pattern()) && Objects.equals(this.separator, that.separator());
-  }
-
-  @Override
-  public int hashCode() {
-    int result = super.hashCode();
-    result = (31 * result) + this.pattern.hashCode();
-    result = (31 * result) + Objects.hashCode(this.separator);
-    return result;
-  }
-
-  @Override
-  public String toString() {
+  public @NotNull String toString() {
     return Internals.toString(this);
   }
 
@@ -109,7 +73,7 @@ final class SelectorComponentImpl extends AbstractComponent implements SelectorC
     return new BuilderImpl(this);
   }
 
-  static final class BuilderImpl extends AbstractComponentBuilder<SelectorComponent, Builder> implements SelectorComponent.Builder {
+  static final class BuilderImpl extends AbstractComponentBuilder<SelectorComponent, Builder> implements Builder {
     private @Nullable String pattern;
     private @Nullable Component separator;
 

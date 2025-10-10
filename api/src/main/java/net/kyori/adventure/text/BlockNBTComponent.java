@@ -27,7 +27,6 @@ import java.util.regex.Matcher;
 import java.util.stream.Stream;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -46,7 +45,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.0.0
  * @sinceMinecraft 1.14
  */
-public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, BlockNBTComponent.Builder>, ScopedComponent<BlockNBTComponent> {
+public sealed interface BlockNBTComponent extends NBTComponent<BlockNBTComponent>, ScopedComponent<BlockNBTComponent> permits BlockNBTComponentImpl {
   /**
    * Gets the block position.
    *
@@ -136,7 +135,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
    *
    * @since 4.0.0
    */
-  interface Builder extends NBTComponentBuilder<BlockNBTComponent, Builder> {
+  sealed interface Builder extends NBTComponentBuilder<BlockNBTComponent, Builder> permits BlockNBTComponentImpl.BuilderImpl {
     /**
      * Sets the block position.
      *
@@ -274,22 +273,6 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
     }
 
     /**
-     * Creates a local position with the given values.
-     *
-     * @param left the left value
-     * @param up the up value
-     * @param forwards the forwards value
-     * @return a local position
-     * @since 4.0.0
-     * @deprecated for removal since 4.10.0, use {@link #localPos(double, double, double)} instead.
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-    static @NotNull LocalPos of(final double left, final double up, final double forwards) {
-      return new BlockNBTComponentImpl.LocalPosImpl(left, up, forwards);
-    }
-
-    /**
      * Gets the left value.
      *
      * @return the left value
@@ -330,22 +313,6 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
      * @since 4.10.0
      */
     static @NotNull WorldPos worldPos(final @NotNull Coordinate x, final @NotNull Coordinate y, final @NotNull Coordinate z) {
-      return new BlockNBTComponentImpl.WorldPosImpl(x, y, z);
-    }
-
-    /**
-     * Creates a world position with the given coordinates.
-     *
-     * @param x the x coordinate
-     * @param y the y coordinate
-     * @param z the z coordinate
-     * @return a world position
-     * @since 4.0.0
-     * @deprecated for removal since 4.10.0, use {@link #worldPos(WorldPos.Coordinate, WorldPos.Coordinate, WorldPos.Coordinate)} instead.
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-    static @NotNull WorldPos of(final @NotNull Coordinate x, final @NotNull Coordinate y, final @NotNull Coordinate z) {
       return new BlockNBTComponentImpl.WorldPosImpl(x, y, z);
     }
 
@@ -410,21 +377,6 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
        * @since 4.10.0
        */
       static @NotNull Coordinate coordinate(final int value, final @NotNull Type type) {
-        return new BlockNBTComponentImpl.WorldPosImpl.CoordinateImpl(value, type);
-      }
-
-      /**
-       * Creates a coordinate with the given value and type.
-       *
-       * @param value the value
-       * @param type the type
-       * @return a coordinate
-       * @since 4.0.0
-       * @deprecated for removal since 4.10.0, use {@link #coordinate(int, Coordinate.Type)} instead.
-       */
-      @Deprecated
-      @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-      static @NotNull Coordinate of(final int value, final @NotNull Type type) {
         return new BlockNBTComponentImpl.WorldPosImpl.CoordinateImpl(value, type);
       }
 

@@ -41,7 +41,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.0.0
  * @sinceMinecraft 1.12
  */
-public interface KeybindComponent extends BuildableComponent<KeybindComponent, KeybindComponent.Builder>, ScopedComponent<KeybindComponent> {
+public sealed interface KeybindComponent extends ScopedComponent<KeybindComponent> permits KeybindComponentImpl {
   /**
    * Gets the keybind.
    *
@@ -78,7 +78,7 @@ public interface KeybindComponent extends BuildableComponent<KeybindComponent, K
       Stream.of(
         ExaminableProperty.of("keybind", this.keybind())
       ),
-      BuildableComponent.super.examinableProperties()
+      ScopedComponent.super.examinableProperties()
     );
   }
 
@@ -102,7 +102,7 @@ public interface KeybindComponent extends BuildableComponent<KeybindComponent, K
    *
    * @since 4.0.0
    */
-  interface Builder extends ComponentBuilder<KeybindComponent, Builder> {
+  sealed interface Builder extends ComponentBuilder<KeybindComponent, Builder> permits KeybindComponentImpl.BuilderImpl {
     /**
      * Sets the keybind.
      *

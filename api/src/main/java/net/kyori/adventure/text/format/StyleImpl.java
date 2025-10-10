@@ -289,8 +289,7 @@ final class StyleImpl implements Style {
   @Override
   public boolean equals(final @Nullable Object other) {
     if (this == other) return true;
-    if (!(other instanceof StyleImpl)) return false;
-    final StyleImpl that = (StyleImpl) other;
+    if (!(other instanceof StyleImpl that)) return false;
     return Objects.equals(this.color, that.color)
       && this.decorations.equals(that.decorations)
       && Objects.equals(this.shadowColor, that.shadowColor)

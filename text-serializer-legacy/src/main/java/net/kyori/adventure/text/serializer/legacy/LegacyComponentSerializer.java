@@ -29,8 +29,8 @@ import java.util.regex.Pattern;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.event.ClickEventImpl;
+import net.kyori.adventure.text.event.HoverEventImpl;
 import net.kyori.adventure.text.flattener.ComponentFlattener;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
@@ -44,7 +44,7 @@ import org.jetbrains.annotations.Nullable;
  * A legacy component serializer.
  *
  * <p>Legacy does <b>not</b> support more complex features such as, but not limited
- * to, {@link ClickEvent} and {@link HoverEvent}.</p>
+ * to, {@link ClickEventImpl} and {@link HoverEventImpl}.</p>
  *
  * @since 4.0.0
  */
@@ -180,7 +180,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
     @NotNull Builder hexCharacter(final char legacyHexCharacter);
 
     /**
-     * Sets that the serializer should extract URLs into {@link ClickEvent}s
+     * Sets that the serializer should extract URLs into {@link ClickEventImpl}s
      * when deserializing.
      *
      * @return this builder
@@ -189,7 +189,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
     @NotNull Builder extractUrls();
 
     /**
-     * Sets that the serializer should extract URLs into {@link ClickEvent}s
+     * Sets that the serializer should extract URLs into {@link ClickEventImpl}s
      * when deserializing.
      *
      * @param pattern the url pattern
@@ -199,7 +199,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
     @NotNull Builder extractUrls(final @NotNull Pattern pattern);
 
     /**
-     * Sets that the serializer should extract URLs into {@link ClickEvent}s
+     * Sets that the serializer should extract URLs into {@link ClickEventImpl}s
      * when deserializing.
      *
      * @param style the style to use for extracted links
@@ -209,7 +209,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
     @NotNull Builder extractUrls(final @Nullable Style style);
 
     /**
-     * Sets that the serializer should extract URLs into {@link ClickEvent}s
+     * Sets that the serializer should extract URLs into {@link ClickEventImpl}s
      * when deserializing.
      *
      * @param pattern the url pattern

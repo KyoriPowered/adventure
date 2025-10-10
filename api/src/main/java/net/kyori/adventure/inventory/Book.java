@@ -30,6 +30,7 @@ import java.util.List;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.util.Buildable;
 import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -45,7 +46,7 @@ import org.jetbrains.annotations.Unmodifiable;
  * @see Audience#openBook(Book)
  * @since 4.0.0
  */
-public sealed interface Book extends Examinable permits BookImpl {
+public sealed interface Book extends Buildable<Book.Builder>, Examinable permits BookImpl {
   /**
    * Creates a book.
    *

@@ -44,7 +44,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.0.0
  * @sinceMinecraft 1.15
  */
-public interface StorageNBTComponent extends NBTComponent<StorageNBTComponent, StorageNBTComponent.Builder>, ScopedComponent<StorageNBTComponent> {
+public interface StorageNBTComponent extends NBTComponent<StorageNBTComponent>, ScopedComponent<StorageNBTComponent> {
   /**
    * Gets the NBT storage's ID.
    *
@@ -78,7 +78,7 @@ public interface StorageNBTComponent extends NBTComponent<StorageNBTComponent, S
    *
    * @since 4.0.0
    */
-  interface Builder extends NBTComponentBuilder<StorageNBTComponent, Builder> {
+  sealed interface Builder extends NBTComponentBuilder<StorageNBTComponent, Builder> permits StorageNBTComponentImpl.BuilderImpl {
     /**
      * Sets the NBT storage.
      *

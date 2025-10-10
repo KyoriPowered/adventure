@@ -118,8 +118,7 @@ public interface ShadowColor extends StyleBuilderApplicable, ARGBLike {
         | (green & 0xff) << 8
         | (blue & 0xff);
 
-    if (value == ShadowColorImpl.NONE_VALUE) return none();
-    return new ShadowColorImpl(value);
+    return shadowColor(value);
   }
 
   /**

@@ -298,9 +298,8 @@ public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, S
     requireNonNull(any, "color");
 
     float matchedDistance = Float.MAX_VALUE;
-    C match = values.get(0);
-    for (int i = 0, length = values.size(); i < length; i++) {
-      final C potential = values.get(i);
+    C match = values.getFirst();
+    for (final C potential : values) {
       final float distance = TextColorImpl.distance(any.asHSV(), potential.asHSV());
       if (distance < matchedDistance) {
         match = potential;

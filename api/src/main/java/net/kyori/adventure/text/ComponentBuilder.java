@@ -49,7 +49,7 @@ import org.jetbrains.annotations.Nullable;
  * @since 4.0.0
  */
 @ApiStatus.NonExtendable
-public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> extends AbstractBuilder<C>, Buildable.Builder<C>, ComponentBuilderApplicable, ComponentLike, MutableStyleSetter<B> {
+public sealed interface ComponentBuilder<C extends Component, B extends ComponentBuilder<C, B>> extends AbstractBuilder<C>, ComponentBuilderApplicable, ComponentLike, MutableStyleSetter<B> permits AbstractComponentBuilder, KeybindComponent.Builder, NBTComponentBuilder, ObjectComponent.Builder, ScoreComponent.Builder, SelectorComponent.Builder, TextComponent.Builder, TranslatableComponent.Builder {
   /**
    * Appends a component to this component.
    *
@@ -149,8 +149,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
   }
 
   /**
-   * Applies an action to this component and all child components if they are
-   * an instance of {@link BuildableComponent}.
+   * Applies an action to this component and all child components.
    *
    * @param action the action
    * @return this builder
@@ -167,7 +166,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @since 4.0.0
    */
   @Contract("_ -> this")
-  @NotNull B mapChildren(final @NotNull Function<BuildableComponent<?, ?>, ? extends BuildableComponent<?, ?>> function);
+  @NotNull B mapChildren(final @NotNull Function<Component, ? extends Component> function);
 
   /**
    * Replaces each child and sub-child of this component with the resultant
@@ -178,7 +177,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @since 4.0.0
    */
   @Contract("_ -> this")
-  @NotNull B mapChildrenDeep(final @NotNull Function<BuildableComponent<?, ?>, ? extends BuildableComponent<?, ?>> function);
+  @NotNull B mapChildrenDeep(final @NotNull Function<Component, ? extends Component> function);
 
   /**
    * Get an unmodifiable list containing all children currently in this builder.

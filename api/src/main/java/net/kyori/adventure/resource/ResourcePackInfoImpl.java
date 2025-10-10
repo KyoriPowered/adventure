@@ -136,7 +136,7 @@ record ResourcePackInfoImpl(UUID id, URI uri, String hash) implements ResourcePa
   static String bytesToString(final byte[] arr) {
     final StringBuilder builder = new StringBuilder(arr.length * 2);
     final Formatter fmt = new Formatter(builder, Locale.ROOT);
-    for (byte b : arr) {
+    for (final byte b : arr) {
       fmt.format("%02x", b & 0xff);
     }
     return builder.toString();

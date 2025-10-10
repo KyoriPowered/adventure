@@ -23,43 +23,44 @@
  */
 package net.kyori.adventure.text.format;
 
+import java.util.List;
 import java.util.stream.Stream;
-import net.kyori.examination.Examinable;
+import net.kyori.adventure.util.HSVLike;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * A combination of a {@link TextDecoration} and a {@link TextDecoration.State}.
- *
- * @since 4.8.0
- */
-public sealed interface TextDecorationAndState extends Examinable, StyleBuilderApplicable permits TextDecorationAndStateImpl {
-  /**
-   * Gets the decoration.
-   *
-   * @return the decoration
-   * @since 4.8.0
-   */
-  @NotNull TextDecoration decoration();
+public record NamedTextColorImpl(String name, int value) implements NamedTextColor {
+  static final int BLACK_VALUE = 0x000000;
+  static final int DARK_BLUE_VALUE = 0x0000aa;
+  static final int DARK_GREEN_VALUE = 0x00aa00;
+  static final int DARK_AQUA_VALUE = 0x00aaaa;
+  static final int DARK_RED_VALUE = 0xaa0000;
+  static final int DARK_PURPLE_VALUE = 0xaa00aa;
+  static final int GOLD_VALUE = 0xffaa00;
+  static final int GRAY_VALUE = 0xaaaaaa;
+  static final int DARK_GRAY_VALUE = 0x555555;
+  static final int BLUE_VALUE = 0x5555ff;
+  static final int GREEN_VALUE = 0x55ff55;
+  static final int AQUA_VALUE = 0x55ffff;
+  static final int RED_VALUE = 0xff5555;
+  static final int LIGHT_PURPLE_VALUE = 0xff55ff;
+  static final int YELLOW_VALUE = 0xffff55;
+  static final int WHITE_VALUE = 0xffffff;
 
-  /**
-   * Gets the state.
-   *
-   * @return the state
-   * @since 4.8.0
-   */
-  TextDecoration.@NotNull State state();
+  static final List<NamedTextColor> VALUES = List.of(BLACK, DARK_BLUE, DARK_GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE, GOLD, GRAY, DARK_GRAY, BLUE, GREEN, AQUA, RED, LIGHT_PURPLE, YELLOW, WHITE);
 
   @Override
-  default void styleApply(final Style.@NotNull Builder style) {
-    style.decoration(this.decoration(), this.state());
+  public @NotNull HSVLike asHSV() {
+    return HSVLike.fromRGB(this.red(), this.green(), this.blue());
   }
 
   @Override
-  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("decoration", this.decoration()),
-      ExaminableProperty.of("state", this.state())
-    );
+  public @NotNull String toString() {
+    return this.name;
+  }
+
+  @Override
+  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.of(ExaminableProperty.of("name", this.name));
   }
 }

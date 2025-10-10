@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.sound;
 
-import java.util.Objects;
 import java.util.stream.Stream;
 import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.key.Key;
@@ -33,13 +32,6 @@ import org.jetbrains.annotations.Nullable;
 
 record SoundStopImpl(@Nullable Key sound, Sound.@Nullable Source source) implements SoundStop {
   static final SoundStopImpl ALL = new SoundStopImpl(null, null);
-
-  @Override
-  public int hashCode() {
-    int result = Objects.hashCode(this.sound());
-    result = (31 * result) + Objects.hashCode(this.source);
-    return result;
-  }
 
   @Override
   public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {

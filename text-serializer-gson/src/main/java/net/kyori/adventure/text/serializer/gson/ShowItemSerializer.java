@@ -37,7 +37,7 @@ import java.util.Map;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.event.DataComponentValue;
-import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.event.HoverEventImpl;
 import net.kyori.adventure.text.serializer.json.JSONOptions;
 import net.kyori.option.OptionState;
 import org.jetbrains.annotations.NotNull;
@@ -47,7 +47,7 @@ import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SHOW_ITEM_COUNT;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SHOW_ITEM_ID;
 
-final class ShowItemSerializer extends TypeAdapter<HoverEvent.ShowItem> {
+final class ShowItemSerializer extends TypeAdapter<HoverEventImpl.ShowItem> {
   @SuppressWarnings("deprecation")
   private static final String LEGACY_SHOW_ITEM_TAG = net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SHOW_ITEM_TAG;
   private static final String DATA_COMPONENT_REMOVAL_PREFIX = "!";
@@ -56,7 +56,7 @@ final class ShowItemSerializer extends TypeAdapter<HoverEvent.ShowItem> {
   private final boolean emitDefaultQuantity;
   private final JSONOptions.ShowItemHoverDataMode itemDataMode;
 
-  static TypeAdapter<HoverEvent.ShowItem> create(final Gson gson, final OptionState opt) {
+  static TypeAdapter<HoverEventImpl.ShowItem> create(final Gson gson, final OptionState opt) {
     return new ShowItemSerializer(gson, opt.value(JSONOptions.EMIT_DEFAULT_ITEM_HOVER_QUANTITY), opt.value(JSONOptions.SHOW_ITEM_HOVER_DATA_MODE)).nullSafe();
   }
 
@@ -68,7 +68,7 @@ final class ShowItemSerializer extends TypeAdapter<HoverEvent.ShowItem> {
 
   @Override
   @SuppressWarnings("deprecation")
-  public HoverEvent.ShowItem read(final JsonReader in) throws IOException {
+  public HoverEventImpl.ShowItem read(final JsonReader in) throws IOException {
     in.beginObject();
 
     Key key = null;
@@ -125,14 +125,14 @@ final class ShowItemSerializer extends TypeAdapter<HoverEvent.ShowItem> {
     in.endObject();
 
     if (dataComponents != null) {
-      return HoverEvent.ShowItem.showItem(key, count, dataComponents);
+      return HoverEventImpl.ShowItem.showItem(key, count, dataComponents);
     } else {
-      return HoverEvent.ShowItem.showItem(key, count, nbt);
+      return HoverEventImpl.ShowItem.showItem(key, count, nbt);
     }
   }
 
   @Override
-  public void write(final JsonWriter out, final HoverEvent.ShowItem value) throws IOException {
+  public void write(final JsonWriter out, final HoverEventImpl.ShowItem value) throws IOException {
     out.beginObject();
 
     out.name(SHOW_ITEM_ID);
@@ -167,7 +167,7 @@ final class ShowItemSerializer extends TypeAdapter<HoverEvent.ShowItem> {
   }
 
   @SuppressWarnings("deprecation")
-  private static void maybeWriteLegacy(final JsonWriter out, final HoverEvent.ShowItem value) throws IOException {
+  private static void maybeWriteLegacy(final JsonWriter out, final HoverEventImpl.ShowItem value) throws IOException {
     final @Nullable BinaryTagHolder nbt = value.nbt();
     if (nbt != null) {
       out.name(LEGACY_SHOW_ITEM_TAG);

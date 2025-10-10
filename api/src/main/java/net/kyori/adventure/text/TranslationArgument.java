@@ -24,7 +24,6 @@
 package net.kyori.adventure.text;
 
 import net.kyori.examination.Examinable;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import static java.util.Objects.requireNonNull;
@@ -34,8 +33,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 4.15.0
  */
-@ApiStatus.NonExtendable
-public interface TranslationArgument extends TranslationArgumentLike, Examinable {
+public sealed interface TranslationArgument extends TranslationArgumentLike, Examinable permits TranslationArgumentImpl {
   /**
    * Create a boolean argument.
    *

@@ -72,11 +72,11 @@ public final class MonkeyBars {
    * @since 4.8.0
    */
   public static <T> @NotNull List<T> addOne(final @NotNull List<T> oldList, final T newElement) {
-    if (oldList.isEmpty()) return Collections.singletonList(newElement);
+    if (oldList.isEmpty()) return List.of(newElement);
     final List<T> newList = new ArrayList<>(oldList.size() + 1);
     newList.addAll(oldList);
     newList.add(newElement);
-    return Collections.unmodifiableList(newList);
+    return List.copyOf(newList);
   }
 
   /**
@@ -99,7 +99,7 @@ public final class MonkeyBars {
     for (final I other : others) {
       ret.add(requireNonNull(mapper.apply(requireNonNull(other, "source[?]")), "mapper(source[?])"));
     }
-    return Collections.unmodifiableList(ret);
+    return List.copyOf(ret);
   }
 
   /**
@@ -119,6 +119,6 @@ public final class MonkeyBars {
     for (final I el : source) {
       ret.add(requireNonNull(mapper.apply(requireNonNull(el, "source[?]")), "mapper(source[?])"));
     }
-    return Collections.unmodifiableList(ret);
+    return List.copyOf(ret);
   }
 }

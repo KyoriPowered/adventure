@@ -24,10 +24,10 @@
 package net.kyori.adventure.text.serializer.gson;
 
 import com.google.gson.TypeAdapter;
-import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.ClickEventImpl;
 
 final class ClickEventActionSerializer {
-  static final TypeAdapter<ClickEvent.Action> INSTANCE = IndexedSerializer.lenient("click action", ClickEvent.Action.NAMES);
+  static final TypeAdapter<ClickEventImpl.Action> INSTANCE = IndexedSerializer.lenient("click action", ClickEventImpl.Action.NAMES);
 
   private ClickEventActionSerializer() {
   }

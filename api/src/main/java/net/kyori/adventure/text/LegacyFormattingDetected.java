@@ -23,9 +23,11 @@
  */
 package net.kyori.adventure.text;
 
+import java.io.Serial;
 import net.kyori.adventure.util.Nag;
 
 final class LegacyFormattingDetected extends Nag {
+  @Serial
   private static final long serialVersionUID = -947793022628807411L;
 
   LegacyFormattingDetected(final Component component) {

@@ -32,6 +32,7 @@ import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.DataComponentValue;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.event.HoverEventImpl;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
@@ -64,7 +65,7 @@ final class HoverTag {
   @SuppressWarnings("unchecked")
   static Tag create(final ArgumentQueue args, final Context ctx) throws ParsingException {
     final String actionName = args.popOr("Hover event requires an action as its first argument").value();
-    final HoverEvent.Action<Object> action = (HoverEvent.Action<Object>) HoverEvent.Action.NAMES.value(actionName);
+    final HoverEventImpl.Action<Object> action = (HoverEventImpl.Action<Object>) HoverEventImpl.Action.NAMES.value(actionName);
     final ActionHandler<Object> value = actionHandler(action);
     if (value == null) {
       throw ctx.newException("Don't know how to turn '" + args + "' into a hover event", args);
@@ -76,18 +77,18 @@ final class HoverTag {
   @SuppressWarnings("unchecked")
   static void emit(final HoverEvent<?> event, final TokenEmitter emitter) {
     final ActionHandler<Object> handler = (ActionHandler<Object>) actionHandler(event.action());
-    emitter.tag(HOVER).argument(HoverEvent.Action.NAMES.key(event.action()));
+    emitter.tag(HOVER).argument(HoverEventImpl.Action.NAMES.key(event.action()));
     handler.emit(event.value(), emitter);
   }
 
   @SuppressWarnings("unchecked")
-  static <V> @Nullable ActionHandler<V> actionHandler(final HoverEvent.Action<V> action) {
+  static <V> @Nullable ActionHandler<V> actionHandler(final HoverEventImpl.Action<V> action) {
     ActionHandler<?> ret = null;
-    if (action == HoverEvent.Action.SHOW_TEXT) {
+    if (action == HoverEventImpl.Action.SHOW_TEXT) {
       ret = ShowText.INSTANCE;
-    } else if (action == HoverEvent.Action.SHOW_ITEM) {
+    } else if (action == HoverEventImpl.Action.SHOW_ITEM) {
       ret = ShowItem.INSTANCE;
-    } else if (action == HoverEvent.Action.SHOW_ENTITY) {
+    } else if (action == HoverEventImpl.Action.SHOW_ENTITY) {
       ret = ShowEntity.INSTANCE;
     }
 
@@ -117,14 +118,14 @@ final class HoverTag {
     }
   }
 
-  static final class ShowItem implements ActionHandler<HoverEvent.ShowItem> {
+  static final class ShowItem implements ActionHandler<HoverEventImpl.ShowItem> {
     private static final ShowItem INSTANCE = new ShowItem();
 
     private ShowItem() {
     }
 
     @Override
-    public HoverEvent.@NotNull ShowItem parse(final @NotNull ArgumentQueue args, final @NotNull Context ctx) throws ParsingException {
+    public HoverEventImpl.@NotNull ShowItem parse(final @NotNull ArgumentQueue args, final @NotNull Context ctx) throws ParsingException {
       try {
         @SuppressWarnings("PatternValidation")
         final Key key = Key.key(args.popOr("Show item hover needs at least an item ID").value());
@@ -146,9 +147,9 @@ final class HoverTag {
             final String dataVal = args.popOr("a value was expected for key " + dataKey).value();
             datas.put(dataKey, BinaryTagHolder.binaryTagHolder(dataVal));
           }
-          return HoverEvent.ShowItem.showItem(key, count, datas);
+          return HoverEventImpl.ShowItem.showItem(key, count, datas);
         } else {
-          return HoverEvent.ShowItem.showItem(key, count);
+          return HoverEventImpl.ShowItem.showItem(key, count);
         }
       } catch (final InvalidKeyException | NumberFormatException ex) {
         throw ctx.newException("Exception parsing show_item hover", ex, args);
@@ -156,12 +157,12 @@ final class HoverTag {
     }
 
     @SuppressWarnings("deprecation")
-    private static HoverEvent.@NotNull ShowItem legacyShowItem(final Key id, final int count, final String value) {
-      return HoverEvent.ShowItem.showItem(id, count, BinaryTagHolder.binaryTagHolder(value));
+    private static HoverEventImpl.@NotNull ShowItem legacyShowItem(final Key id, final int count, final String value) {
+      return HoverEventImpl.ShowItem.showItem(id, count, BinaryTagHolder.binaryTagHolder(value));
     }
 
     @Override
-    public void emit(final HoverEvent.ShowItem event, final TokenEmitter emit) {
+    public void emit(final HoverEventImpl.ShowItem event, final TokenEmitter emit) {
       emit.argument(compactAsString(event.item()));
 
       if (event.count() != 1 || hasLegacy(event) || !event.dataComponents().isEmpty()) {
@@ -179,41 +180,41 @@ final class HoverTag {
     }
 
     @SuppressWarnings("deprecation")
-    static boolean hasLegacy(final HoverEvent.ShowItem event) {
+    static boolean hasLegacy(final HoverEventImpl.ShowItem event) {
       return event.nbt() != null;
     }
 
     @SuppressWarnings("deprecation")
-    static void emitLegacyHover(final HoverEvent.ShowItem event, final TokenEmitter emit) {
+    static void emitLegacyHover(final HoverEventImpl.ShowItem event, final TokenEmitter emit) {
       if (event.nbt() != null) {
         emit.argument(event.nbt().string());
       }
     }
   }
 
-  static final class ShowEntity implements ActionHandler<HoverEvent.ShowEntity> {
+  static final class ShowEntity implements ActionHandler<HoverEventImpl.ShowEntity> {
     static final ShowEntity INSTANCE = new ShowEntity();
 
     private ShowEntity() {
     }
 
     @Override
-    public HoverEvent.@NotNull ShowEntity parse(final @NotNull ArgumentQueue args, final @NotNull Context ctx) throws ParsingException {
+    public HoverEventImpl.@NotNull ShowEntity parse(final @NotNull ArgumentQueue args, final @NotNull Context ctx) throws ParsingException {
       try {
         final Key key = Key.key(args.popOr("Show entity needs a type argument").value());
         final UUID id = UUID.fromString(args.popOr("Show entity needs an entity UUID").value());
         if (args.hasNext()) {
           final Component name = ctx.deserialize(args.pop().value());
-          return HoverEvent.ShowEntity.showEntity(key, id, name);
+          return HoverEventImpl.ShowEntity.showEntity(key, id, name);
         }
-        return HoverEvent.ShowEntity.showEntity(key, id);
+        return HoverEventImpl.ShowEntity.showEntity(key, id);
       } catch (final IllegalArgumentException | InvalidKeyException ex) {
         throw ctx.newException("Exception parsing show_entity hover", ex, args);
       }
     }
 
     @Override
-    public void emit(final HoverEvent.ShowEntity event, final TokenEmitter emit) {
+    public void emit(final HoverEventImpl.ShowEntity event, final TokenEmitter emit) {
       emit.argument(compactAsString(event.type()))
        .argument(event.id().toString());
 

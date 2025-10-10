@@ -23,7 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage.tag.standard;
 
-import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.ClickEventImpl;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
@@ -46,9 +46,9 @@ final class ClickTag {
   static final TagResolver RESOLVER = SerializableResolver.claimingStyle(
     CLICK,
     ClickTag::create,
-    StyleClaim.<ClickEvent>claim(CLICK, Style::clickEvent, (event, emitter) -> {
+    StyleClaim.<ClickEventImpl>claim(CLICK, Style::clickEvent, (event, emitter) -> {
       emitter.tag(CLICK)
-        .argument(ClickEvent.Action.NAMES.key(event.action()))
+        .argument(ClickEventImpl.Action.NAMES.key(event.action()))
         .argument(event.value(), QuotingOverride.QUOTED);
     })
   );
@@ -57,13 +57,13 @@ final class ClickTag {
   }
 
   static Tag create(final ArgumentQueue args, final Context ctx) throws ParsingException {
-    final String actionName = args.popOr(() -> "A click tag requires an action of one of " + ClickEvent.Action.NAMES.keys()).lowerValue();
-    final ClickEvent.@Nullable Action action = ClickEvent.Action.NAMES.value(actionName);
+    final String actionName = args.popOr(() -> "A click tag requires an action of one of " + ClickEventImpl.Action.NAMES.keys()).lowerValue();
+    final ClickEventImpl.@Nullable Action action = ClickEventImpl.Action.NAMES.value(actionName);
     if (action == null) {
       throw ctx.newException("Unknown click event action '" + actionName + "'", args);
     }
 
     final String value = args.popOr("Click event actions require a value").value();
-    return Tag.styling(ClickEvent.clickEvent(action, value));
+    return Tag.styling(ClickEventImpl.clickEvent(action, value));
   }
 }

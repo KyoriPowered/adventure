@@ -35,8 +35,7 @@ final class PermissionCheckers {
   }
 
   private record Always(TriState value) implements PermissionChecker {
-
-    @Override
+      @Override
       public @NotNull TriState value(final @NotNull String permission) {
         return this.value;
       }

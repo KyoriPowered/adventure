@@ -36,7 +36,6 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.util.MonkeyBars;
 import net.kyori.examination.Examinable;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -59,8 +58,7 @@ import org.jetbrains.annotations.Unmodifiable;
  *
  * @since 4.0.0
  */
-@ApiStatus.NonExtendable
-public interface Style extends Buildable<Style, Style.Builder>, Examinable, StyleGetter, StyleSetter<Style> {
+public sealed interface Style extends Examinable, StyleGetter, StyleSetter<Style> permits StyleImpl {
   /**
    * The default font.
    *
@@ -167,8 +165,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
     final int length = applicables.length;
     if (length == 0) return empty();
     final Builder builder = style();
-    for (int i = 0; i < length; i++) {
-      final StyleBuilderApplicable applicable = applicables[i];
+    for (final StyleBuilderApplicable applicable : applicables) {
       if (applicable != null) {
         applicable.styleApply(builder);
       }
@@ -355,7 +352,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
   /**
    * Gets a map of decorations this style has.
    *
-   * @return a set of decorations this style has
+   * @return a map of decorations this style has
    * @since 4.0.0
    */
   @Override
@@ -382,7 +379,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
    * @since 4.0.0
    */
   @Override
-  @Nullable ClickEvent clickEvent();
+  @Nullable ClickEvent<?> clickEvent();
 
   /**
    * Sets the click event.
@@ -392,7 +389,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
    * @since 4.0.0
    */
   @Override
-  @NotNull Style clickEvent(final @Nullable ClickEvent event);
+  @NotNull Style clickEvent(final @Nullable ClickEvent<?> event);
 
   /**
    * Gets the hover event.
@@ -551,7 +548,6 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
    *
    * @return a builder
    */
-  @Override
   @NotNull Builder toBuilder();
 
   /**
@@ -631,20 +627,6 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
       return MonkeyBars.enumSet(Merge.class, merges);
     }
 
-    /**
-     * Creates a merge set.
-     *
-     * @param merges the merge parts
-     * @return a merge set
-     * @since 4.0.0
-     * @deprecated for removal since 4.10.0, use {@link #merges(Style.Merge...)} instead.
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-    public static @Unmodifiable @NotNull Set<Merge> of(final Merge@NotNull... merges) {
-      return MonkeyBars.enumSet(Merge.class, merges);
-    }
-
     static boolean hasAll(final @NotNull Set<Merge> merges) {
       return merges.size() == ALL.size();
     }
@@ -681,7 +663,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
    *
    * @since 4.0.0
    */
-  interface Builder extends AbstractBuilder<Style>, Buildable.Builder<Style>, MutableStyleSetter<Builder> {
+  sealed interface Builder extends AbstractBuilder<Style>, MutableStyleSetter<Builder> permits StyleImpl.BuilderImpl {
     /**
      * Sets the font.
      *
@@ -808,7 +790,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
      */
     @Override
     @Contract("_ -> this")
-    @NotNull Builder clickEvent(final @Nullable ClickEvent event);
+    @NotNull Builder clickEvent(final @Nullable ClickEvent<?> event);
 
     /**
      * Sets the hover event.

@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.text;
 
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -34,8 +33,7 @@ import org.jetbrains.annotations.NotNull;
  * @see Component#virtual(Class, VirtualComponentRenderer)
  * @since 4.18.0
  */
-@ApiStatus.NonExtendable
-public interface VirtualComponent extends TextComponent {
+public sealed interface VirtualComponent extends TextComponent permits VirtualComponentImpl {
   /**
    * Gets the renderer context type.
    *

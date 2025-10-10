@@ -39,8 +39,7 @@ import static java.util.Objects.requireNonNull;
  * @since 4.25.0
  * @sinceMinecraft 1.21.9
  */
-@ApiStatus.NonExtendable
-public /*sealed*/ interface ObjectContents extends Examinable /*permits SpriteObjectContents, PlayerHeadObjectContents*/ {
+public sealed interface ObjectContents extends Examinable permits SpriteObjectContents, PlayerHeadObjectContents {
   /**
    * Creates a sprite contents with the given atlas and sprite.
    *

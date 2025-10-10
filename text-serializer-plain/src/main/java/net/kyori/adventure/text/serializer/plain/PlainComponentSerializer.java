@@ -29,8 +29,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.KeybindComponent;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.event.ClickEventImpl;
+import net.kyori.adventure.text.event.HoverEventImpl;
 import net.kyori.adventure.text.flattener.ComponentFlattener;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import org.jetbrains.annotations.ApiStatus;
@@ -41,7 +41,7 @@ import org.jetbrains.annotations.Nullable;
  * A plain component serializer.
  *
  * <p>Plain does <b>not</b> support more complex features such as, but not limited
- * to, colours, decorations, {@link ClickEvent}, and {@link HoverEvent}.</p>
+ * to, colours, decorations, {@link ClickEventImpl}, and {@link HoverEventImpl}.</p>
  *
  * @since 4.0.0
  * @deprecated for removal since 4.8.0, use {@link PlainTextComponentSerializer} instead

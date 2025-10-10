@@ -40,7 +40,9 @@ import java.util.Set;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.ClickEventImpl;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.event.HoverEventImpl;
 import net.kyori.adventure.text.format.ShadowColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
@@ -394,14 +396,14 @@ final class StyleSerializer extends TypeAdapter<Style> {
               payloadValue = StyleSerializer.FALLBACK_URL_PROTOCOL + payloadValue;
             }
             out.value(payloadValue);
-          } else if (payload instanceof ClickEvent.Payload.Custom) {
-            final ClickEvent.Payload.Custom customPayload = (ClickEvent.Payload.Custom) payload;
+          } else if (payload instanceof ClickEventImpl.Payload.Custom) {
+            final ClickEventImpl.Payload.Custom customPayload = (ClickEventImpl.Payload.Custom) payload;
             out.name(CLICK_EVENT_ID);
             this.gson.toJson(customPayload.key(), SerializerFactory.KEY_TYPE, out);
             out.name(CLICK_EVENT_PAYLOAD);
             out.value(customPayload.data());
           } else if (payload instanceof ClickEvent.Payload.Int) {
-            final ClickEvent.Payload.Int intPayload = (ClickEvent.Payload.Int) payload;
+            final ClickEvent.Payload.Int intPayload = (ClickEventImpl.Payload.Int) payload;
             out.name(CLICK_EVENT_PAGE);
             if (this.emitStringPage) {
               out.value(String.valueOf(intPayload.integer()));
@@ -430,7 +432,7 @@ final class StyleSerializer extends TypeAdapter<Style> {
     }
 
     final @Nullable HoverEvent<?> hoverEvent = value.hoverEvent();
-    if (hoverEvent != null && (((this.emitSnakeCaseHover || this.emitCamelCaseHover) && hoverEvent.action() != HoverEvent.Action.SHOW_ACHIEVEMENT) || this.emitValueFieldHover)) {
+    if (hoverEvent != null && (((this.emitSnakeCaseHover || this.emitCamelCaseHover) && hoverEvent.action() != HoverEventImpl.Action.SHOW_ACHIEVEMENT) || this.emitValueFieldHover)) {
       final HoverEvent.Action<?> action = hoverEvent.action();
 
       if (this.emitSnakeCaseHover && action != HoverEvent.Action.SHOW_ACHIEVEMENT) {
@@ -507,9 +509,9 @@ final class StyleSerializer extends TypeAdapter<Style> {
       Component serialized = null;
       try {
         if (hoverEvent.action() == HoverEvent.Action.SHOW_ENTITY) {
-          serialized = this.legacyHover.serializeShowEntity((HoverEvent.ShowEntity) hoverEvent.value(), this.encoder());
+          serialized = this.legacyHover.serializeShowEntity((HoverEventImpl.ShowEntity) hoverEvent.value(), this.encoder());
         } else if (hoverEvent.action() == HoverEvent.Action.SHOW_ITEM) {
-          serialized = this.legacyHover.serializeShowItem((HoverEvent.ShowItem) hoverEvent.value());
+          serialized = this.legacyHover.serializeShowItem((HoverEventImpl.ShowItem) hoverEvent.value());
         }
       } catch (final IOException ex) {
         throw new JsonSyntaxException(ex);

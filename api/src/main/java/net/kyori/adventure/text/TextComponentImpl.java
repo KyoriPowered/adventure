@@ -32,11 +32,12 @@ import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.util.Nag;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import static java.util.Objects.requireNonNull;
 
-class TextComponentImpl extends AbstractComponent implements TextComponent {
+sealed class TextComponentImpl implements TextComponent permits VirtualComponentImpl {
   private static final boolean WARN_WHEN_LEGACY_FORMATTING_DETECTED = Boolean.TRUE.equals(AdventureProperties.TEXT_WARN_WHEN_LEGACY_FORMATTING_DETECTED.value());
   @VisibleForTesting
   static final char SECTION_CHAR = '§';
@@ -65,10 +66,13 @@ class TextComponentImpl extends AbstractComponent implements TextComponent {
   }
 
   private final String content;
+  private final List<Component> children;
+  private final Style style;
 
   TextComponentImpl(final @NotNull List<Component> children, final @NotNull Style style, final @NotNull String content) {
-    super(children, style);
     this.content = content;
+    this.children = children;
+    this.style = style;
 
     if (WARN_WHEN_LEGACY_FORMATTING_DETECTED) {
       final LegacyFormattingDetected nag = this.warnWhenLegacyFormattingDetected();
@@ -84,6 +88,16 @@ class TextComponentImpl extends AbstractComponent implements TextComponent {
       return new LegacyFormattingDetected(this);
     }
     return null;
+  }
+
+  @Override
+  public @Unmodifiable @NotNull List<Component> children() {
+    return this.children;
+  }
+
+  @Override
+  public @NotNull Style style() {
+    return this.style;
   }
 
   @Override
@@ -110,9 +124,8 @@ class TextComponentImpl extends AbstractComponent implements TextComponent {
   @Override
   public boolean equals(final @Nullable Object other) {
     if (this == other) return true;
-    if (!(other instanceof TextComponentImpl)) return false;
+    if (!(other instanceof final TextComponentImpl that)) return false;
     if (!super.equals(other)) return false;
-    final TextComponentImpl that = (TextComponentImpl) other;
     return Objects.equals(this.content, that.content);
   }
 
@@ -133,7 +146,7 @@ class TextComponentImpl extends AbstractComponent implements TextComponent {
     return new BuilderImpl(this);
   }
 
-  static class BuilderImpl extends AbstractComponentBuilder<TextComponent, Builder> implements TextComponent.Builder {
+  static sealed class BuilderImpl extends AbstractComponentBuilder<TextComponent, Builder> implements TextComponent.Builder permits VirtualComponentImpl.BuilderImpl {
     /*
      * We default to an empty string to avoid needing to manually set the
      * content of a newly-created builder when we only want to append other

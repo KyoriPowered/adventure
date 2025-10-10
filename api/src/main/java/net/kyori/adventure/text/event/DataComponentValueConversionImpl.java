@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.text.event;
 
-import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
 import net.kyori.adventure.internal.Internals;
@@ -33,26 +32,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static java.util.Objects.requireNonNull;
 
-final class DataComponentValueConversionImpl<I, O> implements DataComponentValueConverterRegistry.Conversion<I, O> {
-  private final Class<I> source;
-  private final Class<O> destination;
-  private final BiFunction<Key, I, O> conversion;
-
-  DataComponentValueConversionImpl(final @NotNull Class<I> source, final @NotNull Class<O> destination, final @NotNull BiFunction<Key, I, O> conversion) {
-    this.source = source;
-    this.destination = destination;
-    this.conversion = conversion;
-  }
-
-  @Override
-  public @NotNull Class<I> source() {
-    return this.source;
-  }
-
-  @Override
-  public @NotNull Class<O> destination() {
-    return this.destination;
-  }
+record DataComponentValueConversionImpl<I, O>(Class<I> source, Class<O> destination, BiFunction<Key, I, O> conversion) implements DataComponentValueConverterRegistry.Conversion<I, O> {
 
   @Override
   public @NotNull O convert(final @NotNull Key key, final @NotNull I input) {
@@ -69,22 +49,7 @@ final class DataComponentValueConversionImpl<I, O> implements DataComponentValue
   }
 
   @Override
-  public String toString() {
+  public @NotNull String toString() {
     return Internals.toString(this);
-  }
-
-  @Override
-  public boolean equals(final Object other) {
-    if (this == other) return true;
-    if (other == null || getClass() != other.getClass()) return false;
-    final DataComponentValueConversionImpl<?, ?> that = (DataComponentValueConversionImpl<?, ?>) other;
-    return Objects.equals(this.source, that.source)
-      && Objects.equals(this.destination, that.destination)
-      && Objects.equals(this.conversion, that.conversion);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(this.source, this.destination, this.conversion);
   }
 }

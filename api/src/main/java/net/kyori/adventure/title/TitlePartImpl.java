@@ -25,9 +25,7 @@ package net.kyori.adventure.title;
 
 import org.jetbrains.annotations.NotNull;
 
-public record TitlePartImpl<T>(
-  @NotNull String part
-) implements TitlePart<T> {
+record TitlePartImpl<T>(String part) implements TitlePart<T> {
   @Override
   public boolean equals(final Object o) {
     return o == this;

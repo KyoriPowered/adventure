@@ -26,6 +26,7 @@ package net.kyori.adventure.text.serializer.json;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.HoverEventImpl;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.PlatformAPI;
 import net.kyori.option.OptionState;
@@ -102,7 +103,7 @@ public interface JSONComponentSerializer extends ComponentSerializer<Component, 
 
     /**
      * Sets a serializer that will be used to interpret legacy hover event {@code value} payloads.
-     * If the serializer is {@code null}, then only {@link net.kyori.adventure.text.event.HoverEvent.Action#SHOW_TEXT}
+     * If the serializer is {@code null}, then only {@link HoverEventImpl.Action#SHOW_TEXT}
      * legacy hover events can be deserialized.
      *
      * @param serializer serializer
@@ -115,7 +116,7 @@ public interface JSONComponentSerializer extends ComponentSerializer<Component, 
      * Output a legacy hover event {@code value} in addition to the modern {@code contents}.
      *
      * <p>A {@link #legacyHoverEventSerializer(LegacyHoverEventSerializer) legacy hover serializer} must also be set
-     * to serialize any hover events beyond those with action {@link net.kyori.adventure.text.event.HoverEvent.Action#SHOW_TEXT}</p>
+     * to serialize any hover events beyond those with action {@link HoverEventImpl.Action#SHOW_TEXT}</p>
      *
      * @return this builder
      * @since 4.14.0

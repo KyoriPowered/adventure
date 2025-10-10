@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,7 +38,7 @@ final class PointersSupplierImpl<T> implements PointersSupplier<T> {
 
   PointersSupplierImpl(final @NotNull BuilderImpl<T> builder) {
     this.parent = builder.parent;
-    this.resolvers = new HashMap<>(builder.resolvers);
+    this.resolvers = Map.copyOf(builder.resolvers);
   }
 
   @Override
@@ -71,32 +72,44 @@ final class PointersSupplierImpl<T> implements PointersSupplier<T> {
   }
 
   record ForwardingPointers<U>(U instance, PointersSupplierImpl<U> supplier) implements Pointers {
-      @Override
-      @SuppressWarnings("unchecked") // all values are checked on entry
-      public @NotNull <T> Optional<T> get(final @NotNull Pointer<T> pointer) {
-        Function<? super U, ?> resolver = this.supplier.resolvers.get(Objects.requireNonNull(pointer, "pointer"));
+    @Override
+    @SuppressWarnings("unchecked") // all values are checked on entry
+    public @NotNull <T> Optional<T> get(final @NotNull Pointer<T> pointer) {
+      Function<? super U, ?> resolver = this.supplier.resolvers.get(Objects.requireNonNull(pointer, "pointer"));
 
-        // Fallback to the parent.
-        if (resolver == null) {
-          final PointersSupplier<? super U> parent = this.supplier.parent;
-          if (parent != null) {
-            resolver = parent.resolver(pointer);
-          }
-        }
-
-        // Finally, wrap in an optional.
-        if (resolver == null) {
-          return Optional.empty();
-        } else {
-          return Optional.ofNullable((T) resolver.apply(this.instance));
+      // Fallback to the parent.
+      if (resolver == null) {
+        final PointersSupplier<? super U> parent = this.supplier.parent;
+        if (parent != null) {
+          resolver = parent.resolver(pointer);
         }
       }
 
-      @Override
-      public <T> boolean supports(final @NotNull Pointer<T> pointer) {
-        return this.supplier.supports(pointer);
+      // Finally, wrap in an optional.
+      if (resolver == null) {
+        return Optional.empty();
+      } else {
+        return Optional.ofNullable((T) resolver.apply(this.instance));
       }
     }
+
+    @Override
+    public <T> boolean supports(final @NotNull Pointer<T> pointer) {
+      return this.supplier.supports(pointer);
+    }
+
+    @Override
+    @SuppressWarnings({"unchecked", "rawtypes"}) // all values are checked on entry
+    public @NotNull Builder toBuilder() {
+      final Pointers.Builder builder = this.supplier.parent == null ? Pointers.builder() : this.supplier.parent.view(this.instance).toBuilder();
+
+      for (final Map.Entry<Pointer<?>, Function<U, ?>> entry : this.supplier.resolvers.entrySet()) {
+        builder.withDynamic(entry.getKey(), (Supplier) () -> entry.getValue().apply(this.instance));
+      }
+
+      return builder;
+    }
+  }
 
   static final class BuilderImpl<T> implements Builder<T> {
     private @Nullable PointersSupplier<? super T> parent = null;

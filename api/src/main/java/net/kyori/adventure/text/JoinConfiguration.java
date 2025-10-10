@@ -28,7 +28,6 @@ import java.util.function.Predicate;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.examination.Examinable;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -82,8 +81,7 @@ import org.jetbrains.annotations.Nullable;
  * @see Component#join(JoinConfiguration, ComponentLike...)
  * @since 4.9.0
  */
-@ApiStatus.NonExtendable
-public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConfiguration.Builder>, Examinable {
+public sealed interface JoinConfiguration extends Examinable permits JoinConfigurationImpl {
   /**
    * Creates a new builder.
    *
@@ -258,7 +256,7 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
    *
    * @since 4.9.0
    */
-  interface Builder extends AbstractBuilder<JoinConfiguration>, Buildable.Builder<JoinConfiguration> {
+  sealed interface Builder extends AbstractBuilder<JoinConfiguration> permits JoinConfigurationImpl.BuilderImpl {
     /**
      * Sets the prefix of this join configuration builder.
      *

@@ -53,8 +53,8 @@ public interface MutableStyleSetter<T extends MutableStyleSetter<?>> extends Sty
   @Contract("_ -> this")
   @SuppressWarnings("unchecked")
   default @NotNull T decorate(final @NotNull TextDecoration@NotNull... decorations) {
-    for (int i = 0, length = decorations.length; i < length; i++) {
-      this.decorate(decorations[i]);
+    for (final TextDecoration decoration : decorations) {
+      this.decorate(decoration);
     }
     return (T) this;
   }

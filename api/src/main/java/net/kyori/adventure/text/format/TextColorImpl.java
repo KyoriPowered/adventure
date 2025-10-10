@@ -26,36 +26,12 @@ package net.kyori.adventure.text.format;
 import net.kyori.adventure.util.HSVLike;
 import org.jetbrains.annotations.Debug;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @Debug.Renderer(text = "asHexString()")
-final class TextColorImpl implements TextColor {
-  private final int value;
-
-  TextColorImpl(final int value) {
-    this.value = value;
-  }
+record TextColorImpl(int value) implements TextColor {
 
   @Override
-  public int value() {
-    return this.value;
-  }
-
-  @Override
-  public boolean equals(final @Nullable Object other) {
-    if (this == other) return true;
-    if (!(other instanceof TextColorImpl)) return false;
-    final TextColorImpl that = (TextColorImpl) other;
-    return this.value == that.value;
-  }
-
-  @Override
-  public int hashCode() {
-    return this.value;
-  }
-
-  @Override
-  public String toString() {
+  public @NotNull String toString() {
     return this.asHexString();
   }
 

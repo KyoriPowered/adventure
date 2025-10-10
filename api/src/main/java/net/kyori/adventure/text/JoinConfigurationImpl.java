@@ -35,10 +35,10 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-final class JoinConfigurationImpl implements JoinConfiguration {
+record JoinConfigurationImpl(Component prefix, Component suffix, Component separator, Component lastSeparator, Component lastSeparatorIfSerial, Function<ComponentLike, Component> convertor, Predicate<ComponentLike> predicate, Style parentStyle) implements JoinConfiguration {
   static final Function<ComponentLike, Component> DEFAULT_CONVERTOR = ComponentLike::asComponent;
   static final Predicate<ComponentLike> DEFAULT_PREDICATE = componentLike -> true;
-  static final JoinConfigurationImpl NULL = new JoinConfigurationImpl();
+  static final JoinConfigurationImpl NULL = new JoinConfigurationImpl(null, null, null, null, null, DEFAULT_CONVERTOR, DEFAULT_PREDICATE, Style.empty());
 
   static final JoinConfiguration STANDARD_NEW_LINES = JoinConfiguration.separator(Component.newline());
   static final JoinConfiguration STANDARD_SPACES = JoinConfiguration.separator(Component.space());
@@ -50,80 +50,8 @@ final class JoinConfigurationImpl implements JoinConfiguration {
     .suffix(Component.text("]"))
     .build();
 
-  private final Component prefix;
-  private final Component suffix;
-  private final Component separator;
-  private final Component lastSeparator;
-  private final Component lastSeparatorIfSerial;
-  private final Function<ComponentLike, Component> convertor;
-  private final Predicate<ComponentLike> predicate;
-  private final Style rootStyle;
-
-  private JoinConfigurationImpl() {
-    this.prefix = null;
-    this.suffix = null;
-    this.separator = null;
-    this.lastSeparator = null;
-    this.lastSeparatorIfSerial = null;
-    this.convertor = DEFAULT_CONVERTOR;
-    this.predicate = DEFAULT_PREDICATE;
-    this.rootStyle = Style.empty();
-  }
-
   private JoinConfigurationImpl(final @NotNull BuilderImpl builder) {
-    this.prefix = ComponentLike.unbox(builder.prefix);
-    this.suffix = ComponentLike.unbox(builder.suffix);
-    this.separator = ComponentLike.unbox(builder.separator);
-    this.lastSeparator = ComponentLike.unbox(builder.lastSeparator);
-    this.lastSeparatorIfSerial = ComponentLike.unbox(builder.lastSeparatorIfSerial);
-    this.convertor = builder.convertor;
-    this.predicate = builder.predicate;
-    this.rootStyle = builder.rootStyle;
-  }
-
-  @Override
-  public @Nullable Component prefix() {
-    return this.prefix;
-  }
-
-  @Override
-  public @Nullable Component suffix() {
-    return this.suffix;
-  }
-
-  @Override
-  public @Nullable Component separator() {
-    return this.separator;
-  }
-
-  @Override
-  public @Nullable Component lastSeparator() {
-    return this.lastSeparator;
-  }
-
-  @Override
-  public @Nullable Component lastSeparatorIfSerial() {
-    return this.lastSeparatorIfSerial;
-  }
-
-  @Override
-  public @NotNull Function<ComponentLike, Component> convertor() {
-    return this.convertor;
-  }
-
-  @Override
-  public @NotNull Predicate<ComponentLike> predicate() {
-    return this.predicate;
-  }
-
-  @Override
-  public @NotNull Style parentStyle() {
-    return this.rootStyle;
-  }
-
-  @Override
-  public JoinConfiguration.@NotNull Builder toBuilder() {
-    return new BuilderImpl(this);
+    this(ComponentLike.unbox(builder.prefix), ComponentLike.unbox(builder.suffix), ComponentLike.unbox(builder.separator), ComponentLike.unbox(builder.lastSeparator), ComponentLike.unbox(builder.lastSeparatorIfSerial), builder.convertor, builder.predicate, builder.parentStyle);
   }
 
   @Override
@@ -136,12 +64,12 @@ final class JoinConfigurationImpl implements JoinConfiguration {
       ExaminableProperty.of("lastSeparatorIfSerial", this.lastSeparatorIfSerial),
       ExaminableProperty.of("convertor", this.convertor),
       ExaminableProperty.of("predicate", this.predicate),
-      ExaminableProperty.of("rootStyle", this.rootStyle)
+      ExaminableProperty.of("parentStyle", this.parentStyle)
     );
   }
 
   @Override
-  public String toString() {
+  public @NotNull String toString() {
     return Internals.toString(this);
   }
 
@@ -251,7 +179,7 @@ final class JoinConfigurationImpl implements JoinConfiguration {
     private ComponentLike lastSeparatorIfSerial;
     private Function<ComponentLike, Component> convertor;
     private Predicate<ComponentLike> predicate;
-    private Style rootStyle;
+    private Style parentStyle;
 
     BuilderImpl() {
       this(JoinConfigurationImpl.NULL);
@@ -265,7 +193,7 @@ final class JoinConfigurationImpl implements JoinConfiguration {
       this.convertor = joinConfig.convertor;
       this.lastSeparatorIfSerial = joinConfig.lastSeparatorIfSerial;
       this.predicate = joinConfig.predicate;
-      this.rootStyle = joinConfig.rootStyle;
+      this.parentStyle = joinConfig.parentStyle;
     }
 
     @Override
@@ -312,7 +240,7 @@ final class JoinConfigurationImpl implements JoinConfiguration {
 
     @Override
     public @NotNull Builder parentStyle(final @NotNull Style parentStyle) {
-      this.rootStyle = Objects.requireNonNull(parentStyle, "rootStyle");
+      this.parentStyle = Objects.requireNonNull(parentStyle, "parentStyle");
       return this;
     }
 

@@ -86,6 +86,14 @@ record BookImpl(Component title, Component author, List<Component> pages) implem
     return Internals.toString(this);
   }
 
+  @Override
+  public @NotNull Builder toBuilder() {
+    return new BuilderImpl()
+      .title(this.title)
+      .author(this.author)
+      .pages(this.pages);
+  }
+
   static final class BuilderImpl implements Builder {
     private Component title = Component.empty();
     private Component author = Component.empty();
@@ -123,7 +131,7 @@ record BookImpl(Component title, Component author, List<Component> pages) implem
 
     @Override
     public @NotNull Book build() {
-      return new BookImpl(this.title, this.author, new ArrayList<>(this.pages));
+      return new BookImpl(this.title, this.author, List.copyOf(this.pages));
     }
   }
 }

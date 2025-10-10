@@ -30,8 +30,8 @@ import com.google.gson.JsonObject;
 import java.util.UUID;
 import java.util.function.Consumer;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.event.ClickEventImpl;
+import net.kyori.adventure.text.event.HoverEventImpl;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -128,11 +128,11 @@ public abstract class SerializerTest {
     return TextDecoration.NAMES.key(decoration);
   }
 
-  static String name(final ClickEvent.Action action) {
-    return ClickEvent.Action.NAMES.key(action);
+  static String name(final ClickEventImpl.Action action) {
+    return ClickEventImpl.Action.NAMES.key(action);
   }
 
-  static <V> String name(final HoverEvent.Action<V> action) {
-    return HoverEvent.Action.NAMES.key(action);
+  static <V> String name(final HoverEventImpl.Action<V> action) {
+    return HoverEventImpl.Action.NAMES.key(action);
   }
 }

@@ -50,8 +50,7 @@ import static java.util.Objects.requireNonNull;
  * @since 4.25.0
  * @sinceMinecraft 1.21.9
  */
-@ApiStatus.NonExtendable
-public interface PlayerHeadObjectContents extends ObjectContents {
+public sealed interface PlayerHeadObjectContents extends ObjectContents permits PlayerHeadObjectContentsImpl {
   /**
    * The default value for whether the player's hat layer should render.
    *
@@ -197,7 +196,7 @@ public interface PlayerHeadObjectContents extends ObjectContents {
    *
    * @since 4.25.0
    */
-  interface Builder {
+  sealed interface Builder permits PlayerHeadObjectContentsImpl.BuilderImpl {
     /**
      * Sets the name of the player.
      *

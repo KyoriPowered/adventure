@@ -26,6 +26,7 @@ package net.kyori.adventure.serializer.configurate4;
 import java.lang.reflect.Type;
 import java.util.function.Predicate;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.NamedTextColorImpl;
 import net.kyori.adventure.text.format.TextColor;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.serialize.ScalarSerializer;
@@ -60,7 +61,7 @@ final class TextColorSerializer extends ScalarSerializer<TextColor> {
 
   @Override
   public Object serialize(final @NotNull TextColor item, final @NotNull Predicate<Class<?>> typeSupported) {
-    if (item instanceof NamedTextColor) { // TODO: Downsampling
+    if (item instanceof NamedTextColorImpl) { // TODO: Downsampling
       return NamedTextColor.NAMES.key((NamedTextColor) item);
     } else {
       return item.asHexString();

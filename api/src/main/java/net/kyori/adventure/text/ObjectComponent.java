@@ -34,7 +34,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.25.0
  * @sinceMinecraft 1.21.9
  */
-public interface ObjectComponent extends BuildableComponent<ObjectComponent, ObjectComponent.Builder>, ScopedComponent<ObjectComponent> {
+public sealed interface ObjectComponent extends ScopedComponent<ObjectComponent> permits ObjectComponentImpl {
   /**
    * Gets the contents of this object component.
    *
@@ -56,7 +56,7 @@ public interface ObjectComponent extends BuildableComponent<ObjectComponent, Obj
   default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.concat(
       Stream.of(ExaminableProperty.of("contents", this.contents())),
-      BuildableComponent.super.examinableProperties()
+      ScopedComponent.super.examinableProperties()
     );
   }
 
@@ -65,7 +65,7 @@ public interface ObjectComponent extends BuildableComponent<ObjectComponent, Obj
    *
    * @since 4.25.0
    */
-  interface Builder extends ComponentBuilder<ObjectComponent, Builder> {
+  sealed interface Builder extends ComponentBuilder<ObjectComponent, Builder> permits ObjectComponentImpl.BuilderImpl {
     /**
      * Sets the contents of this object component builder.
      *

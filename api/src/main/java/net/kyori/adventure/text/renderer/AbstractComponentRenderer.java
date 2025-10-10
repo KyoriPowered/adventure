@@ -45,27 +45,26 @@ import org.jetbrains.annotations.NotNull;
 public abstract class AbstractComponentRenderer<C> implements ComponentRenderer<C> {
   @Override
   public @NotNull Component render(@NotNull Component component, final @NotNull C context) {
-    if (component instanceof VirtualComponent) {
-      component = this.renderVirtual((VirtualComponent) component, context);
+    if (component instanceof VirtualComponent vc) {
+      component = this.renderVirtual(vc, context);
     }
-    if (component instanceof TextComponent) {
-      return this.renderText((TextComponent) component, context);
-    } else if (component instanceof TranslatableComponent) {
-      return this.renderTranslatable((TranslatableComponent) component, context);
-    } else if (component instanceof KeybindComponent) {
-      return this.renderKeybind((KeybindComponent) component, context);
-    } else if (component instanceof ScoreComponent) {
-      return this.renderScore((ScoreComponent) component, context);
-    } else if (component instanceof SelectorComponent) {
-      return this.renderSelector((SelectorComponent) component, context);
-    } else if (component instanceof NBTComponent<?, ?>) {
-      if (component instanceof BlockNBTComponent) {
-        return this.renderBlockNbt((BlockNBTComponent) component, context);
-      } else if (component instanceof EntityNBTComponent) {
-        return this.renderEntityNbt((EntityNBTComponent) component, context);
-      } else if (component instanceof StorageNBTComponent) {
-        return this.renderStorageNbt((StorageNBTComponent) component, context);
-      }
+    if (component instanceof TextComponent tc) {
+      return this.renderText(tc, context);
+    } else if (component instanceof TranslatableComponent tc) {
+      return this.renderTranslatable(tc, context);
+    } else if (component instanceof KeybindComponent kc) {
+      return this.renderKeybind(kc, context);
+    } else if (component instanceof ScoreComponent sc) {
+      return this.renderScore(sc, context);
+    } else if (component instanceof SelectorComponent sc) {
+      return this.renderSelector(sc, context);
+    } else if (component instanceof NBTComponent<?, ?> nc) {
+      return switch (nc) {
+        case BlockNBTComponent bnc -> this.renderBlockNbt((BlockNBTComponent) component, context);
+        case EntityNBTComponent enc -> this.renderEntityNbt((EntityNBTComponent) component, context);
+        case StorageNBTComponent snc -> this.renderStorageNbt((StorageNBTComponent) component, context);
+        default -> component;
+      };
     }
     return component;
   }

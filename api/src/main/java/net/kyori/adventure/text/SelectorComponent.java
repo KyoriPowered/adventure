@@ -44,7 +44,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 4.0.0
  */
-public interface SelectorComponent extends BuildableComponent<SelectorComponent, SelectorComponent.Builder>, ScopedComponent<SelectorComponent> {
+public sealed interface SelectorComponent extends ScopedComponent<SelectorComponent> permits SelectorComponentImpl {
   /**
    * Gets the selector pattern.
    *
@@ -87,7 +87,7 @@ public interface SelectorComponent extends BuildableComponent<SelectorComponent,
         ExaminableProperty.of("pattern", this.pattern()),
         ExaminableProperty.of("separator", this.separator())
       ),
-      BuildableComponent.super.examinableProperties()
+      ScopedComponent.super.examinableProperties()
     );
   }
 
@@ -96,7 +96,7 @@ public interface SelectorComponent extends BuildableComponent<SelectorComponent,
    *
    * @since 4.0.0
    */
-  interface Builder extends ComponentBuilder<SelectorComponent, Builder> {
+  sealed interface Builder extends ComponentBuilder<SelectorComponent, Builder> permits SelectorComponentImpl.BuilderImpl {
     /**
      * Sets the selector pattern.
      *

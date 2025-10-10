@@ -27,7 +27,6 @@ import java.util.stream.Stream;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * A component that can display a player's score from a scoreboard objective,
@@ -51,7 +50,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 4.0.0
  */
-public interface ScoreComponent extends BuildableComponent<ScoreComponent, ScoreComponent.Builder>, ScopedComponent<ScoreComponent> {
+public sealed interface ScoreComponent extends ScopedComponent<ScoreComponent> permits ScoreComponentImpl {
   /**
    * Gets the score name.
    *
@@ -88,37 +87,14 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
   @Contract(pure = true)
   @NotNull ScoreComponent objective(final @NotNull String objective);
 
-  /**
-   * Gets the value.
-   *
-   * @return the value
-   * @since 4.0.0
-   * @deprecated since 4.7.0, not for removal, with no replacement. This field is no longer supported in 1.16.5.
-   */
-  @Deprecated
-  @Nullable String value();
-
-  /**
-   * Sets the value.
-   *
-   * @param value the value
-   * @return a score component
-   * @since 4.0.0
-   * @deprecated since 4.7.0, not for removal, with no replacement. This field is no longer supported in 1.16.5.
-   */
-  @Deprecated
-  @Contract(pure = true)
-  @NotNull ScoreComponent value(final @Nullable String value);
-
   @Override
   default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.concat(
       Stream.of(
         ExaminableProperty.of("name", this.name()),
-        ExaminableProperty.of("objective", this.objective()),
-        ExaminableProperty.of("value", this.value())
+        ExaminableProperty.of("objective", this.objective())
       ),
-      BuildableComponent.super.examinableProperties()
+      ScopedComponent.super.examinableProperties()
     );
   }
 
@@ -127,7 +103,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    *
    * @since 4.0.0
    */
-  interface Builder extends ComponentBuilder<ScoreComponent, Builder> {
+  sealed interface Builder extends ComponentBuilder<ScoreComponent, Builder> permits ScoreComponentImpl.BuilderImpl {
     /**
      * Sets the score name.
      *
@@ -147,17 +123,5 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
      */
     @Contract("_ -> this")
     @NotNull Builder objective(final @NotNull String objective);
-
-    /**
-     * Sets the value.
-     *
-     * @param value the value
-     * @return this builder
-     * @since 4.0.0
-     * @deprecated since 4.7.0, not for removal, with no replacement. This field is no longer supported in 1.16.5.
-     */
-    @Deprecated
-    @Contract("_ -> this")
-    @NotNull Builder value(final @Nullable String value);
   }
 }

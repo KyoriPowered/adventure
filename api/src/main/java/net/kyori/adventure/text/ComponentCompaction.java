@@ -64,7 +64,7 @@ final class ComponentCompaction {
       final TextComponent textComponent = (TextComponent) optimized;
 
       if (textComponent.content().isEmpty()) {
-        final Component child = children.get(0);
+        final Component child = children.getFirst();
 
         // merge the updated/parent style into the child before we return
         return child.style(child.style().merge(optimized.style(), Style.Merge.Strategy.IF_ABSENT_ON_TARGET)).compact();
@@ -80,9 +80,7 @@ final class ComponentCompaction {
 
     // optimize all children
     final List<Component> childrenToAppend = new ArrayList<>(children.size());
-    for (int i = 0; i < children.size(); ++i) {
-      Component child = children.get(i);
-
+    for (Component child : children) {
       // compact child recursively
       child = compact(child, childParentStyle);
 
@@ -101,14 +99,14 @@ final class ComponentCompaction {
     // try to merge children into this parent component
     if (isText(optimized)) {
       while (!childrenToAppend.isEmpty()) {
-        final Component child = childrenToAppend.get(0);
+        final Component child = childrenToAppend.getFirst();
         final Style childStyle = child.style().merge(childParentStyle, Style.Merge.Strategy.IF_ABSENT_ON_TARGET);
 
         if (isText(child) && Objects.equals(childStyle, childParentStyle)) {
           // merge child components into the parent if they are a text component with the same effective style
           // in context of their parent style
           optimized = joinText((TextComponent) optimized, (TextComponent) child);
-          childrenToAppend.remove(0);
+          childrenToAppend.removeFirst();
 
           // if the merged child had any children, retain them
           childrenToAppend.addAll(0, child.children());

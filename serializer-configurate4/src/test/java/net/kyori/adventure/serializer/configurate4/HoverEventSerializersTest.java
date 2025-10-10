@@ -28,6 +28,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.event.HoverEventImpl;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
@@ -48,7 +49,7 @@ class HoverEventSerializersTest implements ConfigurateTestBase {
       });
     });
     final Component component = Component.text().content("kashike")
-      .hoverEvent(HoverEvent.showEntity(HoverEvent.ShowEntity.showEntity(Key.key("minecraft:cat"), UUID.fromString("eb121687-8b1a-4944-bd4d-e0a818d9dfe2"))))
+      .hoverEvent(HoverEvent.showEntity(HoverEventImpl.ShowEntity.showEntity(Key.key("minecraft:cat"), UUID.fromString("eb121687-8b1a-4944-bd4d-e0a818d9dfe2"))))
       .build();
 
     this.assertRoundtrippable(component, node);
@@ -68,7 +69,7 @@ class HoverEventSerializersTest implements ConfigurateTestBase {
       });
     });
     final Component component = Component.text().content("kashike")
-      .hoverEvent(HoverEvent.showEntity(HoverEvent.ShowEntity.showEntity(Key.key("minecraft:cat"), UUID.fromString("eb121687-8b1a-4944-bd4d-e0a818d9dfe2"), Component.text("meow"))))
+      .hoverEvent(HoverEvent.showEntity(HoverEventImpl.ShowEntity.showEntity(Key.key("minecraft:cat"), UUID.fromString("eb121687-8b1a-4944-bd4d-e0a818d9dfe2"), Component.text("meow"))))
       .build();
 
     this.assertRoundtrippable(component, node);
@@ -96,7 +97,7 @@ class HoverEventSerializersTest implements ConfigurateTestBase {
       .color(NamedTextColor.AQUA)
       .append(Component.translatable("item.minecraft.purple_wool"))
       .append(Component.text("]"))
-      .hoverEvent(HoverEvent.showItem(HoverEvent.ShowItem.showItem(Key.key("minecraft:purple_wool"), 2, BinaryTagHolder.binaryTagHolder("{Damage: 5b}"))))
+      .hoverEvent(HoverEvent.showItem(HoverEventImpl.ShowItem.showItem(Key.key("minecraft:purple_wool"), 2, BinaryTagHolder.binaryTagHolder("{Damage: 5b}"))))
       .build();
 
     this.assertRoundtrippable(component, node);
@@ -123,7 +124,7 @@ class HoverEventSerializersTest implements ConfigurateTestBase {
       .color(NamedTextColor.AQUA)
       .append(Component.translatable("item.minecraft.purple_wool"))
       .append(Component.text("]"))
-      .hoverEvent(HoverEvent.showItem(HoverEvent.ShowItem.showItem(Key.key("minecraft:purple_wool"), 1)))
+      .hoverEvent(HoverEvent.showItem(HoverEventImpl.ShowItem.showItem(Key.key("minecraft:purple_wool"), 1)))
       .build();
 
     this.assertRoundtrippable(component, node);

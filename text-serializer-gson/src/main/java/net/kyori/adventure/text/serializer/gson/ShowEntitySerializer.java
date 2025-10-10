@@ -34,7 +34,7 @@ import java.util.UUID;
 import net.kyori.adventure.key.InvalidKeyException;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.event.HoverEventImpl;
 import net.kyori.adventure.text.serializer.json.JSONOptions;
 import net.kyori.option.OptionState;
 import org.jetbrains.annotations.Nullable;
@@ -44,8 +44,8 @@ import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SHOW_ENTITY_TYPE;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SHOW_ENTITY_UUID;
 
-final class ShowEntitySerializer extends TypeAdapter<HoverEvent.ShowEntity> {
-  static TypeAdapter<HoverEvent.ShowEntity> create(final Gson gson, final OptionState opt) {
+final class ShowEntitySerializer extends TypeAdapter<HoverEventImpl.ShowEntity> {
+  static TypeAdapter<HoverEventImpl.ShowEntity> create(final Gson gson, final OptionState opt) {
     return new ShowEntitySerializer(gson, opt.value(JSONOptions.EMIT_HOVER_SHOW_ENTITY_KEY_AS_TYPE_AND_UUID_AS_ID)).nullSafe();
   }
 
@@ -58,7 +58,7 @@ final class ShowEntitySerializer extends TypeAdapter<HoverEvent.ShowEntity> {
   }
 
   @Override
-  public HoverEvent.ShowEntity read(final JsonReader in) throws IOException {
+  public HoverEventImpl.ShowEntity read(final JsonReader in) throws IOException {
     in.beginObject();
 
     Key type = null;
@@ -114,11 +114,11 @@ final class ShowEntitySerializer extends TypeAdapter<HoverEvent.ShowEntity> {
     }
     in.endObject();
 
-    return HoverEvent.ShowEntity.showEntity(type, id, name);
+    return HoverEventImpl.ShowEntity.showEntity(type, id, name);
   }
 
   @Override
-  public void write(final JsonWriter out, final HoverEvent.ShowEntity value) throws IOException {
+  public void write(final JsonWriter out, final HoverEventImpl.ShowEntity value) throws IOException {
     out.beginObject();
 
     out.name(this.emitKeyAsTypeAndUuidAsId ? SHOW_ENTITY_TYPE : SHOW_ENTITY_ID);

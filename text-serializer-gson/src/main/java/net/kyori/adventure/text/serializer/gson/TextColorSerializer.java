@@ -29,6 +29,7 @@ import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import java.util.Locale;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.NamedTextColorImpl;
 import net.kyori.adventure.text.format.TextColor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -45,7 +46,7 @@ final class TextColorSerializer extends TypeAdapter<TextColor> {
 
   @Override
   public void write(final JsonWriter out, final TextColor value) throws IOException {
-    if (value instanceof NamedTextColor) {
+    if (value instanceof NamedTextColorImpl) {
       out.value(NamedTextColor.NAMES.key((NamedTextColor) value));
     } else if (this.downsampleColor) {
       out.value(NamedTextColor.NAMES.key(NamedTextColor.nearestTo(value)));

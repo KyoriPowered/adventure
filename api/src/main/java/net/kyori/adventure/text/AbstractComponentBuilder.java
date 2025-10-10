@@ -48,7 +48,7 @@ import static java.util.Objects.requireNonNull;
  * @param <C> the component type
  * @param <B> the builder type
  */
-abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> implements ComponentBuilder<C, B> {
+abstract sealed class AbstractComponentBuilder<C extends Component, B extends ComponentBuilder<C, B>> implements ComponentBuilder<C, B> permits AbstractNBTComponentBuilder, KeybindComponentImpl.BuilderImpl, ObjectComponentImpl.BuilderImpl, ScoreComponentImpl.BuilderImpl, SelectorComponentImpl.BuilderImpl, TextComponentImpl.BuilderImpl, TranslatableComponentImpl.BuilderImpl {
   // We use an empty list by default to prevent unnecessary list creation for components with no children
   protected List<Component> children = Collections.emptyList();
   /*
@@ -91,8 +91,8 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
   public @NotNull B append(final @NotNull ComponentLike@NotNull... components) {
     requireNonNull(components, "components");
     boolean prepared = false;
-    for (int i = 0, length = components.length; i < length; i++) {
-      final Component component = requireNonNull(components[i], "components[?]").asComponent();
+    for (final ComponentLike componentLike : components) {
+      final Component component = requireNonNull(componentLike, "components[?]").asComponent();
       if (component != Component.empty()) {
         if (!prepared) {
           this.prepareChildren();
@@ -137,11 +137,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
     }
     final ListIterator<Component> it = this.children.listIterator();
     while (it.hasNext()) {
-      final Component child = it.next();
-      if (!(child instanceof BuildableComponent<?, ?>)) {
-        continue;
-      }
-      final ComponentBuilder<?, ?> childBuilder = ((BuildableComponent<?, ?>) child).toBuilder();
+      final ComponentBuilder<?, ?> childBuilder = it.next().toBuilder();
       childBuilder.applyDeep(consumer);
       it.set(childBuilder.build());
     }
@@ -150,17 +146,14 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NotNull B mapChildren(final @NotNull Function<BuildableComponent<?, ?>, ? extends BuildableComponent<?, ?>> function) {
+  public @NotNull B mapChildren(final @NotNull Function<Component, ? extends Component> function) {
     if (this.children == Collections.<Component>emptyList()) {
       return (B) this;
     }
     final ListIterator<Component> it = this.children.listIterator();
     while (it.hasNext()) {
       final Component child = it.next();
-      if (!(child instanceof BuildableComponent<?, ?>)) {
-        continue;
-      }
-      final BuildableComponent<?, ?> mappedChild = requireNonNull(function.apply((BuildableComponent<?, ?>) child), "mappedChild");
+      final Component mappedChild = requireNonNull(function.apply(child), "mappedChild");
       if (child == mappedChild) {
         continue;
       }
@@ -171,17 +164,14 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NotNull B mapChildrenDeep(final @NotNull Function<BuildableComponent<?, ?>, ? extends BuildableComponent<?, ?>> function) {
+  public @NotNull B mapChildrenDeep(final @NotNull Function<Component, ? extends Component> function) {
     if (this.children == Collections.<Component>emptyList()) {
       return (B) this;
     }
     final ListIterator<Component> it = this.children.listIterator();
     while (it.hasNext()) {
       final Component child = it.next();
-      if (!(child instanceof BuildableComponent<?, ?>)) {
-        continue;
-      }
-      final BuildableComponent<?, ?> mappedChild = requireNonNull(function.apply((BuildableComponent<?, ?>) child), "mappedChild");
+      final Component mappedChild = requireNonNull(function.apply(child), "mappedChild");
       if (mappedChild.children().isEmpty()) {
         if (child == mappedChild) {
           continue;

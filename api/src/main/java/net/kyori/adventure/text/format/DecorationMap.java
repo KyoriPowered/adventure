@@ -141,8 +141,8 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
 
   @Override
   public TextDecoration.State get(final Object o) {
-    if (o instanceof TextDecoration) {
-      return STATES[(this.bitSet >> (((TextDecoration) o).ordinal() * 2)) & 0b11];
+    if (o instanceof final TextDecoration textDecoration) {
+      return STATES[(this.bitSet >> (textDecoration.ordinal() * 2)) & 0b11];
     }
     return null;
   }
@@ -209,7 +209,7 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
   final class EntrySet extends AbstractSet<Entry<TextDecoration, TextDecoration.State>> {
     @Override
     public @NotNull Iterator<Entry<TextDecoration, TextDecoration.State>> iterator() {
-      return new Iterator<Entry<TextDecoration, TextDecoration.State>>() {
+      return new Iterator<>() {
         private final Iterator<TextDecoration> decorations = KEY_SET.iterator();
         private final Iterator<TextDecoration.State> states = DecorationMap.this.values().iterator();
 

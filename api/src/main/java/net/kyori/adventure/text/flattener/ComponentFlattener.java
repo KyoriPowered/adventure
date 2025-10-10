@@ -37,7 +37,7 @@ import org.jetbrains.annotations.Range;
  *
  * @since 4.7.0
  */
-public interface ComponentFlattener extends Buildable<ComponentFlattener, ComponentFlattener.Builder> {
+public sealed interface ComponentFlattener permits ComponentFlattenerImpl {
   /**
    * A constant representing a flattener with no limit on nested flatten calls.
    *
@@ -96,7 +96,7 @@ public interface ComponentFlattener extends Buildable<ComponentFlattener, Compon
    *
    * @since 4.7.0
    */
-  interface Builder extends AbstractBuilder<ComponentFlattener>, Buildable.Builder<ComponentFlattener> {
+  sealed interface Builder extends AbstractBuilder<ComponentFlattener> permits ComponentFlattenerImpl.BuilderImpl {
     /**
      * Register a type of component to be handled.
      *

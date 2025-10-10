@@ -40,7 +40,7 @@ final class ClickCallbackInternals {
 
   static final class Fallback implements ClickCallback.Provider {
     @Override
-    public @NotNull ClickEvent create(final @NotNull ClickCallback<Audience> callback, final ClickCallback.@NotNull Options options) {
+    public @NotNull ClickEvent<?> create(final @NotNull ClickCallback<Audience> callback, final ClickCallback.@NotNull Options options) {
       return ClickEvent.suggestCommand("Callbacks are not supported on this platform!");
     }
   }

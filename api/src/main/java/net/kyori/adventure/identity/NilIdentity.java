@@ -31,6 +31,9 @@ final class NilIdentity implements Identity {
   static final UUID NIL_UUID = new UUID(0, 0);
   static final Identity INSTANCE = new NilIdentity();
 
+  private NilIdentity() {
+  }
+
   @Override
   public @NotNull UUID uuid() {
     return NIL_UUID;

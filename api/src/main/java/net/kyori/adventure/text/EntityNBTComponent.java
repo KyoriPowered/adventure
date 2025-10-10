@@ -43,7 +43,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.0.0
  * @sinceMinecraft 1.14
  */
-public interface EntityNBTComponent extends NBTComponent<EntityNBTComponent, EntityNBTComponent.Builder>, ScopedComponent<EntityNBTComponent> {
+public sealed interface EntityNBTComponent extends NBTComponent<EntityNBTComponent>, ScopedComponent<EntityNBTComponent> permits EntityNBTComponentImpl {
   /**
    * Gets the entity selector.
    *
@@ -77,7 +77,7 @@ public interface EntityNBTComponent extends NBTComponent<EntityNBTComponent, Ent
    *
    * @since 4.0.0
    */
-  interface Builder extends NBTComponentBuilder<EntityNBTComponent, Builder> {
+  sealed interface Builder extends NBTComponentBuilder<EntityNBTComponent, Builder> permits EntityNBTComponentImpl.BuilderImpl {
     /**
      * Sets the entity selector.
      *

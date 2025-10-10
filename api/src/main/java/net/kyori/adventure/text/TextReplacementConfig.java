@@ -46,7 +46,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 4.2.0
  */
-public interface TextReplacementConfig extends Buildable<TextReplacementConfig, TextReplacementConfig.Builder>, Examinable {
+public sealed interface TextReplacementConfig extends Examinable permits TextReplacementConfigImpl {
   /**
    * Create a new builder.
    *
@@ -70,7 +70,7 @@ public interface TextReplacementConfig extends Buildable<TextReplacementConfig, 
    *
    * @since 4.2.0
    */
-  interface Builder extends AbstractBuilder<TextReplacementConfig>, Buildable.Builder<TextReplacementConfig> {
+  sealed interface Builder extends AbstractBuilder<TextReplacementConfig> permits TextReplacementConfigImpl.Builder {
     /*
      * -------------------
      * ---- Patterns -----

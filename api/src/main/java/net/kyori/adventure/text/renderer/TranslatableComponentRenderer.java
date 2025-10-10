@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import net.kyori.adventure.text.BlockNBTComponent;
-import net.kyori.adventure.text.BuildableComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentBuilder;
 import net.kyori.adventure.text.EntityNBTComponent;
@@ -82,7 +81,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
    */
   public static @NotNull TranslatableComponentRenderer<Locale> usingTranslationSource(final @NotNull Translator source) {
     requireNonNull(source, "source");
-    return new TranslatableComponentRenderer<Locale>() {
+    return new TranslatableComponentRenderer<>() {
       @Override
       protected @Nullable MessageFormat translate(final @NotNull String key, final @NotNull Locale context) {
         return source.translate(key, context);

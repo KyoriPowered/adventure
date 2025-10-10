@@ -48,18 +48,6 @@ public final class UTF8ResourceBundleControl extends ResourceBundle.Control {
    * Gets the shared instance.
    *
    * @return a resource bundle control
-   * @since 4.0.0
-   * @deprecated For removal since 4.24.0, use {@link #utf8ResourceBundleControl} instead
-   */
-  @Deprecated
-  public static ResourceBundle.@NotNull Control get() {
-    return INSTANCE;
-  }
-
-  /**
-   * Gets the shared instance.
-   *
-   * @return a resource bundle control
    * @since 4.24.0
    */
   public static ResourceBundle.@NotNull Control utf8ResourceBundleControl() {

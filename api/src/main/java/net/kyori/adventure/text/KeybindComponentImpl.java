@@ -32,25 +32,13 @@ import org.jetbrains.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-final class KeybindComponentImpl extends AbstractComponent implements KeybindComponent {
-  private final String keybind;
-
+record KeybindComponentImpl(List<Component> children, Style style, String keybind) implements KeybindComponent {
   static KeybindComponent create(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final @NotNull String keybind) {
     return new KeybindComponentImpl(
       ComponentLike.asComponents(children, IS_NOT_EMPTY),
       requireNonNull(style, "style"),
       requireNonNull(keybind, "keybind")
     );
-  }
-
-  KeybindComponentImpl(final @NotNull List<Component> children, final @NotNull Style style, final @NotNull String keybind) {
-    super(children, style);
-    this.keybind = keybind;
-  }
-
-  @Override
-  public @NotNull String keybind() {
-    return this.keybind;
   }
 
   @Override
@@ -70,23 +58,7 @@ final class KeybindComponentImpl extends AbstractComponent implements KeybindCom
   }
 
   @Override
-  public boolean equals(final @Nullable Object other) {
-    if (this == other) return true;
-    if (!(other instanceof KeybindComponent)) return false;
-    if (!super.equals(other)) return false;
-    final KeybindComponent that = (KeybindComponent) other;
-    return Objects.equals(this.keybind, that.keybind());
-  }
-
-  @Override
-  public int hashCode() {
-    int result = super.hashCode();
-    result = (31 * result) + this.keybind.hashCode();
-    return result;
-  }
-
-  @Override
-  public String toString() {
+  public @NotNull String toString() {
     return Internals.toString(this);
   }
 
@@ -95,7 +67,7 @@ final class KeybindComponentImpl extends AbstractComponent implements KeybindCom
     return new BuilderImpl(this);
   }
 
-  static final class BuilderImpl extends AbstractComponentBuilder<KeybindComponent, Builder> implements KeybindComponent.Builder {
+  static final class BuilderImpl extends AbstractComponentBuilder<KeybindComponent, Builder> implements Builder {
     private @Nullable String keybind;
 
     BuilderImpl() {

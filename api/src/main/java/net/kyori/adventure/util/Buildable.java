@@ -21,11 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text;
+package net.kyori.adventure.util;
 
-final class ComponentInternals {
-  static final String CHILDREN_PROPERTY = "children";
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
-  private ComponentInternals() {
-  }
+/**
+ * Something that can be built.
+ *
+ * @param <B> the builder type
+ * @since 4.0.0
+ */
+public interface Buildable<B> {
+  /**
+   * Create a builder from this thing.
+   *
+   * @return a builder
+   * @since 4.0.0
+   */
+  @Contract(value = "-> new", pure = true)
+  @NotNull B toBuilder();
 }

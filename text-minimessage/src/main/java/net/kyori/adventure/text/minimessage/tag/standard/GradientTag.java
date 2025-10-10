@@ -32,6 +32,7 @@ import java.util.OptionalDouble;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.NamedTextColorImpl;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
@@ -170,7 +171,7 @@ class GradientTag extends AbstractColorChangingTag {
       emit.tag(GRADIENT);
       if (colors.length != 2 || !colors[0].equals(DEFAULT_WHITE) || !colors[1].equals(DEFAULT_BLACK)) { // non-default params
         for (final TextColor color : colors) {
-          if (color instanceof NamedTextColor) {
+          if (color instanceof NamedTextColorImpl) {
             emit.argument(NamedTextColor.NAMES.keyOrThrow((NamedTextColor) color));
           } else {
             emit.argument(color.asHexString());

@@ -26,6 +26,7 @@ package net.kyori.adventure.pointer;
 import java.util.Optional;
 import java.util.function.Supplier;
 import net.kyori.adventure.builder.AbstractBuilder;
+import net.kyori.adventure.util.Buildable;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -36,7 +37,7 @@ import org.jetbrains.annotations.UnknownNullability;
  *
  * @since 4.8.0
  */
-public sealed interface Pointers permits PointersImpl, PointersSupplierImpl.ForwardingPointers {
+public sealed interface Pointers extends Buildable<Pointers.Builder> permits PointersImpl, PointersSupplierImpl.ForwardingPointers {
   /**
    * Gets an empty pointers collection.
    *

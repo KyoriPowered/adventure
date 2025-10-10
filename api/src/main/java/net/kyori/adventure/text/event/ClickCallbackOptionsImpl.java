@@ -32,26 +32,8 @@ import org.jetbrains.annotations.NotNull;
 
 import static java.util.Objects.requireNonNull;
 
-final class ClickCallbackOptionsImpl implements ClickCallback.Options {
-  static final ClickCallback.Options DEFAULT = new ClickCallbackOptionsImpl.BuilderImpl().build();
-
-  private final int uses;
-  private final Duration lifetime;
-
-  ClickCallbackOptionsImpl(final int uses, final Duration lifetime) {
-    this.uses = uses;
-    this.lifetime = lifetime;
-  }
-
-  @Override
-  public int uses() {
-    return this.uses;
-  }
-
-  @Override
-  public @NotNull Duration lifetime() {
-    return this.lifetime;
-  }
+record ClickCallbackOptionsImpl(int uses, Duration lifetime) implements ClickCallback.Options {
+  static final ClickCallback.Options DEFAULT = new BuilderImpl().build();
 
   @Override
   public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
@@ -62,7 +44,7 @@ final class ClickCallbackOptionsImpl implements ClickCallback.Options {
   }
 
   @Override
-  public String toString() {
+  public @NotNull String toString() {
     return Internals.toString(this);
   }
 

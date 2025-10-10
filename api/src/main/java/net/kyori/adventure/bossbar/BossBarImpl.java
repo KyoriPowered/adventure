@@ -210,12 +210,12 @@ final class BossBarImpl extends HackyBossBarPlatformBridge implements BossBar {
   private @NotNull BossBar editFlags(final Flag[] flags, final BiPredicate<Set<Flag>, Flag> predicate, final BiConsumer<BossBarImpl, Set<Flag>> onChange) {
     if (flags.length == 0) return this;
     Set<Flag> changes = null;
-    for (int i = 0, length = flags.length; i < length; i++) {
-      if (predicate.test(this.flags, flags[i])) {
+    for (final Flag flag : flags) {
+      if (predicate.test(this.flags, flag)) {
         if (changes == null) {
           changes = EnumSet.noneOf(Flag.class);
         }
-        changes.add(flags[i]);
+        changes.add(flag);
       }
     }
     if (changes != null) {

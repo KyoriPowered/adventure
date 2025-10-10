@@ -118,8 +118,8 @@ public interface StyleSetter<T extends StyleSetter<?>> {
    */
   default @NotNull T decorate(final @NotNull TextDecoration@NotNull... decorations) {
     final Map<TextDecoration, TextDecoration.State> map = new EnumMap<>(TextDecoration.class);
-    for (int i = 0, length = decorations.length; i < length; i++) {
-      map.put(decorations[i], TextDecoration.State.TRUE);
+    for (final TextDecoration decoration : decorations) {
+      map.put(decoration, TextDecoration.State.TRUE);
     }
     return this.decorations(map);
   }
@@ -191,7 +191,7 @@ public interface StyleSetter<T extends StyleSetter<?>> {
    * @return an object ({@code T})
    * @since 4.10.0
    */
-  @NotNull T clickEvent(final @Nullable ClickEvent event);
+  @NotNull T clickEvent(final @Nullable ClickEvent<?> event);
 
   /**
    * Sets the hover event.

@@ -25,7 +25,7 @@ package net.kyori.adventure.text.serializer.gson.legacyimpl;
 
 import java.io.IOException;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.event.HoverEventImpl;
 import net.kyori.adventure.text.serializer.gson.LegacyHoverEventSerializer;
 import net.kyori.adventure.text.serializer.json.legacyimpl.NBTLegacyHoverEventSerializer;
 import net.kyori.adventure.util.Codec;
@@ -41,22 +41,22 @@ final class NBTLegacyHoverEventSerializerImpl implements LegacyHoverEventSeriali
   }
 
   @Override
-  public HoverEvent.@NotNull ShowItem deserializeShowItem(final @NotNull Component input) throws IOException {
+  public HoverEventImpl.@NotNull ShowItem deserializeShowItem(final @NotNull Component input) throws IOException {
     return NEW_INSTANCE.deserializeShowItem(input);
   }
 
   @Override
-  public HoverEvent.@NotNull ShowEntity deserializeShowEntity(final @NotNull Component input, final Codec.Decoder<Component, String, ? extends RuntimeException> componentCodec) throws IOException {
+  public HoverEventImpl.@NotNull ShowEntity deserializeShowEntity(final @NotNull Component input, final Codec.Decoder<Component, String, ? extends RuntimeException> componentCodec) throws IOException {
     return NEW_INSTANCE.deserializeShowEntity(input, componentCodec);
   }
 
   @Override
-  public @NotNull Component serializeShowItem(final HoverEvent.@NotNull ShowItem input) throws IOException {
+  public @NotNull Component serializeShowItem(final HoverEventImpl.@NotNull ShowItem input) throws IOException {
     return NEW_INSTANCE.serializeShowItem(input);
   }
 
   @Override
-  public @NotNull Component serializeShowEntity(final HoverEvent.@NotNull ShowEntity input, final Codec.Encoder<Component, String, ? extends RuntimeException> componentCodec) throws IOException {
+  public @NotNull Component serializeShowEntity(final HoverEventImpl.@NotNull ShowEntity input, final Codec.Encoder<Component, String, ? extends RuntimeException> componentCodec) throws IOException {
     return NEW_INSTANCE.serializeShowEntity(input, componentCodec);
   }
 }

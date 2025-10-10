@@ -78,9 +78,8 @@ final class VirtualComponentImpl<C> extends TextComponentImpl implements Virtual
   @Override
   public boolean equals(final @Nullable Object other) {
     if (this == other) return true;
-    if (!(other instanceof VirtualComponentImpl)) return false;
+    if (!(other instanceof final VirtualComponentImpl<?> that)) return false;
     if (!super.equals(other)) return false;
-    final VirtualComponentImpl<?> that = (VirtualComponentImpl<?>) other;
     return Objects.equals(this.contextType, that.contextType) && Objects.equals(this.renderer, that.renderer);
   }
 

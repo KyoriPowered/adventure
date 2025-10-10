@@ -85,32 +85,6 @@ public enum TextDecoration implements StyleBuilderApplicable, TextFormat {
    *
    * @param state the state
    * @return a {@link TextDecorationAndState}
-   * @since 4.8.0
-   * @deprecated for removal since 4.10.0, use {@link #withState(boolean)} instead
-   */
-  @Deprecated
-  public final @NotNull TextDecorationAndState as(final boolean state) {
-    return this.withState(state);
-  }
-
-  /**
-   * Creates a {@link TextDecorationAndState}, annotating this decoration with the given {@code state}.
-   *
-   * @param state the state
-   * @return a {@link TextDecorationAndState}
-   * @since 4.8.0
-   * @deprecated for removal since 4.10.0, use {@link #withState(State)} instead
-   */
-  @Deprecated
-  public final @NotNull TextDecorationAndState as(final @NotNull State state) {
-    return this.withState(state);
-  }
-
-  /**
-   * An alias for {@link #as(boolean)}.
-   *
-   * @param state the state
-   * @return a {@link TextDecorationAndState}
    * @since 4.10.0
    */
   public final @NotNull TextDecorationAndState withState(final boolean state) {
@@ -118,7 +92,7 @@ public enum TextDecoration implements StyleBuilderApplicable, TextFormat {
   }
 
   /**
-   * An alias for {@link #as(State)}.
+   * Creates a {@link TextDecorationAndState}, annotating this decoration with the given {@code state}.
    *
    * @param state the state
    * @return a {@link TextDecorationAndState}
@@ -129,7 +103,7 @@ public enum TextDecoration implements StyleBuilderApplicable, TextFormat {
   }
 
   /**
-   * An alias for {@link #as(State)}.
+   * Creates a {@link TextDecorationAndState}, annotating this decoration with the given {@code state}.
    *
    * @param state the state
    * @return a {@link TextDecorationAndState}
@@ -215,13 +189,11 @@ public enum TextDecoration implements StyleBuilderApplicable, TextFormat {
      * @since 4.10.0
      */
     public static @NotNull State byTriState(final @NotNull TriState flag) {
-      requireNonNull(flag);
-      switch (flag) {
-        case TRUE: return TRUE;
-        case FALSE: return FALSE;
-        case NOT_SET: return NOT_SET;
-      }
-      throw new IllegalArgumentException("Unable to turn TriState: " + flag + " into a TextDecoration.State");
+      return switch (requireNonNull(flag, "flag")) {
+        case TRUE -> TRUE;
+        case FALSE -> FALSE;
+        case NOT_SET -> NOT_SET;
+      };
     }
   }
 }

@@ -33,9 +33,14 @@ import org.jetbrains.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-final class StorageNBTComponentImpl extends NBTComponentImpl<StorageNBTComponent, StorageNBTComponent.Builder> implements StorageNBTComponent {
-  private final Key storage;
-
+record StorageNBTComponentImpl(
+  List<Component> children,
+  Style style,
+  String nbtPath,
+  boolean interpret,
+  @Nullable Component separator,
+  Key storage
+) implements StorageNBTComponent {
   static @NotNull StorageNBTComponent create(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final String nbtPath, final boolean interpret, final @Nullable ComponentLike separator, final @NotNull Key storage) {
     return new StorageNBTComponentImpl(
       ComponentLike.asComponents(children, IS_NOT_EMPTY),
@@ -45,11 +50,6 @@ final class StorageNBTComponentImpl extends NBTComponentImpl<StorageNBTComponent
       ComponentLike.unbox(separator),
       requireNonNull(storage, "storage")
     );
-  }
-
-  StorageNBTComponentImpl(final @NotNull List<Component> children, final @NotNull Style style, final String nbtPath, final boolean interpret, final @Nullable Component separator, final Key storage) {
-    super(children, style, nbtPath, interpret, separator);
-    this.storage = storage;
   }
 
   @Override
@@ -65,18 +65,8 @@ final class StorageNBTComponentImpl extends NBTComponentImpl<StorageNBTComponent
   }
 
   @Override
-  public @Nullable Component separator() {
-    return this.separator;
-  }
-
-  @Override
   public @NotNull StorageNBTComponent separator(final @Nullable ComponentLike separator) {
     return create(this.children, this.style, this.nbtPath, this.interpret, separator, this.storage);
-  }
-
-  @Override
-  public @NotNull Key storage() {
-    return this.storage;
   }
 
   @Override
@@ -96,32 +86,16 @@ final class StorageNBTComponentImpl extends NBTComponentImpl<StorageNBTComponent
   }
 
   @Override
-  public boolean equals(final @Nullable Object other) {
-    if (this == other) return true;
-    if (!(other instanceof StorageNBTComponent)) return false;
-    if (!super.equals(other)) return false;
-    final StorageNBTComponentImpl that = (StorageNBTComponentImpl) other;
-    return Objects.equals(this.storage, that.storage());
-  }
-
-  @Override
-  public int hashCode() {
-    int result = super.hashCode();
-    result = (31 * result) + this.storage.hashCode();
-    return result;
-  }
-
-  @Override
-  public String toString() {
+  public @NotNull String toString() {
     return Internals.toString(this);
   }
 
   @Override
-  public StorageNBTComponent.@NotNull Builder toBuilder() {
+  public @NotNull Builder toBuilder() {
     return new BuilderImpl(this);
   }
 
-  static class BuilderImpl extends AbstractNBTComponentBuilder<StorageNBTComponent, StorageNBTComponent.Builder> implements StorageNBTComponent.Builder {
+  static final class BuilderImpl extends AbstractNBTComponentBuilder<StorageNBTComponent, Builder> implements Builder {
     private @Nullable Key storage;
 
     BuilderImpl() {
@@ -133,7 +107,7 @@ final class StorageNBTComponentImpl extends NBTComponentImpl<StorageNBTComponent
     }
 
     @Override
-    public StorageNBTComponent.@NotNull Builder storage(final @NotNull Key storage) {
+    public @NotNull Builder storage(final @NotNull Key storage) {
       this.storage = requireNonNull(storage, "storage");
       return this;
     }

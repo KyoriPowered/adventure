@@ -28,9 +28,9 @@ import org.jetbrains.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-abstract class AbstractNBTComponentBuilder<C extends NBTComponent<C, B>, B extends NBTComponentBuilder<C, B>> extends AbstractComponentBuilder<C, B> implements NBTComponentBuilder<C, B> {
+abstract sealed class AbstractNBTComponentBuilder<C extends NBTComponent<C>, B extends NBTComponentBuilder<C, B>> extends AbstractComponentBuilder<C, B> implements NBTComponentBuilder<C, B> permits EntityNBTComponentImpl.BuilderImpl, StorageNBTComponentImpl.BuilderImpl {
   protected @Nullable String nbtPath;
-  protected boolean interpret = NBTComponentImpl.INTERPRET_DEFAULT;
+  protected boolean interpret = NBTComponent.INTERPRET_DEFAULT;
   protected @Nullable Component separator;
 
   AbstractNBTComponentBuilder() {

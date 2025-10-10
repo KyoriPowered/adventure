@@ -35,6 +35,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.util.PlatformAPI;
 import net.kyori.adventure.util.Services;
 import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.ApiStatus;
@@ -63,10 +64,10 @@ public final class DataComponentValueConverterRegistry {
    * @return an unmodifiable set of the known provider ids
    * @since 4.1.7.0
    */
-  public static Set<Key> knownProviders() {
-    return Collections.unmodifiableSet(PROVIDERS.stream()
+  public static @NotNull Set<Key> knownProviders() {
+    return PROVIDERS.stream()
       .map(Provider::id)
-      .collect(Collectors.toSet()));
+      .collect(Collectors.toUnmodifiableSet());
   }
 
   /**
@@ -102,6 +103,8 @@ public final class DataComponentValueConverterRegistry {
    *
    * @since 4.17.0
    */
+  @ApiStatus.NonExtendable
+  @PlatformAPI
   public interface Provider {
     /**
      * An identifier for this provider.
@@ -129,8 +132,7 @@ public final class DataComponentValueConverterRegistry {
    * @param <O> output type
    * @since 4.17.0
    */
-  @ApiStatus.NonExtendable
-  public interface Conversion<I, O> extends Examinable {
+  public sealed interface Conversion<I, O> extends Examinable permits DataComponentValueConversionImpl {
     /**
      * Create a new conversion.
      *
@@ -246,15 +248,7 @@ public final class DataComponentValueConverterRegistry {
     }
   }
 
-  static final class RegisteredConversion {
-    static final RegisteredConversion NONE = new RegisteredConversion(null, null);
-
-    final Key provider;
-    final Conversion<?, ?> conversion;
-
-    RegisteredConversion(final Key provider, final Conversion<?, ?> conversion) {
-      this.provider = provider;
-      this.conversion = conversion;
-    }
+  record RegisteredConversion(Key provider, Conversion<?, ?> conversion) {
+      static final RegisteredConversion NONE = new RegisteredConversion(null, null);
   }
 }

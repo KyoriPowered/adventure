@@ -28,37 +28,16 @@ import net.kyori.adventure.internal.Internals;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-final class ShadowColorImpl implements ShadowColor, Examinable {
+/**
+ * @param value ARGB
+ */
+record ShadowColorImpl(int value) implements ShadowColor, Examinable {
   static final int NONE_VALUE = 0;
   static final ShadowColorImpl NONE = new ShadowColorImpl(NONE_VALUE);
 
-  private final int value; // ARGB
-
-  ShadowColorImpl(final int value) {
-    this.value = value;
-  }
-
   @Override
-  public int value() {
-    return this.value;
-  }
-
-  @Override
-  public boolean equals(final @Nullable Object other) {
-    if (!(other instanceof ShadowColorImpl)) return false;
-    final ShadowColorImpl that = (ShadowColorImpl) other;
-    return this.value == that.value;
-  }
-
-  @Override
-  public int hashCode() {
-    return Integer.hashCode(this.value);
-  }
-
-  @Override
-  public String toString() {
+  public @NotNull String toString() {
     return Internals.toString(this);
   }
 

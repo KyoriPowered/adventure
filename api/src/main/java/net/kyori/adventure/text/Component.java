@@ -35,10 +35,8 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
-import java.util.regex.Pattern;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 import net.kyori.adventure.builder.AbstractBuilder;
@@ -58,11 +56,9 @@ import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.translation.Translatable;
 import net.kyori.adventure.util.ARGBLike;
 import net.kyori.adventure.util.ForwardingIterator;
-import net.kyori.adventure.util.IntFunction2;
 import net.kyori.adventure.util.MonkeyBars;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -110,8 +106,7 @@ import static java.util.Objects.requireNonNull;
  * @see LinearComponents
  * @since 4.0.0
  */
-@ApiStatus.NonExtendable
-public interface Component extends ComponentBuilderApplicable, ComponentLike, Examinable, HoverEventSource<Component>, StyleGetter, StyleSetter<Component> {
+public sealed interface Component extends ComponentBuilderApplicable, ComponentLike, Examinable, HoverEventSource<Component>, StyleGetter, StyleSetter<Component> permits NBTComponent, ScopedComponent {
   /**
    * A predicate that checks equality of two {@code Component}s using {@link Objects#equals(Object, Object)}.
    *
@@ -159,41 +154,6 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   static @NotNull TextComponent space() {
     return TextComponentImpl.SPACE;
-  }
-
-  /**
-   * Joins {@code components} using {@code separator}.
-   *
-   * @param separator the separator
-   * @param components the components
-   * @return a text component
-   * @since 4.0.0
-   * @deprecated for removal since 4.9.0, use {@link #join(JoinConfiguration, ComponentLike...)} with {@link JoinConfiguration#separator(ComponentLike)} instead.
-   */
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  @Deprecated
-  @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull TextComponent join(final @NotNull ComponentLike separator, final @NotNull ComponentLike@NotNull... components) {
-    return join(separator, Arrays.asList(components));
-  }
-
-  /**
-   * Joins {@code components} using {@code separator}.
-   *
-   * @param separator the separator
-   * @param components the components
-   * @return a text component
-   * @since 4.0.0
-   * @deprecated for removal since 4.9.0, use {@link #join(JoinConfiguration, Iterable)} with {@link JoinConfiguration#separator(ComponentLike)} instead.
-   */
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  @Deprecated
-  @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull TextComponent join(final @NotNull ComponentLike separator, final Iterable<? extends ComponentLike> components) {
-    final Component component = join(JoinConfiguration.separator(separator), components);
-
-    if (component instanceof TextComponent) return (TextComponent) component;
-    return Component.text().append(component).build();
   }
 
   /**
@@ -337,7 +297,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _ -> new", pure = true)
   static @NotNull BlockNBTComponent blockNBT(final @NotNull String nbtPath, final BlockNBTComponent.@NotNull Pos pos) {
-    return blockNBT(nbtPath, NBTComponentImpl.INTERPRET_DEFAULT, pos);
+    return blockNBT(nbtPath, NBTComponent.INTERPRET_DEFAULT, pos);
   }
 
   /**
@@ -652,23 +612,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _ -> new", pure = true)
   static @NotNull ScoreComponent score(final @NotNull String name, final @NotNull String objective) {
-    return score(name, objective, null);
-  }
-
-  /**
-   * Creates a score component with a name, objective, and optional value.
-   *
-   * @param name the score name
-   * @param objective the score objective
-   * @param value the value
-   * @return a score component
-   * @since 4.0.0
-   * @deprecated since 4.7.0, not for removal, with no replacement. The {@code value} field is no longer supported in 1.16.5.
-   */
-  @Contract(value = "_, _, _ -> new", pure = true)
-  @Deprecated
-  static @NotNull ScoreComponent score(final @NotNull String name, final @NotNull String objective, final @Nullable String value) {
-    return ScoreComponentImpl.create(Collections.emptyList(), Style.empty(), name, objective, value);
+    return ScoreComponentImpl.create(Collections.emptyList(), Style.empty(), name, objective);
   }
 
   /*
@@ -764,7 +708,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _ -> new", pure = true)
   static @NotNull StorageNBTComponent storageNBT(final @NotNull String nbtPath, final @NotNull Key storage) {
-    return storageNBT(nbtPath, NBTComponentImpl.INTERPRET_DEFAULT, storage);
+    return storageNBT(nbtPath, NBTComponent.INTERPRET_DEFAULT, storage);
   }
 
   /**
@@ -2061,8 +2005,8 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
       Component component = null;
       if (value instanceof Component) {
         component = (Component) hoverEvent.value();
-      } else if (value instanceof HoverEvent.ShowEntity) {
-        component = ((HoverEvent.ShowEntity) value).name();
+      } else if (value instanceof HoverEvent.ShowEntity se) {
+        component = se.name();
       }
       if (component != null) {
         if (equals.test(that, component)) return true;
@@ -2072,21 +2016,6 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
       }
     }
     return false;
-  }
-
-  /**
-   * Prevents a cycle between this component and the provided component.
-   *
-   * @param that the other component
-   * @since 4.0.0
-   * @deprecated for removal since 4.7.0, with no replacement - this method is not necessary due to the fact {@code Component}s are immutable
-   */
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  @Deprecated
-  default void detectCycle(final @NotNull Component that) {
-    if (that.contains(this)) {
-      throw new IllegalStateException("Component cycle detected between " + this + " and " + that);
-    }
   }
 
   /**
@@ -2494,9 +2423,9 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   }
 
   /**
-   * Gets a set of decorations this component has.
+   * Gets a map of decorations this component has.
    *
-   * @return a set of decorations this component has
+   * @return a map of decorations this component has
    * @since 4.0.0
    */
   @Override
@@ -2526,7 +2455,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    */
   @Override
-  default @Nullable ClickEvent clickEvent() {
+  default @Nullable ClickEvent<?> clickEvent() {
     return this.style().clickEvent();
   }
 
@@ -2539,7 +2468,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(pure = true)
   @Override
-  default @NotNull Component clickEvent(final @Nullable ClickEvent event) {
+  default @NotNull Component clickEvent(final @Nullable ClickEvent<?> event) {
     return this.style(this.style().clickEvent(event));
   }
 
@@ -2627,9 +2556,6 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   @ScopedComponentOverrideNotRequired
   default @NotNull Component replaceText(final @NotNull TextReplacementConfig config) {
     requireNonNull(config, "replacement");
-    if (!(config instanceof TextReplacementConfigImpl)) {
-      throw new IllegalArgumentException("Provided replacement was a custom TextReplacementConfig implementation, which is not supported.");
-    }
     return TextReplacementRenderer.INSTANCE.render(this, ((TextReplacementConfigImpl) config).createState());
   }
 
@@ -2740,140 +2666,12 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   }
 
   /**
-   * Finds and replaces text within any {@link Component}s using a string literal.
+   * Returns a builder for this component.
    *
-   * @param search a string literal
-   * @param replacement a {@link ComponentLike} to replace each match
-   * @return a modified copy of this component
-   * @since 4.0.0
-   * @deprecated for removal since 4.2.0, use {@link #replaceText(Consumer)} or {@link #replaceText(TextReplacementConfig)} instead.
+   * @return the builder
+   * @since 5.0.0
    */
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  @Contract(pure = true)
-  @Deprecated
-  default @NotNull Component replaceText(final @NotNull String search, final @Nullable ComponentLike replacement) {
-    return this.replaceText(b -> b.matchLiteral(search).replacement(replacement));
-  }
-
-  /**
-   * Finds and replaces text within any {@link TextComponent}s using a regex pattern.
-   *
-   * @param pattern a regex pattern
-   * @param replacement a function to replace each match
-   * @return a modified copy of this component
-   * @since 4.0.0
-   * @deprecated for removal since 4.2.0, use {@link #replaceText(Consumer)} or {@link #replaceText(TextReplacementConfig)} instead.
-   */
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  @Contract(pure = true)
-  @Deprecated
-  default @NotNull Component replaceText(final @NotNull Pattern pattern, final @NotNull Function<TextComponent.Builder, @Nullable ComponentLike> replacement) {
-    return this.replaceText(b -> b.match(pattern).replacement(replacement));
-  }
-
-  /**
-   * Finds and replaces the first occurrence of text within any {@link Component}s using a string literal.
-   *
-   * @param search a string literal
-   * @param replacement a {@link ComponentLike} to replace the first match
-   * @return a modified copy of this component
-   * @since 4.0.0
-   * @deprecated for removal since 4.2.0, use {@link #replaceText(Consumer)} or {@link #replaceText(TextReplacementConfig)} instead.
-   */
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  @Contract(pure = true)
-  @Deprecated
-  default @NotNull Component replaceFirstText(final @NotNull String search, final @Nullable ComponentLike replacement) {
-    return this.replaceText(b -> b.matchLiteral(search).once().replacement(replacement));
-  }
-
-  /**
-   * Finds and replaces the first occurrence of text within any {@link TextComponent}s using a regex pattern.
-   *
-   * @param pattern a regex pattern
-   * @param replacement a function to replace the first match
-   * @return a modified copy of this component
-   * @since 4.0.0
-   * @deprecated for removal since 4.2.0, use {@link #replaceText(Consumer)} or {@link #replaceText(TextReplacementConfig)} instead.
-   */
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  @Contract(pure = true)
-  @Deprecated
-  default @NotNull Component replaceFirstText(final @NotNull Pattern pattern, final @NotNull Function<TextComponent.Builder, @Nullable ComponentLike> replacement) {
-    return this.replaceText(b -> b.match(pattern).once().replacement(replacement));
-  }
-
-  /**
-   * Finds and replaces {@code n} instances of text within any {@link TextComponent}s using a string literal.
-   *
-   * @param search a string literal
-   * @param replacement a {@link ComponentLike} to replace the first match
-   * @param numberOfReplacements the amount of matches that should be replaced
-   * @return a modified copy of this component
-   * @since 4.0.0
-   * @deprecated for removal since 4.2.0, use {@link #replaceText(Consumer)} or {@link #replaceText(TextReplacementConfig)} instead.
-   */
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  @Contract(pure = true)
-  @Deprecated
-  default @NotNull Component replaceText(final @NotNull String search, final @Nullable ComponentLike replacement, final int numberOfReplacements) {
-    return this.replaceText(b -> b.matchLiteral(search).times(numberOfReplacements).replacement(replacement));
-  }
-
-  /**
-   * Finds and replaces {@code n} instances of text within any {@link TextComponent}s using a regex pattern.
-   *
-   * @param pattern a regex pattern
-   * @param replacement a function to replace each match
-   * @param numberOfReplacements the amount of matches that should be replaced
-   * @return a modified copy of this component
-   * @since 4.0.0
-   * @deprecated for removal since 4.2.0, use {@link #replaceText(Consumer)} or {@link #replaceText(TextReplacementConfig)} instead.
-   */
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  @Contract(pure = true)
-  @Deprecated
-  default @NotNull Component replaceText(final @NotNull Pattern pattern, final @NotNull Function<TextComponent.Builder, @Nullable ComponentLike> replacement, final int numberOfReplacements) {
-    return this.replaceText(b -> b.match(pattern).times(numberOfReplacements).replacement(replacement));
-  }
-
-  /**
-   * Finds and replaces {@code n} instances of text within any {@link TextComponent}s using a string literal.
-   *
-   * <p>Utilises an {@link IntFunction2} to determine if each instance should be replaced.</p>
-   *
-   * @param search a string literal
-   * @param replacement a {@link ComponentLike} to replace the first match
-   * @param fn a function of (index, replaced) used to determine if matches should be replaced, where "replaced" is the number of successful replacements
-   * @return a modified copy of this component
-   * @since 4.0.0
-   * @deprecated for removal since 4.2.0, use {@link #replaceText(Consumer)} or {@link #replaceText(TextReplacementConfig)} instead.
-   */
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  @Contract(pure = true)
-  @Deprecated
-  default @NotNull Component replaceText(final @NotNull String search, final @Nullable ComponentLike replacement, final @NotNull IntFunction2<PatternReplacementResult> fn) {
-    return this.replaceText(b -> b.matchLiteral(search).replacement(replacement).condition(fn));
-  }
-
-  /**
-   * Finds and replaces text using a regex pattern.
-   *
-   * <p>Utilises an {@link IntFunction2} to determine if each instance should be replaced.</p>
-   *
-   * @param pattern a regex pattern
-   * @param replacement a function to replace the first match
-   * @param fn a function of (index, replaced) used to determine if matches should be replaced, where "replaced" is the number of successful replacements
-   * @return a modified copy of this component
-   * @since 4.0.0
-   * @deprecated for removal since 4.2.0, use {@link #replaceText(Consumer)} or {@link #replaceText(TextReplacementConfig)} instead.
-   */
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  @Contract(pure = true)
-  @Deprecated
-  default @NotNull Component replaceText(final @NotNull Pattern pattern, final @NotNull Function<TextComponent.Builder, @Nullable ComponentLike> replacement, final @NotNull IntFunction2<PatternReplacementResult> fn) {
-    return this.replaceText(b -> b.match(pattern).replacement(replacement).condition(fn));
-  }
+  @NotNull ComponentBuilder<?, ?> toBuilder();
 
   @Override
   default void componentBuilderApply(final @NotNull ComponentBuilder<?, ?> component) {
@@ -2894,7 +2692,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("style", this.style()),
-      ExaminableProperty.of(ComponentInternals.CHILDREN_PROPERTY, this.children())
+      ExaminableProperty.of("children", this.children())
     );
   }
 }

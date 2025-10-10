@@ -21,45 +21,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.format;
+package net.kyori.adventure.text.event;
 
 import java.util.stream.Stream;
-import net.kyori.examination.Examinable;
+import net.kyori.adventure.internal.Internals;
+import net.kyori.adventure.text.format.Style;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * A combination of a {@link TextDecoration} and a {@link TextDecoration.State}.
- *
- * @since 4.8.0
- */
-public sealed interface TextDecorationAndState extends Examinable, StyleBuilderApplicable permits TextDecorationAndStateImpl {
-  /**
-   * Gets the decoration.
-   *
-   * @return the decoration
-   * @since 4.8.0
-   */
-  @NotNull TextDecoration decoration();
+import static java.util.Objects.requireNonNull;
 
-  /**
-   * Gets the state.
-   *
-   * @return the state
-   * @since 4.8.0
-   */
-  TextDecoration.@NotNull State state();
+record ClickEventImpl<T extends ClickEvent.Payload>(Action<T> action, Payload payload) implements ClickEvent<T> {
 
-  @Override
-  default void styleApply(final Style.@NotNull Builder style) {
-    style.decoration(this.decoration(), this.state());
+  static <T extends ClickEvent.Payload> ClickEvent<T> create(final @NotNull Action<T> action, final @NotNull T payload) {
+    return new ClickEventImpl<>(requireNonNull(action, "action"), requireNonNull(payload, "payload"));
   }
 
   @Override
-  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public void styleApply(final Style.@NotNull Builder style) {
+    style.clickEvent(this);
+  }
+
+  @Override
+  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
-      ExaminableProperty.of("decoration", this.decoration()),
-      ExaminableProperty.of("state", this.state())
+      ExaminableProperty.of("action", this.action),
+      ExaminableProperty.of("payload", this.payload)
     );
+  }
+
+  @Override
+  public @NotNull String toString() {
+    return Internals.toString(this);
+  }
+
+  record ActionImpl<T extends Payload>(String name, boolean readable, Class<? extends Payload> payloadType) implements ClickEvent.Action<T> {
+    @Override
+    public boolean supports(final @NotNull Payload payload) {
+      return payload.getClass() == this.payloadType;
+    }
   }
 }

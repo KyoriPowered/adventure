@@ -41,6 +41,7 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.flattener.ComponentFlattener;
 import net.kyori.adventure.text.flattener.FlattenerListener;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.NamedTextColorImpl;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -116,7 +117,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     final int index = CharacterAndFormatSet.DEFAULT.characters.indexOf(character);
     if (index != -1) {
       final TextFormat format = CharacterAndFormatSet.DEFAULT.formats.get(index);
-      if (format instanceof NamedTextColor) {
+      if (format instanceof NamedTextColorImpl) {
         return new LegacyFormat((NamedTextColor) format);
       } else if (format instanceof TextDecoration) {
         return new LegacyFormat((TextDecoration) format);
@@ -162,7 +163,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   }
 
   private static boolean isHexTextColor(final TextFormat format) {
-    return format instanceof TextColor && !(format instanceof NamedTextColor);
+    return format instanceof TextColor && !(format instanceof NamedTextColorImpl);
   }
 
   private @Nullable String toLegacyCode(TextFormat format) {
@@ -182,7 +183,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
           return this.hexCharacter + hex;
         }
       } else {
-        if (!(color instanceof NamedTextColor)) {
+        if (!(color instanceof NamedTextColorImpl)) {
           // if we are not using hex colours, then convert the hex colour
           // to the "nearest" possible named/standard text colour
           format = TextColor.nearestColorTo(this.formats.colors, color);

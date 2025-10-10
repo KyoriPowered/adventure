@@ -27,8 +27,8 @@ import java.util.function.Consumer;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.event.ClickEventImpl;
+import net.kyori.adventure.text.event.HoverEventImpl;
 import net.kyori.adventure.text.flattener.ComponentFlattener;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.PlatformAPI;
@@ -39,7 +39,7 @@ import org.jetbrains.annotations.NotNull;
  * A plain-text component serializer.
  *
  * <p>Plain does <b>not</b> support more complex features such as, but not limited
- * to, colours, decorations, {@link ClickEvent}, and {@link HoverEvent}.</p>
+ * to, colours, decorations, {@link ClickEventImpl}, and {@link HoverEventImpl}.</p>
  *
  * @since 4.8.0
  */

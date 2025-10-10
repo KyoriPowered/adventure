@@ -30,6 +30,7 @@ import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.HoverEventImpl;
 import net.kyori.adventure.text.serializer.json.JSONComponentSerializer;
 import net.kyori.adventure.text.serializer.json.JSONOptions;
 import net.kyori.adventure.util.PlatformAPI;
@@ -64,7 +65,7 @@ public interface GsonComponentSerializer extends JSONComponentSerializer, Builda
    * Gets a component serializer for gson serialization and deserialization.
    *
    * <p>Hex colors are coerced to the nearest named color, and legacy hover events are
-   * emitted for action {@link net.kyori.adventure.text.event.HoverEvent.Action#SHOW_TEXT}.</p>
+   * emitted for action {@link HoverEventImpl.Action#SHOW_TEXT}.</p>
    *
    * @return a gson component serializer
    * @since 4.0.0
@@ -142,7 +143,7 @@ public interface GsonComponentSerializer extends JSONComponentSerializer, Builda
 
     /**
      * Sets a serializer that will be used to interpret legacy hover event {@code value} payloads.
-     * If the serializer is {@code null}, then only {@link net.kyori.adventure.text.event.HoverEvent.Action#SHOW_TEXT}
+     * If the serializer is {@code null}, then only {@link HoverEventImpl.Action#SHOW_TEXT}
      * legacy hover events can be deserialized.
      *
      * @param serializer serializer

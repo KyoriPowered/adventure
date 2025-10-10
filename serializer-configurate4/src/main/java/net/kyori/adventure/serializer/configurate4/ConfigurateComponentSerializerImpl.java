@@ -29,8 +29,8 @@ import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslationArgument;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.event.ClickEventImpl;
+import net.kyori.adventure.text.event.HoverEventImpl;
 import net.kyori.adventure.text.format.ShadowColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -103,12 +103,12 @@ final class ConfigurateComponentSerializerImpl implements ConfigurateComponentSe
       .register(TextColorSerializer.INSTANCE)
       .register(BlockNBTPosSerializer.INSTANCE)
       .register(TranslationArgument.class, TranslationArgumentTypeSerializer.INSTANCE)
-      .registerExact(new IndexSerializer<>(TypeToken.get(ClickEvent.Action.class), ClickEvent.Action.NAMES))
-      .registerExact(new IndexSerializer<>(new TypeToken<HoverEvent.Action<?>>() {}, HoverEvent.Action.NAMES))
+      .registerExact(new IndexSerializer<>(TypeToken.get(ClickEventImpl.Action.class), ClickEventImpl.Action.NAMES))
+      .registerExact(new IndexSerializer<>(new TypeToken<HoverEventImpl.Action<?>>() {}, HoverEventImpl.Action.NAMES))
       .registerExact(new IndexSerializer<>(TypeToken.get(Sound.Source.class), Sound.Source.NAMES))
       .registerExact(new IndexSerializer<>(TypeToken.get(TextDecoration.class), TextDecoration.NAMES))
-      .registerExact(HoverEvent.ShowEntity.class, HoverEventShowEntitySerializer.INSTANCE)
-      .registerExact(HoverEvent.ShowItem.class, HoverEventShowItemSerializer.INSTANCE)
+      .registerExact(HoverEventImpl.ShowEntity.class, HoverEventShowEntitySerializer.INSTANCE)
+      .registerExact(HoverEventImpl.ShowItem.class, HoverEventShowItemSerializer.INSTANCE)
       .register(ConfigurateDataComponentValue.class, ConfigurateDataComponentValueTypeSerializer.INSTANCE)
       .register(ShadowColor.class, ShadowColorSerializer.INSTACE)
       .register(PlayerHeadObjectContents.ProfileProperty.class, ProfilePropertySerializer.INSTANCE)

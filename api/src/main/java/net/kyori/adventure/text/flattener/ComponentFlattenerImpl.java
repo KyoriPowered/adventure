@@ -34,7 +34,6 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.KeybindComponent;
 import net.kyori.adventure.text.ObjectComponent;
-import net.kyori.adventure.text.ScoreComponent;
 import net.kyori.adventure.text.SelectorComponent;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
@@ -49,15 +48,10 @@ import org.jetbrains.annotations.Range;
 
 import static java.util.Objects.requireNonNull;
 
-final class ComponentFlattenerImpl implements ComponentFlattener {
+record ComponentFlattenerImpl(InheritanceAwareMap<Component, Handler> flatteners, Function<Component, String> unknownHandler, int maxNestedDepth) implements ComponentFlattener {
   @SuppressWarnings("deprecation")
   static final ComponentFlattener BASIC = new BuilderImpl()
     .mapper(KeybindComponent.class, component -> component.keybind()) // IntelliJ is wrong here, this is fine
-    .mapper(ScoreComponent.class, component -> {
-      // Removed in Vanilla 1.16, but we keep it for backwards compat
-      final @Nullable String value = component.value();
-      return value != null ? value : "";
-    })
     .mapper(SelectorComponent.class, SelectorComponent::pattern)
     .mapper(TextComponent.class, TextComponent::content)
     .mapper(TranslatableComponent.class, component -> {
@@ -66,15 +60,11 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
     })
     .mapper(ObjectComponent.class, component -> {
       final ObjectContents contents = component.contents();
-      if (contents instanceof SpriteObjectContents) {
-        final SpriteObjectContents spriteContents = (SpriteObjectContents) contents;
+      if (contents instanceof final SpriteObjectContents spriteContents) {
         final Key atlas = spriteContents.atlas();
-        return "[" + spriteContents.sprite().asMinimalString()
-          + (!atlas.equals(SpriteObjectContents.DEFAULT_ATLAS) ? "@" + atlas.asMinimalString() : "")
-          + "]";
-      } else if (contents instanceof PlayerHeadObjectContents) {
-        final PlayerHeadObjectContents playerHeadContents = (PlayerHeadObjectContents) contents;
-        return "[" + (playerHeadContents.name() != null ? playerHeadContents.name() : "unknown player") + " head]";
+        return String.format("[%s:%s]", spriteContents.sprite().asMinimalString(), !atlas.equals(SpriteObjectContents.DEFAULT_ATLAS) ? "@" + atlas.asMinimalString() : "");
+      } else if (contents instanceof final PlayerHeadObjectContents playerHeadContents) {
+        return String.format("[%s head]", playerHeadContents.name() != null ? playerHeadContents.name() : "unknown player");
       }
       return "";
     })
@@ -86,26 +76,7 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
 
   private static final int MAX_DEPTH = 512;
 
-  private final InheritanceAwareMap<Component, Handler> flatteners;
-  private final Function<Component, String> unknownHandler;
-  private final int maxNestedDepth;
-
-  ComponentFlattenerImpl(final InheritanceAwareMap<Component, Handler> flatteners, final @Nullable Function<Component, String> unknownHandler, final int maxNestedDepth) {
-    this.flatteners = flatteners;
-    this.unknownHandler = unknownHandler;
-    this.maxNestedDepth = maxNestedDepth;
-  }
-
-  private static final class StackEntry {
-    final Component component;
-    final int depth;
-    final int stylesToPop;
-
-    StackEntry(final Component component, final int depth, final int stylesToPop) {
-      this.component = component;
-      this.depth = depth;
-      this.stylesToPop = stylesToPop;
-    }
+  private record StackEntry(Component component, int depth, int stylesToPop) {
   }
 
   @Override
@@ -185,11 +156,6 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
     }
   }
 
-  @Override
-  public ComponentFlattener.@NotNull Builder toBuilder() {
-    return new BuilderImpl(this.flatteners, this.unknownHandler, this.maxNestedDepth);
-  }
-
   // A function that allows nesting other flatten operations
   @FunctionalInterface
   interface Handler {
@@ -218,20 +184,20 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T extends Component> ComponentFlattener.@NotNull Builder mapper(final @NotNull Class<T> type, final @NotNull Function<T, String> converter) {
+    public @NotNull <T extends Component> Builder mapper(final @NotNull Class<T> type, final @NotNull Function<T, String> converter) {
       this.flatteners.put(type, (self, component, listener, depth, nestedDepth) -> listener.component(converter.apply((T) component)));
       return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T extends Component> ComponentFlattener.@NotNull Builder complexMapper(final @NotNull Class<T> type, final @NotNull BiConsumer<T, Consumer<Component>> converter) {
+    public @NotNull <T extends Component> Builder complexMapper(final @NotNull Class<T> type, final @NotNull BiConsumer<T, Consumer<Component>> converter) {
       this.flatteners.put(type, (self, component, listener, depth, nestedDepth) -> converter.accept((T) component, c -> self.flatten0(c, listener, depth, nestedDepth + 1)));
       return this;
     }
 
     @Override
-    public ComponentFlattener.@NotNull Builder unknownMapper(final @Nullable Function<Component, String> converter) {
+    public @NotNull Builder unknownMapper(final @Nullable Function<Component, String> converter) {
       this.unknownHandler = converter;
       return this;
     }

@@ -182,8 +182,7 @@ public interface ClickCallback<T extends Audience> {
    *
    * @since 4.13.0
    */
-  @ApiStatus.NonExtendable
-  interface Options extends Examinable {
+  sealed interface Options extends Examinable permits ClickCallbackOptionsImpl {
     /**
      * Create a new builder.
      *
@@ -230,8 +229,7 @@ public interface ClickCallback<T extends Audience> {
      *
      * @since 4.13.0
      */
-    @ApiStatus.NonExtendable
-    interface Builder extends AbstractBuilder<Options> {
+    sealed interface Builder extends AbstractBuilder<Options> permits ClickCallbackOptionsImpl.BuilderImpl {
       /**
        * Set the number of uses allowed for this callback.
        *
@@ -268,6 +266,6 @@ public interface ClickCallback<T extends Audience> {
      * @return a created click event that will execute the provided callback with options
      * @since 4.13.0
      */
-    @NotNull ClickEvent create(final @NotNull ClickCallback<Audience> callback, final @NotNull Options options);
+    @NotNull ClickEvent<?> create(final @NotNull ClickCallback<Audience> callback, final @NotNull Options options);
   }
 }
