@@ -34,10 +34,8 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
 import java.util.Spliterators;
-import java.util.stream.Stream;
-import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Unmodifiable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Bit-set driven decoration -&gt; state map.
@@ -77,7 +75,7 @@ import org.jetbrains.annotations.Unmodifiable;
  * a single {@code byte}, I however am not doing that because it's more effort than my time's worth.</p>
  */
 @Unmodifiable
-final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.State> implements Examinable {
+final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.State> {
   static final TextDecoration[] DECORATIONS = TextDecoration.values();
   private static final TextDecoration.State[] STATES = TextDecoration.State.values();
   private static final int MAP_SIZE = DECORATIONS.length;
@@ -117,8 +115,8 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
   private final int bitSet;
 
   // lazy
-  private volatile EntrySet entrySet = null;
-  private volatile Values values = null;
+  private volatile @Nullable EntrySet entrySet = null;
+  private volatile @Nullable Values values = null;
 
   private DecorationMap(final int bitSet) {
     this.bitSet = bitSet;
@@ -133,13 +131,7 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
   }
 
   @Override
-  public Stream<? extends ExaminableProperty> examinableProperties() {
-    return Arrays.stream(DECORATIONS)
-      .map(decoration -> ExaminableProperty.of(decoration.toString(), this.get(decoration)));
-  }
-
-  @Override
-  public TextDecoration.State get(final Object o) {
+  public TextDecoration.@Nullable State get(final Object o) {
     if (o instanceof final TextDecoration textDecoration) {
       return STATES[(this.bitSet >> (textDecoration.ordinal() * 2)) & 0b11];
     }
@@ -162,6 +154,7 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
     return false;
   }
 
+  @SuppressWarnings("DataFlowIssue") // Checked nullable.
   @Override
   public Set<Entry<TextDecoration, TextDecoration.State>> entrySet() {
     if (this.entrySet == null) {
@@ -180,6 +173,7 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
     return KEY_SET;
   }
 
+  @SuppressWarnings("DataFlowIssue") // Checked nullable.
   @Override
   public Collection<TextDecoration.State> values() {
     if (this.values == null) {
@@ -245,10 +239,10 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
     }
 
     @Override
-    public Object [] toArray() {
+    public Object[] toArray() {
       final Object[] states = new Object[MAP_SIZE];
       for (int i = 0; i < MAP_SIZE; i++) {
-        states[i] = DecorationMap.this.get(DECORATIONS[i]);
+        states[i] = DecorationMap.this.getOrDefault(DECORATIONS[i], TextDecoration.State.NOT_SET);
       }
       return states;
     }

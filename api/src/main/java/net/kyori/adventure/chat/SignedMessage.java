@@ -24,13 +24,10 @@
 package net.kyori.adventure.chat;
 
 import java.time.Instant;
-import java.util.stream.Stream;
 import net.kyori.adventure.identity.Identified;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
-import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
 
@@ -40,7 +37,7 @@ import org.jspecify.annotations.Nullable;
  * @since 4.12.0
  * @sinceMinecraft 1.19
  */
-public sealed interface SignedMessage extends Identified, Examinable permits SignedMessageImpl {
+public sealed interface SignedMessage extends Identified permits SignedMessageImpl {
 
   /**
    * Creates a signature wrapper.
@@ -143,24 +140,13 @@ public sealed interface SignedMessage extends Identified, Examinable permits Sig
     return this.signature() != null;
   }
 
-  @Override
-  default Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("timestamp", this.timestamp()),
-      ExaminableProperty.of("salt", this.salt()),
-      ExaminableProperty.of("signature", this.signature()),
-      ExaminableProperty.of("unsignedContent", this.unsignedContent()),
-      ExaminableProperty.of("message", this.message())
-    );
-  }
-
   /**
    * A signature wrapper type.
    *
    * @since 4.12.0
    * @sinceMinecraft 1.19
    */
-  sealed interface Signature extends Examinable permits SignedMessageImpl.SignatureImpl {
+  sealed interface Signature permits SignedMessageImpl.SignatureImpl {
 
     /**
      * Gets the bytes for this signature.
@@ -171,10 +157,5 @@ public sealed interface SignedMessage extends Identified, Examinable permits Sig
      */
     @Contract(pure = true)
     byte[] bytes();
-
-    @Override
-    default Stream<? extends ExaminableProperty> examinableProperties() {
-      return Stream.of(ExaminableProperty.of("bytes", this.bytes()));
-    }
   }
 }

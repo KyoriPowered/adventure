@@ -26,7 +26,6 @@ package net.kyori.adventure.title;
 import java.time.Duration;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.Ticks;
-import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
@@ -36,7 +35,7 @@ import org.jspecify.annotations.Nullable;
  * @see Times
  * @since 4.0.0
  */
-public sealed interface Title extends Examinable permits TitleImpl {
+public sealed interface Title permits TitleImpl {
   /**
    * The default times.
    *
@@ -123,7 +122,7 @@ public sealed interface Title extends Examinable permits TitleImpl {
    *
    * @since 4.0.0
    */
-  sealed interface Times extends Examinable permits TitleImpl.TimesImpl {
+  sealed interface Times permits TitleImpl.TimesImpl {
     /**
      * Creates times.
      *

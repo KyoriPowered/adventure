@@ -23,9 +23,7 @@
  */
 package net.kyori.adventure.text;
 
-import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Contract;
 
 /**
@@ -43,7 +41,7 @@ import org.jetbrains.annotations.Contract;
  * @since 4.0.0
  * @sinceMinecraft 1.15
  */
-public interface StorageNBTComponent extends NBTComponent<StorageNBTComponent>, ScopedComponent<StorageNBTComponent> {
+public sealed interface StorageNBTComponent extends NBTComponent<StorageNBTComponent>, ScopedComponent<StorageNBTComponent> permits StorageNBTComponentImpl {
   /**
    * Gets the NBT storage's ID.
    *
@@ -61,16 +59,6 @@ public interface StorageNBTComponent extends NBTComponent<StorageNBTComponent>, 
    */
   @Contract(pure = true)
   StorageNBTComponent storage(final Key storage);
-
-  @Override
-  default Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.concat(
-      Stream.of(
-        ExaminableProperty.of("storage", this.storage())
-      ),
-      NBTComponent.super.examinableProperties()
-    );
-  }
 
   /**
    * A command storage NBT component builder.

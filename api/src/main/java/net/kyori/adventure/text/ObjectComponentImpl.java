@@ -24,7 +24,6 @@
 package net.kyori.adventure.text;
 
 import java.util.List;
-import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.object.ObjectContents;
 
@@ -43,11 +42,6 @@ record ObjectComponentImpl(List<Component> children, Style style, ObjectContents
   @Override
   public ObjectComponent contents(final ObjectContents contents) {
     return create(this.children, this.style, contents);
-  }
-
-  @Override
-  public String toString() {
-    return Internals.toString(this);
   }
 
   @Override

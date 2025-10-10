@@ -25,11 +25,8 @@ package net.kyori.adventure.sound;
 
 import java.util.OptionalLong;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
-import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.util.ShadyPines;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.Nullable;
 
@@ -47,7 +44,7 @@ sealed abstract class SoundImpl implements Sound permits SoundImpl.Eager, SoundI
   private final float volume;
   private final float pitch;
   private final OptionalLong seed;
-  private SoundStop stop;
+  private @Nullable SoundStop stop;
 
   SoundImpl(final Source source, final float volume, final float pitch, final OptionalLong seed) {
     this.source = source;
@@ -103,27 +100,11 @@ sealed abstract class SoundImpl implements Sound permits SoundImpl.Eager, SoundI
     return result;
   }
 
-  @Override
-  public Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("name", this.name()),
-      ExaminableProperty.of("source", this.source),
-      ExaminableProperty.of("volume", this.volume),
-      ExaminableProperty.of("pitch", this.pitch),
-      ExaminableProperty.of("seed", this.seed)
-    );
-  }
-
-  @Override
-  public String toString() {
-    return Internals.toString(this);
-  }
-
   static final class BuilderImpl implements Builder {
     private static final float DEFAULT_VOLUME = 1f;
     private static final float DEFAULT_PITCH = 1f;
-    private Key eagerType;
-    private Supplier<? extends Type> lazyType;
+    private @Nullable Key eagerType;
+    private @Nullable Supplier<? extends Type> lazyType;
     private Source source = Source.MASTER;
     private float volume = DEFAULT_VOLUME;
     private float pitch = DEFAULT_PITCH;

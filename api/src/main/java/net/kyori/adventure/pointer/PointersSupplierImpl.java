@@ -31,15 +31,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import org.jspecify.annotations.Nullable;
 
-final class PointersSupplierImpl<T> implements PointersSupplier<T> {
-  private final @Nullable PointersSupplier<? super T> parent;
-  private final Map<Pointer<?>, Function<T, ?>> resolvers;
-
-  PointersSupplierImpl(final BuilderImpl<T> builder) {
-    this.parent = builder.parent;
-    this.resolvers = Map.copyOf(builder.resolvers);
-  }
-
+record PointersSupplierImpl<T>(@Nullable PointersSupplier<? super T> parent, Map<Pointer<?>, Function<T, ?>> resolvers) implements PointersSupplier<T> {
   @Override
   public Pointers view(final T instance) {
     return new ForwardingPointers<>(instance, this);
@@ -100,7 +92,7 @@ final class PointersSupplierImpl<T> implements PointersSupplier<T> {
     @Override
     @SuppressWarnings({"unchecked", "rawtypes"}) // all values are checked on entry
     public Builder toBuilder() {
-      final Pointers.Builder builder = this.supplier.parent == null ? Pointers.builder() : this.supplier.parent.view(this.instance).toBuilder();
+      final Builder builder = this.supplier.parent == null ? Pointers.builder() : this.supplier.parent.view(this.instance).toBuilder();
 
       for (final Map.Entry<Pointer<?>, Function<U, ?>> entry : this.supplier.resolvers.entrySet()) {
         builder.withDynamic(entry.getKey(), (Supplier) () -> entry.getValue().apply(this.instance));
@@ -132,7 +124,7 @@ final class PointersSupplierImpl<T> implements PointersSupplier<T> {
 
     @Override
     public PointersSupplier<T> build() {
-      return new PointersSupplierImpl<>(this);
+      return new PointersSupplierImpl<>(this.parent, Map.copyOf(this.resolvers));
     }
   }
 }

@@ -23,9 +23,7 @@
  */
 package net.kyori.adventure.text.object;
 
-import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
-import net.kyori.examination.ExaminableProperty;
 
 /**
  * A sprite contents.
@@ -58,12 +56,4 @@ public sealed interface SpriteObjectContents extends ObjectContents permits Spri
    * @since 4.25.0
    */
   Key sprite();
-
-  @Override
-  default Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("atlas", this.atlas()),
-      ExaminableProperty.of("sprite", this.sprite())
-    );
-  }
 }

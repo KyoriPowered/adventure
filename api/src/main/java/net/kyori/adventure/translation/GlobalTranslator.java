@@ -28,7 +28,6 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.renderer.TranslatableComponentRenderer;
-import net.kyori.examination.Examinable;
 
 /**
  * A global source of translations. The global source is the default source used by adventure platforms
@@ -39,7 +38,7 @@ import net.kyori.examination.Examinable;
  *
  * @since 4.0.0
  */
-public interface GlobalTranslator extends Translator, Examinable {
+public interface GlobalTranslator extends Translator {
   /**
    * Gets the global translation source.
    *

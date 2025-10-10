@@ -24,13 +24,6 @@
 package net.kyori.adventure.identity;
 
 import java.util.UUID;
-import net.kyori.adventure.internal.Internals;
-import net.kyori.examination.Examinable;
 
-record IdentityImpl(UUID uuid) implements Examinable, Identity {
-
-  @Override
-  public String toString() {
-    return Internals.toString(this);
-  }
+record IdentityImpl(UUID uuid) implements Identity {
 }

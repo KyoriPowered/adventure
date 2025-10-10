@@ -23,8 +23,6 @@
  */
 package net.kyori.adventure.text.format;
 
-import net.kyori.adventure.internal.Internals;
-
 import static java.util.Objects.requireNonNull;
 
 record TextDecorationAndStateImpl(TextDecoration decoration, TextDecoration.State state) implements TextDecorationAndState {
@@ -33,10 +31,5 @@ record TextDecorationAndStateImpl(TextDecoration decoration, TextDecoration.Stat
     // decoration is always non-null
     this.decoration = decoration;
     this.state = requireNonNull(state, "state");
-  }
-
-  @Override
-  public String toString() {
-    return Internals.toString(this);
   }
 }

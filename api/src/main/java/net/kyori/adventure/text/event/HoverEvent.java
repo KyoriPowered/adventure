@@ -34,7 +34,6 @@ import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.format.StyleBuilderApplicable;
 import net.kyori.adventure.text.renderer.ComponentRenderer;
 import net.kyori.adventure.util.Index;
-import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Range;
@@ -51,7 +50,7 @@ import static java.util.Objects.requireNonNull;
  * @param <V> the value type
  * @since 4.0.0
  */
-public sealed interface HoverEvent<V> extends Examinable, HoverEventSource<V>, StyleBuilderApplicable permits HoverEventImpl {
+public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderApplicable permits HoverEventImpl {
   /**
    * Creates a hover event that shows text on hover.
    *
@@ -291,7 +290,7 @@ public sealed interface HoverEvent<V> extends Examinable, HoverEventSource<V>, S
    *
    * @since 4.0.0
    */
-  sealed interface ShowItem extends Examinable permits HoverEventImpl.ShowItemImpl {
+  sealed interface ShowItem permits HoverEventImpl.ShowItemImpl {
     /**
      * Creates.
      *
@@ -459,7 +458,7 @@ public sealed interface HoverEvent<V> extends Examinable, HoverEventSource<V>, S
    *
    * @since 4.0.0
    */
-  sealed interface ShowEntity extends Examinable permits HoverEventImpl.ShowEntityImpl {
+  sealed interface ShowEntity permits HoverEventImpl.ShowEntityImpl {
     /**
      * Creates.
      *

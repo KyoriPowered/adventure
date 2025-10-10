@@ -24,10 +24,7 @@
 package net.kyori.adventure.title;
 
 import java.time.Duration;
-import java.util.stream.Stream;
-import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.Component;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
@@ -55,39 +52,11 @@ record TitleImpl(Component title, Component subtitle, @Nullable Times times) imp
     throw new IllegalArgumentException("Don't know what " + part + " is.");
   }
 
-  @Override
-  public Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("title", this.title),
-      ExaminableProperty.of("subtitle", this.subtitle),
-      ExaminableProperty.of("times", this.times)
-    );
-  }
-
-  @Override
-  public String toString() {
-    return Internals.toString(this);
-  }
-
   record TimesImpl(Duration fadeIn, Duration stay, Duration fadeOut) implements Times {
-      TimesImpl(final Duration fadeIn, final Duration stay, final Duration fadeOut) {
-        this.fadeIn = requireNonNull(fadeIn, "fadeIn");
-        this.stay = requireNonNull(stay, "stay");
-        this.fadeOut = requireNonNull(fadeOut, "fadeOut");
-      }
-
-    @Override
-      public Stream<? extends ExaminableProperty> examinableProperties() {
-        return Stream.of(
-          ExaminableProperty.of("fadeIn", this.fadeIn),
-          ExaminableProperty.of("stay", this.stay),
-          ExaminableProperty.of("fadeOut", this.fadeOut)
-        );
-      }
-
-      @Override
-      public String toString() {
-        return Internals.toString(this);
-      }
+    TimesImpl(final Duration fadeIn, final Duration stay, final Duration fadeOut) {
+      this.fadeIn = requireNonNull(fadeIn, "fadeIn");
+      this.stay = requireNonNull(stay, "stay");
+      this.fadeOut = requireNonNull(fadeOut, "fadeOut");
     }
+  }
 }

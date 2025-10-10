@@ -26,14 +26,11 @@ package net.kyori.adventure.text.format;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Stream;
-import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.util.ARGBLike;
-import net.kyori.examination.ExaminableProperty;
 import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
@@ -263,26 +260,6 @@ final class StyleImpl implements Style {
   @Override
   public Builder toBuilder() {
     return new BuilderImpl(this);
-  }
-
-  @Override
-  public Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.concat(
-      this.decorations.examinableProperties(),
-      Stream.of(
-        ExaminableProperty.of("color", this.color),
-        ExaminableProperty.of("shadowColor", this.shadowColor),
-        ExaminableProperty.of("clickEvent", this.clickEvent),
-        ExaminableProperty.of("hoverEvent", this.hoverEvent),
-        ExaminableProperty.of("insertion", this.insertion),
-        ExaminableProperty.of("font", this.font)
-      )
-    );
-  }
-
-  @Override
-  public String toString() {
-    return Internals.toString(this);
   }
 
   @Override

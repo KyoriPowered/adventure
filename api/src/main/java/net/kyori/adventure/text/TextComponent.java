@@ -23,8 +23,6 @@
  */
 package net.kyori.adventure.text;
 
-import java.util.stream.Stream;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Contract;
 
 /**
@@ -56,16 +54,6 @@ public sealed interface TextComponent extends ScopedComponent<TextComponent> per
    */
   @Contract(pure = true)
   TextComponent content(final String content);
-
-  @Override
-  default Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.concat(
-      Stream.of(
-        ExaminableProperty.of("content", this.content())
-      ),
-      ScopedComponent.super.examinableProperties()
-    );
-  }
 
   /**
    * A text component builder.

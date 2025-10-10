@@ -26,7 +26,6 @@ package net.kyori.adventure.resource;
 import java.util.List;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
-import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
 
@@ -39,7 +38,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 4.15.0
  */
-public sealed interface ResourcePackRequest extends Examinable, ResourcePackRequestLike permits ResourcePackRequestImpl {
+public sealed interface ResourcePackRequest extends ResourcePackRequestLike permits ResourcePackRequestImpl {
   /**
    * Create a basic request to apply the provided resource packs.
    *

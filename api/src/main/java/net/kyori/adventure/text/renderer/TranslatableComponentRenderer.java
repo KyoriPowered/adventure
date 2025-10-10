@@ -91,7 +91,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
         final TriState anyTranslations = source.hasAnyTranslations();
         if (anyTranslations == TriState.FALSE) return component;
 
-        final @Nullable Component translated;
+        final Component translated;
         if (source.canTranslate(component.key(), context)) {
           translated = source.translate(component, context);
         } else {
@@ -169,7 +169,6 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
     final ScoreComponent.Builder builder = Component.score()
       .name(component.name())
       .objective(component.objective())
-      .value(component.value());
     return this.mergeStyleAndOptionallyDeepRender(component, builder, context);
   }
 

@@ -26,12 +26,10 @@ package net.kyori.adventure.text;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.stream.Stream;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.translation.GlobalTranslator;
 import net.kyori.adventure.translation.Translatable;
 import net.kyori.adventure.translation.TranslationStore;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
 
@@ -147,18 +145,6 @@ public sealed interface TranslatableComponent extends ScopedComponent<Translatab
    */
   @Contract(pure = true)
   TranslatableComponent fallback(final @Nullable String fallback);
-
-  @Override
-  default Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.concat(
-      Stream.of(
-        ExaminableProperty.of("key", this.key()),
-        ExaminableProperty.of("arguments", this.arguments()),
-        ExaminableProperty.of("fallback", this.fallback())
-      ),
-      ScopedComponent.super.examinableProperties()
-    );
-  }
 
   /**
    * A text component builder.

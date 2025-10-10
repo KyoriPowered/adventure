@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
-import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.key.Key;
 import org.jspecify.annotations.Nullable;
 
@@ -40,16 +39,7 @@ record PlayerHeadObjectContentsImpl(@Nullable String name, @Nullable UUID id, Li
     return new BuilderImpl(this);
   }
 
-  @Override
-  public String toString() {
-    return Internals.toString(this);
-  }
-
   record ProfilePropertyImpl(String name, String value, @Nullable String signature) implements ProfileProperty {
-    @Override
-    public String toString() {
-      return Internals.toString(this);
-    }
   }
 
   static final class BuilderImpl implements Builder {

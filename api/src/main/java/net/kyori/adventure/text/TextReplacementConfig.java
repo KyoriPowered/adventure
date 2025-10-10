@@ -30,7 +30,6 @@ import java.util.regex.Pattern;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.util.IntFunction2;
-import net.kyori.examination.Examinable;
 import org.intellij.lang.annotations.RegExp;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
@@ -45,7 +44,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 4.2.0
  */
-public sealed interface TextReplacementConfig extends Examinable permits TextReplacementConfigImpl {
+public sealed interface TextReplacementConfig permits TextReplacementConfigImpl {
   /**
    * Create a new builder.
    *

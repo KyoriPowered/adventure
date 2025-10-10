@@ -25,11 +25,8 @@ package net.kyori.adventure.text.format;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Stream;
 import net.kyori.adventure.util.HSVLike;
 import net.kyori.adventure.util.RGBLike;
-import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.Nullable;
 
@@ -46,7 +43,7 @@ import static java.util.Objects.requireNonNull;
  * @see NamedTextColor
  * @since 4.0.0
  */
-public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, StyleBuilderApplicable, TextFormat {
+public interface TextColor extends Comparable<TextColor>, RGBLike, StyleBuilderApplicable, TextFormat {
   /**
    * The hex character.
    *
@@ -319,10 +316,5 @@ public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, S
   @Override
   default int compareTo(final TextColor that) {
     return Integer.compare(this.value(), that.value());
-  }
-
-  @Override
-  default Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(ExaminableProperty.of("value", this.asHexString()));
   }
 }

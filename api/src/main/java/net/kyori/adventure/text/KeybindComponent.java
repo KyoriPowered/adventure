@@ -24,8 +24,6 @@
 package net.kyori.adventure.text;
 
 import java.util.Objects;
-import java.util.stream.Stream;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Contract;
 
 /**
@@ -69,16 +67,6 @@ public sealed interface KeybindComponent extends ScopedComponent<KeybindComponen
   @Contract(pure = true)
   default KeybindComponent keybind(final KeybindLike keybind) {
     return this.keybind(Objects.requireNonNull(keybind, "keybind").asKeybind());
-  }
-
-  @Override
-  default Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.concat(
-      Stream.of(
-        ExaminableProperty.of("keybind", this.keybind())
-      ),
-      ScopedComponent.super.examinableProperties()
-    );
   }
 
   /**

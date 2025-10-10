@@ -23,9 +23,6 @@
  */
 package net.kyori.adventure.util;
 
-import java.util.stream.Stream;
-import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Range;
 
 /**
@@ -35,7 +32,7 @@ import org.jetbrains.annotations.Range;
  *
  * @since 4.6.0
  */
-public interface HSVLike extends Examinable {
+public interface HSVLike {
   /**
    * Creates a new HSVLike.
    *
@@ -117,13 +114,4 @@ public interface HSVLike extends Examinable {
    * @since 4.6.0
    */
   float v();
-
-  @Override
-  default Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("h", this.h()),
-      ExaminableProperty.of("s", this.s()),
-      ExaminableProperty.of("v", this.v())
-    );
-  }
 }

@@ -25,27 +25,11 @@ package net.kyori.adventure.text.event;
 
 import java.time.Duration;
 import java.time.temporal.TemporalAmount;
-import java.util.stream.Stream;
-import net.kyori.adventure.internal.Internals;
-import net.kyori.examination.ExaminableProperty;
 
 import static java.util.Objects.requireNonNull;
 
 record ClickCallbackOptionsImpl(int uses, Duration lifetime) implements ClickCallback.Options {
   static final ClickCallback.Options DEFAULT = new BuilderImpl().build();
-
-  @Override
-  public Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("uses", this.uses),
-      ExaminableProperty.of("expiration", this.lifetime)
-    );
-  }
-
-  @Override
-  public String toString() {
-    return Internals.toString(this);
-  }
 
   static final class BuilderImpl implements Builder {
     private static final int DEFAULT_USES = 1;

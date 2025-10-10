@@ -28,7 +28,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.format.Style;
 import org.jspecify.annotations.Nullable;
 
@@ -89,11 +88,6 @@ record TranslatableComponentImpl(List<Component> children, Style style, String k
   @Override
   public TranslatableComponent style(final Style style) {
     return create(this.children, style, this.key, this.fallback, this.args);
-  }
-
-  @Override
-  public String toString() {
-    return Internals.toString(this);
   }
 
   @Override

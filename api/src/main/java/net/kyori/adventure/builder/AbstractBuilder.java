@@ -39,7 +39,7 @@ public interface AbstractBuilder<R> {
    * Configures {@code builder} using {@code consumer} and then builds.
    *
    * @param builder the builder
-   * @param consumer the builder consume
+   * @param consumer the builder consumer
    * @param <R> the type to be built
    * @param <B> the builder type
    * @return the built thing

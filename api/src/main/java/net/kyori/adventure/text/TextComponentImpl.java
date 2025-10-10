@@ -26,7 +26,6 @@ package net.kyori.adventure.text;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.internal.properties.AdventureProperties;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.util.Nag;
@@ -133,11 +132,6 @@ sealed class TextComponentImpl implements TextComponent permits VirtualComponent
     int result = super.hashCode();
     result = (31 * result) + this.content.hashCode();
     return result;
-  }
-
-  @Override
-  public String toString() {
-    return Internals.toString(this);
   }
 
   @Override

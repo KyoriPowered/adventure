@@ -23,27 +23,10 @@
  */
 package net.kyori.adventure.text.format;
 
-import java.util.stream.Stream;
-import net.kyori.adventure.internal.Internals;
-import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
-
 /**
  * @param value ARGB
  */
-record ShadowColorImpl(int value) implements ShadowColor, Examinable {
+record ShadowColorImpl(int value) implements ShadowColor {
   static final int NONE_VALUE = 0;
   static final ShadowColorImpl NONE = new ShadowColorImpl(NONE_VALUE);
-
-  @Override
-  public String toString() {
-    return Internals.toString(this);
-  }
-
-  @Override
-  public Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("value", this.value) // todo: represent as hex?
-    );
-  }
 }

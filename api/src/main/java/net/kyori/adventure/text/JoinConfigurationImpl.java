@@ -27,10 +27,7 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
-import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.format.Style;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
 
@@ -51,25 +48,6 @@ record JoinConfigurationImpl(Component prefix, Component suffix, Component separ
 
   private JoinConfigurationImpl(final BuilderImpl builder) {
     this(ComponentLike.unbox(builder.prefix), ComponentLike.unbox(builder.suffix), ComponentLike.unbox(builder.separator), ComponentLike.unbox(builder.lastSeparator), ComponentLike.unbox(builder.lastSeparatorIfSerial), builder.convertor, builder.predicate, builder.parentStyle);
-  }
-
-  @Override
-  public Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("prefix", this.prefix),
-      ExaminableProperty.of("suffix", this.suffix),
-      ExaminableProperty.of("separator", this.separator),
-      ExaminableProperty.of("lastSeparator", this.lastSeparator),
-      ExaminableProperty.of("lastSeparatorIfSerial", this.lastSeparatorIfSerial),
-      ExaminableProperty.of("convertor", this.convertor),
-      ExaminableProperty.of("predicate", this.predicate),
-      ExaminableProperty.of("parentStyle", this.parentStyle)
-    );
-  }
-
-  @Override
-  public String toString() {
-    return Internals.toString(this);
   }
 
   @Contract(pure = true)

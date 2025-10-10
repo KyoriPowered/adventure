@@ -37,12 +37,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
-import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.util.TriState;
-import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
 import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
@@ -53,7 +49,7 @@ import static java.util.Objects.requireNonNull;
  * @param <T> the value of the translation store
  * @since 4.20.0
  */
-public abstract class AbstractTranslationStore<T> implements Examinable, TranslationStore<T> {
+public abstract class AbstractTranslationStore<T> implements TranslationStore<T> {
   private final Key name;
   private final Map<String, Translation> translations = new ConcurrentHashMap<>();
   private volatile Locale defaultLocale = Locale.US;
@@ -155,11 +151,6 @@ public abstract class AbstractTranslationStore<T> implements Examinable, Transla
   }
 
   @Override
-  public final Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(ExaminableProperty.of("translations", this.translations));
-  }
-
-  @Override
   public final boolean equals(final Object other) {
     if (this == other) return true;
     if (!(other instanceof AbstractTranslationStore<?> that)) return false;
@@ -172,12 +163,7 @@ public abstract class AbstractTranslationStore<T> implements Examinable, Transla
     return this.name.hashCode();
   }
 
-  @Override
-  public final String toString() {
-    return Internals.toString(this);
-  }
-
-  private final class Translation implements Examinable {
+  private final class Translation {
     private final String key;
     private final Map<Locale, T> translations;
 
@@ -207,14 +193,6 @@ public abstract class AbstractTranslationStore<T> implements Examinable, Transla
     }
 
     @Override
-    public Stream<? extends ExaminableProperty> examinableProperties() {
-      return Stream.of(
-        ExaminableProperty.of("key", this.key),
-        ExaminableProperty.of("translations", this.translations)
-      );
-    }
-
-    @Override
     public boolean equals(final Object other) {
       if (this == other) return true;
       if (!(other instanceof AbstractTranslationStore<?>.Translation that)) return false;
@@ -224,11 +202,6 @@ public abstract class AbstractTranslationStore<T> implements Examinable, Transla
     @Override
     public int hashCode() {
       return Objects.hash(this.key, this.translations);
-    }
-
-    @Override
-    public String toString() {
-      return Internals.toString(this);
     }
   }
 

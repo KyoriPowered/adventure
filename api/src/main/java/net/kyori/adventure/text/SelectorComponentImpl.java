@@ -25,7 +25,6 @@ package net.kyori.adventure.text;
 
 import java.util.List;
 import java.util.Objects;
-import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.format.Style;
 import org.jspecify.annotations.Nullable;
 
@@ -60,11 +59,6 @@ record SelectorComponentImpl(List<Component> children, Style style, String patte
   @Override
   public SelectorComponent style(final Style style) {
     return create(this.children, style, this.pattern, this.separator);
-  }
-
-  @Override
-  public String toString() {
-    return Internals.toString(this);
   }
 
   @Override

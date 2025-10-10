@@ -24,10 +24,7 @@
 package net.kyori.adventure.text.event;
 
 import java.util.function.BiFunction;
-import java.util.stream.Stream;
-import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.key.Key;
-import net.kyori.examination.ExaminableProperty;
 
 import static java.util.Objects.requireNonNull;
 
@@ -36,19 +33,5 @@ record DataComponentValueConversionImpl<I, O>(Class<I> source, Class<O> destinat
   @Override
   public O convert(final Key key, final I input) {
     return this.conversion.apply(requireNonNull(key, "key"), requireNonNull(input, "input"));
-  }
-
-  @Override
-  public Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("source", this.source),
-      ExaminableProperty.of("destination", this.destination),
-      ExaminableProperty.of("conversion", this.conversion)
-    );
-  }
-
-  @Override
-  public String toString() {
-    return Internals.toString(this);
   }
 }

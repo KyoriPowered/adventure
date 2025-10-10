@@ -24,9 +24,6 @@
 package net.kyori.adventure.text;
 
 import java.util.regex.Matcher;
-import java.util.stream.Stream;
-import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Contract;
 
 /**
@@ -119,16 +116,6 @@ public sealed interface BlockNBTComponent extends NBTComponent<BlockNBTComponent
     return this.worldPos(WorldPos.Coordinate.relative(x), WorldPos.Coordinate.relative(y), WorldPos.Coordinate.relative(z));
   }
 
-  @Override
-  default Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.concat(
-      Stream.of(
-        ExaminableProperty.of("pos", this.pos())
-      ),
-      NBTComponent.super.examinableProperties()
-    );
-  }
-
   /**
    * An NBT component builder.
    *
@@ -207,7 +194,7 @@ public sealed interface BlockNBTComponent extends NBTComponent<BlockNBTComponent
    *
    * @since 4.0.0
    */
-  interface Pos extends Examinable {
+  interface Pos {
     /**
      * Attempt to parse a position from the input string.
      *
@@ -344,7 +331,7 @@ public sealed interface BlockNBTComponent extends NBTComponent<BlockNBTComponent
      *
      * @since 4.0.0
      */
-    interface Coordinate extends Examinable {
+    interface Coordinate {
       /**
        * Creates a absolute coordinate with the given value.
        *

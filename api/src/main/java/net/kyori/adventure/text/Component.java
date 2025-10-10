@@ -38,7 +38,6 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collector;
-import java.util.stream.Stream;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -57,8 +56,6 @@ import net.kyori.adventure.translation.Translatable;
 import net.kyori.adventure.util.ARGBLike;
 import net.kyori.adventure.util.ForwardingIterator;
 import net.kyori.adventure.util.MonkeyBars;
-import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.Nullable;
@@ -105,7 +102,7 @@ import static java.util.Objects.requireNonNull;
  * @see LinearComponents
  * @since 4.0.0
  */
-public sealed interface Component extends ComponentBuilderApplicable, ComponentLike, Examinable, HoverEventSource<Component>, StyleGetter, StyleSetter<Component> permits NBTComponent, ScopedComponent {
+public sealed interface Component extends ComponentBuilderApplicable, ComponentLike, HoverEventSource<Component>, StyleGetter, StyleSetter<Component> permits NBTComponent, ScopedComponent {
   /**
    * A predicate that checks equality of two {@code Component}s using {@link Objects#equals(Object, Object)}.
    *
@@ -2685,13 +2682,5 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
   @Override
   default HoverEvent<Component> asHoverEvent(final UnaryOperator<Component> op) {
     return HoverEvent.showText(op.apply(this));
-  }
-
-  @Override
-  default Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("style", this.style()),
-      ExaminableProperty.of("children", this.children())
-    );
   }
 }

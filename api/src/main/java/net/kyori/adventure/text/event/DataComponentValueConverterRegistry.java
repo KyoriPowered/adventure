@@ -37,7 +37,6 @@ import java.util.stream.Collectors;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.util.PlatformAPI;
 import net.kyori.adventure.util.Services;
-import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
@@ -85,7 +84,7 @@ public final class DataComponentValueConverterRegistry {
       return target.cast(in);
     }
 
-    final @Nullable RegisteredConversion converter = ConversionCache.converter(in.getClass(), target);
+    final RegisteredConversion converter = ConversionCache.converter(in.getClass(), target);
     if (converter == null) {
       throw new IllegalArgumentException("There is no data holder converter registered to convert from a " + in.getClass() + " instance to a " + target + " (on field " + key + ")");
     }
@@ -131,7 +130,7 @@ public final class DataComponentValueConverterRegistry {
    * @param <O> output type
    * @since 4.17.0
    */
-  public sealed interface Conversion<I, O> extends Examinable permits DataComponentValueConversionImpl {
+  public sealed interface Conversion<I, O> permits DataComponentValueConversionImpl {
     /**
      * Create a new conversion.
      *
@@ -247,7 +246,7 @@ public final class DataComponentValueConverterRegistry {
     }
   }
 
-  record RegisteredConversion(Key provider, Conversion<?, ?> conversion) {
+  record RegisteredConversion(@Nullable Key provider, @Nullable Conversion<?, ?> conversion) {
       static final RegisteredConversion NONE = new RegisteredConversion(null, null);
   }
 }

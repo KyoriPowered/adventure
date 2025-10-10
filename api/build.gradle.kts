@@ -11,8 +11,6 @@ configurations {
 
 dependencies {
   api(projects.adventureKey)
-  api(libs.examination.api)
-  api(libs.examination.string)
   compileOnlyApi(libs.jetbrainsAnnotations)
   compileOnlyApi(libs.jspecify)
   testImplementation(libs.guava)

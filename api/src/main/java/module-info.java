@@ -9,7 +9,9 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 module net.kyori.adventure.api {
   requires transitive net.kyori.adventure.key;
-  requires transitive static org.jspecify;
+
+  requires static org.jspecify;
+  requires static org.jetbrains.annotations;
 
   exports net.kyori.adventure;
   exports net.kyori.adventure.audience;

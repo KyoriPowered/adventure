@@ -30,7 +30,6 @@ import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
 import net.kyori.adventure.util.Index;
-import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.Range;
 
 import static java.util.Objects.requireNonNull;
@@ -61,7 +60,7 @@ import static java.util.Objects.requireNonNull;
  * @see SoundStop
  * @since 4.0.0
  */
-public sealed interface Sound extends Examinable permits SoundImpl {
+public sealed interface Sound permits SoundImpl {
   /**
    * Create a new builder for {@link Sound} instances.
    *

@@ -25,7 +25,6 @@ package net.kyori.adventure.text;
 
 import java.util.List;
 import java.util.Objects;
-import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.format.Style;
 import org.jspecify.annotations.Nullable;
 
@@ -54,11 +53,6 @@ record KeybindComponentImpl(List<Component> children, Style style, String keybin
   @Override
   public KeybindComponent style(final Style style) {
     return create(this.children, style, this.keybind);
-  }
-
-  @Override
-  public String toString() {
-    return Internals.toString(this);
   }
 
   @Override

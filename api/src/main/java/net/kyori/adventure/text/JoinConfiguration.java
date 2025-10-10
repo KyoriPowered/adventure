@@ -27,7 +27,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.format.Style;
-import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
 
@@ -80,7 +79,7 @@ import org.jspecify.annotations.Nullable;
  * @see Component#join(JoinConfiguration, ComponentLike...)
  * @since 4.9.0
  */
-public sealed interface JoinConfiguration extends Examinable permits JoinConfigurationImpl {
+public sealed interface JoinConfiguration permits JoinConfigurationImpl {
   /**
    * Creates a new builder.
    *

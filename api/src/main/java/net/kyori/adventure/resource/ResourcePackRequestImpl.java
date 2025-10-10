@@ -25,11 +25,8 @@ package net.kyori.adventure.resource;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Stream;
-import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.MonkeyBars;
-import net.kyori.examination.ExaminableProperty;
 import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
@@ -67,22 +64,6 @@ record ResourcePackRequestImpl(List<ResourcePackInfo> packs, ResourcePackCallbac
     if (replace == this.replace) return this;
 
     return new ResourcePackRequestImpl(this.packs, this.callback, replace, this.required, this.prompt);
-  }
-
-  @Override
-  public String toString() {
-    return Internals.toString(this);
-  }
-
-  @Override
-  public Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("packs", this.packs),
-      ExaminableProperty.of("callback", this.callback),
-      ExaminableProperty.of("replace", this.replace),
-      ExaminableProperty.of("required", this.required),
-      ExaminableProperty.of("prompt", this.prompt)
-    );
   }
 
   static final class BuilderImpl implements Builder {

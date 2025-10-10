@@ -31,7 +31,6 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.permission.PermissionChecker;
 import net.kyori.adventure.util.PlatformAPI;
-import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.Contract;
@@ -181,7 +180,7 @@ public interface ClickCallback<T extends Audience> {
    *
    * @since 4.13.0
    */
-  sealed interface Options extends Examinable permits ClickCallbackOptionsImpl {
+  sealed interface Options permits ClickCallbackOptionsImpl {
     /**
      * Create a new builder.
      *

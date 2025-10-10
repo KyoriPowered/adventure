@@ -23,10 +23,7 @@
  */
 package net.kyori.adventure.text.event;
 
-import java.util.stream.Stream;
-import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.format.Style;
-import net.kyori.examination.ExaminableProperty;
 
 import static java.util.Objects.requireNonNull;
 
@@ -39,19 +36,6 @@ record ClickEventImpl<T extends ClickEvent.Payload>(Action<T> action, Payload pa
   @Override
   public void styleApply(final Style.Builder style) {
     style.clickEvent(this);
-  }
-
-  @Override
-  public Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("action", this.action),
-      ExaminableProperty.of("payload", this.payload)
-    );
-  }
-
-  @Override
-  public String toString() {
-    return Internals.toString(this);
   }
 
   record ActionImpl<T extends Payload>(String name, boolean readable, Class<? extends Payload> payloadType) implements ClickEvent.Action<T> {

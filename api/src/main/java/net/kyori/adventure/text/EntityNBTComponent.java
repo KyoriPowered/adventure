@@ -23,8 +23,6 @@
  */
 package net.kyori.adventure.text;
 
-import java.util.stream.Stream;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Contract;
 
 /**
@@ -60,16 +58,6 @@ public sealed interface EntityNBTComponent extends NBTComponent<EntityNBTCompone
    */
   @Contract(pure = true)
   EntityNBTComponent selector(final String selector);
-
-  @Override
-  default Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.concat(
-      Stream.of(
-        ExaminableProperty.of("selector", this.selector())
-      ),
-      NBTComponent.super.examinableProperties()
-    );
-  }
 
   /**
    * An entity NBT component builder.

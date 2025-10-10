@@ -51,14 +51,6 @@ public sealed interface ObjectComponent extends ScopedComponent<ObjectComponent>
    */
   ObjectComponent contents(ObjectContents contents);
 
-  @Override
-  default Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.concat(
-      Stream.of(ExaminableProperty.of("contents", this.contents())),
-      ScopedComponent.super.examinableProperties()
-    );
-  }
-
   /**
    * An object component builder.
    *

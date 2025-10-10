@@ -33,7 +33,6 @@ import net.kyori.adventure.key.Keyed;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.format.StyleBuilderApplicable;
 import net.kyori.adventure.util.Index;
-import net.kyori.examination.Examinable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -45,7 +44,7 @@ import static java.util.Objects.requireNonNull;
  * @param <T> the payload type
  * @since 4.0.0
  */
-public sealed interface ClickEvent<T extends ClickEvent.Payload> extends Examinable, StyleBuilderApplicable permits ClickEventImpl {
+public sealed interface ClickEvent<T extends ClickEvent.Payload> extends StyleBuilderApplicable permits ClickEventImpl {
   /**
    * Creates a click event that opens a url.
    *
@@ -337,7 +336,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends Examina
    *
    * @since 4.22.0
    */
-  sealed interface Payload extends Examinable permits ClickEventImpl.Payload.Custom, ClickEventImpl.Payload.Dialog, ClickEventImpl.Payload.Int, ClickEventImpl.Payload.Text {
+  sealed interface Payload permits ClickEventImpl.Payload.Custom, ClickEventImpl.Payload.Dialog, ClickEventImpl.Payload.Int, ClickEventImpl.Payload.Text {
     /**
      * Creates a text payload.
      *

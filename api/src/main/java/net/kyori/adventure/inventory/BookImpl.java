@@ -27,10 +27,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Stream;
-import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.Component;
-import net.kyori.examination.ExaminableProperty;
 
 import static java.util.Objects.requireNonNull;
 
@@ -69,20 +66,6 @@ record BookImpl(Component title, Component author, List<Component> pages) implem
   @Override
   public Book pages(final List<Component> pages) {
     return new BookImpl(this.title, this.author, new ArrayList<>(requireNonNull(pages, "pages")));
-  }
-
-  @Override
-  public Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("title", this.title),
-      ExaminableProperty.of("author", this.author),
-      ExaminableProperty.of("pages", this.pages)
-    );
-  }
-
-  @Override
-  public String toString() {
-    return Internals.toString(this);
   }
 
   @Override

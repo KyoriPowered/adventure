@@ -23,8 +23,6 @@
  */
 package net.kyori.adventure.text;
 
-import net.kyori.examination.Examinable;
-
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -32,7 +30,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 4.15.0
  */
-public sealed interface TranslationArgument extends TranslationArgumentLike, Examinable permits TranslationArgumentImpl {
+public sealed interface TranslationArgument extends TranslationArgumentLike permits TranslationArgumentImpl {
   /**
    * Create a boolean argument.
    *

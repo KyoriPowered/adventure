@@ -23,71 +23,23 @@
  */
 package net.kyori.adventure.text.event;
 
-import java.util.stream.Stream;
 import net.kyori.adventure.dialog.DialogLike;
-import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
-import net.kyori.examination.ExaminableProperty;
 
 final class PayloadImpl {
   private PayloadImpl() {
   }
 
   record TextImpl(String value) implements ClickEventImpl.Payload.Text {
-    @Override
-    public Stream<? extends ExaminableProperty> examinableProperties() {
-      return Stream.of(
-        ExaminableProperty.of("value", this.value)
-      );
-    }
-
-    @Override
-    public String toString() {
-      return Internals.toString(this);
-    }
   }
 
   record IntImpl(int integer) implements ClickEventImpl.Payload.Int {
-    @Override
-    public Stream<? extends ExaminableProperty> examinableProperties() {
-      return Stream.of(
-        ExaminableProperty.of("integer", this.integer)
-      );
-    }
-
-    @Override
-    public String toString() {
-      return Internals.toString(this);
-    }
   }
 
   record DialogImpl(DialogLike dialog) implements ClickEventImpl.Payload.Dialog {
-    @Override
-    public Stream<? extends ExaminableProperty> examinableProperties() {
-      return Stream.of(
-        ExaminableProperty.of("dialog", this.dialog)
-      );
-    }
-
-    @Override
-    public String toString() {
-      return Internals.toString(this);
-    }
   }
 
   record CustomImpl(Key key, BinaryTagHolder nbt) implements ClickEventImpl.Payload.Custom {
-    @Override
-    public Stream<? extends ExaminableProperty> examinableProperties() {
-      return Stream.of(
-        ExaminableProperty.of("key", this.key),
-        ExaminableProperty.of("nbt", this.nbt)
-      );
-    }
-
-    @Override
-    public String toString() {
-      return Internals.toString(this);
-    }
   }
 }

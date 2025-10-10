@@ -26,7 +26,6 @@ package net.kyori.adventure.text.object;
 import java.util.Collections;
 import java.util.UUID;
 import net.kyori.adventure.key.Key;
-import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.Contract;
 
 import static java.util.Objects.requireNonNull;
@@ -37,7 +36,7 @@ import static java.util.Objects.requireNonNull;
  * @since 4.25.0
  * @sinceMinecraft 1.21.9
  */
-public sealed interface ObjectContents extends Examinable permits SpriteObjectContents, PlayerHeadObjectContents {
+public sealed interface ObjectContents permits SpriteObjectContents, PlayerHeadObjectContents {
   /**
    * Creates a sprite contents with the given atlas and sprite.
    *

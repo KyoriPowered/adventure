@@ -23,25 +23,9 @@
  */
 package net.kyori.adventure.sound;
 
-import java.util.stream.Stream;
-import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.key.Key;
-import net.kyori.examination.ExaminableProperty;
 import org.jspecify.annotations.Nullable;
 
 record SoundStopImpl(@Nullable Key sound, Sound.@Nullable Source source) implements SoundStop {
   static final SoundStopImpl ALL = new SoundStopImpl(null, null);
-
-  @Override
-  public Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("name", this.sound()),
-      ExaminableProperty.of("source", this.source)
-    );
-  }
-
-  @Override
-  public String toString() {
-    return Internals.toString(this);
-  }
 }

@@ -23,8 +23,6 @@
  */
 package net.kyori.adventure.util;
 
-import net.kyori.adventure.internal.Internals;
-
 record HSVLikeImpl(float h, float s, float v) implements HSVLike {
   HSVLikeImpl {
     requireInsideRange(h, "h");
@@ -37,10 +35,5 @@ record HSVLikeImpl(float h, float s, float v) implements HSVLike {
       throw new IllegalArgumentException(
         name + " (" + number + ")" + " is not inside the required range: [0,1]");
     }
-  }
-
-  @Override
-  public String toString() {
-    return Internals.toString(this);
   }
 }

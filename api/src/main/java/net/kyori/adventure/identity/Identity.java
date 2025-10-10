@@ -25,13 +25,10 @@ package net.kyori.adventure.identity;
 
 import java.util.Locale;
 import java.util.UUID;
-import java.util.stream.Stream;
 import net.kyori.adventure.Adventure;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.pointer.Pointer;
 import net.kyori.adventure.text.Component;
-import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
 
 /**
  * An identity used to track the sender of messages for the social interaction features
@@ -40,7 +37,7 @@ import net.kyori.examination.ExaminableProperty;
  * @since 4.0.0
  * @sinceMinecraft 1.16
  */
-public sealed interface Identity extends Examinable, Identified permits IdentityImpl, NilIdentity {
+public sealed interface Identity extends Identified permits IdentityImpl, NilIdentity {
   /**
    * A pointer to a name.
    *
@@ -101,10 +98,5 @@ public sealed interface Identity extends Examinable, Identified permits Identity
   @Override
   default Identity identity() {
     return this;
-  }
-
-  @Override
-  default Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(ExaminableProperty.of("uuid", this.uuid()));
   }
 }

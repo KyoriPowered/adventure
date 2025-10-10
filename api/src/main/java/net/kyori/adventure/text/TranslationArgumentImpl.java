@@ -23,10 +23,6 @@
  */
 package net.kyori.adventure.text;
 
-import java.util.stream.Stream;
-import net.kyori.adventure.internal.Internals;
-import net.kyori.examination.ExaminableProperty;
-
 record TranslationArgumentImpl(Object value) implements TranslationArgument {
   private static final Component TRUE = Component.text("true");
   private static final Component FALSE = Component.text("false");
@@ -40,17 +36,5 @@ record TranslationArgumentImpl(Object value) implements TranslationArgument {
     } else {
       return Component.text(String.valueOf(this.value));
     }
-  }
-
-  @Override
-  public String toString() {
-    return Internals.toString(this);
-  }
-
-  @Override
-  public Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("value", this.value)
-    );
   }
 }

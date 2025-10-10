@@ -32,11 +32,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
-import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.Services;
-import net.kyori.examination.ExaminableProperty;
 import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
@@ -59,7 +56,7 @@ final class BossBarImpl extends HackyBossBarPlatformBridge implements BossBar {
 
     @SuppressWarnings("OptionalGetWithoutIsPresent")
     static <I extends BossBarImplementation> I get(final BossBar bar, final Class<I> type) {
-      @Nullable BossBarImplementation implementation = ((BossBarImpl) bar).implementation;
+      BossBarImplementation implementation = ((BossBarImpl) bar).implementation;
       if (implementation == null) {
         implementation = SERVICE.get().create(bar);
         ((BossBarImpl) bar).implementation = implementation;
@@ -284,18 +281,14 @@ final class BossBarImpl extends HackyBossBarPlatformBridge implements BossBar {
   }
 
   @Override
-  public Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("name", this.name),
-      ExaminableProperty.of("progress", this.progress),
-      ExaminableProperty.of("color", this.color),
-      ExaminableProperty.of("overlay", this.overlay),
-      ExaminableProperty.of("flags", this.flags)
-    );
-  }
-
-  @Override
   public String toString() {
-    return Internals.toString(this);
+    return "BossBarImpl{" +
+      "listeners=" + listeners +
+      ", name=" + name +
+      ", progress=" + progress +
+      ", color=" + color +
+      ", overlay=" + overlay +
+      ", flags=" + flags +
+      '}';
   }
 }

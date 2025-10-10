@@ -23,13 +23,10 @@
  */
 package net.kyori.adventure.chat;
 
-import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
-import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
 
@@ -41,7 +38,7 @@ import static java.util.Objects.requireNonNull;
  * @since 4.12.0
  * @sinceMinecraft 1.19
  */
-public interface ChatType extends Examinable, Keyed {
+public interface ChatType extends Keyed {
   /**
    * A chat message from a player.
    *
@@ -136,18 +133,13 @@ public interface ChatType extends Examinable, Keyed {
     return new ChatTypeImpl.BoundImpl(this, requireNonNull(name.asComponent(), "name"), ComponentLike.unbox(target));
   }
 
-  @Override
-  default Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(ExaminableProperty.of("key", this.key()));
-  }
-
   /**
    * A bound {@link ChatType}.
    *
    * @since 4.12.0
    * @sinceMinecraft 1.19
    */
-  interface Bound extends Examinable {
+  interface Bound {
 
     /**
      * Gets the chat type.
@@ -178,14 +170,5 @@ public interface ChatType extends Examinable, Keyed {
      */
     @Contract(pure = true)
     @Nullable Component target();
-
-    @Override
-    default Stream<? extends ExaminableProperty> examinableProperties() {
-      return Stream.of(
-        ExaminableProperty.of("type", this.type()),
-        ExaminableProperty.of("name", this.name()),
-        ExaminableProperty.of("target", this.target())
-      );
-    }
   }
 }

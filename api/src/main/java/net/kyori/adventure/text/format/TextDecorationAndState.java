@@ -23,16 +23,12 @@
  */
 package net.kyori.adventure.text.format;
 
-import java.util.stream.Stream;
-import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
-
 /**
  * A combination of a {@link TextDecoration} and a {@link TextDecoration.State}.
  *
  * @since 4.8.0
  */
-public sealed interface TextDecorationAndState extends Examinable, StyleBuilderApplicable permits TextDecorationAndStateImpl {
+public sealed interface TextDecorationAndState extends StyleBuilderApplicable permits TextDecorationAndStateImpl {
   /**
    * Gets the decoration.
    *
@@ -52,13 +48,5 @@ public sealed interface TextDecorationAndState extends Examinable, StyleBuilderA
   @Override
   default void styleApply(final Style.Builder style) {
     style.decoration(this.decoration(), this.state());
-  }
-
-  @Override
-  default Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("decoration", this.decoration()),
-      ExaminableProperty.of("state", this.state())
-    );
   }
 }

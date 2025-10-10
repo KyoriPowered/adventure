@@ -24,7 +24,6 @@
 package net.kyori.adventure.text.event;
 
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
-import net.kyori.examination.Examinable;
 
 /**
  * A holder for the value of an item's data component.
@@ -36,7 +35,7 @@ import net.kyori.examination.Examinable;
  * @since 4.17.0
  * @sinceMinecraft 1.20.5
  */
-public interface DataComponentValue extends Examinable {
+public interface DataComponentValue {
   /**
    * Get a marker value to indicate that a data component's value should be removed.
    *

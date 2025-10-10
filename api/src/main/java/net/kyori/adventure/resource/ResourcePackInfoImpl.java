@@ -36,9 +36,7 @@ import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-import java.util.stream.Stream;
-import net.kyori.adventure.internal.Internals;
-import net.kyori.examination.ExaminableProperty;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -49,24 +47,10 @@ record ResourcePackInfoImpl(UUID id, URI uri, String hash) implements ResourcePa
     this.hash = requireNonNull(hash, "hash");
   }
 
-  @Override
-  public Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("id", this.id),
-      ExaminableProperty.of("uri", this.uri),
-      ExaminableProperty.of("hash", this.hash)
-    );
-  }
-
-  @Override
-  public String toString() {
-    return Internals.toString(this);
-  }
-
   static final class BuilderImpl implements Builder {
-    private UUID id;
-    private URI uri;
-    private String hash;
+    private @Nullable UUID id;
+    private @Nullable URI uri;
+    private @Nullable String hash;
 
     BuilderImpl() {
     }
@@ -92,6 +76,7 @@ record ResourcePackInfoImpl(UUID id, URI uri, String hash) implements ResourcePa
       return this;
     }
 
+    @SuppressWarnings("DataFlowIssue") // Nullability is checked in constructor.
     @Override
     public ResourcePackInfo build() {
       return new ResourcePackInfoImpl(this.id, this.uri, this.hash);

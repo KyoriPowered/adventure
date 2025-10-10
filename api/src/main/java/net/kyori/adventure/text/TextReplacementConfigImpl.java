@@ -26,9 +26,6 @@ package net.kyori.adventure.text;
 import java.util.function.BiFunction;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
-import net.kyori.adventure.internal.Internals;
-import net.kyori.examination.ExaminableProperty;
 import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
@@ -47,20 +44,6 @@ record TextReplacementConfigImpl(
 
   TextReplacementRenderer.State createState() {
     return new TextReplacementRenderer.State(this.matchPattern, this.replacement, this.continuer, this.replaceInsideHoverEvents);
-  }
-
-  @Override
-  public Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("matchPattern", this.matchPattern),
-      ExaminableProperty.of("replacement", this.replacement),
-      ExaminableProperty.of("continuer", this.continuer)
-    );
-  }
-
-  @Override
-  public String toString() {
-    return Internals.toString(this);
   }
 
   static final class Builder implements TextReplacementConfig.Builder {

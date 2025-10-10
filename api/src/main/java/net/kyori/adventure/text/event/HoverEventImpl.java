@@ -29,14 +29,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.UnaryOperator;
-import java.util.stream.Stream;
-import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.renderer.ComponentRenderer;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.Nullable;
 
@@ -87,11 +84,6 @@ record HoverEventImpl<V>(Action<V> action, V value) implements HoverEvent<V> {
     style.hoverEvent(this);
   }
 
-  @Override
-  public String toString() {
-    return Internals.toString(this);
-  }
-
   record ShowItemImpl(Key item, int count, BinaryTagHolder nbt, Map<Key, DataComponentValue> dataComponents) implements ShowItem {
     @Override
     public ShowItem item(final Key item) {
@@ -129,21 +121,6 @@ record HoverEventImpl<V>(Action<V> action, V value) implements HoverEvent<V> {
         return Collections.unmodifiableMap(results);
       }
     }
-
-    @Override
-    public Stream<? extends ExaminableProperty> examinableProperties() {
-      return Stream.of(
-        ExaminableProperty.of("item", this.item),
-        ExaminableProperty.of("count", this.count),
-        ExaminableProperty.of("nbt", this.nbt),
-        ExaminableProperty.of("dataComponents", this.dataComponents)
-      );
-    }
-
-    @Override
-    public String toString() {
-      return Internals.toString(this);
-    }
   }
 
   record ShowEntityImpl(Key type, UUID id, Component name) implements ShowEntity {
@@ -163,20 +140,6 @@ record HoverEventImpl<V>(Action<V> action, V value) implements HoverEvent<V> {
     public ShowEntity name(final @Nullable Component name) {
       if (Objects.equals(name, this.name)) return this;
       return new ShowEntityImpl(this.type, this.id, name);
-    }
-
-    @Override
-    public Stream<? extends ExaminableProperty> examinableProperties() {
-      return Stream.of(
-        ExaminableProperty.of("type", this.type),
-        ExaminableProperty.of("id", this.id),
-        ExaminableProperty.of("name", this.name)
-      );
-    }
-
-    @Override
-    public String toString() {
-      return Internals.toString(this);
     }
   }
 

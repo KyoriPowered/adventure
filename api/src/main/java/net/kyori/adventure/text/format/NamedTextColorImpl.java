@@ -24,9 +24,7 @@
 package net.kyori.adventure.text.format;
 
 import java.util.List;
-import java.util.stream.Stream;
 import net.kyori.adventure.util.HSVLike;
-import net.kyori.examination.ExaminableProperty;
 
 public record NamedTextColorImpl(String name, int value) implements NamedTextColor {
   static final int BLACK_VALUE = 0x000000;
@@ -51,15 +49,5 @@ public record NamedTextColorImpl(String name, int value) implements NamedTextCol
   @Override
   public HSVLike asHSV() {
     return HSVLike.fromRGB(this.red(), this.green(), this.blue());
-  }
-
-  @Override
-  public String toString() {
-    return this.name;
-  }
-
-  @Override
-  public Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(ExaminableProperty.of("name", this.name));
   }
 }

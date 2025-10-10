@@ -25,7 +25,6 @@ package net.kyori.adventure.text;
 
 import java.util.List;
 import java.util.Objects;
-import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.format.Style;
 import org.jspecify.annotations.Nullable;
 
@@ -61,11 +60,6 @@ record ScoreComponentImpl(List<Component> children, Style style, String name, St
   @Override
   public ScoreComponent style(final Style style) {
     return create(this.children, style, this.name, this.objective);
-  }
-
-  @Override
-  public String toString() {
-    return Internals.toString(this);
   }
 
   @Override

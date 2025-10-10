@@ -30,7 +30,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ForkJoinPool;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.builder.AbstractBuilder;
-import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.Contract;
 
 /**
@@ -40,7 +39,7 @@ import org.jetbrains.annotations.Contract;
  * @see Audience#sendResourcePacks(ResourcePackInfoLike, ResourcePackInfoLike...)
  * @since 4.15.0
  */
-public sealed interface ResourcePackInfo extends Examinable, ResourcePackInfoLike permits ResourcePackInfoImpl {
+public sealed interface ResourcePackInfo extends ResourcePackInfoLike permits ResourcePackInfoImpl {
   /**
    * Creates information about a resource pack.
    *

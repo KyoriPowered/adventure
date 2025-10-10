@@ -26,7 +26,6 @@ package net.kyori.adventure.sound;
 import java.util.function.Supplier;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.key.Key;
-import net.kyori.examination.Examinable;
 import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
@@ -42,7 +41,7 @@ import static java.util.Objects.requireNonNull;
  * @see Audience#stopSound(SoundStop)
  * @since 4.0.0
  */
-public sealed interface SoundStop extends Examinable permits SoundStopImpl {
+public sealed interface SoundStop permits SoundStopImpl {
   /**
    * Stops all sounds.
    *

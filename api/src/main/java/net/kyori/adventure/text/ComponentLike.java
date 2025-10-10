@@ -97,6 +97,7 @@ public interface ComponentLike {
    * @return a component, or {@code null}
    * @since 4.8.0
    */
+  @Contract("null -> null; !null -> !null")
   static @Nullable Component unbox(final @Nullable ComponentLike like) {
     return like != null ? like.asComponent() : null;
   }

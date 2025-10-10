@@ -23,8 +23,6 @@
  */
 package net.kyori.adventure.text;
 
-import java.util.stream.Stream;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Contract;
 
 /**
@@ -85,17 +83,6 @@ public sealed interface ScoreComponent extends ScopedComponent<ScoreComponent> p
    */
   @Contract(pure = true)
   ScoreComponent objective(final String objective);
-
-  @Override
-  default Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.concat(
-      Stream.of(
-        ExaminableProperty.of("name", this.name()),
-        ExaminableProperty.of("objective", this.objective())
-      ),
-      ScopedComponent.super.examinableProperties()
-    );
-  }
 
   /**
    * A score component builder.

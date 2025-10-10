@@ -48,13 +48,12 @@ import org.jspecify.annotations.Nullable;
 import static java.util.Objects.requireNonNull;
 
 record ComponentFlattenerImpl(InheritanceAwareMap<Component, Handler> flatteners, Function<Component, String> unknownHandler, int maxNestedDepth) implements ComponentFlattener {
-  @SuppressWarnings("deprecation")
   static final ComponentFlattener BASIC = new BuilderImpl()
     .mapper(KeybindComponent.class, component -> component.keybind()) // IntelliJ is wrong here, this is fine
     .mapper(SelectorComponent.class, SelectorComponent::pattern)
     .mapper(TextComponent.class, TextComponent::content)
     .mapper(TranslatableComponent.class, component -> {
-      final @Nullable String fallback = component.fallback();
+      final String fallback = component.fallback();
       return fallback != null ? fallback : component.key();
     })
     .mapper(ObjectComponent.class, component -> {
@@ -81,6 +80,11 @@ record ComponentFlattenerImpl(InheritanceAwareMap<Component, Handler> flatteners
   @Override
   public void flatten(final Component input, final FlattenerListener listener) {
     this.flatten0(input, listener, 0, 0);
+  }
+
+  @Override
+  public Builder toBuilder() {
+    return new BuilderImpl(this.flatteners, this.unknownHandler, this.maxNestedDepth);
   }
 
   private void flatten0(final Component input, final FlattenerListener listener, final int depth, final int nestedDepth) {

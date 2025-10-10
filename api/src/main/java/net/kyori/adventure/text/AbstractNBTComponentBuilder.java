@@ -27,7 +27,7 @@ import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-abstract sealed class AbstractNBTComponentBuilder<C extends NBTComponent<C>, B extends NBTComponentBuilder<C, B>> extends AbstractComponentBuilder<C, B> implements NBTComponentBuilder<C, B> permits EntityNBTComponentImpl.BuilderImpl, StorageNBTComponentImpl.BuilderImpl {
+abstract sealed class AbstractNBTComponentBuilder<C extends NBTComponent<C>, B extends NBTComponentBuilder<C, B>> extends AbstractComponentBuilder<C, B> implements NBTComponentBuilder<C, B> permits BlockNBTComponentImpl.BuilderImpl, EntityNBTComponentImpl.BuilderImpl, StorageNBTComponentImpl.BuilderImpl {
   protected @Nullable String nbtPath;
   protected boolean interpret = NBTComponent.INTERPRET_DEFAULT;
   protected @Nullable Component separator;

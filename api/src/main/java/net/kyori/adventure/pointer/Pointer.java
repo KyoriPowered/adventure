@@ -23,11 +23,8 @@
  */
 package net.kyori.adventure.pointer;
 
-import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
-import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
 
 /**
  * A pointer to a resource.
@@ -35,7 +32,7 @@ import net.kyori.examination.ExaminableProperty;
  * @param <V> the value type
  * @since 4.8.0
  */
-public sealed interface Pointer<V> extends Examinable, Keyed permits PointerImpl {
+public sealed interface Pointer<V> extends Keyed permits PointerImpl {
   /**
    * Creates a pointer.
    *
@@ -64,12 +61,4 @@ public sealed interface Pointer<V> extends Examinable, Keyed permits PointerImpl
    * @since 4.8.0
    */
   Key key();
-
-  @Override
-  default Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("type", this.type()),
-      ExaminableProperty.of("key", this.key())
-    );
-  }
 }

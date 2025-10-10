@@ -57,12 +57,11 @@ public abstract class AbstractComponentRenderer<C> implements ComponentRenderer<
       return this.renderScore(sc, context);
     } else if (component instanceof SelectorComponent sc) {
       return this.renderSelector(sc, context);
-    } else if (component instanceof NBTComponent<?, ?> nc) {
+    } else if (component instanceof NBTComponent<?> nc) {
       return switch (nc) {
-        case BlockNBTComponent bnc -> this.renderBlockNbt((BlockNBTComponent) component, context);
-        case EntityNBTComponent enc -> this.renderEntityNbt((EntityNBTComponent) component, context);
-        case StorageNBTComponent snc -> this.renderStorageNbt((StorageNBTComponent) component, context);
-        default -> component;
+        case BlockNBTComponent ignored -> this.renderBlockNbt((BlockNBTComponent) component, context);
+        case EntityNBTComponent ignored -> this.renderEntityNbt((EntityNBTComponent) component, context);
+        case StorageNBTComponent ignored -> this.renderStorageNbt((StorageNBTComponent) component, context);
       };
     }
     return component;
