@@ -57,7 +57,7 @@ public final class JSONOptions {
    * @since 4.15.0
    * @sinceMinecraft 1.16
    */
-  public static final Option<Boolean> EMIT_RGB = Option.booleanOption(key("emit/rgb"), true);
+  public static final Option<Boolean> EMIT_RGB = UNSAFE_SCHEMA.booleanOption(key("emit/rgb"), true);
 
   /**
    * Control how hover event values should be emitted.
@@ -71,7 +71,7 @@ public final class JSONOptions {
    *
    * @since 4.20.0
    */
-  public static final Option<ClickEventValueMode> EMIT_CLICK_EVENT_TYPE = Option.enumOption(key("emit/click_value_mode"), ClickEventValueMode.class, ClickEventValueMode.SNAKE_CASE);
+  public static final Option<ClickEventValueMode> EMIT_CLICK_EVENT_TYPE = UNSAFE_SCHEMA.enumOption(key("emit/click_value_mode"), ClickEventValueMode.class, ClickEventValueMode.SNAKE_CASE);
 
   /**
    * Whether to emit text components with no style and no children as plain text.

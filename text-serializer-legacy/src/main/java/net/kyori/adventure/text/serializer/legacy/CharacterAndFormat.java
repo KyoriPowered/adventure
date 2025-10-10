@@ -24,13 +24,9 @@
 package net.kyori.adventure.text.serializer.legacy;
 
 import java.util.List;
-import java.util.stream.Stream;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.NamedTextColorImpl;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextFormat;
-import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Unmodifiable;
 
 /**
@@ -38,99 +34,99 @@ import org.jetbrains.annotations.Unmodifiable;
  *
  * @since 4.14.0
  */
-public sealed interface CharacterAndFormat extends Examinable permits CharacterAndFormatImpl {
+public sealed interface CharacterAndFormat permits CharacterAndFormatImpl {
   /**
-   * Character and format pair representing {@link NamedTextColorImpl#BLACK}.
+   * Character and format pair representing {@link NamedTextColor#BLACK}.
    *
    * @since 4.14.0
    */
   CharacterAndFormat BLACK = characterAndFormat('0', NamedTextColor.BLACK, true);
   /**
-   * Character and format pair representing {@link NamedTextColorImpl#DARK_BLUE}.
+   * Character and format pair representing {@link NamedTextColor#DARK_BLUE}.
    *
    * @since 4.14.0
    */
   CharacterAndFormat DARK_BLUE = characterAndFormat('1', NamedTextColor.DARK_BLUE, true);
   /**
-   * Character and format pair representing {@link NamedTextColorImpl#DARK_GREEN}.
+   * Character and format pair representing {@link NamedTextColor#DARK_GREEN}.
    *
    * @since 4.14.0
    */
   CharacterAndFormat DARK_GREEN = characterAndFormat('2', NamedTextColor.DARK_GREEN, true);
   /**
-   * Character and format pair representing {@link NamedTextColorImpl#DARK_AQUA}.
+   * Character and format pair representing {@link NamedTextColor#DARK_AQUA}.
    *
    * @since 4.14.0
    */
   CharacterAndFormat DARK_AQUA = characterAndFormat('3', NamedTextColor.DARK_AQUA, true);
   /**
-   * Character and format pair representing {@link NamedTextColorImpl#DARK_RED}.
+   * Character and format pair representing {@link NamedTextColor#DARK_RED}.
    *
    * @since 4.14.0
    */
   CharacterAndFormat DARK_RED = characterAndFormat('4', NamedTextColor.DARK_RED, true);
   /**
-   * Character and format pair representing {@link NamedTextColorImpl#DARK_PURPLE}.
+   * Character and format pair representing {@link NamedTextColor#DARK_PURPLE}.
    *
    * @since 4.14.0
    */
   CharacterAndFormat DARK_PURPLE = characterAndFormat('5', NamedTextColor.DARK_PURPLE, true);
   /**
-   * Character and format pair representing {@link NamedTextColorImpl#GOLD}.
+   * Character and format pair representing {@link NamedTextColor#GOLD}.
    *
    * @since 4.14.0
    */
   CharacterAndFormat GOLD = characterAndFormat('6', NamedTextColor.GOLD, true);
   /**
-   * Character and format pair representing {@link NamedTextColorImpl#GRAY}.
+   * Character and format pair representing {@link NamedTextColor#GRAY}.
    *
    * @since 4.14.0
    */
   CharacterAndFormat GRAY = characterAndFormat('7', NamedTextColor.GRAY, true);
   /**
-   * Character and format pair representing {@link NamedTextColorImpl#DARK_GRAY}.
+   * Character and format pair representing {@link NamedTextColor#DARK_GRAY}.
    *
    * @since 4.14.0
    */
   CharacterAndFormat DARK_GRAY = characterAndFormat('8', NamedTextColor.DARK_GRAY, true);
   /**
-   * Character and format pair representing {@link NamedTextColorImpl#BLUE}.
+   * Character and format pair representing {@link NamedTextColor#BLUE}.
    *
    * @since 4.14.0
    */
   CharacterAndFormat BLUE = characterAndFormat('9', NamedTextColor.BLUE, true);
   /**
-   * Character and format pair representing {@link NamedTextColorImpl#GREEN}.
+   * Character and format pair representing {@link NamedTextColor#GREEN}.
    *
    * @since 4.14.0
    */
   CharacterAndFormat GREEN = characterAndFormat('a', NamedTextColor.GREEN, true);
   /**
-   * Character and format pair representing {@link NamedTextColorImpl#AQUA}.
+   * Character and format pair representing {@link NamedTextColor#AQUA}.
    *
    * @since 4.14.0
    */
   CharacterAndFormat AQUA = characterAndFormat('b', NamedTextColor.AQUA, true);
   /**
-   * Character and format pair representing {@link NamedTextColorImpl#RED}.
+   * Character and format pair representing {@link NamedTextColor#RED}.
    *
    * @since 4.14.0
    */
   CharacterAndFormat RED = characterAndFormat('c', NamedTextColor.RED, true);
   /**
-   * Character and format pair representing {@link NamedTextColorImpl#LIGHT_PURPLE}.
+   * Character and format pair representing {@link NamedTextColor#LIGHT_PURPLE}.
    *
    * @since 4.14.0
    */
   CharacterAndFormat LIGHT_PURPLE = characterAndFormat('d', NamedTextColor.LIGHT_PURPLE, true);
   /**
-   * Character and format pair representing {@link NamedTextColorImpl#YELLOW}.
+   * Character and format pair representing {@link NamedTextColor#YELLOW}.
    *
    * @since 4.14.0
    */
   CharacterAndFormat YELLOW = characterAndFormat('e', NamedTextColor.YELLOW, true);
   /**
-   * Character and format pair representing {@link NamedTextColorImpl#WHITE}.
+   * Character and format pair representing {@link NamedTextColor#WHITE}.
    *
    * @since 4.14.0
    */
@@ -233,13 +229,4 @@ public sealed interface CharacterAndFormat extends Examinable permits CharacterA
    * @since 4.17.0
    */
   boolean caseInsensitive();
-
-  @Override
-  default Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("character", this.character()),
-      ExaminableProperty.of("format", this.format()),
-      ExaminableProperty.of("caseInsensitive", this.caseInsensitive())
-    );
-  }
 }

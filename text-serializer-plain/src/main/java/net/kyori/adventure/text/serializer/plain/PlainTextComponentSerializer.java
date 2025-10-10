@@ -27,8 +27,8 @@ import java.util.function.Consumer;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.event.ClickEventImpl;
-import net.kyori.adventure.text.event.HoverEventImpl;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.flattener.ComponentFlattener;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.PlatformAPI;
@@ -38,7 +38,7 @@ import org.jetbrains.annotations.ApiStatus;
  * A plain-text component serializer.
  *
  * <p>Plain does <b>not</b> support more complex features such as, but not limited
- * to, colours, decorations, {@link ClickEventImpl}, and {@link HoverEventImpl}.</p>
+ * to, colours, decorations, {@link ClickEvent}, and {@link HoverEvent}.</p>
  *
  * @since 4.8.0
  */
@@ -84,7 +84,12 @@ public interface PlainTextComponentSerializer extends ComponentSerializer<Compon
    */
   void serialize(final StringBuilder sb, final Component component);
 
-  // TODO: common builder interface?
+  /**
+   * Creates a new builder from this serializer.
+   *
+   * @return the builder
+   * @since 4.8.0
+   */
   Builder toBuilder();
 
   /**

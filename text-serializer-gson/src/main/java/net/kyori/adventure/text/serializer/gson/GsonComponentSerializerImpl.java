@@ -115,7 +115,7 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
     return this.serializer().toJsonTree(component);
   }
 
-//  @Override TODO: common builder interface?
+  @Override
   public Builder toBuilder() {
     return new BuilderImpl(this);
   }

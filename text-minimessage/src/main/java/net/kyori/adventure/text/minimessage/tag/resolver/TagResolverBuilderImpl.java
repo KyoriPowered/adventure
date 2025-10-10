@@ -68,11 +68,11 @@ final class TagResolverBuilderImpl implements TagResolver.Builder {
   }
 
   @Override
-  public TagResolver.Builder resolvers(final TagResolver ... resolvers) {
+  public TagResolver.Builder resolvers(final TagResolver... resolvers) {
     return this.resolvers(resolvers, true);
   }
 
-  private TagResolver.Builder resolvers(final TagResolver [] resolvers, final boolean forwards) {
+  private TagResolver.Builder resolvers(final TagResolver[] resolvers, final boolean forwards) {
     boolean popped = false;
     requireNonNull(resolvers, "resolvers");
     if (forwards) {

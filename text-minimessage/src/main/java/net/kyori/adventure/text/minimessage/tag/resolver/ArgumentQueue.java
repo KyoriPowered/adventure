@@ -24,7 +24,6 @@
 package net.kyori.adventure.text.minimessage.tag.resolver;
 
 import java.util.function.Supplier;
-import net.kyori.adventure.text.minimessage.ArgumentQueueImpl;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import org.jspecify.annotations.Nullable;
 

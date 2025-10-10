@@ -13,4 +13,5 @@ module net.kyori.adventure.text.minimessage {
   exports net.kyori.adventure.text.minimessage.tag;
   exports net.kyori.adventure.text.minimessage.translation;
   exports net.kyori.adventure.text.minimessage.tree;
+  exports net.kyori.adventure.text.minimessage.tag.resolver;
 }

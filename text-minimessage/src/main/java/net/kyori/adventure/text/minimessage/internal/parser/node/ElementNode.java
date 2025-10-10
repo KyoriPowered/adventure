@@ -152,7 +152,7 @@ public sealed class ElementNode implements Node permits RootNode, TagNode, Value
     return sb;
   }
 
-  char [] ident(final int indent) {
+  char[] ident(final int indent) {
     final char[] c = new char[indent * 2];
     Arrays.fill(c, ' ');
     return c;

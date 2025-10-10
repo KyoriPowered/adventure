@@ -21,19 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage;
+package net.kyori.adventure.text.minimessage.tag.resolver;
 
 import java.util.List;
 import java.util.function.Supplier;
+import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.tag.Tag;
-import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-@ApiStatus.Internal
-public final class ArgumentQueueImpl<T extends Tag.Argument> implements ArgumentQueue {
+final class ArgumentQueueImpl<T extends Tag.Argument> implements ArgumentQueue {
   private final Context context;
   final List<T> args;
   private int ptr = 0;

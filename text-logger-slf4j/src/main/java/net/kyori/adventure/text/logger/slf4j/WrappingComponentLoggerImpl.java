@@ -55,8 +55,8 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   private Object maybeSerialize(final @Nullable Object input) {
-    if (input instanceof ComponentLike) {
-      return this.serialize(((ComponentLike) input).asComponent());
+    if (input instanceof final ComponentLike cl) {
+      return this.serialize(cl.asComponent());
     } else {
       return input;
     }

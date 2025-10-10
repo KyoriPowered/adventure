@@ -33,9 +33,6 @@ import net.kyori.adventure.text.minimessage.tag.Tag;
 import org.jspecify.annotations.Nullable;
 
 record SequentialTagResolver(TagResolver[] resolvers) implements TagResolver, SerializableResolver {
-  SequentialTagResolver(final TagResolver [] resolvers) {
-    this.resolvers = resolvers;
-  }
 
   @Override
   public @Nullable Tag resolve(final String name, final ArgumentQueue arguments, final Context ctx) throws ParsingException {

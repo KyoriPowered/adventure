@@ -25,7 +25,7 @@ package net.kyori.adventure.text.serializer.json;
 
 import java.io.IOException;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.HoverEventImpl;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.util.Codec;
 
 /**
@@ -42,7 +42,7 @@ public interface LegacyHoverEventSerializer {
    * @throws IOException if the input is improperly formatted
    * @since 4.14.0
    */
-  HoverEventImpl.ShowItem deserializeShowItem(Component input) throws IOException;
+  HoverEvent.ShowItem deserializeShowItem(Component input) throws IOException;
 
   /**
    * Convert a modern hover event {@code show_item} value to its legacy format.
@@ -52,7 +52,7 @@ public interface LegacyHoverEventSerializer {
    * @throws IOException if the input is improperly formatted
    * @since 4.14.0
    */
-  Component serializeShowItem(HoverEventImpl.ShowItem input) throws IOException;
+  Component serializeShowItem(HoverEvent.ShowItem input) throws IOException;
 
   /**
    * Convert a legacy hover event {@code show_entity} value to its modern format.
@@ -63,7 +63,7 @@ public interface LegacyHoverEventSerializer {
    * @throws IOException if the input is improperly formatted
    * @since 4.14.0
    */
-  HoverEventImpl.ShowEntity deserializeShowEntity(Component input, Codec.Decoder<Component, String, ? extends RuntimeException> componentDecoder) throws IOException;
+  HoverEvent.ShowEntity deserializeShowEntity(Component input, Codec.Decoder<Component, String, ? extends RuntimeException> componentDecoder) throws IOException;
 
   /**
    * Convert a modern hover event {@code show_entity} value to its legacy format.
@@ -74,5 +74,5 @@ public interface LegacyHoverEventSerializer {
    * @throws IOException if the input is improperly formatted
    * @since 4.14.0
    */
-  Component serializeShowEntity(HoverEventImpl.ShowEntity input, Codec.Encoder<Component, String, ? extends RuntimeException> componentEncoder) throws IOException;
+  Component serializeShowEntity(HoverEvent.ShowEntity input, Codec.Encoder<Component, String, ? extends RuntimeException> componentEncoder) throws IOException;
 }

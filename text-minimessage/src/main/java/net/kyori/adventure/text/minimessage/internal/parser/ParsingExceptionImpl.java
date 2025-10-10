@@ -39,7 +39,7 @@ public class ParsingExceptionImpl extends ParsingException {
   private static final @Serial long serialVersionUID = 2507190809441787202L;
 
   private final String originalText;
-  private Token [] tokens;
+  private Token[] tokens;
 
   /**
    * Create a new parsing exception.
@@ -52,7 +52,7 @@ public class ParsingExceptionImpl extends ParsingException {
   public ParsingExceptionImpl(
     final String message,
     final @Nullable String originalText,
-    final Token ... tokens
+    final Token... tokens
   ) {
     super(message, null, true, false);
     this.tokens = tokens;
@@ -74,7 +74,7 @@ public class ParsingExceptionImpl extends ParsingException {
     final @Nullable String originalText,
     final @Nullable Throwable cause,
     final boolean withStackTrace,
-    final Token ... tokens
+    final Token... tokens
   ) {
     super(message, cause, true, withStackTrace);
     this.tokens = tokens;
@@ -114,7 +114,7 @@ public class ParsingExceptionImpl extends ParsingException {
    * @return the tokens for this error
    * @since 4.10.0
    */
-  public Token [] tokens() {
+  public Token[] tokens() {
     return this.tokens;
   }
 
@@ -124,7 +124,7 @@ public class ParsingExceptionImpl extends ParsingException {
    * @param tokens the tokens for this error
    * @since 4.10.0
    */
-  public void tokens(final Token [] tokens) {
+  public void tokens(final Token[] tokens) {
     this.tokens = tokens;
   }
 

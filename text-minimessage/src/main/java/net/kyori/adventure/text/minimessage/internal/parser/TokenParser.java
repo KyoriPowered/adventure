@@ -319,12 +319,11 @@ public final class TokenParser {
             final int nextCodePoint = message.codePointAt(i + 1);
 
             escaped = switch (state) {
-              case NORMAL ->
-                // allow escaping open tokens
-                nextCodePoint == TAG_START || nextCodePoint == ESCAPE;
-              case STRING ->
-                // allow escaping closing string chars
-                currentStringChar == nextCodePoint || nextCodePoint == ESCAPE;
+              // allow escaping open tokens
+              case NORMAL -> nextCodePoint == TAG_START || nextCodePoint == ESCAPE;
+
+              // allow escaping closing string chars
+              case STRING -> currentStringChar == nextCodePoint || nextCodePoint == ESCAPE;
             };
 
             // only escape if we need to

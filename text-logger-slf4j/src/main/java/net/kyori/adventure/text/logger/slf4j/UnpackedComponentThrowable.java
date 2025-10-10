@@ -27,7 +27,6 @@ import java.io.Serial;
 import java.util.function.Function;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.ComponentMessageThrowable;
-import org.jspecify.annotations.Nullable;
 
 /**
  * A wrapper for exceptions that implement ComponentMessageThrowable.
@@ -39,9 +38,9 @@ final class UnpackedComponentThrowable extends Throwable {
   private final Class<? extends Throwable> backingType;
 
   static Throwable unpack(final Throwable maybeRich, final Function<Component, String> serializer) {
-    if (!(maybeRich instanceof ComponentMessageThrowable)) return maybeRich; // TODO: do we need to unwrap any nested exceptions?
+    if (!(maybeRich instanceof final ComponentMessageThrowable cmt)) return maybeRich; // TODO: do we need to unwrap any nested exceptions?
 
-    final @Nullable Component message = ((ComponentMessageThrowable) maybeRich).componentMessage();
+    final Component message = cmt.componentMessage();
     final Throwable cause = maybeRich.getCause() != null ? unpack(maybeRich.getCause(), serializer) : null;
     final Throwable[] suppressed = maybeRich.getSuppressed();
 

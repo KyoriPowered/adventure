@@ -24,12 +24,9 @@
 package net.kyori.adventure.text.serializer.legacy;
 
 import java.util.Objects;
-import java.util.stream.Stream;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
 import org.jspecify.annotations.Nullable;
 
 /*
@@ -41,7 +38,7 @@ import org.jspecify.annotations.Nullable;
  *
  * @since 4.0.0
  */
-public final class LegacyFormat implements Examinable {
+public final class LegacyFormat {
   static final LegacyFormat RESET = new LegacyFormat(true);
   private final @Nullable NamedTextColor color;
   private final @Nullable TextDecoration decoration;
@@ -113,14 +110,5 @@ public final class LegacyFormat implements Examinable {
     result = (31 * result) + Objects.hashCode(this.decoration);
     result = (31 * result) + Boolean.hashCode(this.reset);
     return result;
-  }
-
-  @Override
-  public Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("color", this.color),
-      ExaminableProperty.of("decoration", this.decoration),
-      ExaminableProperty.of("reset", this.reset)
-    );
   }
 }

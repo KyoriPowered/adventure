@@ -42,7 +42,7 @@ import org.jspecify.annotations.Nullable;
  * <p>This is a specific implementation of {@link JSONComponentSerializer} for the Gson library.
  * Libraries that want to remain unopinionated should work with that interface instead.</p>
  *
- * <p>Use {@link Builder#downsampleColors()} to support platforms
+ * <p>Use {@link #colorDownsamplingGson()} to support platforms
  * that do not understand hex colors that were introduced in Minecraft 1.16.</p>
  *
  * @since 4.0.0
@@ -114,6 +114,14 @@ public interface GsonComponentSerializer extends JSONComponentSerializer {
    * @since 4.7.0
    */
   JsonElement serializeToTree(final Component component);
+
+  /**
+   * Creates a new builder from this serializer.
+   *
+   * @return the builder
+   * @since 4.0.0
+   */
+  public Builder toBuilder();
 
   /**
    * A builder for {@link GsonComponentSerializer}.

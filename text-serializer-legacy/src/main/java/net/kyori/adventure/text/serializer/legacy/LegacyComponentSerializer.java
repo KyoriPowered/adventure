@@ -29,8 +29,8 @@ import java.util.regex.Pattern;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.event.ClickEventImpl;
-import net.kyori.adventure.text.event.HoverEventImpl;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.flattener.ComponentFlattener;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
@@ -43,7 +43,7 @@ import org.jspecify.annotations.Nullable;
  * A legacy component serializer.
  *
  * <p>Legacy does <b>not</b> support more complex features such as, but not limited
- * to, {@link ClickEventImpl} and {@link HoverEventImpl}.</p>
+ * to, {@link ClickEvent} and {@link HoverEvent}.</p>
  *
  * @since 4.0.0
  */
@@ -154,7 +154,12 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
   @Override
   String serialize(final Component component);
 
-  // TODO: new common builder interface?
+  /**
+   * Creates a new builder from this serializer.
+   *
+   * @return the builder
+   * @since 4.0.0
+   */
   Builder toBuilder();
 
   /**
@@ -182,7 +187,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
     Builder hexCharacter(final char legacyHexCharacter);
 
     /**
-     * Sets that the serializer should extract URLs into {@link ClickEventImpl}s
+     * Sets that the serializer should extract URLs into {@link ClickEvent}s
      * when deserializing.
      *
      * @return this builder
@@ -191,7 +196,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
     Builder extractUrls();
 
     /**
-     * Sets that the serializer should extract URLs into {@link ClickEventImpl}s
+     * Sets that the serializer should extract URLs into {@link ClickEvent}s
      * when deserializing.
      *
      * @param pattern the url pattern
@@ -201,7 +206,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
     Builder extractUrls(final Pattern pattern);
 
     /**
-     * Sets that the serializer should extract URLs into {@link ClickEventImpl}s
+     * Sets that the serializer should extract URLs into {@link ClickEvent}s
      * when deserializing.
      *
      * @param style the style to use for extracted links
@@ -211,7 +216,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
     Builder extractUrls(final @Nullable Style style);
 
     /**
-     * Sets that the serializer should extract URLs into {@link ClickEventImpl}s
+     * Sets that the serializer should extract URLs into {@link ClickEvent}s
      * when deserializing.
      *
      * @param pattern the url pattern

@@ -24,7 +24,6 @@
 package net.kyori.adventure.text.serializer.legacy;
 
 import java.util.List;
-import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.format.TextFormat;
 import org.jspecify.annotations.Nullable;
 
@@ -61,11 +60,6 @@ record CharacterAndFormatImpl(char character, TextFormat format, boolean caseIns
     result = 31 * result + this.format.hashCode();
     result = 31 * result + Boolean.hashCode(this.caseInsensitive);
     return result;
-  }
-
-  @Override
-  public String toString() {
-    return Internals.toString(this);
   }
 
   static final class Defaults {

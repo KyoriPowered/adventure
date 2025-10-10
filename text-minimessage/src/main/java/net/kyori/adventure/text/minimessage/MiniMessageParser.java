@@ -42,6 +42,7 @@ import net.kyori.adventure.text.minimessage.internal.parser.node.ValueNode;
 import net.kyori.adventure.text.minimessage.tag.Inserting;
 import net.kyori.adventure.text.minimessage.tag.Modifying;
 import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueueImpl;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.string.MultiLineStringExaminer;
