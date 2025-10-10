@@ -24,7 +24,6 @@
 package net.kyori.adventure.util;
 
 import java.io.Serial;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * A nag.
@@ -40,7 +39,7 @@ public abstract class Nag extends RuntimeException {
    * @param nag the nag
    * @since 4.7.0
    */
-  public static void print(final @NotNull Nag nag) {
+  public static void print(final Nag nag) {
     nag.printStackTrace();
   }
 

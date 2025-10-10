@@ -33,7 +33,6 @@ import net.kyori.adventure.text.VirtualComponent;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.TagPattern;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import org.jetbrains.annotations.NotNull;
 
 import static java.util.Objects.requireNonNull;
 
@@ -65,7 +64,7 @@ public final class Argument {
    * @return the named argument
    * @since 4.20.0
    */
-  public static @NotNull ComponentLike bool(final @TagPattern @NotNull String name, final boolean value) {
+  public static ComponentLike bool(final @TagPattern String name, final boolean value) {
     return argument(name, TranslationArgument.bool(value));
   }
 
@@ -77,7 +76,7 @@ public final class Argument {
    * @return the named argument
    * @since 4.20.0
    */
-  public static @NotNull ComponentLike numeric(final @TagPattern @NotNull String name, final @NotNull Number value) {
+  public static ComponentLike numeric(final @TagPattern String name, final Number value) {
     return argument(name, TranslationArgument.numeric(value));
   }
 
@@ -89,7 +88,7 @@ public final class Argument {
    * @return the named argument
    * @since 4.21.0
    */
-  public static @NotNull ComponentLike string(final @TagPattern @NotNull String name, final @NotNull String value) {
+  public static ComponentLike string(final @TagPattern String name, final String value) {
     return argument(name, TranslationArgument.component(Component.text(value)));
   }
 
@@ -101,7 +100,7 @@ public final class Argument {
    * @return the named argument
    * @since 4.20.0
    */
-  public static @NotNull ComponentLike component(final @TagPattern @NotNull String name, final @NotNull ComponentLike value) {
+  public static ComponentLike component(final @TagPattern String name, final ComponentLike value) {
     return argument(name, TranslationArgument.component(value));
   }
 
@@ -113,7 +112,7 @@ public final class Argument {
    * @return the named argument
    * @since 4.20.0
    */
-  public static @NotNull ComponentLike argument(final @TagPattern @NotNull String name, final @NotNull TranslationArgumentLike argument) {
+  public static ComponentLike argument(final @TagPattern String name, final TranslationArgumentLike argument) {
     return argument(name, requireNonNull(argument, "argument").asTranslationArgument());
   }
 
@@ -125,7 +124,7 @@ public final class Argument {
    * @return the named argument
    * @since 4.20.0
    */
-  public static @NotNull ComponentLike argument(final @TagPattern @NotNull String name, final @NotNull TranslationArgument argument) {
+  public static ComponentLike argument(final @TagPattern String name, final TranslationArgument argument) {
     return Component.virtual(Void.class, new MiniMessageTranslatorArgument<>(name, requireNonNull(argument, "argument")));
   }
 
@@ -137,7 +136,7 @@ public final class Argument {
    * @return the named argument
    * @since 4.20.0
    */
-  public static @NotNull ComponentLike tag(final @TagPattern @NotNull String name, final @NotNull Tag tag) {
+  public static ComponentLike tag(final @TagPattern String name, final Tag tag) {
     return Component.virtual(Void.class, new MiniMessageTranslatorArgument<>(name, requireNonNull(tag, "tag")));
   }
 
@@ -148,7 +147,7 @@ public final class Argument {
    * @return the argument
    * @since 4.20.0
    */
-  public static @NotNull ComponentLike tagResolver(final @NotNull TagResolver @NotNull... resolvers) {
+  public static ComponentLike tagResolver(final TagResolver ... resolvers) {
     return tagResolver(TagResolver.resolver(resolvers));
   }
 
@@ -159,7 +158,7 @@ public final class Argument {
    * @return the argument
    * @since 4.20.0
    */
-  public static @NotNull ComponentLike tagResolver(final @NotNull Iterable<TagResolver> resolvers) {
+  public static ComponentLike tagResolver(final Iterable<TagResolver> resolvers) {
     return tagResolver(TagResolver.resolver(resolvers));
   }
 
@@ -170,7 +169,7 @@ public final class Argument {
    * @return the argument
    * @since 4.20.0
    */
-  public static @NotNull ComponentLike tagResolver(final @NotNull TagResolver tagResolver) {
+  public static ComponentLike tagResolver(final TagResolver tagResolver) {
     // The name field is unused here.
     return Component.virtual(Void.class, new MiniMessageTranslatorArgument<>("unused", requireNonNull(tagResolver, "tagResolver")));
   }
@@ -182,7 +181,7 @@ public final class Argument {
    * @return the argument
    * @since 4.20.0
    */
-  public static @NotNull ComponentLike target(final @NotNull Pointered target) {
+  public static ComponentLike target(final Pointered target) {
     return Component.virtual(Void.class, new MiniMessageTranslatorTarget(requireNonNull(target, "target")));
   }
 }

@@ -27,8 +27,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import net.kyori.adventure.text.format.Style;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -49,7 +48,7 @@ public interface StyleClaim<V> {
    * @return a new claim
    * @since 4.10.0
    */
-  static <T> @NotNull StyleClaim<T> claim(final @NotNull String claimKey, final @NotNull Function<Style, @Nullable T> lens, final @NotNull BiConsumer<T, TokenEmitter> emitable) {
+  static <T> StyleClaim<T> claim(final String claimKey, final Function<Style, @Nullable T> lens, final BiConsumer<T, TokenEmitter> emitable) {
     return claim(claimKey, lens, $ -> true, emitable);
   }
 
@@ -64,7 +63,7 @@ public interface StyleClaim<V> {
    * @return a new claim
    * @since 4.10.0
    */
-  static <T> @NotNull StyleClaim<T> claim(final @NotNull String claimKey, final @NotNull Function<Style, @Nullable T> lens, final @NotNull Predicate<T> filter, final @NotNull BiConsumer<T, TokenEmitter> emitable) {
+  static <T> StyleClaim<T> claim(final String claimKey, final Function<Style, @Nullable T> lens, final Predicate<T> filter, final BiConsumer<T, TokenEmitter> emitable) {
     return new StyleClaimImpl<>(
       requireNonNull(claimKey, "claimKey"),
       requireNonNull(lens, "lens"),
@@ -79,7 +78,7 @@ public interface StyleClaim<V> {
    * @return the key to claim
    * @since 4.10.0
    */
-  @NotNull String claimKey(); // TODO: multiple claim keys? for custom styling tags?
+  String claimKey(); // TODO: multiple claim keys? for custom styling tags?
 
   /**
    * Prepare an emitable to apply this claim based on the style.
@@ -88,5 +87,5 @@ public interface StyleClaim<V> {
    * @return an emitable for this style claim, if it is applicable to the provided style
    * @since 4.10.0
    */
-  @Nullable Emitable apply(final @NotNull Style style);
+  @Nullable Emitable apply(final Style style);
 }

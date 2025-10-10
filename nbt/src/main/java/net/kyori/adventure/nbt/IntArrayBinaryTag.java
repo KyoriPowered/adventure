@@ -27,7 +27,6 @@ import java.util.PrimitiveIterator;
 import java.util.Spliterator;
 import java.util.function.IntConsumer;
 import java.util.stream.IntStream;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * A binary tag holding an {@code int}-array value.
@@ -43,12 +42,12 @@ public interface IntArrayBinaryTag extends ArrayBinaryTag, Iterable<Integer> {
    * @return a binary tag
    * @since 4.14.0
    */
-  static @NotNull IntArrayBinaryTag intArrayBinaryTag(final int@NotNull... value) {
+  static IntArrayBinaryTag intArrayBinaryTag(final int... value) {
     return new IntArrayBinaryTagImpl(value);
   }
 
   @Override
-  default @NotNull BinaryTagType<IntArrayBinaryTag> type() {
+  default BinaryTagType<IntArrayBinaryTag> type() {
     return BinaryTagTypes.INT_ARRAY;
   }
 
@@ -60,7 +59,7 @@ public interface IntArrayBinaryTag extends ArrayBinaryTag, Iterable<Integer> {
    * @return the value
    * @since 4.0.0
    */
-  int@NotNull[] value();
+  int[] value();
 
   /**
    * Get the length of the array.
@@ -88,10 +87,10 @@ public interface IntArrayBinaryTag extends ArrayBinaryTag, Iterable<Integer> {
    * @since 4.2.0
    */
   @Override
-  PrimitiveIterator.@NotNull OfInt iterator();
+  PrimitiveIterator.OfInt iterator();
 
   @Override
-  Spliterator.@NotNull OfInt spliterator();
+  Spliterator.OfInt spliterator();
 
   /**
    * Create a stream whose elements are the elements of this array tag.
@@ -99,7 +98,7 @@ public interface IntArrayBinaryTag extends ArrayBinaryTag, Iterable<Integer> {
    * @return a new stream
    * @since 4.2.0
    */
-  @NotNull IntStream stream();
+  IntStream stream();
 
   /**
    * Perform an action for every int in the backing array.
@@ -107,5 +106,5 @@ public interface IntArrayBinaryTag extends ArrayBinaryTag, Iterable<Integer> {
    * @param action the action to perform
    * @since 4.2.0
    */
-  void forEachInt(final @NotNull IntConsumer action);
+  void forEachInt(final IntConsumer action);
 }

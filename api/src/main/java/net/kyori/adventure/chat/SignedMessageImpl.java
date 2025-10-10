@@ -27,7 +27,6 @@ import java.security.SecureRandom;
 import java.time.Instant;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.text.Component;
-import org.jetbrains.annotations.NotNull;
 
 // Used for system messages ONLY
 record SignedMessageImpl(String message, Component unsignedContent, Instant timestamp, long salt) implements SignedMessage {
@@ -43,7 +42,7 @@ record SignedMessageImpl(String message, Component unsignedContent, Instant time
   }
 
   @Override
-  public @NotNull Identity identity() {
+  public Identity identity() {
     return Identity.nil();
   }
 

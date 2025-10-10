@@ -24,7 +24,6 @@
 package net.kyori.adventure.permission;
 
 import net.kyori.adventure.util.TriState;
-import org.jetbrains.annotations.NotNull;
 
 final class PermissionCheckers {
   static final PermissionChecker NOT_SET = new Always(TriState.NOT_SET);
@@ -36,12 +35,12 @@ final class PermissionCheckers {
 
   private record Always(TriState value) implements PermissionChecker {
       @Override
-      public @NotNull TriState value(final @NotNull String permission) {
+      public TriState value(final String permission) {
         return this.value;
       }
 
       @Override
-      public @NotNull String toString() {
+      public String toString() {
         return PermissionChecker.class.getSimpleName() + ".always(" + this.value + ")";
       }
   }

@@ -26,7 +26,6 @@ package net.kyori.adventure.serializer.configurate4;
 import java.lang.reflect.Type;
 import java.util.function.Predicate;
 import net.kyori.adventure.text.BlockNBTComponent;
-import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.serialize.ScalarSerializer;
 import org.spongepowered.configurate.serialize.SerializationException;
 
@@ -38,7 +37,7 @@ final class BlockNBTPosSerializer extends ScalarSerializer<BlockNBTComponent.Pos
   }
 
   @Override
-  public BlockNBTComponent.Pos deserialize(final @NotNull Type type, final @NotNull Object obj) throws SerializationException {
+  public BlockNBTComponent.Pos deserialize(final Type type, final Object obj) throws SerializationException {
     try {
       return BlockNBTComponent.Pos.fromString(obj.toString());
     } catch (final IllegalArgumentException ex) {
@@ -47,7 +46,7 @@ final class BlockNBTPosSerializer extends ScalarSerializer<BlockNBTComponent.Pos
   }
 
   @Override
-  public Object serialize(final BlockNBTComponent.@NotNull Pos item, final @NotNull Predicate<Class<?>> typeSupported) {
+  public Object serialize(final BlockNBTComponent.Pos item, final Predicate<Class<?>> typeSupported) {
     return item.asString();
   }
 }

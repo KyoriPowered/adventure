@@ -42,8 +42,7 @@ import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.translation.GlobalTranslator;
 import net.kyori.adventure.translation.Translator;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A {@link Translator} implementation that translates strings using MiniMessage.
@@ -118,7 +117,7 @@ public abstract class MiniMessageTranslator implements Translator {
    * @see MiniMessage#miniMessage()
    * @since 4.20.0
    */
-  public MiniMessageTranslator(final @NotNull MiniMessage miniMessage) {
+  public MiniMessageTranslator(final MiniMessage miniMessage) {
     this.miniMessage = Objects.requireNonNull(miniMessage, "miniMessage");
   }
 
@@ -135,15 +134,15 @@ public abstract class MiniMessageTranslator implements Translator {
    * @since 4.20.0
    */
   @SuppressWarnings("checkstyle:MethodName")
-  protected abstract @Nullable String getMiniMessageString(final @NotNull String key, final @NotNull Locale locale);
+  protected abstract @Nullable String getMiniMessageString(final String key, final Locale locale);
 
   @Override
-  public final @Nullable MessageFormat translate(final @NotNull String key, final @NotNull Locale locale) {
+  public final @Nullable MessageFormat translate(final String key, final Locale locale) {
     return null;
   }
 
   @Override
-  public final @Nullable Component translate(final @NotNull TranslatableComponent component, final @NotNull Locale locale) {
+  public final @Nullable Component translate(final TranslatableComponent component, final Locale locale) {
     final String miniMessageString = this.getMiniMessageString(component.key(), locale);
 
     if (miniMessageString == null) {

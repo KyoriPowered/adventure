@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 final class TagStringReader {
   private static final int MAX_DEPTH = 512;

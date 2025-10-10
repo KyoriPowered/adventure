@@ -29,7 +29,6 @@ import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
 
 final class CallbackStylingTagImpl extends AbstractTag implements Inserting {
   private final Consumer<Style.Builder> styles;
@@ -39,7 +38,7 @@ final class CallbackStylingTagImpl extends AbstractTag implements Inserting {
   }
 
   @Override
-  public @NotNull Component value() {
+  public Component value() {
     return Component.text("", Style.style(this.styles));
   }
 
@@ -57,7 +56,7 @@ final class CallbackStylingTagImpl extends AbstractTag implements Inserting {
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(ExaminableProperty.of("styles", this.styles));
   }
 }

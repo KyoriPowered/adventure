@@ -49,8 +49,7 @@ import net.kyori.adventure.text.object.ObjectContents;
 import net.kyori.adventure.text.object.PlayerHeadObjectContents;
 import net.kyori.adventure.text.object.SpriteObjectContents;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
@@ -94,11 +93,11 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
   }
 
   @Override
-  public @NotNull Component deserialize(final @NotNull Type type, final @NotNull ConfigurationNode value) throws SerializationException {
+  public Component deserialize(final Type type, final ConfigurationNode value) throws SerializationException {
     return this.deserialize0(value);
   }
 
-  private @NotNull BuildableComponent<?, ?> deserialize0(final @NotNull ConfigurationNode value) throws SerializationException {
+  private BuildableComponent<?, ?> deserialize0(final ConfigurationNode value) throws SerializationException {
     // Try to read as a string
     if (!value.isList() && !value.isMap()) {
       final String str = value.getString();
@@ -250,7 +249,7 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
   }
 
   @Override
-  public void serialize(final @NotNull Type type, final @Nullable Component src, final @NotNull ConfigurationNode value) throws SerializationException {
+  public void serialize(final Type type, final @Nullable Component src, final ConfigurationNode value) throws SerializationException {
     value.set(null);
     if (src == null) {
       return;

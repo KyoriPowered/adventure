@@ -45,9 +45,8 @@ import net.kyori.adventure.text.minimessage.tag.Modifying;
 import net.kyori.adventure.text.minimessage.tree.Node;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A transformation that applies a colour change.
@@ -81,7 +80,7 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
   }
 
   @Override
-  public final void visit(final @NotNull Node current, final int depth) {
+  public final void visit(final Node current, final int depth) {
     if (this.visited) {
       throw new IllegalStateException("Color changing tag instances cannot be re-used, return a new one for each resolve");
     }
@@ -105,7 +104,7 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
   }
 
   @Override
-  public final Component apply(final @NotNull Component current, final int depth) {
+  public final Component apply(final Component current, final int depth) {
     if (this.emitVirtuals && depth == 0) {
       // capture state into a virtual component, no other logic is needed in normal MM handling
       return Component.virtual(Void.class, new TagInfoHolder(this.preserveData(), current), current.style());
@@ -185,15 +184,15 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
    * @return the emitable for this tag
    * @since 4.18.0
    */
-  protected abstract @NotNull Consumer<TokenEmitter> preserveData();
+  protected abstract Consumer<TokenEmitter> preserveData();
 
   // misc
 
   @Override
-  public abstract @NotNull Stream<? extends ExaminableProperty> examinableProperties();
+  public abstract Stream<? extends ExaminableProperty> examinableProperties();
 
   @Override
-  public final @NotNull String toString() {
+  public final String toString() {
     return Internals.toString(this);
   }
 
@@ -205,17 +204,17 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
 
   private record TagInfoHolder(Consumer<TokenEmitter> output, Component originalComp) implements VirtualComponentRenderer<Void>, Emitable {
     @Override
-    public @UnknownNullability ComponentLike apply(final @NotNull Void context) {
+    public @UnknownNullability ComponentLike apply(final Void context) {
       return this.originalComp;
     }
 
     @Override
-    public @NotNull String fallbackString() {
+    public String fallbackString() {
       return ""; // only holds data for reserialization, not for display
     }
 
     @Override
-    public void emit(final @NotNull TokenEmitter emitter) {
+    public void emit(final TokenEmitter emitter) {
       this.output.accept(emitter);
     }
 

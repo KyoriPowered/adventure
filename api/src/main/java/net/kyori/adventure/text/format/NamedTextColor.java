@@ -24,8 +24,7 @@
 package net.kyori.adventure.text.format;
 
 import net.kyori.adventure.util.Index;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * The named text colours in Minecraft: Java Edition.
@@ -172,7 +171,7 @@ public sealed interface NamedTextColor extends TextColor permits NamedTextColorI
    * @return nearest named colour. will always return a value
    * @since 4.0.0
    */
-  static @NotNull NamedTextColor nearestTo(final @NotNull TextColor any) {
+  static NamedTextColor nearestTo(final TextColor any) {
     if (any instanceof final NamedTextColor namedTextColor) return namedTextColor;
     return TextColor.nearestColorTo(NamedTextColorImpl.VALUES, any);
   }

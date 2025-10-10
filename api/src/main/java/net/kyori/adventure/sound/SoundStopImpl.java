@@ -27,14 +27,13 @@ import java.util.stream.Stream;
 import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.key.Key;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 record SoundStopImpl(@Nullable Key sound, Sound.@Nullable Source source) implements SoundStop {
   static final SoundStopImpl ALL = new SoundStopImpl(null, null);
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("name", this.sound()),
       ExaminableProperty.of("source", this.source)
@@ -42,7 +41,7 @@ record SoundStopImpl(@Nullable Key sound, Sound.@Nullable Source source) impleme
   }
 
   @Override
-  public @NotNull String toString() {
+  public String toString() {
     return Internals.toString(this);
   }
 }

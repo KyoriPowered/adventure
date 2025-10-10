@@ -25,7 +25,6 @@ package net.kyori.adventure.text.event;
 
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.examination.Examinable;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * A holder for the value of an item's data component.
@@ -45,7 +44,7 @@ public interface DataComponentValue extends Examinable {
    * @since 4.17.0
    * @sinceMinecraft 1.20.5
    */
-  static DataComponentValue.@NotNull Removed removed() {
+  static DataComponentValue.Removed removed() {
     return RemovedDataComponentValueImpl.REMOVED;
   }
 
@@ -64,7 +63,7 @@ public interface DataComponentValue extends Examinable {
      * @since 4.17.0
      * @sinceMinecraft 1.20.5
      */
-    @NotNull BinaryTagHolder asBinaryTag();
+    BinaryTagHolder asBinaryTag();
   }
 
   /**

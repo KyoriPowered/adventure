@@ -26,8 +26,7 @@ package net.kyori.adventure.text.format;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.Index;
 import net.kyori.adventure.util.TriState;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -87,7 +86,7 @@ public enum TextDecoration implements StyleBuilderApplicable, TextFormat {
    * @return a {@link TextDecorationAndState}
    * @since 4.10.0
    */
-  public final @NotNull TextDecorationAndState withState(final boolean state) {
+  public final TextDecorationAndState withState(final boolean state) {
     return new TextDecorationAndStateImpl(this, State.byBoolean(state));
   }
 
@@ -98,7 +97,7 @@ public enum TextDecoration implements StyleBuilderApplicable, TextFormat {
    * @return a {@link TextDecorationAndState}
    * @since 4.10.0
    */
-  public final @NotNull TextDecorationAndState withState(final @NotNull State state) {
+  public final TextDecorationAndState withState(final State state) {
     return new TextDecorationAndStateImpl(this, state);
   }
 
@@ -109,17 +108,17 @@ public enum TextDecoration implements StyleBuilderApplicable, TextFormat {
    * @return a {@link TextDecorationAndState}
    * @since 4.10.0
    */
-  public final @NotNull TextDecorationAndState withState(final @NotNull TriState state) {
+  public final TextDecorationAndState withState(final TriState state) {
     return new TextDecorationAndStateImpl(this, State.byTriState(state));
   }
 
   @Override
-  public void styleApply(final Style.@NotNull Builder style) {
+  public void styleApply(final Style.Builder style) {
     style.decorate(this);
   }
 
   @Override
-  public @NotNull String toString() {
+  public String toString() {
     return this.name;
   }
 
@@ -166,7 +165,7 @@ public enum TextDecoration implements StyleBuilderApplicable, TextFormat {
      * @return the state
      * @since 4.0.0
      */
-    public static @NotNull State byBoolean(final boolean flag) {
+    public static State byBoolean(final boolean flag) {
       return flag ? TRUE : FALSE;
     }
 
@@ -177,7 +176,7 @@ public enum TextDecoration implements StyleBuilderApplicable, TextFormat {
      * @return the state
      * @since 4.0.0
      */
-    public static @NotNull State byBoolean(final @Nullable Boolean flag) {
+    public static State byBoolean(final @Nullable Boolean flag) {
       return flag == null ? NOT_SET : byBoolean(flag.booleanValue());
     }
 
@@ -188,7 +187,7 @@ public enum TextDecoration implements StyleBuilderApplicable, TextFormat {
      * @return the state
      * @since 4.10.0
      */
-    public static @NotNull State byTriState(final @NotNull TriState flag) {
+    public static State byTriState(final TriState flag) {
       return switch (requireNonNull(flag, "flag")) {
         case TRUE -> TRUE;
         case FALSE -> FALSE;

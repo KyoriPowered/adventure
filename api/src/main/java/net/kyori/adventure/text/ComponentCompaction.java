@@ -29,9 +29,8 @@ import java.util.List;
 import java.util.Objects;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
+import org.jspecify.annotations.Nullable;
 
 final class ComponentCompaction {
   @VisibleForTesting
@@ -40,7 +39,7 @@ final class ComponentCompaction {
   private ComponentCompaction() {
   }
 
-  static Component compact(final @NotNull Component self, final @Nullable Style parentStyle) {
+  static Component compact(final Component self, final @Nullable Style parentStyle) {
     final List<Component> children = self.children();
     Component optimized = self.children(Collections.emptyList());
     if (parentStyle != null) {
@@ -183,7 +182,7 @@ final class ComponentCompaction {
   * @param parentStyle style from component's parents, for context
   * @return a new, simplified style
   */
-  private static @NotNull Style simplifyStyleForBlank(final @NotNull Style style, final @Nullable Style parentStyle) {
+  private static Style simplifyStyleForBlank(final Style style, final @Nullable Style parentStyle) {
     if (!SIMPLIFY_STYLE_FOR_BLANK_COMPONENTS) {
       // todo: can this be fixed a better way?
       // https://github.com/KyoriPowered/adventure/issues/849

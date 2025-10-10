@@ -28,8 +28,7 @@ import java.util.function.Function;
 import net.kyori.adventure.text.flattener.ComponentFlattener;
 import net.kyori.adventure.util.PlatformAPI;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Adventure properties.
@@ -82,7 +81,7 @@ public final class AdventureProperties {
    * @return a property
    * @since 4.10.0
    */
-  public static <T> @NotNull Property<T> property(final @NotNull String name, final @NotNull Function<String, T> parser, final @Nullable T defaultValue) {
+  public static <T> Property<T> property(final String name, final Function<String, T> parser, final @Nullable T defaultValue) {
     return property(name, parser, defaultValue, true);
   }
 
@@ -97,7 +96,7 @@ public final class AdventureProperties {
    * @return a property
    * @since 4.24.0
    */
-  public static <T> @NotNull Property<T> property(final @NotNull String name, final @NotNull Function<String, T> parser, final @Nullable T defaultValue, final boolean allowProviderDefaultOverride) {
+  public static <T> Property<T> property(final String name, final Function<String, T> parser, final @Nullable T defaultValue, final boolean allowProviderDefaultOverride) {
     return AdventurePropertiesImpl.property(name, parser, defaultValue, allowProviderDefaultOverride);
   }
 
@@ -125,7 +124,7 @@ public final class AdventureProperties {
      * @return the value
      * @since 4.24.0
      */
-    default @NotNull T valueOr(final @NotNull T defaultValue) {
+    default T valueOr(final T defaultValue) {
       final T value = this.value();
       return value == null ? Objects.requireNonNull(defaultValue, "defaultValue") : value;
     }
@@ -148,6 +147,6 @@ public final class AdventureProperties {
      * @param <T> the value type
      * @since 4.24.0
      */
-    <T> @Nullable T overrideDefault(final @NotNull Property<T> property, final @Nullable T existingDefault);
+    <T> @Nullable T overrideDefault(final Property<T> property, final @Nullable T existingDefault);
   }
 }

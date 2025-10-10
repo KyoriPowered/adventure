@@ -28,8 +28,7 @@ import java.util.function.Supplier;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -45,7 +44,7 @@ public final class ArgumentQueueImpl<T extends Tag.Argument> implements Argument
   }
 
   @Override
-  public @NotNull T pop() {
+  public T pop() {
     if (!this.hasNext()) {
       throw this.context.newException("Missing argument for this tag!", this);
     }
@@ -53,7 +52,7 @@ public final class ArgumentQueueImpl<T extends Tag.Argument> implements Argument
   }
 
   @Override
-  public @NotNull T popOr(final @NotNull String errorMessage) {
+  public T popOr(final String errorMessage) {
     requireNonNull(errorMessage, "errorMessage");
     if (!this.hasNext()) {
       throw this.context.newException(errorMessage, this);
@@ -62,7 +61,7 @@ public final class ArgumentQueueImpl<T extends Tag.Argument> implements Argument
   }
 
   @Override
-  public @NotNull T popOr(final @NotNull Supplier<String> errorMessage) {
+  public T popOr(final Supplier<String> errorMessage) {
     requireNonNull(errorMessage, "errorMessage");
     if (!this.hasNext()) {
       throw this.context.newException(requireNonNull(errorMessage.get(), "errorMessage.get()"), this);

@@ -24,7 +24,6 @@
 package net.kyori.adventure.util;
 
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Something that can be built.
@@ -40,5 +39,5 @@ public interface Buildable<B> {
    * @since 4.0.0
    */
   @Contract(value = "-> new", pure = true)
-  @NotNull B toBuilder();
+  B toBuilder();
 }

@@ -29,7 +29,6 @@ import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
 
 final class PayloadImpl {
   private PayloadImpl() {
@@ -37,49 +36,49 @@ final class PayloadImpl {
 
   record TextImpl(String value) implements ClickEventImpl.Payload.Text {
     @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+    public Stream<? extends ExaminableProperty> examinableProperties() {
       return Stream.of(
         ExaminableProperty.of("value", this.value)
       );
     }
 
     @Override
-    public @NotNull String toString() {
+    public String toString() {
       return Internals.toString(this);
     }
   }
 
   record IntImpl(int integer) implements ClickEventImpl.Payload.Int {
     @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+    public Stream<? extends ExaminableProperty> examinableProperties() {
       return Stream.of(
         ExaminableProperty.of("integer", this.integer)
       );
     }
 
     @Override
-    public @NotNull String toString() {
+    public String toString() {
       return Internals.toString(this);
     }
   }
 
   record DialogImpl(DialogLike dialog) implements ClickEventImpl.Payload.Dialog {
     @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+    public Stream<? extends ExaminableProperty> examinableProperties() {
       return Stream.of(
         ExaminableProperty.of("dialog", this.dialog)
       );
     }
 
     @Override
-    public @NotNull String toString() {
+    public String toString() {
       return Internals.toString(this);
     }
   }
 
   record CustomImpl(Key key, BinaryTagHolder nbt) implements ClickEventImpl.Payload.Custom {
     @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+    public Stream<? extends ExaminableProperty> examinableProperties() {
       return Stream.of(
         ExaminableProperty.of("key", this.key),
         ExaminableProperty.of("nbt", this.nbt)
@@ -87,7 +86,7 @@ final class PayloadImpl {
     }
 
     @Override
-    public @NotNull String toString() {
+    public String toString() {
       return Internals.toString(this);
     }
   }

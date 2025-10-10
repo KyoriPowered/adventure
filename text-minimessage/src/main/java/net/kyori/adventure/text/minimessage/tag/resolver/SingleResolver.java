@@ -24,18 +24,16 @@
 package net.kyori.adventure.text.minimessage.tag.resolver;
 
 import java.util.Map;
-import java.util.Objects;
 import net.kyori.adventure.text.minimessage.tag.Tag;
-import org.jetbrains.annotations.NotNull;
 
 record SingleResolver(String key, Tag tag) implements TagResolver.Single, MappableResolver {
   @Override
-  public boolean has(final @NotNull String name) {
+  public boolean has(final String name) {
     return this.key.equals(name);
   }
 
   @Override
-  public boolean contributeToMap(final @NotNull Map<String, Tag> map) {
+  public boolean contributeToMap(final Map<String, Tag> map) {
     map.put(this.key, this.tag);
     return true;
   }

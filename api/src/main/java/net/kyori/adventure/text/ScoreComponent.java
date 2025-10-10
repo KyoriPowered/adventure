@@ -26,7 +26,6 @@ package net.kyori.adventure.text;
 import java.util.stream.Stream;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * A component that can display a player's score from a scoreboard objective,
@@ -57,7 +56,7 @@ public sealed interface ScoreComponent extends ScopedComponent<ScoreComponent> p
    * @return the score name
    * @since 4.0.0
    */
-  @NotNull String name();
+  String name();
 
   /**
    * Sets the score name.
@@ -67,7 +66,7 @@ public sealed interface ScoreComponent extends ScopedComponent<ScoreComponent> p
    * @since 4.0.0
    */
   @Contract(pure = true)
-  @NotNull ScoreComponent name(final @NotNull String name);
+  ScoreComponent name(final String name);
 
   /**
    * Gets the objective name.
@@ -75,7 +74,7 @@ public sealed interface ScoreComponent extends ScopedComponent<ScoreComponent> p
    * @return the objective name
    * @since 4.0.0
    */
-  @NotNull String objective();
+  String objective();
 
   /**
    * Sets the score objective.
@@ -85,10 +84,10 @@ public sealed interface ScoreComponent extends ScopedComponent<ScoreComponent> p
    * @since 4.0.0
    */
   @Contract(pure = true)
-  @NotNull ScoreComponent objective(final @NotNull String objective);
+  ScoreComponent objective(final String objective);
 
   @Override
-  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  default Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.concat(
       Stream.of(
         ExaminableProperty.of("name", this.name()),
@@ -112,7 +111,7 @@ public sealed interface ScoreComponent extends ScopedComponent<ScoreComponent> p
      * @since 4.0.0
      */
     @Contract("_ -> this")
-    @NotNull Builder name(final @NotNull String name);
+    Builder name(final String name);
 
     /**
      * Sets the score objective.
@@ -122,6 +121,6 @@ public sealed interface ScoreComponent extends ScopedComponent<ScoreComponent> p
      * @since 4.0.0
      */
     @Contract("_ -> this")
-    @NotNull Builder objective(final @NotNull String objective);
+    Builder objective(final String objective);
   }
 }

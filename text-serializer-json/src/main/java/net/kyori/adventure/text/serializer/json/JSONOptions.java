@@ -26,7 +26,6 @@ package net.kyori.adventure.text.serializer.json;
 import net.kyori.option.Option;
 import net.kyori.option.OptionSchema;
 import net.kyori.option.OptionState;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Options that can apply to JSON serializers.
@@ -224,7 +223,7 @@ public final class JSONOptions {
    * @return the schema of known json options
    * @since 4.20.0
    */
-  public static @NotNull OptionSchema schema() {
+  public static OptionSchema schema() {
     return SCHEMA;
   }
 
@@ -234,7 +233,7 @@ public final class JSONOptions {
    * @return the versioned flag set
    * @since 4.15.0
    */
-  public static OptionState.@NotNull Versioned byDataVersion() {
+  public static OptionState.Versioned byDataVersion() {
     return BY_DATA_VERSION;
   }
 
@@ -246,7 +245,7 @@ public final class JSONOptions {
    * @return the most widely compatible feature flag set
    * @since 4.15.0
    */
-  public static @NotNull OptionState compatibility() {
+  public static OptionState compatibility() {
     return MOST_COMPATIBLE;
   }
 

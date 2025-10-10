@@ -23,8 +23,6 @@
  */
 package net.kyori.adventure.nbt;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * A binary tag holding a {@code short} value.
  *
@@ -38,12 +36,12 @@ public interface ShortBinaryTag extends NumberBinaryTag {
    * @return a binary tag
    * @since 4.14.0
    */
-  static @NotNull ShortBinaryTag shortBinaryTag(final short value) {
+  static ShortBinaryTag shortBinaryTag(final short value) {
     return new ShortBinaryTagImpl(value);
   }
 
   @Override
-  default @NotNull BinaryTagType<ShortBinaryTag> type() {
+  default BinaryTagType<ShortBinaryTag> type() {
     return BinaryTagTypes.SHORT;
   }
 

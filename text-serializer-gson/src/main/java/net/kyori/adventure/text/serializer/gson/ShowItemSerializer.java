@@ -40,8 +40,7 @@ import net.kyori.adventure.text.event.DataComponentValue;
 import net.kyori.adventure.text.event.HoverEventImpl;
 import net.kyori.adventure.text.serializer.json.JSONOptions;
 import net.kyori.option.OptionState;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SHOW_ITEM_COMPONENTS;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SHOW_ITEM_COUNT;
@@ -144,7 +143,7 @@ final class ShowItemSerializer extends TypeAdapter<HoverEventImpl.ShowItem> {
       out.value(count);
     }
 
-    final @NotNull Map<Key, DataComponentValue> dataComponents = value.dataComponents();
+    final Map<Key, DataComponentValue> dataComponents = value.dataComponents();
     if (!dataComponents.isEmpty() && this.itemDataMode != JSONOptions.ShowItemHoverDataMode.EMIT_LEGACY_NBT) {
       out.name(SHOW_ITEM_COMPONENTS);
       out.beginObject();

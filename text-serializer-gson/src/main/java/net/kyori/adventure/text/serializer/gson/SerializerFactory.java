@@ -41,7 +41,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.object.PlayerHeadObjectContents;
 import net.kyori.adventure.text.serializer.json.JSONOptions;
 import net.kyori.option.OptionState;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 final class SerializerFactory implements TypeAdapterFactory {
   static final Class<Key> KEY_TYPE = Key.class;

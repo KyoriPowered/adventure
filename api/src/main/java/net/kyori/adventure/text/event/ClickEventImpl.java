@@ -27,23 +27,22 @@ import java.util.stream.Stream;
 import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
 
 import static java.util.Objects.requireNonNull;
 
 record ClickEventImpl<T extends ClickEvent.Payload>(Action<T> action, Payload payload) implements ClickEvent<T> {
 
-  static <T extends ClickEvent.Payload> ClickEvent<T> create(final @NotNull Action<T> action, final @NotNull T payload) {
+  static <T extends ClickEvent.Payload> ClickEvent<T> create(final Action<T> action, final T payload) {
     return new ClickEventImpl<>(requireNonNull(action, "action"), requireNonNull(payload, "payload"));
   }
 
   @Override
-  public void styleApply(final Style.@NotNull Builder style) {
+  public void styleApply(final Style.Builder style) {
     style.clickEvent(this);
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("action", this.action),
       ExaminableProperty.of("payload", this.payload)
@@ -51,13 +50,13 @@ record ClickEventImpl<T extends ClickEvent.Payload>(Action<T> action, Payload pa
   }
 
   @Override
-  public @NotNull String toString() {
+  public String toString() {
     return Internals.toString(this);
   }
 
   record ActionImpl<T extends Payload>(String name, boolean readable, Class<? extends Payload> payloadType) implements ClickEvent.Action<T> {
     @Override
-    public boolean supports(final @NotNull Payload payload) {
+    public boolean supports(final Payload payload) {
       return payload.getClass() == this.payloadType;
     }
   }

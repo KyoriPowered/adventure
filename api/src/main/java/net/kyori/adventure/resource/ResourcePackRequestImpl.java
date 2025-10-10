@@ -30,15 +30,14 @@ import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.MonkeyBars;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
 record ResourcePackRequestImpl(List<ResourcePackInfo> packs, ResourcePackCallback callback, boolean replace, boolean required, @Nullable Component prompt) implements ResourcePackRequest {
   @Override
   @SuppressWarnings("UndefinedEquals")
-  public @NotNull ResourcePackRequest packs(final @NotNull Iterable<? extends ResourcePackInfoLike> packs) {
+  public ResourcePackRequest packs(final Iterable<? extends ResourcePackInfoLike> packs) {
     if (this.packs.equals(packs)) return this;
 
     return new ResourcePackRequestImpl(
@@ -51,7 +50,7 @@ record ResourcePackRequestImpl(List<ResourcePackInfo> packs, ResourcePackCallbac
   }
 
   @Override
-  public @NotNull ResourcePackRequest callback(final @NotNull ResourcePackCallback cb) {
+  public ResourcePackRequest callback(final ResourcePackCallback cb) {
     if (cb == this.callback) return this;
 
     return new ResourcePackRequestImpl(
@@ -64,19 +63,19 @@ record ResourcePackRequestImpl(List<ResourcePackInfo> packs, ResourcePackCallbac
   }
 
   @Override
-  public @NotNull ResourcePackRequest replace(final boolean replace) {
+  public ResourcePackRequest replace(final boolean replace) {
     if (replace == this.replace) return this;
 
     return new ResourcePackRequestImpl(this.packs, this.callback, replace, this.required, this.prompt);
   }
 
   @Override
-  public @NotNull String toString() {
+  public String toString() {
     return Internals.toString(this);
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("packs", this.packs),
       ExaminableProperty.of("callback", this.callback),
@@ -99,7 +98,7 @@ record ResourcePackRequestImpl(List<ResourcePackInfo> packs, ResourcePackCallbac
       this.replace = false;
     }
 
-    BuilderImpl(final @NotNull ResourcePackRequest req) {
+    BuilderImpl(final ResourcePackRequest req) {
       this.packs = req.packs();
       this.cb = req.callback();
       this.replace = req.replace();
@@ -108,43 +107,43 @@ record ResourcePackRequestImpl(List<ResourcePackInfo> packs, ResourcePackCallbac
     }
 
     @Override
-    public @NotNull Builder packs(final @NotNull ResourcePackInfoLike first, final @NotNull ResourcePackInfoLike @NotNull ... others) {
+    public Builder packs(final ResourcePackInfoLike first, final ResourcePackInfoLike ... others) {
       this.packs = MonkeyBars.nonEmptyArrayToList(ResourcePackInfoLike::asResourcePackInfo, first, others);
       return this;
     }
 
     @Override
-    public @NotNull Builder packs(final @NotNull Iterable<? extends ResourcePackInfoLike> packs) {
+    public Builder packs(final Iterable<? extends ResourcePackInfoLike> packs) {
       this.packs = MonkeyBars.toUnmodifiableList(ResourcePackInfoLike::asResourcePackInfo, packs);
       return this;
     }
 
     @Override
-    public @NotNull Builder callback(final @NotNull ResourcePackCallback cb) {
+    public Builder callback(final ResourcePackCallback cb) {
       this.cb = requireNonNull(cb, "cb");
       return this;
     }
 
     @Override
-    public @NotNull Builder replace(final boolean replace) {
+    public Builder replace(final boolean replace) {
       this.replace = replace;
       return this;
     }
 
     @Override
-    public @NotNull Builder required(final boolean required) {
+    public Builder required(final boolean required) {
       this.required = required;
       return this;
     }
 
     @Override
-    public @NotNull Builder prompt(final @Nullable Component prompt) {
+    public Builder prompt(final @Nullable Component prompt) {
       this.prompt = prompt;
       return this;
     }
 
     @Override
-    public @NotNull ResourcePackRequest build() {
+    public ResourcePackRequest build() {
       return new ResourcePackRequestImpl(this.packs, this.cb, this.replace, this.required, this.prompt);
     }
   }

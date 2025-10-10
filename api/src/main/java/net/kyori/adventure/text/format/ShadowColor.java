@@ -27,9 +27,8 @@ import net.kyori.adventure.util.ARGBLike;
 import net.kyori.adventure.util.RGBLike;
 import org.intellij.lang.annotations.Pattern;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A shadow color which may be applied to a {@link Style}.
@@ -51,7 +50,7 @@ public interface ShadowColor extends StyleBuilderApplicable, ARGBLike {
    * @return the interpolated value, a color between the two input colors {@code a} and {@code b}
    * @since 4.18.0
    */
-  static @NotNull ShadowColor lerp(final float t, final @NotNull ARGBLike a, final @NotNull ARGBLike b) {
+  static ShadowColor lerp(final float t, final ARGBLike a, final ARGBLike b) {
     final float clampedT = Math.min(1.0f, Math.max(0.0f, t)); // clamp between 0 and 1
     final int ar = a.red();
     final int br = b.red();
@@ -75,7 +74,7 @@ public interface ShadowColor extends StyleBuilderApplicable, ARGBLike {
    * @return a disabling shadow color
    * @since 4.18.0
    */
-  static @NotNull ShadowColor none() {
+  static ShadowColor none() {
     return ShadowColorImpl.NONE;
   }
 
@@ -89,7 +88,7 @@ public interface ShadowColor extends StyleBuilderApplicable, ARGBLike {
    * @since 4.18.0
    */
   @Contract(pure = true)
-  static @NotNull ShadowColor shadowColor(final int argb) {
+  static ShadowColor shadowColor(final int argb) {
     if (argb == ShadowColorImpl.NONE_VALUE) return none();
 
     return new ShadowColorImpl(argb);
@@ -106,7 +105,7 @@ public interface ShadowColor extends StyleBuilderApplicable, ARGBLike {
    * @since 4.18.0
    */
   @Contract(pure = true)
-  static @NotNull ShadowColor shadowColor(
+  static ShadowColor shadowColor(
     final @Range(from = 0x0, to = 0xff) int red,
     final @Range(from = 0x0, to = 0xff) int green,
     final @Range(from = 0x0, to = 0xff) int blue,
@@ -130,7 +129,7 @@ public interface ShadowColor extends StyleBuilderApplicable, ARGBLike {
    * @since 4.18.0
    */
   @Contract(pure = true)
-  static @NotNull ShadowColor shadowColor(final @NotNull RGBLike rgb, final @Range(from = 0x0, to = 0xff) int alpha) {
+  static ShadowColor shadowColor(final RGBLike rgb, final @Range(from = 0x0, to = 0xff) int alpha) {
     return shadowColor(rgb.red(), rgb.green(), rgb.blue(), alpha);
   }
 
@@ -141,7 +140,7 @@ public interface ShadowColor extends StyleBuilderApplicable, ARGBLike {
    * @return a shadow colour
    * @since 4.18.0
    */
-  static @NotNull ShadowColor shadowColor(final @NotNull ARGBLike argb) {
+  static ShadowColor shadowColor(final ARGBLike argb) {
     if (argb instanceof ShadowColor) {
       return (ShadowColor) argb;
     }
@@ -159,7 +158,7 @@ public interface ShadowColor extends StyleBuilderApplicable, ARGBLike {
    * @since 4.18.0
    */
   @Contract(pure = true)
-  static @Nullable ShadowColor fromHexString(@Pattern("#[0-9a-fA-F]{8}") final @NotNull String hex) {
+  static @Nullable ShadowColor fromHexString(@Pattern("#[0-9a-fA-F]{8}") final String hex) {
     if (hex.length() != 9) return null;
     if (!hex.startsWith("#")) return null;
 
@@ -182,7 +181,7 @@ public interface ShadowColor extends StyleBuilderApplicable, ARGBLike {
    * @return the hex string representation of this shadow colour
    * @since 4.18.0
    */
-  default @NotNull String asHexString() {
+  default String asHexString() {
     final int argb = this.value();
     final int a = (argb >> 24) & 0xFF;
     final int r = (argb >> 16) & 0xFF;
@@ -244,7 +243,7 @@ public interface ShadowColor extends StyleBuilderApplicable, ARGBLike {
   int value();
 
   @Override
-  default void styleApply(final Style.@NotNull Builder style) {
+  default void styleApply(final Style.Builder style) {
     style.shadowColor(this);
   }
 }

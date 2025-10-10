@@ -25,11 +25,10 @@ package net.kyori.adventure.pointer;
 
 import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.key.Key;
-import org.jetbrains.annotations.NotNull;
 
 record PointerImpl<T>(Class<T> type, Key key) implements Pointer<T> {
   @Override
-  public @NotNull String toString() {
+  public String toString() {
     return Internals.toString(this);
   }
 }

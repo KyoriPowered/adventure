@@ -23,8 +23,6 @@
  */
 package net.kyori.adventure.nbt;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * A binary tag holding a {@code byte} value.
  *
@@ -52,7 +50,7 @@ public interface ByteBinaryTag extends NumberBinaryTag {
    * @return a binary tag
    * @since 4.14.0
    */
-  static @NotNull ByteBinaryTag byteBinaryTag(final byte value) {
+  static ByteBinaryTag byteBinaryTag(final byte value) {
     if (value == 0) {
       return ZERO;
     } else if (value == 1) {
@@ -63,7 +61,7 @@ public interface ByteBinaryTag extends NumberBinaryTag {
   }
 
   @Override
-  default @NotNull BinaryTagType<ByteBinaryTag> type() {
+  default BinaryTagType<ByteBinaryTag> type() {
     return BinaryTagTypes.BYTE;
   }
 

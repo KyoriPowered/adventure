@@ -24,8 +24,7 @@
 package net.kyori.adventure.text.minimessage.internal.serializer;
 
 import net.kyori.adventure.text.Component;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Something that holds data representable as MiniMessage tags.
@@ -40,7 +39,7 @@ public interface Emitable {
    * @param emitter the target to emit to
    * @since 4.10.0
    */
-  void emit(final @NotNull TokenEmitter emitter);
+  void emit(final TokenEmitter emitter);
 
   /**
    * Provide a substitute for this component's actual children.

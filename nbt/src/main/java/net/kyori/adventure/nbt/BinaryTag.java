@@ -24,7 +24,6 @@
 package net.kyori.adventure.nbt;
 
 import net.kyori.examination.Examinable;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * A binary tag.
@@ -38,10 +37,10 @@ public interface BinaryTag extends BinaryTagLike, Examinable {
    * @return the tag type
    * @since 4.0.0
    */
-  @NotNull BinaryTagType<? extends BinaryTag> type();
+  BinaryTagType<? extends BinaryTag> type();
 
   @Override
-  default @NotNull BinaryTag asBinaryTag() {
+  default BinaryTag asBinaryTag() {
     return this;
   }
 }

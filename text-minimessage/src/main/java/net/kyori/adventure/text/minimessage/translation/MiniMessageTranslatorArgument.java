@@ -28,14 +28,13 @@ import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.VirtualComponentRenderer;
 import net.kyori.adventure.text.minimessage.internal.TagInternals;
 import net.kyori.adventure.text.minimessage.tag.TagPattern;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
 final class MiniMessageTranslatorArgument<T> implements VirtualComponentRenderer<Void> {
-  private final @NotNull String name;
-  private final @NotNull T data;
+  private final String name;
+  private final T data;
 
-  MiniMessageTranslatorArgument(final @TagPattern @NotNull String name, final @NotNull T data) {
+  MiniMessageTranslatorArgument(final @TagPattern String name, final T data) {
     Objects.requireNonNull(name, "name");
     Objects.requireNonNull(data, "data");
     TagInternals.assertValidTagName(name);
@@ -44,16 +43,16 @@ final class MiniMessageTranslatorArgument<T> implements VirtualComponentRenderer
     this.data = data;
   }
 
-  public @NotNull String name() {
+  public String name() {
     return this.name;
   }
 
-  public @NotNull T data() {
+  public T data() {
     return this.data;
   }
 
   @Override
-  public @UnknownNullability ComponentLike apply(final @NotNull Void context) {
+  public @UnknownNullability ComponentLike apply(final Void context) {
     if (this.data instanceof ComponentLike componentLike) {
       return componentLike;
     } else {

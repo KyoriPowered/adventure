@@ -33,8 +33,7 @@ import net.kyori.adventure.translation.Translatable;
 import net.kyori.adventure.translation.TranslationStore;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A component that can display translated text.
@@ -68,7 +67,7 @@ public sealed interface TranslatableComponent extends ScopedComponent<Translatab
    * @return the translation key
    * @since 4.0.0
    */
-  @NotNull String key();
+  String key();
 
   /**
    * Sets the translation key.
@@ -78,7 +77,7 @@ public sealed interface TranslatableComponent extends ScopedComponent<Translatab
    * @since 4.8.0
    */
   @Contract(pure = true)
-  default @NotNull TranslatableComponent key(final @NotNull Translatable translatable) {
+  default TranslatableComponent key(final Translatable translatable) {
     return this.key(Objects.requireNonNull(translatable, "translatable").translationKey());
   }
 
@@ -90,7 +89,7 @@ public sealed interface TranslatableComponent extends ScopedComponent<Translatab
    * @since 4.0.0
    */
   @Contract(pure = true)
-  @NotNull TranslatableComponent key(final @NotNull String key);
+  TranslatableComponent key(final String key);
 
   /**
    * Gets the unmodifiable list of translation arguments.
@@ -98,7 +97,7 @@ public sealed interface TranslatableComponent extends ScopedComponent<Translatab
    * @return the unmodifiable list of translation arguments
    * @since 4.0.0
    */
-  @NotNull List<TranslationArgument> arguments();
+  List<TranslationArgument> arguments();
 
   /**
    * Sets the translation arguments for this component.
@@ -111,7 +110,7 @@ public sealed interface TranslatableComponent extends ScopedComponent<Translatab
    * @since 4.15.0
    */
   @Contract(pure = true)
-  @NotNull TranslatableComponent arguments(final @NotNull ComponentLike@NotNull... args);
+  TranslatableComponent arguments(final ComponentLike... args);
 
   /**
    * Sets the translation arguments for this component.
@@ -123,7 +122,7 @@ public sealed interface TranslatableComponent extends ScopedComponent<Translatab
    * @since 4.15.0
    */
   @Contract(pure = true)
-  @NotNull TranslatableComponent arguments(final @NotNull List<? extends ComponentLike> args);
+  TranslatableComponent arguments(final List<? extends ComponentLike> args);
 
   /**
    * Gets the translation fallback text for this component.
@@ -147,10 +146,10 @@ public sealed interface TranslatableComponent extends ScopedComponent<Translatab
    * @sinceMinecraft 1.19.4
    */
   @Contract(pure = true)
-  @NotNull TranslatableComponent fallback(final @Nullable String fallback);
+  TranslatableComponent fallback(final @Nullable String fallback);
 
   @Override
-  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  default Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.concat(
       Stream.of(
         ExaminableProperty.of("key", this.key()),
@@ -175,7 +174,7 @@ public sealed interface TranslatableComponent extends ScopedComponent<Translatab
      * @since 4.8.0
      */
     @Contract(pure = true)
-    default @NotNull Builder key(final @NotNull Translatable translatable) {
+    default Builder key(final Translatable translatable) {
       return this.key(Objects.requireNonNull(translatable, "translatable").translationKey());
     }
 
@@ -187,7 +186,7 @@ public sealed interface TranslatableComponent extends ScopedComponent<Translatab
      * @since 4.0.0
      */
     @Contract("_ -> this")
-    @NotNull Builder key(final @NotNull String key);
+    Builder key(final String key);
 
     /**
      * Sets the translation args.
@@ -199,7 +198,7 @@ public sealed interface TranslatableComponent extends ScopedComponent<Translatab
      * @since 4.15.0
      */
     @Contract("_ -> this")
-    @NotNull Builder arguments(final @NotNull ComponentLike@NotNull... args);
+    Builder arguments(final ComponentLike... args);
 
     /**
      * Sets the translation args.
@@ -211,7 +210,7 @@ public sealed interface TranslatableComponent extends ScopedComponent<Translatab
      * @since 4.15.0
      */
     @Contract("_ -> this")
-    @NotNull Builder arguments(final @NotNull List<? extends ComponentLike> args);
+    Builder arguments(final List<? extends ComponentLike> args);
 
     /**
      * Sets the translation fallback text.
@@ -224,6 +223,6 @@ public sealed interface TranslatableComponent extends ScopedComponent<Translatab
      * @sinceMinecraft 1.19.4
      */
     @Contract("_ -> this")
-    @NotNull Builder fallback(final @Nullable String fallback);
+    Builder fallback(final @Nullable String fallback);
   }
 }

@@ -27,7 +27,6 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.Spliterator;
 import java.util.function.Supplier;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * An iterable that forwards the {@link #iterator()} and {@link #spliterator()} calls to some {@link Supplier suppliers}.
@@ -46,18 +45,18 @@ public final class ForwardingIterator<T> implements Iterable<T> {
    * @param spliterator the spliterator supplier
    * @since 4.9.0
    */
-  public ForwardingIterator(final @NotNull Supplier<Iterator<T>> iterator, final @NotNull Supplier<Spliterator<T>> spliterator) {
+  public ForwardingIterator(final Supplier<Iterator<T>> iterator, final Supplier<Spliterator<T>> spliterator) {
     this.iterator = Objects.requireNonNull(iterator, "iterator");
     this.spliterator = Objects.requireNonNull(spliterator, "spliterator");
   }
 
   @Override
-  public @NotNull Iterator<T> iterator() {
+  public Iterator<T> iterator() {
     return this.iterator.get();
   }
 
   @Override
-  public @NotNull Spliterator<T> spliterator() {
+  public Spliterator<T> spliterator() {
     return this.spliterator.get();
   }
 }

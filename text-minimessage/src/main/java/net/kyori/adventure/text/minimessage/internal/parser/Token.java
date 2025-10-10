@@ -29,7 +29,6 @@ import java.util.stream.Stream;
 import net.kyori.adventure.internal.Internals;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a token for the lexer.
@@ -119,7 +118,7 @@ public final class Token implements Examinable {
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("startIndex", this.startIndex),
       ExaminableProperty.of("endIndex", this.endIndex),

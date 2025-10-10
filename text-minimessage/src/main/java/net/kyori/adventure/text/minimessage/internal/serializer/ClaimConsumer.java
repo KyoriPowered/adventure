@@ -23,8 +23,6 @@
  */
 package net.kyori.adventure.text.minimessage.internal.serializer;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * A consumer of serialization claims.
  *
@@ -40,7 +38,7 @@ public interface ClaimConsumer {
    * @param styleClaim the claim of a style
    * @since 4.10.0
    */
-  void style(final @NotNull String claimKey, final @NotNull Emitable styleClaim);
+  void style(final String claimKey, final Emitable styleClaim);
 
   /**
    * Submit a component claim for the active component.
@@ -51,7 +49,7 @@ public interface ClaimConsumer {
    * @return whether the claim was successful
    * @since 4.10.0
    */
-  boolean component(final @NotNull Emitable componentClaim);
+  boolean component(final Emitable componentClaim);
 
   /**
    * Get whether a style element has been claimed yet.
@@ -60,7 +58,7 @@ public interface ClaimConsumer {
    * @return whether style is claimed
    * @since 4.10.0
    */
-  boolean styleClaimed(final @NotNull String claimId);
+  boolean styleClaimed(final String claimId);
 
   /**
    * Get whether a component has been claimed yet.

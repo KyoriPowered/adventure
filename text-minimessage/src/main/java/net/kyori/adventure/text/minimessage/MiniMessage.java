@@ -33,8 +33,7 @@ import net.kyori.adventure.text.minimessage.tree.Node;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.PlatformAPI;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * MiniMessage is a textual representation of components.
@@ -51,7 +50,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * @return a simple instance
    * @since 4.10.0
    */
-  static @NotNull MiniMessage miniMessage() {
+  static MiniMessage miniMessage() {
     return MiniMessageImpl.Instances.INSTANCE;
   }
 
@@ -66,7 +65,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * @return the output, with escaped tags
    * @since 4.10.0
    */
-  @NotNull String escapeTags(final @NotNull String input);
+  String escapeTags(final String input);
 
   /**
    * Escapes all known tags in the input message, so that they are ignored in deserialization.
@@ -78,7 +77,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * @return the output, with escaped tags
    * @since 4.10.0
    */
-  @NotNull String escapeTags(final @NotNull String input, final @NotNull TagResolver tagResolver);
+  String escapeTags(final String input, final TagResolver tagResolver);
 
   /**
    * Escapes all known tags in the input message, so that they are ignored in deserialization.
@@ -90,7 +89,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * @return the output, with escaped tags
    * @since 4.10.0
    */
-  default @NotNull String escapeTags(final @NotNull String input, final @NotNull TagResolver... tagResolvers) {
+  default String escapeTags(final String input, final TagResolver... tagResolvers) {
     return this.escapeTags(input, TagResolver.resolver(tagResolvers));
   }
 
@@ -105,7 +104,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * @return the output, without tags
    * @since 4.10.0
    */
-  @NotNull String stripTags(final @NotNull String input);
+  String stripTags(final String input);
 
   /**
    * Removes all known tags in the input message, so that they are ignored in deserialization.
@@ -117,7 +116,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * @return the output, without tags
    * @since 4.10.0
    */
-  @NotNull String stripTags(final @NotNull String input, final @NotNull TagResolver tagResolver);
+  String stripTags(final String input, final TagResolver tagResolver);
 
   /**
    * Removes all known tags in the input message, so that they are ignored in deserialization.
@@ -129,7 +128,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * @return the output, without tags
    * @since 4.10.0
    */
-  default @NotNull String stripTags(final @NotNull String input, final @NotNull TagResolver... tagResolvers) {
+  default String stripTags(final String input, final TagResolver... tagResolvers) {
     return this.stripTags(input, TagResolver.resolver(tagResolvers));
   }
 
@@ -141,7 +140,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * @return the output component
    * @since 4.17.0
    */
-  @NotNull Component deserialize(final @NotNull String input, final @NotNull Pointered target);
+  Component deserialize(final String input, final Pointered target);
 
   /**
    * Deserializes a string into a component, with a tag resolver to parse tags of the form {@code <key>}.
@@ -153,7 +152,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * @return the output component
    * @since 4.10.0
    */
-  @NotNull Component deserialize(final @NotNull String input, final @NotNull TagResolver tagResolver);
+  Component deserialize(final String input, final TagResolver tagResolver);
 
   /**
    * Deserializes a string into a component, with a tag resolver to parse tags of the form {@code <key>} and a target.
@@ -166,7 +165,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * @return the output component
    * @since 4.17.0
    */
-  @NotNull Component deserialize(final @NotNull String input, final @NotNull Pointered target, final @NotNull TagResolver tagResolver);
+  Component deserialize(final String input, final Pointered target, final TagResolver tagResolver);
 
   /**
    * Deserializes a string into a component, with tag resolvers to parse tags of the form {@code <key>}.
@@ -178,7 +177,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * @return the output component
    * @since 4.10.0
    */
-  default @NotNull Component deserialize(final @NotNull String input, final @NotNull TagResolver... tagResolvers) {
+  default Component deserialize(final String input, final TagResolver... tagResolvers) {
     return this.deserialize(input, TagResolver.resolver(tagResolvers));
   }
 
@@ -193,7 +192,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * @return the output component
    * @since 4.17.0
    */
-  default @NotNull Component deserialize(final @NotNull String input, final @NotNull Pointered target, final @NotNull TagResolver... tagResolvers) {
+  default Component deserialize(final String input, final Pointered target, final TagResolver... tagResolvers) {
     return this.deserialize(input, target, TagResolver.resolver(tagResolvers));
   }
 
@@ -205,7 +204,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * @return the root of the resulting tree
    * @since 4.10.0
    */
-  Node.@NotNull Root deserializeToTree(final @NotNull String input);
+  Node.Root deserializeToTree(final String input);
 
   /**
    * Deserializes a string into a tree of parsed elements, with a target.
@@ -216,7 +215,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * @return the root of the resulting tree
    * @since 4.17.0
    */
-  Node.@NotNull Root deserializeToTree(final @NotNull String input, final @NotNull Pointered target);
+  Node.Root deserializeToTree(final String input, final Pointered target);
 
   /**
    * Deserializes a string into a tree of parsed elements, with a tag resolver to parse tags of the form {@code <key>}.
@@ -229,7 +228,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * @return the root of the resulting tree
    * @since 4.10.0
    */
-  Node.@NotNull Root deserializeToTree(final @NotNull String input, final @NotNull TagResolver tagResolver);
+  Node.Root deserializeToTree(final String input, final TagResolver tagResolver);
 
   /**
    * Deserializes a string into a tree of parsed elements, with a tag resolver to parse tags of the form {@code <key>} and a target.
@@ -243,7 +242,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * @return the root of the resulting tree
    * @since 4.17.0
    */
-  Node.@NotNull Root deserializeToTree(final @NotNull String input, final @NotNull Pointered target, final @NotNull TagResolver tagResolver);
+  Node.Root deserializeToTree(final String input, final Pointered target, final TagResolver tagResolver);
 
   /**
    * Deserializes a string into a tree of parsed elements, with a tag resolver to parse tags of the form {@code <key>}.
@@ -256,7 +255,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * @return the root of the resulting tree
    * @since 4.10.0
    */
-  default Node.@NotNull Root deserializeToTree(final @NotNull String input, final @NotNull TagResolver... tagResolvers) {
+  default Node.Root deserializeToTree(final String input, final TagResolver... tagResolvers) {
     return this.deserializeToTree(input, TagResolver.resolver(tagResolvers));
   }
 
@@ -272,7 +271,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * @return the root of the resulting tree
    * @since 4.17.0
    */
-  default Node.@NotNull Root deserializeToTree(final @NotNull String input, final @NotNull Pointered target, final @NotNull TagResolver... tagResolvers) {
+  default Node.Root deserializeToTree(final String input, final Pointered target, final TagResolver... tagResolvers) {
     return this.deserializeToTree(input, target, TagResolver.resolver(tagResolvers));
   }
 
@@ -291,7 +290,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * @return the base tag resolver
    * @since 4.15.0
    */
-  @NotNull TagResolver tags();
+  TagResolver tags();
 
   /**
    * Creates a new {@link MiniMessage.Builder}.
@@ -320,7 +319,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
      * @return this builder
      * @since 4.10.0
      */
-    @NotNull Builder tags(final @NotNull TagResolver tags);
+    Builder tags(final TagResolver tags);
 
     /**
      * Add to the set of known tags this MiniMessage instance can use.
@@ -329,7 +328,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
      * @return this builder
      * @since 4.10.0
      */
-    @NotNull Builder editTags(final @NotNull Consumer<TagResolver.Builder> adder);
+    Builder editTags(final Consumer<TagResolver.Builder> adder);
 
     /**
      * Enables strict mode (disabled by default).
@@ -344,7 +343,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
      * @return this builder
      * @since 4.10.0
      */
-    @NotNull Builder strict(final boolean strict);
+    Builder strict(final boolean strict);
 
     /**
      * Configures if MiniMessage should emit virtual components (enabled by default).
@@ -361,7 +360,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
      * @return this builder.
      * @since 4.19.0
      */
-    @NotNull Builder emitVirtuals(final boolean emitVirtuals);
+    Builder emitVirtuals(final boolean emitVirtuals);
 
     /**
      * Print debug information to the given output (disabled by default).
@@ -375,7 +374,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
      * @return this builder
      * @since 4.10.0
      */
-    @NotNull Builder debug(final @Nullable Consumer<String> debugOutput);
+    Builder debug(final @Nullable Consumer<String> debugOutput);
 
     /**
      * Specify a function that takes the component at the end of the parser process.
@@ -386,7 +385,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
      * @return this builder
      * @since 4.10.0
      */
-    @NotNull Builder postProcessor(final @NotNull UnaryOperator<Component> postProcessor);
+    Builder postProcessor(final UnaryOperator<Component> postProcessor);
 
     /**
      * Specify a function that takes the string at the start of the parser process.
@@ -397,7 +396,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
      * @return this builder
      * @since 4.11.0
      */
-    @NotNull Builder preProcessor(final @NotNull UnaryOperator<String> preProcessor);
+    Builder preProcessor(final UnaryOperator<String> preProcessor);
 
     /**
      * Builds the serializer.
@@ -406,7 +405,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
      * @since 4.10.0
      */
     @Override
-    @NotNull MiniMessage build();
+    MiniMessage build();
   }
 
   /**
@@ -426,7 +425,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
      */
     @ApiStatus.Internal
     @PlatformAPI
-    @NotNull MiniMessage miniMessage();
+    MiniMessage miniMessage();
 
     /**
      * Initialize a {@link Builder} before it is returned to the API caller.
@@ -436,6 +435,6 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
      */
     @ApiStatus.Internal
     @PlatformAPI
-    @NotNull Consumer<Builder> builder();
+    Consumer<Builder> builder();
   }
 }

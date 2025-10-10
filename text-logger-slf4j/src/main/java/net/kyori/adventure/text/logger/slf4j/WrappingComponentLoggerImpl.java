@@ -27,8 +27,7 @@ import java.util.Arrays;
 import java.util.function.Function;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.event.Level;
@@ -63,7 +62,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
     }
   }
 
-  private Object[] maybeSerialize(final @Nullable Object@NotNull... args) {
+  private Object[] maybeSerialize(final @Nullable Object... args) {
     Object[] writable = args;
     for (int i = 0; i < writable.length; i++) {
       if (writable[i] instanceof ComponentLike) {
@@ -147,12 +146,12 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public @NotNull LoggingEventBuilder makeLoggingEventBuilder(final @NotNull Level level) {
+  public LoggingEventBuilder makeLoggingEventBuilder(final Level level) {
     return this.logger.makeLoggingEventBuilder(level);
   }
 
   @Override
-  public @NotNull LoggingEventBuilder atLevel(final @NotNull Level level) {
+  public LoggingEventBuilder atLevel(final Level level) {
     if (this.logger.isEnabledForLevel(level)) {
       return this.logger.makeLoggingEventBuilder(level);
     } else {
@@ -163,7 +162,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   // Standard string methods, to process potential Component arguments
 
   @Override
-  public void trace(final @NotNull String format) {
+  public void trace(final String format) {
     if (!this.isTraceEnabled()) return;
 
     if (this.isLocationAware) {
@@ -181,7 +180,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void trace(final @NotNull String format, final @Nullable Object arg) {
+  public void trace(final String format, final @Nullable Object arg) {
     if (!this.isTraceEnabled()) return;
 
     if (this.isLocationAware) {
@@ -199,7 +198,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void trace(final @NotNull String format, final @Nullable Object arg1, final @Nullable Object arg2) {
+  public void trace(final String format, final @Nullable Object arg1, final @Nullable Object arg2) {
     if (!this.isTraceEnabled()) return;
 
     if (this.isLocationAware) {
@@ -217,7 +216,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void trace(final @NotNull String format, final @Nullable Object @NotNull... arguments) {
+  public void trace(final String format, final @Nullable Object ... arguments) {
     if (!this.isTraceEnabled()) return;
 
     if (this.isLocationAware) {
@@ -235,7 +234,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void trace(final @NotNull String msg, final @Nullable Throwable t) {
+  public void trace(final String msg, final @Nullable Throwable t) {
     if (!this.isTraceEnabled()) return;
 
     if (this.isLocationAware) {
@@ -253,7 +252,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void trace(final @NotNull Marker marker, final @NotNull String msg) {
+  public void trace(final Marker marker, final String msg) {
     if (!this.isTraceEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -271,7 +270,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void trace(final @NotNull Marker marker, final @NotNull String format, final @Nullable Object arg) {
+  public void trace(final Marker marker, final String format, final @Nullable Object arg) {
     if (!this.isTraceEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -289,7 +288,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void trace(final @NotNull Marker marker, final @NotNull String format, final @Nullable Object arg1, final @Nullable Object arg2) {
+  public void trace(final Marker marker, final String format, final @Nullable Object arg1, final @Nullable Object arg2) {
     if (!this.isTraceEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -307,7 +306,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void trace(final @NotNull Marker marker, final @NotNull String format, final @Nullable Object @NotNull... argArray) {
+  public void trace(final Marker marker, final String format, final @Nullable Object ... argArray) {
     if (!this.isTraceEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -325,7 +324,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void trace(final @NotNull Marker marker, final @NotNull String msg, final @Nullable Throwable t) {
+  public void trace(final Marker marker, final String msg, final @Nullable Throwable t) {
     if (!this.isTraceEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -343,7 +342,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void debug(final @NotNull String format) {
+  public void debug(final String format) {
     if (!this.isDebugEnabled()) return;
 
     if (this.isLocationAware) {
@@ -361,7 +360,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void debug(final @NotNull String format, final @Nullable Object arg) {
+  public void debug(final String format, final @Nullable Object arg) {
     if (!this.isDebugEnabled()) return;
 
     if (this.isLocationAware) {
@@ -379,7 +378,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void debug(final @NotNull String format, final @Nullable Object arg1, final @Nullable Object arg2) {
+  public void debug(final String format, final @Nullable Object arg1, final @Nullable Object arg2) {
     if (!this.isDebugEnabled()) return;
 
     if (this.isLocationAware) {
@@ -397,7 +396,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void debug(final @NotNull String format, final @Nullable Object @NotNull... arguments) {
+  public void debug(final String format, final @Nullable Object ... arguments) {
     if (!this.isDebugEnabled()) return;
 
     if (this.isLocationAware) {
@@ -415,7 +414,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void debug(final @NotNull String msg, final @Nullable Throwable t) {
+  public void debug(final String msg, final @Nullable Throwable t) {
     if (!this.isDebugEnabled()) return;
 
     if (this.isLocationAware) {
@@ -433,7 +432,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void debug(final @NotNull Marker marker, final @NotNull String msg) {
+  public void debug(final Marker marker, final String msg) {
     if (!this.isDebugEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -451,7 +450,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void debug(final @NotNull Marker marker, final @NotNull String format, final @Nullable Object arg) {
+  public void debug(final Marker marker, final String format, final @Nullable Object arg) {
     if (!this.isDebugEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -469,7 +468,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void debug(final @NotNull Marker marker, final @NotNull String format, final @Nullable Object arg1, final @Nullable Object arg2) {
+  public void debug(final Marker marker, final String format, final @Nullable Object arg1, final @Nullable Object arg2) {
     if (!this.isDebugEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -487,7 +486,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void debug(final @NotNull Marker marker, final @NotNull String format, final @Nullable Object @NotNull... argArray) {
+  public void debug(final Marker marker, final String format, final @Nullable Object ... argArray) {
     if (!this.isDebugEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -505,7 +504,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void debug(final @NotNull Marker marker, final @NotNull String msg, final @Nullable Throwable t) {
+  public void debug(final Marker marker, final String msg, final @Nullable Throwable t) {
     if (!this.isDebugEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -523,7 +522,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void info(final @NotNull String format) {
+  public void info(final String format) {
     if (!this.isInfoEnabled()) return;
 
     if (this.isLocationAware) {
@@ -541,7 +540,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void info(final @NotNull String format, final @Nullable Object arg) {
+  public void info(final String format, final @Nullable Object arg) {
     if (!this.isInfoEnabled()) return;
 
     if (this.isLocationAware) {
@@ -559,7 +558,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void info(final @NotNull String format, final @Nullable Object arg1, final @Nullable Object arg2) {
+  public void info(final String format, final @Nullable Object arg1, final @Nullable Object arg2) {
     if (!this.isInfoEnabled()) return;
 
     if (this.isLocationAware) {
@@ -577,7 +576,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void info(final @NotNull String format, final @Nullable Object @NotNull... arguments) {
+  public void info(final String format, final @Nullable Object ... arguments) {
     if (!this.isInfoEnabled()) return;
 
     if (this.isLocationAware) {
@@ -595,7 +594,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void info(final @NotNull String msg, final @Nullable Throwable t) {
+  public void info(final String msg, final @Nullable Throwable t) {
     if (!this.isInfoEnabled()) return;
 
     if (this.isLocationAware) {
@@ -613,7 +612,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void info(final @NotNull Marker marker, final @NotNull String msg) {
+  public void info(final Marker marker, final String msg) {
     if (!this.isInfoEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -631,7 +630,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void info(final @NotNull Marker marker, final @NotNull String format, final @Nullable Object arg) {
+  public void info(final Marker marker, final String format, final @Nullable Object arg) {
     if (!this.isInfoEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -649,7 +648,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void info(final @NotNull Marker marker, final @NotNull String format, final @Nullable Object arg1, final @Nullable Object arg2) {
+  public void info(final Marker marker, final String format, final @Nullable Object arg1, final @Nullable Object arg2) {
     if (!this.isInfoEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -667,7 +666,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void info(final @NotNull Marker marker, final @NotNull String format, final @Nullable Object @NotNull... argArray) {
+  public void info(final Marker marker, final String format, final @Nullable Object ... argArray) {
     if (!this.isInfoEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -685,7 +684,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void info(final @NotNull Marker marker, final @NotNull String msg, final @Nullable Throwable t) {
+  public void info(final Marker marker, final String msg, final @Nullable Throwable t) {
     if (!this.isInfoEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -703,7 +702,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void warn(final @NotNull String format) {
+  public void warn(final String format) {
     if (!this.isWarnEnabled()) return;
 
     if (this.isLocationAware) {
@@ -721,7 +720,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void warn(final @NotNull String format, final @Nullable Object arg) {
+  public void warn(final String format, final @Nullable Object arg) {
     if (!this.isWarnEnabled()) return;
 
     if (this.isLocationAware) {
@@ -739,7 +738,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void warn(final @NotNull String format, final @Nullable Object arg1, final @Nullable Object arg2) {
+  public void warn(final String format, final @Nullable Object arg1, final @Nullable Object arg2) {
     if (!this.isWarnEnabled()) return;
 
     if (this.isLocationAware) {
@@ -757,7 +756,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void warn(final @NotNull String format, final @Nullable Object @NotNull... arguments) {
+  public void warn(final String format, final @Nullable Object ... arguments) {
     if (!this.isWarnEnabled()) return;
 
     if (this.isLocationAware) {
@@ -775,7 +774,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void warn(final @NotNull String msg, final @Nullable Throwable t) {
+  public void warn(final String msg, final @Nullable Throwable t) {
     if (!this.isWarnEnabled()) return;
 
     if (this.isLocationAware) {
@@ -793,7 +792,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void warn(final @NotNull Marker marker, final @NotNull String msg) {
+  public void warn(final Marker marker, final String msg) {
     if (!this.isWarnEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -811,7 +810,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void warn(final @NotNull Marker marker, final @NotNull String format, final @Nullable Object arg) {
+  public void warn(final Marker marker, final String format, final @Nullable Object arg) {
     if (!this.isWarnEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -829,7 +828,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void warn(final @NotNull Marker marker, final @NotNull String format, final @Nullable Object arg1, final @Nullable Object arg2) {
+  public void warn(final Marker marker, final String format, final @Nullable Object arg1, final @Nullable Object arg2) {
     if (!this.isWarnEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -847,7 +846,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void warn(final @NotNull Marker marker, final @NotNull String format, final @Nullable Object @NotNull... argArray) {
+  public void warn(final Marker marker, final String format, final @Nullable Object ... argArray) {
     if (!this.isWarnEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -865,7 +864,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void warn(final @NotNull Marker marker, final @NotNull String msg, final @Nullable Throwable t) {
+  public void warn(final Marker marker, final String msg, final @Nullable Throwable t) {
     if (!this.isWarnEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -883,7 +882,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void error(final @NotNull String format) {
+  public void error(final String format) {
     if (!this.isErrorEnabled()) return;
 
     if (this.isLocationAware) {
@@ -901,7 +900,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void error(final @NotNull String format, final @Nullable Object arg) {
+  public void error(final String format, final @Nullable Object arg) {
     if (!this.isErrorEnabled()) return;
 
     if (this.isLocationAware) {
@@ -919,7 +918,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void error(final @NotNull String format, final @Nullable Object arg1, final @Nullable Object arg2) {
+  public void error(final String format, final @Nullable Object arg1, final @Nullable Object arg2) {
     if (!this.isErrorEnabled()) return;
 
     if (this.isLocationAware) {
@@ -937,7 +936,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void error(final @NotNull String format, final @Nullable Object @NotNull... arguments) {
+  public void error(final String format, final @Nullable Object ... arguments) {
     if (!this.isErrorEnabled()) return;
 
     if (this.isLocationAware) {
@@ -955,7 +954,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void error(final @NotNull String msg, final @Nullable Throwable t) {
+  public void error(final String msg, final @Nullable Throwable t) {
     if (!this.isErrorEnabled()) return;
 
     if (this.isLocationAware) {
@@ -973,7 +972,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void error(final @NotNull Marker marker, final @NotNull String msg) {
+  public void error(final Marker marker, final String msg) {
     if (!this.isErrorEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -991,7 +990,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void error(final @NotNull Marker marker, final @NotNull String format, final @Nullable Object arg) {
+  public void error(final Marker marker, final String format, final @Nullable Object arg) {
     if (!this.isErrorEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -1009,7 +1008,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void error(final @NotNull Marker marker, final @NotNull String format, final @Nullable Object arg1, final @Nullable Object arg2) {
+  public void error(final Marker marker, final String format, final @Nullable Object arg1, final @Nullable Object arg2) {
     if (!this.isErrorEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -1027,7 +1026,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void error(final @NotNull Marker marker, final @NotNull String format, final @Nullable Object @NotNull... argArray) {
+  public void error(final Marker marker, final String format, final @Nullable Object ... argArray) {
     if (!this.isErrorEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -1045,7 +1044,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void error(final @NotNull Marker marker, final @NotNull String msg, final @Nullable Throwable t) {
+  public void error(final Marker marker, final String msg, final @Nullable Throwable t) {
     if (!this.isErrorEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -1065,7 +1064,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   // Component-primary methods
 
   @Override
-  public void trace(final @NotNull Component format) {
+  public void trace(final Component format) {
     if (!this.isTraceEnabled()) return;
 
     if (this.isLocationAware) {
@@ -1083,7 +1082,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void trace(final @NotNull Component format, final @Nullable Object arg) {
+  public void trace(final Component format, final @Nullable Object arg) {
     if (!this.isTraceEnabled()) return;
 
     if (this.isLocationAware) {
@@ -1101,7 +1100,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void trace(final @NotNull Component format, final @Nullable Object arg1, final @Nullable Object arg2) {
+  public void trace(final Component format, final @Nullable Object arg1, final @Nullable Object arg2) {
     if (!this.isTraceEnabled()) return;
 
     if (this.isLocationAware) {
@@ -1119,7 +1118,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void trace(final @NotNull Component format, final @Nullable Object @NotNull... arguments) {
+  public void trace(final Component format, final @Nullable Object ... arguments) {
     if (!this.isTraceEnabled()) return;
 
     if (this.isLocationAware) {
@@ -1137,7 +1136,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void trace(final @NotNull Component msg, final @Nullable Throwable t) {
+  public void trace(final Component msg, final @Nullable Throwable t) {
     if (!this.isTraceEnabled()) return;
 
     if (this.isLocationAware) {
@@ -1155,7 +1154,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void trace(final @NotNull Marker marker, final @NotNull Component msg) {
+  public void trace(final Marker marker, final Component msg) {
     if (!this.isTraceEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -1173,7 +1172,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void trace(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object arg) {
+  public void trace(final Marker marker, final Component format, final @Nullable Object arg) {
     if (!this.isTraceEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -1191,7 +1190,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void trace(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object arg1, final @Nullable Object arg2) {
+  public void trace(final Marker marker, final Component format, final @Nullable Object arg1, final @Nullable Object arg2) {
     if (!this.isTraceEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -1209,7 +1208,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void trace(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object @NotNull... argArray) {
+  public void trace(final Marker marker, final Component format, final @Nullable Object ... argArray) {
     if (!this.isTraceEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -1227,7 +1226,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void trace(final @NotNull Marker marker, final @NotNull Component msg, final @Nullable Throwable t) {
+  public void trace(final Marker marker, final Component msg, final @Nullable Throwable t) {
     if (!this.isTraceEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -1245,7 +1244,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void debug(final @NotNull Component format) {
+  public void debug(final Component format) {
     if (!this.isDebugEnabled()) return;
 
     if (this.isLocationAware) {
@@ -1263,7 +1262,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void debug(final @NotNull Component format, final @Nullable Object arg) {
+  public void debug(final Component format, final @Nullable Object arg) {
     if (!this.isDebugEnabled()) return;
 
     if (this.isLocationAware) {
@@ -1281,7 +1280,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void debug(final @NotNull Component format, final @Nullable Object arg1, final @Nullable Object arg2) {
+  public void debug(final Component format, final @Nullable Object arg1, final @Nullable Object arg2) {
     if (!this.isDebugEnabled()) return;
 
     if (this.isLocationAware) {
@@ -1299,7 +1298,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void debug(final @NotNull Component format, final @Nullable Object @NotNull... arguments) {
+  public void debug(final Component format, final @Nullable Object ... arguments) {
     if (!this.isDebugEnabled()) return;
 
     if (this.isLocationAware) {
@@ -1317,7 +1316,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void debug(final @NotNull Component msg, final @Nullable Throwable t) {
+  public void debug(final Component msg, final @Nullable Throwable t) {
     if (!this.isDebugEnabled()) return;
 
     if (this.isLocationAware) {
@@ -1335,7 +1334,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void debug(final @NotNull Marker marker, final @NotNull Component msg) {
+  public void debug(final Marker marker, final Component msg) {
     if (!this.isDebugEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -1353,7 +1352,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void debug(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object arg) {
+  public void debug(final Marker marker, final Component format, final @Nullable Object arg) {
     if (!this.isDebugEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -1371,7 +1370,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void debug(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object arg1, final @Nullable Object arg2) {
+  public void debug(final Marker marker, final Component format, final @Nullable Object arg1, final @Nullable Object arg2) {
     if (!this.isDebugEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -1389,7 +1388,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void debug(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object @NotNull... argArray) {
+  public void debug(final Marker marker, final Component format, final @Nullable Object ... argArray) {
     if (!this.isDebugEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -1407,7 +1406,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void debug(final @NotNull Marker marker, final @NotNull Component msg, final @Nullable Throwable t) {
+  public void debug(final Marker marker, final Component msg, final @Nullable Throwable t) {
     if (!this.isDebugEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -1425,7 +1424,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void info(final @NotNull Component format) {
+  public void info(final Component format) {
     if (!this.isInfoEnabled()) return;
 
     if (this.isLocationAware) {
@@ -1443,7 +1442,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void info(final @NotNull Component format, final @Nullable Object arg) {
+  public void info(final Component format, final @Nullable Object arg) {
     if (!this.isInfoEnabled()) return;
 
     if (this.isLocationAware) {
@@ -1461,7 +1460,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void info(final @NotNull Component format, final @Nullable Object arg1, final @Nullable Object arg2) {
+  public void info(final Component format, final @Nullable Object arg1, final @Nullable Object arg2) {
     if (!this.isInfoEnabled()) return;
 
     if (this.isLocationAware) {
@@ -1479,7 +1478,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void info(final @NotNull Component format, final @Nullable Object @NotNull... arguments) {
+  public void info(final Component format, final @Nullable Object ... arguments) {
     if (!this.isInfoEnabled()) return;
 
     if (this.isLocationAware) {
@@ -1497,7 +1496,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void info(final @NotNull Component msg, final @Nullable Throwable t) {
+  public void info(final Component msg, final @Nullable Throwable t) {
     if (!this.isInfoEnabled()) return;
 
     if (this.isLocationAware) {
@@ -1515,7 +1514,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void info(final @NotNull Marker marker, final @NotNull Component msg) {
+  public void info(final Marker marker, final Component msg) {
     if (!this.isInfoEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -1533,7 +1532,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void info(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object arg) {
+  public void info(final Marker marker, final Component format, final @Nullable Object arg) {
     if (!this.isInfoEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -1551,7 +1550,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void info(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object arg1, final @Nullable Object arg2) {
+  public void info(final Marker marker, final Component format, final @Nullable Object arg1, final @Nullable Object arg2) {
     if (!this.isInfoEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -1569,7 +1568,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void info(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object @NotNull... argArray) {
+  public void info(final Marker marker, final Component format, final @Nullable Object ... argArray) {
     if (!this.isInfoEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -1587,7 +1586,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void info(final @NotNull Marker marker, final @NotNull Component msg, final @Nullable Throwable t) {
+  public void info(final Marker marker, final Component msg, final @Nullable Throwable t) {
     if (!this.isInfoEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -1605,7 +1604,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void warn(final @NotNull Component format) {
+  public void warn(final Component format) {
     if (!this.isWarnEnabled()) return;
 
     if (this.isLocationAware) {
@@ -1623,7 +1622,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void warn(final @NotNull Component format, final @Nullable Object arg) {
+  public void warn(final Component format, final @Nullable Object arg) {
     if (!this.isWarnEnabled()) return;
 
     if (this.isLocationAware) {
@@ -1641,7 +1640,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void warn(final @NotNull Component format, final @Nullable Object arg1, final @Nullable Object arg2) {
+  public void warn(final Component format, final @Nullable Object arg1, final @Nullable Object arg2) {
     if (!this.isWarnEnabled()) return;
 
     if (this.isLocationAware) {
@@ -1659,7 +1658,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void warn(final @NotNull Component format, final @Nullable Object @NotNull... arguments) {
+  public void warn(final Component format, final @Nullable Object ... arguments) {
     if (!this.isWarnEnabled()) return;
 
     if (this.isLocationAware) {
@@ -1677,7 +1676,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void warn(final @NotNull Component msg, final @Nullable Throwable t) {
+  public void warn(final Component msg, final @Nullable Throwable t) {
     if (!this.isWarnEnabled()) return;
 
     if (this.isLocationAware) {
@@ -1695,7 +1694,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void warn(final @NotNull Marker marker, final @NotNull Component msg) {
+  public void warn(final Marker marker, final Component msg) {
     if (!this.isWarnEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -1713,7 +1712,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void warn(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object arg) {
+  public void warn(final Marker marker, final Component format, final @Nullable Object arg) {
     if (!this.isWarnEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -1731,7 +1730,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void warn(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object arg1, final @Nullable Object arg2) {
+  public void warn(final Marker marker, final Component format, final @Nullable Object arg1, final @Nullable Object arg2) {
     if (!this.isWarnEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -1749,7 +1748,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void warn(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object @NotNull... argArray) {
+  public void warn(final Marker marker, final Component format, final @Nullable Object ... argArray) {
     if (!this.isWarnEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -1767,7 +1766,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void warn(final @NotNull Marker marker, final @NotNull Component msg, final @Nullable Throwable t) {
+  public void warn(final Marker marker, final Component msg, final @Nullable Throwable t) {
     if (!this.isWarnEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -1785,7 +1784,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void error(final @NotNull Component format) {
+  public void error(final Component format) {
     if (!this.isErrorEnabled()) return;
 
     if (this.isLocationAware) {
@@ -1803,7 +1802,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void error(final @NotNull Component format, final @Nullable Object arg) {
+  public void error(final Component format, final @Nullable Object arg) {
     if (!this.isErrorEnabled()) return;
 
     if (this.isLocationAware) {
@@ -1821,7 +1820,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void error(final @NotNull Component format, final @Nullable Object arg1, final @Nullable Object arg2) {
+  public void error(final Component format, final @Nullable Object arg1, final @Nullable Object arg2) {
     if (!this.isErrorEnabled()) return;
 
     if (this.isLocationAware) {
@@ -1839,7 +1838,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void error(final @NotNull Component format, final @Nullable Object @NotNull... arguments) {
+  public void error(final Component format, final @Nullable Object ... arguments) {
     if (!this.isErrorEnabled()) return;
 
     if (this.isLocationAware) {
@@ -1857,7 +1856,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void error(final @NotNull Component msg, final @Nullable Throwable t) {
+  public void error(final Component msg, final @Nullable Throwable t) {
     if (!this.isErrorEnabled()) return;
 
     if (this.isLocationAware) {
@@ -1875,7 +1874,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void error(final @NotNull Marker marker, final @NotNull Component msg) {
+  public void error(final Marker marker, final Component msg) {
     if (!this.isErrorEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -1893,7 +1892,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void error(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object arg) {
+  public void error(final Marker marker, final Component format, final @Nullable Object arg) {
     if (!this.isErrorEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -1911,7 +1910,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void error(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object arg1, final @Nullable Object arg2) {
+  public void error(final Marker marker, final Component format, final @Nullable Object arg1, final @Nullable Object arg2) {
     if (!this.isErrorEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -1929,7 +1928,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void error(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object @NotNull... argArray) {
+  public void error(final Marker marker, final Component format, final @Nullable Object ... argArray) {
     if (!this.isErrorEnabled(marker)) return;
 
     if (this.isLocationAware) {
@@ -1947,7 +1946,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public void error(final @NotNull Marker marker, final @NotNull Component msg, final @Nullable Throwable t) {
+  public void error(final Marker marker, final Component msg, final @Nullable Throwable t) {
     if (!this.isErrorEnabled(marker)) return;
 
     if (this.isLocationAware) {

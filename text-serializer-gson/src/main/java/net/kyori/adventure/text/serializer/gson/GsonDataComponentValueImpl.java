@@ -30,23 +30,22 @@ import java.util.stream.Stream;
 import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.event.DataComponentValue;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 sealed class GsonDataComponentValueImpl implements GsonDataComponentValue {
   private final JsonElement element;
 
-  GsonDataComponentValueImpl(final @NotNull JsonElement element) {
+  GsonDataComponentValueImpl(final JsonElement element) {
     this.element = element;
   }
 
   @Override
-  public @NotNull JsonElement element() {
+  public JsonElement element() {
     return this.element;
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("element", this.element)
     );

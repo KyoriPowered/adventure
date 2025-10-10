@@ -37,8 +37,7 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.PlatformAPI;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A legacy component serializer.
@@ -59,7 +58,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
    * @return a component serializer for legacy serialization and deserialization
    * @since 4.0.0
    */
-  static @NotNull LegacyComponentSerializer legacySection() {
+  static LegacyComponentSerializer legacySection() {
     return LegacyComponentSerializerImpl.Instances.SECTION;
   }
 
@@ -73,7 +72,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
    * @return a component serializer for legacy serialization and deserialization
    * @since 4.0.0
    */
-  static @NotNull LegacyComponentSerializer legacyAmpersand() {
+  static LegacyComponentSerializer legacyAmpersand() {
     return LegacyComponentSerializerImpl.Instances.AMPERSAND;
   }
 
@@ -86,7 +85,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
    * @return a component serializer for legacy serialization and deserialization
    * @since 4.0.0
    */
-  static @NotNull LegacyComponentSerializer legacy(final char legacyCharacter) {
+  static LegacyComponentSerializer legacy(final char legacyCharacter) {
     if (legacyCharacter == SECTION_CHAR) {
       return legacySection();
     } else if (legacyCharacter == AMPERSAND_CHAR) {
@@ -112,7 +111,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
    * @return the builder
    * @since 4.0.0
    */
-  static @NotNull Builder builder() {
+  static Builder builder() {
     return new LegacyComponentSerializerImpl.BuilderImpl();
   }
 
@@ -144,7 +143,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
    * @return the component
    */
   @Override
-  @NotNull TextComponent deserialize(final @NotNull String input);
+  TextComponent deserialize(final String input);
 
   /**
    * Serializes a component into a legacy {@link String}.
@@ -153,10 +152,10 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
    * @return the string
    */
   @Override
-  @NotNull String serialize(final @NotNull Component component);
+  String serialize(final Component component);
 
   // TODO: new common builder interface?
-  @NotNull Builder toBuilder();
+  Builder toBuilder();
 
   /**
    * A builder for {@link LegacyComponentSerializer}.
@@ -171,7 +170,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
      * @return this builder
      * @since 4.0.0
      */
-    @NotNull Builder character(final char legacyCharacter);
+    Builder character(final char legacyCharacter);
 
     /**
      * Sets the legacy hex character used by the serializer.
@@ -180,7 +179,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
      * @return this builder
      * @since 4.0.0
      */
-    @NotNull Builder hexCharacter(final char legacyHexCharacter);
+    Builder hexCharacter(final char legacyHexCharacter);
 
     /**
      * Sets that the serializer should extract URLs into {@link ClickEventImpl}s
@@ -189,7 +188,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
      * @return this builder
      * @since 4.0.0
      */
-    @NotNull Builder extractUrls();
+    Builder extractUrls();
 
     /**
      * Sets that the serializer should extract URLs into {@link ClickEventImpl}s
@@ -199,7 +198,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
      * @return this builder
      * @since 4.2.0
      */
-    @NotNull Builder extractUrls(final @NotNull Pattern pattern);
+    Builder extractUrls(final Pattern pattern);
 
     /**
      * Sets that the serializer should extract URLs into {@link ClickEventImpl}s
@@ -209,7 +208,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
      * @return this builder
      * @since 4.0.0
      */
-    @NotNull Builder extractUrls(final @Nullable Style style);
+    Builder extractUrls(final @Nullable Style style);
 
     /**
      * Sets that the serializer should extract URLs into {@link ClickEventImpl}s
@@ -220,7 +219,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
      * @return this builder
      * @since 4.2.0
      */
-    @NotNull Builder extractUrls(final @NotNull Pattern pattern, final @Nullable Style style);
+    Builder extractUrls(final Pattern pattern, final @Nullable Style style);
 
     /**
      * Sets that the serializer should support hex colors.
@@ -230,7 +229,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
      * @return this builder
      * @since 4.0.0
      */
-    @NotNull Builder hexColors();
+    Builder hexColors();
 
     /**
      * Sets that the serializer should use the '&amp;x' repeated code format when serializing hex
@@ -249,7 +248,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
      * @return this builder
      * @since 4.0.0
      */
-    @NotNull Builder useUnusualXRepeatedCharacterHexFormat();
+    Builder useUnusualXRepeatedCharacterHexFormat();
 
     /**
      * Use this component flattener to convert components into plain text.
@@ -260,7 +259,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
      * @return this builder
      * @since 4.7.0
      */
-    @NotNull Builder flattener(final @NotNull ComponentFlattener flattener);
+    Builder flattener(final ComponentFlattener flattener);
 
     /**
      * Sets the formats to use.
@@ -269,7 +268,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
      * @return this builder
      * @since 4.14.0
      */
-    @NotNull Builder formats(final @NotNull List<CharacterAndFormat> formats);
+    Builder formats(final List<CharacterAndFormat> formats);
 
     /**
      * Builds the serializer.
@@ -277,7 +276,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
      * @return the built serializer
      */
     @Override
-    @NotNull LegacyComponentSerializer build();
+    LegacyComponentSerializer build();
   }
 
   /**
@@ -296,7 +295,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
      */
     @ApiStatus.Internal
     @PlatformAPI
-    @NotNull LegacyComponentSerializer legacyAmpersand();
+    LegacyComponentSerializer legacyAmpersand();
 
     /**
      * Provides a {@link LegacyComponentSerializer} using {@link #SECTION_CHAR}.
@@ -306,7 +305,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
      */
     @ApiStatus.Internal
     @PlatformAPI
-    @NotNull LegacyComponentSerializer legacySection();
+    LegacyComponentSerializer legacySection();
 
     /**
      * Completes the building process of {@link Builder}.
@@ -316,6 +315,6 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
      */
     @ApiStatus.Internal
     @PlatformAPI
-    @NotNull Consumer<Builder> legacy();
+    Consumer<Builder> legacy();
   }
 }

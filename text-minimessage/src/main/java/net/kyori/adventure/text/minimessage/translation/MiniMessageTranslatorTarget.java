@@ -26,22 +26,21 @@ package net.kyori.adventure.text.minimessage.translation;
 import net.kyori.adventure.pointer.Pointered;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.VirtualComponentRenderer;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
 final class MiniMessageTranslatorTarget implements VirtualComponentRenderer<Void> {
   private final Pointered pointered;
 
-  MiniMessageTranslatorTarget(final @NotNull Pointered pointered) {
+  MiniMessageTranslatorTarget(final Pointered pointered) {
     this.pointered = pointered;
   }
 
-  @NotNull Pointered pointered() {
+  Pointered pointered() {
     return this.pointered;
   }
 
   @Override
-  public @UnknownNullability ComponentLike apply(final @NotNull Void context) {
+  public @UnknownNullability ComponentLike apply(final Void context) {
     return null;
   }
 }

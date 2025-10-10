@@ -26,7 +26,6 @@ package net.kyori.adventure.text;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.object.ObjectContents;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Displays a non-text object.
@@ -41,7 +40,7 @@ public sealed interface ObjectComponent extends ScopedComponent<ObjectComponent>
    * @return the contents
    * @since 4.25.0
    */
-  @NotNull ObjectContents contents();
+  ObjectContents contents();
 
   /**
    * Creates a copy of this object component with the given contents.
@@ -50,10 +49,10 @@ public sealed interface ObjectComponent extends ScopedComponent<ObjectComponent>
    * @return new object component
    * @since 4.25.0
    */
-  @NotNull ObjectComponent contents(@NotNull ObjectContents contents);
+  ObjectComponent contents(ObjectContents contents);
 
   @Override
-  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  default Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.concat(
       Stream.of(ExaminableProperty.of("contents", this.contents())),
       ScopedComponent.super.examinableProperties()
@@ -73,6 +72,6 @@ public sealed interface ObjectComponent extends ScopedComponent<ObjectComponent>
      * @return this builder
      * @since 4.25.0
      */
-    @NotNull Builder contents(@NotNull ObjectContents objectContents);
+    Builder contents(ObjectContents objectContents);
   }
 }

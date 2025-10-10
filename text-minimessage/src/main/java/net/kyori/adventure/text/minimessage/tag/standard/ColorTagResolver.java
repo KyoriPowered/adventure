@@ -35,8 +35,7 @@ import net.kyori.adventure.text.minimessage.internal.serializer.StyleClaim;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A transformation applying a single text color.
@@ -74,7 +73,7 @@ final class ColorTagResolver implements TagResolver, SerializableResolver.Single
   }
 
   @Override
-  public @Nullable Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue args, final @NotNull Context ctx) throws ParsingException {
+  public @Nullable Tag resolve(final String name, final ArgumentQueue args, final Context ctx) throws ParsingException {
     if (!this.has(name)) {
       return null;
     }
@@ -103,7 +102,7 @@ final class ColorTagResolver implements TagResolver, SerializableResolver.Single
     return color;
   }
 
-  static @NotNull TextColor resolveColor(final @NotNull String colorName, final @NotNull Context ctx) throws ParsingException {
+  static TextColor resolveColor(final String colorName, final Context ctx) throws ParsingException {
     final TextColor color = resolveColorOrNull(colorName);
     if (color == null) {
       throw ctx.newException(String.format("Unable to parse a color from '%s'. Please use named colours or hex (#RRGGBB) colors.", colorName));
@@ -112,7 +111,7 @@ final class ColorTagResolver implements TagResolver, SerializableResolver.Single
   }
 
   @Override
-  public boolean has(final @NotNull String name) {
+  public boolean has(final String name) {
     return isColorOrAbbreviation(name)
       || NamedTextColor.NAMES.value(name) != null
       || COLOR_ALIASES.containsKey(name)

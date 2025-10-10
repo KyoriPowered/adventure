@@ -27,9 +27,7 @@ import java.util.Collections;
 import java.util.UUID;
 import net.kyori.adventure.key.Key;
 import net.kyori.examination.Examinable;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 import static java.util.Objects.requireNonNull;
 
@@ -49,7 +47,7 @@ public sealed interface ObjectContents extends Examinable permits SpriteObjectCo
    * @since 4.25.0
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull SpriteObjectContents sprite(final @NotNull Key atlas, final @NotNull Key sprite) {
+  static SpriteObjectContents sprite(final Key atlas, final Key sprite) {
     return new SpriteObjectContentsImpl(requireNonNull(atlas, "atlas"), requireNonNull(sprite, "sprite"));
   }
 
@@ -61,7 +59,7 @@ public sealed interface ObjectContents extends Examinable permits SpriteObjectCo
    * @since 4.25.0
    */
   @Contract(value = "_ -> new", pure = true)
-  static @NotNull SpriteObjectContents sprite(final @NotNull Key sprite) {
+  static SpriteObjectContents sprite(final Key sprite) {
     return new SpriteObjectContentsImpl(SpriteObjectContents.DEFAULT_ATLAS, requireNonNull(sprite, "sprite"));
   }
 
@@ -72,7 +70,7 @@ public sealed interface ObjectContents extends Examinable permits SpriteObjectCo
    * @since 4.25.0
    */
   @Contract(value = "-> new", pure = true)
-  static PlayerHeadObjectContents.@NotNull Builder playerHead() {
+  static PlayerHeadObjectContents.Builder playerHead() {
     return new PlayerHeadObjectContentsImpl.BuilderImpl();
   }
 
@@ -84,7 +82,7 @@ public sealed interface ObjectContents extends Examinable permits SpriteObjectCo
    * @since 4.25.0
    */
   @Contract(value = "_ -> new", pure = true)
-  static @NotNull PlayerHeadObjectContents playerHead(final @NotNull String name) {
+  static PlayerHeadObjectContents playerHead(final String name) {
     return new PlayerHeadObjectContentsImpl(name, null, Collections.emptyList(), true, null);
   }
 
@@ -96,7 +94,7 @@ public sealed interface ObjectContents extends Examinable permits SpriteObjectCo
    * @since 4.25.0
    */
   @Contract(value = "_ -> new", pure = true)
-  static @NotNull PlayerHeadObjectContents playerHead(final @NotNull UUID id) {
+  static PlayerHeadObjectContents playerHead(final UUID id) {
     return new PlayerHeadObjectContentsImpl(null, id, Collections.emptyList(), true, null);
   }
 
@@ -108,7 +106,7 @@ public sealed interface ObjectContents extends Examinable permits SpriteObjectCo
    * @since 4.25.0
    */
   @Contract(value = "_ -> new", pure = true)
-  static @NotNull PlayerHeadObjectContents playerHead(final PlayerHeadObjectContents.@NotNull SkinSource skinSource) {
+  static PlayerHeadObjectContents playerHead(final PlayerHeadObjectContents.SkinSource skinSource) {
     return playerHead().skin(skinSource).build();
   }
 }

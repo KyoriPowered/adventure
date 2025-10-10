@@ -36,7 +36,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.object.ObjectContents;
 import net.kyori.adventure.text.object.SpriteObjectContents;
 import org.intellij.lang.annotations.Subst;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A sprite object tag.

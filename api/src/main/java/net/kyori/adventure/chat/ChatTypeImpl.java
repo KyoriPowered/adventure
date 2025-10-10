@@ -26,19 +26,18 @@ package net.kyori.adventure.chat;
 import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-record ChatTypeImpl(@NotNull Key key) implements ChatType {
+record ChatTypeImpl(Key key) implements ChatType {
 
   @Override
-  public @NotNull String toString() {
+  public String toString() {
     return Internals.toString(this);
   }
 
   record BoundImpl(ChatType type, Component name, @Nullable Component target) implements Bound {
     @Override
-    public @NotNull String toString() {
+    public String toString() {
       return Internals.toString(this);
     }
   }

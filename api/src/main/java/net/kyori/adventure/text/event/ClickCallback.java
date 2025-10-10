@@ -35,8 +35,7 @@ import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A handler for callback click events.
@@ -73,7 +72,7 @@ public interface ClickCallback<T extends Audience> {
    */
   @CheckReturnValue
   @Contract(pure = true)
-  static <W extends Audience, N extends W> @NotNull ClickCallback<W> widen(final @NotNull ClickCallback<N> original, final @NotNull Class<N> type, final @Nullable Consumer<? super Audience> otherwise) {
+  static <W extends Audience, N extends W> ClickCallback<W> widen(final ClickCallback<N> original, final Class<N> type, final @Nullable Consumer<? super Audience> otherwise) {
     return audience -> {
       if (type.isInstance(audience)) {
         original.accept(type.cast(audience));
@@ -97,7 +96,7 @@ public interface ClickCallback<T extends Audience> {
    */
   @CheckReturnValue
   @Contract(pure = true)
-  static <W extends Audience, N extends W> @NotNull ClickCallback<W> widen(final @NotNull ClickCallback<N> original, final @NotNull Class<N> type) {
+  static <W extends Audience, N extends W> ClickCallback<W> widen(final ClickCallback<N> original, final Class<N> type) {
     return widen(original, type, null);
   }
 
@@ -107,7 +106,7 @@ public interface ClickCallback<T extends Audience> {
    * @param audience the single-user audience who is attempting to execute this callback function.
    * @since 4.13.0
    */
-  void accept(final @NotNull T audience);
+  void accept(final T audience);
 
   /**
    * Filter audiences that receive this click callback.
@@ -120,7 +119,7 @@ public interface ClickCallback<T extends Audience> {
    */
   @CheckReturnValue
   @Contract(pure = true)
-  default @NotNull ClickCallback<T> filter(final @NotNull Predicate<T> filter) {
+  default ClickCallback<T> filter(final Predicate<T> filter) {
     return this.filter(filter, null);
   }
 
@@ -134,7 +133,7 @@ public interface ClickCallback<T extends Audience> {
    */
   @CheckReturnValue
   @Contract(pure = true)
-  default @NotNull ClickCallback<T> filter(final @NotNull Predicate<T> filter, final @Nullable Consumer<? super Audience> otherwise) {
+  default ClickCallback<T> filter(final Predicate<T> filter, final @Nullable Consumer<? super Audience> otherwise) {
     return audience -> {
       if (filter.test(audience)) {
         this.accept(audience);
@@ -157,7 +156,7 @@ public interface ClickCallback<T extends Audience> {
    */
   @CheckReturnValue
   @Contract(pure = true)
-  default @NotNull ClickCallback<T> requiringPermission(final @NotNull String permission) {
+  default ClickCallback<T> requiringPermission(final String permission) {
     return this.requiringPermission(permission, null);
   }
 
@@ -173,7 +172,7 @@ public interface ClickCallback<T extends Audience> {
    */
   @CheckReturnValue
   @Contract(pure = true)
-  default @NotNull ClickCallback<T> requiringPermission(final @NotNull String permission, final @Nullable Consumer<? super Audience> otherwise) {
+  default ClickCallback<T> requiringPermission(final String permission, final @Nullable Consumer<? super Audience> otherwise) {
     return this.filter(audience -> audience.getOrDefault(PermissionChecker.POINTER, ClickCallbackInternals.ALWAYS_FALSE).test(permission), otherwise);
   }
 
@@ -189,7 +188,7 @@ public interface ClickCallback<T extends Audience> {
      * @return the new builder
      * @since 4.13.0
      */
-    static @NotNull Builder builder() {
+    static Builder builder() {
       return new ClickCallbackOptionsImpl.BuilderImpl();
     }
 
@@ -200,7 +199,7 @@ public interface ClickCallback<T extends Audience> {
      * @return the new builder
      * @since 4.13.0
      */
-    static @NotNull Builder builder(final @NotNull Options existing) {
+    static Builder builder(final Options existing) {
       return new ClickCallbackOptionsImpl.BuilderImpl(existing);
     }
 
@@ -222,7 +221,7 @@ public interface ClickCallback<T extends Audience> {
      * @return the duration of this callback
      * @since 4.13.0
      */
-    @NotNull Duration lifetime();
+    Duration lifetime();
 
     /**
      * A builder for callback options.
@@ -237,7 +236,7 @@ public interface ClickCallback<T extends Audience> {
        * @return this builder
        * @since 4.13.0
        */
-      @NotNull Builder uses(int useCount);
+      Builder uses(int useCount);
 
       /**
        * Set how long the callback should last from sending.
@@ -246,7 +245,7 @@ public interface ClickCallback<T extends Audience> {
        * @return this builder
        * @since 4.13.0
        */
-      @NotNull Builder lifetime(final @NotNull TemporalAmount duration);
+      Builder lifetime(final TemporalAmount duration);
     }
   }
 
@@ -266,6 +265,6 @@ public interface ClickCallback<T extends Audience> {
      * @return a created click event that will execute the provided callback with options
      * @since 4.13.0
      */
-    @NotNull ClickEvent<?> create(final @NotNull ClickCallback<Audience> callback, final @NotNull Options options);
+    ClickEvent<?> create(final ClickCallback<Audience> callback, final Options options);
   }
 }

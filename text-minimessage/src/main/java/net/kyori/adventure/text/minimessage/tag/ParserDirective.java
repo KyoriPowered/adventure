@@ -23,8 +23,6 @@
  */
 package net.kyori.adventure.text.minimessage.tag;
 
-import org.jetbrains.annotations.ApiStatus;
-
 /**
  * Tags implementing this interface are used to provide directives, or instructions, to the parser directly.
  *

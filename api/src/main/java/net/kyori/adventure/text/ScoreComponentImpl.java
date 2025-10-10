@@ -27,13 +27,12 @@ import java.util.List;
 import java.util.Objects;
 import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.format.Style;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
 record ScoreComponentImpl(List<Component> children, Style style, String name, String objective) implements ScoreComponent {
-  static ScoreComponent create(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final @NotNull String name, final @NotNull String objective) {
+  static ScoreComponent create(final List<? extends ComponentLike> children, final Style style, final String name, final String objective) {
     return new ScoreComponentImpl(
       ComponentLike.asComponents(children, IS_NOT_EMPTY),
       requireNonNull(style, "style"),
@@ -43,34 +42,34 @@ record ScoreComponentImpl(List<Component> children, Style style, String name, St
   }
 
   @Override
-  public @NotNull ScoreComponent name(final @NotNull String name) {
+  public ScoreComponent name(final String name) {
     if (Objects.equals(this.name, name)) return this;
     return create(this.children, this.style, name, this.objective);
   }
 
   @Override
-  public @NotNull ScoreComponent objective(final @NotNull String objective) {
+  public ScoreComponent objective(final String objective) {
     if (Objects.equals(this.objective, objective)) return this;
     return create(this.children, this.style, this.name, objective);
   }
 
   @Override
-  public @NotNull ScoreComponent children(final @NotNull List<? extends ComponentLike> children) {
+  public ScoreComponent children(final List<? extends ComponentLike> children) {
     return create(children, this.style, this.name, this.objective);
   }
 
   @Override
-  public @NotNull ScoreComponent style(final @NotNull Style style) {
+  public ScoreComponent style(final Style style) {
     return create(this.children, style, this.name, this.objective);
   }
 
   @Override
-  public @NotNull String toString() {
+  public String toString() {
     return Internals.toString(this);
   }
 
   @Override
-  public @NotNull Builder toBuilder() {
+  public Builder toBuilder() {
     return new BuilderImpl(this);
   }
 
@@ -81,26 +80,26 @@ record ScoreComponentImpl(List<Component> children, Style style, String name, St
     BuilderImpl() {
     }
 
-    BuilderImpl(final @NotNull ScoreComponent component) {
+    BuilderImpl(final ScoreComponent component) {
       super(component);
       this.name = component.name();
       this.objective = component.objective();
     }
 
     @Override
-    public @NotNull Builder name(final @NotNull String name) {
+    public Builder name(final String name) {
       this.name = requireNonNull(name, "name");
       return this;
     }
 
     @Override
-    public @NotNull Builder objective(final @NotNull String objective) {
+    public Builder objective(final String objective) {
       this.objective = requireNonNull(objective, "objective");
       return this;
     }
 
     @Override
-    public @NotNull ScoreComponent build() {
+    public ScoreComponent build() {
       if (this.name == null) throw new IllegalStateException("name must be set");
       if (this.objective == null) throw new IllegalStateException("objective must be set");
       return create(this.children, this.buildStyle(), this.name, this.objective);

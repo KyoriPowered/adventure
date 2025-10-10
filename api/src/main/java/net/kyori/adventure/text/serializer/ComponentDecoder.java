@@ -25,8 +25,7 @@ package net.kyori.adventure.text.serializer;
 
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A {@link Component} decoder, which provides deserialization, but without serialization.
@@ -45,7 +44,7 @@ public interface ComponentDecoder<S, O extends Component> {
    * @return the component
    * @since 4.16.0
    */
-  @NotNull O deserialize(final @NotNull S input);
+  O deserialize(final S input);
 
   /**
    * Deserialize a component from input of type {@code S}.

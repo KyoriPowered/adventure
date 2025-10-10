@@ -28,8 +28,7 @@ import java.time.Duration;
 import java.util.Objects;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
@@ -49,7 +48,7 @@ final class TitleSerializer implements TypeSerializer<Title> {
   static final String FADE_OUT = "fade-out";
 
   @Override
-  public @Nullable Title deserialize(final @NotNull Type type, final @NotNull ConfigurationNode value) throws SerializationException {
+  public @Nullable Title deserialize(final Type type, final ConfigurationNode value) throws SerializationException {
     if (value.empty()) {
       return null;
     }
@@ -68,7 +67,7 @@ final class TitleSerializer implements TypeSerializer<Title> {
   }
 
   @Override
-  public void serialize(final @NotNull Type type, final @Nullable Title obj, final @NotNull ConfigurationNode value) throws SerializationException {
+  public void serialize(final Type type, final @Nullable Title obj, final ConfigurationNode value) throws SerializationException {
     if (obj == null) {
       value.set(null);
       return;

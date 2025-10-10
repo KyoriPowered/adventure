@@ -27,13 +27,12 @@ import java.util.List;
 import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.object.ObjectContents;
-import org.jetbrains.annotations.NotNull;
 
 import static java.util.Objects.requireNonNull;
 
 record ObjectComponentImpl(List<Component> children, Style style, ObjectContents contents) implements ObjectComponent {
 
-  static @NotNull ObjectComponentImpl create(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final @NotNull ObjectContents objectContents) {
+  static ObjectComponentImpl create(final List<? extends ComponentLike> children, final Style style, final ObjectContents objectContents) {
     return new ObjectComponentImpl(
       ComponentLike.asComponents(children, IS_NOT_EMPTY),
       requireNonNull(style, "style"),
@@ -42,27 +41,27 @@ record ObjectComponentImpl(List<Component> children, Style style, ObjectContents
   }
 
   @Override
-  public @NotNull ObjectComponent contents(final @NotNull ObjectContents contents) {
+  public ObjectComponent contents(final ObjectContents contents) {
     return create(this.children, this.style, contents);
   }
 
   @Override
-  public @NotNull String toString() {
+  public String toString() {
     return Internals.toString(this);
   }
 
   @Override
-  public @NotNull Builder toBuilder() {
+  public Builder toBuilder() {
     return new BuilderImpl(this);
   }
 
   @Override
-  public @NotNull ObjectComponent children(final @NotNull List<? extends ComponentLike> children) {
+  public ObjectComponent children(final List<? extends ComponentLike> children) {
     return create(children, this.style, this.contents);
   }
 
   @Override
-  public @NotNull ObjectComponent style(final @NotNull Style style) {
+  public ObjectComponent style(final Style style) {
     return create(this.children, style, this.contents);
   }
 
@@ -72,19 +71,19 @@ record ObjectComponentImpl(List<Component> children, Style style, ObjectContents
     BuilderImpl() {
     }
 
-    BuilderImpl(final @NotNull ObjectComponent component) {
+    BuilderImpl(final ObjectComponent component) {
       super(component);
       this.objectContents = component.contents();
     }
 
     @Override
-    public @NotNull Builder contents(final @NotNull ObjectContents objectContents) {
+    public Builder contents(final ObjectContents objectContents) {
       this.objectContents = requireNonNull(objectContents, "contents");
       return this;
     }
 
     @Override
-    public @NotNull ObjectComponent build() {
+    public ObjectComponent build() {
       if (this.objectContents == null) throw new IllegalStateException("contents must be set");
       return create(this.children, this.buildStyle(), this.objectContents);
     }

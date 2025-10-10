@@ -28,19 +28,18 @@ import java.util.stream.Stream;
 import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.key.Key;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
 
 import static java.util.Objects.requireNonNull;
 
 record DataComponentValueConversionImpl<I, O>(Class<I> source, Class<O> destination, BiFunction<Key, I, O> conversion) implements DataComponentValueConverterRegistry.Conversion<I, O> {
 
   @Override
-  public @NotNull O convert(final @NotNull Key key, final @NotNull I input) {
+  public O convert(final Key key, final I input) {
     return this.conversion.apply(requireNonNull(key, "key"), requireNonNull(input, "input"));
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("source", this.source),
       ExaminableProperty.of("destination", this.destination),
@@ -49,7 +48,7 @@ record DataComponentValueConversionImpl<I, O>(Class<I> source, Class<O> destinat
   }
 
   @Override
-  public @NotNull String toString() {
+  public String toString() {
     return Internals.toString(this);
   }
 }

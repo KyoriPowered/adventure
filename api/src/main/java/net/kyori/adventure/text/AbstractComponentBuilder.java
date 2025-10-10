@@ -37,8 +37,7 @@ import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.util.ARGBLike;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -62,7 +61,7 @@ abstract sealed class AbstractComponentBuilder<C extends Component, B extends Co
   protected AbstractComponentBuilder() {
   }
 
-  protected AbstractComponentBuilder(final @NotNull C component) {
+  protected AbstractComponentBuilder(final C component) {
     final List<Component> children = component.children();
     if (!children.isEmpty()) {
       this.children = new ArrayList<>(children);
@@ -74,7 +73,7 @@ abstract sealed class AbstractComponentBuilder<C extends Component, B extends Co
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NotNull B append(final @NotNull Component component) {
+  public B append(final Component component) {
     if (component == Component.empty()) return (B) this;
     this.prepareChildren();
     this.children.add(requireNonNull(component, "component"));
@@ -82,13 +81,13 @@ abstract sealed class AbstractComponentBuilder<C extends Component, B extends Co
   }
 
   @Override
-  public @NotNull B append(final @NotNull Component@NotNull... components) {
+  public B append(final Component... components) {
     return this.append((ComponentLike[]) components);
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NotNull B append(final @NotNull ComponentLike@NotNull... components) {
+  public B append(final ComponentLike... components) {
     requireNonNull(components, "components");
     boolean prepared = false;
     for (final ComponentLike componentLike : components) {
@@ -106,7 +105,7 @@ abstract sealed class AbstractComponentBuilder<C extends Component, B extends Co
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NotNull B append(final @NotNull Iterable<? extends ComponentLike> components) {
+  public B append(final Iterable<? extends ComponentLike> components) {
     requireNonNull(components, "components");
     boolean prepared = false;
     for (final ComponentLike like : components) {
@@ -130,7 +129,7 @@ abstract sealed class AbstractComponentBuilder<C extends Component, B extends Co
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NotNull B applyDeep(final @NotNull Consumer<? super ComponentBuilder<?, ?>> consumer) {
+  public B applyDeep(final Consumer<? super ComponentBuilder<?, ?>> consumer) {
     this.apply(consumer);
     if (this.children == Collections.<Component>emptyList()) {
       return (B) this;
@@ -146,7 +145,7 @@ abstract sealed class AbstractComponentBuilder<C extends Component, B extends Co
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NotNull B mapChildren(final @NotNull Function<Component, ? extends Component> function) {
+  public B mapChildren(final Function<Component, ? extends Component> function) {
     if (this.children == Collections.<Component>emptyList()) {
       return (B) this;
     }
@@ -164,7 +163,7 @@ abstract sealed class AbstractComponentBuilder<C extends Component, B extends Co
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NotNull B mapChildrenDeep(final @NotNull Function<Component, ? extends Component> function) {
+  public B mapChildrenDeep(final Function<Component, ? extends Component> function) {
     if (this.children == Collections.<Component>emptyList()) {
       return (B) this;
     }
@@ -187,13 +186,13 @@ abstract sealed class AbstractComponentBuilder<C extends Component, B extends Co
   }
 
   @Override
-  public @NotNull List<Component> children() {
+  public List<Component> children() {
     return Collections.unmodifiableList(this.children);
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NotNull B style(final @NotNull Style style) {
+  public B style(final Style style) {
     this.style = style;
     this.styleBuilder = null;
     return (B) this;
@@ -201,84 +200,84 @@ abstract sealed class AbstractComponentBuilder<C extends Component, B extends Co
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NotNull B style(final @NotNull Consumer<Style.Builder> consumer) {
+  public B style(final Consumer<Style.Builder> consumer) {
     consumer.accept(this.styleBuilder());
     return (B) this;
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NotNull B font(final @Nullable Key font) {
+  public B font(final @Nullable Key font) {
     this.styleBuilder().font(font);
     return (B) this;
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NotNull B color(final @Nullable TextColor color) {
+  public B color(final @Nullable TextColor color) {
     this.styleBuilder().color(color);
     return (B) this;
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NotNull B colorIfAbsent(final @Nullable TextColor color) {
+  public B colorIfAbsent(final @Nullable TextColor color) {
     this.styleBuilder().colorIfAbsent(color);
     return (B) this;
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NotNull B shadowColor(final @Nullable ARGBLike argb) {
+  public B shadowColor(final @Nullable ARGBLike argb) {
     this.styleBuilder().shadowColor(argb);
     return (B) this;
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NotNull B shadowColorIfAbsent(final @Nullable ARGBLike argb) {
+  public B shadowColorIfAbsent(final @Nullable ARGBLike argb) {
     this.styleBuilder().shadowColorIfAbsent(argb);
     return (B) this;
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NotNull B decoration(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state) {
+  public B decoration(final TextDecoration decoration, final TextDecoration.State state) {
     this.styleBuilder().decoration(decoration, state);
     return (B) this;
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NotNull B decorationIfAbsent(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state) {
+  public B decorationIfAbsent(final TextDecoration decoration, final TextDecoration.State state) {
     this.styleBuilder().decorationIfAbsent(decoration, state);
     return (B) this;
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NotNull B clickEvent(final @Nullable ClickEvent event) {
+  public B clickEvent(final @Nullable ClickEvent event) {
     this.styleBuilder().clickEvent(event);
     return (B) this;
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NotNull B hoverEvent(final @Nullable HoverEventSource<?> source) {
+  public B hoverEvent(final @Nullable HoverEventSource<?> source) {
     this.styleBuilder().hoverEvent(source);
     return (B) this;
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NotNull B insertion(final @Nullable String insertion) {
+  public B insertion(final @Nullable String insertion) {
     this.styleBuilder().insertion(insertion);
     return (B) this;
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NotNull B mergeStyle(final @NotNull Component that, final @NotNull Set<Style.Merge> merges) {
+  public B mergeStyle(final Component that, final Set<Style.Merge> merges) {
     final Style thatStyle = requireNonNull(that, "that").style();
     if (thatStyle.isEmpty() && merges.isEmpty()) return (B) this;
     this.styleBuilder().merge(thatStyle, merges);
@@ -287,13 +286,13 @@ abstract sealed class AbstractComponentBuilder<C extends Component, B extends Co
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NotNull B resetStyle() {
+  public B resetStyle() {
     this.style = null;
     this.styleBuilder = null;
     return (B) this;
   }
 
-  private Style.@NotNull Builder styleBuilder() {
+  private Style.Builder styleBuilder() {
     if (this.styleBuilder == null) {
       if (this.style != null) {
         this.styleBuilder = this.style.toBuilder();
@@ -310,7 +309,7 @@ abstract sealed class AbstractComponentBuilder<C extends Component, B extends Co
     return this.styleBuilder != null || this.style != null;
   }
 
-  protected @NotNull Style buildStyle() {
+  protected Style buildStyle() {
     if (this.styleBuilder != null) {
       return this.styleBuilder.build();
     } else if (this.style != null) {

@@ -23,8 +23,7 @@
  */
 package net.kyori.adventure.text;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -36,7 +35,7 @@ abstract sealed class AbstractNBTComponentBuilder<C extends NBTComponent<C>, B e
   AbstractNBTComponentBuilder() {
   }
 
-  AbstractNBTComponentBuilder(final @NotNull C component) {
+  AbstractNBTComponentBuilder(final C component) {
     super(component);
     this.nbtPath = component.nbtPath();
     this.interpret = component.interpret();
@@ -45,21 +44,21 @@ abstract sealed class AbstractNBTComponentBuilder<C extends NBTComponent<C>, B e
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NotNull B nbtPath(final @NotNull String nbtPath) {
+  public B nbtPath(final String nbtPath) {
     this.nbtPath = requireNonNull(nbtPath, "nbtPath");
     return (B) this;
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NotNull B interpret(final boolean interpret) {
+  public B interpret(final boolean interpret) {
     this.interpret = interpret;
     return (B) this;
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NotNull B separator(final @Nullable ComponentLike separator) {
+  public B separator(final @Nullable ComponentLike separator) {
     this.separator = ComponentLike.unbox(separator);
     return (B) this;
   }

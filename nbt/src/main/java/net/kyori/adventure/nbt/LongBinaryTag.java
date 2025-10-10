@@ -23,8 +23,6 @@
  */
 package net.kyori.adventure.nbt;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * A binary tag holding a {@code long} value.
  *
@@ -38,12 +36,12 @@ public interface LongBinaryTag extends NumberBinaryTag {
    * @return a binary tag
    * @since 4.14.0
    */
-  static @NotNull LongBinaryTag longBinaryTag(final long value) {
+  static LongBinaryTag longBinaryTag(final long value) {
     return new LongBinaryTagImpl(value);
   }
 
   @Override
-  default @NotNull BinaryTagType<LongBinaryTag> type() {
+  default BinaryTagType<LongBinaryTag> type() {
     return BinaryTagTypes.LONG;
   }
 

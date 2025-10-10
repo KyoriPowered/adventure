@@ -26,14 +26,13 @@ package net.kyori.adventure.text;
 import java.util.stream.Stream;
 import net.kyori.adventure.internal.Internals;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
 
 record TranslationArgumentImpl(Object value) implements TranslationArgument {
   private static final Component TRUE = Component.text("true");
   private static final Component FALSE = Component.text("false");
 
   @Override
-  public @NotNull Component asComponent() {
+  public Component asComponent() {
     if (this.value instanceof Component) {
       return (Component) this.value;
     } else if (this.value instanceof Boolean) {
@@ -44,12 +43,12 @@ record TranslationArgumentImpl(Object value) implements TranslationArgument {
   }
 
   @Override
-  public @NotNull String toString() {
+  public String toString() {
     return Internals.toString(this);
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("value", this.value)
     );

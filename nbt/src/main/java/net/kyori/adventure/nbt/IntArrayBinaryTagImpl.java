@@ -32,8 +32,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Debug;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 @Debug.Renderer(text = "\"int[\" + this.value.length + \"]\"", childrenArray = "this.value", hasChildren = "this.value.length > 0")
 final class IntArrayBinaryTagImpl extends ArrayBinaryTagImpl implements IntArrayBinaryTag {
@@ -44,7 +43,7 @@ final class IntArrayBinaryTagImpl extends ArrayBinaryTagImpl implements IntArray
   }
 
   @Override
-  public int@NotNull[] value() {
+  public int[] value() {
     return Arrays.copyOf(this.value, this.value.length);
   }
 
@@ -60,7 +59,7 @@ final class IntArrayBinaryTagImpl extends ArrayBinaryTagImpl implements IntArray
   }
 
   @Override
-  public PrimitiveIterator.@NotNull OfInt iterator() {
+  public PrimitiveIterator.OfInt iterator() {
     return new PrimitiveIterator.OfInt() {
       private int index;
 
@@ -80,17 +79,17 @@ final class IntArrayBinaryTagImpl extends ArrayBinaryTagImpl implements IntArray
   }
 
   @Override
-  public Spliterator.@NotNull OfInt spliterator() {
+  public Spliterator.OfInt spliterator() {
     return Arrays.spliterator(this.value);
   }
 
   @Override
-  public @NotNull IntStream stream() {
+  public IntStream stream() {
     return Arrays.stream(this.value);
   }
 
   @Override
-  public void forEachInt(final @NotNull IntConsumer action) {
+  public void forEachInt(final IntConsumer action) {
     for (final int j : this.value) {
       action.accept(j);
     }
@@ -115,7 +114,7 @@ final class IntArrayBinaryTagImpl extends ArrayBinaryTagImpl implements IntArray
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(ExaminableProperty.of("value", this.value));
   }
 }

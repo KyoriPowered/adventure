@@ -27,7 +27,6 @@ import java.util.function.Function;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.PlatformAPI;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
 /**
@@ -46,7 +45,7 @@ public interface ComponentLoggerProvider {
    * @return a component logger with the provided name
    * @since 4.11.0
    */
-  @NotNull ComponentLogger logger(final @NotNull LoggerHelper helper, final @NotNull String name);
+  ComponentLogger logger(final LoggerHelper helper, final String name);
 
   /**
    * A factory for default implementations of component loggers.
@@ -63,7 +62,7 @@ public interface ComponentLoggerProvider {
      * @return a plain serializer
      * @since 4.11.0
      */
-    @NotNull Function<Component, String> plainSerializer();
+    Function<Component, String> plainSerializer();
 
     /**
      * Create a component logger based on one which delegates to an underlying plain {@link Logger} implementation.
@@ -75,6 +74,6 @@ public interface ComponentLoggerProvider {
      * @return a new logger
      * @since 4.11.0
      */
-    @NotNull ComponentLogger delegating(final @NotNull Logger base, final @NotNull Function<Component, String> serializer);
+    ComponentLogger delegating(final Logger base, final Function<Component, String> serializer);
   }
 }

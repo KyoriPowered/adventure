@@ -32,8 +32,7 @@ import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 record JoinConfigurationImpl(Component prefix, Component suffix, Component separator, Component lastSeparator, Component lastSeparatorIfSerial, Function<ComponentLike, Component> convertor, Predicate<ComponentLike> predicate, Style parentStyle) implements JoinConfiguration {
   static final Function<ComponentLike, Component> DEFAULT_CONVERTOR = ComponentLike::asComponent;
@@ -50,12 +49,12 @@ record JoinConfigurationImpl(Component prefix, Component suffix, Component separ
     .suffix(Component.text("]"))
     .build();
 
-  private JoinConfigurationImpl(final @NotNull BuilderImpl builder) {
+  private JoinConfigurationImpl(final BuilderImpl builder) {
     this(ComponentLike.unbox(builder.prefix), ComponentLike.unbox(builder.suffix), ComponentLike.unbox(builder.separator), ComponentLike.unbox(builder.lastSeparator), ComponentLike.unbox(builder.lastSeparatorIfSerial), builder.convertor, builder.predicate, builder.parentStyle);
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("prefix", this.prefix),
       ExaminableProperty.of("suffix", this.suffix),
@@ -69,12 +68,12 @@ record JoinConfigurationImpl(Component prefix, Component suffix, Component separ
   }
 
   @Override
-  public @NotNull String toString() {
+  public String toString() {
     return Internals.toString(this);
   }
 
   @Contract(pure = true)
-  static @NotNull Component join(final @NotNull JoinConfiguration config, final @NotNull Iterable<? extends ComponentLike> components) {
+  static Component join(final JoinConfiguration config, final Iterable<? extends ComponentLike> components) {
     Objects.requireNonNull(config, "config");
     Objects.requireNonNull(components, "components");
 
@@ -146,7 +145,7 @@ record JoinConfigurationImpl(Component prefix, Component suffix, Component separ
     return builder.build();
   }
 
-  static @NotNull Component singleElementJoin(final @NotNull JoinConfiguration config, final @Nullable ComponentLike component) {
+  static Component singleElementJoin(final JoinConfiguration config, final @Nullable ComponentLike component) {
     final Component prefix = config.prefix();
     final Component suffix = config.suffix();
     final Function<ComponentLike, Component> convertor = config.convertor();
@@ -185,7 +184,7 @@ record JoinConfigurationImpl(Component prefix, Component suffix, Component separ
       this(JoinConfigurationImpl.NULL);
     }
 
-    private BuilderImpl(final @NotNull JoinConfigurationImpl joinConfig) {
+    private BuilderImpl(final JoinConfigurationImpl joinConfig) {
       this.separator = joinConfig.separator;
       this.lastSeparator = joinConfig.lastSeparator;
       this.prefix = joinConfig.prefix;
@@ -197,55 +196,55 @@ record JoinConfigurationImpl(Component prefix, Component suffix, Component separ
     }
 
     @Override
-    public @NotNull Builder prefix(final @Nullable ComponentLike prefix) {
+    public Builder prefix(final @Nullable ComponentLike prefix) {
       this.prefix = prefix;
       return this;
     }
 
     @Override
-    public @NotNull Builder suffix(final @Nullable ComponentLike suffix) {
+    public Builder suffix(final @Nullable ComponentLike suffix) {
       this.suffix = suffix;
       return this;
     }
 
     @Override
-    public @NotNull Builder separator(final @Nullable ComponentLike separator) {
+    public Builder separator(final @Nullable ComponentLike separator) {
       this.separator = separator;
       return this;
     }
 
     @Override
-    public @NotNull Builder lastSeparator(final @Nullable ComponentLike lastSeparator) {
+    public Builder lastSeparator(final @Nullable ComponentLike lastSeparator) {
       this.lastSeparator = lastSeparator;
       return this;
     }
 
     @Override
-    public @NotNull Builder lastSeparatorIfSerial(final @Nullable ComponentLike lastSeparatorIfSerial) {
+    public Builder lastSeparatorIfSerial(final @Nullable ComponentLike lastSeparatorIfSerial) {
       this.lastSeparatorIfSerial = lastSeparatorIfSerial;
       return this;
     }
 
     @Override
-    public @NotNull Builder convertor(final @NotNull Function<ComponentLike, Component> convertor) {
+    public Builder convertor(final Function<ComponentLike, Component> convertor) {
       this.convertor = Objects.requireNonNull(convertor, "convertor");
       return this;
     }
 
     @Override
-    public @NotNull Builder predicate(final @NotNull Predicate<ComponentLike> predicate) {
+    public Builder predicate(final Predicate<ComponentLike> predicate) {
       this.predicate = Objects.requireNonNull(predicate, "predicate");
       return this;
     }
 
     @Override
-    public @NotNull Builder parentStyle(final @NotNull Style parentStyle) {
+    public Builder parentStyle(final Style parentStyle) {
       this.parentStyle = Objects.requireNonNull(parentStyle, "parentStyle");
       return this;
     }
 
     @Override
-    public @NotNull JoinConfiguration build() {
+    public JoinConfiguration build() {
       return new JoinConfigurationImpl(this);
     }
   }

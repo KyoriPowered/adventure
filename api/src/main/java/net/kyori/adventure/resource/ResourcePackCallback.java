@@ -26,7 +26,6 @@ package net.kyori.adventure.resource;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 import net.kyori.adventure.audience.Audience;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * A callback for a resource pack application operation.
@@ -43,7 +42,7 @@ public interface ResourcePackCallback {
    * @return the no-op callback
    * @since 4.15.0
    */
-  static @NotNull ResourcePackCallback noOp() {
+  static ResourcePackCallback noOp() {
     return ResourcePackCallbacks.NO_OP;
   }
 
@@ -55,7 +54,7 @@ public interface ResourcePackCallback {
    * @return the created callback
    * @since 4.15.0
    */
-  static @NotNull ResourcePackCallback onTerminal(final @NotNull BiConsumer<UUID, Audience> success, final @NotNull BiConsumer<UUID, Audience> failure) {
+  static ResourcePackCallback onTerminal(final BiConsumer<UUID, Audience> success, final BiConsumer<UUID, Audience> failure) {
     return (uuid, status, audience) -> {
       if (status == ResourcePackStatus.SUCCESSFULLY_LOADED) {
         success.accept(uuid, audience);
@@ -76,5 +75,5 @@ public interface ResourcePackCallback {
    * @param audience the audience the pack is being applied to
    * @since 4.15.0
    */
-  void packEventReceived(final @NotNull UUID uuid, final @NotNull ResourcePackStatus status, final @NotNull Audience audience);
+  void packEventReceived(final UUID uuid, final ResourcePackStatus status, final Audience audience);
 }

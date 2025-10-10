@@ -58,7 +58,7 @@ import net.kyori.adventure.text.object.PlayerHeadObjectContents;
 import net.kyori.adventure.text.object.SpriteObjectContents;
 import net.kyori.adventure.text.serializer.json.JSONOptions;
 import net.kyori.option.OptionState;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.EXTRA;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.KEYBIND;

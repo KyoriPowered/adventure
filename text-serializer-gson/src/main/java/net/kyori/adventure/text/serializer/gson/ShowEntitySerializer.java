@@ -37,7 +37,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEventImpl;
 import net.kyori.adventure.text.serializer.json.JSONOptions;
 import net.kyori.option.OptionState;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SHOW_ENTITY_ID;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SHOW_ENTITY_NAME;

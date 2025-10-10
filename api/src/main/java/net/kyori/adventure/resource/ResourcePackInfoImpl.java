@@ -39,19 +39,18 @@ import java.util.concurrent.Executor;
 import java.util.stream.Stream;
 import net.kyori.adventure.internal.Internals;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
 
 import static java.util.Objects.requireNonNull;
 
 record ResourcePackInfoImpl(UUID id, URI uri, String hash) implements ResourcePackInfo {
-  ResourcePackInfoImpl(final @NotNull UUID id, final @NotNull URI uri, final @NotNull String hash) {
+  ResourcePackInfoImpl(final UUID id, final URI uri, final String hash) {
     this.id = requireNonNull(id, "id");
     this.uri = requireNonNull(uri, "uri");
     this.hash = requireNonNull(hash, "hash");
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("id", this.id),
       ExaminableProperty.of("uri", this.uri),
@@ -60,7 +59,7 @@ record ResourcePackInfoImpl(UUID id, URI uri, String hash) implements ResourcePa
   }
 
   @Override
-  public @NotNull String toString() {
+  public String toString() {
     return Internals.toString(this);
   }
 
@@ -73,13 +72,13 @@ record ResourcePackInfoImpl(UUID id, URI uri, String hash) implements ResourcePa
     }
 
     @Override
-    public @NotNull Builder id(final @NotNull UUID id) {
+    public Builder id(final UUID id) {
       this.id = requireNonNull(id, "id");
       return this;
     }
 
     @Override
-    public @NotNull Builder uri(final @NotNull URI uri) {
+    public Builder uri(final URI uri) {
       this.uri = requireNonNull(uri, "uri");
       if (this.id == null) {
         this.id = UUID.nameUUIDFromBytes(uri.toString().getBytes(StandardCharsets.UTF_8));
@@ -88,18 +87,18 @@ record ResourcePackInfoImpl(UUID id, URI uri, String hash) implements ResourcePa
     }
 
     @Override
-    public @NotNull Builder hash(final @NotNull String hash) {
+    public Builder hash(final String hash) {
       this.hash = requireNonNull(hash, "hash");
       return this;
     }
 
     @Override
-    public @NotNull ResourcePackInfo build() {
+    public ResourcePackInfo build() {
       return new ResourcePackInfoImpl(this.id, this.uri, this.hash);
     }
 
     @Override
-    public @NotNull CompletableFuture<ResourcePackInfo> computeHashAndBuild(final @NotNull Executor executor) {
+    public CompletableFuture<ResourcePackInfo> computeHashAndBuild(final Executor executor) {
       return computeHash(requireNonNull(this.uri, "uri"), executor)
         .thenApply(hash -> {
           this.hash(hash);

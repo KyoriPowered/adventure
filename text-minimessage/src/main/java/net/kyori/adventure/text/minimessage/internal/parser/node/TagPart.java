@@ -26,7 +26,6 @@ package net.kyori.adventure.text.minimessage.internal.parser.node;
 import net.kyori.adventure.text.minimessage.internal.parser.Token;
 import net.kyori.adventure.text.minimessage.internal.parser.TokenParser;
 import net.kyori.adventure.text.minimessage.tag.Tag;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents an inner part of a tag.
@@ -46,9 +45,9 @@ public final class TagPart implements Tag.Argument {
    * @since 4.10.0
    */
   public TagPart(
-    final @NotNull String sourceMessage,
-    final @NotNull Token token,
-    final TokenParser.@NotNull TagProvider tagResolver
+    final String sourceMessage,
+    final Token token,
+    final TokenParser.TagProvider tagResolver
   ) {
     String v = unquoteAndEscape(sourceMessage, token.startIndex(), token.endIndex());
     v = TokenParser.resolvePreProcessTags(v, tagResolver);
@@ -64,7 +63,7 @@ public final class TagPart implements Tag.Argument {
    * @since 4.10.0
    */
   @Override
-  public @NotNull String value() {
+  public String value() {
     return this.value;
   }
 
@@ -74,7 +73,7 @@ public final class TagPart implements Tag.Argument {
    * @return the token
    * @since 4.10.0
    */
-  public @NotNull Token token() {
+  public Token token() {
     return this.token;
   }
 
@@ -87,7 +86,7 @@ public final class TagPart implements Tag.Argument {
    * @return the output substring
    * @since 4.10.0
    */
-  public static @NotNull String unquoteAndEscape(final @NotNull String text, final int start, final int end) {
+  public static String unquoteAndEscape(final String text, final int start, final int end) {
     if (start == end) {
       return "";
     }

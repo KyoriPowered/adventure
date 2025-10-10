@@ -23,8 +23,6 @@
  */
 package net.kyori.adventure.key;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * Something that has a namespace.
  *
@@ -38,5 +36,5 @@ public interface Namespaced {
    * @since 4.4.0
    */
   @KeyPattern.Namespace
-  @NotNull String namespace();
+  String namespace();
 }

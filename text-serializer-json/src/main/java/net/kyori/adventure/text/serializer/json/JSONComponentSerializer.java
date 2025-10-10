@@ -30,8 +30,7 @@ import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.PlatformAPI;
 import net.kyori.option.OptionState;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A JSON component serializer.
@@ -48,7 +47,7 @@ public interface JSONComponentSerializer extends ComponentSerializer<Component, 
    * @return a JSON component serializer
    * @since 4.14.0
    */
-  static @NotNull JSONComponentSerializer json() {
+  static JSONComponentSerializer json() {
     return JSONComponentSerializerAccessor.Instances.INSTANCE;
   }
 
@@ -58,7 +57,7 @@ public interface JSONComponentSerializer extends ComponentSerializer<Component, 
    * @return the new builder
    * @since 4.14.0
    */
-  static JSONComponentSerializer.@NotNull Builder builder() {
+  static JSONComponentSerializer.Builder builder() {
     return JSONComponentSerializerAccessor.Instances.BUILDER_SUPPLIER.get();
   }
 
@@ -78,7 +77,7 @@ public interface JSONComponentSerializer extends ComponentSerializer<Component, 
      * @see JSONOptions
      * @since 4.15.0
      */
-    @NotNull Builder options(final @NotNull OptionState flags);
+    Builder options(final OptionState flags);
 
     /**
      * Edit the active set of serializer options.
@@ -88,7 +87,7 @@ public interface JSONComponentSerializer extends ComponentSerializer<Component, 
      * @see JSONOptions
      * @since  4.15.0
      */
-    @NotNull Builder editOptions(final @NotNull Consumer<OptionState.Builder> optionEditor);
+    Builder editOptions(final Consumer<OptionState.Builder> optionEditor);
 
     /**
      * Sets a serializer that will be used to interpret legacy hover event {@code value} payloads.
@@ -99,7 +98,7 @@ public interface JSONComponentSerializer extends ComponentSerializer<Component, 
      * @return this builder
      * @since 4.14.0
      */
-    @NotNull Builder legacyHoverEventSerializer(final @Nullable LegacyHoverEventSerializer serializer);
+    Builder legacyHoverEventSerializer(final @Nullable LegacyHoverEventSerializer serializer);
 
     /**
      * Create a finished serializer instance.
@@ -107,7 +106,7 @@ public interface JSONComponentSerializer extends ComponentSerializer<Component, 
      * @return the new serializer
      * @since 4.14.0
      */
-    @NotNull JSONComponentSerializer build();
+    JSONComponentSerializer build();
   }
 
   /**
@@ -126,7 +125,7 @@ public interface JSONComponentSerializer extends ComponentSerializer<Component, 
      */
     @ApiStatus.Internal
     @PlatformAPI
-    @NotNull JSONComponentSerializer instance();
+    JSONComponentSerializer instance();
 
     /**
      * Provide a supplier for builder builders of {@link JSONComponentSerializer} instances.
@@ -136,6 +135,6 @@ public interface JSONComponentSerializer extends ComponentSerializer<Component, 
      */
     @ApiStatus.Internal
     @PlatformAPI
-    @NotNull Supplier<@NotNull Builder> builder();
+    Supplier<Builder> builder();
   }
 }

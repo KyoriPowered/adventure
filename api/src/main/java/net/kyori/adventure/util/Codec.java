@@ -23,8 +23,6 @@
  */
 package net.kyori.adventure.util;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * A combination encoder and decoder.
  *
@@ -47,15 +45,15 @@ public interface Codec<D, E, DX extends Throwable, EX extends Throwable> {
    * @return a codec
    * @since 4.10.0
    */
-  static <D, E, DX extends Throwable, EX extends Throwable> @NotNull Codec<D, E, DX, EX> codec(final @NotNull Decoder<D, E, DX> decoder, final @NotNull Encoder<D, E, EX> encoder) {
+  static <D, E, DX extends Throwable, EX extends Throwable> Codec<D, E, DX, EX> codec(final Decoder<D, E, DX> decoder, final Encoder<D, E, EX> encoder) {
     return new Codec<D, E, DX, EX>() {
       @Override
-      public @NotNull D decode(final @NotNull E encoded) throws DX {
+      public D decode(final E encoded) throws DX {
         return decoder.decode(encoded);
       }
 
       @Override
-      public @NotNull E encode(final @NotNull D decoded) throws EX {
+      public E encode(final D decoded) throws EX {
         return encoder.encode(decoded);
       }
     };
@@ -69,7 +67,7 @@ public interface Codec<D, E, DX extends Throwable, EX extends Throwable> {
    * @throws DX if an exception is encountered while decoding
    * @since 4.0.0
    */
-  @NotNull D decode(final @NotNull E encoded) throws DX;
+  D decode(final E encoded) throws DX;
 
   /**
    * A decoder.
@@ -88,7 +86,7 @@ public interface Codec<D, E, DX extends Throwable, EX extends Throwable> {
      * @throws X if an exception is encountered while decoding
      * @since 4.0.0
      */
-    @NotNull D decode(final @NotNull E encoded) throws X;
+    D decode(final E encoded) throws X;
   }
 
   /**
@@ -99,7 +97,7 @@ public interface Codec<D, E, DX extends Throwable, EX extends Throwable> {
    * @throws EX if an exception is encountered while encoding
    * @since 4.0.0
    */
-  @NotNull E encode(final @NotNull D decoded) throws EX;
+  E encode(final D decoded) throws EX;
 
   /**
    * An encoder.
@@ -118,6 +116,6 @@ public interface Codec<D, E, DX extends Throwable, EX extends Throwable> {
      * @throws X if an exception is encountered while encoding
      * @since 4.0.0
      */
-    @NotNull E encode(final @NotNull D decoded) throws X;
+    E encode(final D decoded) throws X;
   }
 }

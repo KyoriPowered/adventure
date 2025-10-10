@@ -39,7 +39,6 @@ import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Changes the color based on a phase param.
@@ -115,7 +114,7 @@ public final class TransitionTag implements Inserting, Examinable {
   }
 
   @Override
-  public @NotNull Component value() {
+  public Component value() {
     return Component.text("", this.color());
   }
 
@@ -138,7 +137,7 @@ public final class TransitionTag implements Inserting, Examinable {
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("phase", this.phase),
       ExaminableProperty.of("colors", this.colors)

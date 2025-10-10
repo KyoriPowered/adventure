@@ -25,7 +25,6 @@ package net.kyori.adventure.text.renderer;
 
 import java.util.function.Function;
 import net.kyori.adventure.text.Component;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * A component renderer.
@@ -42,7 +41,7 @@ public interface ComponentRenderer<C> {
    * @return the rendered component
    * @since 4.0.0
    */
-  @NotNull Component render(final @NotNull Component component, final @NotNull C context);
+  Component render(final Component component, final C context);
 
   /**
    * Return a {@link ComponentRenderer} that takes a different context type.

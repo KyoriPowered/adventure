@@ -31,8 +31,7 @@ import net.kyori.adventure.text.minimessage.internal.serializer.ClaimConsumer;
 import net.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
 import net.kyori.adventure.text.minimessage.tag.Inserting;
 import net.kyori.adventure.text.minimessage.tag.Tag;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 final class CachingTagResolver implements TagResolver.WithoutArguments, MappableResolver, SerializableResolver {
   private static final Tag NULL_REPLACEMENT = (Inserting) () -> {
@@ -46,7 +45,7 @@ final class CachingTagResolver implements TagResolver.WithoutArguments, Mappable
     this.resolver = resolver;
   }
 
-  private Tag query(final @NotNull String key) {
+  private Tag query(final String key) {
     return this.cache.computeIfAbsent(key, k -> {
       final @Nullable Tag result = this.resolver.resolve(k);
       return result == null ? NULL_REPLACEMENT : result;
@@ -54,18 +53,18 @@ final class CachingTagResolver implements TagResolver.WithoutArguments, Mappable
   }
 
   @Override
-  public @Nullable Tag resolve(final @NotNull String name) {
+  public @Nullable Tag resolve(final String name) {
     final Tag potentialValue = this.query(name);
     return potentialValue == NULL_REPLACEMENT ? null : potentialValue;
   }
 
   @Override
-  public boolean has(final @NotNull String name) {
+  public boolean has(final String name) {
     return this.query(name) != NULL_REPLACEMENT;
   }
 
   @Override
-  public boolean contributeToMap(final @NotNull Map<String, Tag> map) {
+  public boolean contributeToMap(final Map<String, Tag> map) {
     if (this.resolver instanceof MappableResolver) {
       return ((MappableResolver) this.resolver).contributeToMap(map);
     } else {
@@ -74,7 +73,7 @@ final class CachingTagResolver implements TagResolver.WithoutArguments, Mappable
   }
 
   @Override
-  public void handle(final @NotNull Component serializable, final @NotNull ClaimConsumer consumer) {
+  public void handle(final Component serializable, final ClaimConsumer consumer) {
     if (this.resolver instanceof SerializableResolver) {
       ((SerializableResolver) this.resolver).handle(serializable, consumer);
     }

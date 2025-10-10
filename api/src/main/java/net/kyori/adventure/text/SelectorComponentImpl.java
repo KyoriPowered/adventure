@@ -27,13 +27,12 @@ import java.util.List;
 import java.util.Objects;
 import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.format.Style;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
 record SelectorComponentImpl(List<Component> children, Style style, String pattern, @Nullable Component separator) implements SelectorComponent {
-  static SelectorComponent create(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final @NotNull String pattern, final @Nullable ComponentLike separator) {
+  static SelectorComponent create(final List<? extends ComponentLike> children, final Style style, final String pattern, final @Nullable ComponentLike separator) {
     return new SelectorComponentImpl(
       ComponentLike.asComponents(children, IS_NOT_EMPTY),
       requireNonNull(style, "style"),
@@ -43,33 +42,33 @@ record SelectorComponentImpl(List<Component> children, Style style, String patte
   }
 
   @Override
-  public @NotNull SelectorComponent pattern(final @NotNull String pattern) {
+  public SelectorComponent pattern(final String pattern) {
     if (Objects.equals(this.pattern, pattern)) return this;
     return create(this.children, this.style, pattern, this.separator);
   }
 
   @Override
-  public @NotNull SelectorComponent separator(final @Nullable ComponentLike separator) {
+  public SelectorComponent separator(final @Nullable ComponentLike separator) {
     return create(this.children, this.style, this.pattern, separator);
   }
 
   @Override
-  public @NotNull SelectorComponent children(final @NotNull List<? extends ComponentLike> children) {
+  public SelectorComponent children(final List<? extends ComponentLike> children) {
     return create(children, this.style, this.pattern, this.separator);
   }
 
   @Override
-  public @NotNull SelectorComponent style(final @NotNull Style style) {
+  public SelectorComponent style(final Style style) {
     return create(this.children, style, this.pattern, this.separator);
   }
 
   @Override
-  public @NotNull String toString() {
+  public String toString() {
     return Internals.toString(this);
   }
 
   @Override
-  public @NotNull Builder toBuilder() {
+  public Builder toBuilder() {
     return new BuilderImpl(this);
   }
 
@@ -80,26 +79,26 @@ record SelectorComponentImpl(List<Component> children, Style style, String patte
     BuilderImpl() {
     }
 
-    BuilderImpl(final @NotNull SelectorComponent component) {
+    BuilderImpl(final SelectorComponent component) {
       super(component);
       this.pattern = component.pattern();
       this.separator = component.separator();
     }
 
     @Override
-    public @NotNull Builder pattern(final @NotNull String pattern) {
+    public Builder pattern(final String pattern) {
       this.pattern = requireNonNull(pattern, "pattern");
       return this;
     }
 
     @Override
-    public @NotNull Builder separator(final @Nullable ComponentLike separator) {
+    public Builder separator(final @Nullable ComponentLike separator) {
       this.separator = ComponentLike.unbox(separator);
       return this;
     }
 
     @Override
-    public @NotNull SelectorComponent build() {
+    public SelectorComponent build() {
       if (this.pattern == null) throw new IllegalStateException("pattern must be set");
       return create(this.children, this.buildStyle(), this.pattern, this.separator);
     }

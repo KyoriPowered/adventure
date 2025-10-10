@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.stream.Stream;
 import net.kyori.adventure.util.HSVLike;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
 
 public record NamedTextColorImpl(String name, int value) implements NamedTextColor {
   static final int BLACK_VALUE = 0x000000;
@@ -50,17 +49,17 @@ public record NamedTextColorImpl(String name, int value) implements NamedTextCol
   static final List<NamedTextColor> VALUES = List.of(BLACK, DARK_BLUE, DARK_GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE, GOLD, GRAY, DARK_GRAY, BLUE, GREEN, AQUA, RED, LIGHT_PURPLE, YELLOW, WHITE);
 
   @Override
-  public @NotNull HSVLike asHSV() {
+  public HSVLike asHSV() {
     return HSVLike.fromRGB(this.red(), this.green(), this.blue());
   }
 
   @Override
-  public @NotNull String toString() {
+  public String toString() {
     return this.name;
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(ExaminableProperty.of("name", this.name));
   }
 }

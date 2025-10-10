@@ -36,88 +36,87 @@ import net.kyori.adventure.resource.ResourcePackRequest;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
+import org.jspecify.annotations.Nullable;
 
 final class EmptyAudience implements Audience {
   static final EmptyAudience INSTANCE = new EmptyAudience();
 
   @Override
-  public @NotNull <T> Optional<T> get(final @NotNull Pointer<T> pointer) {
+  public <T> Optional<T> get(final Pointer<T> pointer) {
     return Optional.empty();
   }
 
   @Contract("_, null -> null; _, !null -> !null")
   @Override
-  public <T> @Nullable T getOrDefault(final @NotNull Pointer<T> pointer, final @Nullable T defaultValue) {
+  public <T> @Nullable T getOrDefault(final Pointer<T> pointer, final @Nullable T defaultValue) {
     return defaultValue;
   }
 
   @Override
-  public <T> @UnknownNullability T getOrDefaultFrom(final @NotNull Pointer<T> pointer, final @NotNull Supplier<? extends T> defaultValue) {
+  public <T> @UnknownNullability T getOrDefaultFrom(final Pointer<T> pointer, final Supplier<? extends T> defaultValue) {
     return defaultValue.get();
   }
 
   @Override
-  public @NotNull Audience filterAudience(final @NotNull Predicate<? super Audience> filter) {
+  public Audience filterAudience(final Predicate<? super Audience> filter) {
     return this;
   }
 
   @Override
-  public void forEachAudience(final @NotNull Consumer<? super Audience> action) {
+  public void forEachAudience(final Consumer<? super Audience> action) {
   }
 
   @Override
-  public void sendMessage(final @NotNull ComponentLike message) {
+  public void sendMessage(final ComponentLike message) {
   }
 
   @Override
-  public void sendMessage(final @NotNull Component message) {
+  public void sendMessage(final Component message) {
   }
 
   @Override
-  public void sendMessage(final @NotNull Component message, final ChatType.@NotNull Bound boundChatType) {
+  public void sendMessage(final Component message, final ChatType.Bound boundChatType) {
   }
 
   @Override
-  public void sendMessage(final @NotNull SignedMessage signedMessage, final ChatType.@NotNull Bound boundChatType) {
+  public void sendMessage(final SignedMessage signedMessage, final ChatType.Bound boundChatType) {
   }
 
   @Override
-  public void deleteMessage(final SignedMessage.@NotNull Signature signature) {
+  public void deleteMessage(final SignedMessage.Signature signature) {
   }
 
   @Override
-  public void sendActionBar(final @NotNull ComponentLike message) {
+  public void sendActionBar(final ComponentLike message) {
   }
 
   @Override
-  public void sendPlayerListHeader(final @NotNull ComponentLike header) {
+  public void sendPlayerListHeader(final ComponentLike header) {
   }
 
   @Override
-  public void sendPlayerListFooter(final @NotNull ComponentLike footer) {
+  public void sendPlayerListFooter(final ComponentLike footer) {
   }
 
   @Override
-  public void sendPlayerListHeaderAndFooter(final @NotNull ComponentLike header, final @NotNull ComponentLike footer) {
+  public void sendPlayerListHeaderAndFooter(final ComponentLike header, final ComponentLike footer) {
   }
 
   @Override
-  public void openBook(final Book.@NotNull Builder book) {
+  public void openBook(final Book.Builder book) {
   }
 
   @Override
-  public void sendResourcePacks(final @NotNull ResourcePackInfoLike request, final @NotNull ResourcePackInfoLike@NotNull... others) {
+  public void sendResourcePacks(final ResourcePackInfoLike request, final ResourcePackInfoLike... others) {
   }
 
   @Override
-  public void removeResourcePacks(final @NotNull ResourcePackRequest request) {
+  public void removeResourcePacks(final ResourcePackRequest request) {
   }
 
   @Override
-  public void removeResourcePacks(final @NotNull ResourcePackInfoLike request, final @NotNull ResourcePackInfoLike@NotNull... others) {
+  public void removeResourcePacks(final ResourcePackInfoLike request, final ResourcePackInfoLike... others) {
   }
 
   @Override

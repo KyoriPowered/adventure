@@ -26,8 +26,7 @@ package net.kyori.adventure.text;
 import java.util.stream.Stream;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A component that can display NBT fetched from different locations, optionally trying to interpret the NBT as JSON
@@ -65,7 +64,7 @@ public sealed interface NBTComponent<C extends NBTComponent<C>> extends Componen
    * @return the NBT path
    * @since 4.0.0
    */
-  @NotNull String nbtPath();
+  String nbtPath();
 
   /**
    * Sets the NBT path.
@@ -75,7 +74,7 @@ public sealed interface NBTComponent<C extends NBTComponent<C>> extends Componen
    * @since 4.0.0
    */
   @Contract(pure = true)
-  @NotNull C nbtPath(final @NotNull String nbtPath);
+  C nbtPath(final String nbtPath);
 
   /**
    * Gets if we should be interpreting.
@@ -93,7 +92,7 @@ public sealed interface NBTComponent<C extends NBTComponent<C>> extends Componen
    * @since 4.0.0
    */
   @Contract(pure = true)
-  @NotNull C interpret(final boolean interpret);
+  C interpret(final boolean interpret);
 
   /**
    * Gets the separator.
@@ -110,10 +109,10 @@ public sealed interface NBTComponent<C extends NBTComponent<C>> extends Componen
    * @return the separator
    * @since 4.8.0
    */
-  @NotNull C separator(final @Nullable ComponentLike separator);
+  C separator(final @Nullable ComponentLike separator);
 
   @Override
-  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  default Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.concat(
       Stream.of(
         ExaminableProperty.of("nbtPath", this.nbtPath()),

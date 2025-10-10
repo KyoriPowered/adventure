@@ -26,8 +26,7 @@ package net.kyori.adventure.text.serializer.json;
 import java.util.function.Consumer;
 import net.kyori.adventure.text.Component;
 import net.kyori.option.OptionState;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 final class DummyJSONComponentSerializer implements JSONComponentSerializer {
   static final JSONComponentSerializer INSTANCE = new DummyJSONComponentSerializer();
@@ -38,34 +37,34 @@ final class DummyJSONComponentSerializer implements JSONComponentSerializer {
     Is your environment configured in a way that causes ServiceLoader to malfunction?""";
 
   @Override
-  public @NotNull Component deserialize(final @NotNull String input) {
+  public Component deserialize(final String input) {
     throw new UnsupportedOperationException(UNSUPPORTED_MESSAGE);
   }
 
   @Override
-  public @NotNull String serialize(final @NotNull Component component) {
+  public String serialize(final Component component) {
     throw new UnsupportedOperationException(UNSUPPORTED_MESSAGE);
   }
 
   // A no-op builder that just returns the unsupported instance.
   static final class BuilderImpl implements Builder {
     @Override
-    public @NotNull Builder options(final @NotNull OptionState flags) {
+    public Builder options(final OptionState flags) {
       return this;
     }
 
     @Override
-    public @NotNull Builder editOptions(final @NotNull Consumer<OptionState.Builder> optionEditor) {
+    public Builder editOptions(final Consumer<OptionState.Builder> optionEditor) {
       return this;
     }
 
     @Override
-    public @NotNull Builder legacyHoverEventSerializer(final @Nullable LegacyHoverEventSerializer serializer) {
+    public Builder legacyHoverEventSerializer(final @Nullable LegacyHoverEventSerializer serializer) {
       return this;
     }
 
     @Override
-    public @NotNull JSONComponentSerializer build() {
+    public JSONComponentSerializer build() {
       return INSTANCE;
     }
   }

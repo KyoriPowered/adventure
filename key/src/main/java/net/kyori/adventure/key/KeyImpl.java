@@ -31,7 +31,6 @@ import java.util.OptionalInt;
 import java.util.stream.Stream;
 import net.kyori.examination.ExaminableProperty;
 import org.intellij.lang.annotations.RegExp;
-import org.jetbrains.annotations.NotNull;
 
 import static java.util.Objects.requireNonNull;
 
@@ -66,21 +65,21 @@ record KeyImpl(String namespace, String value) implements Key {
   }
 
   @Override
-  public @NotNull String asString() {
+  public String asString() {
     return asString(this.namespace, this.value);
   }
 
-  private static @NotNull String asString(final @NotNull String namespace, final @NotNull String value) {
+  private static String asString(final String namespace, final String value) {
     return namespace + ':' + value;
   }
 
   @Override
-  public @NotNull String toString() {
+  public String toString() {
     return this.asString();
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("namespace", this.namespace),
       ExaminableProperty.of("value", this.value)
@@ -95,7 +94,7 @@ record KeyImpl(String namespace, String value) implements Key {
   }
 
   @Override
-  public int compareTo(final @NotNull Key that) {
+  public int compareTo(final Key that) {
     return Key.super.compareTo(that);
   }
 }

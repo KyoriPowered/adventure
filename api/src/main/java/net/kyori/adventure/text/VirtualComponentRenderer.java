@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.text;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
 /**
@@ -40,7 +39,7 @@ public interface VirtualComponentRenderer<C> {
    * @return the rendered value
    * @since 4.18.0
    */
-  @UnknownNullability ComponentLike apply(final @NotNull C context);
+  @UnknownNullability ComponentLike apply(final C context);
 
   /**
    * Get a fallback value for when this component has been serialized without being rendered.
@@ -50,7 +49,7 @@ public interface VirtualComponentRenderer<C> {
    * @return the fallback string
    * @since 4.18.0
    */
-  default @NotNull String fallbackString() {
+  default String fallbackString() {
     return "";
   }
 }

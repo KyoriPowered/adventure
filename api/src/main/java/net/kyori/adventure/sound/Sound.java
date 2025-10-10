@@ -31,7 +31,6 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
 import net.kyori.adventure.util.Index;
 import net.kyori.examination.Examinable;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
 import static java.util.Objects.requireNonNull;
@@ -69,7 +68,7 @@ public sealed interface Sound extends Examinable permits SoundImpl {
    * @return a new builder
    * @since 4.12.0
    */
-  static @NotNull Builder sound() {
+  static Builder sound() {
     return new SoundImpl.BuilderImpl();
   }
 
@@ -80,7 +79,7 @@ public sealed interface Sound extends Examinable permits SoundImpl {
    * @return a new builder
    * @since 4.12.0
    */
-  static @NotNull Builder sound(final @NotNull Sound existing) {
+  static Builder sound(final Sound existing) {
     return new SoundImpl.BuilderImpl(existing);
   }
 
@@ -91,7 +90,7 @@ public sealed interface Sound extends Examinable permits SoundImpl {
    * @return a new builder
    * @since 4.12.0
    */
-  static @NotNull Sound sound(final @NotNull Consumer<Sound.Builder> configurer) {
+  static Sound sound(final Consumer<Sound.Builder> configurer) {
     return AbstractBuilder.configureAndBuild(sound(), configurer);
   }
 
@@ -105,7 +104,7 @@ public sealed interface Sound extends Examinable permits SoundImpl {
    * @return the sound
    * @since 4.0.0
    */
-  static @NotNull Sound sound(final @NotNull Key name, final @NotNull Source source, final float volume, final float pitch) {
+  static Sound sound(final Key name, final Source source, final float volume, final float pitch) {
     return sound().type(name).source(source).volume(volume).pitch(pitch).build();
   }
 
@@ -119,7 +118,7 @@ public sealed interface Sound extends Examinable permits SoundImpl {
    * @return the sound
    * @since 4.0.0
    */
-  static @NotNull Sound sound(final @NotNull Type type, final @NotNull Source source, final float volume, final float pitch) {
+  static Sound sound(final Type type, final Source source, final float volume, final float pitch) {
     requireNonNull(type, "type");
     return sound(type.key(), source, volume, pitch);
   }
@@ -134,7 +133,7 @@ public sealed interface Sound extends Examinable permits SoundImpl {
    * @return the sound
    * @since 4.0.0
    */
-  static @NotNull Sound sound(final @NotNull Supplier<? extends Type> type, final @NotNull Source source, final float volume, final float pitch) {
+  static Sound sound(final Supplier<? extends Type> type, final Source source, final float volume, final float pitch) {
     return sound().type(type).source(source).volume(volume).pitch(pitch).build();
   }
 
@@ -148,7 +147,7 @@ public sealed interface Sound extends Examinable permits SoundImpl {
    * @return the sound
    * @since 4.8.0
    */
-  static @NotNull Sound sound(final @NotNull Key name, final Source.@NotNull Provider source, final float volume, final float pitch) {
+  static Sound sound(final Key name, final Source.Provider source, final float volume, final float pitch) {
     return sound(name, source.soundSource(), volume, pitch);
   }
 
@@ -162,7 +161,7 @@ public sealed interface Sound extends Examinable permits SoundImpl {
    * @return the sound
    * @since 4.8.0
    */
-  static @NotNull Sound sound(final @NotNull Type type, final Source.@NotNull Provider source, final float volume, final float pitch) {
+  static Sound sound(final Type type, final Source.Provider source, final float volume, final float pitch) {
     return sound(type, source.soundSource(), volume, pitch);
   }
 
@@ -176,7 +175,7 @@ public sealed interface Sound extends Examinable permits SoundImpl {
    * @return the sound
    * @since 4.8.0
    */
-  static @NotNull Sound sound(final @NotNull Supplier<? extends Type> type, final Source.@NotNull Provider source, final float volume, final float pitch) {
+  static Sound sound(final Supplier<? extends Type> type, final Source.Provider source, final float volume, final float pitch) {
     return sound(type, source.soundSource(), volume, pitch);
   }
 
@@ -186,7 +185,7 @@ public sealed interface Sound extends Examinable permits SoundImpl {
    * @return the name
    * @since 4.0.0
    */
-  @NotNull Key name();
+  Key name();
 
   /**
    * Gets the source.
@@ -194,7 +193,7 @@ public sealed interface Sound extends Examinable permits SoundImpl {
    * @return the source
    * @since 4.0.0
    */
-  @NotNull Source source();
+  Source source();
 
   /**
    * Gets the volume.
@@ -220,7 +219,7 @@ public sealed interface Sound extends Examinable permits SoundImpl {
    * @return the seed to use
    * @since 4.12.0
    */
-  @NotNull OptionalLong seed();
+  OptionalLong seed();
 
   /**
    * Gets the {@link SoundStop} that will stop this specific sound.
@@ -228,7 +227,7 @@ public sealed interface Sound extends Examinable permits SoundImpl {
    * @return the sound stop
    * @since 4.8.0
    */
-  @NotNull SoundStop asStop();
+  SoundStop asStop();
 
   /**
    * The sound source.
@@ -362,7 +361,7 @@ public sealed interface Sound extends Examinable permits SoundImpl {
        * @return the source
        * @since 4.8.0
        */
-      @NotNull Source soundSource();
+      Source soundSource();
     }
   }
 
@@ -379,7 +378,7 @@ public sealed interface Sound extends Examinable permits SoundImpl {
      * @since 4.0.0
      */
     @Override
-    @NotNull Key key();
+    Key key();
   }
 
   /**
@@ -397,7 +396,7 @@ public sealed interface Sound extends Examinable permits SoundImpl {
      * @return the emitter
      * @since 4.8.0
      */
-    static @NotNull Emitter self() {
+    static Emitter self() {
       return SoundImpl.EMITTER_SELF;
     }
   }
@@ -419,7 +418,7 @@ public sealed interface Sound extends Examinable permits SoundImpl {
      * @return this builder
      * @since 4.12.0
      */
-    @NotNull Builder type(final @NotNull Key type);
+    Builder type(final Key type);
 
     /**
      * Set the type of this sound.
@@ -430,7 +429,7 @@ public sealed interface Sound extends Examinable permits SoundImpl {
      * @return this builder
      * @since 4.12.0
      */
-    @NotNull Builder type(final @NotNull Type type);
+    Builder type(final Type type);
 
     /**
      * Set the type of this sound.
@@ -441,7 +440,7 @@ public sealed interface Sound extends Examinable permits SoundImpl {
      * @return this builder
      * @since 4.12.0
      */
-    @NotNull Builder type(final @NotNull Supplier<? extends Type> typeSupplier);
+    Builder type(final Supplier<? extends Type> typeSupplier);
 
     /**
      * A {@link Source} to tell the game where the sound is coming from.
@@ -452,7 +451,7 @@ public sealed interface Sound extends Examinable permits SoundImpl {
      * @return this builder
      * @since 4.12.0
      */
-    @NotNull Builder source(final @NotNull Source source);
+    Builder source(final Source source);
 
     /**
      * A {@link Source} to tell the game where the sound is coming from.
@@ -463,7 +462,7 @@ public sealed interface Sound extends Examinable permits SoundImpl {
      * @return this builder
      * @since 4.12.0
      */
-    @NotNull Builder source(final Source.@NotNull Provider source);
+    Builder source(final Source.Provider source);
 
     /**
      * The volume for this sound, indicating how far away it can be heard.
@@ -474,7 +473,7 @@ public sealed interface Sound extends Examinable permits SoundImpl {
      * @return this builder
      * @since 4.12.0
      */
-    @NotNull Builder volume(final @Range(from = 0, to = Integer.MAX_VALUE) float volume);
+    Builder volume(final @Range(from = 0, to = Integer.MAX_VALUE) float volume);
 
     /**
      * The pitch for this sound, indicating how high or low the sound can be heard.
@@ -485,7 +484,7 @@ public sealed interface Sound extends Examinable permits SoundImpl {
      * @return this builder
      * @since 4.12.0
      */
-    @NotNull Builder pitch(final @Range(from = -1, to = 1) float pitch);
+    Builder pitch(final @Range(from = -1, to = 1) float pitch);
 
     /**
      * The seed for this sound, used for weighted choices.
@@ -496,7 +495,7 @@ public sealed interface Sound extends Examinable permits SoundImpl {
      * @return this builder
      * @since 4.12.0
      */
-    @NotNull Builder seed(final long seed);
+    Builder seed(final long seed);
 
     /**
      * The seed for this sound, used for weighted choices.
@@ -507,6 +506,6 @@ public sealed interface Sound extends Examinable permits SoundImpl {
      * @return this builder
      * @since 4.12.0
      */
-    @NotNull Builder seed(final @NotNull OptionalLong seed);
+    Builder seed(final OptionalLong seed);
   }
 }

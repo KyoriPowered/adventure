@@ -25,9 +25,7 @@ package net.kyori.adventure.text;
 
 import java.util.stream.Stream;
 import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * A component that displays a string.
@@ -47,7 +45,7 @@ public sealed interface TextComponent extends ScopedComponent<TextComponent> per
    * @return the plain text content
    * @since 4.0.0
    */
-  @NotNull String content();
+  String content();
 
   /**
    * Sets the plain text content.
@@ -57,10 +55,10 @@ public sealed interface TextComponent extends ScopedComponent<TextComponent> per
    * @since 4.0.0
    */
   @Contract(pure = true)
-  @NotNull TextComponent content(final @NotNull String content);
+  TextComponent content(final String content);
 
   @Override
-  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+  default Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.concat(
       Stream.of(
         ExaminableProperty.of("content", this.content())
@@ -81,7 +79,7 @@ public sealed interface TextComponent extends ScopedComponent<TextComponent> per
      * @return the plain text content
      * @since 4.0.0
      */
-    @NotNull String content();
+    String content();
 
     /**
      * Sets the plain text content.
@@ -91,6 +89,6 @@ public sealed interface TextComponent extends ScopedComponent<TextComponent> per
      * @since 4.0.0
      */
     @Contract("_ -> this")
-    @NotNull Builder content(final @NotNull String content);
+    Builder content(final String content);
   }
 }

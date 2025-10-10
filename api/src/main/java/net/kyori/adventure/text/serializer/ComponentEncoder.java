@@ -25,8 +25,7 @@ package net.kyori.adventure.text.serializer;
 
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A {@link Component} encoder, which provides serialization, but without deserialization.
@@ -45,7 +44,7 @@ public interface ComponentEncoder<I extends Component, R> {
    * @return the output
    * @since 4.14.0
    */
-  @NotNull R serialize(final @NotNull I component);
+  R serialize(final I component);
 
   /**
    * Serializes a component into an output of type {@code R}.

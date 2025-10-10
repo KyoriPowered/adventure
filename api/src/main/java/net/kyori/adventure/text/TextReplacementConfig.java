@@ -33,8 +33,7 @@ import net.kyori.adventure.util.IntFunction2;
 import net.kyori.examination.Examinable;
 import org.intellij.lang.annotations.RegExp;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -53,7 +52,7 @@ public sealed interface TextReplacementConfig extends Examinable permits TextRep
    * @return a new builder
    * @since 4.2.0
    */
-  static @NotNull Builder builder() {
+  static Builder builder() {
     return new TextReplacementConfigImpl.Builder();
   }
 
@@ -63,7 +62,7 @@ public sealed interface TextReplacementConfig extends Examinable permits TextRep
    * @return the match pattern
    * @since 4.2.0
    */
-  @NotNull Pattern matchPattern();
+  Pattern matchPattern();
 
   /**
    * A builder for replacement configurations.
@@ -99,7 +98,7 @@ public sealed interface TextReplacementConfig extends Examinable permits TextRep
      * @since 4.2.0
      */
     @Contract("_ -> this")
-    default @NotNull Builder match(final @NotNull @RegExp String pattern) {
+    default Builder match(final @RegExp String pattern) {
       return this.match(Pattern.compile(pattern));
     }
 
@@ -111,7 +110,7 @@ public sealed interface TextReplacementConfig extends Examinable permits TextRep
      * @since 4.2.0
      */
     @Contract("_ -> this")
-    @NotNull Builder match(final @NotNull Pattern pattern);
+    Builder match(final Pattern pattern);
 
     /*
      * ---------------------------
@@ -125,7 +124,7 @@ public sealed interface TextReplacementConfig extends Examinable permits TextRep
      * @return this builder
      * @since 4.2.0
      */
-    default @NotNull Builder once() {
+    default Builder once() {
       return this.times(1);
     }
 
@@ -137,7 +136,7 @@ public sealed interface TextReplacementConfig extends Examinable permits TextRep
      * @since 4.2.0
      */
     @Contract("_ -> this")
-    default @NotNull Builder times(final int times) {
+    default Builder times(final int times) {
       return this.condition((index, replaced) -> replaced < times ? PatternReplacementResult.REPLACE : PatternReplacementResult.STOP);
     }
 
@@ -150,7 +149,7 @@ public sealed interface TextReplacementConfig extends Examinable permits TextRep
      * @since 4.2.0
      */
     @Contract("_ -> this")
-    default @NotNull Builder condition(final @NotNull IntFunction2<PatternReplacementResult> condition) {
+    default Builder condition(final IntFunction2<PatternReplacementResult> condition) {
       return this.condition((result, matchCount, replaced) -> condition.apply(matchCount, replaced));
     }
 
@@ -163,7 +162,7 @@ public sealed interface TextReplacementConfig extends Examinable permits TextRep
      * @since 4.8.0
      */
     @Contract("_ -> this")
-    @NotNull Builder condition(final @NotNull Condition condition);
+    Builder condition(final Condition condition);
 
     /*
      * -------------------------
@@ -179,7 +178,7 @@ public sealed interface TextReplacementConfig extends Examinable permits TextRep
      * @since 4.2.0
      */
     @Contract("_ -> this")
-    default @NotNull Builder replacement(final @NotNull String replacement) {
+    default Builder replacement(final String replacement) {
       requireNonNull(replacement, "replacement");
       return this.replacement(builder -> builder.content(replacement));
     }
@@ -192,7 +191,7 @@ public sealed interface TextReplacementConfig extends Examinable permits TextRep
      * @since 4.2.0
      */
     @Contract("_ -> this")
-    default @NotNull Builder replacement(final @Nullable ComponentLike replacement) {
+    default Builder replacement(final @Nullable ComponentLike replacement) {
       final @Nullable Component baked = ComponentLike.unbox(replacement);
       return this.replacement((result, input) -> baked);
     }
@@ -205,7 +204,7 @@ public sealed interface TextReplacementConfig extends Examinable permits TextRep
      * @since 4.2.0
      */
     @Contract("_ -> this")
-    default @NotNull Builder replacement(final @NotNull Function<TextComponent.Builder, @Nullable ComponentLike> replacement) {
+    default Builder replacement(final Function<TextComponent.Builder, @Nullable ComponentLike> replacement) {
       requireNonNull(replacement, "replacement");
       return this.replacement((result, input) -> replacement.apply(input));
 
@@ -219,7 +218,7 @@ public sealed interface TextReplacementConfig extends Examinable permits TextRep
      * @since 4.2.0
      */
     @Contract("_ -> this")
-    @NotNull Builder replacement(final @NotNull BiFunction<MatchResult, TextComponent.Builder, @Nullable ComponentLike> replacement);
+    Builder replacement(final BiFunction<MatchResult, TextComponent.Builder, @Nullable ComponentLike> replacement);
 
     /**
      * Set if the replacement should replace inside {@link HoverEvent hover events}.
@@ -231,7 +230,7 @@ public sealed interface TextReplacementConfig extends Examinable permits TextRep
      * @since 4.19.0
      */
     @Contract("_ -> this")
-    @NotNull Builder replaceInsideHoverEvents(final boolean replace);
+    Builder replaceInsideHoverEvents(final boolean replace);
   }
 
   /**
@@ -250,6 +249,6 @@ public sealed interface TextReplacementConfig extends Examinable permits TextRep
      * @return whether a certain match should
      * @since 4.8.0
      */
-    @NotNull PatternReplacementResult shouldReplace(final @NotNull MatchResult result, final int matchCount, final int replaced);
+    PatternReplacementResult shouldReplace(final MatchResult result, final int matchCount, final int replaced);
   }
 }
