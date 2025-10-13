@@ -498,6 +498,9 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
   /**
    * An enumeration of click event actions.
    *
+   * <p>In Adventure 5.0, Action will no longer be an enum.
+   * Therefore, the "enumness" of this class is considered deprecated.</p>
+   *
    * @since 4.0.0
    */
   public enum Action {
@@ -606,7 +609,11 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
      *
      * @return the payload type
      * @since 4.22.0
+     * @deprecated For removal in 5.0 since 4.26.
+     *     Action will no longer be an enum.
+     *     The payload type will be indicated with generics.
      */
+    @Deprecated
     public @NotNull Class<? extends Payload> payloadType() {
       return this.payloadType;
     }
