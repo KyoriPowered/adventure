@@ -53,6 +53,9 @@ abstract class NBTComponentImpl<C extends NBTComponent<C, B>, B extends NBTCompo
   }
 
   @Override
+  public abstract @NotNull B toBuilder();
+
+  @Override
   public boolean equals(final @Nullable Object other) {
     if (this == other) return true;
     if (!(other instanceof NBTComponent)) return false;

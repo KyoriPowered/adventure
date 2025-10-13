@@ -32,12 +32,15 @@ import org.jetbrains.annotations.NotNull;
  * @param <C> the component type
  * @param <B> the builder type
  * @since 4.0.0
+ * @deprecated For removal in 5.0, since 4.26 with no replacement. See instead {@link Component#toBuilder()}.
  */
+@Deprecated
 public interface BuildableComponent<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> extends Buildable<C, B>, Component {
   /**
    * Create a builder from this component.
    *
    * @return the builder
+   * @deprecated For removal in 5.0, since 4.26 with no replacement. See instead {@link Component#toBuilder()}.
    */
   @Override
   @NotNull B toBuilder();
