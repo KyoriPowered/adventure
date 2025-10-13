@@ -39,6 +39,7 @@ import org.jetbrains.annotations.Range;
  *
  * @since 4.0.0
  */
+@ApiStatus.NonExtendable
 public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, BinaryTag, Iterable<BinaryTag> {
   /**
    * Gets an empty list tag.
@@ -674,6 +675,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @param <T> the element type
    * @since 4.0.0
    */
+  @ApiStatus.NonExtendable
   interface Builder<T extends BinaryTag> extends ListTagSetter<Builder<T>, T> {
     /**
      * Builds.

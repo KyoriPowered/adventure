@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.nbt;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -32,6 +33,7 @@ import org.jetbrains.annotations.NotNull;
  * @param <T> the element type
  * @since 4.0.0
  */
+@ApiStatus.NonExtendable
 public interface ListTagSetter<R, T extends BinaryTag> {
   /**
    * Adds a tag.

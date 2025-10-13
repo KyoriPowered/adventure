@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.nbt;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -30,6 +31,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 4.2.0
  */
+@ApiStatus.NonExtendable
 public interface ArrayBinaryTag extends BinaryTag {
   @Override
   @NotNull BinaryTagType<? extends ArrayBinaryTag> type();

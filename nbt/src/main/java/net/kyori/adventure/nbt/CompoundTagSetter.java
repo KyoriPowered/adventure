@@ -25,6 +25,7 @@ package net.kyori.adventure.nbt;
 
 import java.util.Map;
 import java.util.function.Consumer;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,6 +35,7 @@ import org.jetbrains.annotations.Nullable;
  * @param <R> the return type
  * @since 4.0.0
  */
+@ApiStatus.NonExtendable
 public interface CompoundTagSetter<R> {
   /**
    * Inserts a tag.

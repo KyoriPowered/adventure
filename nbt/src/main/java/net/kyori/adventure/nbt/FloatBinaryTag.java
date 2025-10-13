@@ -31,6 +31,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 4.0.0
  */
+@ApiStatus.NonExtendable
 public interface FloatBinaryTag extends NumberBinaryTag {
   /**
    * Creates a binary tag holding a {@code float} value.

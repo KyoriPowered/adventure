@@ -36,6 +36,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.0.0
  * @sinceMinecraft 1.2.1
  */
+@ApiStatus.NonExtendable
 public interface IntArrayBinaryTag extends ArrayBinaryTag, Iterable<Integer> {
   /**
    * Creates a binary tag holding an {@code int}-array value.

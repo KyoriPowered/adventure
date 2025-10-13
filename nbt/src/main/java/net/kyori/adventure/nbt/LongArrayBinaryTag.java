@@ -36,6 +36,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.0.0
  * @sinceMinecraft 1.12
  */
+@ApiStatus.NonExtendable
 public interface LongArrayBinaryTag extends ArrayBinaryTag, Iterable<Long> {
   /**
    * Creates a binary tag holding a {@code long}-array value.
