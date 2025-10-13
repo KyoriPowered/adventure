@@ -24,11 +24,16 @@
 package net.kyori.adventure.text.format;
 
 import net.kyori.adventure.text.Component;
+import org.jetbrains.annotations.ApiStatus;
 
 /**
  * A format which may be applied to a {@link Component}.
  *
+ * <p>In Adventure 5.0 this interface will become sealed.
+ * You should migrate away from implementing this interface.</p>
+ *
  * @since 4.0.0
  */
+@ApiStatus.NonExtendable
 public interface TextFormat {
 }

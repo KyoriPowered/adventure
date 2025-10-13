@@ -29,6 +29,7 @@ import java.util.function.Function;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.Buildable;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -38,6 +39,7 @@ import org.jetbrains.annotations.Range;
  *
  * @since 4.7.0
  */
+@ApiStatus.NonExtendable
 public interface ComponentFlattener extends Buildable<ComponentFlattener, ComponentFlattener.Builder> {
   /**
    * A constant representing a flattener with no limit on nested flatten calls.
@@ -97,6 +99,7 @@ public interface ComponentFlattener extends Buildable<ComponentFlattener, Compon
    *
    * @since 4.7.0
    */
+  @ApiStatus.NonExtendable
   interface Builder extends AbstractBuilder<ComponentFlattener>, Buildable.Builder<ComponentFlattener> {
     /**
      * Register a type of component to be handled.

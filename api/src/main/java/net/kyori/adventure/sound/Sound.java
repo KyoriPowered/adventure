@@ -411,6 +411,7 @@ public interface Sound extends Examinable {
    *
    * @since 4.12.0
    */
+  @ApiStatus.NonExtendable
   interface Builder extends AbstractBuilder<Sound> {
     /**
      * Set the type of this sound.
