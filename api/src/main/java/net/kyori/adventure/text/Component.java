@@ -2665,7 +2665,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * Returns a builder for this component.
    *
    * @return the builder
-   * @since 5.0.0
+   * @since 4.26.0
    */
   ComponentBuilder<?, ?> toBuilder();
 

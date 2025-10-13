@@ -107,4 +107,7 @@ public sealed interface NBTComponent<C extends NBTComponent<C>> extends Componen
    * @since 4.8.0
    */
   C separator(final @Nullable ComponentLike separator);
+
+  @Override
+  NBTComponentBuilder<C, ? extends NBTComponentBuilder<C, ?>> toBuilder();
 }
