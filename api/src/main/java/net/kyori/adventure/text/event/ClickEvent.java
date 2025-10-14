@@ -229,6 +229,9 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends StyleBu
   /**
    * An enumeration of click event actions.
    *
+   * <p><b>Note:</b> although this interface is sealed, new implementations
+   * may be added at any time as and when needed.</p>
+   *
    * @param <T> the payload type
    * @since 4.0.0
    */
@@ -411,6 +414,9 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends StyleBu
 
   /**
    * A payload for a click event.
+   *
+   * <p><b>Note:</b> although this interface is sealed, new implementations
+   * may be added at any time as and when needed.</p>
    *
    * @since 4.22.0
    */

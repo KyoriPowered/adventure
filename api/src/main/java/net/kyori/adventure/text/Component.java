@@ -91,6 +91,9 @@ import static java.util.Objects.requireNonNull;
  * <a href="https://docs.papermc.io/adventure/text/">can be found on
  * our documentation.</a></p>
  *
+ * <p><b>Note:</b> although this interface is sealed, new implementations
+ * may be added at any time as and when needed.</p>
+ *
  * @see BlockNBTComponent
  * @see EntityNBTComponent
  * @see KeybindComponent
@@ -99,6 +102,7 @@ import static java.util.Objects.requireNonNull;
  * @see StorageNBTComponent
  * @see TextComponent
  * @see TranslatableComponent
+ * @see ObjectComponent
  * @see LinearComponents
  * @since 4.0.0
  */
