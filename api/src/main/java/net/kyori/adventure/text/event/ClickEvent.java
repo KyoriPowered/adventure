@@ -232,13 +232,13 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends StyleBu
    * @param <T> the payload type
    * @since 4.0.0
    */
-  sealed interface Action<T extends Payload> permits ClickEventImpl.ActionImpl {
+  sealed interface Action<T extends Payload> {
     /**
      * Opens a url when clicked.
      *
      * @since 4.0.0
      */
-    Action<Payload.Text> OPEN_URL = new ClickEventImpl.ActionImpl<>("open_url", true, Payload.Text.class);
+    OpenUrl OPEN_URL = ClickEventImpl.OPEN_URL;
 
     /**
      * Opens a file when clicked.
@@ -247,28 +247,28 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends StyleBu
      *
      * @since 4.0.0
      */
-    Action<Payload.Text> OPEN_FILE = new ClickEventImpl.ActionImpl<>("open_file", false, Payload.Text.class);
+    OpenFile OPEN_FILE = ClickEventImpl.OPEN_FILE;
 
     /**
      * Runs a command when clicked.
      *
      * @since 4.0.0
      */
-    Action<Payload.Text> RUN_COMMAND = new ClickEventImpl.ActionImpl<>("run_command", true, Payload.Text.class);
+    RunCommand RUN_COMMAND = ClickEventImpl.RUN_COMMAND;
 
     /**
      * Suggests a command into the chat box.
      *
      * @since 4.0.0
      */
-    Action<Payload.Text> SUGGEST_COMMAND = new ClickEventImpl.ActionImpl<>("suggest_command", true, Payload.Text.class);
+    SuggestCommand SUGGEST_COMMAND = ClickEventImpl.SUGGEST_COMMAND;
 
     /**
      * Changes the page of a book.
      *
      * @since 4.0.0
      */
-    Action<Payload.Int> CHANGE_PAGE = new ClickEventImpl.ActionImpl<>("change_page", true, Payload.Int.class);
+    ChangePage CHANGE_PAGE = ClickEventImpl.CHANGE_PAGE;
 
     /**
      * Copies text to the clipboard.
@@ -276,7 +276,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends StyleBu
      * @since 4.0.0
      * @sinceMinecraft 1.15
      */
-    Action<Payload.Text> COPY_TO_CLIPBOARD = new ClickEventImpl.ActionImpl<>("copy_to_clipboard", true, Payload.Text.class);
+    CopyToClipboard COPY_TO_CLIPBOARD = ClickEventImpl.COPY_TO_CLIPBOARD;
 
     /**
      * Shows a dialog.
@@ -286,7 +286,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends StyleBu
      * @since 4.22.0
      * @sinceMinecraft 1.21.6
      */
-    Action<Payload.Dialog> SHOW_DIALOG = new ClickEventImpl.ActionImpl<>("show_dialog", false, Payload.Dialog.class);
+    ShowDialog SHOW_DIALOG = ClickEventImpl.SHOW_DIALOG;
 
     /**
      * Sends a custom event to the server.
@@ -294,7 +294,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends StyleBu
      * @since 4.22.0
      * @sinceMinecraft 1.21.6
      */
-    Action<Payload.Custom> CUSTOM = new ClickEventImpl.ActionImpl<>("custom", true, Payload.Custom.class);
+    Custom CUSTOM = ClickEventImpl.CUSTOM;
 
     /**
      * The name map.
@@ -322,14 +322,91 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends StyleBu
     boolean supports(final Payload payload);
 
     /**
-     * The type of the payload this click event supports.
+     * An action with a text payload.
      *
-     * @return the payload type
-     * @since 4.22.0
-     * @deprecated For removal, action now supports generics.
+     * @since 5.0.0
      */
-    @Deprecated(since = "5.0.0", forRemoval = true)
-    Class<? extends Payload> payloadType();
+    sealed interface TextCarrier extends ClickEvent.Action<Payload.Text> {
+    }
+
+    /**
+     * Opens a url when clicked.
+     *
+     * @see #OPEN_URL
+     * @since 5.0.0
+     */
+    sealed interface OpenUrl extends TextCarrier permits ClickEventImpl.AbstractAction.OpenUrlImpl {
+    }
+
+    /**
+     * Opens a file when clicked.
+     *
+     * <p>This action is not readable, and may only be used locally on the client.</p>
+     *
+     * @see #OPEN_FILE
+     * @since 5.0.0
+     */
+    sealed interface OpenFile extends TextCarrier permits ClickEventImpl.AbstractAction.OpenFileImpl {
+    }
+
+    /**
+     * Runs a command when clicked.
+     *
+     * @see #RUN_COMMAND
+     * @since 5.0.0
+     */
+    sealed interface RunCommand extends TextCarrier permits ClickEventImpl.AbstractAction.RunCommandImpl {
+    }
+
+    /**
+     * Suggests a command into the chat box.
+     *
+     * @see #SUGGEST_COMMAND
+     * @since 5.0.0
+     */
+    sealed interface SuggestCommand extends TextCarrier permits ClickEventImpl.AbstractAction.SuggestCommandImpl {
+    }
+
+    /**
+     * Changes the page of a book.
+     *
+     * @see #CHANGE_PAGE
+     * @since 5.0.0
+     */
+    sealed interface ChangePage extends ClickEvent.Action<Payload.Int> permits ClickEventImpl.AbstractAction.ChangePageImpl {
+    }
+
+    /**
+     * Copies text to the clipboard.
+     *
+     * @see #COPY_TO_CLIPBOARD
+     * @since 4.0.0
+     * @sinceMinecraft 1.15
+     */
+    sealed interface CopyToClipboard extends TextCarrier permits ClickEventImpl.AbstractAction.CopyToClipboardImpl {
+    }
+
+    /**
+     * Shows a dialog.
+     *
+     * <p>This action is not readable at this time until Adventure has a full Dialog API.</p>
+     *
+     * @see #SHOW_DIALOG
+     * @since 5.0.0
+     * @sinceMinecraft 1.21.6
+     */
+    sealed interface ShowDialog extends ClickEvent.Action<Payload.Dialog> permits ClickEventImpl.AbstractAction.ShowDialogImpl {
+    }
+
+    /**
+     * Sends a custom event to the server.
+     *
+     * @see #CUSTOM
+     * @since 5.0.0
+     * @sinceMinecraft 1.21.6
+     */
+    sealed interface Custom extends ClickEvent.Action<Payload.Custom> permits ClickEventImpl.AbstractAction.CustomImpl {
+    }
   }
 
   /**

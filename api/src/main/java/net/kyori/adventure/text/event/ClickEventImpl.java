@@ -38,10 +38,95 @@ record ClickEventImpl<T extends ClickEvent.Payload>(Action<T> action, Payload pa
     style.clickEvent(this);
   }
 
-  record ActionImpl<T extends Payload>(String name, boolean readable, Class<? extends Payload> payloadType) implements ClickEvent.Action<T> {
-    @Override
+  static ClickEvent.Action.OpenUrl OPEN_URL = new AbstractAction.OpenUrlImpl();
+  static ClickEvent.Action.OpenFile OPEN_FILE = new AbstractAction.OpenFileImpl();
+  static ClickEvent.Action.RunCommand RUN_COMMAND = new AbstractAction.RunCommandImpl();
+  static ClickEvent.Action.SuggestCommand SUGGEST_COMMAND = new AbstractAction.SuggestCommandImpl();
+  static ClickEvent.Action.ChangePage CHANGE_PAGE = new AbstractAction.ChangePageImpl();
+  static ClickEvent.Action.CopyToClipboard COPY_TO_CLIPBOARD = new AbstractAction.CopyToClipboardImpl();
+  static ClickEvent.Action.ShowDialog SHOW_DIALOG = new AbstractAction.ShowDialogImpl();
+  static ClickEvent.Action.Custom CUSTOM = new AbstractAction.CustomImpl();
+
+  abstract static class AbstractAction {
+    private final String name;
+    private final boolean readable;
+    private final Class<? extends Payload> payloadType;
+
+    private AbstractAction(String name, boolean readable, Class<? extends Payload> payloadType) {
+      this.name = name;
+      this.readable = readable;
+      this.payloadType = payloadType;
+    }
+
+    public boolean readable() {
+      return this.readable;
+    }
+
     public boolean supports(final Payload payload) {
-      return payload.getClass() == this.payloadType;
+      return this.payloadType.isInstance(payload);
+    }
+
+    @Override
+    public String toString() {
+      return this.name;
+    }
+
+    @Override
+    public int hashCode() {
+      return this.name.hashCode();
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+      return obj == this;
+    }
+
+    static final class OpenUrlImpl extends AbstractAction implements Action.OpenUrl {
+      private OpenUrlImpl() {
+        super("open_url", true, Payload.Text.class);
+      }
+    }
+
+    static final class OpenFileImpl extends AbstractAction implements Action.OpenFile {
+      private OpenFileImpl() {
+        super("open_file", false, Payload.Text.class);
+      }
+    }
+
+    static final class RunCommandImpl extends AbstractAction implements Action.RunCommand {
+      private RunCommandImpl() {
+        super("run_command", true, Payload.Text.class);
+      }
+    }
+
+    static final class SuggestCommandImpl extends AbstractAction implements Action.SuggestCommand {
+      private SuggestCommandImpl() {
+        super("suggest_command", true, Payload.Text.class);
+      }
+    }
+
+    static final class ChangePageImpl extends AbstractAction implements Action.ChangePage {
+      private ChangePageImpl() {
+        super("change_page", true, Payload.Int.class);
+      }
+    }
+
+    static final class CopyToClipboardImpl extends AbstractAction implements Action.CopyToClipboard {
+      private CopyToClipboardImpl() {
+        super("copy_to_clipboard", true, Payload.Text.class);
+      }
+    }
+
+    static final class ShowDialogImpl extends AbstractAction implements Action.ShowDialog {
+      private ShowDialogImpl() {
+        super("show_dialog", true, Payload.Dialog.class);
+      }
+    }
+
+    static final class CustomImpl extends AbstractAction implements Action.Custom {
+      private CustomImpl() {
+        super("custom", true, Payload.Custom.class);
+      }
     }
   }
 }
