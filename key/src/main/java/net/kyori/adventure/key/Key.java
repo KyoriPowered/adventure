@@ -133,8 +133,6 @@ public interface Key extends Comparable<Key>, Namespaced, Keyed {
    * @since 4.0.0
    */
   static Key key(@KeyPattern.Namespace final String namespace, @KeyPattern.Value final String value) {
-    KeyImpl.checkError("namespace", namespace, namespace, value, Key.checkNamespace(namespace), KeyImpl.NAMESPACE_PATTERN);
-    KeyImpl.checkError("value", value, namespace, value, Key.checkValue(value), KeyImpl.VALUE_PATTERN);
     return new KeyImpl(namespace, value);
   }
 

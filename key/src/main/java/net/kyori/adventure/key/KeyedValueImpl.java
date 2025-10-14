@@ -23,9 +23,16 @@
  */
 package net.kyori.adventure.key;
 
+import java.util.Objects;
 import org.jspecify.annotations.Nullable;
 
 record KeyedValueImpl<T>(Key key, T value) implements KeyedValue<T> {
+
+  KeyedValueImpl {
+    Objects.requireNonNull(key, "key");
+    Objects.requireNonNull(value, "value");
+  }
+
   @Override
   public boolean equals(final @Nullable Object other) {
     if (this == other) return true;

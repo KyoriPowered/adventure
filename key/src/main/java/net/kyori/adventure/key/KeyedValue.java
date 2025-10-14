@@ -23,8 +23,6 @@
  */
 package net.kyori.adventure.key;
 
-import static java.util.Objects.requireNonNull;
-
 /**
  * A {@code T} value with an associated {@link Key}.
  *
@@ -42,7 +40,7 @@ public interface KeyedValue<T> extends Keyed {
    * @since 4.10.0
    */
   static <T> KeyedValue<T> keyedValue(final Key key, final T value) {
-    return new KeyedValueImpl<>(key, requireNonNull(value, "value"));
+    return new KeyedValueImpl<>(key, value);
   }
 
   /**

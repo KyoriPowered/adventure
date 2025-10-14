@@ -38,6 +38,11 @@ record KeyImpl(String namespace, String value) implements Key {
   static final @RegExp String NAMESPACE_PATTERN = "[a-z0-9_\\-.]+";
   static final @RegExp String VALUE_PATTERN = "[a-z0-9_\\-./]+";
 
+  KeyImpl {
+    KeyImpl.checkError("namespace", namespace, namespace, value, Key.checkNamespace(namespace), KeyImpl.NAMESPACE_PATTERN);
+    KeyImpl.checkError("value", value, namespace, value, Key.checkValue(value), KeyImpl.VALUE_PATTERN);
+  }
+
   static void checkError(final String name, final String checkPart, final String namespace, final String value, final OptionalInt index, final String pattern) {
     requireNonNull(checkPart, name);
     if (index.isPresent()) {
