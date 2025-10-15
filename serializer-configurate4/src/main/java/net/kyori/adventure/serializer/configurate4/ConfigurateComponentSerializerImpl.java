@@ -102,6 +102,7 @@ final class ConfigurateComponentSerializerImpl implements ConfigurateComponentSe
       .register(TextColorSerializer.INSTANCE)
       .register(BlockNBTPosSerializer.INSTANCE)
       .register(TranslationArgument.class, TranslationArgumentTypeSerializer.INSTANCE)
+      .register(ClickEvent.Payload.class, ClickEventPayloadSerializer.INSTANCE)
       .registerExact(new IndexSerializer<>(new TypeToken<ClickEvent.Action<?>>() {}, ClickEvent.Action.NAMES))
       .registerExact(new IndexSerializer<>(new TypeToken<HoverEvent.Action<?>>() {}, HoverEvent.Action.NAMES))
       .registerExact(new IndexSerializer<>(TypeToken.get(Sound.Source.class), Sound.Source.NAMES))

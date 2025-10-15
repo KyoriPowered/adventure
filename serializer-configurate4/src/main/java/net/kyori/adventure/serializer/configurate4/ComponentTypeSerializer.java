@@ -158,12 +158,12 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
         .name(name.getString())
         .objective(objective.getString());
       // score components can have a value sometimes, let's grab it
-      /*final ConfigurationNode scoreValue = score.node(SCORE_VALUE);
+      final ConfigurationNode scoreValue = score.node(SCORE_VALUE);
       if (!scoreValue.virtual()) {
         component = builder.value(scoreValue.getString());
-      } else {*/
+      } else {
         component = builder;
-      //}
+      }
     } else if (children.containsKey(SELECTOR)) {
       component = Component.selector().pattern(children.get(SELECTOR).getString());
     } else if (children.containsKey(KEYBIND)) {
