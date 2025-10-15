@@ -2,25 +2,9 @@ plugins {
   id("adventure.common-conventions")
 }
 
-val exposedVersion by configurations.creating {
-}
-
-configurations {
-  apiElements {
-    extendsFrom(exposedVersion)
-  }
-  runtimeClasspath {
-    extendsFrom(exposedVersion)
-  }
-  runtimeElements {
-    extendsFrom(exposedVersion)
-  }
-}
-
 dependencies {
   api(projects.adventureApi)
   compileOnly(libs.slf4j)
-  exposedVersion(libs.slf4jRuntime)
   testImplementation(libs.slf4jtest)
   testImplementation(libs.slf4j)
 }

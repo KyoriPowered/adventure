@@ -32,8 +32,6 @@ import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.event.Level;
 import org.slf4j.spi.LocationAwareLogger;
-import org.slf4j.spi.LoggingEventBuilder;
-import org.slf4j.spi.NOPLoggingEventBuilder;
 
 final class WrappingComponentLoggerImpl implements ComponentLogger {
   private static final String FQCN = WrappingComponentLoggerImpl.class.getName();
@@ -48,13 +46,13 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
     this.isLocationAware = backing instanceof LocationAwareLogger;
   }
 
-  private String serialize(final Component input) {
+  private @Nullable String serialize(final @Nullable Component input) {
     if (input == null) return null;
 
     return this.serializer.apply(input);
   }
 
-  private Object maybeSerialize(final @Nullable Object input) {
+  private @Nullable Object maybeSerialize(final @Nullable Object input) {
     if (input instanceof final ComponentLike cl) {
       return this.serialize(cl.asComponent());
     } else {
@@ -62,8 +60,8 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
     }
   }
 
-  private Object[] maybeSerialize(final @Nullable Object... args) {
-    Object[] writable = args;
+  private @Nullable Object[] maybeSerialize(final @Nullable Object... args) {
+    @Nullable Object[] writable = args;
     for (int i = 0; i < writable.length; i++) {
       if (writable[i] instanceof ComponentLike) {
         if (writable == args) {
@@ -146,16 +144,16 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public LoggingEventBuilder makeLoggingEventBuilder(final Level level) {
-    return this.logger.makeLoggingEventBuilder(level);
+  public ComponentLoggingEventBuilder makeLoggingEventBuilder(final Level level) {
+    return new ComponentLoggingEventBuilderImpl(this.logger, level, this.serializer);
   }
 
   @Override
-  public LoggingEventBuilder atLevel(final Level level) {
+  public ComponentLoggingEventBuilder atLevel(final Level level) {
     if (this.logger.isEnabledForLevel(level)) {
-      return this.logger.makeLoggingEventBuilder(level);
+      return this.makeLoggingEventBuilder(level);
     } else {
-      return NOPLoggingEventBuilder.singleton();
+      return NoOpComponentLoggingEventBuilderImpl.INSTANCE;
     }
   }
 
