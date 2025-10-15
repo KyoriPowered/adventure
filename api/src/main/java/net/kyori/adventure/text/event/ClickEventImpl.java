@@ -52,7 +52,7 @@ record ClickEventImpl<T extends ClickEvent.Payload>(Action<T> action, Payload pa
     private final boolean readable;
     private final Class<? extends Payload> payloadType;
 
-    private AbstractAction(String name, boolean readable, Class<? extends Payload> payloadType) {
+    private AbstractAction(final String name, final boolean readable, final Class<? extends Payload> payloadType) {
       this.name = name;
       this.readable = readable;
       this.payloadType = payloadType;
