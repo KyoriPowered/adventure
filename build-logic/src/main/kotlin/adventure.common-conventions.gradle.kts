@@ -83,7 +83,10 @@ indraCrossdoc {
 tasks {
   javadoc {
     val options = options as? StandardJavadocDocletOptions ?: return@javadoc
-    options.tags("sinceMinecraft:a:Since Minecraft:")
+    options.tags(
+      "sinceMinecraft:a:Since Minecraft:",
+      "obsoleteSinceMinecraft:a:Obsolete since Minecraft",
+    )
   }
 
   jacocoTestReport {

@@ -23,7 +23,9 @@
  */
 package net.kyori.adventure.text;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A component that can display a player's score from a scoreboard objective,
@@ -35,9 +37,9 @@ import org.jetbrains.annotations.Contract;
  *   <dd>a player username or a Minecraft selector that leads to a single player</dd>
  *   <dt>objective</dt>
  *   <dd>a scoreboard objective</dd>
- *   <dt>value(optional)</dt>
+ *   <dt>value (optional, obsolete)</dt>
  *   <dd>a value to use that will override any queried scoreboard value
- *   <p>This field is no longer present in the game from 1.16,
+ *   <p>This field is no longer present in the game from 1.16.5,
  *   which means it will be ignored</p></dd>
  * </dl>
  *
@@ -84,6 +86,28 @@ public sealed interface ScoreComponent extends ScopedComponent<ScoreComponent> p
   @Contract(pure = true)
   ScoreComponent objective(final String objective);
 
+  /**
+   * Gets the value.
+   *
+   * @return the value
+   * @since 4.0.0
+   * @obsoleteSinceMinecraft 1.16.5, no longer supported
+   */
+  @ApiStatus.Obsolete
+  @Nullable String value();
+
+  /**
+   * Sets the value.
+   *
+   * @param value the value
+   * @return a score component
+   * @since 4.0.0
+   * @obsoleteSinceMinecraft 1.16.5, no longer supported
+   */
+  @ApiStatus.Obsolete
+  @Contract(pure = true)
+  ScoreComponent value(final String value);
+
   @Override
   Builder toBuilder();
 
@@ -112,5 +136,17 @@ public sealed interface ScoreComponent extends ScopedComponent<ScoreComponent> p
      */
     @Contract("_ -> this")
     Builder objective(final String objective);
+
+    /**
+     * Sets the value.
+     *
+     * @param value the value
+     * @return this builder
+     * @since 4.0.0
+     * @obsoleteSinceMinecraft 1.16.5, no longer supported
+     */
+    @Contract("_ -> this")
+    @ApiStatus.Obsolete
+    Builder value(final @Nullable String value);
   }
 }

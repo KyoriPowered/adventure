@@ -56,6 +56,7 @@ import net.kyori.adventure.translation.Translatable;
 import net.kyori.adventure.util.ARGBLike;
 import net.kyori.adventure.util.ForwardingIterator;
 import net.kyori.adventure.util.MonkeyBars;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.Nullable;
@@ -612,7 +613,23 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    */
   @Contract(value = "_, _ -> new", pure = true)
   static ScoreComponent score(final String name, final String objective) {
-    return ScoreComponentImpl.create(Collections.emptyList(), Style.empty(), name, objective);
+    return score(name, objective, null);
+  }
+
+  /**
+   * Creates a score component with a name and objective.
+   *
+   * @param name the score name
+   * @param objective the score objective
+   * @param value the score value
+   * @return a score component
+   * @since 4.0.0
+   * @obsoleteSinceMinecraft 1.16.5, no longer supported
+   */
+  @ApiStatus.Obsolete
+  @Contract(value = "_, _, _ -> new", pure = true)
+  static ScoreComponent score(final String name, final String objective, final @Nullable String value) {
+    return ScoreComponentImpl.create(Collections.emptyList(), Style.empty(), name, objective, value);
   }
 
   /*

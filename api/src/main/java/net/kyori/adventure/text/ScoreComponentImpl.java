@@ -30,36 +30,49 @@ import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-record ScoreComponentImpl(List<Component> children, Style style, String name, String objective) implements ScoreComponent {
-  static ScoreComponent create(final List<? extends ComponentLike> children, final Style style, final String name, final String objective) {
+record ScoreComponentImpl(
+  List<Component> children,
+  Style style,
+  String name,
+  String objective,
+  @Nullable String value
+) implements ScoreComponent {
+  static ScoreComponent create(final List<? extends ComponentLike> children, final Style style, final String name, final String objective, final @Nullable String value) {
     return new ScoreComponentImpl(
       ComponentLike.asComponents(children, IS_NOT_EMPTY),
       requireNonNull(style, "style"),
       requireNonNull(name, "name"),
-      requireNonNull(objective, "objective")
+      requireNonNull(objective, "objective"),
+      value
     );
   }
 
   @Override
   public ScoreComponent name(final String name) {
     if (Objects.equals(this.name, name)) return this;
-    return create(this.children, this.style, name, this.objective);
+    return create(this.children, this.style, name, this.objective, this.value);
   }
 
   @Override
   public ScoreComponent objective(final String objective) {
     if (Objects.equals(this.objective, objective)) return this;
-    return create(this.children, this.style, this.name, objective);
+    return create(this.children, this.style, this.name, objective, this.value);
+  }
+
+  @Override
+  public ScoreComponent value(final @Nullable String value) {
+    if (Objects.equals(this.value, value)) return this;
+    return create(this.children, this.style, this.name, this.objective, value);
   }
 
   @Override
   public ScoreComponent children(final List<? extends ComponentLike> children) {
-    return create(children, this.style, this.name, this.objective);
+    return create(children, this.style, this.name, this.objective, this.value);
   }
 
   @Override
   public ScoreComponent style(final Style style) {
-    return create(this.children, style, this.name, this.objective);
+    return create(this.children, style, this.name, this.objective, this.value);
   }
 
   @Override
@@ -70,6 +83,7 @@ record ScoreComponentImpl(List<Component> children, Style style, String name, St
   static final class BuilderImpl extends AbstractComponentBuilder<ScoreComponent, Builder> implements Builder {
     private @Nullable String name;
     private @Nullable String objective;
+    private @Nullable String value;
 
     BuilderImpl() {
     }
@@ -93,10 +107,16 @@ record ScoreComponentImpl(List<Component> children, Style style, String name, St
     }
 
     @Override
+    public Builder value(final @Nullable String value) {
+      this.value = value;
+      return this;
+    }
+
+    @Override
     public ScoreComponent build() {
       if (this.name == null) throw new IllegalStateException("name must be set");
       if (this.objective == null) throw new IllegalStateException("objective must be set");
-      return create(this.children, this.buildStyle(), this.name, this.objective);
+      return create(this.children, this.buildStyle(), this.name, this.objective, this.value);
     }
   }
 }
