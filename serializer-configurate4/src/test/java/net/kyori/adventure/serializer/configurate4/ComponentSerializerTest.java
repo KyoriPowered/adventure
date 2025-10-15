@@ -82,10 +82,9 @@ class ComponentSerializerTest implements ConfigurateTestBase {
       n.node(ComponentTreeConstants.SCORE).act(s -> {
         s.node(ComponentTreeConstants.SCORE_NAME).raw("Holder");
         s.node(ComponentTreeConstants.SCORE_OBJECTIVE).raw("some.objective");
-        s.node(ComponentTreeConstants.SCORE_VALUE).raw("Override");
       });
     });
-    final Component component = Component.score("Holder", "some.objective", "Override");
+    final Component component = Component.score("Holder", "some.objective");
 
     this.assertRoundtrippable(component, serialized);
   }

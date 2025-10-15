@@ -35,7 +35,7 @@ import org.spongepowered.configurate.serialize.TypeSerializer;
 final class ShadowColorSerializer implements TypeSerializer<ShadowColor> {
   static final TypeSerializer<ShadowColor> INSTACE = new ShadowColorSerializer(false);
 
-  private boolean emitFloats;
+  private final boolean emitFloats;
 
   private ShadowColorSerializer(final boolean emitFloats) {
     this.emitFloats = emitFloats;

@@ -97,17 +97,13 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
     return this.deserialize0(value);
   }
 
-  private BuildableComponent<?, ?> deserialize0(final ConfigurationNode value) throws SerializationException {
+  private Component deserialize0(final ConfigurationNode value) throws SerializationException {
     // Try to read as a string
     if (!value.isList() && !value.isMap()) {
       final String str = value.getString();
       if (str != null) {
         if (this.stringSerial != null) {
-          final Component ret = this.stringSerial.deserialize(str);
-          if (!(ret instanceof BuildableComponent<?, ?>)) {
-            throw new SerializationException("Result " + ret + " is not builable");
-          }
-          return (BuildableComponent<?, ?>) ret;
+          return this.stringSerial.deserialize(str);
         } else {
           return Component.text(str);
         }
@@ -115,7 +111,7 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
     } else if (value.isList()) {
       ComponentBuilder<?, ?> parent = null;
       for (final ConfigurationNode childElement : value.childrenList()) {
-        final BuildableComponent<?, ?> child = this.deserialize0(childElement);
+        final Component child = this.deserialize0(childElement);
         if (parent == null) {
           parent = child.toBuilder();
         } else {
@@ -162,12 +158,12 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
         .name(name.getString())
         .objective(objective.getString());
       // score components can have a value sometimes, let's grab it
-      final ConfigurationNode scoreValue = score.node(SCORE_VALUE);
+      /*final ConfigurationNode scoreValue = score.node(SCORE_VALUE);
       if (!scoreValue.virtual()) {
         component = builder.value(scoreValue.getString());
-      } else {
+      } else {*/
         component = builder;
-      }
+      //}
     } else if (children.containsKey(SELECTOR)) {
       component = Component.selector().pattern(children.get(SELECTOR).getString());
     } else if (children.containsKey(KEYBIND)) {
@@ -278,13 +274,13 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
       score.node(SCORE_OBJECTIVE).set(sc.objective());
       // score component value is optional
       @SuppressWarnings("deprecation")
-      final @Nullable String scoreValue = sc.value();
+      final String scoreValue = sc.value();
       if (scoreValue != null) score.node(SCORE_VALUE).set(scoreValue);
     } else if (src instanceof SelectorComponent) {
       value.node(SELECTOR).set(((SelectorComponent) src).pattern());
     } else if (src instanceof KeybindComponent) {
       value.node(KEYBIND).set(((KeybindComponent) src).keybind());
-    } else if (src instanceof final NBTComponent<?, ?> nc) {
+    } else if (src instanceof final NBTComponent<?> nc) {
       value.node(NBT).set(nc.nbtPath());
       value.node(NBT_INTERPRET).set(nc.interpret());
       switch (src) {
@@ -293,17 +289,14 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
         case StorageNBTComponent storageNBTComponent -> value.node(NBT_STORAGE).set(KeySerializer.INSTANCE.type(), storageNBTComponent.storage());
         default -> throw notSureHowToSerialize(src);
       }
-    } else if (src instanceof ObjectComponent) {
-      final ObjectComponent objectComponent = (ObjectComponent) src;
+    } else if (src instanceof final ObjectComponent objectComponent) {
       final ObjectContents contents = objectComponent.contents();
-      if (contents instanceof SpriteObjectContents) {
-        final SpriteObjectContents spriteContents = (SpriteObjectContents) contents;
+      if (contents instanceof final SpriteObjectContents spriteContents) {
         if (!spriteContents.atlas().equals(SpriteObjectContents.DEFAULT_ATLAS)) {
           value.node(OBJECT_ATLAS).set(KeySerializer.INSTANCE.type(), spriteContents.atlas());
         }
         value.node(OBJECT_SPRITE).set(KeySerializer.INSTANCE.type(), spriteContents.sprite());
-      } else if (contents instanceof PlayerHeadObjectContents) {
-        final PlayerHeadObjectContents playerHeadContents = (PlayerHeadObjectContents) contents;
+      } else if (contents instanceof final PlayerHeadObjectContents playerHeadContents) {
         value.node(OBJECT_HAT).set(playerHeadContents.hat());
         final String playerName = playerHeadContents.name();
         final UUID playerId = playerHeadContents.id();
@@ -348,7 +341,7 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
     }
   }
 
-  private static <C extends NBTComponent<C, B>, B extends NBTComponentBuilder<C, B>> B nbt(final B builder, final String nbt, final boolean interpret) {
+  private static <C extends NBTComponent<C>, B extends NBTComponentBuilder<C, B>> B nbt(final B builder, final String nbt, final boolean interpret) {
     return builder
       .nbtPath(nbt)
       .interpret(interpret);

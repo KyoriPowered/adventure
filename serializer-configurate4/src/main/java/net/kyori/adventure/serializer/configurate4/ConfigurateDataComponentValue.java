@@ -31,7 +31,7 @@ import org.spongepowered.configurate.ConfigurationNode;
  *
  * @since 4.17.0
  */
-public interface ConfigurateDataComponentValue extends DataComponentValue {
+public sealed interface ConfigurateDataComponentValue extends DataComponentValue permits SnapshottingConfigurateDataComponentValue {
   /**
    * Create a data component value capturing the value of an existing node.
    *

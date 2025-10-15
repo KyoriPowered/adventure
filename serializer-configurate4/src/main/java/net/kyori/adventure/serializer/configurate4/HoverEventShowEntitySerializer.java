@@ -27,33 +27,33 @@ import java.lang.reflect.Type;
 import java.util.UUID;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.HoverEventImpl;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
 
-final class HoverEventShowEntitySerializer implements TypeSerializer<HoverEventImpl.ShowEntity> {
+final class HoverEventShowEntitySerializer implements TypeSerializer<HoverEvent.ShowEntity> {
   static final HoverEventShowEntitySerializer INSTANCE = new HoverEventShowEntitySerializer();
 
   private HoverEventShowEntitySerializer() {
   }
 
   @Override
-  public HoverEventImpl.ShowEntity deserialize(final Type type, final ConfigurationNode value) throws SerializationException {
+  public HoverEvent.ShowEntity deserialize(final Type type, final ConfigurationNode value) throws SerializationException {
     final Key typeId = value.node(ComponentTreeConstants.SHOW_ENTITY_TYPE).get(Key.class);
     final UUID id = value.node(ComponentTreeConstants.SHOW_ENTITY_ID).get(UUID.class);
     if (typeId == null || id == null) {
       throw new SerializationException("A show entity hover event needs type and id fields to be deserialized");
     }
-    final @Nullable Component name = value.node(ComponentTreeConstants.SHOW_ENTITY_NAME).get(Component.class);
+    final Component name = value.node(ComponentTreeConstants.SHOW_ENTITY_NAME).get(Component.class);
 
-    return HoverEventImpl.ShowEntity.showEntity(typeId, id, name);
+    return HoverEvent.ShowEntity.showEntity(typeId, id, name);
   }
 
   @Override
-  public void serialize(final Type type, final HoverEventImpl.@Nullable ShowEntity obj, final ConfigurationNode value) throws SerializationException {
+  public void serialize(final Type type, final HoverEvent.@Nullable ShowEntity obj, final ConfigurationNode value) throws SerializationException {
     if (obj == null) {
       value.set(null);
       return;
