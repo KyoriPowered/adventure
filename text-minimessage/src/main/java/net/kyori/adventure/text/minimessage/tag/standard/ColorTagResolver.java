@@ -42,17 +42,17 @@ import org.jspecify.annotations.Nullable;
  *
  * @since 4.10.0
  */
-final class ColorTagResolver implements TagResolver, SerializableResolver.Single {
+record ColorTagResolver() implements TagResolver, SerializableResolver.Single {
   private static final String COLOR_3 = "c";
   private static final String COLOR_2 = "colour";
-  private static final String COLOR = "color";
+  static final String COLOR = "color";
 
   static final TagResolver INSTANCE = new ColorTagResolver();
   private static final StyleClaim<TextColor> STYLE = StyleClaim.claim(COLOR, Style::color, (color, emitter) -> {
     // TODO: custom aliases
     // TODO: compact vs expanded format? COLOR vs color:COLOR vs c:COLOR
     if (color instanceof NamedTextColor namedColor) {
-      emitter.tag(NamedTextColor.NAMES.key(namedColor));
+      emitter.tag(NamedTextColor.NAMES.keyOrThrow(namedColor));
     } else {
       emitter.tag(color.asHexString());
     }
@@ -67,9 +67,6 @@ final class ColorTagResolver implements TagResolver, SerializableResolver.Single
 
   private static boolean isColorOrAbbreviation(final String name) {
     return name.equals(COLOR) || name.equals(COLOR_2) || name.equals(COLOR_3);
-  }
-
-  ColorTagResolver() {
   }
 
   @Override
@@ -119,7 +116,7 @@ final class ColorTagResolver implements TagResolver, SerializableResolver.Single
   }
 
   @Override
-  public @Nullable StyleClaim<?> claimStyle() {
+  public StyleClaim<?> claimStyle() {
     return STYLE;
   }
 }

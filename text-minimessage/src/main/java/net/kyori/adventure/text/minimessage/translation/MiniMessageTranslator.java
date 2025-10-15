@@ -167,17 +167,15 @@ public abstract class MiniMessageTranslator implements Translator {
         if (value instanceof final VirtualComponent virtual) {
           final VirtualComponentRenderer<?> renderer = virtual.renderer();
 
-          if (renderer instanceof MiniMessageTranslatorTarget) {
+          if (renderer instanceof MiniMessageTranslatorTarget translatorTarget) {
             if (targetAlreadyOverridden) {
               throw new IllegalArgumentException("Multiple Argument.target() translation arguments have been set!");
             }
 
-            target = ((MiniMessageTranslatorTarget) renderer).pointered();
+            target = translatorTarget.pointered();
             targetAlreadyOverridden = true;
             continue;
-          } else if (renderer instanceof MiniMessageTranslatorArgument<?> translatorArgument) {
-            final Object data = translatorArgument.data();
-            final String name = translatorArgument.name();
+          } else if (renderer instanceof MiniMessageTranslatorArgument<?>(String name, Object data)) {
             switch (data) {
               case TranslationArgumentLike translationArgumentLike -> {
                 final Tag tag = Tag.selfClosingInserting(translationArgumentLike);

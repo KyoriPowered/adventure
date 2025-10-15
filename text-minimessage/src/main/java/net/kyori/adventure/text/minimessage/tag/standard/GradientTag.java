@@ -30,9 +30,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.OptionalDouble;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.NamedTextColorImpl;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
@@ -40,9 +38,7 @@ import net.kyori.adventure.text.minimessage.internal.serializer.TokenEmitter;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Range;
-import org.jspecify.annotations.Nullable;
 
 /**
  * A transformation that applies a colour gradient.
@@ -50,7 +46,7 @@ import org.jspecify.annotations.Nullable;
  * @since 4.10.0
  */
 class GradientTag extends AbstractColorChangingTag {
-  private static final String GRADIENT = "gradient";
+  static final String GRADIENT = "gradient";
   private static final TextColor DEFAULT_WHITE = TextColor.color(0xffffff);
   private static final TextColor DEFAULT_BLACK = TextColor.color(0x000000);
 
@@ -170,8 +166,8 @@ class GradientTag extends AbstractColorChangingTag {
       emit.tag(GRADIENT);
       if (colors.length != 2 || !colors[0].equals(DEFAULT_WHITE) || !colors[1].equals(DEFAULT_BLACK)) { // non-default params
         for (final TextColor color : colors) {
-          if (color instanceof NamedTextColorImpl) {
-            emit.argument(NamedTextColor.NAMES.keyOrThrow((NamedTextColor) color));
+          if (color instanceof NamedTextColor namedTextColor) {
+            emit.argument(NamedTextColor.NAMES.keyOrThrow(namedTextColor));
           } else {
             emit.argument(color.asHexString());
           }
@@ -185,18 +181,9 @@ class GradientTag extends AbstractColorChangingTag {
   }
 
   @Override
-  public Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("phase", this.phase),
-      ExaminableProperty.of("colors", this.colors)
-    );
-  }
-
-  @Override
-  public boolean equals(final @Nullable Object other) {
+  public boolean equals(final Object other) {
     if (this == other) return true;
-    if (other == null || this.getClass() != other.getClass()) return false;
-    final GradientTag that = (GradientTag) other;
+    if (!(other instanceof final GradientTag that)) return false;
     return this.index == that.index
       && this.phase == that.phase
       && Arrays.equals(this.colors, that.colors);
@@ -207,5 +194,13 @@ class GradientTag extends AbstractColorChangingTag {
     int result = Objects.hash(this.index, this.phase);
     result = 31 * result + Arrays.hashCode(this.colors);
     return result;
+  }
+
+  @Override
+  public String toString() {
+    return "GradientTag{" +
+      "colors=" + Arrays.toString(this.colors) +
+      ", phase=" + this.phase +
+      '}';
   }
 }

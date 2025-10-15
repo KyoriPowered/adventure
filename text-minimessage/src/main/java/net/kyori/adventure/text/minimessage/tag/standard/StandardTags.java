@@ -23,10 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage.tag.standard;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-import net.kyori.adventure.text.format.NamedTextColorImpl;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
@@ -98,7 +95,7 @@ public final class StandardTags {
   /**
    * Get a resolver for the {@value ColorTagResolver#COLOR} tags.
    *
-   * <p>This tag supports both hex string colors as well as {@linkplain NamedTextColorImpl named colors}.</p>
+   * <p>This tag supports both hex string colors as well as {@linkplain NamedTextColor named colors}.</p>
    *
    * @return a resolver for the {@value ColorTagResolver#COLOR} tags
    * @since 4.10.0
@@ -325,9 +322,5 @@ public final class StandardTags {
    */
   public static TagResolver defaults() {
     return ALL;
-  }
-
-  static Set<String> names(final String... names) {
-    return new HashSet<>(Arrays.asList(names));
   }
 }

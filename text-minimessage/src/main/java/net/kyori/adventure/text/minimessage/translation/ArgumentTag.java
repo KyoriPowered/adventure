@@ -31,17 +31,9 @@ import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jspecify.annotations.Nullable;
 
-final class ArgumentTag implements TagResolver {
+record ArgumentTag(List<Tag> arguments, TagResolver tagResolver) implements TagResolver {
   private static final String NAME = "argument";
   private static final String NAME_1 = "arg";
-
-  private final List<Tag> arguments;
-  private final TagResolver tagResolver;
-
-  ArgumentTag(final List<Tag> arguments, final TagResolver tagResolver) {
-    this.arguments = arguments;
-    this.tagResolver = tagResolver;
-  }
 
   @Override
   public @Nullable Tag resolve(final String name, final ArgumentQueue arguments, final Context ctx) throws ParsingException {

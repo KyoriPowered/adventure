@@ -28,12 +28,7 @@ import java.util.Objects;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import org.jspecify.annotations.Nullable;
 
-final class MapTagResolver implements TagResolver.WithoutArguments, MappableResolver {
-  private final Map<String, ? extends Tag> tagMap;
-
-  MapTagResolver(final Map<String, ? extends Tag> placeholderMap) {
-    this.tagMap = placeholderMap;
-  }
+record MapTagResolver(Map<String, ? extends Tag> tagMap) implements TagResolver.WithoutArguments, MappableResolver {
 
   @Override
   public @Nullable Tag resolve(final String name) {
@@ -56,15 +51,9 @@ final class MapTagResolver implements TagResolver.WithoutArguments, MappableReso
     if (this == other) {
       return true;
     }
-    if (!(other instanceof MapTagResolver)) {
+    if (!(other instanceof MapTagResolver(Map<String, ? extends Tag> map))) {
       return false;
     }
-    final MapTagResolver that = (MapTagResolver) other;
-    return Objects.equals(this.tagMap, that.tagMap);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(this.tagMap);
+    return Objects.equals(this.tagMap, map);
   }
 }

@@ -24,12 +24,9 @@
 package net.kyori.adventure.text.minimessage.tag.standard;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.OptionalDouble;
-import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.Context;
@@ -37,20 +34,22 @@ import net.kyori.adventure.text.minimessage.tag.Inserting;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
+import org.jetbrains.annotations.ApiStatus;
 
 /**
  * Changes the color based on a phase param.
  *
  * @since 4.10.0
  */
-public final class TransitionTag implements Inserting, Examinable {
-  public static final String TRANSITION = "transition";
+@ApiStatus.Internal
+public record TransitionTag(
+  TextColor[] colors,
+  float phase,
+  boolean negativePhase
+) implements Inserting {
 
-  private final TextColor[] colors;
-  private final float phase;
-  private final boolean negativePhase;
+  @ApiStatus.Internal
+  public static final String TRANSITION = "transition";
 
   static final TagResolver RESOLVER = TagResolver.resolver(TransitionTag.TRANSITION, TransitionTag::create);
 
@@ -60,7 +59,7 @@ public final class TransitionTag implements Inserting, Examinable {
     if (args.hasNext()) {
       textColors = new ArrayList<>();
       while (args.hasNext()) {
-        final Tag.Argument arg = args.pop();
+        final Argument arg = args.pop();
 
         // Determine if this is a color first. Double#parseDouble is "slow" in cases where we hit a string.
         final String argValue = arg.value();
@@ -93,24 +92,28 @@ public final class TransitionTag implements Inserting, Examinable {
       textColors = Collections.emptyList();
     }
 
-    return new TransitionTag(phase, textColors);
+    final TextColor[] colorsArray;
+    final boolean negativePhase;
+
+    if (phase < 0) {
+      negativePhase = true;
+      phase = 1 + phase;
+      Collections.reverse(textColors);
+    } else {
+      negativePhase = false;
+    }
+
+    if (textColors.isEmpty()) {
+      colorsArray = new TextColor[]{TextColor.color(0xffffff), TextColor.color(0x000000)};
+    } else {
+      colorsArray = textColors.toArray(new TextColor[0]);
+    }
+
+    return new TransitionTag(colorsArray, phase, negativePhase);
   }
 
-  private TransitionTag(final float phase, final List<TextColor> colors) {
-    if (phase < 0) {
-      this.negativePhase = true;
-      this.phase = 1 + phase;
-      Collections.reverse(colors);
-    } else {
-      this.negativePhase = false;
-      this.phase = phase;
-    }
-
-    if (colors.isEmpty()) {
-      this.colors = new TextColor[]{TextColor.color(0xffffff), TextColor.color(0x000000)};
-    } else {
-      this.colors = colors.toArray(new TextColor[0]);
-    }
+  @ApiStatus.Internal
+  public TransitionTag {
   }
 
   @Override
@@ -134,28 +137,5 @@ public final class TransitionTag implements Inserting, Examinable {
       }
     }
     return this.colors[0];
-  }
-
-  @Override
-  public Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("phase", this.phase),
-      ExaminableProperty.of("colors", this.colors)
-    );
-  }
-
-  @Override
-  public boolean equals(final Object other) {
-    if (this == other) return true;
-    if (other == null || this.getClass() != other.getClass()) return false;
-    final TransitionTag that = (TransitionTag) other;
-    return this.phase == that.phase && Arrays.equals(this.colors, that.colors);
-  }
-
-  @Override
-  public int hashCode() {
-    int result = Objects.hash(this.phase);
-    result = 31 * result + Arrays.hashCode(this.colors);
-    return result;
   }
 }

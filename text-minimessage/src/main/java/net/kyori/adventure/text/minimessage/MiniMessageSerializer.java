@@ -344,8 +344,8 @@ final class MiniMessageSerializer {
         this.componentClaim.emit(this);
         ret = this.componentClaim.substitute();
         this.componentClaim = null;
-      } else if (component instanceof TextComponent) {
-        this.text(((TextComponent) component).content());
+      } else if (component instanceof TextComponent textComponent) {
+        this.text(textComponent.content());
       } else {
         // todo: best choice?
         throw new IllegalStateException("Unclaimed component " + component);

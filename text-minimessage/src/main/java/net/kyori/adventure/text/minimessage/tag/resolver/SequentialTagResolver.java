@@ -32,15 +32,16 @@ import net.kyori.adventure.text.minimessage.internal.serializer.SerializableReso
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import org.jspecify.annotations.Nullable;
 
+@SuppressWarnings("ArrayRecordComponent") // We implement equals/hashCode ourselves
 record SequentialTagResolver(TagResolver[] resolvers) implements TagResolver, SerializableResolver {
 
   @Override
   public @Nullable Tag resolve(final String name, final ArgumentQueue arguments, final Context ctx) throws ParsingException {
-    @Nullable ParsingException thrown = null;
+    ParsingException thrown = null;
     for (final TagResolver resolver : this.resolvers) {
       try {
         if (!resolver.has(name)) continue;
-        final @Nullable Tag placeholder = resolver.resolve(name, arguments, ctx);
+        final Tag placeholder = resolver.resolve(name, arguments, ctx);
 
         if (placeholder != null) {
           return placeholder;
@@ -82,8 +83,8 @@ record SequentialTagResolver(TagResolver[] resolvers) implements TagResolver, Se
   @Override
   public void handle(final Component serializable, final ClaimConsumer consumer) {
     for (final TagResolver resolver : this.resolvers) {
-      if (resolver instanceof SerializableResolver) {
-        ((SerializableResolver) resolver).handle(serializable, consumer);
+      if (resolver instanceof SerializableResolver serializableResolver) {
+        serializableResolver.handle(serializable, consumer);
       }
     }
   }
@@ -93,10 +94,10 @@ record SequentialTagResolver(TagResolver[] resolvers) implements TagResolver, Se
     if (other == this) {
       return true;
     }
-    if (!(other instanceof final SequentialTagResolver that)) {
+    if (!(other instanceof SequentialTagResolver(TagResolver[] resolvers1))) {
       return false;
     }
-    return Arrays.equals(this.resolvers, that.resolvers);
+    return Arrays.equals(this.resolvers, resolvers1);
   }
 
   @Override

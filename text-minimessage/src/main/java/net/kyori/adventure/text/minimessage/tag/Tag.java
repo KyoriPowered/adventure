@@ -44,7 +44,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 4.10.0
  */
-public sealed interface Tag permits Inserting, Modifying, ParserDirective, PreProcess, /* internal */ AbstractTag {
+public sealed interface Tag permits Inserting, Modifying, ParserDirective, PreProcess {
 
   /**
    * Create a tag that inserts the content literally into the parse string.

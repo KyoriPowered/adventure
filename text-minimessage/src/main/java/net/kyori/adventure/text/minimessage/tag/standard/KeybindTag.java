@@ -52,9 +52,9 @@ final class KeybindTag {
   }
 
   static @Nullable Emitable emit(final Component component) {
-    if (!(component instanceof KeybindComponent)) return null;
+    if (!(component instanceof KeybindComponent keybindComponent)) return null;
 
-    final String key = ((KeybindComponent) component).keybind();
+    final String key = keybindComponent.keybind();
 
     return emit -> emit.tag(KEYBIND).argument(key);
   }

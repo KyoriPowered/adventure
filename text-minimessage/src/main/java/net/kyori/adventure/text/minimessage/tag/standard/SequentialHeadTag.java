@@ -51,7 +51,7 @@ import org.jspecify.annotations.Nullable;
  * @sinceMinecraft 1.21.9
  */
 final class SequentialHeadTag {
-  private static final String HEAD = "head";
+  static final String HEAD = "head";
   // TODO: Move this to HeadTag
   private static final Pattern UUIDv4_PATTERN = Pattern.compile("[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ABCD][0-9a-f]{3}-[0-9a-f]{12}", Pattern.CASE_INSENSITIVE);
 
@@ -119,16 +119,14 @@ final class SequentialHeadTag {
   }
 
   static @Nullable Emitable claimComponent(final Component input) {
-    if (!(input instanceof ObjectComponent)) {
+    if (!(input instanceof ObjectComponent objectComponent)) {
       return null;
     }
 
-    final ObjectContents contents = ((ObjectComponent) input).contents();
-    if (!(contents instanceof PlayerHeadObjectContents)) {
+    final ObjectContents contents = objectComponent.contents();
+    if (!(contents instanceof PlayerHeadObjectContents playerHead)) {
       return null;
     }
-
-    final PlayerHeadObjectContents playerHead = ((PlayerHeadObjectContents) contents);
 
     PresentType present = null;
     if (playerHead.name() != null) {

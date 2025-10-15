@@ -29,14 +29,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import net.kyori.examination.ExaminableProperty;
-import org.jspecify.annotations.Nullable;
 
 /**
  * Applies pride flags to a component.
@@ -44,7 +41,7 @@ import org.jspecify.annotations.Nullable;
  * @since 4.18.0
  */
 final class PrideTag extends GradientTag {
-  private static final String PRIDE = "pride";
+  static final String PRIDE = "pride";
 
   static final TagResolver RESOLVER = TagResolver.resolver(PRIDE, PrideTag::create);
 
@@ -110,25 +107,24 @@ final class PrideTag extends GradientTag {
   }
 
   @Override
-  public Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("flag", this.flag),
-      ExaminableProperty.of("phase", this.phase)
-    );
-  }
-
-  @Override
   public int hashCode() {
     return Objects.hash(this.flag, this.phase);
   }
 
   @Override
-  public boolean equals(final @Nullable Object other) {
+  public boolean equals(final Object other) {
     if (this == other) return true;
-    if (other == null || this.getClass() != other.getClass()) return false;
-    final PrideTag that = (PrideTag) other;
+    if (!(other instanceof final PrideTag that)) return false;
     return this.phase == that.phase
       && this.flag.equals(that.flag);
+  }
+
+  @Override
+  public String toString() {
+    return "PrideTag{" +
+      "flag='" + this.flag + '\'' +
+      ", phase=" + this.phase +
+      '}';
   }
 
   private static List<TextColor> colors(final int ... colors) {

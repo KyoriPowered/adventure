@@ -47,7 +47,7 @@ final class CachingTagResolver implements TagResolver.WithoutArguments, Mappable
 
   private Tag query(final String key) {
     return this.cache.computeIfAbsent(key, k -> {
-      final @Nullable Tag result = this.resolver.resolve(k);
+      final Tag result = this.resolver.resolve(k);
       return result == null ? NULL_REPLACEMENT : result;
     });
   }
@@ -65,8 +65,8 @@ final class CachingTagResolver implements TagResolver.WithoutArguments, Mappable
 
   @Override
   public boolean contributeToMap(final Map<String, Tag> map) {
-    if (this.resolver instanceof MappableResolver) {
-      return ((MappableResolver) this.resolver).contributeToMap(map);
+    if (this.resolver instanceof MappableResolver mappableResolver) {
+      return mappableResolver.contributeToMap(map);
     } else {
       return false;
     }
@@ -74,8 +74,8 @@ final class CachingTagResolver implements TagResolver.WithoutArguments, Mappable
 
   @Override
   public void handle(final Component serializable, final ClaimConsumer consumer) {
-    if (this.resolver instanceof SerializableResolver) {
-      ((SerializableResolver) this.resolver).handle(serializable, consumer);
+    if (this.resolver instanceof SerializableResolver serializableResolver) {
+      serializableResolver.handle(serializable, consumer);
     }
   }
 
@@ -84,10 +84,9 @@ final class CachingTagResolver implements TagResolver.WithoutArguments, Mappable
     if (this == other) {
       return true;
     }
-    if (!(other instanceof CachingTagResolver)) {
+    if (!(other instanceof CachingTagResolver that)) {
       return false;
     }
-    final CachingTagResolver that = (CachingTagResolver) other;
     return Objects.equals(this.resolver, that.resolver);
   }
 

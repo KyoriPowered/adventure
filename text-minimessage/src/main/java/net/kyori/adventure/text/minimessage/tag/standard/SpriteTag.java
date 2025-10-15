@@ -45,7 +45,7 @@ import org.jspecify.annotations.Nullable;
  * @sinceMinecraft 1.21.9
  */
 final class SpriteTag {
-  private static final String SPRITE = "sprite";
+  static final String SPRITE = "sprite";
 
   static final TagResolver RESOLVER = SerializableResolver.claimingComponent(
     SPRITE,
@@ -76,16 +76,14 @@ final class SpriteTag {
   }
 
   static @Nullable Emitable claimComponent(final Component input) {
-    if (!(input instanceof ObjectComponent)) {
+    if (!(input instanceof ObjectComponent objectComponent)) {
       return null;
     }
 
-    final ObjectContents contents = ((ObjectComponent) input).contents();
-    if (!(contents instanceof SpriteObjectContents)) {
+    final ObjectContents contents = objectComponent.contents();
+    if (!(contents instanceof SpriteObjectContents sprite)) {
       return null;
     }
-
-    final SpriteObjectContents sprite = ((SpriteObjectContents) contents);
 
     final Key atlas = sprite.atlas();
     final Key key = sprite.sprite();

@@ -33,7 +33,6 @@ import net.kyori.adventure.text.minimessage.internal.parser.Token;
 import net.kyori.adventure.text.minimessage.internal.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
-import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueueImpl;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jspecify.annotations.Nullable;
 
@@ -50,7 +49,7 @@ final class ContextImpl implements Context {
 
   private final boolean strict;
   private final boolean emitVirtuals;
-  private final Consumer<String> debugOutput;
+  private final @Nullable Consumer<String> debugOutput;
   private String message;
   private final MiniMessage miniMessage;
   private final @Nullable Pointered target;
@@ -61,7 +60,7 @@ final class ContextImpl implements Context {
   ContextImpl(
     final boolean strict,
     final boolean emitVirtuals,
-    final Consumer<String> debugOutput,
+    final @Nullable Consumer<String> debugOutput,
     final String message,
     final MiniMessage miniMessage,
     final @Nullable Pointered target,
@@ -89,7 +88,7 @@ final class ContextImpl implements Context {
     return this.emitVirtuals;
   }
 
-  public Consumer<String> debugOutput() {
+  public @Nullable Consumer<String> debugOutput() {
     return this.debugOutput;
   }
 
@@ -162,12 +161,12 @@ final class ContextImpl implements Context {
 
   @Override
   public ParsingException newException(final String message, final ArgumentQueue tags) {
-    return new ParsingExceptionImpl(message, this.message, null, false, tagsToTokens(((ArgumentQueueImpl<?>) tags).args));
+    return new ParsingExceptionImpl(message, this.message, null, false, tagsToTokens(((ArgumentQueueImpl<?>) tags).args()));
   }
 
   @Override
   public ParsingException newException(final String message, final @Nullable Throwable cause, final ArgumentQueue tags) {
-    return new ParsingExceptionImpl(message, this.message, cause, false, tagsToTokens(((ArgumentQueueImpl<?>) tags).args));
+    return new ParsingExceptionImpl(message, this.message, cause, false, tagsToTokens(((ArgumentQueueImpl<?>) tags).args()));
   }
 
   private Component deserializeWithOptionalTarget(final String message, final TagResolver tagResolver) {

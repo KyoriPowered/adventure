@@ -49,7 +49,7 @@ import org.jspecify.annotations.Nullable;
  * @since 4.10.0
  */
 final class HoverTag {
-  private static final String HOVER = "hover";
+  static final String HOVER = "hover";
 
   static final TagResolver RESOLVER = SerializableResolver.claimingStyle(
     HOVER,

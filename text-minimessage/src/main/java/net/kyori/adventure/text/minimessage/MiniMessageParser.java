@@ -29,7 +29,6 @@ import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.internal.parser.ParsingExceptionImpl;
 import net.kyori.adventure.text.minimessage.internal.parser.Token;
@@ -42,22 +41,9 @@ import net.kyori.adventure.text.minimessage.internal.parser.node.ValueNode;
 import net.kyori.adventure.text.minimessage.tag.Inserting;
 import net.kyori.adventure.text.minimessage.tag.Modifying;
 import net.kyori.adventure.text.minimessage.tag.Tag;
-import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueueImpl;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import net.kyori.examination.Examinable;
-import net.kyori.examination.string.MultiLineStringExaminer;
-import org.jspecify.annotations.Nullable;
 
-final class MiniMessageParser {
-  final TagResolver tagResolver;
-
-  MiniMessageParser() {
-    this.tagResolver = TagResolver.standard();
-  }
-
-  MiniMessageParser(final TagResolver tagResolver) {
-    this.tagResolver = tagResolver;
-  }
+record MiniMessageParser(TagResolver tagResolver) {
 
   String escapeTokens(final ContextImpl context) {
     final StringBuilder sb = new StringBuilder(context.message().length());
@@ -88,7 +74,8 @@ final class MiniMessageParser {
 
   String stripTokens(final ContextImpl context) {
     final StringBuilder sb = new StringBuilder(context.message().length());
-    this.processTokens(sb, context, (token, builder) -> {});
+    this.processTokens(sb, context, (token, builder) -> {
+    });
     return sb.toString();
   }
 
@@ -101,12 +88,8 @@ final class MiniMessageParser {
     final List<Token> root = TokenParser.tokenize(richMessage, true);
     for (final Token token : root) {
       switch (token.type()) {
-        case TEXT:
-          sb.append(richMessage, token.startIndex(), token.endIndex());
-          break;
-        case OPEN_TAG:
-        case CLOSE_TAG:
-        case OPEN_CLOSE_TAG:
+        case TEXT -> sb.append(richMessage, token.startIndex(), token.endIndex());
+        case OPEN_TAG, CLOSE_TAG, OPEN_CLOSE_TAG -> {
           // extract tag name
           if (token.childTokens().isEmpty()) {
             sb.append(richMessage, token.startIndex(), token.endIndex());
@@ -118,9 +101,8 @@ final class MiniMessageParser {
           } else {
             sb.append(richMessage, token.startIndex(), token.endIndex());
           }
-          break;
-        default:
-          throw new IllegalArgumentException("Unsupported token type " + token.type());
+        }
+        default -> throw new IllegalArgumentException("Unsupported token type " + token.type());
       }
     }
   }
@@ -148,7 +130,7 @@ final class MiniMessageParser {
           }
           debug.accept("\n");
 
-          final @Nullable Tag transformation = combinedResolver.resolve(name, new ArgumentQueueImpl<>(context, args), context);
+          final Tag transformation = combinedResolver.resolve(name, new ArgumentQueueImpl<>(context, args), context);
 
           if (transformation == null) {
             debug.accept("Could not match node '");
@@ -158,7 +140,7 @@ final class MiniMessageParser {
             debug.accept("Successfully matched node '");
             debug.accept(name);
             debug.accept("' to tag ");
-            debug.accept(transformation instanceof Examinable ? ((Examinable) transformation).examinableName() : transformation.getClass().getName());
+            debug.accept(transformation.getClass().getName());
             debug.accept("\n");
           }
 
@@ -166,7 +148,7 @@ final class MiniMessageParser {
         } catch (final ParsingException e) {
           if (token != null && e instanceof final ParsingExceptionImpl impl) {
             if (impl.tokens().length == 0) {
-              impl.tokens(new Token[] {token});
+              impl.tokens(new Token[]{token});
             }
           }
           debug.accept("Could not match node '");
@@ -212,8 +194,8 @@ final class MiniMessageParser {
   Component treeToComponent(final ElementNode node, final ContextImpl context) {
     Component comp = Component.empty();
     Tag tag = null;
-    if (node instanceof ValueNode) {
-      comp = Component.text(((ValueNode) node).value());
+    if (node instanceof ValueNode valueNode) {
+      comp = Component.text(valueNode.value());
     } else if (node instanceof final TagNode tagNode) {
 
       tag = tagNode.tag();
@@ -250,7 +232,7 @@ final class MiniMessageParser {
       debug.accept("==========\ntreeToComponent \n");
       debug.accept(node.toString());
       debug.accept("\n");
-      debug.accept(comp.examine(MultiLineStringExaminer.simpleEscaping()).collect(Collectors.joining("\n")));
+      debug.accept(comp.toString());
       debug.accept("\n==========\n");
     }
 

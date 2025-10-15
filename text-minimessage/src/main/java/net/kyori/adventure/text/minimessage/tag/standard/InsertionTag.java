@@ -39,7 +39,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
  * @since 4.10.0
  */
 final class InsertionTag {
-  private static final String INSERTION = "insert";
+  static final String INSERTION = "insert";
 
   static final TagResolver RESOLVER = SerializableResolver.claimingStyle(
     INSERTION,

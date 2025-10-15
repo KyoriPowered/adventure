@@ -63,7 +63,7 @@ final class DecorationTag {
 
   // create resolvers for canonical + configured alternates
   static Map.Entry<TextDecoration, Stream<TagResolver>> resolvers(final TextDecoration decoration, final @Nullable String shortName, final String... secondaryAliases) {
-    final String canonicalName = TextDecoration.NAMES.key(decoration);
+    final String canonicalName = TextDecoration.NAMES.keyOrThrow(decoration);
     final Set<String> names = new HashSet<>();
     names.add(canonicalName);
     if (shortName != null) names.add(shortName);
@@ -75,7 +75,7 @@ final class DecorationTag {
           (args, ctx) -> DecorationTag.create(decoration, args, ctx),
           claim(decoration, (state, emitter) -> emit(canonicalName, shortName == null ? canonicalName : shortName, state, emitter))
         )),
-      names.stream().map(name -> TagResolver.resolver(DecorationTag.REVERT + name, DecorationTag.createNegated(decoration)))
+      names.stream().map(name -> TagResolver.resolver(DecorationTag.REVERT + canonicalName, DecorationTag.createNegated(decoration)))
     ));
   }
 

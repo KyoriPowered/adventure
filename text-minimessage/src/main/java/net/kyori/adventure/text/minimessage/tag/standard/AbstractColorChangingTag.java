@@ -26,8 +26,6 @@ package net.kyori.adventure.text.minimessage.tag.standard;
 import java.util.Collections;
 import java.util.PrimitiveIterator;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
-import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TextComponent;
@@ -43,8 +41,6 @@ import net.kyori.adventure.text.minimessage.internal.serializer.TokenEmitter;
 import net.kyori.adventure.text.minimessage.tag.Inserting;
 import net.kyori.adventure.text.minimessage.tag.Modifying;
 import net.kyori.adventure.text.minimessage.tree.Node;
-import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
@@ -60,7 +56,7 @@ import org.jspecify.annotations.Nullable;
  *
  * @since 4.10.0
  */
-abstract class AbstractColorChangingTag implements Modifying, Examinable {
+abstract class AbstractColorChangingTag implements Modifying {
   private static final ComponentFlattener LENGTH_CALCULATOR = ComponentFlattener.builder()
     .mapper(TextComponent.class, TextComponent::content)
     .unknownMapper(x -> "_") // every unknown component gets a single colour
@@ -85,8 +81,8 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
       throw new IllegalStateException("Color changing tag instances cannot be re-used, return a new one for each resolve");
     }
 
-    if (current instanceof ValueNode) {
-      final String value = ((ValueNode) current).value();
+    if (current instanceof ValueNode valueNode) {
+      final String value = valueNode.value();
       this.size += value.codePointCount(0, value.length());
     } else if (current instanceof final TagNode tag) {
       if (tag.tag() instanceof Inserting) {
@@ -116,17 +112,17 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
       }
       // This component has its own color applied, which overrides ours
       // We still want to keep track of where we are though if this is text
-      if (current instanceof TextComponent) {
-        this.skipColorForLengthOf(((TextComponent) current).content());
+      if (current instanceof TextComponent textComponent) {
+        this.skipColorForLengthOf(textComponent.content());
       }
       return current.children(Collections.emptyList());
     }
 
     this.disableApplyingColorDepth = -1;
-    if (current instanceof VirtualComponent) {
+    if (current instanceof VirtualComponent virtualComponent) {
       // this component has its own information, so we can't rainbowify direct content -- we can process children tho
       // basically treat as if it's a non-text component
-      this.skipColorForLengthOf(((VirtualComponent) current).content());
+      this.skipColorForLengthOf(virtualComponent.content());
 
       return current.children(Collections.emptyList());
     } else if (current instanceof final TextComponent textComponent && !textComponent.content().isEmpty()) {
@@ -189,23 +185,18 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
   // misc
 
   @Override
-  public abstract Stream<? extends ExaminableProperty> examinableProperties();
-
-  @Override
-  public final String toString() {
-    return Internals.toString(this);
-  }
-
-  @Override
   public abstract boolean equals(final @Nullable Object other);
 
   @Override
   public abstract int hashCode();
 
-  private record TagInfoHolder(Consumer<TokenEmitter> output, Component originalComp) implements VirtualComponentRenderer<Void>, Emitable {
+  @Override
+  public abstract String toString();
+
+  private record TagInfoHolder(Consumer<TokenEmitter> output, Component substitute) implements VirtualComponentRenderer<Void>, Emitable {
     @Override
     public @UnknownNullability ComponentLike apply(final Void context) {
-      return this.originalComp;
+      return this.substitute;
     }
 
     @Override
@@ -217,23 +208,18 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
     public void emit(final TokenEmitter emitter) {
       this.output.accept(emitter);
     }
-
-    @Override
-    public @Nullable Component substitute() {
-      return this.originalComp;
-    }
   }
 
   static @Nullable Emitable claimComponent(final Component comp) {
-    if (!(comp instanceof VirtualComponent)) {
+    if (!(comp instanceof VirtualComponent virtualComponent)) {
       return null;
     }
 
-    final VirtualComponentRenderer<?> holder = ((VirtualComponent) comp).renderer();
-    if (!(holder instanceof TagInfoHolder)) {
+    final VirtualComponentRenderer<?> holder = virtualComponent.renderer();
+    if (!(holder instanceof TagInfoHolder tagInfoHolder)) {
       return null;
     }
 
-    return (TagInfoHolder) holder;
+    return tagInfoHolder;
   }
 }

@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage.tag.standard;
 
+import java.util.Set;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.BlockNBTComponent;
 import net.kyori.adventure.text.Component;
@@ -45,8 +46,8 @@ import org.jspecify.annotations.Nullable;
  * @since 4.13.0
  */
 final class NbtTag {
-  private static final String NBT = "nbt";
-  private static final String DATA = "data";
+  static final String NBT = "nbt";
+  static final String DATA = "data";
 
   private static final String BLOCK = "block";
   private static final String ENTITY = "entity";
@@ -54,7 +55,7 @@ final class NbtTag {
   private static final String INTERPRET = "interpret";
 
   static final TagResolver RESOLVER = SerializableResolver.claimingComponent(
-    StandardTags.names(NBT, DATA),
+    Set.of(NBT, DATA),
     NbtTag::resolve,
     NbtTag::emit
   );
@@ -118,20 +119,21 @@ final class NbtTag {
         type = STORAGE;
         id = storageNBTComponent.storage().asString();
       }
-      case null, default -> {
+      default -> {
         return null;
       }
     }
 
     return out -> {
-      final NBTComponent<?, ?> nbt = (NBTComponent<?, ?>) comp;
+      final NBTComponent<?> nbt = (NBTComponent<?>) comp;
       out.tag(NBT)
         .argument(type)
         .argument(id)
         .argument(nbt.nbtPath());
 
-      if (nbt.separator() != null) {
-        out.argument(nbt.separator());
+      final Component separator = nbt.separator();
+      if (separator != null) {
+        out.argument(separator);
       }
 
       if (nbt.interpret()) {

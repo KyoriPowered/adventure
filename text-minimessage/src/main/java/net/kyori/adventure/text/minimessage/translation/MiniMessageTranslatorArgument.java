@@ -30,10 +30,7 @@ import net.kyori.adventure.text.minimessage.internal.TagInternals;
 import net.kyori.adventure.text.minimessage.tag.TagPattern;
 import org.jetbrains.annotations.UnknownNullability;
 
-final class MiniMessageTranslatorArgument<T> implements VirtualComponentRenderer<Void> {
-  private final String name;
-  private final T data;
-
+record MiniMessageTranslatorArgument<T>(String name, T data) implements VirtualComponentRenderer<Void> {
   MiniMessageTranslatorArgument(final @TagPattern String name, final T data) {
     Objects.requireNonNull(name, "name");
     Objects.requireNonNull(data, "data");
@@ -41,14 +38,6 @@ final class MiniMessageTranslatorArgument<T> implements VirtualComponentRenderer
 
     this.name = name;
     this.data = data;
-  }
-
-  public String name() {
-    return this.name;
-  }
-
-  public T data() {
-    return this.data;
   }
 
   @Override

@@ -21,24 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.tag.resolver;
+package net.kyori.adventure.text.minimessage;
 
 import java.util.List;
 import java.util.function.Supplier;
-import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
 final class ArgumentQueueImpl<T extends Tag.Argument> implements ArgumentQueue {
   private final Context context;
-  final List<T> args;
+  private final List<T> args;
   private int ptr = 0;
 
-  ArgumentQueueImpl(final Context context, final List<T> args) {
+  public ArgumentQueueImpl(final Context context, final List<T> args) {
     this.context = context;
     this.args = args;
+  }
+
+  public List<T> args() {
+    return this.args;
   }
 
   @Override

@@ -185,21 +185,19 @@ public final class TokenParser {
           final int nextCodePoint = message.codePointAt(i + 1);
 
           switch (state) {
-            case NORMAL:
+            case NORMAL ->
               // allow escaping open tokens
               escaped = nextCodePoint == TAG_START || nextCodePoint == ESCAPE;
-              break;
-            case STRING:
+            case STRING ->
               // allow escaping closing string chars
               escaped = currentStringChar == nextCodePoint || nextCodePoint == ESCAPE;
-              break;
-            case TAG:
+            case TAG -> {
               // Escape characters are not valid in tag names, so we aren't a tag token
               if (nextCodePoint == TAG_START) {
                 escaped = true;
                 state = FirstPassState.NORMAL;
               }
-              break;
+            }
           }
 
           // only escape if we need to
@@ -213,16 +211,16 @@ public final class TokenParser {
       }
 
       switch (state) {
-        case NORMAL:
+        case NORMAL -> {
           if (codePoint == TAG_START) {
             // Possibly a tag
             marker = i;
             state = FirstPassState.TAG;
           }
-          break;
-        case TAG:
+        }
+        case TAG -> {
           switch (codePoint) {
-            case TAG_END:
+            case TAG_END -> {
               if (i == marker + 1) {
                 // This is empty, <>, so it's not a tag
                 state = FirstPassState.NORMAL;
@@ -245,26 +243,24 @@ public final class TokenParser {
               }
               consumer.accept(marker, currentTokenEnd, thisType);
               state = FirstPassState.NORMAL;
-              break;
-            case TAG_START:
+            }
+            case TAG_START ->
               // This isn't a tag, but we can re-start looking here
               marker = i;
-              break;
-            case '\'':
-            case '"':
+            case '\'', '"' -> {
               currentStringChar = (char) codePoint;
               // Look ahead if the quote being opened is ever closed
               if (message.indexOf(codePoint, i + 1) != -1) {
                 state = FirstPassState.STRING;
               }
-              break;
+            }
           }
-          break;
-        case STRING:
+        }
+        case STRING -> {
           if (codePoint == currentStringChar) {
             state = FirstPassState.TAG;
           }
-          break;
+        }
       }
 
       if (i == (length - 1) && state == FirstPassState.TAG) {
@@ -393,12 +389,8 @@ public final class TokenParser {
     for (final Token token : tokens) {
       final TokenType type = token.type();
       switch (type) {
-        case TEXT:
-          node.addChild(new TextNode(node, token, message));
-          break;
-
-        case OPEN_TAG:
-        case OPEN_CLOSE_TAG:
+        case TEXT -> node.addChild(new TextNode(node, token, message));
+        case OPEN_TAG, OPEN_CLOSE_TAG -> {
           // Check if this even is a valid tag
           final Token tagNamePart = token.childTokens().getFirst();
           final String tagName = message.substring(tagNamePart.startIndex(), tagNamePart.endIndex());
@@ -426,7 +418,7 @@ public final class TokenParser {
               // This is a recognized tag, goes in the tree
               tagNode.tag(tag);
               node.addChild(tagNode);
-              if (type != TokenType.OPEN_CLOSE_TAG && (!(tag instanceof Inserting) || ((Inserting) tag).allowsChildren())) {
+              if (type != TokenType.OPEN_CLOSE_TAG && (!(tag instanceof Inserting inserting) || inserting.allowsChildren())) {
                 node = tagNode;
               }
             }
@@ -434,9 +426,8 @@ public final class TokenParser {
             // not recognized, plain text
             node.addChild(new TextNode(node, token, message));
           }
-          break; // OPEN_TAG
-
-        case CLOSE_TAG:
+        }
+        case CLOSE_TAG -> {
           final List<Token> childTokens = token.childTokens();
           if (childTokens.isEmpty()) {
             throw new IllegalStateException("CLOSE_TAG token somehow has no children - " +
@@ -490,11 +481,8 @@ public final class TokenParser {
             // This means the closing tag didn't match to anything
             // Since open tags which don't match to anything is never an error, neither is this
             node.addChild(new TextNode(node, token, message));
-            break;
           }
-          break; // CLOSE_TAG
-        default: // ignore other tags
-          break;
+        }
       }
     }
 

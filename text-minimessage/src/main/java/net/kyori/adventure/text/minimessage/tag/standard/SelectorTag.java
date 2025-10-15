@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage.tag.standard;
 
+import java.util.Set;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.SelectorComponent;
@@ -41,11 +42,11 @@ import org.jspecify.annotations.Nullable;
  * @since 4.11.0
  */
 final class SelectorTag {
-  private static final String SEL = "sel";
-  private static final String SELECTOR = "selector";
+  static final String SEL = "sel";
+  static final String SELECTOR = "selector";
 
   static final TagResolver RESOLVER = SerializableResolver.claimingComponent(
-    StandardTags.names(SEL, SELECTOR),
+    Set.of(SEL, SELECTOR),
     SelectorTag::create,
     SelectorTag::claim
   );
@@ -69,8 +70,10 @@ final class SelectorTag {
     return emit -> {
       emit.tag(SEL);
       emit.argument(st.pattern());
-      if (st.separator() != null) {
-        emit.argument(st.separator());
+
+      final Component separator = st.separator();
+      if (separator != null) {
+        emit.argument(separator);
       }
     };
   }

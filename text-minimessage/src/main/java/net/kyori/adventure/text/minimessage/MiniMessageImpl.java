@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.text.minimessage;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
@@ -37,12 +36,14 @@ import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-/**
- * not public api.
- *
- * @since 4.10.0
- */
-final class MiniMessageImpl implements MiniMessage {
+record MiniMessageImpl(
+  MiniMessageParser parser,
+  boolean strict,
+  boolean emitVirtuals,
+  @Nullable Consumer<String> debugOutput,
+  UnaryOperator<String> preProcessor,
+  UnaryOperator<Component> postProcessor
+) implements MiniMessage {
   private static final Optional<Provider> SERVICE = Services.service(Provider.class);
   static final Consumer<Builder> BUILDER = SERVICE
     .map(Provider::builder)
@@ -60,20 +61,8 @@ final class MiniMessageImpl implements MiniMessage {
   static final UnaryOperator<String> DEFAULT_NO_OP = UnaryOperator.identity();
   static final UnaryOperator<Component> DEFAULT_COMPACTING_METHOD = Component::compact;
 
-  private final boolean strict;
-  private final boolean emitVirtuals;
-  private final @Nullable Consumer<String> debugOutput;
-  private final UnaryOperator<Component> postProcessor;
-  private final UnaryOperator<String> preProcessor;
-  final MiniMessageParser parser;
-
-  MiniMessageImpl(final TagResolver resolver, final boolean strict, final boolean emitVirtuals, final @Nullable Consumer<String> debugOutput, final UnaryOperator<String> preProcessor, final UnaryOperator<Component> postProcessor) {
-    this.parser = new MiniMessageParser(resolver);
-    this.strict = strict;
-    this.emitVirtuals = emitVirtuals;
-    this.debugOutput = debugOutput;
-    this.preProcessor = preProcessor;
-    this.postProcessor = postProcessor;
+  MiniMessageImpl(final TagResolver parser, final boolean strict, final boolean emitVirtuals, final @Nullable Consumer<String> debugOutput, final UnaryOperator<String> preProcessor, final UnaryOperator<Component> postProcessor) {
+    this(new MiniMessageParser(parser), strict, emitVirtuals, debugOutput, preProcessor, postProcessor);
   }
 
   @Override
@@ -123,13 +112,13 @@ final class MiniMessageImpl implements MiniMessage {
 
   private SerializableResolver serialResolver(final @Nullable TagResolver extraResolver) {
     if (extraResolver == null) {
-      if (this.parser.tagResolver instanceof SerializableResolver) {
-        return (SerializableResolver) this.parser.tagResolver;
+      if (this.parser.tagResolver() instanceof SerializableResolver) {
+        return (SerializableResolver) this.parser.tagResolver();
       }
     } else {
-      final TagResolver combined = TagResolver.resolver(this.parser.tagResolver, extraResolver);
-      if (combined instanceof SerializableResolver) {
-        return (SerializableResolver) combined;
+      final TagResolver combined = TagResolver.resolver(this.parser.tagResolver(), extraResolver);
+      if (combined instanceof SerializableResolver serializableResolver) {
+        return serializableResolver;
       }
     }
 
@@ -157,13 +146,8 @@ final class MiniMessageImpl implements MiniMessage {
   }
 
   @Override
-  public boolean strict() {
-    return this.strict;
-  }
-
-  @Override
   public TagResolver tags() {
-    return this.parser.tagResolver;
+    return this.parser.tagResolver();
   }
 
   private ContextImpl newContext(final String input, final @Nullable Pointered target, final @Nullable TagResolver resolver) {
@@ -175,7 +159,7 @@ final class MiniMessageImpl implements MiniMessage {
     private TagResolver tagResolver = TagResolver.standard();
     private boolean strict = false;
     private boolean emitVirtuals = true;
-    private Consumer<String> debug = null;
+    private @Nullable Consumer<String> debug = null;
     private UnaryOperator<Component> postProcessor = DEFAULT_COMPACTING_METHOD;
     private UnaryOperator<String> preProcessor = DEFAULT_NO_OP;
 
@@ -185,7 +169,7 @@ final class MiniMessageImpl implements MiniMessage {
 
     BuilderImpl(final MiniMessageImpl serializer) {
       this();
-      this.tagResolver = serializer.parser.tagResolver;
+      this.tagResolver = serializer.parser.tagResolver();
       this.strict = serializer.strict;
       this.debug = serializer.debugOutput;
       this.postProcessor = serializer.postProcessor;
@@ -227,13 +211,13 @@ final class MiniMessageImpl implements MiniMessage {
 
     @Override
     public Builder postProcessor(final UnaryOperator<Component> postProcessor) {
-      this.postProcessor = Objects.requireNonNull(postProcessor, "postProcessor");
+      this.postProcessor = requireNonNull(postProcessor, "postProcessor");
       return this;
     }
 
     @Override
     public Builder preProcessor(final UnaryOperator<String> preProcessor) {
-      this.preProcessor = Objects.requireNonNull(preProcessor, "preProcessor");
+      this.preProcessor = requireNonNull(preProcessor, "preProcessor");
       return this;
     }
 

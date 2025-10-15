@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage.tag.standard;
 
+import java.util.Set;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.TranslationArgument;
@@ -41,12 +42,12 @@ import org.jspecify.annotations.Nullable;
  * @since 4.10.0
  */
 final class TranslatableTag {
-  private static final String TR = "tr";
-  private static final String TRANSLATE = "translate";
-  private static final String LANG = "lang";
+  static final String TR = "tr";
+  static final String TRANSLATE = "translate";
+  static final String LANG = "lang";
 
   static final TagResolver RESOLVER = SerializableResolver.claimingComponent(
-    StandardTags.names(LANG, TRANSLATE, TR),
+    Set.of(LANG, TRANSLATE, TR),
     TranslatableTag::create,
     TranslatableTag::claim
   );

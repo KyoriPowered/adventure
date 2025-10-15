@@ -38,7 +38,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jspecify.annotations.Nullable;
 
 final class ShadowColorTag {
-  private static final String SHADOW_COLOR = "shadow";
+  static final String SHADOW_COLOR = "shadow";
   private static final String SHADOW_NONE = "!" + SHADOW_COLOR;
   private static final float DEFAULT_ALPHA = 0.25f;
 

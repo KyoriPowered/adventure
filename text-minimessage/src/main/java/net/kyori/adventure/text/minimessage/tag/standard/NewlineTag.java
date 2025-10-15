@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage.tag.standard;
 
+import java.util.Set;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
@@ -39,11 +40,11 @@ import org.jspecify.annotations.Nullable;
  * @since 4.10.0
  */
 final class NewlineTag {
-  private static final String BR = "br";
-  private static final String NEWLINE = "newline";
+  static final String BR = "br";
+  static final String NEWLINE = "newline";
 
   static final TagResolver RESOLVER = SerializableResolver.claimingComponent(
-    StandardTags.names(NEWLINE, BR),
+    Set.of(NEWLINE, BR),
     NewlineTag::create,
     NewlineTag::claimComponent
   );

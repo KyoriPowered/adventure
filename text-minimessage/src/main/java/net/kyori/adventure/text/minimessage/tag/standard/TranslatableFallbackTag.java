@@ -26,6 +26,7 @@ package net.kyori.adventure.text.minimessage.tag.standard;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.TranslationArgument;
@@ -45,12 +46,12 @@ import org.jspecify.annotations.Nullable;
  * @sinceMinecraft 1.19.4
  */
 final class TranslatableFallbackTag {
-  private static final String TR_OR = "tr_or";
-  private static final String TRANSLATE_OR = "translate_or";
-  private static final String LANG_OR = "lang_or";
+  static final String TR_OR = "tr_or";
+  static final String TRANSLATE_OR = "translate_or";
+  static final String LANG_OR = "lang_or";
 
   static final TagResolver RESOLVER = SerializableResolver.claimingComponent(
-    StandardTags.names(LANG_OR, TRANSLATE_OR, TR_OR),
+    Set.of(LANG_OR, TRANSLATE_OR, TR_OR),
     TranslatableFallbackTag::create,
     TranslatableFallbackTag::claim
   );

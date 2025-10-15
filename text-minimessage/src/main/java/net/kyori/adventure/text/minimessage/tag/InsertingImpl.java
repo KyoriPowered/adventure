@@ -23,48 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage.tag;
 
-import java.util.Objects;
-import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
-import net.kyori.examination.ExaminableProperty;
-import org.jspecify.annotations.Nullable;
 
-final class InsertingImpl extends AbstractTag implements Inserting {
-  private final boolean allowsChildren;
-  private final Component value;
-
-  InsertingImpl(final boolean allowsChildren, final Component value) {
-    this.allowsChildren = allowsChildren;
-    this.value = value;
-  }
-
-  @Override
-  public boolean allowsChildren() {
-    return this.allowsChildren;
-  }
-
-  @Override
-  public Component value() {
-    return this.value;
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(this.allowsChildren, this.value);
-  }
-
-  @Override
-  public boolean equals(final @Nullable Object other) {
-    if (this == other) return true;
-    if (!(other instanceof final InsertingImpl that)) return false;
-    return this.allowsChildren == that.allowsChildren && Objects.equals(this.value, that.value);
-  }
-
-  @Override
-  public Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("allowsChildren", this.allowsChildren),
-      ExaminableProperty.of("value", this.value)
-    );
-  }
+record InsertingImpl(boolean allowsChildren, Component value) implements Inserting {
 }

@@ -45,14 +45,22 @@ final class ScoreTag {
   static Tag create(final ArgumentQueue args, final Context ctx) throws ParsingException {
     final String name = args.popOr("A scoreboard member name is required").value();
     final String objective = args.popOr("An objective name is required").value();
-    return Tag.inserting(Component.score(name, objective));
+    final String value = args.hasNext() ? args.pop().value() : null;
+    return Tag.inserting(Component.score(name, objective, value));
   }
 
   static @Nullable Emitable emit(final Component component) {
     if (!(component instanceof final ScoreComponent score)) return null;
 
-    return emit -> emit.tag(SCORE)
-      .argument(score.name())
-      .argument(score.objective());
+    return emit -> {
+      emit.tag(SCORE)
+        .argument(score.name())
+        .argument(score.objective());
+
+      final String value = score.value();
+      if (value != null) {
+        emit.argument(value);
+      }
+    };
   }
 }
