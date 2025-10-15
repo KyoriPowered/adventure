@@ -75,10 +75,10 @@ class ClickEventTest {
 
   @Test
   void assertReadable() {
-    final Set<ClickEvent.Action> unreadable = new HashSet();
+    final Set<ClickEvent.Action<?>> unreadable = new HashSet<>();
     unreadable.add(ClickEvent.Action.OPEN_FILE);
     unreadable.add(ClickEvent.Action.SHOW_DIALOG);
-    for (final ClickEvent.Action action : ClickEvent.Action.values()) {
+    for (final ClickEvent.Action<?> action : ClickEvent.Action.NAMES.values()) {
       assertEquals(action.readable(), !unreadable.contains(action));
     }
   }

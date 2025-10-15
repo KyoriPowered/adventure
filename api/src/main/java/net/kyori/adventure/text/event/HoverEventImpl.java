@@ -89,6 +89,7 @@ record HoverEventImpl<V>(Action<V> action, V value) implements HoverEvent<V> {
     }
 
     @Override
+    @Deprecated
     public ShowItem nbt(final @Nullable BinaryTagHolder nbt) {
       if (Objects.equals(nbt, this.nbt)) return this;
       return new ShowItemImpl(this.item, this.count, nbt, Collections.emptyMap());

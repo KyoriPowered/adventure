@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class HoverEventTest {
   @Test
   void testAsHoverEvent() {
-    final HoverEventImpl<Component> event = HoverEvent.showText(Component.text("kittens"));
+    final HoverEvent<Component> event = HoverEvent.showText(Component.text("kittens"));
     assertSame(event, event.asHoverEvent());
     assertSame(event, event.asHoverEvent(UnaryOperator.identity()));
     assertEquals(HoverEvent.showText(Component.text("cats")), event.asHoverEvent(old -> Component.text("cats")));

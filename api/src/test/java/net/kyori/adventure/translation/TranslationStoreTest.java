@@ -50,7 +50,7 @@ class TranslationStoreTest {
   static void testRegister() {
     REGISTRY.register("what", Locale.CANADA, new MessageFormat("A what?", Locale.CANADA));
 
-    final ResourceBundle bundle = ResourceBundle.getBundle("adventure-test", Locale.US, UTF8ResourceBundleControl.get());
+    final ResourceBundle bundle = ResourceBundle.getBundle("adventure-test", Locale.US, UTF8ResourceBundleControl.utf8ResourceBundleControl());
     REGISTRY.registerAll(Locale.US, bundle, true);
   }
 
@@ -206,7 +206,6 @@ class TranslationStoreTest {
       .testEquals();
   }
 
-  @Test
   @AfterAll
   static void testUnregister() {
     REGISTRY.unregister("test");

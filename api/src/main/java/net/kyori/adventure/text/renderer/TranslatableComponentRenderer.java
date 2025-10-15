@@ -68,6 +68,9 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
     MERGES = Collections.unmodifiableSet(merges);
   }
 
+  public TranslatableComponentRenderer() {
+  }
+
   /**
    * Creates a {@link TranslatableComponentRenderer} using the {@link Translator} to translate.
    *

@@ -42,6 +42,10 @@ import net.kyori.adventure.text.VirtualComponent;
  * @since 4.0.0
  */
 public abstract class AbstractComponentRenderer<C> implements ComponentRenderer<C> {
+
+  public AbstractComponentRenderer() {
+  }
+
   @Override
   public Component render(Component component, final C context) {
     if (component instanceof VirtualComponent vc) {

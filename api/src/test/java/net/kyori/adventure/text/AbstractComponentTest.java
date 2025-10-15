@@ -47,7 +47,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-abstract class AbstractComponentTest<C extends BuildableComponent<C, B> & ScopedComponent<C>, B extends ComponentBuilder<C, B>> {
+abstract class AbstractComponentTest<C extends ScopedComponent<C>, B extends ComponentBuilder<C, B>> {
   abstract B builder();
 
   final C buildOne() {

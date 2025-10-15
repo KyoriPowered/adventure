@@ -43,6 +43,9 @@ import java.util.ResourceBundle;
 public final class UTF8ResourceBundleControl extends ResourceBundle.Control {
   private static final UTF8ResourceBundleControl INSTANCE = new UTF8ResourceBundleControl();
 
+  private UTF8ResourceBundleControl() {
+  }
+
   /**
    * Gets the shared instance.
    *

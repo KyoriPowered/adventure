@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-abstract class AbstractNBTComponentTest<C extends NBTComponent<C, B> & ScopedComponent<C>, B extends NBTComponentBuilder<C, B>> extends AbstractComponentTest<C, B> {
+abstract class AbstractNBTComponentTest<C extends NBTComponent<C> & ScopedComponent<C>, B extends NBTComponentBuilder<C, B>> extends AbstractComponentTest<C, B> {
   @Test
   void testBuildWithInterpret() {
     final C c0 = this.buildOne();
