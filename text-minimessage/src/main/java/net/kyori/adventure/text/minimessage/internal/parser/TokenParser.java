@@ -185,14 +185,14 @@ public final class TokenParser {
           final int nextCodePoint = message.codePointAt(i + 1);
 
           switch (state) {
-            case NORMAL ->
-              // allow escaping open tokens
-              escaped = nextCodePoint == TAG_START || nextCodePoint == ESCAPE;
-            case STRING ->
-              // allow escaping closing string chars
-              escaped = currentStringChar == nextCodePoint || nextCodePoint == ESCAPE;
+            // allow escaping open tokens
+            case NORMAL -> escaped = nextCodePoint == TAG_START || nextCodePoint == ESCAPE;
+
+            // allow escaping closing string chars
+            case STRING -> escaped = currentStringChar == nextCodePoint || nextCodePoint == ESCAPE;
+
+            // Escape characters are not valid in tag names, so we aren't a tag token
             case TAG -> {
-              // Escape characters are not valid in tag names, so we aren't a tag token
               if (nextCodePoint == TAG_START) {
                 escaped = true;
                 state = FirstPassState.NORMAL;
@@ -244,9 +244,10 @@ public final class TokenParser {
               consumer.accept(marker, currentTokenEnd, thisType);
               state = FirstPassState.NORMAL;
             }
-            case TAG_START ->
-              // This isn't a tag, but we can re-start looking here
-              marker = i;
+
+            // This isn't a tag, but we can re-start looking here
+            case TAG_START -> marker = i;
+
             case '\'', '"' -> {
               currentStringChar = (char) codePoint;
               // Look ahead if the quote being opened is ever closed

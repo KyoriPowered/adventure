@@ -39,10 +39,13 @@ import org.jetbrains.annotations.ApiStatus;
 /**
  * Changes the color based on a phase param.
  *
+ * @param colors the colors to transition between
+ * @param phase the phase for the transition
+ * @param negativePhase whether the phase is negative
  * @since 4.10.0
  */
 @ApiStatus.Internal
-public record TransitionTag(
+record TransitionTag(
   TextColor[] colors,
   float phase,
   boolean negativePhase

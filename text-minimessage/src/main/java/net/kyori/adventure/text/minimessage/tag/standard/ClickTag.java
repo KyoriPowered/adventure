@@ -96,8 +96,7 @@ record ClickTag() {
       }
       case ClickEvent.Action.ShowDialog ignored ->
         throw ctx.newException("'show_dialog' click events are not supported in MiniMessage yet");
-      case ClickEvent.Action.TextCarrier textCarrier ->
-        ClickEvent.clickEvent(textCarrier, ClickEvent.Payload.string(args.popOr("'" + textCarrier + "' click events require a value").value()));
+      case ClickEvent.Action.TextCarrier textCarrier -> ClickEvent.clickEvent(textCarrier, ClickEvent.Payload.string(args.popOr("'" + textCarrier + "' click events require a value").value()));
     };
 
     return Tag.styling(event);

@@ -36,7 +36,7 @@ final class ArgumentQueueImpl<T extends Tag.Argument> implements ArgumentQueue {
   private final List<T> args;
   private int ptr = 0;
 
-  public ArgumentQueueImpl(final Context context, final List<T> args) {
+  ArgumentQueueImpl(final Context context, final List<T> args) {
     this.context = context;
     this.args = args;
   }
