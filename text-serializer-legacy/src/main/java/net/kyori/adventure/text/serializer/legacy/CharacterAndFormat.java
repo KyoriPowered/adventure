@@ -28,6 +28,9 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextFormat;
 import org.jetbrains.annotations.Unmodifiable;
+import org.jspecify.annotations.Nullable;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A combination of a {@code character}, a {@link TextFormat}, and if the character is {@link #caseInsensitive()}.
@@ -168,7 +171,30 @@ public sealed interface CharacterAndFormat permits CharacterAndFormatImpl {
    *
    * @since 4.14.0
    */
-  CharacterAndFormat RESET = characterAndFormat('r', Reset.INSTANCE, true);
+  CharacterAndFormat RESET = characterAndReset('r', true);
+
+  /**
+   * Creates a new combination of a case-sensitive {@code character} and the reset directive.
+   *
+   * @param character the character
+   * @return a new character and format instance.
+   * @since 5.0.0
+   */
+  static CharacterAndFormat characterAndReset(final char character) {
+    return characterAndReset(character, false);
+  }
+
+  /**
+   * Creates a new combination of a case-sensitive {@code character} and the reset directive.
+   *
+   * @param character the character
+   * @param caseInsensitive if the character is case-insensitive
+   * @return a new character and format instance.
+   * @since 5.0.0
+   */
+  static CharacterAndFormat characterAndReset(final char character, final boolean caseInsensitive) {
+    return new CharacterAndFormatImpl(character, null, caseInsensitive);
+  }
 
   /**
    * Creates a new combination of a case-sensitive {@code character} and a {@link TextFormat}.
@@ -192,7 +218,7 @@ public sealed interface CharacterAndFormat permits CharacterAndFormatImpl {
    * @since 4.17.0
    */
   static CharacterAndFormat characterAndFormat(final char character, final TextFormat format, final boolean caseInsensitive) {
-    return new CharacterAndFormatImpl(character, format, caseInsensitive);
+    return new CharacterAndFormatImpl(character, requireNonNull(format, "format"), caseInsensitive);
   }
 
   /**
@@ -215,12 +241,12 @@ public sealed interface CharacterAndFormat permits CharacterAndFormatImpl {
   char character();
 
   /**
-   * Gets the format.
+   * Gets the format, or {@code null} if this format holds a reset directive.
    *
    * @return the format
    * @since 4.14.0
    */
-  TextFormat format();
+  @Nullable TextFormat format();
 
   /**
    * If the {@link #character()} is case-insensitive.

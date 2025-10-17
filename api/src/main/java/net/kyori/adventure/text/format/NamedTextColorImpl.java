@@ -44,7 +44,9 @@ record NamedTextColorImpl(String name, int value) implements NamedTextColor {
   static final int YELLOW_VALUE = 0xffff55;
   static final int WHITE_VALUE = 0xffffff;
 
-  static final List<NamedTextColor> VALUES = List.of(BLACK, DARK_BLUE, DARK_GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE, GOLD, GRAY, DARK_GRAY, BLUE, GREEN, AQUA, RED, LIGHT_PURPLE, YELLOW, WHITE);
+  public static class Values {
+    static final List<NamedTextColor> VALUES = List.of(BLACK, DARK_BLUE, DARK_GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE, GOLD, GRAY, DARK_GRAY, BLUE, GREEN, AQUA, RED, LIGHT_PURPLE, YELLOW, WHITE);
+  }
 
   @Override
   public HSVLike asHSV() {

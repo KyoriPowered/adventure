@@ -43,7 +43,7 @@ import static java.util.Objects.requireNonNull;
  * @see NamedTextColor
  * @since 4.0.0
  */
-public interface TextColor extends Comparable<TextColor>, RGBLike, StyleBuilderApplicable, TextFormat {
+public non-sealed interface TextColor extends Comparable<TextColor>, RGBLike, StyleBuilderApplicable, TextFormat {
   /**
    * The hex character.
    *

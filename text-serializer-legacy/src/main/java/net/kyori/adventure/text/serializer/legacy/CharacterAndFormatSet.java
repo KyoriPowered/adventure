@@ -28,14 +28,15 @@ import java.util.Collections;
 import java.util.List;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextFormat;
+import org.jspecify.annotations.Nullable;
 
-record CharacterAndFormatSet(List<TextFormat> formats, List<TextColor> colors, String characters) {
+record CharacterAndFormatSet(List<@Nullable TextFormat> formats, List<TextColor> colors, String characters) {
   static final CharacterAndFormatSet DEFAULT = of(CharacterAndFormat.defaults());
 
   static CharacterAndFormatSet of(final List<CharacterAndFormat> pairs) {
     final int size = pairs.size();
     final List<TextColor> colors = new ArrayList<>();
-    final List<TextFormat> formats = new ArrayList<>(size);
+    final List<@Nullable TextFormat> formats = new ArrayList<>(size);
     final StringBuilder characters = new StringBuilder(size);
     for (final CharacterAndFormat pair : pairs) {
       final char character = pair.character();

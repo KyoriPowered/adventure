@@ -38,6 +38,7 @@ import net.kyori.adventure.text.EntityNBTComponent;
 import net.kyori.adventure.text.KeybindComponent;
 import net.kyori.adventure.text.NBTComponent;
 import net.kyori.adventure.text.NBTComponentBuilder;
+import net.kyori.adventure.text.ObjectComponent;
 import net.kyori.adventure.text.ScoreComponent;
 import net.kyori.adventure.text.SelectorComponent;
 import net.kyori.adventure.text.StorageNBTComponent;
@@ -153,7 +154,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
     builder
       .nbtPath(oldComponent.nbtPath())
       .interpret(oldComponent.interpret());
-    final @Nullable Component separator = oldComponent.separator();
+    final Component separator = oldComponent.separator();
     if (separator != null) {
       builder.separator(this.render(separator, context));
     }
@@ -187,6 +188,12 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
   }
 
   @Override
+  protected Component renderObject(final ObjectComponent component, final C context) {
+    final ObjectComponent.Builder builder = Component.object().contents(component.contents());
+    return this.mergeStyleAndOptionallyDeepRender(component, builder, context);
+  }
+
+  @Override
   protected Component renderTranslatable(TranslatableComponent component, final C context) {
     final List<TranslationArgument> arguments = component.arguments();
     final List<Component> children = component.children();
@@ -212,9 +219,8 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
     return this.renderTranslatableInner(component, context);
   }
 
-  @SuppressWarnings("JdkObsolete") // MessageFormat requires StringBuffer in its api
   protected Component renderTranslatableInner(final TranslatableComponent component, final C context) {
-    final @Nullable MessageFormat format = this.translate(component.key(), component.fallback(), context);
+    final MessageFormat format = this.translate(component.key(), component.fallback(), context);
     if (format == null) return this.optionallyRenderChildrenAndStyle(component, context);
 
     final List<TranslationArgument> args = component.arguments();
@@ -248,7 +254,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
   }
 
   protected Component optionallyRenderChildrenAndStyle(Component component, final C context) {
-    final @Nullable HoverEvent<?> hoverEvent = component.hoverEvent();
+    final HoverEvent<?> hoverEvent = component.hoverEvent();
     if (hoverEvent != null) {
       component = component.hoverEvent(hoverEvent.withRenderedValue(this, context));
     }
@@ -277,7 +283,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
   protected <B extends ComponentBuilder<?, ?>> void mergeStyle(final Component component, final B builder, final C context) {
     builder.mergeStyle(component, MERGES);
     builder.clickEvent(component.clickEvent());
-    final @Nullable HoverEvent<?> hoverEvent = component.hoverEvent();
+    final HoverEvent<?> hoverEvent = component.hoverEvent();
     if (hoverEvent != null) {
       builder.hoverEvent(hoverEvent.withRenderedValue(this, context));
     }

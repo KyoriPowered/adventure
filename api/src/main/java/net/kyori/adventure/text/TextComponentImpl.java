@@ -120,18 +120,25 @@ sealed class TextComponentImpl implements TextComponent permits VirtualComponent
   }
 
   @Override
-  public boolean equals(final @Nullable Object other) {
-    if (this == other) return true;
-    if (!(other instanceof final TextComponentImpl that)) return false;
-    if (!super.equals(other)) return false;
-    return Objects.equals(this.content, that.content);
+  public boolean equals(final Object o) {
+    if (!(o instanceof TextComponentImpl that)) return false;
+    return Objects.equals(this.content, that.content)
+      && Objects.equals(this.children, that.children)
+      && Objects.equals(this.style, that.style);
   }
 
   @Override
   public int hashCode() {
-    int result = super.hashCode();
+    int result = 0;
     result = (31 * result) + this.content.hashCode();
+    result = (31 * result) + this.children.hashCode();
+    result = (31 * result) + this.style.hashCode();
     return result;
+  }
+
+  @Override
+  public String toString() {
+    return "TextComponentImpl{content='" + this.content + '\'' + ", children=" + this.children + ", style=" + this.style + '}';
   }
 
   @Override

@@ -27,41 +27,7 @@ import java.util.List;
 import net.kyori.adventure.text.format.TextFormat;
 import org.jspecify.annotations.Nullable;
 
-import static java.util.Objects.requireNonNull;
-
-record CharacterAndFormatImpl(char character, TextFormat format, boolean caseInsensitive) implements CharacterAndFormat {
-  CharacterAndFormatImpl(final char character, final TextFormat format, final boolean caseInsensitive) {
-    this.character = character;
-    this.format = requireNonNull(format, "format");
-    this.caseInsensitive = caseInsensitive;
-  }
-
-  @Override
-  public TextFormat format() {
-    return this.format;
-  }
-
-  @Override
-  public boolean equals(final @Nullable Object other) {
-    if (this == other) {
-      return true;
-    }
-    if (!(other instanceof CharacterAndFormatImpl(char otherCharacter, TextFormat otherFormat, boolean otherCaseInsensitive))) {
-      return false;
-    }
-    return this.character == otherCharacter
-      && this.format.equals(otherFormat)
-      && this.caseInsensitive == otherCaseInsensitive;
-  }
-
-  @Override
-  public int hashCode() {
-    int result = this.character;
-    result = 31 * result + this.format.hashCode();
-    result = 31 * result + Boolean.hashCode(this.caseInsensitive);
-    return result;
-  }
-
+record CharacterAndFormatImpl(char character, @Nullable TextFormat format, boolean caseInsensitive) implements CharacterAndFormat {
   static final class Defaults {
     static final List<CharacterAndFormat> DEFAULTS = createDefaults();
 
