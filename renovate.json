@@ -1,6 +1,6 @@
 {
   "extends": [
-    "local>KyoriPowered/.github:renovate-config"
+    "local>KyoriPowered/ci-cookbook:renovate-config#2025.10.17"
   ],
   "ignoreDeps": [
     "com.google.code.gson:gson",

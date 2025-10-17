@@ -1,6 +1,6 @@
 # adventure
 
-![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/KyoriPowered/adventure/build.yml?branch=main/4)
+![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/PaperMC/adventure/ci.yaml?branch=main/4)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue)](license.txt)
 [![Maven Central](https://img.shields.io/maven-central/v/net.kyori/adventure-api?label=stable)](https://search.maven.org/search?q=g:net.kyori%20AND%20a:adventure*)
 ![Maven metadata URL](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fnet%2Fkyori%2Fadventure-api%2Fmaven-metadata.xml&label=dev)

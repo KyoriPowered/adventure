@@ -15,7 +15,7 @@ indra {
   }
   checkstyle(libs.versions.checkstyle.get())
 
-  github("KyoriPowered", "adventure") {
+  github("PaperMC", "adventure") {
     ci(true)
   }
   mitLicense()
