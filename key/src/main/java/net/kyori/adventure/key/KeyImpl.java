@@ -28,21 +28,18 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.OptionalInt;
-import org.intellij.lang.annotations.RegExp;
 
 import static java.util.Objects.requireNonNull;
 
 record KeyImpl(String namespace, String value) implements Key {
   static final Comparator<? super Key> COMPARATOR = Comparator.comparing(Key::value).thenComparing(Key::namespace);
 
-  static final @RegExp String NAMESPACE_PATTERN = "[a-z0-9_\\-.]+";
-  static final @RegExp String VALUE_PATTERN = "[a-z0-9_\\-./]+";
-
   KeyImpl {
-    KeyImpl.checkError("namespace", namespace, namespace, value, Key.checkNamespace(namespace), KeyImpl.NAMESPACE_PATTERN);
-    KeyImpl.checkError("value", value, namespace, value, Key.checkValue(value), KeyImpl.VALUE_PATTERN);
+    KeyImpl.checkError("namespace", namespace, namespace, value, Key.checkNamespace(namespace), KeyPattern.NAMESPACE_PATTERN);
+    KeyImpl.checkError("value", value, namespace, value, Key.checkValue(value), KeyPattern.VALUE_PATTERN);
   }
 
+  @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // It's okay, this is internal, and it's fine anyway.
   static void checkError(final String name, final String checkPart, final String namespace, final String value, final OptionalInt index, final String pattern) {
     requireNonNull(checkPart, name);
     if (index.isPresent()) {
