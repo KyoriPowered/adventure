@@ -27,4 +27,7 @@
  * @sinceMinecraft 1.21.6
  * @since 4.22
  */
+@NullMarked
 package net.kyori.adventure.dialog;
+
+import org.jspecify.annotations.NullMarked;

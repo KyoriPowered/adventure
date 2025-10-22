@@ -24,4 +24,7 @@
 /**
  * Formats which may be applied to components.
  */
+@NullMarked
 package net.kyori.adventure.text.format;
+
+import org.jspecify.annotations.NullMarked;

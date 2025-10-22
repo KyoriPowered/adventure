@@ -24,4 +24,7 @@
 /**
  * Serializers for Configurate 4.
  */
+@NullMarked
 package net.kyori.adventure.serializer.configurate4;
+
+import org.jspecify.annotations.NullMarked;

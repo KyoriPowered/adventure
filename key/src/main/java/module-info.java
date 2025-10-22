@@ -1,9 +1,6 @@
-import org.jspecify.annotations.NullMarked;
-
 /**
  * A reference composed of a namespace and a path.
  */
-@NullMarked
 module net.kyori.adventure.key {
   requires static org.jspecify;
   requires static org.jetbrains.annotations;

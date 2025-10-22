@@ -26,4 +26,7 @@
  *
  * @since 4.10.0
  */
+@NullMarked
 package net.kyori.adventure.text.minimessage.tag.resolver;
+
+import org.jspecify.annotations.NullMarked;

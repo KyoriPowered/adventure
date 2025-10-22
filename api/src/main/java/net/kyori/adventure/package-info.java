@@ -27,4 +27,7 @@
  * <p>See the <a href="https://docs.papermc.io/adventure/">documentation</a>
  * for usage and dependency information for this project and associated libraries.</p>
  */
+@NullMarked
 package net.kyori.adventure;
+
+import org.jspecify.annotations.NullMarked;

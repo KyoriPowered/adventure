@@ -24,4 +24,7 @@
 /**
  * Gson based serialization and deserialization.
  */
+@NullMarked
 package net.kyori.adventure.text.serializer.gson;
+
+import org.jspecify.annotations.NullMarked;

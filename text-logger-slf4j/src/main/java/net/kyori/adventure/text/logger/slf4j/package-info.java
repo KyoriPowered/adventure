@@ -26,4 +26,7 @@
  *
  * <p>This wrapper supports the API provided in 1.7/1.8, but does not yet implement the fluent API present in the 2.0 betas.</p>
  */
+@NullMarked
 package net.kyori.adventure.text.logger.slf4j;
+
+import org.jspecify.annotations.NullMarked;

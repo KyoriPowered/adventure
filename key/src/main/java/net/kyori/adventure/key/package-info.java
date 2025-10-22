@@ -24,4 +24,7 @@
 /**
  * A reference composed of a namespace and a path.
  */
+@NullMarked
 package net.kyori.adventure.key;
+
+import org.jspecify.annotations.NullMarked;

@@ -26,4 +26,7 @@
  *
  * @see <a href="https://docs.papermc.io/adventure/minimessage/format/">Format Documentation</a>
  */
+@NullMarked
 package net.kyori.adventure.text.minimessage;
+
+import org.jspecify.annotations.NullMarked;

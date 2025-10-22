@@ -25,4 +25,7 @@
  * Internal properties.
  */
 @org.jetbrains.annotations.ApiStatus.Internal
+@NullMarked
 package net.kyori.adventure.internal.properties;
+
+import org.jspecify.annotations.NullMarked;

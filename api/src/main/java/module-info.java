@@ -1,12 +1,9 @@
-import org.jspecify.annotations.NullMarked;
-
 /**
  * Adventure: a serverside user interface library for Minecraft: Java Edition.
  *
  * <p>See the <a href="https://docs.papermc.io/adventure/">documentation</a>
  * for usage and dependency information for this project and associated libraries.</p>
  */
-@NullMarked
 module net.kyori.adventure.api {
   requires transitive net.kyori.adventure.key;
   requires transitive org.jspecify;

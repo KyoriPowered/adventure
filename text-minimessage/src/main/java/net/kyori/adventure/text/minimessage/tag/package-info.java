@@ -24,4 +24,7 @@
 /**
  * Specification of the API for customizing tags understood by MiniMessage.
  */
+@NullMarked
 package net.kyori.adventure.text.minimessage.tag;
+
+import org.jspecify.annotations.NullMarked;
