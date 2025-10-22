@@ -265,7 +265,7 @@ abstract class AbstractComponentTest<C extends ScopedComponent<C>, B extends Com
   @Test
   void testRebuildEmptyChildren() {
     final C c0 = this.buildOne();
-    final B b0 = c0.toBuilder();
+    final B b0 = (B) c0.toBuilder();
     final C c1 = b0.build();
     assertEquals(c0, c1);
     assertThat(c0.children()).isEmpty();
@@ -276,7 +276,7 @@ abstract class AbstractComponentTest<C extends ScopedComponent<C>, B extends Com
   void testRebuildChild() {
     final Component child = Component.text("abc");
     final C c0 = this.builder().append(child).build();
-    final B b0 = c0.toBuilder();
+    final B b0 = (B) c0.toBuilder();
     final C c1 = b0.build();
     assertEquals(c0, c1);
     forEachTransformAndAssertIterable(Arrays.asList(c0, c1), Component::children, subject -> subject.containsExactly(child).inOrder());
@@ -288,8 +288,8 @@ abstract class AbstractComponentTest<C extends ScopedComponent<C>, B extends Com
     final Component child2 = Component.text("def");
     final C c0 = this.builder().append(child1, child2).build();
     final C c1 = this.builder().append(Arrays.asList(child1, child2)).build();
-    final B b0 = c0.toBuilder();
-    final B b1 = c1.toBuilder();
+    final B b0 = (B) c0.toBuilder();
+    final B b1 = (B) c1.toBuilder();
     final C c2 = b0.build();
     final C c3 = b1.build();
     assertAllEqualToEachOther(c0, c1, c2, c3);

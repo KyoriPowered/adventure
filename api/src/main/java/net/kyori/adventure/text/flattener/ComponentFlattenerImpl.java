@@ -60,7 +60,7 @@ record ComponentFlattenerImpl(InheritanceAwareMap<Component, Handler> flatteners
       final ObjectContents contents = component.contents();
       if (contents instanceof final SpriteObjectContents spriteContents) {
         final Key atlas = spriteContents.atlas();
-        return String.format("[%s:%s]", spriteContents.sprite().asMinimalString(), !atlas.equals(SpriteObjectContents.DEFAULT_ATLAS) ? "@" + atlas.asMinimalString() : "");
+        return String.format("[%s%s]", spriteContents.sprite().asMinimalString(), !atlas.equals(SpriteObjectContents.DEFAULT_ATLAS) ? "@" + atlas.asMinimalString() : "");
       } else if (contents instanceof final PlayerHeadObjectContents playerHeadContents) {
         return String.format("[%s head]", playerHeadContents.name() != null ? playerHeadContents.name() : "unknown player");
       }

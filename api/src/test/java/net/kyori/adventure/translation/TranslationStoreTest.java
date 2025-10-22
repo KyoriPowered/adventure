@@ -202,7 +202,7 @@ class TranslationStoreTest {
   void testEquality() {
     new EqualsTester()
       .addEqualityGroup(REGISTRY)
-      .addEqualityGroup(TranslationRegistry.create(Key.key("adventure", "test_2")))
+      .addEqualityGroup(TranslationStore.messageFormat(Key.key("adventure", "test_2")))
       .testEquals();
   }
 

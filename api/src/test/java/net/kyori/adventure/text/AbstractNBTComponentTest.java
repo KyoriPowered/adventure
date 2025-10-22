@@ -33,7 +33,7 @@ abstract class AbstractNBTComponentTest<C extends NBTComponent<C> & ScopedCompon
   @Test
   void testBuildWithInterpret() {
     final C c0 = this.buildOne();
-    assertFalse(c0.interpret());
+    assertEquals(BlockNBTComponent.INTERPRET_DEFAULT, c0.interpret());
     final C c1 = this.builder().interpret(true).build();
     assertTrue(c1.interpret());
   }
@@ -42,7 +42,7 @@ abstract class AbstractNBTComponentTest<C extends NBTComponent<C> & ScopedCompon
   void testInterpret() {
     final C c0 = this.buildOne();
     final C c1 = c0.interpret(true);
-    assertFalse(c0.interpret());
+    assertEquals(BlockNBTComponent.INTERPRET_DEFAULT, c0.interpret());
     assertTrue(c1.interpret());
   }
 

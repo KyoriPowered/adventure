@@ -30,7 +30,6 @@ import java.util.stream.IntStream;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -389,7 +388,7 @@ class JoinTest {
   private static final class TestComponentLike implements ComponentLike {
 
     @Override
-    public @NotNull Component asComponent() {
+    public Component asComponent() {
       return Component.text("FAIL");
     }
   }

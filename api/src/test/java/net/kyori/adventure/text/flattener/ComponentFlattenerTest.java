@@ -40,8 +40,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.object.ObjectContents;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -59,18 +58,18 @@ class ComponentFlattenerTest {
     final List<String> strings = new ArrayList<>();
 
     @Override
-    public void pushStyle(final @NotNull Style style) {
+    public void pushStyle(final Style style) {
       this.pushCount++;
       this.pushedStyles.add(style);
     }
 
     @Override
-    public void component(final @NotNull String text) {
+    public void component(final String text) {
       this.strings.add(text);
     }
 
     @Override
-    public void popStyle(final @NotNull Style style) {
+    public void popStyle(final Style style) {
       this.popCount++;
       this.poppedStyles.add(style);
     }
