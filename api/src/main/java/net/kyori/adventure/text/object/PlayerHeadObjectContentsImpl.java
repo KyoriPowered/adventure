@@ -79,7 +79,7 @@ record PlayerHeadObjectContentsImpl(@Nullable String name, @Nullable UUID id, Li
     }
 
     @Override
-    public Builder profileProperties(final Collection<ProfileProperty> properties) {
+    public Builder profileProperties(final Collection<? extends ProfileProperty> properties) {
       for (final ProfileProperty property : requireNonNull(properties, "properties")) {
         this.profileProperty(property);
       }
