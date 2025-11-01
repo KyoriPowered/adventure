@@ -34,6 +34,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.KeybindComponent;
 import net.kyori.adventure.text.ObjectComponent;
+import net.kyori.adventure.text.ScoreComponent;
 import net.kyori.adventure.text.SelectorComponent;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
@@ -47,9 +48,9 @@ import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-record ComponentFlattenerImpl(InheritanceAwareMap<Component, Handler> flatteners, Function<Component, String> unknownHandler, int maxNestedDepth) implements ComponentFlattener {
+record ComponentFlattenerImpl(InheritanceAwareMap<Component, Handler> flatteners,@Nullable Function<Component, String> unknownHandler, int maxNestedDepth) implements ComponentFlattener {
   static final ComponentFlattener BASIC = new BuilderImpl()
-    .mapper(KeybindComponent.class, component -> component.keybind()) // IntelliJ is wrong here, this is fine
+    .mapper(KeybindComponent.class, component -> component.keybind())
     .mapper(SelectorComponent.class, SelectorComponent::pattern)
     .mapper(TextComponent.class, TextComponent::content)
     .mapper(TranslatableComponent.class, component -> {
@@ -111,7 +112,7 @@ record ComponentFlattenerImpl(InheritanceAwareMap<Component, Handler> flatteners
       }
 
       final Component component = entry.component;
-      final @Nullable Handler flattener = this.flattener(component);
+      final Handler flattener = this.flattener(component);
       final Style componentStyle = component.style();
 
       // Push the style to both the listener and the stack (so we can pop later).

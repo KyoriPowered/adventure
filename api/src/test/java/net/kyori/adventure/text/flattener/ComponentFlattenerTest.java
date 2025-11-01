@@ -228,15 +228,8 @@ class ComponentFlattenerTest {
   }
 
   @Test
-  @SuppressWarnings("deprecation")
   void testScore() {
-    this.testFlatten(ComponentFlattener.basic(), Component.score("kashike", "dirtMined", "legacy support only"))
-      .assertBalanced()
-      .assertPushesAndPops(1)
-      .assertStyles(Style.empty())
-      .assertContents("legacy support only");
-
-    this.testFlatten(ComponentFlattener.textOnly(), Component.score("kashike", "dirtMined", "legacy support only"))
+    this.testFlatten(ComponentFlattener.basic(), Component.score("kashike", "dirtMined", "no flattener for score"))
       .assertBalanced()
       .assertPushesAndPops(1)
       .assertStyles(Style.empty())
