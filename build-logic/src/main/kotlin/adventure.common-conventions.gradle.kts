@@ -65,6 +65,7 @@ spotless {
   }
   java {
     importOrderFile(rootProject.file(".spotless/kyori.importorder"))
+    removeUnusedImports()
     applyCommon()
   }
   kotlinGradle {

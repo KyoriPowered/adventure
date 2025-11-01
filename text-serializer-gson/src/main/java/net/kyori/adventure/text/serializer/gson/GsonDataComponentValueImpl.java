@@ -44,7 +44,7 @@ sealed class GsonDataComponentValueImpl implements GsonDataComponentValue {
   @Override
   public String toString() {
     return "GsonDataComponentValueImpl{" +
-      "element=" + element +
+      "element=" + this.element +
       '}';
   }
 

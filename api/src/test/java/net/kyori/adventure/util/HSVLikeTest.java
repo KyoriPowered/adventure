@@ -58,7 +58,7 @@ class HSVLikeTest {
     );
   }
 
-  private static float[] roundFloats(final float [] floats) {
+  private static float[] roundFloats(final float[] floats) {
     final float[] result = new float[floats.length];
     for (int i = 0; i < floats.length; i++) {
       result[i] = BigDecimal.valueOf(floats[i]).setScale(7, RoundingMode.UP).floatValue();

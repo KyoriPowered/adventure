@@ -383,7 +383,8 @@ final class StyleSerializer extends TypeAdapter<Style> {
                 case ClickEvent.Action.RunCommand ignored -> out.name(CLICK_EVENT_COMMAND);
                 case ClickEvent.Action.SuggestCommand ignored -> out.name(CLICK_EVENT_COMMAND);
                 case ClickEvent.Action.CopyToClipboard ignored -> out.name(CLICK_EVENT_VALUE);
-                default -> {}
+                default -> {
+                }
               }
               String payloadValue = text.value();
               if (action == ClickEvent.Action.OPEN_URL && this.emitClickUrlHttps && !StyleSerializer.isValidUrlScheme(payloadValue)) {

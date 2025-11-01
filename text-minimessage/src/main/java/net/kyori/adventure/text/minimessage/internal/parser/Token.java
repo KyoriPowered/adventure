@@ -23,9 +23,9 @@
  */
 package net.kyori.adventure.text.minimessage.internal.parser;
 
-import org.jspecify.annotations.Nullable;
 import java.util.List;
 import java.util.Objects;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Represents a token for the lexer.
