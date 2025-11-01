@@ -53,7 +53,7 @@ public sealed interface NBTComponent<C extends NBTComponent<C>> extends Componen
    *
    * @since 5.0.0
    */
-  boolean INTERPRET_DEFAULT = true;
+  boolean INTERPRET_DEFAULT = false;
 
   /**
    * Gets the NBT path.
