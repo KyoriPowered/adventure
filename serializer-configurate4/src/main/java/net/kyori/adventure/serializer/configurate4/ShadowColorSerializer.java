@@ -32,14 +32,8 @@ import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
 
-final class ShadowColorSerializer implements TypeSerializer<ShadowColor> {
-  static final TypeSerializer<ShadowColor> INSTACE = new ShadowColorSerializer(false);
-
-  private boolean emitFloats;
-
-  private ShadowColorSerializer(final boolean emitFloats) {
-    this.emitFloats = emitFloats;
-  }
+record ShadowColorSerializer(boolean emitFloats) implements TypeSerializer<ShadowColor> {
+  static final TypeSerializer<ShadowColor> INSTANCE = new ShadowColorSerializer(false);
 
   @Override
   public ShadowColor deserialize(final Type type, final ConfigurationNode node) throws SerializationException {

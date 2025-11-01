@@ -104,7 +104,7 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
   }
 
   @Override
-  public BuildableComponent<?, ?> read(final JsonReader in) throws IOException {
+  public Component read(final JsonReader in) throws IOException {
     final JsonToken token = in.peek();
     if (token == JsonToken.STRING || token == JsonToken.NUMBER || token == JsonToken.BOOLEAN) {
       return Component.text(GsonHacks.readString(in));
@@ -112,7 +112,7 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
       ComponentBuilder<?, ?> parent = null;
       in.beginArray();
       while (in.hasNext()) {
-        final BuildableComponent<?, ?> child = this.read(in);
+        final Component child = this.read(in);
         if (parent == null) {
           parent = child.toBuilder();
         } else {
@@ -285,7 +285,7 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
     return builder.build();
   }
 
-  private static <C extends NBTComponent<C, B>, B extends NBTComponentBuilder<C, B>> B nbt(final B builder, final String nbt, final boolean interpret, final @Nullable Component separator) {
+  private static <C extends NBTComponent<C>, B extends NBTComponentBuilder<C, B>> B nbt(final B builder, final String nbt, final boolean interpret, final @Nullable Component separator) {
     return builder
       .nbtPath(nbt)
       .interpret(interpret)
@@ -329,7 +329,7 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
       case TranslatableComponent translatable -> {
         out.name(TRANSLATE);
         out.value(translatable.key());
-        final @Nullable String fallback = translatable.fallback();
+        final String fallback = translatable.fallback();
         if (fallback != null) {
           out.name(TRANSLATE_FALLBACK);
           out.value(fallback);
@@ -361,7 +361,7 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
         out.name(KEYBIND);
         out.value(keybindComponent.keybind());
       }
-      case NBTComponent<?, ?> nbt -> {
+      case NBTComponent<?> nbt -> {
         out.name(NBT);
         out.value(nbt.nbtPath());
         out.name(NBT_INTERPRET);

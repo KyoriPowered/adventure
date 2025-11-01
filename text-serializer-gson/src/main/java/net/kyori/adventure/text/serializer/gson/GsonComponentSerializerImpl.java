@@ -85,17 +85,13 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
 
   @Override
   public Component deserialize(final String string) {
-    final Component component = this.serializer().fromJson(string, Component.class);
-    if (component == null) throw ComponentSerializerImpl.notSureHowToDeserialize(string);
-    return component;
+    return this.serializer().fromJson(string, Component.class);
   }
 
   @Override
   public @Nullable Component deserializeOr(final @Nullable String input, final @Nullable Component fallback) {
     if (input == null) return fallback;
-    final Component component = this.serializer().fromJson(input, Component.class);
-    if (component == null) return fallback;
-    return component;
+    return this.serializer().fromJson(input, Component.class);
   }
 
   @Override
@@ -105,9 +101,7 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
 
   @Override
   public Component deserializeFromTree(final JsonElement input) {
-    final Component component = this.serializer().fromJson(input, Component.class);
-    if (component == null) throw ComponentSerializerImpl.notSureHowToDeserialize(input);
-    return component;
+    return this.serializer().fromJson(input, Component.class);
   }
 
   @Override

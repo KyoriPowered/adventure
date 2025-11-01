@@ -34,20 +34,13 @@ import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jspecify.annotations.Nullable;
 
-class ComponentClaimingResolverImpl implements TagResolver, SerializableResolver.Single {
-  private final Set<String> names;
-  private final BiFunction<ArgumentQueue, Context, Tag> handler;
-  private final Function<Component, @Nullable Emitable> componentClaim;
-
-  ComponentClaimingResolverImpl(final Set<String> names, final BiFunction<ArgumentQueue, Context, Tag> handler, final Function<Component, @Nullable Emitable> componentClaim) {
-    this.names = names;
-    this.handler = handler;
-    this.componentClaim = componentClaim;
-  }
-
+record ComponentClaimingResolverImpl(Set<String> names, BiFunction<ArgumentQueue, Context, Tag> handler, Function<Component, @Nullable Emitable> componentClaim)
+  implements TagResolver, SerializableResolver.Single {
   @Override
   public @Nullable Tag resolve(final String name, final ArgumentQueue arguments, final Context ctx) throws ParsingException {
-    if (!this.names.contains(name)) return null;
+    if (!this.names.contains(name)) {
+      return null;
+    }
 
     return this.handler.apply(arguments, ctx);
   }

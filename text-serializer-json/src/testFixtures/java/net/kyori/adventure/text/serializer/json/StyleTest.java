@@ -29,9 +29,7 @@ import java.util.UUID;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.ClickEventImpl;
 import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.event.HoverEventImpl;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.ShadowColor;
 import net.kyori.adventure.text.format.Style;
@@ -148,7 +146,7 @@ class StyleTest extends SerializerTest {
         json.addProperty(ComponentTreeConstants.COLOR, name(NamedTextColor.RED));
         json.addProperty(name(TextDecoration.BOLD), true);
         json.add(ComponentTreeConstants.CLICK_EVENT_SNAKE, object(clickEvent -> {
-          clickEvent.addProperty(ComponentTreeConstants.CLICK_EVENT_ACTION, name(ClickEventImpl.Action.OPEN_URL));
+          clickEvent.addProperty(ComponentTreeConstants.CLICK_EVENT_ACTION, name(ClickEvent.Action.OPEN_URL));
           clickEvent.addProperty(ComponentTreeConstants.CLICK_EVENT_URL, "https://github.com");
         }));
       }
@@ -160,7 +158,7 @@ class StyleTest extends SerializerTest {
     final UUID dolores = UUID.randomUUID();
     this.testStyle(
       Style.style()
-        .hoverEvent(HoverEvent.showEntity(HoverEventImpl.ShowEntity.showEntity(
+        .hoverEvent(HoverEvent.showEntity(HoverEvent.ShowEntity.showEntity(
           Key.key(Key.MINECRAFT_NAMESPACE, "pig"),
           dolores,
           Component.text("Dolores", TextColor.color(0x0a1ab9))
@@ -168,7 +166,7 @@ class StyleTest extends SerializerTest {
         .build(),
       json -> {
         json.add(ComponentTreeConstants.HOVER_EVENT_SNAKE, object(hoverEvent -> {
-          hoverEvent.addProperty(ComponentTreeConstants.HOVER_EVENT_ACTION, name(HoverEventImpl.Action.SHOW_ENTITY));
+          hoverEvent.addProperty(ComponentTreeConstants.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ENTITY));
           hoverEvent.addProperty(ComponentTreeConstants.SHOW_ENTITY_ID, "minecraft:pig");
           hoverEvent.add(ComponentTreeConstants.SHOW_ENTITY_UUID, uuidArray(dolores));
           hoverEvent.add(ComponentTreeConstants.SHOW_ENTITY_NAME, object(name -> {

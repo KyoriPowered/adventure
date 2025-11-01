@@ -133,7 +133,7 @@ public sealed interface NamedTextColor extends TextColor permits NamedTextColorI
    *
    * @since 4.0.0
    */
-  Index<String, NamedTextColor> NAMES = Index.create(NamedTextColor::toString, NamedTextColorImpl.Values.VALUES);
+  Index<String, NamedTextColor> NAMES = Index.create(NamedTextColor::name, NamedTextColorImpl.Values.VALUES);
 
   /**
    * Gets the named color exactly matching the provided color.
@@ -175,4 +175,12 @@ public sealed interface NamedTextColor extends TextColor permits NamedTextColorI
     if (any instanceof final NamedTextColor namedTextColor) return namedTextColor;
     return TextColor.nearestColorTo(NamedTextColorImpl.Values.VALUES, any);
   }
+
+  /**
+   * The name of this named text color.
+   *
+   * @return the name
+   * @since 5.0.0
+   */
+  String name();
 }

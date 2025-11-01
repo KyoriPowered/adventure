@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.List;
 import net.kyori.adventure.text.minimessage.internal.parser.Token;
 import net.kyori.adventure.text.minimessage.internal.parser.TokenType;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A matched token consumer that produces a list of matched tokens.
@@ -35,7 +36,7 @@ import net.kyori.adventure.text.minimessage.internal.parser.TokenType;
  * @since 4.10.0
  */
 public final class TokenListProducingMatchedTokenConsumer extends MatchedTokenConsumer<List<Token>> {
-  private List<Token> result = null;
+  private @Nullable List<Token> result = null;
 
   /**
    * Creates a new token list producing matched token consumer.

@@ -90,7 +90,7 @@ public final class StringResolvingMatchedTokenConsumer extends MatchedTokenConsu
           }
         }
         // we might care if it's a pre-process!
-        final @Nullable Tag replacement = this.tagProvider.resolve(TokenParser.TagProvider.sanitizePlaceholderName(tag), parts, tokens.get(0));
+        final Tag replacement = this.tagProvider.resolve(TokenParser.TagProvider.sanitizePlaceholderName(tag), parts, tokens.get(0));
 
         if (replacement instanceof PreProcess preProcess) {
           this.builder.append(Objects.requireNonNull(preProcess.value(), "PreProcess replacements cannot return null"));

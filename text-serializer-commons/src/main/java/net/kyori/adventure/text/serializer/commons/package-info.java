@@ -3,3 +3,5 @@
  */
 @NullMarked
 package net.kyori.adventure.text.serializer.commons;
+
+import org.jspecify.annotations.NullMarked;

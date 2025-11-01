@@ -32,25 +32,26 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.BlockNBTComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslationArgument;
-import net.kyori.adventure.text.event.ClickEventImpl;
-import net.kyori.adventure.text.event.HoverEventImpl;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.ShadowColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.object.PlayerHeadObjectContents;
 import net.kyori.adventure.text.serializer.json.JSONOptions;
+import net.kyori.adventure.text.serializer.json.LegacyHoverEventSerializer;
 import net.kyori.option.OptionState;
 import org.jspecify.annotations.Nullable;
 
-final class SerializerFactory implements TypeAdapterFactory {
+record SerializerFactory(OptionState features, LegacyHoverEventSerializer legacyHoverSerializer) implements TypeAdapterFactory {
   static final Class<Key> KEY_TYPE = Key.class;
   static final Class<Component> COMPONENT_TYPE = Component.class;
   static final Class<Style> STYLE_TYPE = Style.class;
-  static final Class<ClickEventImpl.Action> CLICK_ACTION_TYPE = ClickEventImpl.Action.class;
-  static final Class<HoverEventImpl.Action> HOVER_ACTION_TYPE = HoverEventImpl.Action.class;
-  static final Class<HoverEventImpl.ShowItem> SHOW_ITEM_TYPE = HoverEventImpl.ShowItem.class;
-  static final Class<HoverEventImpl.ShowEntity> SHOW_ENTITY_TYPE = HoverEventImpl.ShowEntity.class;
+  static final Class<ClickEvent.Action> CLICK_ACTION_TYPE = ClickEvent.Action.class;
+  static final Class<HoverEvent.Action> HOVER_ACTION_TYPE = HoverEvent.Action.class;
+  static final Class<HoverEvent.ShowItem> SHOW_ITEM_TYPE = HoverEvent.ShowItem.class;
+  static final Class<HoverEvent.ShowEntity> SHOW_ENTITY_TYPE = HoverEvent.ShowEntity.class;
   static final Class<String> STRING_TYPE = String.class;
   static final Class<TextColorWrapper> COLOR_WRAPPER_TYPE = TextColorWrapper.class;
   static final Class<TextColor> COLOR_TYPE = TextColor.class;
@@ -61,17 +62,9 @@ final class SerializerFactory implements TypeAdapterFactory {
   static final Class<TranslationArgument> TRANSLATION_ARGUMENT_TYPE = TranslationArgument.class;
   static final Class<PlayerHeadObjectContents.ProfileProperty> PROFILE_PROPERTY_TYPE = PlayerHeadObjectContents.ProfileProperty.class;
 
-  private final OptionState features;
-  private final net.kyori.adventure.text.serializer.json.LegacyHoverEventSerializer legacyHoverSerializer;
-
-  SerializerFactory(final OptionState features, final net.kyori.adventure.text.serializer.json.@Nullable LegacyHoverEventSerializer legacyHoverSerializer) {
-    this.features = features;
-    this.legacyHoverSerializer = legacyHoverSerializer;
-  }
-
   @Override
   @SuppressWarnings("unchecked")
-  public <T> TypeAdapter<T> create(final Gson gson, final TypeToken<T> type) {
+  public <T> @Nullable TypeAdapter<T> create(final Gson gson, final TypeToken<T> type) {
     final Class<? super T> rawType = type.getRawType();
     if (COMPONENT_TYPE.isAssignableFrom(rawType)) {
       return (TypeAdapter<T>) ComponentSerializerImpl.create(this.features, gson);

@@ -97,17 +97,13 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
     return this.deserialize0(value);
   }
 
-  private BuildableComponent<?, ?> deserialize0(final ConfigurationNode value) throws SerializationException {
+  private Component deserialize0(final ConfigurationNode value) throws SerializationException {
     // Try to read as a string
     if (!value.isList() && !value.isMap()) {
       final String str = value.getString();
       if (str != null) {
         if (this.stringSerial != null) {
-          final Component ret = this.stringSerial.deserialize(str);
-          if (!(ret instanceof BuildableComponent<?, ?>)) {
-            throw new SerializationException("Result " + ret + " is not builable");
-          }
-          return (BuildableComponent<?, ?>) ret;
+          return this.stringSerial.deserialize(str);
         } else {
           return Component.text(str);
         }
@@ -115,7 +111,7 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
     } else if (value.isList()) {
       ComponentBuilder<?, ?> parent = null;
       for (final ConfigurationNode childElement : value.childrenList()) {
-        final BuildableComponent<?, ?> child = this.deserialize0(childElement);
+        final Component child = this.deserialize0(childElement);
         if (parent == null) {
           parent = child.toBuilder();
         } else {
@@ -284,7 +280,7 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
       value.node(SELECTOR).set(((SelectorComponent) src).pattern());
     } else if (src instanceof KeybindComponent) {
       value.node(KEYBIND).set(((KeybindComponent) src).keybind());
-    } else if (src instanceof final NBTComponent<?, ?> nc) {
+    } else if (src instanceof final NBTComponent<?> nc) {
       value.node(NBT).set(nc.nbtPath());
       value.node(NBT_INTERPRET).set(nc.interpret());
       switch (src) {
@@ -348,7 +344,7 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
     }
   }
 
-  private static <C extends NBTComponent<C, B>, B extends NBTComponentBuilder<C, B>> B nbt(final B builder, final String nbt, final boolean interpret) {
+  private static <C extends NBTComponent<C>, B extends NBTComponentBuilder<C, B>> B nbt(final B builder, final String nbt, final boolean interpret) {
     return builder
       .nbtPath(nbt)
       .interpret(interpret);

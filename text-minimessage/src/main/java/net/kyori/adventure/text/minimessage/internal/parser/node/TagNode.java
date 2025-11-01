@@ -98,7 +98,7 @@ public final class TagNode extends ElementNode {
    * @since 4.10.0
    */
   public String name() {
-    return this.parts.get(0).value();
+    return this.parts.getFirst().value();
   }
 
   @Override

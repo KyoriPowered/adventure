@@ -27,7 +27,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.event.HoverEventImpl;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import org.junit.jupiter.api.Test;
@@ -102,7 +101,7 @@ final class TextComponentTest extends SerializerTest {
         json.addProperty(ComponentTreeConstants.TEXT, "This is a test.");
         json.addProperty(ComponentTreeConstants.COLOR, name(NamedTextColor.DARK_PURPLE));
         json.add(ComponentTreeConstants.HOVER_EVENT_SNAKE, object(event -> {
-          event.addProperty(ComponentTreeConstants.HOVER_EVENT_ACTION, name(HoverEventImpl.Action.SHOW_TEXT));
+          event.addProperty(ComponentTreeConstants.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_TEXT));
           event.addProperty(ComponentTreeConstants.HOVER_EVENT_VALUE, "A test.");
         }));
         json.add(ComponentTreeConstants.EXTRA, array(extra -> {
