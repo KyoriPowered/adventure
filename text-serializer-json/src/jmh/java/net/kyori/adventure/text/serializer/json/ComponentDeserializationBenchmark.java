@@ -59,19 +59,19 @@ public class ComponentDeserializationBenchmark {
   public void prepare() {
     this.simpleComponent = JSONComponentSerializer.json().serialize(text("Hello, World!", style(TextDecoration.UNDERLINED)));
     this.componentTreeWithStyle = JSONComponentSerializer.json().serialize(text()
-                                                     .decorate(TextDecoration.UNDERLINED, TextDecoration.ITALIC)
-                                                     .append(text("Component ", color(0x8cfbde)))
-                                                     .append(text("with ", color(0x0fff95), TextDecoration.BOLD))
-                                                     .append(text("hex ", color(0x06ba63)))
-                                                     .append(text("colors", color(0x103900)))
-                                                     .build());
+      .decorate(TextDecoration.UNDERLINED, TextDecoration.ITALIC)
+      .append(text("Component ", color(0x8cfbde)))
+      .append(text("with ", color(0x0fff95), TextDecoration.BOLD))
+      .append(text("hex ", color(0x06ba63)))
+      .append(text("colors", color(0x103900)))
+      .build());
     this.componentTreeWithEvents = JSONComponentSerializer.json().serialize(text()
-                                                      .decorate(TextDecoration.UNDERLINED, TextDecoration.ITALIC)
-                                                      .append(text("Component ", style(color(0x8cfbde), openUrl("https://kyori.net/"))))
-                                                      .append(text("with ", style(color(0x0fff95), TextDecoration.BOLD, showItem(Key.key("iron_sword"), 1, BinaryTagHolder.binaryTagHolder("{Damage: 30, RepairCost: 4, Enchantments: [{id: 'minecraft:sharpness', lvl: 3s}, {id: 'minecraft:unbreaking', lvl: 1s}]}")))))
-                                                      .append(text("hex ", style(color(0x06ba63), showEntity(Key.key("pig"), UUID.randomUUID(), text("Piggy", NamedTextColor.YELLOW)))))
-                                                      .append(text("colors", style(color(0x103900), showText(text("Text hover!")))))
-                                                      .build());
+      .decorate(TextDecoration.UNDERLINED, TextDecoration.ITALIC)
+      .append(text("Component ", style(color(0x8cfbde), openUrl("https://kyori.net/"))))
+      .append(text("with ", style(color(0x0fff95), TextDecoration.BOLD, showItem(Key.key("iron_sword"), 1, BinaryTagHolder.binaryTagHolder("{Damage: 30, RepairCost: 4, Enchantments: [{id: 'minecraft:sharpness', lvl: 3s}, {id: 'minecraft:unbreaking', lvl: 1s}]}")))))
+      .append(text("hex ", style(color(0x06ba63), showEntity(Key.key("pig"), UUID.randomUUID(), text("Piggy", NamedTextColor.YELLOW)))))
+      .append(text("colors", style(color(0x103900), showText(text("Text hover!")))))
+      .build());
   }
 
   @Benchmark
