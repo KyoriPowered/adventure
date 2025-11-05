@@ -30,12 +30,13 @@ import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 final class JSONComponentSerializerTest extends SerializerTest {
   @Test
   void testDeserializeNull() {
-    assertThrows(RuntimeException.class, () -> JSONComponentSerializer.json().deserialize("null"));
+    assertNull(JSONComponentSerializer.json().deserialize("null"));
   }
 
   @Test

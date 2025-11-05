@@ -119,11 +119,11 @@ class StyleTest extends SerializerTest {
       .editOptions(opts -> opts.value(JSONOptions.SHADOW_COLOR_MODE, JSONOptions.ShadowColorEmitMode.EMIT_ARRAY))
       .build();
 
-    this.testStyle(floatSerial, Style.style(ShadowColor.shadowColor(0x80, 0x40, 0xcc, 0xff)), json -> json.add(ComponentTreeConstants.SHADOW_COLOR, array(arr -> {
-      arr.add(0.501960813999176f);
-      arr.add(0.250980406999588f);
-      arr.add(0.800000011920929f);
-      arr.add(1f);
+    this.testStyle(floatSerial, Style.style(ShadowColor.shadowColor(0xff, 0xff, 0x00, 0xff)), json -> json.add(ComponentTreeConstants.SHADOW_COLOR, array(arr -> {
+      arr.add(1.0);
+      arr.add(1.0);
+      arr.add(0.0);
+      arr.add(1.0);
     })));
   }
 
