@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Arrays;
 import java.util.Objects;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * A holder for string tag format options.
@@ -38,24 +37,12 @@ public final class TagStringIO {
   private static final TagStringIO INSTANCE = new TagStringIO(new Builder());
 
   /**
-   * Get an instance of {@link TagStringIO} that reads and writes using standard options.
-   *
-   * @return the basic instance
-   * @since 4.0.0
-   * @deprecated For removal since 4.22.0, use {@link #tagStringIO()} instead
-   */
-  @Deprecated
-  public static @NotNull TagStringIO get() {
-    return tagStringIO();
-  }
-
-  /**
    * Gets an instance of {@link TagStringIO} that reads and writes using standard options.
    *
    * @return the basic instance
    * @since 4.22.0
    */
-  public static @NotNull TagStringIO tagStringIO() {
+  public static TagStringIO tagStringIO() {
     return INSTANCE;
   }
 
@@ -65,7 +52,7 @@ public final class TagStringIO {
    * @return a builder
    * @since 4.0.0
    */
-  public static @NotNull Builder builder() {
+  public static Builder builder() {
     return new Builder();
   }
 
@@ -75,7 +62,7 @@ public final class TagStringIO {
   private final boolean emitHeterogeneousLists;
   private final String indent;
 
-  private TagStringIO(final @NotNull Builder builder) {
+  private TagStringIO(final Builder builder) {
     this.acceptLegacy = builder.acceptLegacy;
     this.emitLegacy = builder.emitLegacy;
     this.acceptHeterogeneousLists = builder.acceptHeterogeneousLists;
@@ -94,7 +81,7 @@ public final class TagStringIO {
    * @throws IOException on any syntax errors
    * @since 4.0.0
    */
-  public @NotNull CompoundBinaryTag asCompound(final @NotNull String input) throws IOException {
+  public CompoundBinaryTag asCompound(final String input) throws IOException {
     Objects.requireNonNull(input, "input");
     try {
       final CharBuffer buffer = new CharBuffer(input);
@@ -122,7 +109,7 @@ public final class TagStringIO {
    * @throws IOException on any syntax errors
    * @since 4.22.0
    */
-  public @NotNull BinaryTag asTag(final @NotNull String input) throws IOException {
+  public BinaryTag asTag(final String input) throws IOException {
     Objects.requireNonNull(input, "input");
     try {
       final CharBuffer buffer = new CharBuffer(input);
@@ -148,7 +135,7 @@ public final class TagStringIO {
    * @throws IOException on any syntax errors
    * @since 4.22.0
    */
-  public @NotNull CompoundBinaryTag asCompound(final @NotNull String input, final @NotNull Appendable remainder) throws IOException {
+  public CompoundBinaryTag asCompound(final String input, final Appendable remainder) throws IOException {
     Objects.requireNonNull(input, "input");
     Objects.requireNonNull(remainder, "remainder");
     try {
@@ -173,7 +160,7 @@ public final class TagStringIO {
    * @throws IOException on any syntax errors
    * @since 4.22.0
    */
-  public @NotNull BinaryTag asTag(final @NotNull String input, final @NotNull Appendable remainder) throws IOException {
+  public BinaryTag asTag(final String input, final Appendable remainder) throws IOException {
     Objects.requireNonNull(input, "input");
     Objects.requireNonNull(remainder, "remainder");
     try {
@@ -197,7 +184,7 @@ public final class TagStringIO {
    * @throws IOException if any errors occur writing to string
    * @since 4.0.0
    */
-  public @NotNull String asString(final @NotNull CompoundBinaryTag input) throws IOException {
+  public String asString(final CompoundBinaryTag input) throws IOException {
     return this.asString((BinaryTag) input);
   }
 
@@ -209,7 +196,7 @@ public final class TagStringIO {
    * @throws IOException if any errors occur writing to string
    * @since 4.20.0
    */
-  public @NotNull String asString(final @NotNull BinaryTag input) throws IOException {
+  public String asString(final BinaryTag input) throws IOException {
     Objects.requireNonNull(input, "input");
     final StringBuilder sb = new StringBuilder();
     try (final TagStringWriter emit = new TagStringWriter(sb, this.indent)) {
@@ -230,7 +217,7 @@ public final class TagStringIO {
    * @throws IOException if any IO or syntax errors occur while parsing
    * @since 4.0.0
    */
-  public void toWriter(final @NotNull CompoundBinaryTag input, final @NotNull Writer dest) throws IOException {
+  public void toWriter(final CompoundBinaryTag input, final Writer dest) throws IOException {
     this.toWriter((BinaryTag) input, dest);
   }
 
@@ -244,7 +231,7 @@ public final class TagStringIO {
    * @throws IOException if any IO or syntax errors occur while parsing
    * @since 4.22.0
    */
-  public void toWriter(final @NotNull BinaryTag input, final @NotNull Writer dest) throws IOException {
+  public void toWriter(final BinaryTag input, final Writer dest) throws IOException {
     Objects.requireNonNull(input, "input");
     Objects.requireNonNull(dest, "dest");
     try (final TagStringWriter emit = new TagStringWriter(dest, this.indent)) {
@@ -278,7 +265,7 @@ public final class TagStringIO {
      * @return this builder
      * @since 4.0.0
      */
-    public @NotNull Builder indent(final int spaces) {
+    public Builder indent(final int spaces) {
       if (spaces == 0) {
         this.indent = "";
       } else if ((!this.indent.isEmpty() && this.indent.charAt(0) != ' ') || spaces != this.indent.length()) {
@@ -298,7 +285,7 @@ public final class TagStringIO {
      * @return this builder
      * @since 4.0.0
      */
-    public @NotNull Builder indentTab(final int tabs) {
+    public Builder indentTab(final int tabs) {
       if (tabs == 0) {
         this.indent = "";
       } else if ((!this.indent.isEmpty() && this.indent.charAt(0) != '\t') || tabs != this.indent.length()) {
@@ -321,7 +308,7 @@ public final class TagStringIO {
      * @return this builder
      * @since 4.0.0
      */
-    public @NotNull Builder acceptLegacy(final boolean legacy) {
+    public Builder acceptLegacy(final boolean legacy) {
       this.acceptLegacy = legacy;
       return this;
     }
@@ -333,7 +320,7 @@ public final class TagStringIO {
      * @return this builder
      * @since 4.0.0
      */
-    public @NotNull Builder emitLegacy(final boolean legacy) {
+    public Builder emitLegacy(final boolean legacy) {
       this.emitLegacy = legacy;
       return this;
     }
@@ -348,7 +335,7 @@ public final class TagStringIO {
      * @return this builder
      * @since 4.22.0
      */
-    public @NotNull Builder acceptHeterogeneousLists(final boolean heterogeneous) {
+    public Builder acceptHeterogeneousLists(final boolean heterogeneous) {
       this.acceptHeterogeneousLists = heterogeneous;
       return this;
     }
@@ -363,7 +350,7 @@ public final class TagStringIO {
      * @return this builder
      * @since 4.22.0
      */
-    public @NotNull Builder emitHeterogeneousLists(final boolean heterogeneous) {
+    public Builder emitHeterogeneousLists(final boolean heterogeneous) {
       this.emitHeterogeneousLists = heterogeneous;
       return this;
     }
@@ -374,7 +361,7 @@ public final class TagStringIO {
      * @return new IO configuration
      * @since 4.0.0
      */
-    public @NotNull TagStringIO build() {
+    public TagStringIO build() {
       return new TagStringIO(this);
     }
   }

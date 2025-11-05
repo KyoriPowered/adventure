@@ -28,8 +28,8 @@ import com.google.common.testing.EqualsTester;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class BlockNBTComponentTest extends AbstractNBTComponentTest<BlockNBTComponent, BlockNBTComponent.Builder> {
   @Override
@@ -54,12 +54,12 @@ class BlockNBTComponentTest extends AbstractNBTComponentTest<BlockNBTComponent, 
     assertEquals(BlockNBTComponent.WorldPos.worldPos(BlockNBTComponent.WorldPos.Coordinate.absolute(1), BlockNBTComponent.WorldPos.Coordinate.relative(2), BlockNBTComponent.WorldPos.Coordinate.absolute(3)), c1.pos());
     assertEquals("abc", c1.nbtPath());
 
-    assertTrue(c0.pos() instanceof BlockNBTComponent.LocalPos);
+    assertInstanceOf(BlockNBTComponent.LocalPos.class, c0.pos());
     assertEquals(1, ((BlockNBTComponent.LocalPos) c0.pos()).left());
     assertEquals(2, ((BlockNBTComponent.LocalPos) c0.pos()).up());
     assertEquals(3, ((BlockNBTComponent.LocalPos) c0.pos()).forwards());
 
-    assertTrue(c1.pos() instanceof BlockNBTComponent.WorldPos);
+    assertInstanceOf(BlockNBTComponent.WorldPos.class, c1.pos());
     assertEquals(BlockNBTComponent.WorldPos.Coordinate.Type.ABSOLUTE, ((BlockNBTComponent.WorldPos) c1.pos()).x().type());
     assertEquals(BlockNBTComponent.WorldPos.Coordinate.Type.RELATIVE, ((BlockNBTComponent.WorldPos) c1.pos()).y().type());
     assertEquals(BlockNBTComponent.WorldPos.Coordinate.Type.ABSOLUTE, ((BlockNBTComponent.WorldPos) c1.pos()).z().type());

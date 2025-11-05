@@ -25,34 +25,9 @@ package net.kyori.adventure.text.format;
 
 import net.kyori.adventure.util.HSVLike;
 import org.jetbrains.annotations.Debug;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @Debug.Renderer(text = "asHexString()")
-final class TextColorImpl implements TextColor {
-  private final int value;
-
-  TextColorImpl(final int value) {
-    this.value = value;
-  }
-
-  @Override
-  public int value() {
-    return this.value;
-  }
-
-  @Override
-  public boolean equals(final @Nullable Object other) {
-    if (this == other) return true;
-    if (!(other instanceof TextColorImpl)) return false;
-    final TextColorImpl that = (TextColorImpl) other;
-    return this.value == that.value;
-  }
-
-  @Override
-  public int hashCode() {
-    return this.value;
-  }
+record TextColorImpl(int value) implements TextColor {
 
   @Override
   public String toString() {
@@ -68,7 +43,7 @@ final class TextColorImpl implements TextColor {
    * @param other colour to compare to
    * @return distance metric
    */
-  static float distance(final @NotNull HSVLike self, final @NotNull HSVLike other) {
+  static float distance(final HSVLike self, final HSVLike other) {
     // weight hue more heavily than saturation and brightness. kind of magic numbers, but is fine for our use case of downsampling to a set of colors
     final float hueDistance = 3 * Math.min(Math.abs(self.h() - other.h()), 1f - Math.abs(self.h() - other.h()));
     final float saturationDiff = self.s() - other.s();

@@ -26,6 +26,7 @@ package net.kyori.adventure.text.minimessage.tag.standard;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.TranslationArgument;
@@ -36,7 +37,7 @@ import net.kyori.adventure.text.minimessage.internal.serializer.SerializableReso
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Insert a translation component into the result, with a fallback string.
@@ -45,12 +46,12 @@ import org.jetbrains.annotations.Nullable;
  * @sinceMinecraft 1.19.4
  */
 final class TranslatableFallbackTag {
-  private static final String TR_OR = "tr_or";
-  private static final String TRANSLATE_OR = "translate_or";
-  private static final String LANG_OR = "lang_or";
+  static final String TR_OR = "tr_or";
+  static final String TRANSLATE_OR = "translate_or";
+  static final String LANG_OR = "lang_or";
 
   static final TagResolver RESOLVER = SerializableResolver.claimingComponent(
-    StandardTags.names(LANG_OR, TRANSLATE_OR, TR_OR),
+    Set.of(LANG_OR, TRANSLATE_OR, TR_OR),
     TranslatableFallbackTag::create,
     TranslatableFallbackTag::claim
   );
@@ -61,6 +62,10 @@ final class TranslatableFallbackTag {
   static Tag create(final ArgumentQueue args, final Context ctx) throws ParsingException {
     final String key = args.popOr("A translation key is required").value();
     final String fallback = args.popOr("A fallback messages is required").value();
+    return Tag.inserting(Component.translatable(key, fallback, constructWith(args, ctx)));
+  }
+
+  static List<Component> constructWith(final ArgumentQueue args, final Context ctx) {
     final List<Component> with;
     if (args.hasNext()) {
       with = new ArrayList<>();
@@ -70,14 +75,12 @@ final class TranslatableFallbackTag {
     } else {
       with = Collections.emptyList();
     }
-
-    return Tag.inserting(Component.translatable(key, fallback, with));
+    return with;
   }
 
   static @Nullable Emitable claim(final Component input) {
-    if (!(input instanceof TranslatableComponent) || ((TranslatableComponent) input).fallback() == null) return null;
+    if (!(input instanceof final TranslatableComponent tr) || tr.fallback() == null) return null;
 
-    final TranslatableComponent tr = (TranslatableComponent) input;
     return emit -> {
       emit.tag(LANG_OR);
       emit.argument(tr.key());

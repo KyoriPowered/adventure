@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage.tag.standard;
 
+import java.util.Set;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
@@ -31,7 +32,7 @@ import net.kyori.adventure.text.minimessage.internal.serializer.SerializableReso
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Newline tag.
@@ -39,11 +40,11 @@ import org.jetbrains.annotations.Nullable;
  * @since 4.10.0
  */
 final class NewlineTag {
-  private static final String BR = "br";
-  private static final String NEWLINE = "newline";
+  static final String BR = "br";
+  static final String NEWLINE = "newline";
 
   static final TagResolver RESOLVER = SerializableResolver.claimingComponent(
-    StandardTags.names(NEWLINE, BR),
+    Set.of(NEWLINE, BR),
     NewlineTag::create,
     NewlineTag::claimComponent
   );

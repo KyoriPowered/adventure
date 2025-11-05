@@ -29,8 +29,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -49,13 +48,13 @@ final class InheritanceAwareMapImpl<C, V> implements InheritanceAwareMap<C, V> {
   }
 
   @Override
-  public boolean containsKey(final @NotNull Class<? extends C> clazz) {
+  public boolean containsKey(final Class<? extends C> clazz) {
     return this.get(clazz) != null;
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public @Nullable V get(final @NotNull Class<? extends C> clazz) {
+  public @Nullable V get(final Class<? extends C> clazz) {
     final Object ret = this.cache.computeIfAbsent(clazz, c -> {
       final @Nullable V value = this.declaredValues.get(c);
       if (value != null) return value;
@@ -73,7 +72,7 @@ final class InheritanceAwareMapImpl<C, V> implements InheritanceAwareMap<C, V> {
   }
 
   @Override
-  public @NotNull InheritanceAwareMap<C, V> with(final @NotNull Class<? extends C> clazz, final @NotNull V value) {
+  public InheritanceAwareMap<C, V> with(final Class<? extends C> clazz, final V value) {
     if (Objects.equals(this.declaredValues.get(clazz), value)) return this;
     if (this.strict) validateNoneInHierarchy(clazz, this.declaredValues);
 
@@ -83,7 +82,7 @@ final class InheritanceAwareMapImpl<C, V> implements InheritanceAwareMap<C, V> {
   }
 
   @Override
-  public @NotNull InheritanceAwareMap<C, V> without(final @NotNull Class<? extends C> clazz) {
+  public InheritanceAwareMap<C, V> without(final Class<? extends C> clazz) {
     if (!this.declaredValues.containsKey(clazz)) return this;
 
     final Map<Class<? extends C>, V> newValues = new LinkedHashMap<>(this.declaredValues);
@@ -96,12 +95,12 @@ final class InheritanceAwareMapImpl<C, V> implements InheritanceAwareMap<C, V> {
     private final Map<Class<? extends C>, V> values = new LinkedHashMap<>();
 
     @Override
-    public @NotNull InheritanceAwareMap<C, V> build() {
+    public InheritanceAwareMap<C, V> build() {
       return new InheritanceAwareMapImpl<>(this.strict, Collections.unmodifiableMap(new LinkedHashMap<>(this.values)));
     }
 
     @Override
-    public @NotNull Builder<C, V> strict(final boolean strict) {
+    public Builder<C, V> strict(final boolean strict) {
       if (strict && !this.strict) { // re-validate contents
         for (final Class<? extends C> clazz : this.values.keySet()) {
           validateNoneInHierarchy(clazz, this.values);
@@ -112,7 +111,7 @@ final class InheritanceAwareMapImpl<C, V> implements InheritanceAwareMap<C, V> {
     }
 
     @Override
-    public @NotNull Builder<C, V> put(final @NotNull Class<? extends C> clazz, final @NotNull V value) {
+    public Builder<C, V> put(final Class<? extends C> clazz, final V value) {
       if (this.strict) validateNoneInHierarchy(clazz, this.values);
       this.values.put(
         requireNonNull(clazz, "clazz"),
@@ -122,14 +121,14 @@ final class InheritanceAwareMapImpl<C, V> implements InheritanceAwareMap<C, V> {
     }
 
     @Override
-    public @NotNull Builder<C, V> remove(final @NotNull Class<? extends C> clazz) {
+    public Builder<C, V> remove(final Class<? extends C> clazz) {
       this.values.remove(requireNonNull(clazz, "clazz"));
       return this;
     }
 
     @Override
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public @NotNull Builder<C, V> putAll(final @NotNull InheritanceAwareMap<? extends C, ? extends V> map) {
+    public Builder<C, V> putAll(final InheritanceAwareMap<? extends C, ? extends V> map) {
       final InheritanceAwareMapImpl<?, V> impl = (InheritanceAwareMapImpl<?, V>) map;
       if (this.strict) {
         if (!this.values.isEmpty() || !impl.strict) { // validate all

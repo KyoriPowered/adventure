@@ -23,11 +23,11 @@
  */
 package net.kyori.adventure.text.minimessage.internal.parser;
 
+import java.io.Serial;
 import java.util.Arrays;
 import net.kyori.adventure.text.minimessage.ParsingException;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * An exception that happens while parsing.
@@ -36,10 +36,10 @@ import org.jetbrains.annotations.Nullable;
  */
 @ApiStatus.Internal
 public class ParsingExceptionImpl extends ParsingException {
-  private static final long serialVersionUID = 2507190809441787202L;
+  private static final @Serial long serialVersionUID = 2507190809441787202L;
 
   private final String originalText;
-  private Token @NotNull [] tokens;
+  private Token[] tokens;
 
   /**
    * Create a new parsing exception.
@@ -52,7 +52,7 @@ public class ParsingExceptionImpl extends ParsingException {
   public ParsingExceptionImpl(
     final String message,
     final @Nullable String originalText,
-    final @NotNull Token @NotNull ... tokens
+    final Token... tokens
   ) {
     super(message, null, true, false);
     this.tokens = tokens;
@@ -74,7 +74,7 @@ public class ParsingExceptionImpl extends ParsingException {
     final @Nullable String originalText,
     final @Nullable Throwable cause,
     final boolean withStackTrace,
-    final @NotNull Token @NotNull ... tokens
+    final Token... tokens
   ) {
     super(message, cause, true, withStackTrace);
     this.tokens = tokens;
@@ -114,7 +114,7 @@ public class ParsingExceptionImpl extends ParsingException {
    * @return the tokens for this error
    * @since 4.10.0
    */
-  public @NotNull Token @NotNull [] tokens() {
+  public Token[] tokens() {
     return this.tokens;
   }
 
@@ -124,12 +124,12 @@ public class ParsingExceptionImpl extends ParsingException {
    * @param tokens the tokens for this error
    * @since 4.10.0
    */
-  public void tokens(final @NotNull Token @NotNull [] tokens) {
+  public void tokens(final Token[] tokens) {
     this.tokens = tokens;
   }
 
   private String arrow() {
-    final @NotNull Token[] ts = this.tokens();
+    final Token[] ts = this.tokens();
     final char[] chars = new char[ts[ts.length - 1].endIndex()];
 
     int i = 0;

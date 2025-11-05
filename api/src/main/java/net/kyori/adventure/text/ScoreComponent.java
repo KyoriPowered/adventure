@@ -23,11 +23,9 @@
  */
 package net.kyori.adventure.text;
 
-import java.util.stream.Stream;
-import net.kyori.examination.ExaminableProperty;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A component that can display a player's score from a scoreboard objective,
@@ -39,9 +37,9 @@ import org.jetbrains.annotations.Nullable;
  *   <dd>a player username or a Minecraft selector that leads to a single player</dd>
  *   <dt>objective</dt>
  *   <dd>a scoreboard objective</dd>
- *   <dt>value(optional)</dt>
+ *   <dt>value (optional, obsolete)</dt>
  *   <dd>a value to use that will override any queried scoreboard value
- *   <p>This field is no longer present in the game from 1.16,
+ *   <p>This field is no longer present in the game from 1.16.5,
  *   which means it will be ignored</p></dd>
  * </dl>
  *
@@ -51,14 +49,14 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 4.0.0
  */
-public interface ScoreComponent extends BuildableComponent<ScoreComponent, ScoreComponent.Builder>, ScopedComponent<ScoreComponent> {
+public sealed interface ScoreComponent extends ScopedComponent<ScoreComponent> permits ScoreComponentImpl {
   /**
    * Gets the score name.
    *
    * @return the score name
    * @since 4.0.0
    */
-  @NotNull String name();
+  String name();
 
   /**
    * Sets the score name.
@@ -68,7 +66,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    * @since 4.0.0
    */
   @Contract(pure = true)
-  @NotNull ScoreComponent name(final @NotNull String name);
+  ScoreComponent name(final String name);
 
   /**
    * Gets the objective name.
@@ -76,7 +74,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    * @return the objective name
    * @since 4.0.0
    */
-  @NotNull String objective();
+  String objective();
 
   /**
    * Sets the score objective.
@@ -86,16 +84,16 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    * @since 4.0.0
    */
   @Contract(pure = true)
-  @NotNull ScoreComponent objective(final @NotNull String objective);
+  ScoreComponent objective(final String objective);
 
   /**
    * Gets the value.
    *
    * @return the value
    * @since 4.0.0
-   * @deprecated since 4.7.0, not for removal, with no replacement. This field is no longer supported in 1.16.5.
+   * @obsoleteSinceMinecraft 1.16.5, no longer supported
    */
-  @Deprecated
+  @ApiStatus.Obsolete
   @Nullable String value();
 
   /**
@@ -104,30 +102,21 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    * @param value the value
    * @return a score component
    * @since 4.0.0
-   * @deprecated since 4.7.0, not for removal, with no replacement. This field is no longer supported in 1.16.5.
+   * @obsoleteSinceMinecraft 1.16.5, no longer supported
    */
-  @Deprecated
+  @ApiStatus.Obsolete
   @Contract(pure = true)
-  @NotNull ScoreComponent value(final @Nullable String value);
+  ScoreComponent value(final String value);
 
   @Override
-  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.concat(
-      Stream.of(
-        ExaminableProperty.of("name", this.name()),
-        ExaminableProperty.of("objective", this.objective()),
-        ExaminableProperty.of("value", this.value())
-      ),
-      BuildableComponent.super.examinableProperties()
-    );
-  }
+  Builder toBuilder();
 
   /**
    * A score component builder.
    *
    * @since 4.0.0
    */
-  interface Builder extends ComponentBuilder<ScoreComponent, Builder> {
+  sealed interface Builder extends ComponentBuilder<ScoreComponent, Builder> permits ScoreComponentImpl.BuilderImpl {
     /**
      * Sets the score name.
      *
@@ -136,7 +125,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
      * @since 4.0.0
      */
     @Contract("_ -> this")
-    @NotNull Builder name(final @NotNull String name);
+    Builder name(final String name);
 
     /**
      * Sets the score objective.
@@ -146,7 +135,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
      * @since 4.0.0
      */
     @Contract("_ -> this")
-    @NotNull Builder objective(final @NotNull String objective);
+    Builder objective(final String objective);
 
     /**
      * Sets the value.
@@ -154,10 +143,10 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
      * @param value the value
      * @return this builder
      * @since 4.0.0
-     * @deprecated since 4.7.0, not for removal, with no replacement. This field is no longer supported in 1.16.5.
+     * @obsoleteSinceMinecraft 1.16.5, no longer supported
      */
-    @Deprecated
     @Contract("_ -> this")
-    @NotNull Builder value(final @Nullable String value);
+    @ApiStatus.Obsolete
+    Builder value(final @Nullable String value);
   }
 }

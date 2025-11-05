@@ -23,10 +23,7 @@
  */
 package net.kyori.adventure.text;
 
-import java.util.stream.Stream;
 import net.kyori.adventure.text.object.ObjectContents;
-import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Displays a non-text object.
@@ -34,14 +31,14 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.25.0
  * @sinceMinecraft 1.21.9
  */
-public interface ObjectComponent extends BuildableComponent<ObjectComponent, ObjectComponent.Builder>, ScopedComponent<ObjectComponent> {
+public sealed interface ObjectComponent extends ScopedComponent<ObjectComponent> permits ObjectComponentImpl {
   /**
    * Gets the contents of this object component.
    *
    * @return the contents
    * @since 4.25.0
    */
-  @NotNull ObjectContents contents();
+  ObjectContents contents();
 
   /**
    * Creates a copy of this object component with the given contents.
@@ -50,22 +47,17 @@ public interface ObjectComponent extends BuildableComponent<ObjectComponent, Obj
    * @return new object component
    * @since 4.25.0
    */
-  @NotNull ObjectComponent contents(@NotNull ObjectContents contents);
+  ObjectComponent contents(ObjectContents contents);
 
   @Override
-  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.concat(
-      Stream.of(ExaminableProperty.of("contents", this.contents())),
-      BuildableComponent.super.examinableProperties()
-    );
-  }
+  Builder toBuilder();
 
   /**
    * An object component builder.
    *
    * @since 4.25.0
    */
-  interface Builder extends ComponentBuilder<ObjectComponent, Builder> {
+  sealed interface Builder extends ComponentBuilder<ObjectComponent, Builder> permits ObjectComponentImpl.BuilderImpl {
     /**
      * Sets the contents of this object component builder.
      *
@@ -73,6 +65,6 @@ public interface ObjectComponent extends BuildableComponent<ObjectComponent, Obj
      * @return this builder
      * @since 4.25.0
      */
-    @NotNull Builder contents(@NotNull ObjectContents objectContents);
+    Builder contents(ObjectContents objectContents);
   }
 }

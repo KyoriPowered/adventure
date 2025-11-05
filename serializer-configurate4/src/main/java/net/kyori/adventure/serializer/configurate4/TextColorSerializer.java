@@ -27,7 +27,6 @@ import java.lang.reflect.Type;
 import java.util.function.Predicate;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.serialize.ScalarSerializer;
 import org.spongepowered.configurate.serialize.SerializationException;
 
@@ -39,9 +38,9 @@ final class TextColorSerializer extends ScalarSerializer<TextColor> {
   }
 
   @Override
-  public TextColor deserialize(final @NotNull Type type, final @NotNull Object obj) throws SerializationException {
-    if (obj instanceof Number) { // numerical values
-      return TextColor.color(((Number) obj).intValue());
+  public TextColor deserialize(final Type type, final Object obj) throws SerializationException {
+    if (obj instanceof Number num) { // numerical values
+      return TextColor.color(num.intValue());
     } else if (!(obj instanceof CharSequence)) {
       throw new SerializationException("Text colors must either be strings or integers");
     }
@@ -59,9 +58,9 @@ final class TextColorSerializer extends ScalarSerializer<TextColor> {
   }
 
   @Override
-  public Object serialize(final @NotNull TextColor item, final @NotNull Predicate<Class<?>> typeSupported) {
-    if (item instanceof NamedTextColor) { // TODO: Downsampling
-      return NamedTextColor.NAMES.key((NamedTextColor) item);
+  public Object serialize(final TextColor item, final Predicate<Class<?>> typeSupported) {
+    if (item instanceof NamedTextColor namedTextColor) { // TODO: Downsampling
+      return namedTextColor.name();
     } else {
       return item.asHexString();
     }

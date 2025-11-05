@@ -23,165 +23,23 @@
  */
 package net.kyori.adventure.text.event;
 
-import java.util.Objects;
-import java.util.stream.Stream;
 import net.kyori.adventure.dialog.DialogLike;
-import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
-import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
 
-abstract class PayloadImpl implements ClickEvent.Payload {
-  @Override
-  public String toString() {
-    return Internals.toString(this);
+final class PayloadImpl {
+  private PayloadImpl() {
   }
 
-  static final class TextImpl extends PayloadImpl implements ClickEvent.Payload.Text {
-    private final String value;
-
-    TextImpl(final @NotNull String value) {
-      this.value = value;
-    }
-
-    @Override
-    public @NotNull String value() {
-      return this.value;
-    }
-
-    @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-      return Stream.of(
-        ExaminableProperty.of("value", this.value)
-      );
-    }
-
-    @Override
-    public boolean equals(final Object other) {
-      if (this == other) return true;
-      if (other == null || getClass() != other.getClass()) return false;
-      final TextImpl that = (TextImpl) other;
-      return Objects.equals(this.value, that.value);
-    }
-
-    @Override
-    public int hashCode() {
-      return this.value.hashCode();
-    }
+  record TextImpl(String value) implements ClickEvent.Payload.Text {
   }
 
-  static final class IntImpl extends PayloadImpl implements ClickEvent.Payload.Int {
-    private final int integer;
-
-    IntImpl(final int integer) {
-      this.integer = integer;
-    }
-
-    @Override
-    public int integer() {
-      return this.integer;
-    }
-
-    @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-      return Stream.of(
-        ExaminableProperty.of("integer", this.integer)
-      );
-    }
-
-    @Override
-    public boolean equals(final Object other) {
-      if (this == other) return true;
-      if (other == null || getClass() != other.getClass()) return false;
-      final IntImpl that = (IntImpl) other;
-      return Objects.equals(this.integer, that.integer);
-    }
-
-    @Override
-    public int hashCode() {
-      return this.integer;
-    }
+  record IntImpl(int integer) implements ClickEvent.Payload.Int {
   }
 
-  static final class DialogImpl extends PayloadImpl implements ClickEvent.Payload.Dialog {
-    private final DialogLike dialogLike;
-
-    DialogImpl(final @NotNull DialogLike dialogLike) {
-      this.dialogLike = dialogLike;
-    }
-
-    @Override
-    public @NotNull DialogLike dialog() {
-      return this.dialogLike;
-    }
-
-    @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-      return Stream.of(
-        ExaminableProperty.of("dialog", this.dialogLike)
-      );
-    }
-
-    @Override
-    public boolean equals(final Object other) {
-      if (this == other) return true;
-      if (other == null || getClass() != other.getClass()) return false;
-      final DialogImpl that = (DialogImpl) other;
-      return Objects.equals(this.dialogLike, that.dialogLike);
-    }
-
-    @Override
-    public int hashCode() {
-      return this.dialogLike.hashCode();
-    }
+  record DialogImpl(DialogLike dialog) implements ClickEvent.Payload.Dialog {
   }
 
-  static final class CustomImpl extends PayloadImpl implements ClickEvent.Payload.Custom {
-    private final Key key;
-    private final BinaryTagHolder nbt;
-
-    CustomImpl(final @NotNull Key key, final @NotNull BinaryTagHolder nbt) {
-      this.key = key;
-      this.nbt = nbt;
-    }
-
-    @Override
-    public @NotNull Key key() {
-      return this.key;
-    }
-
-    @Override
-    public @NotNull String data() {
-      return this.nbt.string();
-    }
-
-    @Override
-    public @NotNull BinaryTagHolder nbt() {
-      return this.nbt;
-    }
-
-    @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-      return Stream.of(
-        ExaminableProperty.of("key", this.key),
-        ExaminableProperty.of("nbt", this.nbt)
-      );
-    }
-
-    @Override
-    public boolean equals(final Object other) {
-      if (this == other) return true;
-      if (other == null || getClass() != other.getClass()) return false;
-      final CustomImpl that = (CustomImpl) other;
-      return Objects.equals(this.key, that.key) && Objects.equals(this.nbt, that.nbt);
-    }
-
-    @Override
-    public int hashCode() {
-      int result = this.key.hashCode();
-      result = (31 * result) + this.nbt.hashCode();
-      return result;
-    }
+  record CustomImpl(Key key, BinaryTagHolder nbt) implements ClickEvent.Payload.Custom {
   }
 }

@@ -28,16 +28,15 @@ import java.util.function.Supplier;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.util.Buildable;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A collection of {@link Pointer pointers}.
  *
  * @since 4.8.0
  */
-public interface Pointers extends Buildable<Pointers, Pointers.Builder> {
+public sealed interface Pointers extends Buildable<Pointers.Builder> permits PointersImpl, PointersSupplierImpl.ForwardingPointers {
   /**
    * Gets an empty pointers collection.
    *
@@ -45,7 +44,7 @@ public interface Pointers extends Buildable<Pointers, Pointers.Builder> {
    * @since 4.8.0
    */
   @Contract(pure = true)
-  static @NotNull Pointers empty() {
+  static Pointers empty() {
     return PointersImpl.EMPTY;
   }
 
@@ -57,7 +56,7 @@ public interface Pointers extends Buildable<Pointers, Pointers.Builder> {
    * @since 4.8.0
    */
   @Contract(pure = true)
-  static @NotNull Builder builder() {
+  static Builder builder() {
     return new PointersImpl.BuilderImpl();
   }
 
@@ -69,7 +68,7 @@ public interface Pointers extends Buildable<Pointers, Pointers.Builder> {
    * @return the value
    * @since 4.8.0
    */
-  <T> @NotNull Optional<T> get(final @NotNull Pointer<T> pointer);
+  <T> Optional<T> get(final Pointer<T> pointer);
 
   /**
    * Gets the value of {@code pointer}.
@@ -84,7 +83,7 @@ public interface Pointers extends Buildable<Pointers, Pointers.Builder> {
    */
   @Contract("_, null -> _; _, !null -> !null")
   @SuppressWarnings("checkstyle:MethodName")
-  default <T> @Nullable T getOrDefault(final @NotNull Pointer<T> pointer, final @Nullable T defaultValue) {
+  default <T> @Nullable T getOrDefault(final Pointer<T> pointer, final @Nullable T defaultValue) {
     return this.get(pointer).orElse(defaultValue);
   }
 
@@ -100,7 +99,7 @@ public interface Pointers extends Buildable<Pointers, Pointers.Builder> {
    * @since 4.8.0
    */
   @SuppressWarnings("checkstyle:MethodName")
-  default <T> @UnknownNullability T getOrDefaultFrom(final @NotNull Pointer<T> pointer, final @NotNull Supplier<? extends T> defaultValue) {
+  default <T> @UnknownNullability T getOrDefaultFrom(final Pointer<T> pointer, final Supplier<? extends T> defaultValue) {
     return this.get(pointer).orElseGet(defaultValue);
   }
 
@@ -114,7 +113,7 @@ public interface Pointers extends Buildable<Pointers, Pointers.Builder> {
    * @return if the pointer is supported
    * @since 4.8.0
    */
-  <T> boolean supports(final @NotNull Pointer<T> pointer);
+  <T> boolean supports(final Pointer<T> pointer);
 
   /**
    * A builder of pointers.
@@ -122,7 +121,7 @@ public interface Pointers extends Buildable<Pointers, Pointers.Builder> {
    * @see Pointers
    * @since 4.8.0
    */
-  interface Builder extends AbstractBuilder<Pointers>, Buildable.Builder<Pointers> {
+  sealed interface Builder extends AbstractBuilder<Pointers> permits PointersImpl.BuilderImpl {
     /**
      * Adds a pointer with a static, optional value.
      *
@@ -133,7 +132,7 @@ public interface Pointers extends Buildable<Pointers, Pointers.Builder> {
      * @since 4.8.0
      */
     @Contract("_, _ -> this")
-    default <T> @NotNull Builder withStatic(final @NotNull Pointer<T> pointer, final @Nullable T value) {
+    default <T> Builder withStatic(final Pointer<T> pointer, final @Nullable T value) {
       return this.withDynamic(pointer, () -> value);
     }
 
@@ -147,6 +146,6 @@ public interface Pointers extends Buildable<Pointers, Pointers.Builder> {
      * @since 4.8.0
      */
     @Contract("_, _ -> this")
-    <T> @NotNull Builder withDynamic(final @NotNull Pointer<T> pointer, @NotNull Supplier<@Nullable T> value);
+    <T> Builder withDynamic(final Pointer<T> pointer, Supplier<@Nullable T> value);
   }
 }

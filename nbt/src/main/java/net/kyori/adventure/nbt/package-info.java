@@ -27,4 +27,7 @@
  * <p>Adventure supports serializing to both binary and string representations
  * of the tags, both through {@link net.kyori.adventure.nbt.BinaryTagIO}</p>
  */
+@NullMarked
 package net.kyori.adventure.nbt;
+
+import org.jspecify.annotations.NullMarked;

@@ -29,8 +29,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -50,7 +49,7 @@ class GlobalTranslatorTest {
 
   @ParameterizedTest
   @ValueSource(strings = {"testDummy", "otherDummy"})
-  void testRender(final @NotNull String key) {
+  void testRender(final String key) {
     GlobalTranslator.translator().addSource(DummyTranslator.INSTANCE);
     assertEquals(
       Component.text()
@@ -125,19 +124,19 @@ class GlobalTranslatorTest {
     static final DummyTranslator INSTANCE = new DummyTranslator();
 
     @Override
-    public @NotNull Key name() {
+    public Key name() {
       return Key.key("adventure", "test_dummy");
     }
 
     @Override
-    public @Nullable MessageFormat translate(final @NotNull String key, final @NotNull Locale locale) {
+    public @Nullable MessageFormat translate(final String key, final Locale locale) {
       return (key.equals("testDummy") && locale.equals(Locale.US))
         ? new MessageFormat("Hello {0}!")
         : null;
     }
 
     @Override
-    public @Nullable Component translate(final @NotNull TranslatableComponent component, final @NotNull Locale locale) {
+    public @Nullable Component translate(final TranslatableComponent component, final Locale locale) {
       if (component.key().equals("test.1")) {
         return Component.text("so valid").children(component.children());
       }

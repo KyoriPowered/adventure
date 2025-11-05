@@ -28,5 +28,9 @@
  *
  * @since 4.10.0
  */
-@org.jetbrains.annotations.ApiStatus.Internal
+@ApiStatus.Internal
+@NullMarked
 package net.kyori.adventure.text.minimessage.internal.serializer;
+
+import org.jetbrains.annotations.ApiStatus;
+import org.jspecify.annotations.NullMarked;

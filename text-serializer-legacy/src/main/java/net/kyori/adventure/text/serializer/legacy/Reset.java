@@ -23,13 +23,11 @@
  */
 package net.kyori.adventure.text.serializer.legacy;
 
-import net.kyori.adventure.text.format.TextFormat;
-
 /**
  * The reset directive.
  *
  * @since 4.14.0
  */
-public enum Reset implements TextFormat {
+public enum Reset {
   INSTANCE;
 }

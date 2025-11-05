@@ -25,8 +25,7 @@ package net.kyori.adventure.util;
 
 import net.kyori.adventure.builder.AbstractBuilder;
 import org.jetbrains.annotations.CheckReturnValue;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A map type that will traverse class hierarchy to find a value for a key.
@@ -52,7 +51,7 @@ public interface InheritanceAwareMap<C, V> {
    * @since 4.17.0
    */
   @SuppressWarnings("unchecked")
-  static <K, E> @NotNull InheritanceAwareMap<K, E> empty() {
+  static <K, E> InheritanceAwareMap<K, E> empty() {
     return InheritanceAwareMapImpl.EMPTY;
   }
 
@@ -64,7 +63,7 @@ public interface InheritanceAwareMap<C, V> {
    * @return a new builder
    * @since 4.17.0
    */
-  static <K, E> InheritanceAwareMap.@NotNull Builder<K, E> builder() {
+  static <K, E> InheritanceAwareMap.Builder<K, E> builder() {
     return new InheritanceAwareMapImpl.BuilderImpl<>();
   }
 
@@ -77,7 +76,7 @@ public interface InheritanceAwareMap<C, V> {
    * @return a new builder
    * @since 4.17.0
    */
-  static <K, E> InheritanceAwareMap.@NotNull Builder<K, E> builder(final InheritanceAwareMap<? extends K, ? extends E> existing) {
+  static <K, E> InheritanceAwareMap.Builder<K, E> builder(final InheritanceAwareMap<? extends K, ? extends E> existing) {
     return new InheritanceAwareMapImpl.BuilderImpl<K, E>()
       .putAll(existing);
   }
@@ -89,7 +88,7 @@ public interface InheritanceAwareMap<C, V> {
    * @return whether such a value is present
    * @since 4.17.0
    */
-  boolean containsKey(final @NotNull Class<? extends C> clazz);
+  boolean containsKey(final Class<? extends C> clazz);
 
   /**
    * Get the applicable value for the provided class.
@@ -100,7 +99,7 @@ public interface InheritanceAwareMap<C, V> {
    * @return the value, if any is available
    * @since 4.17.0
    */
-  @Nullable V get(final @NotNull Class<? extends C> clazz);
+  @Nullable V get(final Class<? extends C> clazz);
 
   /**
    * Get an updated inheritance aware map with the provided key changed.
@@ -111,7 +110,7 @@ public interface InheritanceAwareMap<C, V> {
    * @since 4.17.0
    */
   @CheckReturnValue
-  @NotNull InheritanceAwareMap<C, V> with(final @NotNull Class<? extends C> clazz, final @NotNull V value);
+  InheritanceAwareMap<C, V> with(final Class<? extends C> clazz, final V value);
 
   /**
    * Get an updated inheritance aware map with the provided key removed.
@@ -121,7 +120,7 @@ public interface InheritanceAwareMap<C, V> {
    * @since 4.17.0
    */
   @CheckReturnValue
-  @NotNull InheritanceAwareMap<C, V> without(final @NotNull Class<? extends C> clazz);
+  InheritanceAwareMap<C, V> without(final Class<? extends C> clazz);
 
   /**
    * A builder for inheritance-aware maps.
@@ -140,7 +139,7 @@ public interface InheritanceAwareMap<C, V> {
      * @return this builder
      * @since 4.17.0
      */
-    @NotNull Builder<C, V> strict(final boolean strict);
+    Builder<C, V> strict(final boolean strict);
 
     /**
      * Put another value in this map.
@@ -150,7 +149,7 @@ public interface InheritanceAwareMap<C, V> {
      * @return this builder
      * @since 4.17.0
      */
-    @NotNull Builder<C, V> put(final @NotNull Class<? extends C> clazz, final @NotNull V value);
+    Builder<C, V> put(final Class<? extends C> clazz, final V value);
 
     /**
      * Remove a value in this map.
@@ -159,7 +158,7 @@ public interface InheritanceAwareMap<C, V> {
      * @return this builder
      * @since 4.17.0
      */
-    @NotNull Builder<C, V> remove(final @NotNull Class<? extends C> clazz);
+    Builder<C, V> remove(final Class<? extends C> clazz);
 
     /**
      * Put values from an existing inheritance-aware map into this map.
@@ -168,7 +167,7 @@ public interface InheritanceAwareMap<C, V> {
      * @return this builder
      * @since 4.17.0
      */
-    @NotNull Builder<C, V> putAll(final @NotNull InheritanceAwareMap<? extends C, ? extends V> map);
+    Builder<C, V> putAll(final InheritanceAwareMap<? extends C, ? extends V> map);
   }
 
 }

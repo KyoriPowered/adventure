@@ -43,7 +43,7 @@ class TranslatorTest {
 
   @Test
   void testParseLocaleWithLanguageAndCountryAndVariant() {
-    assertEquals(new Locale("en", "ie", "euro"), Translator.parseLocale("en_ie_euro"));
-    assertEquals(new Locale("de", "de", "euro"), Translator.parseLocale("de_de_euro"));
+    assertEquals(Locale.of("en", "ie", "euro"), Translator.parseLocale("en_ie_euro"));
+    assertEquals(Locale.of("de", "de", "euro"), Translator.parseLocale("de_de_euro"));
   }
 }

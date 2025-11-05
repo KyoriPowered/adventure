@@ -32,7 +32,6 @@ import net.kyori.adventure.text.event.DataComponentValue;
 import net.kyori.adventure.text.event.DataComponentValueConverterRegistry;
 import net.kyori.adventure.text.serializer.gson.GsonDataComponentValue;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * A provider for Gson's implementations of data component value converters.
@@ -47,12 +46,12 @@ public final class GsonDataComponentValueConverterProvider implements DataCompon
   private static final Key ID = Key.key(Adventure.NAMESPACE, "serializer/gson");
 
   @Override
-  public @NotNull Key id() {
+  public Key id() {
     return ID;
   }
 
   @Override
-  public @NotNull Iterable<DataComponentValueConverterRegistry.Conversion<?, ?>> conversions() {
+  public Iterable<DataComponentValueConverterRegistry.Conversion<?, ?>> conversions() {
     return Collections.singletonList(
       DataComponentValueConverterRegistry.Conversion.convert(
         DataComponentValue.Removed.class,

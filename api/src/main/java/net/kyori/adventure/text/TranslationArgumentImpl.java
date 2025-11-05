@@ -23,61 +23,18 @@
  */
 package net.kyori.adventure.text;
 
-import java.util.Objects;
-import java.util.stream.Stream;
-import net.kyori.adventure.internal.Internals;
-import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-final class TranslationArgumentImpl implements TranslationArgument {
+record TranslationArgumentImpl(Object value) implements TranslationArgument {
   private static final Component TRUE = Component.text("true");
   private static final Component FALSE = Component.text("false");
 
-  private final Object value;
-
-  TranslationArgumentImpl(final Object value) {
-    this.value = value;
-  }
-
   @Override
-  public @NotNull Object value() {
-    return this.value;
-  }
-
-  @Override
-  public @NotNull Component asComponent() {
-    if (this.value instanceof Component) {
-      return (Component) this.value;
-    } else if (this.value instanceof Boolean) {
-      return (Boolean) this.value ? TRUE : FALSE;
+  public Component asComponent() {
+    if (this.value instanceof final Component component) {
+      return component;
+    } else if (this.value instanceof final Boolean bool) {
+      return bool ? TRUE : FALSE;
     } else {
       return Component.text(String.valueOf(this.value));
     }
-  }
-
-  @Override
-  public boolean equals(final @Nullable Object other) {
-    if (this == other) return true;
-    if (other == null || getClass() != other.getClass()) return false;
-    final TranslationArgumentImpl that = (TranslationArgumentImpl) other;
-    return Objects.equals(this.value, that.value);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(this.value);
-  }
-
-  @Override
-  public String toString() {
-    return Internals.toString(this);
-  }
-
-  @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("value", this.value)
-    );
   }
 }

@@ -23,7 +23,7 @@
  */
 package net.kyori.adventure.text;
 
-import org.jetbrains.annotations.ApiStatus;
+import net.kyori.adventure.text.event.HoverEvent;
 
 /**
  * Flags to modify the behaviour of a component iterator.
@@ -33,16 +33,15 @@ import org.jetbrains.annotations.ApiStatus;
  * @see Component#spliterator(ComponentIteratorType, java.util.Set)
  * @since 4.9.0
  */
-@ApiStatus.NonExtendable
 public enum ComponentIteratorFlag {
   /**
-   * Includes the name of entities inside {@link net.kyori.adventure.text.event.HoverEvent.Action#SHOW_ENTITY entity} hover events.
+   * Includes the name of entities inside {@link HoverEvent.Action#SHOW_ENTITY entity} hover events.
    *
    * @since 4.9.0
    */
   INCLUDE_HOVER_SHOW_ENTITY_NAME,
   /**
-   * Includes the components inside {@link net.kyori.adventure.text.event.HoverEvent.Action#SHOW_TEXT text} hover events.
+   * Includes the components inside {@link HoverEvent.Action#SHOW_TEXT text} hover events.
    *
    * @since 4.9.0
    */

@@ -24,23 +24,20 @@
 package net.kyori.adventure.text.serializer.legacy;
 
 import java.util.List;
-import java.util.stream.Stream;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextFormat;
-import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
+import org.jspecify.annotations.Nullable;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A combination of a {@code character}, a {@link TextFormat}, and if the character is {@link #caseInsensitive()}.
  *
  * @since 4.14.0
  */
-@ApiStatus.NonExtendable
-public interface CharacterAndFormat extends Examinable {
+public sealed interface CharacterAndFormat permits CharacterAndFormatImpl {
   /**
    * Character and format pair representing {@link NamedTextColor#BLACK}.
    *
@@ -174,7 +171,30 @@ public interface CharacterAndFormat extends Examinable {
    *
    * @since 4.14.0
    */
-  CharacterAndFormat RESET = characterAndFormat('r', Reset.INSTANCE, true);
+  CharacterAndFormat RESET = characterAndReset('r', true);
+
+  /**
+   * Creates a new combination of a case-sensitive {@code character} and the reset directive.
+   *
+   * @param character the character
+   * @return a new character and format instance.
+   * @since 5.0.0
+   */
+  static CharacterAndFormat characterAndReset(final char character) {
+    return characterAndReset(character, false);
+  }
+
+  /**
+   * Creates a new combination of a case-sensitive {@code character} and the reset directive.
+   *
+   * @param character the character
+   * @param caseInsensitive if the character is case-insensitive
+   * @return a new character and format instance.
+   * @since 5.0.0
+   */
+  static CharacterAndFormat characterAndReset(final char character, final boolean caseInsensitive) {
+    return new CharacterAndFormatImpl(character, null, caseInsensitive);
+  }
 
   /**
    * Creates a new combination of a case-sensitive {@code character} and a {@link TextFormat}.
@@ -184,7 +204,7 @@ public interface CharacterAndFormat extends Examinable {
    * @return a new character and format instance.
    * @since 4.14.0
    */
-  static @NotNull CharacterAndFormat characterAndFormat(final char character, final @NotNull TextFormat format) {
+  static CharacterAndFormat characterAndFormat(final char character, final TextFormat format) {
     return characterAndFormat(character, format, false);
   }
 
@@ -197,8 +217,8 @@ public interface CharacterAndFormat extends Examinable {
    * @return a new character and format instance.
    * @since 4.17.0
    */
-  static @NotNull CharacterAndFormat characterAndFormat(final char character, final @NotNull TextFormat format, final boolean caseInsensitive) {
-    return new CharacterAndFormatImpl(character, format, caseInsensitive);
+  static CharacterAndFormat characterAndFormat(final char character, final TextFormat format, final boolean caseInsensitive) {
+    return new CharacterAndFormatImpl(character, requireNonNull(format, "format"), caseInsensitive);
   }
 
   /**
@@ -208,7 +228,7 @@ public interface CharacterAndFormat extends Examinable {
    * @since 4.14.0
    */
   @Unmodifiable
-  static @NotNull List<CharacterAndFormat> defaults() {
+  static List<CharacterAndFormat> defaults() {
     return CharacterAndFormatImpl.Defaults.DEFAULTS;
   }
 
@@ -221,12 +241,12 @@ public interface CharacterAndFormat extends Examinable {
   char character();
 
   /**
-   * Gets the format.
+   * Gets the format, or {@code null} if this format holds a reset directive.
    *
    * @return the format
    * @since 4.14.0
    */
-  @NotNull TextFormat format();
+  @Nullable TextFormat format();
 
   /**
    * If the {@link #character()} is case-insensitive.
@@ -235,13 +255,4 @@ public interface CharacterAndFormat extends Examinable {
    * @since 4.17.0
    */
   boolean caseInsensitive();
-
-  @Override
-  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("character", this.character()),
-      ExaminableProperty.of("format", this.format()),
-      ExaminableProperty.of("caseInsensitive", this.caseInsensitive())
-    );
-  }
 }

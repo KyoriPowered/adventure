@@ -33,8 +33,6 @@ import net.kyori.adventure.text.minimessage.internal.parser.TokenType;
 import net.kyori.adventure.text.minimessage.internal.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.tag.PreProcess;
 import net.kyori.adventure.text.minimessage.tag.Tag;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import static net.kyori.adventure.text.minimessage.internal.parser.TokenParser.SEPARATOR;
 import static net.kyori.adventure.text.minimessage.internal.parser.TokenParser.tokenize;
@@ -56,8 +54,8 @@ public final class StringResolvingMatchedTokenConsumer extends MatchedTokenConsu
    * @since 4.10.0
    */
   public StringResolvingMatchedTokenConsumer(
-    final @NotNull String input,
-    final @NotNull TagProvider tagProvider
+    final String input,
+    final TagProvider tagProvider
   ) {
     super(input);
     this.builder = new StringBuilder(input.length());
@@ -65,7 +63,7 @@ public final class StringResolvingMatchedTokenConsumer extends MatchedTokenConsu
   }
 
   @Override
-  public void accept(final int start, final int end, final @NotNull TokenType tokenType) {
+  public void accept(final int start, final int end, final TokenType tokenType) {
     super.accept(start, end, tokenType);
 
     if (tokenType != TokenType.OPEN_TAG) {
@@ -83,17 +81,17 @@ public final class StringResolvingMatchedTokenConsumer extends MatchedTokenConsu
       if (TagInternals.sanitizeAndCheckValidTagName(tag)) {
         final List<Token> tokens = tokenize(match, false);
         final List<TagPart> parts = new ArrayList<>();
-        final List<Token> childs = tokens.isEmpty() ? null : tokens.get(0).childTokens();
+        final List<Token> childs = tokens.isEmpty() ? null : tokens.getFirst().childTokens();
         if (childs != null) {
           for (int i = 1; i < childs.size(); i++) {
             parts.add(new TagPart(match, childs.get(i), this.tagProvider));
           }
         }
         // we might care if it's a pre-process!
-        final @Nullable Tag replacement = this.tagProvider.resolveSequential(TagProvider.sanitizePlaceholderName(tag), parts, tokens.get(0));
+        final Tag replacement = this.tagProvider.resolveSequential(TagProvider.sanitizePlaceholderName(tag), parts, tokens.getFirst());
 
-        if (replacement instanceof PreProcess) {
-          this.builder.append(Objects.requireNonNull(((PreProcess) replacement).value(), "PreProcess replacements cannot return null"));
+        if (replacement instanceof PreProcess preProcess) {
+          this.builder.append(Objects.requireNonNull(preProcess.value(), "PreProcess replacements cannot return null"));
           return;
         }
       }
@@ -104,7 +102,7 @@ public final class StringResolvingMatchedTokenConsumer extends MatchedTokenConsu
   }
 
   @Override
-  public @NotNull String result() {
+  public String result() {
     return this.builder.toString();
   }
 }

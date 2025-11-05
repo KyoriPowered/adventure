@@ -24,8 +24,7 @@
 package net.kyori.adventure.util;
 
 import java.util.function.BooleanSupplier;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Similar to a {@code boolean} but with three states.
@@ -59,11 +58,11 @@ public enum TriState {
    * @since 4.10.0
    */
   public @Nullable Boolean toBoolean() {
-    switch (this) {
-      case TRUE: return Boolean.TRUE;
-      case FALSE: return Boolean.FALSE;
-      default: return null;
-    }
+    return switch (this) {
+      case TRUE -> Boolean.TRUE;
+      case FALSE -> Boolean.FALSE;
+      default -> null;
+    };
   }
 
   /**
@@ -79,11 +78,11 @@ public enum TriState {
    * @since 4.10.0
    */
   public boolean toBooleanOrElse(final boolean other) {
-    switch (this) {
-      case TRUE: return true;
-      case FALSE: return false;
-      default: return other;
-    }
+    return switch (this) {
+      case TRUE -> true;
+      case FALSE -> false;
+      default -> other;
+    };
   }
 
   /**
@@ -98,12 +97,12 @@ public enum TriState {
    * @return the boolean representing the tri-state or the result of the passed supplier if this state is {@link #NOT_SET}.
    * @since 4.10.0
    */
-  public boolean toBooleanOrElseGet(final @NotNull BooleanSupplier supplier) {
-    switch (this) {
-      case TRUE: return true;
-      case FALSE: return false;
-      default: return supplier.getAsBoolean();
-    }
+  public boolean toBooleanOrElseGet(final BooleanSupplier supplier) {
+    return switch (this) {
+      case TRUE -> true;
+      case FALSE -> false;
+      default -> supplier.getAsBoolean();
+    };
   }
 
   /**
@@ -113,7 +112,7 @@ public enum TriState {
    * @return a tri-state
    * @since 4.8.0
    */
-  public static @NotNull TriState byBoolean(final boolean value) {
+  public static TriState byBoolean(final boolean value) {
     return value ? TRUE : FALSE;
   }
 
@@ -124,7 +123,7 @@ public enum TriState {
    * @return a tri-state
    * @since 4.8.0
    */
-  public static @NotNull TriState byBoolean(final @Nullable Boolean value) {
+  public static TriState byBoolean(final @Nullable Boolean value) {
     return value == null ? NOT_SET : byBoolean(value.booleanValue());
   }
 }

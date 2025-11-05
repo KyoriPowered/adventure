@@ -23,9 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage.tag.standard;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Set;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.TranslationArgument;
@@ -36,7 +34,7 @@ import net.kyori.adventure.text.minimessage.internal.serializer.SerializableReso
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Insert a translation component into the result.
@@ -44,12 +42,12 @@ import org.jetbrains.annotations.Nullable;
  * @since 4.10.0
  */
 final class TranslatableTag {
-  private static final String TR = "tr";
-  private static final String TRANSLATE = "translate";
-  private static final String LANG = "lang";
+  static final String TR = "tr";
+  static final String TRANSLATE = "translate";
+  static final String LANG = "lang";
 
   static final TagResolver RESOLVER = SerializableResolver.claimingComponent(
-    StandardTags.names(LANG, TRANSLATE, TR),
+    Set.of(LANG, TRANSLATE, TR),
     TranslatableTag::create,
     TranslatableTag::claim
   );
@@ -59,23 +57,12 @@ final class TranslatableTag {
 
   static Tag create(final ArgumentQueue args, final Context ctx) throws ParsingException {
     final String key = args.popOr("A translation key is required").value();
-    final List<Component> with;
-    if (args.hasNext()) {
-      with = new ArrayList<>();
-      while (args.hasNext()) {
-        with.add(ctx.deserialize(args.pop().value()));
-      }
-    } else {
-      with = Collections.emptyList();
-    }
-
-    return Tag.inserting(Component.translatable(key, with));
+    return Tag.inserting(Component.translatable(key, TranslatableFallbackTag.constructWith(args, ctx)));
   }
 
   static @Nullable Emitable claim(final Component input) {
-    if (!(input instanceof TranslatableComponent) || ((TranslatableComponent) input).fallback() != null) return null;
+    if (!(input instanceof final TranslatableComponent tr) || tr.fallback() != null) return null;
 
-    final TranslatableComponent tr = (TranslatableComponent) input;
     return emit -> {
       emit.tag(LANG);
       emit.argument(tr.key());

@@ -42,8 +42,7 @@ import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.translation.GlobalTranslator;
 import net.kyori.adventure.translation.Translator;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A {@link Translator} implementation that translates strings using MiniMessage.
@@ -118,7 +117,7 @@ public abstract class MiniMessageTranslator implements Translator {
    * @see MiniMessage#miniMessage()
    * @since 4.20.0
    */
-  public MiniMessageTranslator(final @NotNull MiniMessage miniMessage) {
+  public MiniMessageTranslator(final MiniMessage miniMessage) {
     this.miniMessage = Objects.requireNonNull(miniMessage, "miniMessage");
   }
 
@@ -135,15 +134,15 @@ public abstract class MiniMessageTranslator implements Translator {
    * @since 4.20.0
    */
   @SuppressWarnings("checkstyle:MethodName")
-  protected abstract @Nullable String getMiniMessageString(final @NotNull String key, final @NotNull Locale locale);
+  protected abstract @Nullable String getMiniMessageString(final String key, final Locale locale);
 
   @Override
-  public final @Nullable MessageFormat translate(final @NotNull String key, final @NotNull Locale locale) {
+  public final @Nullable MessageFormat translate(final String key, final Locale locale) {
     return null;
   }
 
   @Override
-  public final @Nullable Component translate(final @NotNull TranslatableComponent component, final @NotNull Locale locale) {
+  public final @Nullable Component translate(final TranslatableComponent component, final Locale locale) {
     final String miniMessageString = this.getMiniMessageString(component.key(), locale);
 
     if (miniMessageString == null) {
@@ -165,35 +164,32 @@ public abstract class MiniMessageTranslator implements Translator {
       for (final TranslationArgument argument : translationArguments) {
         final Object value = argument.value();
 
-        if (value instanceof VirtualComponent) {
-          final VirtualComponentRenderer<?> renderer = ((VirtualComponent) value).renderer();
+        if (value instanceof final VirtualComponent virtual) {
+          final VirtualComponentRenderer<?> renderer = virtual.renderer();
 
-          if (renderer instanceof MiniMessageTranslatorTarget) {
+          if (renderer instanceof MiniMessageTranslatorTarget translatorTarget) {
             if (targetAlreadyOverridden) {
               throw new IllegalArgumentException("Multiple Argument.target() translation arguments have been set!");
             }
 
-            target = ((MiniMessageTranslatorTarget) renderer).pointered();
+            target = translatorTarget.pointered();
             targetAlreadyOverridden = true;
             continue;
-          } else if (renderer instanceof MiniMessageTranslatorArgument<?>) {
-            final MiniMessageTranslatorArgument<?> translatorArgument = (MiniMessageTranslatorArgument<?>) renderer;
-            final Object data = translatorArgument.data();
-
-            if (data instanceof TranslationArgumentLike) {
-              final Tag tag = Tag.selfClosingInserting((TranslationArgumentLike) data);
-              tagResolverBuilder.tag(translatorArgument.name(), tag);
-              indexedArguments.add(tag);
-              continue;
-            } else if (data instanceof Tag) {
-              final Tag tag = (Tag) data;
-              tagResolverBuilder.tag(translatorArgument.name(), tag);
-              indexedArguments.add(tag);
-              continue;
-            } else if (data instanceof TagResolver) {
-              tagResolverBuilder.resolvers((TagResolver) data);
-            } else {
-              throw new IllegalArgumentException("Unknown translator argument type: " + data.getClass());
+          } else if (renderer instanceof MiniMessageTranslatorArgument<?>(String name, Object data)) {
+            switch (data) {
+              case TranslationArgumentLike translationArgumentLike -> {
+                final Tag tag = Tag.selfClosingInserting(translationArgumentLike);
+                tagResolverBuilder.tag(name, tag);
+                indexedArguments.add(tag);
+                continue;
+              }
+              case Tag tag -> {
+                tagResolverBuilder.tag(name, tag);
+                indexedArguments.add(tag);
+                continue;
+              }
+              case TagResolver tagResolver -> tagResolverBuilder.resolvers(tagResolver);
+              default -> throw new IllegalArgumentException("Unknown translator argument type: " + data.getClass());
             }
           }
         }

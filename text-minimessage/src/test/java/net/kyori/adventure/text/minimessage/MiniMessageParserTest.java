@@ -480,20 +480,22 @@ public class MiniMessageParserTest extends AbstractTest {
 
     final TagResolver resolver = TagResolver.resolver(Placeholder.parsed("name", "you"), Placeholder.component("action", Component.text("click")));
     final Node tree = MiniMessage.miniMessage().deserializeToTree(input, resolver);
-    final String expected = "Node {\n" +
-      "  TagNode('red') {\n" +
-      "    TextNode(' RED ')\n" +
-      "    TagNode('blue') {\n" +
-      "      TextNode(' you ')\n" +
-      "      TagNode('click', 'open_url', 'https://github.com') {\n" +
-      "        TextNode(' good ')\n" +
-      "        TagNode('action') {\n" +
-      "        }\n" +
-      "        TextNode(' ')\n" +
-      "      }\n" +
-      "    }\n" +
-      "  }\n" +
-      "}\n";
+    final String expected = """
+      Node {
+        TagNode('red') {
+          TextNode(' RED ')
+          TagNode('blue') {
+            TextNode(' you ')
+            TagNode('click', 'open_url', 'https://github.com') {
+              TextNode(' good ')
+              TagNode('action') {
+              }
+              TextNode(' ')
+            }
+          }
+        }
+      }
+      """;
 
     assertEquals(expected, tree.toString());
   }

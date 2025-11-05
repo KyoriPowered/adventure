@@ -28,9 +28,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.NamedArgumentMap;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Parser context for use within transformations.
@@ -39,8 +37,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 4.10.0
  */
-@ApiStatus.NonExtendable
-public interface Context {
+public sealed interface Context permits ContextImpl {
 
   /**
    * The target of the parse context, if provided.
@@ -49,7 +46,7 @@ public interface Context {
    * @return the target, if provided
    * @since 4.17.0
    */
-  public @Nullable Pointered target();
+  @Nullable Pointered target();
 
   /**
    * The target of the parse context.
@@ -60,7 +57,7 @@ public interface Context {
    * @return the target, if provided
    * @since 4.17.0
    */
-  public @NotNull Pointered targetOrThrow();
+  Pointered targetOrThrow();
 
   /**
    * The target of the parse context, casted to a provided type.
@@ -74,7 +71,7 @@ public interface Context {
    * @return the target
    * @since 4.17.0
    */
-  public <T extends Pointered> @NotNull T targetAsType(final @NotNull Class<T> targetClass);
+  <T extends Pointered> T targetAsType(final Class<T> targetClass);
 
   /**
    * Deserializes a MiniMessage string using all the settings of this context.
@@ -83,7 +80,7 @@ public interface Context {
    * @return the parsed message
    * @since 4.10.0
    */
-  @NotNull Component deserialize(final @NotNull String message);
+  Component deserialize(final String message);
 
   /**
    * Deserializes a MiniMessage string using all the settings of this context.
@@ -93,7 +90,7 @@ public interface Context {
    * @return the parsed message
    * @since 4.10.0
    */
-  @NotNull Component deserialize(final @NotNull String message, final @NotNull TagResolver resolver);
+  Component deserialize(final String message, final TagResolver resolver);
 
   /**
    * Deserializes a MiniMessage string using all the settings of this context.
@@ -103,7 +100,7 @@ public interface Context {
    * @return the parsed message
    * @since 4.10.0
    */
-  @NotNull Component deserialize(final @NotNull String message, final @NotNull TagResolver@NotNull... resolvers);
+  Component deserialize(final String message, final TagResolver... resolvers);
 
   /**
    * Create a new parsing exception.
@@ -113,9 +110,9 @@ public interface Context {
    * @return the new parsing exception
    * @since 4.10.0
    */
-  @NotNull ParsingException newException(
-    final @NotNull String message,
-    final @NotNull ArgumentQueue tags
+  ParsingException newException(
+    final String message,
+    final ArgumentQueue tags
   );
 
   /**
@@ -126,9 +123,9 @@ public interface Context {
    * @return the new parsing exception
    * @since 4.25.0
    */
-  @NotNull ParsingException newException(
-    final @NotNull String message,
-    final @NotNull NamedArgumentMap tags
+  ParsingException newException(
+    final String message,
+    final NamedArgumentMap tags
   );
 
   /**
@@ -138,7 +135,7 @@ public interface Context {
    * @return the new parsing exception
    * @since 4.10.0
    */
-  @NotNull ParsingException newException(final @NotNull String message);
+  ParsingException newException(final String message);
 
   /**
    * Create a new parsing exception.
@@ -149,10 +146,10 @@ public interface Context {
    * @return the new parsing exception
    * @since 4.10.0
    */
-  @NotNull ParsingException newException(
-    final @NotNull String message,
+  ParsingException newException(
+    final String message,
     final @Nullable Throwable cause,
-    final @NotNull ArgumentQueue args
+    final ArgumentQueue args
   );
 
   /**
@@ -163,10 +160,10 @@ public interface Context {
    * @param args arguments that caused the errors
    * @return the new parsing exception
    */
-  @NotNull ParsingException newException(
-    final @NotNull String message,
+  ParsingException newException(
+    final String message,
     final @Nullable Throwable cause,
-    final @NotNull NamedArgumentMap args
+    final NamedArgumentMap args
   );
 
   /**

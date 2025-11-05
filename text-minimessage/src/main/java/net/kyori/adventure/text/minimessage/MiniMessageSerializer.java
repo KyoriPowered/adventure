@@ -35,8 +35,7 @@ import net.kyori.adventure.text.minimessage.internal.serializer.Emitable;
 import net.kyori.adventure.text.minimessage.internal.serializer.QuotingOverride;
 import net.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
 import net.kyori.adventure.text.minimessage.internal.serializer.TokenEmitter;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -49,7 +48,7 @@ final class MiniMessageSerializer {
   // - abbreviated vs long tag names (tag-specific option)
   //
 
-  static @NotNull String serialize(final @NotNull Component component, final @NotNull SerializableResolver resolver, final boolean strict) {
+  static String serialize(final Component component, final SerializableResolver resolver, final boolean strict) {
     final StringBuilder sb = new StringBuilder();
     final Collector emitter = new Collector(resolver, strict, sb);
 
@@ -65,7 +64,7 @@ final class MiniMessageSerializer {
     return sb.toString();
   }
 
-  private static void visit(final @NotNull Component component, final Collector emitter, final SerializableResolver resolver, final boolean lastChild) {
+  private static void visit(final Component component, final Collector emitter, final SerializableResolver resolver, final boolean lastChild) {
     // visit self
     resolver.handle(component, emitter);
     Component childSource = emitter.flushClaims(component);
@@ -171,7 +170,7 @@ final class MiniMessageSerializer {
     // TokenEmitter
 
     @Override
-    public @NotNull Collector tag(final @NotNull String token) {
+    public Collector tag(final String token) {
       this.completeTag();
       this.consumer.append(TokenParser.TAG_START);
       this.escapeTagContent(token, QuotingOverride.UNQUOTED);
@@ -181,7 +180,7 @@ final class MiniMessageSerializer {
     }
 
     @Override
-    public @NotNull TokenEmitter selfClosingTag(final @NotNull String token) {
+    public TokenEmitter selfClosingTag(final String token) {
       this.completeTag();
       this.consumer.append(TokenParser.TAG_START);
       this.escapeTagContent(token, QuotingOverride.UNQUOTED);
@@ -190,7 +189,7 @@ final class MiniMessageSerializer {
     }
 
     @Override
-    public @NotNull TokenEmitter argument(final @NotNull String arg) {
+    public TokenEmitter argument(final String arg) {
       if (!this.tagState.isTag) {
         throw new IllegalStateException("Not within a tag!");
       }
@@ -200,7 +199,7 @@ final class MiniMessageSerializer {
     }
 
     @Override
-    public @NotNull TokenEmitter namedArgument(final @NotNull String name, final @NotNull String arg) {
+    public TokenEmitter namedArgument(final String name, final String arg) {
       if (!this.tagState.isTag) {
         throw new IllegalStateException("Not within a tag!");
       }
@@ -212,7 +211,7 @@ final class MiniMessageSerializer {
     }
 
     @Override
-    public @NotNull TokenEmitter argument(final @NotNull String arg, final @NotNull QuotingOverride quotingPreference) {
+    public TokenEmitter argument(final String arg, final QuotingOverride quotingPreference) {
       if (!this.tagState.isTag) {
         throw new IllegalStateException("Not within a tag!");
       }
@@ -222,7 +221,7 @@ final class MiniMessageSerializer {
     }
 
     @Override
-    public @NotNull TokenEmitter namedArgument(final @NotNull String name, final @NotNull String arg, final @NotNull QuotingOverride quotingPreference) {
+    public TokenEmitter namedArgument(final String name, final String arg, final QuotingOverride quotingPreference) {
       if (!this.tagState.isTag) {
         throw new IllegalStateException("Not within a tag!");
       }
@@ -234,19 +233,19 @@ final class MiniMessageSerializer {
     }
 
     @Override
-    public @NotNull TokenEmitter argument(final @NotNull Component arg) {
+    public TokenEmitter argument(final Component arg) {
       final String serialized = MiniMessageSerializer.serialize(arg, this.resolver, this.strict);
       return this.argument(serialized, QuotingOverride.QUOTED); // always quote tokens
     }
 
     @Override
-    public @NotNull TokenEmitter namedArgument(final @NotNull String name, final @NotNull Component arg) {
+    public TokenEmitter namedArgument(final String name, final Component arg) {
       final String serialized = MiniMessageSerializer.serialize(arg, this.resolver, this.strict);
       return this.namedArgument(name, serialized, QuotingOverride.QUOTED); // always quote tokens
     }
 
     @Override
-    public @NotNull TokenEmitter flag(final @NotNull String name, final boolean value) {
+    public TokenEmitter flag(final String name, final boolean value) {
       if (!this.tagState.isTag) {
         throw new IllegalStateException("Not within a tag!");
       }
@@ -256,7 +255,7 @@ final class MiniMessageSerializer {
     }
 
     @Override
-    public @NotNull Collector text(final @NotNull String text) {
+    public Collector text(final String text) {
       this.completeTag();
       // escape '\' and '<'
       appendEscaping(this.consumer, text, TEXT_ESCAPES, true);
@@ -328,12 +327,12 @@ final class MiniMessageSerializer {
     }
 
     @Override
-    public @NotNull Collector pop() {
+    public Collector pop() {
       this.emitClose(this.popTag(false));
       return this;
     }
 
-    private void emitClose(final @NotNull String tag) {
+    private void emitClose(final String tag) {
       // currently: we don't keep any arguments, does it ever make sense to?
       if (this.tagState.isTag) {
         if (this.tagState == TagState.MID) { // not _SELF_CLOSING
@@ -355,14 +354,14 @@ final class MiniMessageSerializer {
     final Set<String> claimedStyleElements = new HashSet<>();
 
     @Override
-    public void style(final @NotNull String claimKey, final @NotNull Emitable styleClaim) {
+    public void style(final String claimKey, final Emitable styleClaim) {
       if (this.claimedStyleElements.add(requireNonNull(claimKey, "claimKey"))) {
         styleClaim.emit(this);
       }
     }
 
     @Override
-    public boolean component(final @NotNull Emitable componentClaim) {
+    public boolean component(final Emitable componentClaim) {
       if (this.componentClaim != null) return false;
 
       this.componentClaim = requireNonNull(componentClaim, "componentClaim");
@@ -375,7 +374,7 @@ final class MiniMessageSerializer {
     }
 
     @Override
-    public boolean styleClaimed(final @NotNull String claimId) {
+    public boolean styleClaimed(final String claimId) {
       return this.claimedStyleElements.contains(claimId);
     }
 
@@ -385,8 +384,8 @@ final class MiniMessageSerializer {
         this.componentClaim.emit(this);
         ret = this.componentClaim.substitute();
         this.componentClaim = null;
-      } else if (component instanceof TextComponent) {
-        this.text(((TextComponent) component).content());
+      } else if (component instanceof TextComponent textComponent) {
+        this.text(textComponent.content());
       } else {
         // todo: best choice?
         throw new IllegalStateException("Unclaimed component " + component);
@@ -395,5 +394,4 @@ final class MiniMessageSerializer {
       return ret;
     }
   }
-
 }

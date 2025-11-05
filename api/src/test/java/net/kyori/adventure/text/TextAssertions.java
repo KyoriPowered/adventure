@@ -27,10 +27,8 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import java.util.Set;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.examination.string.MultiLineStringExaminer;
 import org.junit.jupiter.api.Assertions;
 
 public final class TextAssertions {
@@ -70,7 +68,7 @@ public final class TextAssertions {
     Assertions.assertEquals(prettyPrint(expected), prettyPrint(actual), message);
   }
 
-  private static final String prettyPrint(final Component component) {
-    return component.examine(MultiLineStringExaminer.simpleEscaping()).collect(Collectors.joining("\n"));
+  private static String prettyPrint(final Component component) {
+    return component.toString().replace("[", "[\n").replace("]", "\n]");
   }
 }

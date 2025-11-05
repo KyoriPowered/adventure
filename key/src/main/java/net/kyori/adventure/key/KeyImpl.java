@@ -28,30 +28,20 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.OptionalInt;
-import java.util.stream.Stream;
-import net.kyori.examination.ExaminableProperty;
-import org.intellij.lang.annotations.RegExp;
-import org.jetbrains.annotations.NotNull;
 
 import static java.util.Objects.requireNonNull;
 
-final class KeyImpl implements Key {
+record KeyImpl(String namespace, String value) implements Key {
   static final Comparator<? super Key> COMPARATOR = Comparator.comparing(Key::value).thenComparing(Key::namespace);
 
-  static final @RegExp String NAMESPACE_PATTERN = "[a-z0-9_\\-.]+";
-  static final @RegExp String VALUE_PATTERN = "[a-z0-9_\\-./]+";
-
-  private final String namespace;
-  private final String value;
-
-  KeyImpl(final @NotNull String namespace, final @NotNull String value) {
-    checkError("namespace", namespace, namespace, value, Key.checkNamespace(namespace), NAMESPACE_PATTERN);
-    checkError("value", value, namespace, value, Key.checkValue(value), VALUE_PATTERN);
-    this.namespace = requireNonNull(namespace, "namespace");
-    this.value = requireNonNull(value, "value");
+  KeyImpl {
+    KeyImpl.checkError("namespace", namespace, namespace, value, Key.checkNamespace(namespace), KeyPattern.NAMESPACE_PATTERN);
+    KeyImpl.checkError("value", value, namespace, value, Key.checkValue(value), KeyPattern.VALUE_PATTERN);
   }
 
-  private static void checkError(final String name, final String checkPart, final String namespace, final String value, final OptionalInt index, final String pattern) {
+  @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // It's okay, this is internal, and it's fine anyway.
+  static void checkError(final String name, final String checkPart, final String namespace, final String value, final OptionalInt index, final String pattern) {
+    requireNonNull(checkPart, name);
     if (index.isPresent()) {
       final int indexValue = index.getAsInt();
       final char character = checkPart.charAt(indexValue);
@@ -75,54 +65,28 @@ final class KeyImpl implements Key {
   }
 
   @Override
-  public @NotNull String namespace() {
-    return this.namespace;
-  }
-
-  @Override
-  public @NotNull String value() {
-    return this.value;
-  }
-
-  @Override
-  public @NotNull String asString() {
+  public String asString() {
     return asString(this.namespace, this.value);
   }
 
-  private static @NotNull String asString(final @NotNull String namespace, final @NotNull String value) {
+  private static String asString(final String namespace, final String value) {
     return namespace + ':' + value;
   }
 
   @Override
-  public @NotNull String toString() {
+  public String toString() {
     return this.asString();
-  }
-
-  @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("namespace", this.namespace),
-      ExaminableProperty.of("value", this.value)
-    );
   }
 
   @Override
   public boolean equals(final Object other) {
     if (this == other) return true;
-    if (!(other instanceof Key)) return false;
-    final Key that = (Key) other;
+    if (!(other instanceof Key that)) return false;
     return Objects.equals(this.namespace, that.namespace()) && Objects.equals(this.value, that.value());
   }
 
   @Override
-  public int hashCode() {
-    int result = this.namespace.hashCode();
-    result = (31 * result) + this.value.hashCode();
-    return result;
-  }
-
-  @Override
-  public int compareTo(final @NotNull Key that) {
+  public int compareTo(final Key that) {
     return Key.super.compareTo(that);
   }
 }

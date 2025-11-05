@@ -24,4 +24,7 @@
 /**
  * Flatteners to convert component trees into linear strings.
  */
+@NullMarked
 package net.kyori.adventure.text.flattener;
+
+import org.jspecify.annotations.NullMarked;

@@ -24,7 +24,6 @@
 package net.kyori.adventure.text.minimessage.internal.serializer;
 
 import net.kyori.adventure.text.Component;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * A consumer of tokens used to generate MiniMessage output.
@@ -39,7 +38,7 @@ public interface TokenEmitter {
    * @return this emitter
    * @since 4.10.0
    */
-  @NotNull TokenEmitter tag(final @NotNull String token); // TODO: some sort of TagFlags, with things like SELF_CLOSING, CLOSE_WITH_ARGUMENTS, etc?
+  TokenEmitter tag(final String token); // TODO: some sort of TagFlags, with things like SELF_CLOSING, CLOSE_WITH_ARGUMENTS, etc?
 
   /**
    * Open a tag with or without arguments that cannot have children.
@@ -50,7 +49,7 @@ public interface TokenEmitter {
    * @return this emitter
    * @since 4.10.0
    */
-  @NotNull TokenEmitter selfClosingTag(final @NotNull String token); // TODO: some sort of TagFlags, with things like SELF_CLOSING, CLOSE_WITH_ARGUMENTS, etc?
+  TokenEmitter selfClosingTag(final String token); // TODO: some sort of TagFlags, with things like SELF_CLOSING, CLOSE_WITH_ARGUMENTS, etc?
 
   /**
    * Add arguments to the current tag.
@@ -61,7 +60,7 @@ public interface TokenEmitter {
    * @return this emitter
    * @since 4.10.0
    */
-  default @NotNull TokenEmitter arguments(final @NotNull String... args) {
+  default TokenEmitter arguments(final String... args) {
     for (final String arg : args) {
       this.argument(arg);
     }
@@ -77,7 +76,7 @@ public interface TokenEmitter {
    * @return this emitter
    * @since 4.10.0
    */
-  @NotNull TokenEmitter argument(final @NotNull String arg);
+  TokenEmitter argument(final String arg);
 
   /**
    * Add a single named argument to the current tag.
@@ -89,7 +88,7 @@ public interface TokenEmitter {
    * @return this emitter
    * @since 4.25.0
    */
-  @NotNull TokenEmitter namedArgument(final @NotNull String name, final @NotNull String arg);
+  TokenEmitter namedArgument(final String name, final String arg);
 
   /**
    * Add a single argument to the current tag.
@@ -101,7 +100,7 @@ public interface TokenEmitter {
    * @return this emitter
    * @since 4.10.0
    */
-  @NotNull TokenEmitter argument(final @NotNull String arg, final @NotNull QuotingOverride quotingPreference);
+  TokenEmitter argument(final String arg, final QuotingOverride quotingPreference);
 
   /**
    * Add a single named argument to the current tag.
@@ -114,7 +113,7 @@ public interface TokenEmitter {
    * @return this emitter
    * @since 4.25.0
    */
-  @NotNull TokenEmitter namedArgument(final @NotNull String name, final @NotNull String arg, final @NotNull QuotingOverride quotingPreference);
+  TokenEmitter namedArgument(final String name, final String arg, final QuotingOverride quotingPreference);
 
   /**
    * Add a single argument to the current tag.
@@ -125,7 +124,7 @@ public interface TokenEmitter {
    * @return this emitter
    * @since 4.10.0
    */
-  @NotNull TokenEmitter argument(final @NotNull Component arg);
+  TokenEmitter argument(final Component arg);
 
   /**
    * Add a single named argument to the current tag.
@@ -137,7 +136,7 @@ public interface TokenEmitter {
    * @return this emitter
    * @since 4.25.0
    */
-  @NotNull TokenEmitter namedArgument(final @NotNull String name, final @NotNull Component arg);
+  TokenEmitter namedArgument(final String name, final Component arg);
 
   /**
    * Adds a flag argument to the current tag.
@@ -149,7 +148,7 @@ public interface TokenEmitter {
    * @return this emitter
    * @since 4.25.0
    */
-  @NotNull TokenEmitter flag(final @NotNull String name, final boolean value);
+  TokenEmitter flag(final String name, final boolean value);
 
   /**
    * Emit literal text.
@@ -160,7 +159,7 @@ public interface TokenEmitter {
    * @return this emitter
    * @since 4.10.0
    */
-  @NotNull TokenEmitter text(final @NotNull String text);
+  TokenEmitter text(final String text);
 
   /**
    * Explicitly end a token, only needed if there are multiple tokens within an {@link Emitable} for some reason.
@@ -170,5 +169,5 @@ public interface TokenEmitter {
    * @return this emitter
    * @since 4.10.0
    */
-  @NotNull TokenEmitter pop();
+  TokenEmitter pop();
 }

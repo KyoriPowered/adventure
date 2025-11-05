@@ -23,49 +23,7 @@
  */
 package net.kyori.adventure.text.object;
 
-import java.util.Objects;
-import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.key.Key;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-final class SpriteObjectContentsImpl implements SpriteObjectContents {
-  private final Key atlas;
-  private final Key sprite;
-
-  SpriteObjectContentsImpl(final @NotNull Key atlas, final @NotNull Key sprite) {
-    this.atlas = atlas;
-    this.sprite = sprite;
-  }
-
-  @Override
-  public @NotNull Key atlas() {
-    return this.atlas;
-  }
-
-  @Override
-  public @NotNull Key sprite() {
-    return this.sprite;
-  }
-
-  @Override
-  public boolean equals(final @Nullable Object other) {
-    if (this == other) return true;
-    if (!(other instanceof SpriteObjectContents)) return false;
-    final SpriteObjectContentsImpl that = (SpriteObjectContentsImpl) other;
-    return Objects.equals(this.atlas, that.atlas())
-      && Objects.equals(this.sprite, that.sprite());
-  }
-
-  @Override
-  public int hashCode() {
-    int result = this.atlas.hashCode();
-    result = (31 * result) + this.sprite.hashCode();
-    return result;
-  }
-
-  @Override
-  public String toString() {
-    return Internals.toString(this);
-  }
+record SpriteObjectContentsImpl(Key atlas, Key sprite) implements SpriteObjectContents {
 }

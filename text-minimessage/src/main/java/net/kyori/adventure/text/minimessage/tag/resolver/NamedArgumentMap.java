@@ -27,7 +27,6 @@ import java.util.function.Supplier;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.util.TriState;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -45,7 +44,7 @@ public interface NamedArgumentMap {
    * @return whether an argument by this name is present
    * @since 4.25.0
    */
-  boolean isPresent(@NotNull String name);
+  boolean isPresent(String name);
 
   /**
    * Get the number of arguments present.
@@ -62,7 +61,7 @@ public interface NamedArgumentMap {
    * @return the argument
    * @since 4.25.0
    */
-  Tag.@Nullable Argument get(@NotNull String name);
+  Tag.@Nullable Argument get(String name);
 
   /**
    * Get the value of a flag. If a flag is present {@code flag},
@@ -74,7 +73,7 @@ public interface NamedArgumentMap {
    * @return its presence status in the tag
    * @since 4.25.0
    */
-  @NotNull TriState flag(@NotNull String name);
+  TriState flag(String name);
 
   /**
    * Get whether this flag is set, inverted or not.
@@ -83,7 +82,7 @@ public interface NamedArgumentMap {
    * @return whether it is present
    * @since 4.25.0
    */
-  boolean isFlagPresent(@NotNull String name);
+  boolean isFlagPresent(String name);
 
   /**
    * Get an argument by its name, throwing an exception if no argument with that name was present.
@@ -92,7 +91,7 @@ public interface NamedArgumentMap {
    * @return the argument
    * @since 4.25.0
    */
-  default Tag.@NotNull Argument orThrow(final @NotNull String name) {
+  default Tag.Argument orThrow(final String name) {
     return this.orThrow(name, name + " is not present");
   }
 
@@ -104,7 +103,7 @@ public interface NamedArgumentMap {
    * @return the argument
    * @since 4.25.0
    */
-  Tag.@NotNull Argument orThrow(@NotNull String name, @NotNull String errorMessage);
+  Tag.Argument orThrow(String name, String errorMessage);
 
   /**
    * Get an argument by its name, throwing an exception if no argument with that name was present.
@@ -114,5 +113,5 @@ public interface NamedArgumentMap {
    * @return the argument
    * @since 4.25.0
    */
-  Tag.@NotNull Argument orThrow(@NotNull String name, @NotNull Supplier<String> errorMessage);
+  Tag.Argument orThrow(String name, Supplier<String> errorMessage);
 }

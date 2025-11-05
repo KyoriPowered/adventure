@@ -8,7 +8,6 @@ plugins {
 val sharedTests = configurations.dependencyScope("sharedTests")
 
 val sharedTestDirs by configurations.registering {
-  isVisible = false
   isCanBeConsumed = false
   extendsFrom(sharedTests.get())
   isTransitive = false // we want the directory on its own
@@ -22,7 +21,6 @@ val sharedTestDirs by configurations.registering {
 }
 
 val sharedBenchmarks by configurations.registering {
-  isVisible = false
   isTransitive = false
 
   attributes {

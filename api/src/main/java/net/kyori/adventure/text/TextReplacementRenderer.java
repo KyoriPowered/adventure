@@ -32,8 +32,7 @@ import java.util.regex.Pattern;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.renderer.ComponentRenderer;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A renderer performing a replacement on every {@link TextComponent} element of a component tree.
@@ -45,7 +44,7 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
   }
 
   @Override
-  public @NotNull Component render(final @NotNull Component component, final @NotNull State state) {
+  public Component render(final Component component, final State state) {
     if (!state.running) return component;
     final boolean prevFirstMatch = state.firstMatch;
     state.firstMatch = true;
@@ -56,8 +55,8 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
     List<Component> children = null;
     Component modified = component;
     // replace the component itself
-    if (component instanceof TextComponent) {
-      final String content = ((TextComponent) component).content();
+    if (component instanceof TextComponent tc) {
+      final String content = tc.content();
       final Matcher matcher = state.pattern.matcher(content);
       int replacedUntil = 0; // last index handled
       while (matcher.find()) {
@@ -208,7 +207,7 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
     int replaceCount = 0;
     boolean firstMatch = true;
 
-    State(final @NotNull Pattern pattern, final @NotNull BiFunction<MatchResult, TextComponent.Builder, @Nullable ComponentLike> replacement, final TextReplacementConfig.@NotNull Condition continuer, final boolean replaceInsideHoverEvents) {
+    State(final Pattern pattern, final BiFunction<MatchResult, TextComponent.Builder, @Nullable ComponentLike> replacement, final TextReplacementConfig.Condition continuer, final boolean replaceInsideHoverEvents) {
       this.pattern = pattern;
       this.replacement = replacement;
       this.continuer = continuer;

@@ -24,8 +24,11 @@
 /**
  * Internal API, not for public use.
  *
- * <p>The contents of this package may change at any time, and may not be exported when adventure is present on the module path.
+ * <p>The contents of this package may change at any time, and are not exported when adventure is present on the module path.
  * Some elements may be promoted to public API based on user interest.</p>
  */
 @org.jetbrains.annotations.ApiStatus.Internal
+@NullMarked
 package net.kyori.adventure.text.minimessage.internal;
+
+import org.jspecify.annotations.NullMarked;

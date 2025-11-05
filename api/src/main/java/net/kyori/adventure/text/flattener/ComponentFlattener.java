@@ -28,17 +28,15 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.util.Buildable;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A 'flattener' to convert a component tree to a linear string for display.
  *
  * @since 4.7.0
  */
-public interface ComponentFlattener extends Buildable<ComponentFlattener, ComponentFlattener.Builder> {
+public sealed interface ComponentFlattener permits ComponentFlattenerImpl {
   /**
    * A constant representing a flattener with no limit on nested flatten calls.
    *
@@ -52,7 +50,7 @@ public interface ComponentFlattener extends Buildable<ComponentFlattener, Compon
    * @return a new builder
    * @since 4.7.0
    */
-  static @NotNull Builder builder() {
+  static Builder builder() {
     return new ComponentFlattenerImpl.BuilderImpl();
   }
 
@@ -65,7 +63,7 @@ public interface ComponentFlattener extends Buildable<ComponentFlattener, Compon
    * @return a basic flattener
    * @since 4.7.0
    */
-  static @NotNull ComponentFlattener basic() {
+  static ComponentFlattener basic() {
     return ComponentFlattenerImpl.BASIC;
   }
 
@@ -77,7 +75,7 @@ public interface ComponentFlattener extends Buildable<ComponentFlattener, Compon
    * @return a text-only flattener
    * @since 4.7.0
    */
-  static @NotNull ComponentFlattener textOnly() {
+  static ComponentFlattener textOnly() {
     return ComponentFlattenerImpl.TEXT_ONLY;
   }
 
@@ -88,7 +86,15 @@ public interface ComponentFlattener extends Buildable<ComponentFlattener, Compon
    * @param listener the listener that will receive flattened component state
    * @since 4.7.0
    */
-  void flatten(final @NotNull Component input, final @NotNull FlattenerListener listener);
+  void flatten(final Component input, final FlattenerListener listener);
+
+  /**
+   * Create a new builder with the same configuration as this flattener.
+   *
+   * @return the builder
+   * @since 4.7.0
+   */
+  Builder toBuilder();
 
   /**
    * A builder for a component flattener.
@@ -97,7 +103,7 @@ public interface ComponentFlattener extends Buildable<ComponentFlattener, Compon
    *
    * @since 4.7.0
    */
-  interface Builder extends AbstractBuilder<ComponentFlattener>, Buildable.Builder<ComponentFlattener> {
+  sealed interface Builder extends AbstractBuilder<ComponentFlattener> permits ComponentFlattenerImpl.BuilderImpl {
     /**
      * Register a type of component to be handled.
      *
@@ -108,7 +114,7 @@ public interface ComponentFlattener extends Buildable<ComponentFlattener, Compon
      * @see #complexMapper(Class, BiConsumer) for component types that are too complex to be directly rendered to a string
      * @since 4.7.0
      */
-    <T extends Component> @NotNull Builder mapper(final @NotNull Class<T> type, final @NotNull Function<T, String> converter);
+    <T extends Component> Builder mapper(final Class<T> type, final Function<T, String> converter);
 
     /**
      * Register a type of component that needs to be flattened to an intermediate stage.
@@ -119,7 +125,7 @@ public interface ComponentFlattener extends Buildable<ComponentFlattener, Compon
      * @return this builder
      * @since 4.7.0
      */
-    <T extends Component> @NotNull Builder complexMapper(final @NotNull Class<T> type, final @NotNull BiConsumer<T, Consumer<Component>> converter);
+    <T extends Component> Builder complexMapper(final Class<T> type, final BiConsumer<T, Consumer<Component>> converter);
 
     /**
      * Register a handler for unknown component types.
@@ -130,7 +136,7 @@ public interface ComponentFlattener extends Buildable<ComponentFlattener, Compon
      * @return this builder
      * @since 4.7.0
      */
-    @NotNull Builder unknownMapper(final @Nullable Function<Component, String> converter);
+    Builder unknownMapper(final @Nullable Function<Component, String> converter);
 
     /**
      * Sets the limit of nested flatten calls.
@@ -142,6 +148,6 @@ public interface ComponentFlattener extends Buildable<ComponentFlattener, Compon
      * @return this builder
      * @since 4.22.0
      */
-    @NotNull Builder nestingLimit(final @Range(from = 1, to = Integer.MAX_VALUE) int limit);
+    Builder nestingLimit(final @Range(from = 1, to = Integer.MAX_VALUE) int limit);
   }
 }

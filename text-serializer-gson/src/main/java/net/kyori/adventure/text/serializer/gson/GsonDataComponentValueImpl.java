@@ -26,35 +26,26 @@ package net.kyori.adventure.text.serializer.gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import java.util.Objects;
-import java.util.stream.Stream;
-import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.event.DataComponentValue;
-import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-class GsonDataComponentValueImpl implements GsonDataComponentValue {
+sealed class GsonDataComponentValueImpl implements GsonDataComponentValue {
   private final JsonElement element;
 
-  GsonDataComponentValueImpl(final @NotNull JsonElement element) {
+  GsonDataComponentValueImpl(final JsonElement element) {
     this.element = element;
   }
 
   @Override
-  public @NotNull JsonElement element() {
+  public JsonElement element() {
     return this.element;
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("element", this.element)
-    );
-  }
-
-  @Override
   public String toString() {
-    return Internals.toString(this);
+    return "GsonDataComponentValueImpl{" +
+      "element=" + this.element +
+      '}';
   }
 
   @Override

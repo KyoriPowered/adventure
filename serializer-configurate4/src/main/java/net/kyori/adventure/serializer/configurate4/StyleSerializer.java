@@ -26,6 +26,7 @@ package net.kyori.adventure.serializer.configurate4;
 import io.leangen.geantyref.TypeToken;
 import java.lang.reflect.Type;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -33,8 +34,7 @@ import net.kyori.adventure.text.format.ShadowColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.ConfigurationOptions;
 import org.spongepowered.configurate.serialize.SerializationException;
@@ -42,6 +42,9 @@ import org.spongepowered.configurate.serialize.TypeSerializer;
 
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_ACTION;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_CAMEL;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_ID;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_PAGE;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_PAYLOAD;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_VALUE;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.COLOR;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.FONT;
@@ -63,22 +66,22 @@ final class StyleSerializer implements TypeSerializer<Style> {
   }
 
   @Override
-  public @NotNull Style deserialize(final @NotNull Type type, final @NotNull ConfigurationNode value) throws SerializationException {
+  public Style deserialize(final Type type, final ConfigurationNode value) throws SerializationException {
     if (value.virtual()) {
       return Style.empty();
     }
 
     final Style.Builder builder = Style.style();
 
-    final @Nullable Key font = value.node(FONT).get(Key.class);
+    final Key font = value.node(FONT).get(Key.class);
     if (font != null) {
       builder.font(font);
     }
-    final @Nullable TextColor color = value.node(COLOR).get(TextColor.class);
+    final TextColor color = value.node(COLOR).get(TextColor.class);
     if (color != null) {
       builder.color(color);
     }
-    final @Nullable ShadowColor shadowColor = value.node(SHADOW_COLOR).get(ShadowColor.class);
+    final ShadowColor shadowColor = value.node(SHADOW_COLOR).get(ShadowColor.class);
     if (shadowColor != null) {
       builder.shadowColor(shadowColor);
     }
@@ -90,15 +93,37 @@ final class StyleSerializer implements TypeSerializer<Style> {
       }
     }
 
-    final @Nullable String insertion = value.node(INSERTION).getString();
+    final String insertion = value.node(INSERTION).getString();
     if (insertion != null) {
       builder.insertion(insertion);
     }
 
     final ConfigurationNode clickEvent = value.node(CLICK_EVENT_CAMEL);
     if (!clickEvent.virtual()) {
-      final ClickEvent.Action action = nonNull(clickEvent.node(CLICK_EVENT_ACTION).get(ClickEvent.Action.class), "click event action");
-      builder.clickEvent(ClickEvent.clickEvent(action, nonNull(clickEvent.node(CLICK_EVENT_VALUE).getString(), "click event value")));
+      final ClickEvent.Action<?> action = nonNull(clickEvent.node(CLICK_EVENT_ACTION).get(ClickEvent.Action.class), "click event action");
+      switch (action) {
+        case ClickEvent.Action.ChangePage ignored -> {
+          ConfigurationNode page;
+          page = clickEvent.node(CLICK_EVENT_PAGE);
+          if (page.virtual()) page = clickEvent.node(CLICK_EVENT_VALUE);
+          nonNull(page, "click event page");
+          builder.clickEvent(ClickEvent.changePage(page.getInt()));
+        }
+        case ClickEvent.Action.Custom ignored -> {
+          builder.clickEvent(
+            ClickEvent.custom(
+              nonNull(clickEvent.node(CLICK_EVENT_ID).get(Key.class), "click event id"),
+              BinaryTagHolder.binaryTagHolder(nonNull(clickEvent.node(CLICK_EVENT_PAYLOAD).getString(), "click event payload"))
+            )
+          );
+        }
+        case ClickEvent.Action.ShowDialog ignored -> {
+          throw new SerializationException("Unable to serialize show_dialog click event");
+        }
+        case ClickEvent.Action.TextCarrier textCarrier -> {
+          builder.clickEvent(ClickEvent.clickEvent(textCarrier, ClickEvent.Payload.string(nonNull(clickEvent.node(CLICK_EVENT_VALUE).getString(), "click event value"))));
+        }
+      }
     }
 
     final ConfigurationNode hoverEvent = value.node(HOVER_EVENT_CAMEL);
@@ -133,7 +158,7 @@ final class StyleSerializer implements TypeSerializer<Style> {
   }
 
   @Override
-  public void serialize(final @NotNull Type type, @Nullable Style obj, final @NotNull ConfigurationNode value) throws SerializationException {
+  public void serialize(final Type type, @Nullable Style obj, final ConfigurationNode value) throws SerializationException {
     if (obj == null) {
       obj = Style.empty();
     }
@@ -152,12 +177,27 @@ final class StyleSerializer implements TypeSerializer<Style> {
     value.node(INSERTION).set(obj.insertion());
 
     final ConfigurationNode clickNode = value.node(CLICK_EVENT_CAMEL);
-    final ClickEvent clickEvent = obj.clickEvent();
+    final ClickEvent<?> clickEvent = obj.clickEvent();
     if (clickEvent == null) {
       clickNode.set(null);
     } else {
-      clickNode.node(CLICK_EVENT_ACTION).set(ClickEvent.Action.class, clickEvent.action());
-      clickNode.node(CLICK_EVENT_VALUE).set(clickEvent.value());
+      clickNode.node(CLICK_EVENT_ACTION).set(clickEvent.action().toString());
+      switch (clickEvent.payload()) {
+        case ClickEvent.Payload.Custom custom -> {
+          clickNode.node(CLICK_EVENT_ID).set(Key.class, custom.key());
+          clickNode.set(CLICK_EVENT_PAYLOAD).set(custom.nbt().string());
+        }
+        case ClickEvent.Payload.Dialog ignored -> {
+          throw new SerializationException("Unable to serialize show_dialog click event");
+        }
+        case ClickEvent.Payload.Int integer -> {
+          // currently only change_page uses this, might need more complicated logic in the future
+          clickNode.node(CLICK_EVENT_PAGE).set(integer.integer());
+        }
+        case ClickEvent.Payload.Text text -> {
+          clickNode.node(CLICK_EVENT_VALUE).set(text.value());
+        }
+      }
     }
 
     final ConfigurationNode hoverNode = value.node(HOVER_EVENT_CAMEL);
@@ -177,7 +217,7 @@ final class StyleSerializer implements TypeSerializer<Style> {
     }
   }
 
-  private static <T> @NotNull T nonNull(final @Nullable T value, final @NotNull String type) throws SerializationException {
+  private static <T> T nonNull(final @Nullable T value, final String type) throws SerializationException {
     if (value == null) {
       throw new SerializationException(type + " was null in an unexpected location");
     }

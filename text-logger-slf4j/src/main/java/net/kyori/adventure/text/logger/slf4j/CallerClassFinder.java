@@ -23,21 +23,14 @@
  */
 package net.kyori.adventure.text.logger.slf4j;
 
-// Java 8 version, see Java 9 version as well
 final class CallerClassFinder {
   private CallerClassFinder() {
   }
 
   static String callingClassName() {
-    return callingClassName(2); // this, plus the calling method
-  }
-
-  static String callingClassName(final int elementsToSkip) { // elementsToSkip not counting this method
-    final StackTraceElement[] elements = Thread.currentThread().getStackTrace(); // includes call to getStackTrace()
-    if (elements.length <= elementsToSkip) {
-      throw new IllegalArgumentException("Not enough stack elements to skip " + elementsToSkip + " elements");
-    } else {
-      return elements[elementsToSkip + 2].getClassName();
-    }
+    return StackWalker.getInstance().walk(stream -> stream.map(StackWalker.StackFrame::getClassName)
+        .skip(2) // Skip this method, plus the calling method.
+        .findFirst())
+      .orElseThrow(() -> new IllegalArgumentException("Not enough stack elements to skip 2 elements"));
   }
 }

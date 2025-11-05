@@ -41,8 +41,7 @@ import net.kyori.adventure.text.minimessage.internal.serializer.TokenEmitter;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Hover tag.
@@ -50,7 +49,7 @@ import org.jetbrains.annotations.Nullable;
  * @since 4.10.0
  */
 final class HoverTag {
-  private static final String HOVER = "hover";
+  static final String HOVER = "hover";
 
   static final TagResolver RESOLVER = SerializableResolver.claimingStyle(
     HOVER,
@@ -95,7 +94,7 @@ final class HoverTag {
   }
 
   interface ActionHandler<V> {
-    @NotNull V parse(final @NotNull ArgumentQueue args, final @NotNull Context ctx) throws ParsingException;
+    V parse(final ArgumentQueue args, final Context ctx) throws ParsingException;
 
     void emit(final V event, final TokenEmitter emit);
   }
@@ -107,7 +106,7 @@ final class HoverTag {
     }
 
     @Override
-    public @NotNull Component parse(final @NotNull ArgumentQueue args, final @NotNull Context ctx) throws ParsingException {
+    public Component parse(final ArgumentQueue args, final Context ctx) throws ParsingException {
       return ctx.deserialize(args.popOr("show_text action requires a message").value());
     }
 
@@ -124,19 +123,17 @@ final class HoverTag {
     }
 
     @Override
-    public HoverEvent.@NotNull ShowItem parse(final @NotNull ArgumentQueue args, final @NotNull Context ctx) throws ParsingException {
+    public HoverEvent.ShowItem parse(final ArgumentQueue args, final Context ctx) throws ParsingException {
       try {
         @SuppressWarnings("PatternValidation")
         final Key key = Key.key(args.popOr("Show item hover needs at least an item ID").value());
         final int count = args.hasNext() ? args.pop().asInt().orElseThrow(() -> ctx.newException("The count argument was not a valid integer")) : 1;
         if (args.hasNext()) {
-          // Compatibility with legacy versions:
-          // if the value starts with a '{' we assume it's SNBT, and parse it as such to create a legacy holder
-          // otherwise, we'll parse argument pairs as a map of ResourceLocation -> SNBT value
+          // if the value starts with a '{' we assume it's SNBT. The previous behavior of legacy parsing has
+          // been removed in Adventure 5.0.0.
           final String value = args.peek().value();
           if (value.startsWith("{")) {
-            args.pop();
-            return legacyShowItem(key, count, value);
+            throw ctx.newException("Legacy SNBT serializing is since Adventure 5.0.0 no longer supported.");
           }
 
           final Map<Key, DataComponentValue> datas = new HashMap<>();
@@ -153,11 +150,6 @@ final class HoverTag {
       } catch (final InvalidKeyException | NumberFormatException ex) {
         throw ctx.newException("Exception parsing show_item hover", ex, args);
       }
-    }
-
-    @SuppressWarnings("deprecation")
-    private static HoverEvent.@NotNull ShowItem legacyShowItem(final Key id, final int count, final String value) {
-      return HoverEvent.ShowItem.showItem(id, count, BinaryTagHolder.binaryTagHolder(value));
     }
 
     @Override
@@ -198,7 +190,7 @@ final class HoverTag {
     }
 
     @Override
-    public HoverEvent.@NotNull ShowEntity parse(final @NotNull ArgumentQueue args, final @NotNull Context ctx) throws ParsingException {
+    public HoverEvent.ShowEntity parse(final ArgumentQueue args, final Context ctx) throws ParsingException {
       try {
         final Key key = Key.key(args.popOr("Show entity needs a type argument").value());
         final UUID id = UUID.fromString(args.popOr("Show entity needs an entity UUID").value());
@@ -223,7 +215,7 @@ final class HoverTag {
     }
   }
 
-  static @NotNull String compactAsString(final @NotNull Key key) {
+  static String compactAsString(final Key key) {
     if (key.namespace().equals(Key.MINECRAFT_NAMESPACE)) {
       return key.value();
     } else {

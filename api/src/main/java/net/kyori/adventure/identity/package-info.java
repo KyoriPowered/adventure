@@ -27,4 +27,7 @@
  *
  * @sinceMinecraft 1.16
  */
+@NullMarked
 package net.kyori.adventure.identity;
+
+import org.jspecify.annotations.NullMarked;

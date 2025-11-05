@@ -40,10 +40,11 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.object.PlayerHeadObjectContents;
 import net.kyori.adventure.text.serializer.json.JSONOptions;
+import net.kyori.adventure.text.serializer.json.LegacyHoverEventSerializer;
 import net.kyori.option.OptionState;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-final class SerializerFactory implements TypeAdapterFactory {
+record SerializerFactory(OptionState features, LegacyHoverEventSerializer legacyHoverSerializer) implements TypeAdapterFactory {
   static final Class<Key> KEY_TYPE = Key.class;
   static final Class<Component> COMPONENT_TYPE = Component.class;
   static final Class<Style> STYLE_TYPE = Style.class;
@@ -61,17 +62,9 @@ final class SerializerFactory implements TypeAdapterFactory {
   static final Class<TranslationArgument> TRANSLATION_ARGUMENT_TYPE = TranslationArgument.class;
   static final Class<PlayerHeadObjectContents.ProfileProperty> PROFILE_PROPERTY_TYPE = PlayerHeadObjectContents.ProfileProperty.class;
 
-  private final OptionState features;
-  private final net.kyori.adventure.text.serializer.json.LegacyHoverEventSerializer legacyHoverSerializer;
-
-  SerializerFactory(final OptionState features, final net.kyori.adventure.text.serializer.json.@Nullable LegacyHoverEventSerializer legacyHoverSerializer) {
-    this.features = features;
-    this.legacyHoverSerializer = legacyHoverSerializer;
-  }
-
   @Override
   @SuppressWarnings("unchecked")
-  public <T> TypeAdapter<T> create(final Gson gson, final TypeToken<T> type) {
+  public <T> @Nullable TypeAdapter<T> create(final Gson gson, final TypeToken<T> type) {
     final Class<? super T> rawType = type.getRawType();
     if (COMPONENT_TYPE.isAssignableFrom(rawType)) {
       return (TypeAdapter<T>) ComponentSerializerImpl.create(this.features, gson);

@@ -38,8 +38,6 @@ import net.kyori.adventure.bossbar.BossBarViewer;
 import net.kyori.adventure.chat.ChatType;
 import net.kyori.adventure.chat.SignedMessage;
 import net.kyori.adventure.dialog.DialogLike;
-import net.kyori.adventure.identity.Identified;
-import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.pointer.Pointered;
 import net.kyori.adventure.resource.ResourcePackInfo;
@@ -52,8 +50,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.title.Title;
 import net.kyori.adventure.title.TitlePart;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * A receiver of Minecraft media.
@@ -109,7 +105,7 @@ public interface Audience extends Pointered {
    * @return a do-nothing audience
    * @since 4.0.0
    */
-  static @NotNull Audience empty() {
+  static Audience empty() {
     return EmptyAudience.INSTANCE;
   }
 
@@ -121,7 +117,7 @@ public interface Audience extends Pointered {
    * @see ForwardingAudience
    * @since 4.0.0
    */
-  static @NotNull Audience audience(final @NotNull Audience@NotNull... audiences) {
+  static Audience audience(final Audience... audiences) {
     final int length = audiences.length;
     if (length == 0) {
       return empty();
@@ -142,7 +138,7 @@ public interface Audience extends Pointered {
    * @see ForwardingAudience
    * @since 4.0.0
    */
-  static @NotNull ForwardingAudience audience(final @NotNull Iterable<? extends Audience> audiences) {
+  static ForwardingAudience audience(final Iterable<? extends Audience> audiences) {
     return () -> audiences;
   }
 
@@ -154,7 +150,7 @@ public interface Audience extends Pointered {
    * @return a collector to create a forwarding audience
    * @since 4.0.0
    */
-  static @NotNull Collector<? super Audience, ?, ForwardingAudience> toAudience() {
+  static Collector<? super Audience, ?, ForwardingAudience> toAudience() {
     return Audiences.COLLECTOR;
   }
 
@@ -171,7 +167,7 @@ public interface Audience extends Pointered {
    * @return an audience providing a snapshot of all audiences that match the predicate when this method is invoked
    * @since 4.9.0
    */
-  default @NotNull Audience filterAudience(final @NotNull Predicate<? super Audience> filter) {
+  default Audience filterAudience(final Predicate<? super Audience> filter) {
     return filter.test(this)
       ? this
       : empty();
@@ -190,7 +186,7 @@ public interface Audience extends Pointered {
    * @param action the action
    * @since 4.9.0
    */
-  default void forEachAudience(final @NotNull Consumer<? super Audience> action) {
+  default void forEachAudience(final Consumer<? super Audience> action) {
     action.accept(this);
   }
 
@@ -200,12 +196,10 @@ public interface Audience extends Pointered {
    *
    * @param message a message
    * @see Component
-   * @see #sendMessage(Identified, ComponentLike)
-   * @see #sendMessage(Identity, ComponentLike)
    * @since 4.1.0
    */
   @ForwardingAudienceOverrideNotRequired
-  default void sendMessage(final @NotNull ComponentLike message) {
+  default void sendMessage(final ComponentLike message) {
     this.sendMessage(message.asComponent());
   }
 
@@ -214,179 +208,11 @@ public interface Audience extends Pointered {
    *
    * @param message a message
    * @see Component
-   * @see #sendMessage(Identified, Component)
-   * @see #sendMessage(Identity, Component)
    * @since 4.1.0
    */
-  @SuppressWarnings("deprecation")
-  default void sendMessage(final @NotNull Component message) {
-    this.sendMessage(message, MessageType.SYSTEM);
-  }
-
-  /**
-   * Sends a system chat message to this {@link Audience} ignoring the provided {@link MessageType}.
-   *
-   * @param message a message
-   * @param type the type
-   * @see Component
-   * @see #sendMessage(Identified, ComponentLike, MessageType)
-   * @see #sendMessage(Identity, ComponentLike, MessageType)
-   * @since 4.1.0
-   * @deprecated for removal since 4.12.0, {@link MessageType} is deprecated for removal, use {@link #sendMessage(ComponentLike)}
-   */
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  @Deprecated
-  @ForwardingAudienceOverrideNotRequired
-  default void sendMessage(final @NotNull ComponentLike message, final @NotNull MessageType type) {
-    this.sendMessage(message.asComponent(), type);
-  }
-
-  /**
-   * Sends a system chat message to this {@link Audience} ignoring the provided {@link MessageType}.
-   *
-   * @param message a message
-   * @param type the type
-   * @see Component
-   * @see #sendMessage(Identified, Component, MessageType)
-   * @see #sendMessage(Identity, Component, MessageType)
-   * @since 4.1.0
-   * @deprecated for removal since 4.12.0, {@link MessageType} is deprecated for removal, use {@link #sendMessage(Component)} instead
-   */
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  @Deprecated
-  @ForwardingAudienceOverrideNotRequired
-  default void sendMessage(final @NotNull Component message, final @NotNull MessageType type) {
-    this.sendMessage(Identity.nil(), message, type);
+  default void sendMessage(final Component message) {
   }
   /* End: system messages */
-
-  /* Start: unsigned player messages */
-  /**
-   * Sends an unsigned player chat message from the given {@link Identified} to this {@link Audience} with the {@link ChatType#CHAT system} chat type.
-   *
-   * @param source the source of the message
-   * @param message a message
-   * @see Component
-   * @since 4.0.0
-   * @deprecated since 4.12.0, the client errors on and can reject identified messages without {@link SignedMessage} data, this may be unsupported in the future, use {@link #sendMessage(SignedMessage, ChatType.Bound)} instead
-   */
-  @Deprecated
-  @ForwardingAudienceOverrideNotRequired
-  default void sendMessage(final @NotNull Identified source, final @NotNull ComponentLike message) {
-    this.sendMessage(source, message.asComponent());
-  }
-
-  /**
-   * Sends an unsigned player chat message from the entity represented by the given {@link Identity} to this {@link Audience} with the {@link ChatType#CHAT system} chat type.
-   *
-   * @param source the identity of the source of the message
-   * @param message a message
-   * @see Component
-   * @since 4.0.0
-   * @deprecated since 4.12.0, the client errors on and can reject identified messages without {@link SignedMessage} data, this may be unsupported in the future, use {@link #sendMessage(SignedMessage, ChatType.Bound)} instead
-   */
-  @Deprecated
-  @ForwardingAudienceOverrideNotRequired
-  default void sendMessage(final @NotNull Identity source, final @NotNull ComponentLike message) {
-    this.sendMessage(source, message.asComponent());
-  }
-
-  /**
-   * Sends an unsigned player chat message from the given {@link Identified} to this {@link Audience} with the {@link ChatType#CHAT system} chat type.
-   *
-   * @param source the source of the message
-   * @param message a message
-   * @see Component
-   * @since 4.0.0
-   * @deprecated since 4.12.0, the client errors on receiving and can reject identified messages without {@link SignedMessage} data, this may be unsupported in the future, use {@link #sendMessage(SignedMessage, ChatType.Bound)} instead
-   */
-  @Deprecated
-  @ForwardingAudienceOverrideNotRequired
-  default void sendMessage(final @NotNull Identified source, final @NotNull Component message) {
-    this.sendMessage(source, message, MessageType.CHAT);
-  }
-
-  /**
-   * Sends an unsigned player chat message from the entity represented by the given {@link Identity} to this {@link Audience} with the {@link ChatType#CHAT system} chat type.
-   *
-   * @param source the identity of the source of the message
-   * @param message a message
-   * @see Component
-   * @since 4.0.0
-   * @deprecated since 4.12.0, the client errors on receiving and can reject identified messages without {@link SignedMessage} data, this may be unsupported in the future, use {@link #sendMessage(SignedMessage, ChatType.Bound)} instead
-   */
-  @Deprecated
-  @ForwardingAudienceOverrideNotRequired
-  default void sendMessage(final @NotNull Identity source, final @NotNull Component message) {
-    this.sendMessage(source, message, MessageType.CHAT);
-  }
-
-  /**
-   * Sends an unsigned player chat message from the given {@link Identified} to this {@link Audience} with the {@link ChatType} corresponding to the provided {@link MessageType}.
-   *
-   * @param source the source of the message
-   * @param message a message
-   * @param type the type
-   * @see Component
-   * @since 4.0.0
-   * @deprecated for removal since 4.12.0, {@link MessageType} is deprecated for removal and the client errors on receiving and can reject identified messages without {@link SignedMessage} data, use {@link #sendMessage(SignedMessage, ChatType.Bound)} instead
-   */
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  @Deprecated
-  @ForwardingAudienceOverrideNotRequired
-  default void sendMessage(final @NotNull Identified source, final @NotNull ComponentLike message, final @NotNull MessageType type) {
-    this.sendMessage(source, message.asComponent(), type);
-  }
-
-  /**
-   * Sends an unsigned player chat message from the entity represented by the given {@link Identity} to this {@link Audience}.
-   *
-   * @param source the identity of the source of the message
-   * @param message a message
-   * @param type the type
-   * @see Component
-   * @since 4.0.0
-   * @deprecated for removal since 4.12.0, {@link MessageType} is deprecated for removal and the client errors on receiving and can reject identified messages without {@link SignedMessage} data, use {@link #sendMessage(SignedMessage, ChatType.Bound)} instead
-   */
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  @Deprecated
-  @ForwardingAudienceOverrideNotRequired
-  default void sendMessage(final @NotNull Identity source, final @NotNull ComponentLike message, final @NotNull MessageType type) {
-    this.sendMessage(source, message.asComponent(), type);
-  }
-
-  /**
-   * Sends an unsigned player chat message from the given {@link Identified} to this {@link Audience} with the {@link ChatType} corresponding to the provided {@link MessageType}.
-   *
-   * @param source the source of the message
-   * @param message a message
-   * @param type the type
-   * @see Component
-   * @since 4.0.0
-   * @deprecated for removal since 4.12.0, {@link MessageType} is deprecated for removal and the client errors on receiving and can reject identified messages without {@link SignedMessage} data, use {@link #sendMessage(SignedMessage, ChatType.Bound)} instead
-   */
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  @Deprecated
-  default void sendMessage(final @NotNull Identified source, final @NotNull Component message, final @NotNull MessageType type) {
-    this.sendMessage(source.identity(), message, type);
-  }
-
-  /**
-   * Sends a player chat message from the entity represented by the given {@link Identity} to this {@link Audience} with the {@link ChatType} corresponding to the provided {@link MessageType}.
-   *
-   * @param source the identity of the source of the message
-   * @param message a message
-   * @param type the type
-   * @see Component
-   * @since 4.0.0
-   * @deprecated for removal since 4.12.0, {@link MessageType} is deprecated for removal and the client errors on receiving and can reject identified messages without {@link SignedMessage} data, use {@link #sendMessage(SignedMessage, ChatType.Bound)} instead
-   */
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  @Deprecated
-  default void sendMessage(final @NotNull Identity source, final @NotNull Component message, final @NotNull MessageType type) {
-    // implementation required
-  }
-  /* End: unsigned player messages */
 
   /* Start: disguised player messages */
   /**
@@ -397,9 +223,7 @@ public interface Audience extends Pointered {
    * @since 4.12.0
    * @sinceMinecraft 1.19
    */
-  @SuppressWarnings("deprecation")
-  default void sendMessage(final @NotNull Component message, final ChatType.@NotNull Bound boundChatType) {
-    this.sendMessage(message, MessageType.CHAT);
+  default void sendMessage(final Component message, final ChatType.Bound boundChatType) {
   }
 
   /**
@@ -411,7 +235,7 @@ public interface Audience extends Pointered {
    * @sinceMinecraft 1.19
    */
   @ForwardingAudienceOverrideNotRequired
-  default void sendMessage(final @NotNull ComponentLike message, final ChatType.@NotNull Bound boundChatType) {
+  default void sendMessage(final ComponentLike message, final ChatType.Bound boundChatType) {
     this.sendMessage(message.asComponent(), boundChatType);
   }
   /* End: disguised player messages
@@ -425,14 +249,7 @@ public interface Audience extends Pointered {
    * @since 4.12.0
    * @sinceMinecraft 1.19
    */
-  @SuppressWarnings("deprecation")
-  default void sendMessage(final @NotNull SignedMessage signedMessage, final ChatType.@NotNull Bound boundChatType) {
-    final Component content = signedMessage.unsignedContent() != null ? signedMessage.unsignedContent() : Component.text(signedMessage.message());
-    if (signedMessage.isSystem()) {
-      this.sendMessage(content);
-    } else {
-      this.sendMessage(signedMessage.identity(), content, MessageType.CHAT);
-    }
+  default void sendMessage(final SignedMessage signedMessage, final ChatType.Bound boundChatType) {
   }
 
   /**
@@ -444,7 +261,7 @@ public interface Audience extends Pointered {
    * @sinceMinecraft 1.19
    */
   @ForwardingAudienceOverrideNotRequired
-  default void deleteMessage(final @NotNull SignedMessage signedMessage) {
+  default void deleteMessage(final SignedMessage signedMessage) {
     if (signedMessage.canDelete()) {
       this.deleteMessage(Objects.requireNonNull(signedMessage.signature()));
     }
@@ -457,7 +274,7 @@ public interface Audience extends Pointered {
    * @since 4.12.0
    * @sinceMinecraft 1.19
    */
-  default void deleteMessage(final SignedMessage.@NotNull Signature signature) {
+  default void deleteMessage(final SignedMessage.Signature signature) {
   }
   /* End: signed player messages */
 
@@ -469,7 +286,7 @@ public interface Audience extends Pointered {
    * @since 4.0.0
    */
   @ForwardingAudienceOverrideNotRequired
-  default void sendActionBar(final @NotNull ComponentLike message) {
+  default void sendActionBar(final ComponentLike message) {
     this.sendActionBar(message.asComponent());
   }
 
@@ -480,7 +297,7 @@ public interface Audience extends Pointered {
    * @see Component
    * @since 4.0.0
    */
-  default void sendActionBar(final @NotNull Component message) {
+  default void sendActionBar(final Component message) {
   }
 
   /**
@@ -493,7 +310,7 @@ public interface Audience extends Pointered {
    * @since 4.3.0
    */
   @ForwardingAudienceOverrideNotRequired
-  default void sendPlayerListHeader(final @NotNull ComponentLike header) {
+  default void sendPlayerListHeader(final ComponentLike header) {
     this.sendPlayerListHeader(header.asComponent());
   }
 
@@ -506,7 +323,7 @@ public interface Audience extends Pointered {
    * @param header the header
    * @since 4.3.0
    */
-  default void sendPlayerListHeader(final @NotNull Component header) {
+  default void sendPlayerListHeader(final Component header) {
     this.sendPlayerListHeaderAndFooter(header, Component.empty());
   }
 
@@ -520,7 +337,7 @@ public interface Audience extends Pointered {
    * @since 4.3.0
    */
   @ForwardingAudienceOverrideNotRequired
-  default void sendPlayerListFooter(final @NotNull ComponentLike footer) {
+  default void sendPlayerListFooter(final ComponentLike footer) {
     this.sendPlayerListFooter(footer.asComponent());
   }
 
@@ -533,7 +350,7 @@ public interface Audience extends Pointered {
    * @param footer the footer
    * @since 4.3.0
    */
-  default void sendPlayerListFooter(final @NotNull Component footer) {
+  default void sendPlayerListFooter(final Component footer) {
     this.sendPlayerListHeaderAndFooter(Component.empty(), footer);
   }
 
@@ -545,7 +362,7 @@ public interface Audience extends Pointered {
    * @since 4.3.0
    */
   @ForwardingAudienceOverrideNotRequired
-  default void sendPlayerListHeaderAndFooter(final @NotNull ComponentLike header, final @NotNull ComponentLike footer) {
+  default void sendPlayerListHeaderAndFooter(final ComponentLike header, final ComponentLike footer) {
     this.sendPlayerListHeaderAndFooter(header.asComponent(), footer.asComponent());
   }
 
@@ -556,7 +373,7 @@ public interface Audience extends Pointered {
    * @param footer the footer
    * @since 4.3.0
    */
-  default void sendPlayerListHeaderAndFooter(final @NotNull Component header, final @NotNull Component footer) {
+  default void sendPlayerListHeaderAndFooter(final Component header, final Component footer) {
   }
 
   /**
@@ -567,7 +384,7 @@ public interface Audience extends Pointered {
    * @since 4.0.0
    */
   @ForwardingAudienceOverrideNotRequired
-  default void showTitle(final @NotNull Title title) {
+  default void showTitle(final Title title) {
     final Title.Times times = title.times();
     if (times != null) this.sendTitlePart(TitlePart.TIMES, times);
 
@@ -581,10 +398,9 @@ public interface Audience extends Pointered {
    * @param part the part
    * @param value the value
    * @param <T> the type of the value of the part
-   * @throws IllegalArgumentException if a title part that is not in {@link TitlePart} is used
    * @since 4.9.0
    */
-  default <T> void sendTitlePart(final @NotNull TitlePart<T> part, final @NotNull T value) {
+  default <T> void sendTitlePart(final TitlePart<T> part, final T value) {
   }
 
   /**
@@ -612,7 +428,7 @@ public interface Audience extends Pointered {
    * @see BossBar
    * @since 4.0.0
    */
-  default void showBossBar(final @NotNull BossBar bar) {
+  default void showBossBar(final BossBar bar) {
   }
 
   /**
@@ -622,7 +438,7 @@ public interface Audience extends Pointered {
    * @see BossBar
    * @since 4.0.0
    */
-  default void hideBossBar(final @NotNull BossBar bar) {
+  default void hideBossBar(final BossBar bar) {
   }
 
   /**
@@ -634,7 +450,7 @@ public interface Audience extends Pointered {
    * @see Sound
    * @since 4.0.0
    */
-  default void playSound(final @NotNull Sound sound) {
+  default void playSound(final Sound sound) {
   }
 
   /**
@@ -647,7 +463,7 @@ public interface Audience extends Pointered {
    * @see Sound
    * @since 4.0.0
    */
-  default void playSound(final @NotNull Sound sound, final double x, final double y, final double z) {
+  default void playSound(final Sound sound, final double x, final double y, final double z) {
   }
 
   /**
@@ -664,7 +480,7 @@ public interface Audience extends Pointered {
    * @param emitter an emitter
    * @since 4.8.0
    */
-  default void playSound(final @NotNull Sound sound, final Sound.@NotNull Emitter emitter) {
+  default void playSound(final Sound sound, final Sound.Emitter emitter) {
   }
 
   /**
@@ -674,7 +490,7 @@ public interface Audience extends Pointered {
    * @since 4.8.0
    */
   @ForwardingAudienceOverrideNotRequired
-  default void stopSound(final @NotNull Sound sound) {
+  default void stopSound(final Sound sound) {
     this.stopSound(Objects.requireNonNull(sound, "sound").asStop());
   }
 
@@ -685,7 +501,7 @@ public interface Audience extends Pointered {
    * @see SoundStop
    * @since 4.0.0
    */
-  default void stopSound(final @NotNull SoundStop stop) {
+  default void stopSound(final SoundStop stop) {
   }
 
   /**
@@ -698,7 +514,7 @@ public interface Audience extends Pointered {
    * @since 4.0.0
    */
   @ForwardingAudienceOverrideNotRequired
-  default void openBook(final Book.@NotNull Builder book) {
+  default void openBook(final Book.Builder book) {
     this.openBook(book.build());
   }
 
@@ -711,7 +527,7 @@ public interface Audience extends Pointered {
    * @see Book
    * @since 4.0.0
    */
-  default void openBook(final @NotNull Book book) {
+  default void openBook(final Book book) {
   }
 
   // ------------------------
@@ -729,7 +545,7 @@ public interface Audience extends Pointered {
    * @since 4.15.0
    */
   @ForwardingAudienceOverrideNotRequired
-  default void sendResourcePacks(final @NotNull ResourcePackInfoLike first, final @NotNull ResourcePackInfoLike... others) {
+  default void sendResourcePacks(final ResourcePackInfoLike first, final ResourcePackInfoLike... others) {
     this.sendResourcePacks(ResourcePackRequest.addingRequest(first, others));
   }
 
@@ -743,7 +559,7 @@ public interface Audience extends Pointered {
    * @since 4.15.0
    */
   @ForwardingAudienceOverrideNotRequired
-  default void sendResourcePacks(final @NotNull ResourcePackRequestLike request) {
+  default void sendResourcePacks(final ResourcePackRequestLike request) {
     this.sendResourcePacks(request.asResourcePackRequest());
   }
 
@@ -756,7 +572,7 @@ public interface Audience extends Pointered {
    * @see ResourcePackInfo
    * @since 4.15.0
    */
-  default void sendResourcePacks(final @NotNull ResourcePackRequest request) {
+  default void sendResourcePacks(final ResourcePackRequest request) {
   }
 
   /**
@@ -767,7 +583,7 @@ public interface Audience extends Pointered {
    * @sinceMinecraft 1.20.3
    */
   @ForwardingAudienceOverrideNotRequired
-  default void removeResourcePacks(final @NotNull ResourcePackRequestLike request) {
+  default void removeResourcePacks(final ResourcePackRequestLike request) {
     this.removeResourcePacks(request.asResourcePackRequest());
   }
 
@@ -779,10 +595,10 @@ public interface Audience extends Pointered {
    * @sinceMinecraft 1.20.3
    */
   @ForwardingAudienceOverrideNotRequired
-  default void removeResourcePacks(final @NotNull ResourcePackRequest request) {
+  default void removeResourcePacks(final ResourcePackRequest request) {
     final List<ResourcePackInfo> infos = request.packs();
     if (infos.size() == 1) {
-      this.removeResourcePacks(infos.get(0).id());
+      this.removeResourcePacks(infos.getFirst().id());
     } else if (infos.isEmpty()) {
       return;
     }
@@ -791,7 +607,7 @@ public interface Audience extends Pointered {
     for (int i = 0; i < otherReqs.length; i++) {
       otherReqs[i] = infos.get(i + 1).id();
     }
-    this.removeResourcePacks(infos.get(0).id(), otherReqs);
+    this.removeResourcePacks(infos.getFirst().id(), otherReqs);
   }
 
   /**
@@ -803,7 +619,7 @@ public interface Audience extends Pointered {
    * @sinceMinecraft 1.20.3
    */
   @ForwardingAudienceOverrideNotRequired
-  default void removeResourcePacks(final @NotNull ResourcePackInfoLike request, final @NotNull ResourcePackInfoLike @NotNull... others) {
+  default void removeResourcePacks(final ResourcePackInfoLike request, final ResourcePackInfoLike ... others) {
     final UUID[] otherReqs = new UUID[others.length];
     for (int i = 0; i < others.length; i++) {
       otherReqs[i] = others[i].asResourcePackInfo().id();
@@ -818,7 +634,7 @@ public interface Audience extends Pointered {
    * @since 4.16.0
    * @sinceMinecraft 1.20.3
    */
-  default void removeResourcePacks(final @NotNull Iterable<UUID> ids) {
+  default void removeResourcePacks(final Iterable<UUID> ids) {
     // break these out to id + arrays
     final Iterator<UUID> it = ids.iterator();
     if (!it.hasNext()) return;
@@ -851,7 +667,7 @@ public interface Audience extends Pointered {
    * @since 4.15.0
    * @sinceMinecraft 1.20.3
    */
-  default void removeResourcePacks(final @NotNull UUID id, final @NotNull UUID@NotNull... others) {
+  default void removeResourcePacks(final UUID id, final UUID... others) {
   }
 
   /**
@@ -876,7 +692,7 @@ public interface Audience extends Pointered {
    * @since 4.22.0
    * @sinceMinecraft 1.21.6
    */
-  default void showDialog(final @NotNull DialogLike dialog) {
+  default void showDialog(final DialogLike dialog) {
   }
 
   /**

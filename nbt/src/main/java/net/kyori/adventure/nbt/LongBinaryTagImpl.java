@@ -23,24 +23,10 @@
  */
 package net.kyori.adventure.nbt;
 
-import java.util.stream.Stream;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Debug;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @Debug.Renderer(text = "String.valueOf(this.value) + \"l\"", hasChildren = "false")
-final class LongBinaryTagImpl extends AbstractBinaryTag implements LongBinaryTag {
-  private final long value;
-
-  LongBinaryTagImpl(final long value) {
-    this.value = value;
-  }
-
-  @Override
-  public long value() {
-    return this.value;
-  }
+record LongBinaryTagImpl(long value) implements LongBinaryTag {
 
   @Override
   public byte byteValue() {
@@ -73,25 +59,7 @@ final class LongBinaryTagImpl extends AbstractBinaryTag implements LongBinaryTag
   }
 
   @Override
-  public @NotNull Number numberValue() {
+  public Number numberValue() {
     return this.value;
-  }
-
-  @Override
-  public boolean equals(final @Nullable Object other) {
-    if (this == other) return true;
-    if (other == null || this.getClass() != other.getClass()) return false;
-    final LongBinaryTagImpl that = (LongBinaryTagImpl) other;
-    return this.value == that.value;
-  }
-
-  @Override
-  public int hashCode() {
-    return Long.hashCode(this.value);
-  }
-
-  @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(ExaminableProperty.of("value", this.value));
   }
 }

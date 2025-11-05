@@ -61,10 +61,11 @@ spotless {
   fun FormatExtension.applyCommon() {
     trimTrailingWhitespace()
     endWithNewline()
-    indentWithSpaces(2)
+    leadingTabsToSpaces(2)
   }
   java {
     importOrderFile(rootProject.file(".spotless/kyori.importorder"))
+    removeUnusedImports()
     applyCommon()
   }
   kotlinGradle {
@@ -83,7 +84,10 @@ indraCrossdoc {
 tasks {
   javadoc {
     val options = options as? StandardJavadocDocletOptions ?: return@javadoc
-    options.tags("sinceMinecraft:a:Since Minecraft:")
+    options.tags(
+      "sinceMinecraft:a:Since Minecraft:",
+      "obsoleteSinceMinecraft:a:Obsolete since Minecraft",
+    )
   }
 
   jacocoTestReport {

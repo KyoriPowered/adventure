@@ -24,4 +24,7 @@
 /**
  * Serialization and deserialization for components.
  */
+@NullMarked
 package net.kyori.adventure.text.serializer;
+
+import org.jspecify.annotations.NullMarked;

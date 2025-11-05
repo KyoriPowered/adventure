@@ -31,7 +31,6 @@ import net.kyori.adventure.title.TitlePart;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TitleTest {
 
@@ -61,20 +60,6 @@ public class TitleTest {
     assertEquals(this.foo, title.part(TitlePart.TITLE));
     assertEquals(this.bar, title.part(TitlePart.SUBTITLE));
     assertEquals(this.times, title.part(TitlePart.TIMES));
-  }
-
-  @Test
-  void testIllegalTitleParts() {
-    final Title title = Title.title(this.foo, this.bar);
-    final TitlePart<Component> unknownPart = new TitlePart<Component>() {
-      @Override
-      public String toString() {
-        return "TitlePart.CAT";
-      }
-    };
-
-    assertThrows(IllegalArgumentException.class, () -> title.part(unknownPart));
-    assertThrows(NullPointerException.class, () -> title.part(null));
   }
 
   @Test

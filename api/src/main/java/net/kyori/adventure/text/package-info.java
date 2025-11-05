@@ -24,4 +24,7 @@
 /**
  * Data for controlling components, their styles, and events.
  */
+@NullMarked
 package net.kyori.adventure.text;
+
+import org.jspecify.annotations.NullMarked;

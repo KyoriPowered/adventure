@@ -59,7 +59,7 @@ class SerializerCollectorTest {
 
   @Test
   void testPopUnmarked() {
-    final String output = this.serializeToString(c -> c.popToMark());
+    final String output = this.serializeToString(MiniMessageSerializer.Collector::popToMark);
     assertEquals("", output);
   }
 

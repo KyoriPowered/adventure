@@ -35,11 +35,10 @@ import net.kyori.adventure.text.minimessage.internal.serializer.TokenEmitter;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 final class ShadowColorTag {
-  private static final String SHADOW_COLOR = "shadow";
+  static final String SHADOW_COLOR = "shadow";
   private static final String SHADOW_NONE = "!" + SHADOW_COLOR;
   private static final float DEFAULT_ALPHA = 0.25f;
 
@@ -52,7 +51,7 @@ final class ShadowColorTag {
     TagResolver.resolver(SHADOW_NONE, Tag.styling(ShadowColor.none()))
   );
 
-  static Tag create(final @NotNull ArgumentQueue args, final @NotNull Context ctx) throws ParsingException {
+  static Tag create(final ArgumentQueue args, final Context ctx) throws ParsingException {
     final String colorString = args.popOr("Expected to find a color parameter: #RRGGBBAA").lowerValue();
     final ShadowColor color;
     if (colorString.startsWith(TextColor.HEX_PREFIX) && colorString.length() == 9) {
@@ -69,7 +68,7 @@ final class ShadowColorTag {
     return Tag.styling(color);
   }
 
-  static void emit(final @NotNull ShadowColor color, final @NotNull TokenEmitter emitter) {
+  static void emit(final ShadowColor color, final TokenEmitter emitter) {
     if (ShadowColor.none().equals(color)) {
       emitter.tag(SHADOW_NONE);
       return;

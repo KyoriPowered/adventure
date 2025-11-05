@@ -23,24 +23,10 @@
  */
 package net.kyori.adventure.nbt;
 
-import java.util.stream.Stream;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Debug;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @Debug.Renderer(text = "String.valueOf(this.value) + \"s\"", hasChildren = "false")
-final class ShortBinaryTagImpl extends AbstractBinaryTag implements ShortBinaryTag {
-  private final short value;
-
-  ShortBinaryTagImpl(final short value) {
-    this.value = value;
-  }
-
-  @Override
-  public short value() {
-    return this.value;
-  }
+record ShortBinaryTagImpl(short value) implements ShortBinaryTag {
 
   @Override
   public byte byteValue() {
@@ -73,25 +59,7 @@ final class ShortBinaryTagImpl extends AbstractBinaryTag implements ShortBinaryT
   }
 
   @Override
-  public @NotNull Number numberValue() {
+  public Number numberValue() {
     return this.value;
-  }
-
-  @Override
-  public boolean equals(final @Nullable Object other) {
-    if (this == other) return true;
-    if (other == null || this.getClass() != other.getClass()) return false;
-    final ShortBinaryTagImpl that = (ShortBinaryTagImpl) other;
-    return this.value == that.value;
-  }
-
-  @Override
-  public int hashCode() {
-    return Short.hashCode(this.value);
-  }
-
-  @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(ExaminableProperty.of("value", this.value));
   }
 }

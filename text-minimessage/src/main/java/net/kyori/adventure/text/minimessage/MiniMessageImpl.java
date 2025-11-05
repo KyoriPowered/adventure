@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.text.minimessage;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
@@ -33,17 +32,18 @@ import net.kyori.adventure.text.minimessage.internal.serializer.SerializableReso
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.minimessage.tree.Node;
 import net.kyori.adventure.util.Services;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-/**
- * not public api.
- *
- * @since 4.10.0
- */
-final class MiniMessageImpl implements MiniMessage {
+record MiniMessageImpl(
+  MiniMessageParser parser,
+  boolean strict,
+  boolean emitVirtuals,
+  @Nullable Consumer<String> debugOutput,
+  UnaryOperator<String> preProcessor,
+  UnaryOperator<Component> postProcessor
+) implements MiniMessage {
   private static final Optional<Provider> SERVICE = Services.service(Provider.class);
   static final Consumer<Builder> BUILDER = SERVICE
     .map(Provider::builder)
@@ -61,76 +61,64 @@ final class MiniMessageImpl implements MiniMessage {
   static final UnaryOperator<String> DEFAULT_NO_OP = UnaryOperator.identity();
   static final UnaryOperator<Component> DEFAULT_COMPACTING_METHOD = Component::compact;
 
-  private final boolean strict;
-  private final boolean emitVirtuals;
-  private final @Nullable Consumer<String> debugOutput;
-  private final UnaryOperator<Component> postProcessor;
-  private final UnaryOperator<String> preProcessor;
-  final MiniMessageParser parser;
-
-  MiniMessageImpl(final @NotNull TagResolver resolver, final boolean strict, final boolean emitVirtuals, final @Nullable Consumer<String> debugOutput, final @NotNull UnaryOperator<String> preProcessor, final @NotNull UnaryOperator<Component> postProcessor) {
-    this.parser = new MiniMessageParser(resolver);
-    this.strict = strict;
-    this.emitVirtuals = emitVirtuals;
-    this.debugOutput = debugOutput;
-    this.preProcessor = preProcessor;
-    this.postProcessor = postProcessor;
+  MiniMessageImpl(final TagResolver parser, final boolean strict, final boolean emitVirtuals, final @Nullable Consumer<String> debugOutput, final UnaryOperator<String> preProcessor, final UnaryOperator<Component> postProcessor) {
+    this(new MiniMessageParser(parser), strict, emitVirtuals, debugOutput, preProcessor, postProcessor);
   }
 
   @Override
-  public @NotNull Component deserialize(final @NotNull String input) {
+  public Component deserialize(final String input) {
     return this.parser.parseFormat(this.newContext(input, null, null));
   }
 
   @Override
-  public @NotNull Component deserialize(final @NotNull String input, final @NotNull Pointered target) {
+  public Component deserialize(final String input, final Pointered target) {
     return this.parser.parseFormat(this.newContext(input, requireNonNull(target, "target"), null));
   }
 
   @Override
-  public @NotNull Component deserialize(final @NotNull String input, final @NotNull TagResolver tagResolver) {
+  public Component deserialize(final String input, final TagResolver tagResolver) {
     return this.parser.parseFormat(this.newContext(input, null, requireNonNull(tagResolver, "tagResolver")));
   }
 
   @Override
-  public @NotNull Component deserialize(final @NotNull String input, final @NotNull Pointered target, final @NotNull TagResolver tagResolver) {
+  public Component deserialize(final String input, final Pointered target, final TagResolver tagResolver) {
     return this.parser.parseFormat(this.newContext(input, requireNonNull(target, "target"), requireNonNull(tagResolver, "tagResolver")));
   }
 
   @Override
-  public Node.@NotNull Root deserializeToTree(final @NotNull String input) {
+  public Node.Root deserializeToTree(final String input) {
     return this.parser.parseToTree(this.newContext(input, null, null));
   }
 
   @Override
-  public Node.@NotNull Root deserializeToTree(final @NotNull String input, final @NotNull Pointered target) {
+  public Node.Root deserializeToTree(final String input, final Pointered target) {
     return this.parser.parseToTree(this.newContext(input, requireNonNull(target, "target"), null));
   }
 
   @Override
-  public Node.@NotNull Root deserializeToTree(final @NotNull String input, final @NotNull TagResolver tagResolver) {
+  public Node.Root deserializeToTree(final String input, final TagResolver tagResolver) {
     return this.parser.parseToTree(this.newContext(input, null, requireNonNull(tagResolver, "tagResolver")));
   }
 
   @Override
-  public Node.@NotNull Root deserializeToTree(final @NotNull String input, final @NotNull Pointered target, final @NotNull TagResolver tagResolver) {
+  public Node.Root deserializeToTree(final String input, final Pointered target, final TagResolver tagResolver) {
     return this.parser.parseToTree(this.newContext(input, requireNonNull(target, "target"), requireNonNull(tagResolver, "tagResolver")));
   }
 
   @Override
-  public @NotNull String serialize(final @NotNull Component component) {
+  public String serialize(final Component component) {
     return MiniMessageSerializer.serialize(component, this.serialResolver(null), this.strict);
   }
 
   private SerializableResolver serialResolver(final @Nullable TagResolver extraResolver) {
     if (extraResolver == null) {
-      if (this.parser.tagResolver instanceof SerializableResolver) {
-        return (SerializableResolver) this.parser.tagResolver;
+      if (this.parser.tagResolver() instanceof SerializableResolver) {
+        return (SerializableResolver) this.parser.tagResolver();
       }
     } else {
-      final TagResolver combined = TagResolver.resolver(this.parser.tagResolver, extraResolver);
-      if (combined instanceof SerializableResolver) {
-        return (SerializableResolver) combined;
+      final TagResolver combined = TagResolver.resolver(this.parser.tagResolver(), extraResolver);
+      if (combined instanceof SerializableResolver serializableResolver) {
+        return serializableResolver;
       }
     }
 
@@ -138,36 +126,31 @@ final class MiniMessageImpl implements MiniMessage {
   }
 
   @Override
-  public @NotNull String escapeTags(final @NotNull String input) {
+  public String escapeTags(final String input) {
     return this.parser.escapeTokens(this.newContext(input, null, null));
   }
 
   @Override
-  public @NotNull String escapeTags(final @NotNull String input, final @NotNull TagResolver tagResolver) {
+  public String escapeTags(final String input, final TagResolver tagResolver) {
     return this.parser.escapeTokens(this.newContext(input, null, tagResolver));
   }
 
   @Override
-  public @NotNull String stripTags(final @NotNull String input) {
+  public String stripTags(final String input) {
     return this.parser.stripTokens(this.newContext(input, null, null));
   }
 
   @Override
-  public @NotNull String stripTags(final @NotNull String input, final @NotNull TagResolver tagResolver) {
+  public String stripTags(final String input, final TagResolver tagResolver) {
     return this.parser.stripTokens(this.newContext(input, null, tagResolver));
   }
 
   @Override
-  public boolean strict() {
-    return this.strict;
+  public TagResolver tags() {
+    return this.parser.tagResolver();
   }
 
-  @Override
-  public @NotNull TagResolver tags() {
-    return this.parser.tagResolver;
-  }
-
-  private @NotNull ContextImpl newContext(final @NotNull String input, final @Nullable Pointered target, final @Nullable TagResolver resolver) {
+  private ContextImpl newContext(final String input, final @Nullable Pointered target, final @Nullable TagResolver resolver) {
     requireNonNull(input, "input");
     return new ContextImpl(this.strict, this.emitVirtuals, this.debugOutput, input, this, target, resolver, this.preProcessor, this.postProcessor);
   }
@@ -176,7 +159,7 @@ final class MiniMessageImpl implements MiniMessage {
     private TagResolver tagResolver = TagResolver.standard();
     private boolean strict = false;
     private boolean emitVirtuals = true;
-    private Consumer<String> debug = null;
+    private @Nullable Consumer<String> debug = null;
     private UnaryOperator<Component> postProcessor = DEFAULT_COMPACTING_METHOD;
     private UnaryOperator<String> preProcessor = DEFAULT_NO_OP;
 
@@ -186,7 +169,7 @@ final class MiniMessageImpl implements MiniMessage {
 
     BuilderImpl(final MiniMessageImpl serializer) {
       this();
-      this.tagResolver = serializer.parser.tagResolver;
+      this.tagResolver = serializer.parser.tagResolver();
       this.strict = serializer.strict;
       this.debug = serializer.debugOutput;
       this.postProcessor = serializer.postProcessor;
@@ -194,13 +177,13 @@ final class MiniMessageImpl implements MiniMessage {
     }
 
     @Override
-    public @NotNull Builder tags(final @NotNull TagResolver tags) {
+    public Builder tags(final TagResolver tags) {
       this.tagResolver = requireNonNull(tags, "tags");
       return this;
     }
 
     @Override
-    public @NotNull Builder editTags(final @NotNull Consumer<TagResolver.Builder> adder) {
+    public Builder editTags(final Consumer<TagResolver.Builder> adder) {
       requireNonNull(adder, "adder");
       final TagResolver.Builder builder = TagResolver.builder().resolver(this.tagResolver);
       adder.accept(builder);
@@ -209,37 +192,37 @@ final class MiniMessageImpl implements MiniMessage {
     }
 
     @Override
-    public @NotNull Builder strict(final boolean strict) {
+    public Builder strict(final boolean strict) {
       this.strict = strict;
       return this;
     }
 
     @Override
-    public @NotNull Builder emitVirtuals(final boolean emitVirtuals) {
+    public Builder emitVirtuals(final boolean emitVirtuals) {
       this.emitVirtuals = emitVirtuals;
       return this;
     }
 
     @Override
-    public @NotNull Builder debug(final @Nullable Consumer<String> debugOutput) {
+    public Builder debug(final @Nullable Consumer<String> debugOutput) {
       this.debug = debugOutput;
       return this;
     }
 
     @Override
-    public @NotNull Builder postProcessor(final @NotNull UnaryOperator<Component> postProcessor) {
-      this.postProcessor = Objects.requireNonNull(postProcessor, "postProcessor");
+    public Builder postProcessor(final UnaryOperator<Component> postProcessor) {
+      this.postProcessor = requireNonNull(postProcessor, "postProcessor");
       return this;
     }
 
     @Override
-    public @NotNull Builder preProcessor(final @NotNull UnaryOperator<String> preProcessor) {
-      this.preProcessor = Objects.requireNonNull(preProcessor, "preProcessor");
+    public Builder preProcessor(final UnaryOperator<String> preProcessor) {
+      this.preProcessor = requireNonNull(preProcessor, "preProcessor");
       return this;
     }
 
     @Override
-    public @NotNull MiniMessage build() {
+    public MiniMessage build() {
       return new MiniMessageImpl(this.tagResolver, this.strict, this.emitVirtuals, this.debug, this.preProcessor, this.postProcessor);
     }
   }

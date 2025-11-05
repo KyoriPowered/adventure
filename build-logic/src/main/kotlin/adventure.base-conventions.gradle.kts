@@ -7,7 +7,7 @@ val libs = extensions.getByType(org.gradle.accessors.dm.LibrariesForLibs::class)
 
 indra {
   javaVersions {
-    minimumToolchain(17)
+    target(21)
     val testVersions = (project.property("testJdks") as String)
       .split(",")
       .map { it.trim().toInt() }
@@ -15,7 +15,7 @@ indra {
   }
   checkstyle(libs.versions.checkstyle.get())
 
-  github("KyoriPowered", "adventure") {
+  github("PaperMC", "adventure") {
     ci(true)
   }
   mitLicense()

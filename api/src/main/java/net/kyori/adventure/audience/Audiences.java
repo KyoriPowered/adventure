@@ -30,7 +30,6 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import net.kyori.adventure.resource.ResourcePackCallback;
 import net.kyori.adventure.text.ComponentLike;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * {@link Audience}-related utilities.
@@ -53,11 +52,11 @@ public final class Audiences {
    * @return an action to send a message
    * @since 4.13.0
    */
-  public static @NotNull Consumer<? super Audience> sendingMessage(final @NotNull ComponentLike message) {
+  public static Consumer<? super Audience> sendingMessage(final ComponentLike message) {
     return audience -> audience.sendMessage(message);
   }
 
-  static @NotNull ResourcePackCallback unwrapCallback(final Audience forwarding, final Audience dest, final @NotNull ResourcePackCallback cb) {
+  static ResourcePackCallback unwrapCallback(final Audience forwarding, final Audience dest, final ResourcePackCallback cb) {
     if (cb == ResourcePackCallback.noOp()) return cb;
 
     return (uuid, status, audience) -> {

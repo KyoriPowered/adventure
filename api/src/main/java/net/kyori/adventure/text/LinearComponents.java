@@ -25,7 +25,6 @@ package net.kyori.adventure.text;
 
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.StyleBuilderApplicable;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * A utility class that allows {@link Component components} to be created where {@link Style styles} can be specified inline.
@@ -51,27 +50,26 @@ public final class LinearComponents {
    * @return a component
    * @since 4.0.0
    */
-  public static @NotNull Component linear(final @NotNull ComponentBuilderApplicable@NotNull... applicables) {
+  public static Component linear(final ComponentBuilderApplicable... applicables) {
     final int length = applicables.length;
     if (length == 0) return Component.empty();
     if (length == 1) {
       final ComponentBuilderApplicable ap0 = applicables[0];
-      if (ap0 instanceof ComponentLike) {
-        return ((ComponentLike) ap0).asComponent();
+      if (ap0 instanceof ComponentLike cl) {
+        return cl.asComponent();
       }
       throw nothingComponentLike();
     }
     final TextComponentImpl.BuilderImpl builder = new TextComponentImpl.BuilderImpl();
     Style.Builder style = null;
-    for (int i = 0; i < length; i++) {
-      final ComponentBuilderApplicable applicable = applicables[i];
-      if (applicable instanceof StyleBuilderApplicable) {
+    for (final ComponentBuilderApplicable applicable : applicables) {
+      if (applicable instanceof StyleBuilderApplicable sba) {
         if (style == null) {
           style = Style.style();
         }
-        style.apply((StyleBuilderApplicable) applicable);
-      } else if (style != null && applicable instanceof ComponentLike) {
-        builder.applicableApply(((ComponentLike) applicable).asComponent().style(style));
+        style.apply(sba);
+      } else if (style != null && applicable instanceof ComponentLike cl) {
+        builder.applicableApply(cl.asComponent().style(style));
       } else {
         builder.applicableApply(applicable);
       }
@@ -80,7 +78,7 @@ public final class LinearComponents {
     if (size == 0) {
       throw nothingComponentLike();
     } else if (size == 1 && !builder.hasStyle()) {
-      return builder.children.get(0);
+      return builder.children.getFirst();
     } else {
       return builder.build();
     }

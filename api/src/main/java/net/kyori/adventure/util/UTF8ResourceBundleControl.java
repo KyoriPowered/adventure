@@ -32,7 +32,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * A {@link ResourceBundle.Control} that enforces UTF-8 string encoding.
@@ -44,16 +43,7 @@ import org.jetbrains.annotations.NotNull;
 public final class UTF8ResourceBundleControl extends ResourceBundle.Control {
   private static final UTF8ResourceBundleControl INSTANCE = new UTF8ResourceBundleControl();
 
-  /**
-   * Gets the shared instance.
-   *
-   * @return a resource bundle control
-   * @since 4.0.0
-   * @deprecated For removal since 4.24.0, use {@link #utf8ResourceBundleControl} instead
-   */
-  @Deprecated
-  public static ResourceBundle.@NotNull Control get() {
-    return INSTANCE;
+  private UTF8ResourceBundleControl() {
   }
 
   /**
@@ -62,7 +52,7 @@ public final class UTF8ResourceBundleControl extends ResourceBundle.Control {
    * @return a resource bundle control
    * @since 4.24.0
    */
-  public static ResourceBundle.@NotNull Control utf8ResourceBundleControl() {
+  public static ResourceBundle.Control utf8ResourceBundleControl() {
     return INSTANCE;
   }
 

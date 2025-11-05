@@ -23,24 +23,10 @@
  */
 package net.kyori.adventure.nbt;
 
-import java.util.stream.Stream;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Debug;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @Debug.Renderer(text = "String.valueOf(this.value) + \"d\"", hasChildren = "false")
-final class DoubleBinaryTagImpl extends AbstractBinaryTag implements DoubleBinaryTag {
-  private final double value;
-
-  DoubleBinaryTagImpl(final double value) {
-    this.value = value;
-  }
-
-  @Override
-  public double value() {
-    return this.value;
-  }
+record DoubleBinaryTagImpl(double value) implements DoubleBinaryTag {
 
   @Override
   public byte byteValue() {
@@ -73,25 +59,7 @@ final class DoubleBinaryTagImpl extends AbstractBinaryTag implements DoubleBinar
   }
 
   @Override
-  public @NotNull Number numberValue() {
+  public Number numberValue() {
     return this.value;
-  }
-
-  @Override
-  public boolean equals(final @Nullable Object other) {
-    if (this == other) return true;
-    if (other == null || this.getClass() != other.getClass()) return false;
-    final DoubleBinaryTagImpl that = (DoubleBinaryTagImpl) other;
-    return Double.doubleToLongBits(this.value) == Double.doubleToLongBits(that.value);
-  }
-
-  @Override
-  public int hashCode() {
-    return Double.hashCode(this.value);
-  }
-
-  @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(ExaminableProperty.of("value", this.value));
   }
 }

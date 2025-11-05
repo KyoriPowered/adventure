@@ -34,7 +34,6 @@ import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.InflaterInputStream;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Serialization operations for binary tags.
@@ -57,7 +56,7 @@ public final class BinaryTagIO {
    * @return binary tag reader
    * @since 4.4.0
    */
-  public static @NotNull Reader unlimitedReader() {
+  public static Reader unlimitedReader() {
     return BinaryTagReaderImpl.UNLIMITED;
   }
 
@@ -69,7 +68,7 @@ public final class BinaryTagIO {
    * @return binary tag reader
    * @since 4.4.0
    */
-  public static @NotNull Reader reader() {
+  public static Reader reader() {
     return BinaryTagReaderImpl.DEFAULT_LIMIT;
   }
 
@@ -82,7 +81,7 @@ public final class BinaryTagIO {
    * @return binary tag reader
    * @since 4.4.0
    */
-  public static @NotNull Reader reader(final long sizeLimitBytes) {
+  public static Reader reader(final long sizeLimitBytes) {
     if (sizeLimitBytes <= 0) {
       throw new IllegalArgumentException("The size limit must be greater than zero");
     }
@@ -95,148 +94,8 @@ public final class BinaryTagIO {
    * @return binary tag writer
    * @since 4.4.0
    */
-  public static @NotNull Writer writer() {
+  public static Writer writer() {
     return BinaryTagWriterImpl.INSTANCE;
-  }
-
-  /**
-   * Reads a compound tag from {@code path}.
-   *
-   * @param path the path
-   * @return the compound tag
-   * @throws IOException if an exception was encountered while reading a compound tag
-   * @since 4.0.0
-   * @deprecated since 4.4.0, use {@link #reader()}
-   */
-  @Deprecated
-  public static @NotNull CompoundBinaryTag readPath(final @NotNull Path path) throws IOException {
-    return reader().read(path);
-  }
-
-  /**
-   * Reads a compound tag from an input stream. The stream is not closed afterwards.
-   *
-   * @param input the input stream
-   * @return the compound tag
-   * @throws IOException if an exception was encountered while reading a compound tag
-   * @since 4.0.0
-   * @deprecated since 4.4.0, use {@link #reader()}
-   */
-  @Deprecated
-  public static @NotNull CompoundBinaryTag readInputStream(final @NotNull InputStream input) throws IOException {
-    return reader().read(input);
-  }
-
-  /**
-   * Reads a compound tag from {@code path} using GZIP decompression.
-   *
-   * @param path the path
-   * @return the compound tag
-   * @throws IOException if an exception was encountered while reading a compound tag
-   * @since 4.0.0
-   * @deprecated since 4.4.0, use {@link #reader()}
-   */
-  @Deprecated
-  public static @NotNull CompoundBinaryTag readCompressedPath(final @NotNull Path path) throws IOException {
-    return reader().read(path, Compression.GZIP);
-  }
-
-  /**
-   * Reads a compound tag from an input stream using GZIP decompression. The stream is not closed afterwards.
-   *
-   * @param input the input stream
-   * @return the compound tag
-   * @throws IOException if an exception was encountered while reading a compound tag
-   * @since 4.0.0
-   * @deprecated since 4.4.0, use {@link #reader()}
-   */
-  @Deprecated
-  public static @NotNull CompoundBinaryTag readCompressedInputStream(final @NotNull InputStream input) throws IOException {
-    return reader().read(input, Compression.GZIP);
-  }
-
-  /**
-   * Reads a compound tag from {@code input}.
-   *
-   * @param input the input
-   * @return the compound tag
-   * @throws IOException if an exception was encountered while reading a compound tag
-   * @since 4.0.0
-   * @deprecated since 4.4.0, use {@link #reader()}
-   */
-  @Deprecated
-  public static @NotNull CompoundBinaryTag readDataInput(final @NotNull DataInput input) throws IOException {
-    return reader().read(input);
-  }
-
-  /**
-   * Writes a compound tag to {@code path}.
-   *
-   * @param tag the compound tag
-   * @param path the path
-   * @throws IOException if an exception was encountered while writing the compound tag
-   * @since 4.0.0
-   * @deprecated since 4.4.0, use {@link #writer()}
-   */
-  @Deprecated
-  public static void writePath(final @NotNull CompoundBinaryTag tag, final @NotNull Path path) throws IOException {
-    writer().write(tag, path);
-  }
-
-  /**
-   * Writes a compound tag to an output stream. The output stream will not be closed.
-   *
-   * @param tag the compound tag
-   * @param output the output stream
-   * @throws IOException if an exception was encountered while writing the compound tag
-   * @since 4.0.0
-   * @deprecated since 4.4.0, use {@link #writer()}
-   */
-  @Deprecated
-  public static void writeOutputStream(final @NotNull CompoundBinaryTag tag, final @NotNull OutputStream output) throws IOException {
-    writer().write(tag, output);
-  }
-
-  /**
-   * Writes a compound tag to {@code path} using GZIP compression.
-   *
-   * @param tag the compound tag
-   * @param path the path
-   * @throws IOException if an exception was encountered while writing the compound tag
-   * @since 4.0.0
-   * @deprecated since 4.4.0, use {@link #writer()}
-   */
-  @Deprecated
-  public static void writeCompressedPath(final @NotNull CompoundBinaryTag tag, final @NotNull Path path) throws IOException {
-    writer().write(tag, path, Compression.GZIP);
-  }
-
-  /**
-   * Writes a compound tag to an output stream using GZIP compression. The output stream is not closed afterwards.
-   *
-   * @param tag the compound tag
-   * @param output the output stream
-   * @throws IOException if an exception was encountered while writing the compound tag
-   * @since 4.0.0
-   * @deprecated since 4.4.0, use {@link #writer()}
-   */
-  @Deprecated
-  public static void writeCompressedOutputStream(final @NotNull CompoundBinaryTag tag, final @NotNull OutputStream output) throws IOException {
-    writer().write(tag, output, Compression.GZIP);
-  }
-
-  /**
-   * Writes a compound tag to {@code output}.
-   *
-   * @param tag the compound tag
-   * @param output the output
-   * @throws IOException if an exception was encountered while writing the compound tag
-   * @since 4.0.0
-   * @deprecated since 4.4.0, use {@link #writer()}
-   */
-  @Deprecated
-  public static void writeDataOutput(final @NotNull CompoundBinaryTag tag, final @NotNull DataOutput output) throws IOException {
-    writer().write(tag, output);
   }
 
   /**
@@ -257,7 +116,7 @@ public final class BinaryTagIO {
      * @throws IOException if an exception was encountered while reading the tag
      * @since 4.4.0
      */
-    default @NotNull CompoundBinaryTag read(final @NotNull Path path) throws IOException {
+    default CompoundBinaryTag read(final Path path) throws IOException {
       return this.read(path, Compression.NONE);
     }
 
@@ -272,7 +131,7 @@ public final class BinaryTagIO {
      * @throws IOException if an exception was encountered while reading the tag
      * @since 4.4.0
      */
-    @NotNull CompoundBinaryTag read(final @NotNull Path path, final @NotNull Compression compression) throws IOException;
+    CompoundBinaryTag read(final Path path, final Compression compression) throws IOException;
 
     /**
      * Reads a binary tag from {@code input}.
@@ -286,7 +145,7 @@ public final class BinaryTagIO {
      * @throws IOException if an exception was encountered while reading the tag
      * @since 4.4.0
      */
-    default @NotNull CompoundBinaryTag read(final @NotNull InputStream input) throws IOException {
+    default CompoundBinaryTag read(final InputStream input) throws IOException {
       return this.read(input, Compression.NONE);
     }
 
@@ -301,7 +160,7 @@ public final class BinaryTagIO {
      * @throws IOException if an exception was encountered while reading the tag
      * @since 4.4.0
      */
-    @NotNull CompoundBinaryTag read(final @NotNull InputStream input, final @NotNull Compression compression) throws IOException;
+    CompoundBinaryTag read(final InputStream input, final Compression compression) throws IOException;
 
     /**
      * Reads a binary tag from {@code input}.
@@ -313,7 +172,7 @@ public final class BinaryTagIO {
      * @throws IOException if an exception was encountered while reading the tag
      * @since 4.4.0
      */
-    @NotNull CompoundBinaryTag read(final @NotNull DataInput input) throws IOException;
+    CompoundBinaryTag read(final DataInput input) throws IOException;
 
     /**
      * Reads a binary tag from {@code path}.
@@ -328,7 +187,7 @@ public final class BinaryTagIO {
      * @since 4.15.0
      * @sinceMinecraft 1.20.2
      */
-    default @NotNull CompoundBinaryTag readNameless(final @NotNull Path path) throws IOException {
+    default CompoundBinaryTag readNameless(final Path path) throws IOException {
       return this.readNameless(path, Compression.NONE);
     }
 
@@ -344,7 +203,7 @@ public final class BinaryTagIO {
      * @since 4.15.0
      * @sinceMinecraft 1.20.2
      */
-    @NotNull CompoundBinaryTag readNameless(final @NotNull Path path, final @NotNull Compression compression) throws IOException;
+    CompoundBinaryTag readNameless(final Path path, final Compression compression) throws IOException;
 
     /**
      * Reads a binary tag from {@code input}.
@@ -359,7 +218,7 @@ public final class BinaryTagIO {
      * @since 4.15.0
      * @sinceMinecraft 1.20.2
      */
-    default @NotNull CompoundBinaryTag readNameless(final @NotNull InputStream input) throws IOException {
+    default CompoundBinaryTag readNameless(final InputStream input) throws IOException {
       return this.readNameless(input, Compression.NONE);
     }
 
@@ -375,7 +234,7 @@ public final class BinaryTagIO {
      * @since 4.15.0
      * @sinceMinecraft 1.20.2
      */
-    @NotNull CompoundBinaryTag readNameless(final @NotNull InputStream input, final @NotNull Compression compression) throws IOException;
+    CompoundBinaryTag readNameless(final InputStream input, final Compression compression) throws IOException;
 
     /**
      * Reads a binary tag from {@code input}.
@@ -388,7 +247,7 @@ public final class BinaryTagIO {
      * @since 4.15.0
      * @sinceMinecraft 1.20.2
      */
-    @NotNull CompoundBinaryTag readNameless(final @NotNull DataInput input) throws IOException;
+    CompoundBinaryTag readNameless(final DataInput input) throws IOException;
 
     /**
      * Reads a binary tag, with a name, from {@code path}.
@@ -400,7 +259,7 @@ public final class BinaryTagIO {
      * @throws IOException if an exception was encountered while reading the tag
      * @since 4.4.0
      */
-    default Map.@NotNull Entry<String, CompoundBinaryTag> readNamed(final @NotNull Path path) throws IOException {
+    default Map.Entry<String, CompoundBinaryTag> readNamed(final Path path) throws IOException {
       return this.readNamed(path, Compression.NONE);
     }
 
@@ -413,7 +272,7 @@ public final class BinaryTagIO {
      * @throws IOException if an exception was encountered while reading the tag
      * @since 4.4.0
      */
-    Map.@NotNull Entry<String, CompoundBinaryTag> readNamed(final @NotNull Path path, final @NotNull Compression compression) throws IOException;
+    Map.Entry<String, CompoundBinaryTag> readNamed(final Path path, final Compression compression) throws IOException;
 
     /**
      * Reads a binary tag, with a name, from {@code input}.
@@ -425,7 +284,7 @@ public final class BinaryTagIO {
      * @throws IOException if an exception was encountered while reading the tag
      * @since 4.4.0
      */
-    default Map.@NotNull Entry<String, CompoundBinaryTag> readNamed(final @NotNull InputStream input) throws IOException {
+    default Map.Entry<String, CompoundBinaryTag> readNamed(final InputStream input) throws IOException {
       return this.readNamed(input, Compression.NONE);
     }
 
@@ -438,7 +297,7 @@ public final class BinaryTagIO {
      * @throws IOException if an exception was encountered while reading the tag
      * @since 4.4.0
      */
-    Map.@NotNull Entry<String, CompoundBinaryTag> readNamed(final @NotNull InputStream input, final @NotNull Compression compression) throws IOException;
+    Map.Entry<String, CompoundBinaryTag> readNamed(final InputStream input, final Compression compression) throws IOException;
 
     /**
      * Reads a binary tag, with a name, from {@code input}.
@@ -448,7 +307,7 @@ public final class BinaryTagIO {
      * @throws IOException if an exception was encountered while reading the tag
      * @since 4.4.0
      */
-    Map.@NotNull Entry<String, CompoundBinaryTag> readNamed(final @NotNull DataInput input) throws IOException;
+    Map.Entry<String, CompoundBinaryTag> readNamed(final DataInput input) throws IOException;
   }
 
   /**
@@ -469,7 +328,7 @@ public final class BinaryTagIO {
      * @throws IOException if an exception was encountered while reading the tag
      * @since 4.4.0
      */
-    default void write(final @NotNull CompoundBinaryTag tag, final @NotNull Path path) throws IOException {
+    default void write(final CompoundBinaryTag tag, final Path path) throws IOException {
       this.write(tag, path, Compression.NONE);
     }
 
@@ -484,7 +343,7 @@ public final class BinaryTagIO {
      * @throws IOException if an exception was encountered while reading the tag
      * @since 4.4.0
      */
-    void write(final @NotNull CompoundBinaryTag tag, final @NotNull Path path, final @NotNull Compression compression) throws IOException;
+    void write(final CompoundBinaryTag tag, final Path path, final Compression compression) throws IOException;
 
     /**
      * Writes a binary tag to {@code output}.
@@ -498,7 +357,7 @@ public final class BinaryTagIO {
      * @throws IOException if an exception was encountered while reading the tag
      * @since 4.4.0
      */
-    default void write(final @NotNull CompoundBinaryTag tag, final @NotNull OutputStream output) throws IOException {
+    default void write(final CompoundBinaryTag tag, final OutputStream output) throws IOException {
       this.write(tag, output, Compression.NONE);
     }
 
@@ -513,7 +372,7 @@ public final class BinaryTagIO {
      * @throws IOException if an exception was encountered while reading the tag
      * @since 4.4.0
      */
-    void write(final @NotNull CompoundBinaryTag tag, final @NotNull OutputStream output, final @NotNull Compression compression) throws IOException;
+    void write(final CompoundBinaryTag tag, final OutputStream output, final Compression compression) throws IOException;
 
     /**
      * Writes a binary tag to {@code output}.
@@ -525,7 +384,7 @@ public final class BinaryTagIO {
      * @throws IOException if an exception was encountered while reading the tag
      * @since 4.4.0
      */
-    void write(final @NotNull CompoundBinaryTag tag, final @NotNull DataOutput output) throws IOException;
+    void write(final CompoundBinaryTag tag, final DataOutput output) throws IOException;
 
     /**
      * Writes a binary tag to {@code path} with a {@code compression} type.
@@ -540,7 +399,7 @@ public final class BinaryTagIO {
      * @since 4.15.0
      * @sinceMinecraft 1.20.2
      */
-    default void writeNameless(final @NotNull CompoundBinaryTag tag, final @NotNull Path path) throws IOException {
+    default void writeNameless(final CompoundBinaryTag tag, final Path path) throws IOException {
       this.writeNameless(tag, path, Compression.NONE);
     }
 
@@ -556,7 +415,7 @@ public final class BinaryTagIO {
      * @since 4.15.0
      * @sinceMinecraft 1.20.2
      */
-    void writeNameless(final @NotNull CompoundBinaryTag tag, final @NotNull Path path, final @NotNull Compression compression) throws IOException;
+    void writeNameless(final CompoundBinaryTag tag, final Path path, final Compression compression) throws IOException;
 
     /**
      * Writes a binary tag to {@code output}.
@@ -571,7 +430,7 @@ public final class BinaryTagIO {
      * @since 4.15.0
      * @sinceMinecraft 1.20.2
      */
-    default void writeNameless(final @NotNull CompoundBinaryTag tag, final @NotNull OutputStream output) throws IOException {
+    default void writeNameless(final CompoundBinaryTag tag, final OutputStream output) throws IOException {
       this.writeNameless(tag, output, Compression.NONE);
     }
 
@@ -587,7 +446,7 @@ public final class BinaryTagIO {
      * @since 4.15.0
      * @sinceMinecraft 1.20.2
      */
-    void writeNameless(final @NotNull CompoundBinaryTag tag, final @NotNull OutputStream output, final @NotNull Compression compression) throws IOException;
+    void writeNameless(final CompoundBinaryTag tag, final OutputStream output, final Compression compression) throws IOException;
 
     /**
      * Writes a binary tag to {@code output}.
@@ -600,7 +459,7 @@ public final class BinaryTagIO {
      * @since 4.15.0
      * @sinceMinecraft 1.20.2
      */
-    void writeNameless(final @NotNull CompoundBinaryTag tag, final @NotNull DataOutput output) throws IOException;
+    void writeNameless(final CompoundBinaryTag tag, final DataOutput output) throws IOException;
 
     /**
      * Writes a binary tag, with a name, to {@code path}.
@@ -612,7 +471,7 @@ public final class BinaryTagIO {
      * @throws IOException if an exception was encountered while reading the tag
      * @since 4.4.0
      */
-    default void writeNamed(final Map.@NotNull Entry<String, CompoundBinaryTag> tag, final @NotNull Path path) throws IOException {
+    default void writeNamed(final Map.Entry<String, CompoundBinaryTag> tag, final Path path) throws IOException {
       this.writeNamed(tag, path, Compression.NONE);
     }
 
@@ -625,7 +484,7 @@ public final class BinaryTagIO {
      * @throws IOException if an exception was encountered while reading the tag
      * @since 4.4.0
      */
-    void writeNamed(final Map.@NotNull Entry<String, CompoundBinaryTag> tag, final @NotNull Path path, final @NotNull Compression compression) throws IOException;
+    void writeNamed(final Map.Entry<String, CompoundBinaryTag> tag, final Path path, final Compression compression) throws IOException;
 
     /**
      * Writes a binary tag, with a name, to {@code output}.
@@ -637,7 +496,7 @@ public final class BinaryTagIO {
      * @throws IOException if an exception was encountered while reading the tag
      * @since 4.4.0
      */
-    default void writeNamed(final Map.@NotNull Entry<String, CompoundBinaryTag> tag, final @NotNull OutputStream output) throws IOException {
+    default void writeNamed(final Map.Entry<String, CompoundBinaryTag> tag, final OutputStream output) throws IOException {
       this.writeNamed(tag, output, Compression.NONE);
     }
 
@@ -650,7 +509,7 @@ public final class BinaryTagIO {
      * @throws IOException if an exception was encountered while reading the tag
      * @since 4.4.0
      */
-    void writeNamed(final Map.@NotNull Entry<String, CompoundBinaryTag> tag, final @NotNull OutputStream output, final @NotNull Compression compression) throws IOException;
+    void writeNamed(final Map.Entry<String, CompoundBinaryTag> tag, final OutputStream output, final Compression compression) throws IOException;
 
     /**
      * Writes a binary tag, with a name, to {@code output}.
@@ -660,7 +519,7 @@ public final class BinaryTagIO {
      * @throws IOException if an exception was encountered while reading the tag
      * @since 4.4.0
      */
-    void writeNamed(final Map.@NotNull Entry<String, CompoundBinaryTag> tag, final @NotNull DataOutput output) throws IOException;
+    void writeNamed(final Map.Entry<String, CompoundBinaryTag> tag, final DataOutput output) throws IOException;
   }
 
   /**
@@ -670,18 +529,26 @@ public final class BinaryTagIO {
    */
   public static abstract class Compression {
     /**
+     * Constructs a new {@link Compression} instance.
+     *
+     * @since 4.4.0
+     */
+    public Compression() {
+    }
+
+    /**
      * No compression.
      *
      * @since 4.4.0
      */
     public static final Compression NONE = new Compression() {
       @Override
-      @NotNull InputStream decompress(final @NotNull InputStream is) {
+      InputStream decompress(final InputStream is) {
         return is;
       }
 
       @Override
-      @NotNull OutputStream compress(final @NotNull OutputStream os) {
+      OutputStream compress(final OutputStream os) {
         return os;
       }
 
@@ -697,12 +564,12 @@ public final class BinaryTagIO {
      */
     public static final Compression GZIP = new Compression() {
       @Override
-      @NotNull InputStream decompress(final @NotNull InputStream is) throws IOException {
+      InputStream decompress(final InputStream is) throws IOException {
         return new GZIPInputStream(is);
       }
 
       @Override
-      @NotNull OutputStream compress(final @NotNull OutputStream os) throws IOException {
+      OutputStream compress(final OutputStream os) throws IOException {
         return new GZIPOutputStream(os);
       }
 
@@ -718,12 +585,12 @@ public final class BinaryTagIO {
      */
     public static final Compression ZLIB = new Compression() {
       @Override
-      @NotNull InputStream decompress(final @NotNull InputStream is) {
+      InputStream decompress(final InputStream is) {
         return new InflaterInputStream(is);
       }
 
       @Override
-      @NotNull OutputStream compress(final @NotNull OutputStream os) {
+      OutputStream compress(final OutputStream os) {
         return new DeflaterOutputStream(os);
       }
 
@@ -733,8 +600,24 @@ public final class BinaryTagIO {
       }
     };
 
-    abstract @NotNull InputStream decompress(final @NotNull InputStream is) throws IOException;
+    /**
+     * Decompresses an input stream.
+     *
+     * @param is the input stream
+     * @return the decompressed input stream
+     * @throws IOException if an exception was encountered while decompressing the stream
+     * @since 4.4.0
+     */
+    abstract InputStream decompress(final InputStream is) throws IOException;
 
-    abstract @NotNull OutputStream compress(final @NotNull OutputStream os) throws IOException;
+    /**
+     * Compresses an output stream.
+     *
+     * @param os the output stream
+     * @return the compressed output stream
+     * @throws IOException if an exception was encountered while compressing the stream
+     * @since 4.4.0
+     */
+    abstract OutputStream compress(final OutputStream os) throws IOException;
   }
 }

@@ -40,8 +40,6 @@ import net.kyori.adventure.text.event.DataComponentValue;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.serializer.json.JSONOptions;
 import net.kyori.option.OptionState;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SHOW_ITEM_COMPONENTS;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SHOW_ITEM_COUNT;
@@ -73,49 +71,49 @@ final class ShowItemSerializer extends TypeAdapter<HoverEvent.ShowItem> {
 
     Key key = null;
     int count = 1;
-    @Nullable BinaryTagHolder nbt = null;
-    @Nullable Map<Key, DataComponentValue> dataComponents = null;
+    BinaryTagHolder nbt = null;
+    Map<Key, DataComponentValue> dataComponents = null;
 
     while (in.hasNext()) {
       final String fieldName = in.nextName();
-      if (fieldName.equals(SHOW_ITEM_ID)) {
-        key = this.gson.fromJson(in, SerializerFactory.KEY_TYPE);
-      } else if (fieldName.equals(SHOW_ITEM_COUNT)) {
-        count = in.nextInt();
-      } else if (fieldName.equals(LEGACY_SHOW_ITEM_TAG)) {
-        final JsonToken token = in.peek();
-        if (token == JsonToken.STRING || token == JsonToken.NUMBER) {
-          nbt = BinaryTagHolder.binaryTagHolder(in.nextString());
-        } else if (token == JsonToken.BOOLEAN) {
-          nbt = BinaryTagHolder.binaryTagHolder(String.valueOf(in.nextBoolean()));
-        } else if (token == JsonToken.NULL) {
-          in.nextNull();
-        } else {
-          throw new JsonParseException("Expected " + LEGACY_SHOW_ITEM_TAG + " to be a string");
-        }
-      } else if (fieldName.equals(SHOW_ITEM_COMPONENTS)) {
-        in.beginObject();
-        while (in.peek() != JsonToken.END_OBJECT) {
-          final String name = in.nextName();
-          final Key id;
-          final boolean removed;
-          if (name.startsWith(DATA_COMPONENT_REMOVAL_PREFIX)) {
-            id = Key.key(name.substring(1));
-            removed = true;
+      switch (fieldName) {
+        case SHOW_ITEM_ID -> key = this.gson.fromJson(in, SerializerFactory.KEY_TYPE);
+        case SHOW_ITEM_COUNT -> count = in.nextInt();
+        case LEGACY_SHOW_ITEM_TAG -> {
+          final JsonToken token = in.peek();
+          if (token == JsonToken.STRING || token == JsonToken.NUMBER) {
+            nbt = BinaryTagHolder.binaryTagHolder(in.nextString());
+          } else if (token == JsonToken.BOOLEAN) {
+            nbt = BinaryTagHolder.binaryTagHolder(String.valueOf(in.nextBoolean()));
+          } else if (token == JsonToken.NULL) {
+            in.nextNull();
           } else {
-            id = Key.key(name);
-            removed = false;
+            throw new JsonParseException("Expected " + LEGACY_SHOW_ITEM_TAG + " to be a string");
           }
-
-          final JsonElement tree = this.gson.fromJson(in, JsonElement.class);
-          if (dataComponents == null) {
-            dataComponents = new HashMap<>();
-          }
-          dataComponents.put(id, removed ? DataComponentValue.removed() : GsonDataComponentValue.gsonDataComponentValue(tree));
         }
-        in.endObject();
-      } else {
-        in.skipValue();
+        case SHOW_ITEM_COMPONENTS -> {
+          in.beginObject();
+          while (in.peek() != JsonToken.END_OBJECT) {
+            final String name = in.nextName();
+            final Key id;
+            final boolean removed;
+            if (name.startsWith(DATA_COMPONENT_REMOVAL_PREFIX)) {
+              id = Key.key(name.substring(1));
+              removed = true;
+            } else {
+              id = Key.key(name);
+              removed = false;
+            }
+
+            final JsonElement tree = this.gson.fromJson(in, JsonElement.class);
+            if (dataComponents == null) {
+              dataComponents = new HashMap<>();
+            }
+            dataComponents.put(id, removed ? DataComponentValue.removed() : GsonDataComponentValue.gsonDataComponentValue(tree));
+          }
+          in.endObject();
+        }
+        default -> in.skipValue();
       }
     }
 
@@ -144,7 +142,7 @@ final class ShowItemSerializer extends TypeAdapter<HoverEvent.ShowItem> {
       out.value(count);
     }
 
-    final @NotNull Map<Key, DataComponentValue> dataComponents = value.dataComponents();
+    final Map<Key, DataComponentValue> dataComponents = value.dataComponents();
     if (!dataComponents.isEmpty() && this.itemDataMode != JSONOptions.ShowItemHoverDataMode.EMIT_LEGACY_NBT) {
       out.name(SHOW_ITEM_COMPONENTS);
       out.beginObject();
@@ -168,7 +166,7 @@ final class ShowItemSerializer extends TypeAdapter<HoverEvent.ShowItem> {
 
   @SuppressWarnings("deprecation")
   private static void maybeWriteLegacy(final JsonWriter out, final HoverEvent.ShowItem value) throws IOException {
-    final @Nullable BinaryTagHolder nbt = value.nbt();
+    final BinaryTagHolder nbt = value.nbt();
     if (nbt != null) {
       out.name(LEGACY_SHOW_ITEM_TAG);
       out.value(nbt.string());

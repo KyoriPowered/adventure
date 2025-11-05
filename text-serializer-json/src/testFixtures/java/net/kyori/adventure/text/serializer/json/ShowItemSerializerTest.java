@@ -50,7 +50,7 @@ final class ShowItemSerializerTest extends SerializerTest {
         HoverEvent.showItem(
           Key.key("minecraft", "diamond"),
           2,
-          BinaryTagHolder.binaryTagHolder(TagStringIO.get().asString(
+          BinaryTagHolder.binaryTagHolder(TagStringIO.tagStringIO().asString(
             CompoundBinaryTag.builder()
               .put("display", CompoundBinaryTag.builder()
                 .put("Name", StringBinaryTag.stringBinaryTag("A test!"))
@@ -102,7 +102,7 @@ final class ShowItemSerializerTest extends SerializerTest {
         HoverEvent.showItem(
           Key.key("minecraft", "diamond"),
           1,
-          BinaryTagHolder.binaryTagHolder(TagStringIO.get().asString(
+          BinaryTagHolder.binaryTagHolder(TagStringIO.tagStringIO().asString(
             CompoundBinaryTag.builder()
               .put("display", CompoundBinaryTag.builder()
                 .put("Name", StringBinaryTag.stringBinaryTag("A test!"))

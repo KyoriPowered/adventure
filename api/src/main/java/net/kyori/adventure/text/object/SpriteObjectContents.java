@@ -23,11 +23,7 @@
  */
 package net.kyori.adventure.text.object;
 
-import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
-import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * A sprite contents.
@@ -37,8 +33,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.25.0
  * @sinceMinecraft 1.21.9
  */
-@ApiStatus.NonExtendable
-public interface SpriteObjectContents extends ObjectContents {
+public sealed interface SpriteObjectContents extends ObjectContents permits SpriteObjectContentsImpl {
   /**
    * The default atlas key for sprites, used by vanilla when the atlas is not specified in a serialized object component.
    *
@@ -52,7 +47,7 @@ public interface SpriteObjectContents extends ObjectContents {
    * @return the atlas key
    * @since 4.25.0
    */
-  @NotNull Key atlas();
+  Key atlas();
 
   /**
    * Gets the sprite key.
@@ -60,13 +55,5 @@ public interface SpriteObjectContents extends ObjectContents {
    * @return the sprite key
    * @since 4.25.0
    */
-  @NotNull Key sprite();
-
-  @Override
-  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("atlas", this.atlas()),
-      ExaminableProperty.of("sprite", this.sprite())
-    );
-  }
+  Key sprite();
 }

@@ -25,8 +25,7 @@ package net.kyori.adventure.text.minimessage.internal.parser.node;
 
 import net.kyori.adventure.text.minimessage.internal.parser.Token;
 import net.kyori.adventure.text.minimessage.internal.parser.TokenParser;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Represents a string of chars.
@@ -48,8 +47,8 @@ public final class TextNode extends ValueNode {
    */
   public TextNode(
     final @Nullable ElementNode parent,
-    final @NotNull Token token,
-    final @NotNull String sourceMessage
+    final Token token,
+    final String sourceMessage
   ) {
     super(parent, token, sourceMessage, TokenParser.unescape(sourceMessage, token.startIndex(), token.endIndex(), TextNode::isEscape));
   }

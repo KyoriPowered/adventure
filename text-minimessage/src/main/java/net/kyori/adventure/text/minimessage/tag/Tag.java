@@ -32,8 +32,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.StyleBuilderApplicable;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
+import net.kyori.adventure.text.minimessage.internal.parser.node.TagPart;
 
 import static java.util.Objects.requireNonNull;
 
@@ -45,7 +44,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 4.10.0
  */
-public /* sealed */ interface Tag /* permits Inserting, Modifying, ParserDirective, PreProcess, /internal/ AbstractTag */ {
+public sealed interface Tag permits Inserting, Modifying, ParserDirective, PreProcess {
 
   /**
    * Create a tag that inserts the content literally into the parse string.
@@ -54,7 +53,7 @@ public /* sealed */ interface Tag /* permits Inserting, Modifying, ParserDirecti
    * @return a new tag
    * @since 4.10.0
    */
-  static @NotNull PreProcess preProcessParsed(final @NotNull String content) {
+  static PreProcess preProcessParsed(final String content) {
     return new PreProcessTagImpl(requireNonNull(content, "content"));
   }
 
@@ -67,7 +66,7 @@ public /* sealed */ interface Tag /* permits Inserting, Modifying, ParserDirecti
    * @return a tag that will insert this component
    * @since 4.10.0
    */
-  static @NotNull Tag inserting(final @NotNull Component content) {
+  static Tag inserting(final Component content) {
     return new InsertingImpl(true, requireNonNull(content, "content must not be null"));
   }
 
@@ -80,7 +79,7 @@ public /* sealed */ interface Tag /* permits Inserting, Modifying, ParserDirecti
    * @return a tag that will insert this component
    * @since 4.10.0
    */
-  static @NotNull Tag inserting(final @NotNull ComponentLike value) {
+  static Tag inserting(final ComponentLike value) {
     return inserting(requireNonNull(value, "value").asComponent());
   }
 
@@ -93,7 +92,7 @@ public /* sealed */ interface Tag /* permits Inserting, Modifying, ParserDirecti
    * @return a tag that will insert this component
    * @since 4.10.0
    */
-  static @NotNull Tag selfClosingInserting(final @NotNull Component content) {
+  static Tag selfClosingInserting(final Component content) {
     return new InsertingImpl(false, requireNonNull(content, "content must not be null"));
   }
 
@@ -106,7 +105,7 @@ public /* sealed */ interface Tag /* permits Inserting, Modifying, ParserDirecti
    * @return a tag that will insert this component
    * @since 4.10.0
    */
-  static @NotNull Tag selfClosingInserting(final @NotNull ComponentLike value) {
+  static Tag selfClosingInserting(final ComponentLike value) {
     return selfClosingInserting(requireNonNull(value, "value").asComponent());
   }
 
@@ -117,7 +116,7 @@ public /* sealed */ interface Tag /* permits Inserting, Modifying, ParserDirecti
    * @return a tag for this action
    * @since 4.10.0
    */
-  static @NotNull Tag styling(final Consumer<Style.Builder> styles) {
+  static Tag styling(final Consumer<Style.Builder> styles) {
     return new CallbackStylingTagImpl(styles);
   }
 
@@ -128,7 +127,7 @@ public /* sealed */ interface Tag /* permits Inserting, Modifying, ParserDirecti
    * @return a tag for these actions
    * @since 4.10.0
    */
-  static @NotNull Tag styling(final @NotNull StyleBuilderApplicable@NotNull... actions) {
+  static Tag styling(final StyleBuilderApplicable... actions) {
     requireNonNull(actions, "actions");
     for (int i = 0, length = actions.length; i < length; i++) {
       if (actions[i] == null) {
@@ -143,15 +142,14 @@ public /* sealed */ interface Tag /* permits Inserting, Modifying, ParserDirecti
    *
    * @since 4.10.0
    */
-  @ApiStatus.NonExtendable
-  interface Argument {
+  sealed interface Argument permits TagPart {
     /**
      * Returns the value of this argument.
      *
      * @return the value
      * @since 4.10.0
      */
-    @NotNull String value();
+    String value();
 
     /**
      * Returns the value of this argument, lower-cased in the root locale.
@@ -161,7 +159,7 @@ public /* sealed */ interface Tag /* permits Inserting, Modifying, ParserDirecti
      * @return the lower-cased value of this argument
      * @since 4.10.0
      */
-    default @NotNull String lowerValue() {
+    default String lowerValue() {
       return this.value().toLowerCase(Locale.ROOT);
     }
 
@@ -193,7 +191,7 @@ public /* sealed */ interface Tag /* permits Inserting, Modifying, ParserDirecti
      * @return an optional providing the value of this argument as an integer
      * @since 4.10.0
      */
-    default @NotNull OptionalInt asInt() {
+    default OptionalInt asInt() {
       try {
         return OptionalInt.of(Integer.parseInt(this.value()));
       } catch (final NumberFormatException ex) {
@@ -209,7 +207,7 @@ public /* sealed */ interface Tag /* permits Inserting, Modifying, ParserDirecti
      * @return an optional providing the value of this argument as an integer
      * @since 4.10.0
      */
-    default @NotNull OptionalDouble asDouble() {
+    default OptionalDouble asDouble() {
       try {
         return OptionalDouble.of(Double.parseDouble(this.value()));
       } catch (final NumberFormatException ex) {

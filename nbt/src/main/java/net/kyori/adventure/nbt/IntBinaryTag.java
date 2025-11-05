@@ -23,15 +23,12 @@
  */
 package net.kyori.adventure.nbt;
 
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-
 /**
  * A binary tag holding an {@code int} value.
  *
  * @since 4.0.0
  */
-public interface IntBinaryTag extends NumberBinaryTag {
+public sealed interface IntBinaryTag extends NumberBinaryTag permits IntBinaryTagImpl {
   /**
    * Creates a binary tag holding an {@code int} value.
    *
@@ -39,26 +36,12 @@ public interface IntBinaryTag extends NumberBinaryTag {
    * @return a binary tag
    * @since 4.14.0
    */
-  static @NotNull IntBinaryTag intBinaryTag(final int value) {
-    return new IntBinaryTagImpl(value);
-  }
-
-  /**
-   * Creates a binary tag holding an {@code int} value.
-   *
-   * @param value the value
-   * @return a binary tag
-   * @since 4.0.0
-   * @deprecated for removal since 4.14.0, use {@link #intBinaryTag(int)} instead.
-   */
-  @Deprecated
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  static @NotNull IntBinaryTag of(final int value) {
+  static IntBinaryTag intBinaryTag(final int value) {
     return new IntBinaryTagImpl(value);
   }
 
   @Override
-  default @NotNull BinaryTagType<IntBinaryTag> type() {
+  default BinaryTagType<IntBinaryTag> type() {
     return BinaryTagTypes.INT;
   }
 

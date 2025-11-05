@@ -24,4 +24,7 @@
 /**
  * Data for controlling resource packs.
  */
+@NullMarked
 package net.kyori.adventure.resource;
+
+import org.jspecify.annotations.NullMarked;

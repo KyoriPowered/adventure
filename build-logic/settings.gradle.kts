@@ -7,6 +7,10 @@ dependencyResolutionManagement {
       name = "stellardriftReleases"
       mavenContent { releasesOnly() }
     }
+    maven(url = "https://repo.papermc.io/repository/maven-snapshots/") {
+      name = "papermcSnapshots"
+      mavenContent { snapshotsOnly() }
+    }
     maven(url = "https://repo.stellardrift.ca/maven/snapshots/") {
       name = "stellardriftSnapshots"
       mavenContent { snapshotsOnly() }

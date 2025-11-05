@@ -25,7 +25,6 @@ package net.kyori.adventure.text;
 
 import net.kyori.adventure.text.format.StyleBuilderApplicable;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Something that can be applied to a {@link ComponentBuilder}.
@@ -42,5 +41,5 @@ public interface ComponentBuilderApplicable {
    * @since 4.0.0
    */
   @Contract(mutates = "param")
-  void componentBuilderApply(final @NotNull ComponentBuilder<?, ?> component);
+  void componentBuilderApply(final ComponentBuilder<?, ?> component);
 }

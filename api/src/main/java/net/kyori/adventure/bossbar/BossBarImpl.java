@@ -32,18 +32,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
-import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.Services;
-import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-@SuppressWarnings("deprecation")
 final class BossBarImpl extends HackyBossBarPlatformBridge implements BossBar {
   private final List<Listener> listeners = new CopyOnWriteArrayList<>();
   private Component name;
@@ -53,7 +47,6 @@ final class BossBarImpl extends HackyBossBarPlatformBridge implements BossBar {
   private final Set<Flag> flags = EnumSet.noneOf(Flag.class);
   @Nullable BossBarImplementation implementation;
 
-  @ApiStatus.Internal
   static final class ImplementationAccessor {
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     private static final Optional<BossBarImplementation.Provider> SERVICE = Services.service(BossBarImplementation.Provider.class);
@@ -62,8 +55,8 @@ final class BossBarImpl extends HackyBossBarPlatformBridge implements BossBar {
     }
 
     @SuppressWarnings("OptionalGetWithoutIsPresent")
-    static @NotNull <I extends BossBarImplementation> I get(final @NotNull BossBar bar, final @NotNull Class<I> type) {
-      @Nullable BossBarImplementation implementation = ((BossBarImpl) bar).implementation;
+    static <I extends BossBarImplementation> I get(final BossBar bar, final Class<I> type) {
+      BossBarImplementation implementation = ((BossBarImpl) bar).implementation;
       if (implementation == null) {
         implementation = SERVICE.get().create(bar);
         ((BossBarImpl) bar).implementation = implementation;
@@ -72,25 +65,25 @@ final class BossBarImpl extends HackyBossBarPlatformBridge implements BossBar {
     }
   }
 
-  BossBarImpl(final @NotNull Component name, final float progress, final @NotNull Color color, final @NotNull Overlay overlay) {
+  BossBarImpl(final Component name, final float progress, final Color color, final Overlay overlay) {
     this.name = requireNonNull(name, "name");
     this.progress = progress;
     this.color = requireNonNull(color, "color");
     this.overlay = requireNonNull(overlay, "overlay");
   }
 
-  BossBarImpl(final @NotNull Component name, final float progress, final @NotNull Color color, final @NotNull Overlay overlay, final @NotNull Set<Flag> flags) {
+  BossBarImpl(final Component name, final float progress, final Color color, final Overlay overlay, final Set<Flag> flags) {
     this(name, progress, color, overlay);
     this.flags.addAll(flags);
   }
 
   @Override
-  public @NotNull Component name() {
+  public Component name() {
     return this.name;
   }
 
   @Override
-  public @NotNull BossBar name(final @NotNull Component newName) {
+  public BossBar name(final Component newName) {
     // We do not check if the new name equals the old name here as the GlobalTranslator
     // may produce a different resulting component for the end user.
     requireNonNull(newName, "name");
@@ -106,7 +99,7 @@ final class BossBarImpl extends HackyBossBarPlatformBridge implements BossBar {
   }
 
   @Override
-  public @NotNull BossBar progress(final float newProgress) {
+  public BossBar progress(final float newProgress) {
     checkProgress(newProgress);
     final float oldProgress = this.progress;
     if (newProgress != oldProgress) {
@@ -123,12 +116,12 @@ final class BossBarImpl extends HackyBossBarPlatformBridge implements BossBar {
   }
 
   @Override
-  public @NotNull Color color() {
+  public Color color() {
     return this.color;
   }
 
   @Override
-  public @NotNull BossBar color(final @NotNull Color newColor) {
+  public BossBar color(final Color newColor) {
     requireNonNull(newColor, "color");
     final Color oldColor = this.color;
     if (newColor != oldColor) {
@@ -139,12 +132,12 @@ final class BossBarImpl extends HackyBossBarPlatformBridge implements BossBar {
   }
 
   @Override
-  public @NotNull Overlay overlay() {
+  public Overlay overlay() {
     return this.overlay;
   }
 
   @Override
-  public @NotNull BossBar overlay(final @NotNull Overlay newOverlay) {
+  public BossBar overlay(final Overlay newOverlay) {
     requireNonNull(newOverlay, "overlay");
     final Overlay oldOverlay = this.overlay;
     if (newOverlay != oldOverlay) {
@@ -155,12 +148,12 @@ final class BossBarImpl extends HackyBossBarPlatformBridge implements BossBar {
   }
 
   @Override
-  public @NotNull Set<Flag> flags() {
+  public Set<Flag> flags() {
     return Collections.unmodifiableSet(this.flags);
   }
 
   @Override
-  public @NotNull BossBar flags(final @NotNull Set<Flag> newFlags) {
+  public BossBar flags(final Set<Flag> newFlags) {
     if (newFlags.isEmpty() && !this.flags.isEmpty()) {
       final Set<Flag> oldFlags = EnumSet.copyOf(this.flags);
       this.flags.clear();
@@ -179,21 +172,21 @@ final class BossBarImpl extends HackyBossBarPlatformBridge implements BossBar {
   }
 
   @Override
-  public boolean hasFlag(final @NotNull Flag flag) {
+  public boolean hasFlag(final Flag flag) {
     return this.flags.contains(flag);
   }
 
   @Override
-  public @NotNull BossBar addFlag(final @NotNull Flag flag) {
+  public BossBar addFlag(final Flag flag) {
     return this.editFlags(flag, Set::add, BossBarImpl::onFlagsAdded);
   }
 
   @Override
-  public @NotNull BossBar removeFlag(final @NotNull Flag flag) {
+  public BossBar removeFlag(final Flag flag) {
     return this.editFlags(flag, Set::remove, BossBarImpl::onFlagsRemoved);
   }
 
-  private @NotNull BossBar editFlags(final @NotNull Flag flag, final @NotNull BiPredicate<Set<Flag>, Flag> predicate, final BiConsumer<BossBarImpl, Set<Flag>> onChange) {
+  private BossBar editFlags(final Flag flag, final BiPredicate<Set<Flag>, Flag> predicate, final BiConsumer<BossBarImpl, Set<Flag>> onChange) {
     if (predicate.test(this.flags, flag)) {
       onChange.accept(this, Collections.singleton(flag));
     }
@@ -201,43 +194,17 @@ final class BossBarImpl extends HackyBossBarPlatformBridge implements BossBar {
   }
 
   @Override
-  public @NotNull BossBar addFlags(final @NotNull Flag@NotNull... flags) {
+  public BossBar addFlags(final Flag... flags) {
     return this.editFlags(flags, Set::add, BossBarImpl::onFlagsAdded);
   }
 
   @Override
-  public @NotNull BossBar removeFlags(final @NotNull Flag@NotNull... flags) {
+  public BossBar removeFlags(final Flag... flags) {
     return this.editFlags(flags, Set::remove, BossBarImpl::onFlagsRemoved);
   }
 
-  private @NotNull BossBar editFlags(final Flag[] flags, final BiPredicate<Set<Flag>, Flag> predicate, final BiConsumer<BossBarImpl, Set<Flag>> onChange) {
+  private BossBar editFlags(final Flag[] flags, final BiPredicate<Set<Flag>, Flag> predicate, final BiConsumer<BossBarImpl, Set<Flag>> onChange) {
     if (flags.length == 0) return this;
-    Set<Flag> changes = null;
-    for (int i = 0, length = flags.length; i < length; i++) {
-      if (predicate.test(this.flags, flags[i])) {
-        if (changes == null) {
-          changes = EnumSet.noneOf(Flag.class);
-        }
-        changes.add(flags[i]);
-      }
-    }
-    if (changes != null) {
-      onChange.accept(this, changes);
-    }
-    return this;
-  }
-
-  @Override
-  public @NotNull BossBar addFlags(final @NotNull Iterable<Flag> flags) {
-    return this.editFlags(flags, Set::add, BossBarImpl::onFlagsAdded);
-  }
-
-  @Override
-  public @NotNull BossBar removeFlags(final @NotNull Iterable<Flag> flags) {
-    return this.editFlags(flags, Set::remove, BossBarImpl::onFlagsRemoved);
-  }
-
-  private @NotNull BossBar editFlags(final Iterable<Flag> flags, final BiPredicate<Set<Flag>, Flag> predicate, final BiConsumer<BossBarImpl, Set<Flag>> onChange) {
     Set<Flag> changes = null;
     for (final Flag flag : flags) {
       if (predicate.test(this.flags, flag)) {
@@ -254,26 +221,52 @@ final class BossBarImpl extends HackyBossBarPlatformBridge implements BossBar {
   }
 
   @Override
-  public @NotNull BossBar addListener(final @NotNull Listener listener) {
+  public BossBar addFlags(final Iterable<Flag> flags) {
+    return this.editFlags(flags, Set::add, BossBarImpl::onFlagsAdded);
+  }
+
+  @Override
+  public BossBar removeFlags(final Iterable<Flag> flags) {
+    return this.editFlags(flags, Set::remove, BossBarImpl::onFlagsRemoved);
+  }
+
+  private BossBar editFlags(final Iterable<Flag> flags, final BiPredicate<Set<Flag>, Flag> predicate, final BiConsumer<BossBarImpl, Set<Flag>> onChange) {
+    Set<Flag> changes = null;
+    for (final Flag flag : flags) {
+      if (predicate.test(this.flags, flag)) {
+        if (changes == null) {
+          changes = EnumSet.noneOf(Flag.class);
+        }
+        changes.add(flag);
+      }
+    }
+    if (changes != null) {
+      onChange.accept(this, changes);
+    }
+    return this;
+  }
+
+  @Override
+  public BossBar addListener(final Listener listener) {
     this.listeners.add(listener);
     return this;
   }
 
   @Override
-  public @NotNull BossBar removeListener(final @NotNull Listener listener) {
+  public BossBar removeListener(final Listener listener) {
     this.listeners.remove(listener);
     return this;
   }
 
   @Override
-  public @NotNull Iterable<? extends BossBarViewer> viewers() {
+  public Iterable<? extends BossBarViewer> viewers() {
     if (this.implementation != null) {
       return this.implementation.viewers();
     }
     return Collections.emptyList();
   }
 
-  private void forEachListener(final @NotNull Consumer<Listener> consumer) {
+  private void forEachListener(final Consumer<Listener> consumer) {
     for (final Listener listener : this.listeners) {
       consumer.accept(listener);
     }
@@ -288,18 +281,14 @@ final class BossBarImpl extends HackyBossBarPlatformBridge implements BossBar {
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("name", this.name),
-      ExaminableProperty.of("progress", this.progress),
-      ExaminableProperty.of("color", this.color),
-      ExaminableProperty.of("overlay", this.overlay),
-      ExaminableProperty.of("flags", this.flags)
-    );
-  }
-
-  @Override
   public String toString() {
-    return Internals.toString(this);
+    return "BossBarImpl{" +
+      "listeners=" + this.listeners +
+      ", name=" + this.name +
+      ", progress=" + this.progress +
+      ", color=" + this.color +
+      ", overlay=" + this.overlay +
+      ", flags=" + this.flags +
+      '}';
   }
 }

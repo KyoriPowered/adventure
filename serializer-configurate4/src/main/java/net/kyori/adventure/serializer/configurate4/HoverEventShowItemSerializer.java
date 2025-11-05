@@ -31,8 +31,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
@@ -47,7 +46,7 @@ final class HoverEventShowItemSerializer implements TypeSerializer<HoverEvent.Sh
   }
 
   @Override
-  public HoverEvent.ShowItem deserialize(final @NotNull Type type, final @NotNull ConfigurationNode value) throws SerializationException {
+  public HoverEvent.ShowItem deserialize(final Type type, final ConfigurationNode value) throws SerializationException {
     final Key id = value.node(ComponentTreeConstants.SHOW_ITEM_ID).get(Key.class);
     if (id == null) {
       throw new SerializationException("An id is required to deserialize the show_item hover event");
@@ -67,7 +66,7 @@ final class HoverEventShowItemSerializer implements TypeSerializer<HoverEvent.Sh
   }
 
   @Override
-  public void serialize(final @NotNull Type type, final HoverEvent.@Nullable ShowItem obj, final @NotNull ConfigurationNode value) throws SerializationException {
+  public void serialize(final Type type, final HoverEvent.@Nullable ShowItem obj, final ConfigurationNode value) throws SerializationException {
     if (obj == null) {
       value.set(null);
       return;

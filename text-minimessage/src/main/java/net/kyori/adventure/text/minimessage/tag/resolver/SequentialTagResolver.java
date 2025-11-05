@@ -30,22 +30,17 @@ import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.internal.serializer.ClaimConsumer;
 import net.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
 import net.kyori.adventure.text.minimessage.tag.Tag;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-final class SequentialTagResolver implements TagResolver, SerializableResolver {
-  final TagResolver[] resolvers;
-
-  SequentialTagResolver(final @NotNull TagResolver@NotNull[] resolvers) {
-    this.resolvers = resolvers;
-  }
+@SuppressWarnings("ArrayRecordComponent") // We implement equals/hashCode ourselves
+record SequentialTagResolver(TagResolver[] resolvers) implements TagResolver, SerializableResolver {
 
   @Override
-  public @Nullable Tag resolveNamed(final @NotNull String name, final @NotNull NamedArgumentMap arguments, final @NotNull Context ctx) throws ParsingException {
-    @Nullable ParsingException thrown = null;
+  public @Nullable Tag resolveNamed(final String name, final NamedArgumentMap arguments, final Context ctx) throws ParsingException {
+    ParsingException thrown = null;
     for (final TagResolver resolver : this.resolvers) {
       try {
-        final @Nullable Tag placeholder = resolver.resolveNamed(name, arguments, ctx);
+        final Tag placeholder = resolver.resolveNamed(name, arguments, ctx);
 
         if (placeholder != null) return placeholder;
       } catch (final ParsingException ex) {
@@ -71,13 +66,16 @@ final class SequentialTagResolver implements TagResolver, SerializableResolver {
   }
 
   @Override
-  public @Nullable Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) throws ParsingException {
-    @Nullable ParsingException thrown = null;
+  public @Nullable Tag resolve(final String name, final ArgumentQueue arguments, final Context ctx) throws ParsingException {
+    ParsingException thrown = null;
     for (final TagResolver resolver : this.resolvers) {
       try {
-        final @Nullable Tag placeholder = resolver.resolve(name, arguments, ctx);
+        if (!resolver.has(name)) continue;
+        final Tag placeholder = resolver.resolve(name, arguments, ctx);
 
-        if (placeholder != null) return placeholder;
+        if (placeholder != null) {
+          return placeholder;
+        }
       } catch (final ParsingException ex) {
         arguments.reset();
         if (thrown == null) {
@@ -103,7 +101,7 @@ final class SequentialTagResolver implements TagResolver, SerializableResolver {
   }
 
   @Override
-  public boolean has(final @NotNull String name) {
+  public boolean has(final String name) {
     for (final TagResolver resolver : this.resolvers) {
       if (resolver.has(name)) {
         return true;
@@ -113,10 +111,10 @@ final class SequentialTagResolver implements TagResolver, SerializableResolver {
   }
 
   @Override
-  public void handle(final @NotNull Component serializable, final @NotNull ClaimConsumer consumer) {
+  public void handle(final Component serializable, final ClaimConsumer consumer) {
     for (final TagResolver resolver : this.resolvers) {
-      if (resolver instanceof SerializableResolver) {
-        ((SerializableResolver) resolver).handle(serializable, consumer);
+      if (resolver instanceof SerializableResolver serializableResolver) {
+        serializableResolver.handle(serializable, consumer);
       }
     }
   }
@@ -126,11 +124,10 @@ final class SequentialTagResolver implements TagResolver, SerializableResolver {
     if (other == this) {
       return true;
     }
-    if (!(other instanceof SequentialTagResolver)) {
+    if (!(other instanceof SequentialTagResolver(TagResolver[] resolvers1))) {
       return false;
     }
-    final SequentialTagResolver that = (SequentialTagResolver) other;
-    return Arrays.equals(this.resolvers, that.resolvers);
+    return Arrays.equals(this.resolvers, resolvers1);
   }
 
   @Override

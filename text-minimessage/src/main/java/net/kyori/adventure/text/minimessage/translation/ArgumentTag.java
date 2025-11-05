@@ -29,23 +29,14 @@ import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-final class ArgumentTag implements TagResolver.Sequential {
+record ArgumentTag(List<Tag> arguments, TagResolver tagResolver) implements TagResolver.Sequential {
   private static final String NAME = "argument";
   private static final String NAME_1 = "arg";
 
-  private final List<Tag> arguments;
-  private final TagResolver tagResolver;
-
-  ArgumentTag(final @NotNull List<Tag> arguments, final @NotNull TagResolver tagResolver) {
-    this.arguments = arguments;
-    this.tagResolver = tagResolver;
-  }
-
   @Override
-  public @Nullable Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) throws ParsingException {
+  public @Nullable Tag resolve(final String name, final ArgumentQueue arguments, final Context ctx) throws ParsingException {
     if (name.equals(NAME) || name.equals(NAME_1)) {
       final int index = arguments.popOr("No argument number provided").asInt().orElseThrow(() -> ctx.newException("Invalid argument number", arguments));
 
@@ -60,7 +51,7 @@ final class ArgumentTag implements TagResolver.Sequential {
   }
 
   @Override
-  public boolean has(final @NotNull String name) {
+  public boolean has(final String name) {
     return name.equals(NAME) || name.equals(NAME_1) || this.tagResolver.has(name);
   }
 }

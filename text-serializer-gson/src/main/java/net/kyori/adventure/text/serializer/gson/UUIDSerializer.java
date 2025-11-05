@@ -47,9 +47,9 @@ final class UUIDSerializer extends TypeAdapter<UUID> {
   public void write(final JsonWriter out, final UUID value) throws IOException {
     if (this.emitIntArray) {
       final int msb0 = (int) (value.getMostSignificantBits() >> 32);
-      final int msb1 = (int) (value.getMostSignificantBits() & 0xffffffffl);
+      final int msb1 = (int) (value.getMostSignificantBits() & 0xffffffffL);
       final int lsb0 = (int) (value.getLeastSignificantBits() >> 32);
-      final int lsb1 = (int) (value.getLeastSignificantBits() & 0xffffffffl);
+      final int lsb1 = (int) (value.getLeastSignificantBits() & 0xffffffffL);
 
       out.beginArray()
         .value(msb0)
@@ -72,7 +72,7 @@ final class UUIDSerializer extends TypeAdapter<UUID> {
       final int lsb0 = in.nextInt();
       final int lsb1 = in.nextInt();
       in.endArray();
-      return new UUID((long) msb0 << 32 | ((long) msb1 & 0xffffffffl), (long) lsb0 << 32 | ((long) lsb1 & 0xffffffffl));
+      return new UUID((long) msb0 << 32 | ((long) msb1 & 0xffffffffL), (long) lsb0 << 32 | ((long) lsb1 & 0xffffffffL));
     }
 
     return UUID.fromString(in.nextString());

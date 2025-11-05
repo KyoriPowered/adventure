@@ -37,7 +37,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.serializer.json.JSONOptions;
 import net.kyori.option.OptionState;
-import org.jetbrains.annotations.Nullable;
 
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SHOW_ENTITY_ID;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SHOW_ENTITY_NAME;
@@ -63,13 +62,13 @@ final class ShowEntitySerializer extends TypeAdapter<HoverEvent.ShowEntity> {
 
     Key type = null;
     UUID id = null;
-    @Nullable Component name = null;
+    Component name = null;
 
     while (in.hasNext()) {
       final String fieldName = in.nextName();
 
       switch (fieldName) {
-        case SHOW_ENTITY_ID:
+        case SHOW_ENTITY_ID -> {
           if (in.peek() == JsonToken.BEGIN_ARRAY) {
             // If it is an array, we know this is a UUID encoded.
             id = this.gson.fromJson(in, UUID.class);
@@ -93,19 +92,11 @@ final class ShowEntitySerializer extends TypeAdapter<HoverEvent.ShowEntity> {
               }
             }
           }
-          break;
-        case SHOW_ENTITY_TYPE:
-          type = this.gson.fromJson(in, Key.class);
-          break;
-        case SHOW_ENTITY_UUID:
-          id = this.gson.fromJson(in, UUID.class);
-          break;
-        case SHOW_ENTITY_NAME:
-          name = this.gson.fromJson(in, SerializerFactory.COMPONENT_TYPE);
-          break;
-        default:
-          in.skipValue();
-          break;
+        }
+        case SHOW_ENTITY_TYPE -> type = this.gson.fromJson(in, Key.class);
+        case SHOW_ENTITY_UUID -> id = this.gson.fromJson(in, UUID.class);
+        case SHOW_ENTITY_NAME -> name = this.gson.fromJson(in, SerializerFactory.COMPONENT_TYPE);
+        default -> in.skipValue();
       }
     }
 
@@ -127,7 +118,7 @@ final class ShowEntitySerializer extends TypeAdapter<HoverEvent.ShowEntity> {
     out.name(this.emitKeyAsTypeAndUuidAsId ? SHOW_ENTITY_ID : SHOW_ENTITY_UUID);
     this.gson.toJson(value.id(), SerializerFactory.UUID_TYPE, out);
 
-    final @Nullable Component name = value.name();
+    final Component name = value.name();
     if (name != null) {
       out.name(SHOW_ENTITY_NAME);
       this.gson.toJson(name, SerializerFactory.COMPONENT_TYPE, out);

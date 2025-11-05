@@ -24,7 +24,6 @@
 package net.kyori.adventure.util;
 
 import java.time.Duration;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Standard game tick utilities.
@@ -53,7 +52,7 @@ public interface Ticks {
    * @return a duration
    * @since 4.0.0
    */
-  static @NotNull Duration duration(final long ticks) {
+  static Duration duration(final long ticks) {
     return Duration.ofMillis(ticks * SINGLE_TICK_DURATION_MS);
   }
 }

@@ -53,6 +53,7 @@ class KeyTest {
     assertEquals("empty", key.value());
   }
 
+  @SuppressWarnings("PatternValidation") // We are testing to ensure this throws an exception.
   @Test
   void testOfInvalid() {
     assertEquals("!", assertThrows(InvalidKeyException.class, () -> Key.key("!")).keyValue());
@@ -115,6 +116,7 @@ class KeyTest {
     assertTrue(Key.parseableValue("some/path"));
   }
 
+  @SuppressWarnings("PatternValidation") // We are testing to ensure this throws an exception.
   @Test
   void testNulChar() {
     assertThrows(InvalidKeyException.class, () -> Key.key("carbon:global\0\0\0"));
@@ -125,6 +127,7 @@ class KeyTest {
     assertEquals(Key.key(Key.MINECRAFT_NAMESPACE, "test"), Key.key(":test"));
   }
 
+  @SuppressWarnings("PatternValidation") // We are testing to ensure this throws an exception.
   @Test
   void testKeyWithInvalidCharacter() {
     assertThrows(InvalidKeyException.class, () -> Key.key("a/b", "a"));

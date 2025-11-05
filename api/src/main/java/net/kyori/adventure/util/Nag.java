@@ -23,7 +23,7 @@
  */
 package net.kyori.adventure.util;
 
-import org.jetbrains.annotations.NotNull;
+import java.io.Serial;
 
 /**
  * A nag.
@@ -31,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.7.0
  */
 public abstract class Nag extends RuntimeException {
-  private static final long serialVersionUID = -695562541413409498L;
+  @Serial private static final long serialVersionUID = -695562541413409498L;
 
   /**
    * Prints a nag.
@@ -39,7 +39,7 @@ public abstract class Nag extends RuntimeException {
    * @param nag the nag
    * @since 4.7.0
    */
-  public static void print(final @NotNull Nag nag) {
+  public static void print(final Nag nag) {
     nag.printStackTrace();
   }
 

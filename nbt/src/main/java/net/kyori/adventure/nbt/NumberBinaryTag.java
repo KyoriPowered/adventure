@@ -23,16 +23,14 @@
  */
 package net.kyori.adventure.nbt;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * A numeric binary tag.
  *
  * @since 4.0.0
  */
-public interface NumberBinaryTag extends BinaryTag {
+public sealed interface NumberBinaryTag extends BinaryTag permits ByteBinaryTag, DoubleBinaryTag, FloatBinaryTag, IntBinaryTag, LongBinaryTag, ShortBinaryTag {
   @Override
-  @NotNull BinaryTagType<? extends NumberBinaryTag> type();
+  BinaryTagType<? extends NumberBinaryTag> type();
 
   /**
    * Gets the value as a {@code byte}.
@@ -88,5 +86,5 @@ public interface NumberBinaryTag extends BinaryTag {
    * @return the value as a {@link Number}
    * @since 4.21.0
    */
-  @NotNull Number numberValue();
+  Number numberValue();
 }

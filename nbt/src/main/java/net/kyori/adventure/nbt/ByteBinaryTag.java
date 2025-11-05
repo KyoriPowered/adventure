@@ -23,15 +23,12 @@
  */
 package net.kyori.adventure.nbt;
 
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-
 /**
  * A binary tag holding a {@code byte} value.
  *
  * @since 4.0.0
  */
-public interface ByteBinaryTag extends NumberBinaryTag {
+public sealed interface ByteBinaryTag extends NumberBinaryTag permits ByteBinaryTagImpl {
   /**
    * A tag with the value {@code 0}.
    *
@@ -53,7 +50,7 @@ public interface ByteBinaryTag extends NumberBinaryTag {
    * @return a binary tag
    * @since 4.14.0
    */
-  static @NotNull ByteBinaryTag byteBinaryTag(final byte value) {
+  static ByteBinaryTag byteBinaryTag(final byte value) {
     if (value == 0) {
       return ZERO;
     } else if (value == 1) {
@@ -63,22 +60,8 @@ public interface ByteBinaryTag extends NumberBinaryTag {
     }
   }
 
-  /**
-   * Creates a binary tag holding a {@code byte} value.
-   *
-   * @param value the value
-   * @return a binary tag
-   * @since 4.0.0
-   * @deprecated for removal since 4.14.0, use {@link #byteBinaryTag(byte)} instead.
-   */
-  @Deprecated
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  static @NotNull ByteBinaryTag of(final byte value) {
-    return byteBinaryTag(value);
-  }
-
   @Override
-  default @NotNull BinaryTagType<ByteBinaryTag> type() {
+  default BinaryTagType<ByteBinaryTag> type() {
     return BinaryTagTypes.BYTE;
   }
 

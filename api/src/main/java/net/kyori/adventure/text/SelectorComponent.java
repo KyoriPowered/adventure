@@ -23,11 +23,8 @@
  */
 package net.kyori.adventure.text;
 
-import java.util.stream.Stream;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A component that can display the name of entities found with a given selector.
@@ -44,14 +41,14 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 4.0.0
  */
-public interface SelectorComponent extends BuildableComponent<SelectorComponent, SelectorComponent.Builder>, ScopedComponent<SelectorComponent> {
+public sealed interface SelectorComponent extends ScopedComponent<SelectorComponent> permits SelectorComponentImpl {
   /**
    * Gets the selector pattern.
    *
    * @return the selector pattern
    * @since 4.0.0
    */
-  @NotNull String pattern();
+  String pattern();
 
   /**
    * Sets the selector pattern.
@@ -61,7 +58,7 @@ public interface SelectorComponent extends BuildableComponent<SelectorComponent,
    * @since 4.0.0
    */
   @Contract(pure = true)
-  @NotNull SelectorComponent pattern(final @NotNull String pattern);
+  SelectorComponent pattern(final String pattern);
 
   /**
    * Gets the separator.
@@ -78,25 +75,17 @@ public interface SelectorComponent extends BuildableComponent<SelectorComponent,
    * @return the separator
    * @since 4.8.0
    */
-  @NotNull SelectorComponent separator(final @Nullable ComponentLike separator);
+  SelectorComponent separator(final @Nullable ComponentLike separator);
 
   @Override
-  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.concat(
-      Stream.of(
-        ExaminableProperty.of("pattern", this.pattern()),
-        ExaminableProperty.of("separator", this.separator())
-      ),
-      BuildableComponent.super.examinableProperties()
-    );
-  }
+  Builder toBuilder();
 
   /**
    * A selector component builder.
    *
    * @since 4.0.0
    */
-  interface Builder extends ComponentBuilder<SelectorComponent, Builder> {
+  sealed interface Builder extends ComponentBuilder<SelectorComponent, Builder> permits SelectorComponentImpl.BuilderImpl {
     /**
      * Sets the selector pattern.
      *
@@ -105,7 +94,7 @@ public interface SelectorComponent extends BuildableComponent<SelectorComponent,
      * @since 4.0.0
      */
     @Contract("_ -> this")
-    @NotNull Builder pattern(final @NotNull String pattern);
+    Builder pattern(final String pattern);
 
     /**
      * Sets the separator.
@@ -115,6 +104,6 @@ public interface SelectorComponent extends BuildableComponent<SelectorComponent,
      * @since 4.8.0
      */
     @Contract("_ -> this")
-    @NotNull Builder separator(final @Nullable ComponentLike separator);
+    Builder separator(final @Nullable ComponentLike separator);
   }
 }

@@ -23,11 +23,6 @@
  */
 package net.kyori.adventure.util;
 
-import java.util.stream.Stream;
-import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
 /**
@@ -37,7 +32,7 @@ import org.jetbrains.annotations.Range;
  *
  * @since 4.6.0
  */
-public interface HSVLike extends Examinable {
+public interface HSVLike {
   /**
    * Creates a new HSVLike.
    *
@@ -47,23 +42,7 @@ public interface HSVLike extends Examinable {
    * @return a new HSVLike
    * @since 4.10.0
    */
-  static @NotNull HSVLike hsvLike(final float h, final float s, final float v) {
-    return new HSVLikeImpl(h, s, v);
-  }
-
-  /**
-   * Creates a new HSVLike.
-   *
-   * @param h hue color component
-   * @param s saturation color component
-   * @param v value color component
-   * @return a new HSVLike
-   * @since 4.6.0
-   * @deprecated for removal since 4.10.0, use {@link #hsvLike(float, float, float)} instead.
-   */
-  @Deprecated
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  static @NotNull HSVLike of(final float h, final float s, final float v) {
+  static HSVLike hsvLike(final float h, final float s, final float v) {
     return new HSVLikeImpl(h, s, v);
   }
 
@@ -76,7 +55,7 @@ public interface HSVLike extends Examinable {
    * @return a new HSVLike
    * @since 4.6.0
    */
-  static @NotNull HSVLike fromRGB(@Range(from = 0x0, to = 0xff) final int red, @Range(from = 0x0, to = 0xff) final int green, @Range(from = 0x0, to = 0xff) final int blue) {
+  static HSVLike fromRGB(@Range(from = 0x0, to = 0xff) final int red, @Range(from = 0x0, to = 0xff) final int green, @Range(from = 0x0, to = 0xff) final int blue) {
     final float r = red / 255.0f;
     final float g = green / 255.0f;
     final float b = blue / 255.0f;
@@ -135,13 +114,4 @@ public interface HSVLike extends Examinable {
    * @since 4.6.0
    */
   float v();
-
-  @Override
-  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("h", this.h()),
-      ExaminableProperty.of("s", this.s()),
-      ExaminableProperty.of("v", this.v())
-    );
-  }
 }

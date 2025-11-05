@@ -27,17 +27,14 @@ import java.util.Locale;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.pointer.Pointered;
 import net.kyori.adventure.pointer.Pointers;
-import org.jetbrains.annotations.NotNull;
 
-final class LocalePointered implements Pointered {
-  private final Pointers pointers;
-
-  LocalePointered(final @NotNull Locale locale) {
-    this.pointers = Pointers.builder().withStatic(Identity.LOCALE, locale).build();
+record LocalePointered(Pointers pointers) implements Pointered {
+  LocalePointered(final Locale pointers) {
+    this(Pointers.builder().withStatic(Identity.LOCALE, pointers).build());
   }
 
   @Override
-  public @NotNull Pointers pointers() {
+  public Pointers pointers() {
     return this.pointers;
   }
 }

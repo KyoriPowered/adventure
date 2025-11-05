@@ -30,10 +30,9 @@ import org.jetbrains.annotations.ApiStatus;
  * This class is a major hack, intended to allow certain platforms a way
  * to define a platform-native counterpart to an Adventure boss bar.
  *
- * @deprecated not an official API, and may disappear without warning
+ * @since 4.3.0
  */
 @ApiStatus.Internal
-@Deprecated
 @PlatformAPI
 abstract class HackyBossBarPlatformBridge {
 }

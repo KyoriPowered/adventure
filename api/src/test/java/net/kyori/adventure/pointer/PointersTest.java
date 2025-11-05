@@ -85,10 +85,6 @@ final class PointersTest {
     final Pointers childPointers = child.view(10);
     assertEquals("0", childPointers.get(p0).get());
     assertEquals("1", childPointers.get(p1).get());
-
-    final Pointers rebuilt = childPointers.toBuilder().withStatic(p0, "1").build();
-    assertEquals("1", rebuilt.get(p0).get());
-    assertEquals("1", rebuilt.get(p1).get());
   }
 
   @Test
@@ -106,9 +102,5 @@ final class PointersTest {
     final Pointers pointer = supplier.view(10);
     assertFalse(pointer.get(p0).isPresent());
     assertEquals("1", pointer.get(p1).get());
-
-    final Pointers rebuilt = pointer.toBuilder().withStatic(p0, "1").build();
-    assertEquals("1", rebuilt.get(p0).get());
-    assertEquals("1", rebuilt.get(p1).get());
   }
 }

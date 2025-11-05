@@ -23,33 +23,31 @@
  */
 package net.kyori.adventure.text.logger.slf4j;
 
+import java.io.Serial;
 import java.util.function.Function;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.ComponentMessageThrowable;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * A wrapper for exceptions that implement ComponentMessageThrowable.
  */
 @SuppressWarnings("OverrideThrowableToString")
 final class UnpackedComponentThrowable extends Throwable {
-  private static final long serialVersionUID = -1L;
+  @Serial private static final long serialVersionUID = -1L;
 
   private final Class<? extends Throwable> backingType;
 
   static Throwable unpack(final Throwable maybeRich, final Function<Component, String> serializer) {
-    if (!(maybeRich instanceof ComponentMessageThrowable)) return maybeRich; // TODO: do we need to unwrap any nested exceptions?
+    if (!(maybeRich instanceof final ComponentMessageThrowable cmt)) return maybeRich; // TODO: do we need to unwrap any nested exceptions?
 
-    final @Nullable Component message = ((ComponentMessageThrowable) maybeRich).componentMessage();
+    final Component message = cmt.componentMessage();
     final Throwable cause = maybeRich.getCause() != null ? unpack(maybeRich.getCause(), serializer) : null;
     final Throwable[] suppressed = maybeRich.getSuppressed();
 
     final UnpackedComponentThrowable ret = new UnpackedComponentThrowable(maybeRich.getClass(), serializer.apply(message), cause);
     ret.setStackTrace(maybeRich.getStackTrace());
-    if (suppressed.length > 0) {
-      for (int i = 0; i < suppressed.length; i++) {
-        ret.addSuppressed(unpack(suppressed[i], serializer));
-      }
+    for (final Throwable throwable : suppressed) {
+      ret.addSuppressed(unpack(throwable, serializer));
     }
 
     return ret;

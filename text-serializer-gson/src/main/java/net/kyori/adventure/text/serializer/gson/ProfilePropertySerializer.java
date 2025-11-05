@@ -62,14 +62,11 @@ final class ProfilePropertySerializer extends TypeAdapter<PlayerHeadObjectConten
     String signature = null;
     while (in.hasNext()) {
       final String fieldName = in.nextName();
-      if (fieldName.equals(PROFILE_PROPERTY_NAME)) {
-        name = in.nextString();
-      } else if (fieldName.equals(PROFILE_PROPERTY_VALUE)) {
-        value = in.nextString();
-      } else if (fieldName.equals(PROFILE_PROPERTY_SIGNATURE)) {
-        signature = in.nextString();
-      } else {
-        in.skipValue();
+      switch (fieldName) {
+        case PROFILE_PROPERTY_NAME -> name = in.nextString();
+        case PROFILE_PROPERTY_VALUE -> value = in.nextString();
+        case PROFILE_PROPERTY_SIGNATURE -> signature = in.nextString();
+        default -> in.skipValue();
       }
     }
     in.endObject();

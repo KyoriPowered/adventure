@@ -41,8 +41,7 @@ import net.kyori.adventure.text.minimessage.internal.serializer.TokenEmitter;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -63,8 +62,8 @@ final class DecorationTag {
   public static final String REVERT = "!";
 
   // create resolvers for canonical + configured alternates
-  static Map.Entry<TextDecoration, Stream<TagResolver>> resolvers(final TextDecoration decoration, final @Nullable String shortName, final @NotNull String@NotNull... secondaryAliases) {
-    final String canonicalName = TextDecoration.NAMES.key(decoration);
+  static Map.Entry<TextDecoration, Stream<TagResolver>> resolvers(final TextDecoration decoration, final @Nullable String shortName, final String... secondaryAliases) {
+    final String canonicalName = TextDecoration.NAMES.keyOrThrow(decoration);
     final Set<String> names = new HashSet<>();
     names.add(canonicalName);
     if (shortName != null) names.add(shortName);
@@ -76,7 +75,7 @@ final class DecorationTag {
           (args, ctx) -> DecorationTag.create(decoration, args, ctx),
           claim(decoration, (state, emitter) -> emit(canonicalName, shortName == null ? canonicalName : shortName, state, emitter))
         )),
-      names.stream().map(name -> TagResolver.resolver(DecorationTag.REVERT + name, DecorationTag.createNegated(decoration)))
+      names.stream().map(name -> TagResolver.resolver(DecorationTag.REVERT + canonicalName, DecorationTag.createNegated(decoration)))
     ));
   }
 
@@ -109,7 +108,7 @@ final class DecorationTag {
     return Tag.styling(toApply.withState(false));
   }
 
-  static @NotNull StyleClaim<TextDecoration.State> claim(final @NotNull TextDecoration decoration, final @NotNull BiConsumer<TextDecoration.State, TokenEmitter> emitable) {
+  static StyleClaim<TextDecoration.State> claim(final TextDecoration decoration, final BiConsumer<TextDecoration.State, TokenEmitter> emitable) {
     requireNonNull(decoration, "decoration");
     return StyleClaim.claim(
       "decoration_" + TextDecoration.NAMES.key(decoration),
@@ -119,7 +118,7 @@ final class DecorationTag {
     );
   }
 
-  static void emit(final @NotNull String longName, final @NotNull String shortName, final TextDecoration.@NotNull State state, final @NotNull TokenEmitter emitter) {
+  static void emit(final String longName, final String shortName, final TextDecoration.State state, final TokenEmitter emitter) {
     if (state == State.FALSE) {
       emitter.tag(REVERT + longName);
     } else {

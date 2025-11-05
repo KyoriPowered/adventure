@@ -27,7 +27,6 @@ import com.google.auto.service.AutoService;
 import java.util.Arrays;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import static net.kyori.adventure.key.Key.key;
@@ -103,12 +102,12 @@ class DataComponentValueConverterRegistryTest {
     static final Key ID = key("adventure", "test/converter_registry");
 
     @Override
-    public @NotNull Key id() {
+    public Key id() {
       return ID;
     }
 
     @Override
-    public @NotNull Iterable<DataComponentValueConverterRegistry.Conversion<?, ?>> conversions() {
+    public Iterable<DataComponentValueConverterRegistry.Conversion<?, ?>> conversions() {
       // gah j8
       return Arrays.asList(
         DataComponentValueConverterRegistry.Conversion.convert(DirectValue.class, ItfValueImpl.class, (key, dir) -> new ItfValueImpl(dir.value)),

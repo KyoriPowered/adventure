@@ -26,8 +26,7 @@ package net.kyori.adventure.text.format;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.Index;
 import net.kyori.adventure.util.TriState;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -85,12 +84,10 @@ public enum TextDecoration implements StyleBuilderApplicable, TextFormat {
    *
    * @param state the state
    * @return a {@link TextDecorationAndState}
-   * @since 4.8.0
-   * @deprecated for removal since 4.10.0, use {@link #withState(boolean)} instead
+   * @since 4.10.0
    */
-  @Deprecated
-  public final @NotNull TextDecorationAndState as(final boolean state) {
-    return this.withState(state);
+  public final TextDecorationAndState withState(final boolean state) {
+    return new TextDecorationAndStateImpl(this, State.byBoolean(state));
   }
 
   /**
@@ -98,54 +95,30 @@ public enum TextDecoration implements StyleBuilderApplicable, TextFormat {
    *
    * @param state the state
    * @return a {@link TextDecorationAndState}
-   * @since 4.8.0
-   * @deprecated for removal since 4.10.0, use {@link #withState(State)} instead
-   */
-  @Deprecated
-  public final @NotNull TextDecorationAndState as(final @NotNull State state) {
-    return this.withState(state);
-  }
-
-  /**
-   * An alias for {@link #as(boolean)}.
-   *
-   * @param state the state
-   * @return a {@link TextDecorationAndState}
    * @since 4.10.0
    */
-  public final @NotNull TextDecorationAndState withState(final boolean state) {
-    return new TextDecorationAndStateImpl(this, State.byBoolean(state));
-  }
-
-  /**
-   * An alias for {@link #as(State)}.
-   *
-   * @param state the state
-   * @return a {@link TextDecorationAndState}
-   * @since 4.10.0
-   */
-  public final @NotNull TextDecorationAndState withState(final @NotNull State state) {
+  public final TextDecorationAndState withState(final State state) {
     return new TextDecorationAndStateImpl(this, state);
   }
 
   /**
-   * An alias for {@link #as(State)}.
+   * Creates a {@link TextDecorationAndState}, annotating this decoration with the given {@code state}.
    *
    * @param state the state
    * @return a {@link TextDecorationAndState}
    * @since 4.10.0
    */
-  public final @NotNull TextDecorationAndState withState(final @NotNull TriState state) {
+  public final TextDecorationAndState withState(final TriState state) {
     return new TextDecorationAndStateImpl(this, State.byTriState(state));
   }
 
   @Override
-  public void styleApply(final Style.@NotNull Builder style) {
+  public void styleApply(final Style.Builder style) {
     style.decorate(this);
   }
 
   @Override
-  public @NotNull String toString() {
+  public String toString() {
     return this.name;
   }
 
@@ -192,7 +165,7 @@ public enum TextDecoration implements StyleBuilderApplicable, TextFormat {
      * @return the state
      * @since 4.0.0
      */
-    public static @NotNull State byBoolean(final boolean flag) {
+    public static State byBoolean(final boolean flag) {
       return flag ? TRUE : FALSE;
     }
 
@@ -203,7 +176,7 @@ public enum TextDecoration implements StyleBuilderApplicable, TextFormat {
      * @return the state
      * @since 4.0.0
      */
-    public static @NotNull State byBoolean(final @Nullable Boolean flag) {
+    public static State byBoolean(final @Nullable Boolean flag) {
       return flag == null ? NOT_SET : byBoolean(flag.booleanValue());
     }
 
@@ -214,14 +187,12 @@ public enum TextDecoration implements StyleBuilderApplicable, TextFormat {
      * @return the state
      * @since 4.10.0
      */
-    public static @NotNull State byTriState(final @NotNull TriState flag) {
-      requireNonNull(flag);
-      switch (flag) {
-        case TRUE: return TRUE;
-        case FALSE: return FALSE;
-        case NOT_SET: return NOT_SET;
-      }
-      throw new IllegalArgumentException("Unable to turn TriState: " + flag + " into a TextDecoration.State");
+    public static State byTriState(final TriState flag) {
+      return switch (requireNonNull(flag, "flag")) {
+        case TRUE -> TRUE;
+        case FALSE -> FALSE;
+        case NOT_SET -> NOT_SET;
+      };
     }
   }
 }

@@ -28,12 +28,12 @@ import com.github.valfirst.slf4jtest.TestLogger;
 import com.github.valfirst.slf4jtest.TestLoggerFactory;
 import com.github.valfirst.slf4jtest.TestLoggerFactoryExtension;
 import com.google.common.collect.ImmutableList;
+import java.io.Serial;
 import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.util.ComponentMessageThrowable;
 import org.jetbrains.annotations.Nullable;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Marker;
@@ -124,7 +124,7 @@ public class ComponentLoggerTest {
   }
 
   static class RichTestException extends Exception implements ComponentMessageThrowable {
-    private static final long serialVersionUID = -1l;
+    private static final @Serial long serialVersionUID = -1L;
 
     private final Component richMessage;
 
@@ -159,13 +159,12 @@ public class ComponentLoggerTest {
   }
 
   @Test
-  @Disabled("We cannot implement this without forcing a binary dep at the moment")
   void testFluentApi() {
     final Component message = Component.text("Hello ").append(Component.text("{}", NamedTextColor.BLUE));
     final String arg = "world";
 
     this.makeLogger().atDebug()
-        // .setMessage(message)
+        .setMessage(message)
         .addArgument(arg)
         .log();
 

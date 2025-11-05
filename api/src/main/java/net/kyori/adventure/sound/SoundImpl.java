@@ -25,18 +25,14 @@ package net.kyori.adventure.sound;
 
 import java.util.OptionalLong;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
-import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.util.ShadyPines;
-import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-abstract class SoundImpl implements Sound {
+sealed abstract class SoundImpl implements Sound permits SoundImpl.Eager, SoundImpl.Lazy {
   static final Emitter EMITTER_SELF = new Emitter() {
     @Override
     public String toString() {
@@ -48,9 +44,9 @@ abstract class SoundImpl implements Sound {
   private final float volume;
   private final float pitch;
   private final OptionalLong seed;
-  private SoundStop stop;
+  private @Nullable SoundStop stop;
 
-  SoundImpl(final @NotNull Source source, final float volume, final float pitch, final OptionalLong seed) {
+  SoundImpl(final Source source, final float volume, final float pitch, final OptionalLong seed) {
     this.source = source;
     this.volume = volume;
     this.pitch = pitch;
@@ -58,7 +54,7 @@ abstract class SoundImpl implements Sound {
   }
 
   @Override
-  public @NotNull Source source() {
+  public Source source() {
     return this.source;
   }
 
@@ -73,12 +69,12 @@ abstract class SoundImpl implements Sound {
   }
 
   @Override
-  public @NotNull OptionalLong seed() {
+  public OptionalLong seed() {
     return this.seed;
   }
 
   @Override
-  public @NotNull SoundStop asStop() {
+  public SoundStop asStop() {
     if (this.stop == null) this.stop = SoundStop.namedOnSource(this.name(), this.source());
     return this.stop;
   }
@@ -86,8 +82,7 @@ abstract class SoundImpl implements Sound {
   @Override
   public boolean equals(final @Nullable Object other) {
     if (this == other) return true;
-    if (!(other instanceof SoundImpl)) return false;
-    final SoundImpl that = (SoundImpl) other;
+    if (!(other instanceof SoundImpl that)) return false;
     return this.name().equals(that.name())
       && this.source == that.source
       && ShadyPines.equals(this.volume, that.volume)
@@ -105,27 +100,11 @@ abstract class SoundImpl implements Sound {
     return result;
   }
 
-  @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("name", this.name()),
-      ExaminableProperty.of("source", this.source),
-      ExaminableProperty.of("volume", this.volume),
-      ExaminableProperty.of("pitch", this.pitch),
-      ExaminableProperty.of("seed", this.seed)
-    );
-  }
-
-  @Override
-  public String toString() {
-    return Internals.toString(this);
-  }
-
   static final class BuilderImpl implements Builder {
     private static final float DEFAULT_VOLUME = 1f;
     private static final float DEFAULT_PITCH = 1f;
-    private Key eagerType;
-    private Supplier<? extends Type> lazyType;
+    private @Nullable Key eagerType;
+    private @Nullable Supplier<? extends Type> lazyType;
     private Source source = Source.MASTER;
     private float volume = DEFAULT_VOLUME;
     private float pitch = DEFAULT_PITCH;
@@ -134,11 +113,11 @@ abstract class SoundImpl implements Sound {
     BuilderImpl() {
     }
 
-    BuilderImpl(final @NotNull Sound existing) {
-      if (existing instanceof Eager) {
-        this.type(((Eager) existing).name);
-      } else if (existing instanceof Lazy) {
-        this.type(((Lazy) existing).supplier);
+    BuilderImpl(final Sound existing) {
+      if (existing instanceof Eager eager) {
+        this.type(eager.name);
+      } else if (existing instanceof Lazy lazy) {
+        this.type(lazy.supplier);
       } else {
         throw new IllegalArgumentException("Unknown sound type " + existing + ", must be Eager or Lazy");
       }
@@ -150,63 +129,63 @@ abstract class SoundImpl implements Sound {
     }
 
     @Override
-    public @NotNull Builder type(final @NotNull Key type) {
+    public Builder type(final Key type) {
       this.eagerType = requireNonNull(type, "type");
       this.lazyType = null;
       return this;
     }
 
     @Override
-    public @NotNull Builder type(final @NotNull Type type) {
+    public Builder type(final Type type) {
       this.eagerType = requireNonNull(requireNonNull(type, "type").key(), "type.key()");
       this.lazyType = null;
       return this;
     }
 
     @Override
-    public @NotNull Builder type(final @NotNull Supplier<? extends Type> typeSupplier) {
+    public Builder type(final Supplier<? extends Type> typeSupplier) {
       this.lazyType = requireNonNull(typeSupplier, "typeSupplier");
       this.eagerType = null;
       return this;
     }
 
     @Override
-    public @NotNull Builder source(final @NotNull Source source) {
+    public Builder source(final Source source) {
       this.source = requireNonNull(source, "source");
       return this;
     }
 
     @Override
-    public @NotNull Builder source(final Source.@NotNull Provider source) {
+    public Builder source(final Source.Provider source) {
       return this.source(source.soundSource());
     }
 
     @Override
-    public @NotNull Builder volume(final @Range(from = 0, to = Integer.MAX_VALUE) float volume) {
+    public Builder volume(final @Range(from = 0, to = Integer.MAX_VALUE) float volume) {
       this.volume = volume;
       return this;
     }
 
     @Override
-    public @NotNull Builder pitch(final @Range(from = -1, to = 1) float pitch) {
+    public Builder pitch(final @Range(from = -1, to = 1) float pitch) {
       this.pitch = pitch;
       return this;
     }
 
     @Override
-    public @NotNull Builder seed(final long seed) {
+    public Builder seed(final long seed) {
       this.seed = OptionalLong.of(seed);
       return this;
     }
 
     @Override
-    public @NotNull Builder seed(final @NotNull OptionalLong seed) {
+    public Builder seed(final OptionalLong seed) {
       this.seed = requireNonNull(seed, "seed");
       return this;
     }
 
     @Override
-    public @NotNull Sound build() {
+    public Sound build() {
       if (this.eagerType != null) {
         return new Eager(this.eagerType, this.source, this.volume, this.pitch, this.seed);
       } else if (this.lazyType != null) {
@@ -220,13 +199,13 @@ abstract class SoundImpl implements Sound {
   static final class Eager extends SoundImpl {
     final Key name;
 
-    Eager(final @NotNull Key name, final @NotNull Source source, final float volume, final float pitch, final OptionalLong seed) {
+    Eager(final Key name, final Source source, final float volume, final float pitch, final OptionalLong seed) {
       super(source, volume, pitch, seed);
       this.name = name;
     }
 
     @Override
-    public @NotNull Key name() {
+    public Key name() {
       return this.name;
     }
   }
@@ -234,13 +213,13 @@ abstract class SoundImpl implements Sound {
   static final class Lazy extends SoundImpl {
     final Supplier<? extends Type> supplier;
 
-    Lazy(final @NotNull Supplier<? extends Type> supplier, final @NotNull Source source, final float volume, final float pitch, final OptionalLong seed) {
+    Lazy(final Supplier<? extends Type> supplier, final Source source, final float volume, final float pitch, final OptionalLong seed) {
       super(source, volume, pitch, seed);
       this.supplier = supplier;
     }
 
     @Override
-    public @NotNull Key name() {
+    public Key name() {
       return this.supplier.get().key();
     }
   }

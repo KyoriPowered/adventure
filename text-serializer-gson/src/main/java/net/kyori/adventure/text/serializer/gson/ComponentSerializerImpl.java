@@ -40,7 +40,6 @@ import java.util.Map;
 import java.util.UUID;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.BlockNBTComponent;
-import net.kyori.adventure.text.BuildableComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentBuilder;
 import net.kyori.adventure.text.EntityNBTComponent;
@@ -59,7 +58,7 @@ import net.kyori.adventure.text.object.PlayerHeadObjectContents;
 import net.kyori.adventure.text.object.SpriteObjectContents;
 import net.kyori.adventure.text.serializer.json.JSONOptions;
 import net.kyori.option.OptionState;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.EXTRA;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.KEYBIND;
@@ -105,7 +104,7 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
   }
 
   @Override
-  public BuildableComponent<?, ?> read(final JsonReader in) throws IOException {
+  public Component read(final JsonReader in) throws IOException {
     final JsonToken token = in.peek();
     if (token == JsonToken.STRING || token == JsonToken.NUMBER || token == JsonToken.BOOLEAN) {
       return Component.text(GsonHacks.readString(in));
@@ -113,7 +112,7 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
       ComponentBuilder<?, ?> parent = null;
       in.beginArray();
       while (in.hasNext()) {
-        final BuildableComponent<?, ?> child = this.read(in);
+        final Component child = this.read(in);
         if (parent == null) {
           parent = child.toBuilder();
         } else {
@@ -157,103 +156,86 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
     in.beginObject();
     while (in.hasNext()) {
       final String fieldName = in.nextName();
-      if (fieldName.equals(TEXT)) {
-        text = GsonHacks.readString(in);
-      } else if (fieldName.equals(TRANSLATE)) {
-        translate = in.nextString();
-      } else if (fieldName.equals(TRANSLATE_FALLBACK)) {
-        translateFallback = in.nextString();
-      } else if (fieldName.equals(TRANSLATE_WITH)) {
-        translateWith = this.gson.fromJson(in, TRANSLATABLE_ARGUMENT_LIST_TYPE);
-      } else if (fieldName.equals(SCORE)) {
-        in.beginObject();
-        while (in.hasNext()) {
-          final String scoreFieldName = in.nextName();
-          if (scoreFieldName.equals(SCORE_NAME)) {
-            scoreName = in.nextString();
-          } else if (scoreFieldName.equals(SCORE_OBJECTIVE)) {
-            scoreObjective = in.nextString();
-          } else if (scoreFieldName.equals(SCORE_VALUE)) {
-            scoreValue = in.nextString();
+      switch (fieldName) {
+        case TEXT -> text = GsonHacks.readString(in);
+        case TRANSLATE -> translate = in.nextString();
+        case TRANSLATE_FALLBACK -> translateFallback = in.nextString();
+        case TRANSLATE_WITH -> translateWith = this.gson.fromJson(in, TRANSLATABLE_ARGUMENT_LIST_TYPE);
+        case SCORE -> {
+          in.beginObject();
+          while (in.hasNext()) {
+            final String scoreFieldName = in.nextName();
+            switch (scoreFieldName) {
+              case SCORE_NAME -> scoreName = in.nextString();
+              case SCORE_OBJECTIVE -> scoreObjective = in.nextString();
+              case SCORE_VALUE -> scoreValue = in.nextString();
+              default -> in.skipValue();
+            }
+          }
+          if (scoreName == null || scoreObjective == null) {
+            throw new JsonParseException("A score component requires a " + SCORE_NAME + " and " + SCORE_OBJECTIVE);
+          }
+          in.endObject();
+        }
+        case SELECTOR -> selector = in.nextString();
+        case KEYBIND -> keybind = in.nextString();
+        case NBT -> nbt = in.nextString();
+        case NBT_INTERPRET -> nbtInterpret = in.nextBoolean();
+        case NBT_BLOCK -> nbtBlock = this.gson.fromJson(in, SerializerFactory.BLOCK_NBT_POS_TYPE);
+        case NBT_ENTITY -> nbtEntity = in.nextString();
+        case NBT_STORAGE -> nbtStorage = this.gson.fromJson(in, SerializerFactory.KEY_TYPE);
+        case EXTRA -> extra = this.gson.fromJson(in, COMPONENT_LIST_TYPE);
+        case SEPARATOR -> separator = this.read(in);
+        case OBJECT_ATLAS -> atlas = this.gson.fromJson(in, SerializerFactory.KEY_TYPE);
+        case OBJECT_SPRITE -> sprite = this.gson.fromJson(in, SerializerFactory.KEY_TYPE);
+        case OBJECT_PLAYER -> {
+          if (playerHeadContents == null) playerHeadContents = ObjectContents.playerHead();
+          final JsonToken playerToken = in.peek();
+          // `player` can be either just the name or a partial profile
+          if (playerToken == JsonToken.STRING) {
+            playerHeadContentsHasProfile = true;
+            playerHeadContents.name(in.nextString());
+          } else if (playerToken == JsonToken.BEGIN_OBJECT) {
+            playerHeadContentsHasProfile = true;
+            in.beginObject();
+            while (in.hasNext()) {
+              final String playerHeadFieldName = in.nextName();
+              switch (playerHeadFieldName) {
+                case OBJECT_PLAYER_NAME -> playerHeadContents.name(in.nextString());
+                case OBJECT_PLAYER_ID -> playerHeadContents.id(this.gson.fromJson(in, SerializerFactory.UUID_TYPE));
+                case OBJECT_PLAYER_PROPERTIES -> {
+                  final JsonToken propertyToken = in.peek();
+                  if (propertyToken == JsonToken.BEGIN_ARRAY) {
+                    playerHeadContents.profileProperties(this.gson.fromJson(in, PROPERTY_LIST_TYPE));
+                  } else if (propertyToken == JsonToken.BEGIN_OBJECT) {
+                    in.beginObject();
+                    while (in.hasNext()) {
+                      final String propertyName = in.nextName();
+                      in.beginArray();
+                      while (in.hasNext()) {
+                        playerHeadContents.profileProperty(PlayerHeadObjectContents.property(propertyName, in.nextString()));
+                      }
+                      in.endArray();
+                    }
+                    in.endObject();
+                  } else {
+                    in.skipValue();
+                  }
+                }
+                case OBJECT_PLAYER_TEXTURE -> playerHeadContents.texture(this.gson.fromJson(in, SerializerFactory.KEY_TYPE));
+                default -> in.skipValue();
+              }
+            }
+            in.endObject();
           } else {
             in.skipValue();
           }
         }
-        if (scoreName == null || scoreObjective == null) {
-          throw new JsonParseException("A score component requires a " + SCORE_NAME + " and " + SCORE_OBJECTIVE);
+        case OBJECT_HAT -> {
+          if (playerHeadContents == null) playerHeadContents = ObjectContents.playerHead();
+          playerHeadContents.hat(in.nextBoolean());
         }
-        in.endObject();
-      } else if (fieldName.equals(SELECTOR)) {
-        selector = in.nextString();
-      } else if (fieldName.equals(KEYBIND)) {
-        keybind = in.nextString();
-      } else if (fieldName.equals(NBT)) {
-        nbt = in.nextString();
-      } else if (fieldName.equals(NBT_INTERPRET)) {
-        nbtInterpret = in.nextBoolean();
-      } else if (fieldName.equals(NBT_BLOCK)) {
-        nbtBlock = this.gson.fromJson(in, SerializerFactory.BLOCK_NBT_POS_TYPE);
-      } else if (fieldName.equals(NBT_ENTITY)) {
-        nbtEntity = in.nextString();
-      } else if (fieldName.equals(NBT_STORAGE)) {
-        nbtStorage = this.gson.fromJson(in, SerializerFactory.KEY_TYPE);
-      } else if (fieldName.equals(EXTRA)) {
-        extra = this.gson.fromJson(in, COMPONENT_LIST_TYPE);
-      } else if (fieldName.equals(SEPARATOR)) {
-        separator = this.read(in);
-      } else if (fieldName.equals(OBJECT_ATLAS)) {
-        atlas = this.gson.fromJson(in, SerializerFactory.KEY_TYPE);
-      } else if (fieldName.equals(OBJECT_SPRITE)) {
-        sprite = this.gson.fromJson(in, SerializerFactory.KEY_TYPE);
-      } else if (fieldName.equals(OBJECT_PLAYER)) {
-        if (playerHeadContents == null) playerHeadContents = ObjectContents.playerHead();
-        final JsonToken playerToken = in.peek();
-        // `player` can be either just the name or a partial profile
-        if (playerToken == JsonToken.STRING) {
-          playerHeadContentsHasProfile = true;
-          playerHeadContents.name(in.nextString());
-        } else if (playerToken == JsonToken.BEGIN_OBJECT) {
-          playerHeadContentsHasProfile = true;
-          in.beginObject();
-          while (in.hasNext()) {
-            final String playerHeadFieldName = in.nextName();
-            if (playerHeadFieldName.equals(OBJECT_PLAYER_NAME)) {
-              playerHeadContents.name(in.nextString());
-            } else if (playerHeadFieldName.equals(OBJECT_PLAYER_ID)) {
-              playerHeadContents.id(this.gson.fromJson(in, SerializerFactory.UUID_TYPE));
-            } else if (playerHeadFieldName.equals(OBJECT_PLAYER_PROPERTIES)) {
-              final JsonToken propertyToken = in.peek();
-              if (propertyToken == JsonToken.BEGIN_ARRAY) {
-                playerHeadContents.profileProperties(this.gson.fromJson(in, PROPERTY_LIST_TYPE));
-              } else if (propertyToken == JsonToken.BEGIN_OBJECT) {
-                in.beginObject();
-                while (in.hasNext()) {
-                  final String propertyName = in.nextName();
-                  in.beginArray();
-                  while (in.hasNext()) {
-                    playerHeadContents.profileProperty(PlayerHeadObjectContents.property(propertyName, in.nextString()));
-                  }
-                  in.endArray();
-                }
-                in.endObject();
-              } else {
-                in.skipValue();
-              }
-            } else if (playerHeadFieldName.equals(OBJECT_PLAYER_TEXTURE)) {
-              playerHeadContents.texture(this.gson.fromJson(in, SerializerFactory.KEY_TYPE));
-            } else {
-              in.skipValue();
-            }
-          }
-          in.endObject();
-        } else {
-          in.skipValue();
-        }
-      } else if (fieldName.equals(OBJECT_HAT)) {
-        if (playerHeadContents == null) playerHeadContents = ObjectContents.playerHead();
-        playerHeadContents.hat(in.nextBoolean());
-      } else {
-        style.add(fieldName, this.gson.fromJson(in, JsonElement.class));
+        default -> style.add(fieldName, this.gson.fromJson(in, JsonElement.class));
       }
     }
 
@@ -298,12 +280,12 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
     }
 
     builder.style(this.gson.fromJson(style, SerializerFactory.STYLE_TYPE))
-        .append(extra);
+      .append(extra);
     in.endObject();
     return builder.build();
   }
 
-  private static <C extends NBTComponent<C, B>, B extends NBTComponentBuilder<C, B>> B nbt(final B builder, final String nbt, final boolean interpret, final @Nullable Component separator) {
+  private static <C extends NBTComponent<C>, B extends NBTComponentBuilder<C, B>> B nbt(final B builder, final String nbt, final boolean interpret, final @Nullable Component separator) {
     return builder
       .nbtPath(nbt)
       .interpret(interpret)
@@ -339,109 +321,112 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
       this.gson.toJson(value.children(), COMPONENT_LIST_TYPE, out);
     }
 
-    if (value instanceof TextComponent) {
-      out.name(TEXT);
-      out.value(((TextComponent) value).content());
-    } else if (value instanceof TranslatableComponent) {
-      final TranslatableComponent translatable = (TranslatableComponent) value;
-      out.name(TRANSLATE);
-      out.value(translatable.key());
-      final @Nullable String fallback = translatable.fallback();
-      if (fallback != null) {
-        out.name(TRANSLATE_FALLBACK);
-        out.value(fallback);
+    switch (value) {
+      case TextComponent textComponent -> {
+        out.name(TEXT);
+        out.value(textComponent.content());
       }
-      if (!translatable.arguments().isEmpty()) {
-        out.name(TRANSLATE_WITH);
-        this.gson.toJson(translatable.arguments(), TRANSLATABLE_ARGUMENT_LIST_TYPE, out);
-      }
-    } else if (value instanceof ScoreComponent) {
-      final ScoreComponent score = (ScoreComponent) value;
-      out.name(SCORE);
-      out.beginObject();
-      out.name(SCORE_NAME);
-      out.value(score.name());
-      out.name(SCORE_OBJECTIVE);
-      out.value(score.objective());
-      if (score.value() != null) {
-        out.name(SCORE_VALUE);
-        out.value(score.value());
-      }
-      out.endObject();
-    } else if (value instanceof SelectorComponent) {
-      final SelectorComponent selector = (SelectorComponent) value;
-      out.name(SELECTOR);
-      out.value(selector.pattern());
-      this.serializeSeparator(out, selector.separator());
-    } else if (value instanceof KeybindComponent) {
-      out.name(KEYBIND);
-      out.value(((KeybindComponent) value).keybind());
-    } else if (value instanceof NBTComponent) {
-      final NBTComponent<?, ?> nbt = (NBTComponent<?, ?>) value;
-      out.name(NBT);
-      out.value(nbt.nbtPath());
-      out.name(NBT_INTERPRET);
-      out.value(nbt.interpret());
-      this.serializeSeparator(out, nbt.separator());
-      if (value instanceof BlockNBTComponent) {
-        out.name(NBT_BLOCK);
-        this.gson.toJson(((BlockNBTComponent) value).pos(), SerializerFactory.BLOCK_NBT_POS_TYPE, out);
-      } else if (value instanceof EntityNBTComponent) {
-        out.name(NBT_ENTITY);
-        out.value(((EntityNBTComponent) value).selector());
-      } else if (value instanceof StorageNBTComponent) {
-        out.name(NBT_STORAGE);
-        this.gson.toJson(((StorageNBTComponent) value).storage(), SerializerFactory.KEY_TYPE, out);
-      } else {
-        throw notSureHowToSerialize(value);
-      }
-    } else if (value instanceof ObjectComponent) {
-      final ObjectComponent objectComponent = (ObjectComponent) value;
-      final ObjectContents contents = objectComponent.contents();
-      if (contents instanceof SpriteObjectContents) {
-        final SpriteObjectContents spriteContents = (SpriteObjectContents) contents;
-        if (!spriteContents.atlas().equals(SpriteObjectContents.DEFAULT_ATLAS)) {
-          out.name(OBJECT_ATLAS);
-          this.gson.toJson(spriteContents.atlas(), SerializerFactory.KEY_TYPE, out);
+      case TranslatableComponent translatable -> {
+        out.name(TRANSLATE);
+        out.value(translatable.key());
+        final String fallback = translatable.fallback();
+        if (fallback != null) {
+          out.name(TRANSLATE_FALLBACK);
+          out.value(fallback);
         }
-        out.name(OBJECT_SPRITE);
-        this.gson.toJson(spriteContents.sprite(), SerializerFactory.KEY_TYPE, out);
-      } else if (contents instanceof PlayerHeadObjectContents) {
-        final PlayerHeadObjectContents playerHeadContents = (PlayerHeadObjectContents) contents;
-        out.name(OBJECT_HAT);
-        out.value(playerHeadContents.hat());
-        final String playerName = playerHeadContents.name();
-        final UUID playerId = playerHeadContents.id();
-        final List<PlayerHeadObjectContents.ProfileProperty> properties = playerHeadContents.profileProperties();
-        final Key texture = playerHeadContents.texture();
-        out.name(OBJECT_PLAYER);
-        if (playerName != null && playerId == null && properties.isEmpty() && texture == null) {
-          out.value(playerName);
-        } else {
-          out.beginObject();
-          if (playerName != null) {
-            out.name(OBJECT_PLAYER_NAME);
+        if (!translatable.arguments().isEmpty()) {
+          out.name(TRANSLATE_WITH);
+          this.gson.toJson(translatable.arguments(), TRANSLATABLE_ARGUMENT_LIST_TYPE, out);
+        }
+      }
+      case ScoreComponent score -> {
+        out.name(SCORE);
+        out.beginObject();
+        out.name(SCORE_NAME);
+        out.value(score.name());
+        out.name(SCORE_OBJECTIVE);
+        out.value(score.objective());
+        if (score.value() != null) {
+          out.name(SCORE_VALUE);
+          out.value(score.value());
+        }
+        out.endObject();
+      }
+      case SelectorComponent selector -> {
+        out.name(SELECTOR);
+        out.value(selector.pattern());
+        this.serializeSeparator(out, selector.separator());
+      }
+      case KeybindComponent keybindComponent -> {
+        out.name(KEYBIND);
+        out.value(keybindComponent.keybind());
+      }
+      case NBTComponent<?> nbt -> {
+        out.name(NBT);
+        out.value(nbt.nbtPath());
+        out.name(NBT_INTERPRET);
+        out.value(nbt.interpret());
+        this.serializeSeparator(out, nbt.separator());
+        switch (value) {
+          case BlockNBTComponent blockNBTComponent -> {
+            out.name(NBT_BLOCK);
+            this.gson.toJson(blockNBTComponent.pos(), SerializerFactory.BLOCK_NBT_POS_TYPE, out);
+          }
+          case EntityNBTComponent entityNBTComponent -> {
+            out.name(NBT_ENTITY);
+            out.value(entityNBTComponent.selector());
+          }
+          case StorageNBTComponent storageNBTComponent -> {
+            out.name(NBT_STORAGE);
+            this.gson.toJson(storageNBTComponent.storage(), SerializerFactory.KEY_TYPE, out);
+          }
+          default -> throw notSureHowToSerialize(value);
+        }
+      }
+      case ObjectComponent objectComponent -> {
+        final ObjectContents contents = objectComponent.contents();
+        if (contents instanceof final SpriteObjectContents spriteContents) {
+          if (!spriteContents.atlas().equals(SpriteObjectContents.DEFAULT_ATLAS)) {
+            out.name(OBJECT_ATLAS);
+            this.gson.toJson(spriteContents.atlas(), SerializerFactory.KEY_TYPE, out);
+          }
+          out.name(OBJECT_SPRITE);
+          this.gson.toJson(spriteContents.sprite(), SerializerFactory.KEY_TYPE, out);
+        } else if (contents instanceof final PlayerHeadObjectContents playerHeadContents) {
+          out.name(OBJECT_HAT);
+          out.value(playerHeadContents.hat());
+          final String playerName = playerHeadContents.name();
+          final UUID playerId = playerHeadContents.id();
+          final List<PlayerHeadObjectContents.ProfileProperty> properties = playerHeadContents.profileProperties();
+          final Key texture = playerHeadContents.texture();
+          out.name(OBJECT_PLAYER);
+          if (playerName != null && playerId == null && properties.isEmpty() && texture == null) {
             out.value(playerName);
+          } else {
+            out.beginObject();
+            if (playerName != null) {
+              out.name(OBJECT_PLAYER_NAME);
+              out.value(playerName);
+            }
+            if (playerId != null) {
+              out.name(OBJECT_PLAYER_ID);
+              this.gson.toJson(playerId, SerializerFactory.UUID_TYPE, out);
+            }
+            if (!properties.isEmpty()) {
+              out.name(OBJECT_PLAYER_PROPERTIES);
+              this.gson.toJson(properties, PROPERTY_LIST_TYPE, out);
+            }
+            if (texture != null) {
+              out.name(OBJECT_PLAYER_TEXTURE);
+              this.gson.toJson(texture, SerializerFactory.KEY_TYPE, out);
+            }
+            out.endObject();
           }
-          if (playerId != null) {
-            out.name(OBJECT_PLAYER_ID);
-            this.gson.toJson(playerId, SerializerFactory.UUID_TYPE, out);
-          }
-          if (!properties.isEmpty()) {
-            out.name(OBJECT_PLAYER_PROPERTIES);
-            this.gson.toJson(properties, PROPERTY_LIST_TYPE, out);
-          }
-          if (texture != null) {
-            out.name(OBJECT_PLAYER_TEXTURE);
-            this.gson.toJson(texture, SerializerFactory.KEY_TYPE, out);
-          }
-          out.endObject();
+        } else {
+          throw notSureHowToSerialize(value);
         }
-      } else {
-        throw notSureHowToSerialize(value);
       }
-    } else {
-      throw notSureHowToSerialize(value);
+      default -> throw notSureHowToSerialize(value);
     }
 
     out.endObject();

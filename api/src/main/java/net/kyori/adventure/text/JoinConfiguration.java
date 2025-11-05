@@ -27,12 +27,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.format.Style;
-import net.kyori.adventure.util.Buildable;
-import net.kyori.examination.Examinable;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A configuration for how a series of components can be joined.
@@ -83,15 +79,14 @@ import org.jetbrains.annotations.Nullable;
  * @see Component#join(JoinConfiguration, ComponentLike...)
  * @since 4.9.0
  */
-@ApiStatus.NonExtendable
-public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConfiguration.Builder>, Examinable {
+public sealed interface JoinConfiguration permits JoinConfigurationImpl {
   /**
    * Creates a new builder.
    *
    * @return a new builder
    * @since 4.9.0
    */
-  static @NotNull Builder builder() {
+  static Builder builder() {
     return new JoinConfigurationImpl.BuilderImpl();
   }
 
@@ -101,7 +96,7 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
    * @return the join configuration
    * @since 4.9.0
    */
-  static @NotNull JoinConfiguration noSeparators() {
+  static JoinConfiguration noSeparators() {
     return JoinConfigurationImpl.NULL;
   }
 
@@ -114,7 +109,7 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
    * @return the join configuration
    * @since 4.10.0
    */
-  static @NotNull JoinConfiguration newlines() {
+  static JoinConfiguration newlines() {
     return JoinConfigurationImpl.STANDARD_NEW_LINES;
   }
 
@@ -127,7 +122,7 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
    * @return the join configuration
    * @since 4.15.0
    */
-  static @NotNull JoinConfiguration spaces() {
+  static JoinConfiguration spaces() {
     return JoinConfigurationImpl.STANDARD_SPACES;
   }
 
@@ -141,7 +136,7 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
    * @return the join configuration
    * @since 4.10.0
    */
-  static @NotNull JoinConfiguration commas(final boolean spaces) {
+  static JoinConfiguration commas(final boolean spaces) {
     return spaces ? JoinConfigurationImpl.STANDARD_COMMA_SPACE_SEPARATED : JoinConfigurationImpl.STANDARD_COMMA_SEPARATED;
   }
 
@@ -156,7 +151,7 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
    * @return the join configuration
    * @since 4.10.0
    */
-  static @NotNull JoinConfiguration arrayLike() {
+  static JoinConfiguration arrayLike() {
     return JoinConfigurationImpl.STANDARD_ARRAY_LIKE;
   }
 
@@ -167,7 +162,7 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
    * @return the join configuration
    * @since 4.9.0
    */
-  static @NotNull JoinConfiguration separator(final @Nullable ComponentLike separator) {
+  static JoinConfiguration separator(final @Nullable ComponentLike separator) {
     if (separator == null) return JoinConfigurationImpl.NULL;
     return builder().separator(separator).build();
   }
@@ -180,7 +175,7 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
    * @return the join configuration
    * @since 4.9.0
    */
-  static @NotNull JoinConfiguration separators(final @Nullable ComponentLike separator, final @Nullable ComponentLike lastSeparator) {
+  static JoinConfiguration separators(final @Nullable ComponentLike separator, final @Nullable ComponentLike lastSeparator) {
     if (separator == null && lastSeparator == null) return JoinConfigurationImpl.NULL;
     return builder().separator(separator).lastSeparator(lastSeparator).build();
   }
@@ -234,7 +229,7 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
    * @return the operator
    * @since 4.9.0
    */
-  @NotNull Function<ComponentLike, Component> convertor();
+  Function<ComponentLike, Component> convertor();
 
   /**
    * Gets the predicate of this join configuration.
@@ -244,7 +239,7 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
    * @return the predicate
    * @since 4.9.0
    */
-  @NotNull Predicate<ComponentLike> predicate();
+  Predicate<ComponentLike> predicate();
 
   /**
    * Gets the style of the parent component that contains the joined components.
@@ -252,14 +247,14 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
    * @return the style
    * @since 4.11.0
    */
-  @NotNull Style parentStyle();
+  Style parentStyle();
 
   /**
    * A builder for join configurations.
    *
    * @since 4.9.0
    */
-  interface Builder extends AbstractBuilder<JoinConfiguration>, Buildable.Builder<JoinConfiguration> {
+  sealed interface Builder extends AbstractBuilder<JoinConfiguration> permits JoinConfigurationImpl.BuilderImpl {
     /**
      * Sets the prefix of this join configuration builder.
      *
@@ -268,7 +263,7 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
      * @since 4.9.0
      */
     @Contract("_ -> this")
-    @NotNull Builder prefix(final @Nullable ComponentLike prefix);
+    Builder prefix(final @Nullable ComponentLike prefix);
 
     /**
      * Sets the suffix of this join configuration builder.
@@ -278,7 +273,7 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
      * @since 4.9.0
      */
     @Contract("_ -> this")
-    @NotNull Builder suffix(final @Nullable ComponentLike suffix);
+    Builder suffix(final @Nullable ComponentLike suffix);
 
     /**
      * Sets the separator of this join configuration builder.
@@ -288,7 +283,7 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
      * @since 4.9.0
      */
     @Contract("_ -> this")
-    @NotNull Builder separator(final @Nullable ComponentLike separator);
+    Builder separator(final @Nullable ComponentLike separator);
 
     /**
      * Sets the last separator of this join configuration builder.
@@ -298,7 +293,7 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
      * @since 4.9.0
      */
     @Contract("_ -> this")
-    @NotNull Builder lastSeparator(final @Nullable ComponentLike lastSeparator);
+    Builder lastSeparator(final @Nullable ComponentLike lastSeparator);
 
     /**
      * Sets the last separator that will be used instead of the normal last separator in the case where there
@@ -311,7 +306,7 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
      * @since 4.9.0
      */
     @Contract("_ -> this")
-    @NotNull Builder lastSeparatorIfSerial(final @Nullable ComponentLike lastSeparatorIfSerial);
+    Builder lastSeparatorIfSerial(final @Nullable ComponentLike lastSeparatorIfSerial);
 
     /**
      * Sets the convertor of this join configuration builder.
@@ -323,7 +318,7 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
      * @since 4.9.0
      */
     @Contract("_ -> this")
-    @NotNull Builder convertor(final @NotNull Function<ComponentLike, Component> convertor);
+    Builder convertor(final Function<ComponentLike, Component> convertor);
 
     /**
      * Sets the predicate of this join configuration builder.
@@ -335,7 +330,7 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
      * @since 4.9.0
      */
     @Contract("_ -> this")
-    @NotNull Builder predicate(final @NotNull Predicate<ComponentLike> predicate);
+    Builder predicate(final Predicate<ComponentLike> predicate);
 
     /**
      * Sets the style of the parent component that contains the joined components.
@@ -345,6 +340,6 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
      * @since 4.11.0
      */
     @Contract("_ -> this")
-    @NotNull Builder parentStyle(final @NotNull Style parentStyle);
+    Builder parentStyle(final Style parentStyle);
   }
 }

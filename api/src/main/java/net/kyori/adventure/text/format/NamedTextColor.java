@@ -23,144 +23,117 @@
  */
 package net.kyori.adventure.text.format;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Stream;
-import net.kyori.adventure.util.HSVLike;
 import net.kyori.adventure.util.Index;
-import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * The named text colours in Minecraft: Java Edition.
  *
  * @since 4.0.0
  */
-public final class NamedTextColor implements TextColor {
-  private static final int BLACK_VALUE = 0x000000;
-  private static final int DARK_BLUE_VALUE = 0x0000aa;
-  private static final int DARK_GREEN_VALUE = 0x00aa00;
-  private static final int DARK_AQUA_VALUE = 0x00aaaa;
-  private static final int DARK_RED_VALUE = 0xaa0000;
-  private static final int DARK_PURPLE_VALUE = 0xaa00aa;
-  private static final int GOLD_VALUE = 0xffaa00;
-  private static final int GRAY_VALUE = 0xaaaaaa;
-  private static final int DARK_GRAY_VALUE = 0x555555;
-  private static final int BLUE_VALUE = 0x5555ff;
-  private static final int GREEN_VALUE = 0x55ff55;
-  private static final int AQUA_VALUE = 0x55ffff;
-  private static final int RED_VALUE = 0xff5555;
-  private static final int LIGHT_PURPLE_VALUE = 0xff55ff;
-  private static final int YELLOW_VALUE = 0xffff55;
-  private static final int WHITE_VALUE = 0xffffff;
-
+public sealed interface NamedTextColor extends TextColor permits NamedTextColorImpl {
   /**
    * The standard {@code black} colour.
    *
    * @since 4.0.0
    */
-  public static final NamedTextColor BLACK = new NamedTextColor("black", BLACK_VALUE);
+  NamedTextColor BLACK = new NamedTextColorImpl("black", NamedTextColorImpl.BLACK_VALUE);
   /**
    * The standard {@code dark_blue} colour.
    *
    * @since 4.0.0
    */
-  public static final NamedTextColor DARK_BLUE = new NamedTextColor("dark_blue", DARK_BLUE_VALUE);
+  NamedTextColor DARK_BLUE = new NamedTextColorImpl("dark_blue", NamedTextColorImpl.DARK_BLUE_VALUE);
   /**
    * The standard {@code dark_green} colour.
    *
    * @since 4.0.0
    */
-  public static final NamedTextColor DARK_GREEN = new NamedTextColor("dark_green", DARK_GREEN_VALUE);
+  NamedTextColor DARK_GREEN = new NamedTextColorImpl("dark_green", NamedTextColorImpl.DARK_GREEN_VALUE);
   /**
    * The standard {@code dark_aqua} colour.
    *
    * @since 4.0.0
    */
-  public static final NamedTextColor DARK_AQUA = new NamedTextColor("dark_aqua", DARK_AQUA_VALUE);
+  NamedTextColor DARK_AQUA = new NamedTextColorImpl("dark_aqua", NamedTextColorImpl.DARK_AQUA_VALUE);
   /**
    * The standard {@code dark_red} colour.
    *
    * @since 4.0.0
    */
-  public static final NamedTextColor DARK_RED = new NamedTextColor("dark_red", DARK_RED_VALUE);
+  NamedTextColor DARK_RED = new NamedTextColorImpl("dark_red", NamedTextColorImpl.DARK_RED_VALUE);
   /**
    * The standard {@code dark_purple} colour.
    *
    * @since 4.0.0
    */
-  public static final NamedTextColor DARK_PURPLE = new NamedTextColor("dark_purple", DARK_PURPLE_VALUE);
+  NamedTextColor DARK_PURPLE = new NamedTextColorImpl("dark_purple", NamedTextColorImpl.DARK_PURPLE_VALUE);
   /**
    * The standard {@code gold} colour.
    *
    * @since 4.0.0
    */
-  public static final NamedTextColor GOLD = new NamedTextColor("gold", GOLD_VALUE);
+  NamedTextColor GOLD = new NamedTextColorImpl("gold", NamedTextColorImpl.GOLD_VALUE);
   /**
    * The standard {@code gray} colour.
    *
    * @since 4.0.0
    */
-  public static final NamedTextColor GRAY = new NamedTextColor("gray", GRAY_VALUE);
+  NamedTextColor GRAY = new NamedTextColorImpl("gray", NamedTextColorImpl.GRAY_VALUE);
   /**
    * The standard {@code dark_gray} colour.
    *
    * @since 4.0.0
    */
-  public static final NamedTextColor DARK_GRAY = new NamedTextColor("dark_gray", DARK_GRAY_VALUE);
+  NamedTextColor DARK_GRAY = new NamedTextColorImpl("dark_gray", NamedTextColorImpl.DARK_GRAY_VALUE);
   /**
    * The standard {@code blue} colour.
    *
    * @since 4.0.0
    */
-  public static final NamedTextColor BLUE = new NamedTextColor("blue", BLUE_VALUE);
+  NamedTextColor BLUE = new NamedTextColorImpl("blue", NamedTextColorImpl.BLUE_VALUE);
   /**
    * The standard {@code green} colour.
    *
    * @since 4.0.0
    */
-  public static final NamedTextColor GREEN = new NamedTextColor("green", GREEN_VALUE);
+  NamedTextColor GREEN = new NamedTextColorImpl("green", NamedTextColorImpl.GREEN_VALUE);
   /**
    * The standard {@code aqua} colour.
    *
    * @since 4.0.0
    */
-  public static final NamedTextColor AQUA = new NamedTextColor("aqua", AQUA_VALUE);
+  NamedTextColor AQUA = new NamedTextColorImpl("aqua", NamedTextColorImpl.AQUA_VALUE);
   /**
    * The standard {@code red} colour.
    *
    * @since 4.0.0
    */
-  public static final NamedTextColor RED = new NamedTextColor("red", RED_VALUE);
+  NamedTextColor RED = new NamedTextColorImpl("red", NamedTextColorImpl.RED_VALUE);
   /**
    * The standard {@code light_purple} colour.
    *
    * @since 4.0.0
    */
-  public static final NamedTextColor LIGHT_PURPLE = new NamedTextColor("light_purple", LIGHT_PURPLE_VALUE);
+  NamedTextColor LIGHT_PURPLE = new NamedTextColorImpl("light_purple", NamedTextColorImpl.LIGHT_PURPLE_VALUE);
   /**
    * The standard {@code yellow} colour.
    *
    * @since 4.0.0
    */
-  public static final NamedTextColor YELLOW = new NamedTextColor("yellow", YELLOW_VALUE);
+  NamedTextColor YELLOW = new NamedTextColorImpl("yellow", NamedTextColorImpl.YELLOW_VALUE);
   /**
    * The standard {@code white} colour.
    *
    * @since 4.0.0
    */
-  public static final NamedTextColor WHITE = new NamedTextColor("white", WHITE_VALUE);
-
-  private static final List<NamedTextColor> VALUES = Collections.unmodifiableList(Arrays.asList(BLACK, DARK_BLUE, DARK_GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE, GOLD, GRAY, DARK_GRAY, BLUE, GREEN, AQUA, RED, LIGHT_PURPLE, YELLOW, WHITE));
+  NamedTextColor WHITE = new NamedTextColorImpl("white", NamedTextColorImpl.WHITE_VALUE);
   /**
    * An index of name to color.
    *
    * @since 4.0.0
    */
-  public static final Index<String, NamedTextColor> NAMES = Index.create(constant -> constant.name, VALUES);
+  Index<String, NamedTextColor> NAMES = Index.create(NamedTextColor::name, NamedTextColorImpl.Values.VALUES);
 
   /**
    * Gets the named color exactly matching the provided color.
@@ -169,58 +142,26 @@ public final class NamedTextColor implements TextColor {
    * @return the matched color, or null
    * @since 4.10.0
    */
-  public static @Nullable NamedTextColor namedColor(final int value) {
-    switch (value) {
-      case BLACK_VALUE: return BLACK;
-      case DARK_BLUE_VALUE: return DARK_BLUE;
-      case DARK_GREEN_VALUE: return DARK_GREEN;
-      case DARK_AQUA_VALUE: return DARK_AQUA;
-      case DARK_RED_VALUE: return DARK_RED;
-      case DARK_PURPLE_VALUE: return DARK_PURPLE;
-      case GOLD_VALUE: return GOLD;
-      case GRAY_VALUE: return GRAY;
-      case DARK_GRAY_VALUE: return DARK_GRAY;
-      case BLUE_VALUE: return BLUE;
-      case GREEN_VALUE: return GREEN;
-      case AQUA_VALUE: return AQUA;
-      case RED_VALUE: return RED;
-      case LIGHT_PURPLE_VALUE: return LIGHT_PURPLE;
-      case YELLOW_VALUE: return YELLOW;
-      case WHITE_VALUE: return WHITE;
-      default: return null;
-    }
-  }
-
-  /**
-   * Gets the named color exactly matching the provided color.
-   *
-   * @param value the color to match
-   * @return the matched color, or null
-   * @since 4.0.0
-   * @deprecated for removal since 4.10.0, use {@link #namedColor(int)} instead
-   */
-  @Deprecated
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  public static @Nullable NamedTextColor ofExact(final int value) {
-    switch (value) {
-      case BLACK_VALUE: return BLACK;
-      case DARK_BLUE_VALUE: return DARK_BLUE;
-      case DARK_GREEN_VALUE: return DARK_GREEN;
-      case DARK_AQUA_VALUE: return DARK_AQUA;
-      case DARK_RED_VALUE: return DARK_RED;
-      case DARK_PURPLE_VALUE: return DARK_PURPLE;
-      case GOLD_VALUE: return GOLD;
-      case GRAY_VALUE: return GRAY;
-      case DARK_GRAY_VALUE: return DARK_GRAY;
-      case BLUE_VALUE: return BLUE;
-      case GREEN_VALUE: return GREEN;
-      case AQUA_VALUE: return AQUA;
-      case RED_VALUE: return RED;
-      case LIGHT_PURPLE_VALUE: return LIGHT_PURPLE;
-      case YELLOW_VALUE: return YELLOW;
-      case WHITE_VALUE: return WHITE;
-      default: return null;
-    }
+  static @Nullable NamedTextColor namedColor(final int value) {
+    return switch (value) {
+      case NamedTextColorImpl.BLACK_VALUE -> BLACK;
+      case NamedTextColorImpl.DARK_BLUE_VALUE -> DARK_BLUE;
+      case NamedTextColorImpl.DARK_GREEN_VALUE -> DARK_GREEN;
+      case NamedTextColorImpl.DARK_AQUA_VALUE -> DARK_AQUA;
+      case NamedTextColorImpl.DARK_RED_VALUE -> DARK_RED;
+      case NamedTextColorImpl.DARK_PURPLE_VALUE -> DARK_PURPLE;
+      case NamedTextColorImpl.GOLD_VALUE -> GOLD;
+      case NamedTextColorImpl.GRAY_VALUE -> GRAY;
+      case NamedTextColorImpl.DARK_GRAY_VALUE -> DARK_GRAY;
+      case NamedTextColorImpl.BLUE_VALUE -> BLUE;
+      case NamedTextColorImpl.GREEN_VALUE -> GREEN;
+      case NamedTextColorImpl.AQUA_VALUE -> AQUA;
+      case NamedTextColorImpl.RED_VALUE -> RED;
+      case NamedTextColorImpl.LIGHT_PURPLE_VALUE -> LIGHT_PURPLE;
+      case NamedTextColorImpl.YELLOW_VALUE -> YELLOW;
+      case NamedTextColorImpl.WHITE_VALUE -> WHITE;
+      default -> null;
+    };
   }
 
   /**
@@ -230,44 +171,16 @@ public final class NamedTextColor implements TextColor {
    * @return nearest named colour. will always return a value
    * @since 4.0.0
    */
-  public static @NotNull NamedTextColor nearestTo(final @NotNull TextColor any) {
-    if (any instanceof NamedTextColor) {
-      return (NamedTextColor) any;
-    }
-
-    return TextColor.nearestColorTo(VALUES, any);
+  static NamedTextColor nearestTo(final TextColor any) {
+    if (any instanceof final NamedTextColor namedTextColor) return namedTextColor;
+    return TextColor.nearestColorTo(NamedTextColorImpl.Values.VALUES, any);
   }
 
-  private final String name;
-  private final int value;
-  private final HSVLike hsv;
-
-  private NamedTextColor(final String name, final int value) {
-    this.name = name;
-    this.value = value;
-    this.hsv = HSVLike.fromRGB(this.red(), this.green(), this.blue());
-  }
-
-  @Override
-  public int value() {
-    return this.value;
-  }
-
-  @Override
-  public @NotNull HSVLike asHSV() {
-    return this.hsv;
-  }
-
-  @Override
-  public @NotNull String toString() {
-    return this.name;
-  }
-
-  @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.concat(
-      Stream.of(ExaminableProperty.of("name", this.name)),
-      TextColor.super.examinableProperties()
-    );
-  }
+  /**
+   * The name of this named text color.
+   *
+   * @return the name
+   * @since 5.0.0
+   */
+  String name();
 }

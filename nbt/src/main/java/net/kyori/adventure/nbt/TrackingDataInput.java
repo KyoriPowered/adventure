@@ -25,8 +25,7 @@ package net.kyori.adventure.nbt;
 
 import java.io.DataInput;
 import java.io.IOException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 final class TrackingDataInput implements DataInput, BinaryTagScope {
   private static final int MAX_DEPTH = 512;
@@ -41,18 +40,18 @@ final class TrackingDataInput implements DataInput, BinaryTagScope {
   }
 
   public static BinaryTagScope enter(final DataInput input) throws IOException {
-    if (input instanceof TrackingDataInput) {
-      return ((TrackingDataInput) input).enter();
+    if (input instanceof TrackingDataInput tdi) {
+      return tdi.enter();
     } else {
-      return NoOp.INSTANCE;
+      return BinaryTagScope.noOp();
     }
   }
 
   public static BinaryTagScope enter(final DataInput input, final long expectedSize) throws IOException {
-    if (input instanceof TrackingDataInput) {
-      return ((TrackingDataInput) input).enter(expectedSize);
+    if (input instanceof TrackingDataInput tdi) {
+      return tdi.enter(expectedSize);
     } else {
-      return NoOp.INSTANCE;
+      return BinaryTagScope.noOp();
     }
   }
 
@@ -86,13 +85,13 @@ final class TrackingDataInput implements DataInput, BinaryTagScope {
   }
 
   @Override
-  public void readFully(final byte@NotNull[] array) throws IOException {
+  public void readFully(final byte[] array) throws IOException {
     this.counter += array.length;
     this.input.readFully(array);
   }
 
   @Override
-  public void readFully(final byte@NotNull[] array, final int off, final int len) throws IOException {
+  public void readFully(final byte[] array, final int off, final int len) throws IOException {
     this.counter += len;
     this.input.readFully(array, off, len);
   }
@@ -164,7 +163,7 @@ final class TrackingDataInput implements DataInput, BinaryTagScope {
 
   @Override
   public @Nullable String readLine() throws IOException {
-    final @Nullable String result = this.input.readLine();
+    final String result = this.input.readLine();
     if (result != null) {
       this.counter += result.length() + 1;
     }
@@ -172,7 +171,7 @@ final class TrackingDataInput implements DataInput, BinaryTagScope {
   }
 
   @Override
-  public @NotNull String readUTF() throws IOException {
+  public String readUTF() throws IOException {
     final String result = this.input.readUTF();
     this.counter += (result.length() * 2L) + 2; // not entirely accurate, but the closest we can get without doing implementation details
     return result;
@@ -182,5 +181,4 @@ final class TrackingDataInput implements DataInput, BinaryTagScope {
   public void close() throws IOException {
     this.exit();
   }
-
 }

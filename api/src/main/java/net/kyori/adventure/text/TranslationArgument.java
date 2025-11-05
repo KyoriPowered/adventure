@@ -23,10 +23,6 @@
  */
 package net.kyori.adventure.text;
 
-import net.kyori.examination.Examinable;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -34,8 +30,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 4.15.0
  */
-@ApiStatus.NonExtendable
-public interface TranslationArgument extends TranslationArgumentLike, Examinable {
+public sealed interface TranslationArgument extends TranslationArgumentLike permits TranslationArgumentImpl {
   /**
    * Create a boolean argument.
    *
@@ -44,7 +39,7 @@ public interface TranslationArgument extends TranslationArgumentLike, Examinable
    * @since 4.15.0
    * @sinceMinecraft 1.20.3
    */
-  static @NotNull TranslationArgument bool(final boolean value) {
+  static TranslationArgument bool(final boolean value) {
     return new TranslationArgumentImpl(value);
   }
 
@@ -56,7 +51,7 @@ public interface TranslationArgument extends TranslationArgumentLike, Examinable
    * @since 4.15.0
    * @sinceMinecraft 1.20.3
    */
-  static @NotNull TranslationArgument numeric(final @NotNull Number value) {
+  static TranslationArgument numeric(final Number value) {
     return new TranslationArgumentImpl(requireNonNull(value, "value"));
   }
 
@@ -68,8 +63,8 @@ public interface TranslationArgument extends TranslationArgumentLike, Examinable
    * @since 4.15.0
    * @sinceMinecraft 1.20.3
    */
-  static @NotNull TranslationArgument component(final @NotNull ComponentLike value) {
-    if (value instanceof TranslationArgumentLike) return ((TranslationArgumentLike) value).asTranslationArgument();
+  static TranslationArgument component(final ComponentLike value) {
+    if (value instanceof TranslationArgumentLike tal) return tal.asTranslationArgument();
     return new TranslationArgumentImpl(requireNonNull(requireNonNull(value, "value").asComponent(), "value.asComponent()"));
   }
 
@@ -79,10 +74,10 @@ public interface TranslationArgument extends TranslationArgumentLike, Examinable
    * @return the argument value
    * @since 4.15.0
    */
-  @NotNull Object value();
+  Object value();
 
   @Override
-  default @NotNull TranslationArgument asTranslationArgument() {
+  default TranslationArgument asTranslationArgument() {
     return this;
   }
 }

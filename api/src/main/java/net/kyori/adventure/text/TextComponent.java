@@ -23,11 +23,7 @@
  */
 package net.kyori.adventure.text;
 
-import java.util.stream.Stream;
-import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * A component that displays a string.
@@ -40,28 +36,14 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 4.0.0
  */
-public interface TextComponent extends BuildableComponent<TextComponent, TextComponent.Builder>, ScopedComponent<TextComponent> {
-  /**
-   * Creates a component with {@code components} as the children.
-   *
-   * @param components the children
-   * @return a text component
-   * @since 4.0.0
-   * @deprecated for removal since 4.9.0, use {@link Component#textOfChildren(ComponentLike...)} instead
-   */
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  @Deprecated
-  static @NotNull TextComponent ofChildren(final @NotNull ComponentLike@NotNull... components) {
-    return Component.textOfChildren(components);
-  }
-
+public sealed interface TextComponent extends ScopedComponent<TextComponent> permits TextComponentImpl, VirtualComponent {
   /**
    * Gets the plain text content.
    *
    * @return the plain text content
    * @since 4.0.0
    */
-  @NotNull String content();
+  String content();
 
   /**
    * Sets the plain text content.
@@ -71,31 +53,24 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @since 4.0.0
    */
   @Contract(pure = true)
-  @NotNull TextComponent content(final @NotNull String content);
+  TextComponent content(final String content);
 
   @Override
-  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.concat(
-      Stream.of(
-        ExaminableProperty.of("content", this.content())
-      ),
-      BuildableComponent.super.examinableProperties()
-    );
-  }
+  Builder toBuilder();
 
   /**
    * A text component builder.
    *
    * @since 4.0.0
    */
-  interface Builder extends ComponentBuilder<TextComponent, Builder> {
+  sealed interface Builder extends ComponentBuilder<TextComponent, Builder> permits TextComponentImpl.BuilderImpl {
     /**
      * Gets the plain text content.
      *
      * @return the plain text content
      * @since 4.0.0
      */
-    @NotNull String content();
+    String content();
 
     /**
      * Sets the plain text content.
@@ -105,6 +80,6 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
      * @since 4.0.0
      */
     @Contract("_ -> this")
-    @NotNull Builder content(final @NotNull String content);
+    Builder content(final String content);
   }
 }

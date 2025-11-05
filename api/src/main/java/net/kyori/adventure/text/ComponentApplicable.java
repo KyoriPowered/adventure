@@ -23,8 +23,6 @@
  */
 package net.kyori.adventure.text;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * Something that can be applied to a {@link Component}.
  *
@@ -39,5 +37,5 @@ public interface ComponentApplicable {
    * @return a component with something applied.
    * @since 4.0.0
    */
-  @NotNull Component componentApply(final @NotNull Component component);
+  Component componentApply(final Component component);
 }

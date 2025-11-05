@@ -23,8 +23,6 @@
  */
 package net.kyori.adventure.text;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * Represents anything that can be represented as a non-{@link Component} {@link TranslationArgument}.
  *
@@ -39,10 +37,10 @@ public interface TranslationArgumentLike extends ComponentLike {
    * @return the argument representation
    * @since 4.15.0
    */
-  @NotNull TranslationArgument asTranslationArgument();
+  TranslationArgument asTranslationArgument();
 
   @Override
-  default @NotNull Component asComponent() {
+  default Component asComponent() {
     return this.asTranslationArgument().asComponent();
   }
 }

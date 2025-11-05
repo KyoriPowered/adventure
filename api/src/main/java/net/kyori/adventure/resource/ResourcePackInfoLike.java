@@ -23,8 +23,6 @@
  */
 package net.kyori.adventure.resource;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * Something that can be represented as a {@link ResourcePackInfo}.
  *
@@ -37,5 +35,5 @@ public interface ResourcePackInfoLike {
    * @return a component
    * @since 4.15.0
    */
-  @NotNull ResourcePackInfo asResourcePackInfo();
+  ResourcePackInfo asResourcePackInfo();
 }

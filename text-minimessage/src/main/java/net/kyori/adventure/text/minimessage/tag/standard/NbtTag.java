@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage.tag.standard;
 
+import java.util.Set;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.BlockNBTComponent;
 import net.kyori.adventure.text.Component;
@@ -37,7 +38,7 @@ import net.kyori.adventure.text.minimessage.internal.serializer.SerializableReso
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * One tag for all NBT components.
@@ -45,8 +46,8 @@ import org.jetbrains.annotations.Nullable;
  * @since 4.13.0
  */
 final class NbtTag {
-  private static final String NBT = "nbt";
-  private static final String DATA = "data";
+  static final String NBT = "nbt";
+  static final String DATA = "data";
 
   private static final String BLOCK = "block";
   private static final String ENTITY = "entity";
@@ -54,7 +55,7 @@ final class NbtTag {
   private static final String INTERPRET = "interpret";
 
   static final TagResolver RESOLVER = SerializableResolver.claimingComponent(
-    StandardTags.names(NBT, DATA),
+    Set.of(NBT, DATA),
     NbtTag::resolve,
     NbtTag::emit
   );
@@ -66,22 +67,21 @@ final class NbtTag {
   static Tag resolve(final ArgumentQueue args, final Context ctx) throws ParsingException {
     final String type = args.popOr("a type of block, entity, or storage is required").lowerValue();
     final NBTComponentBuilder<?, ?> builder;
-    if (BLOCK.equals(type)) {
-      final String pos = args.popOr("A position is required").value();
-      try {
-        builder = Component.blockNBT()
-          .pos(BlockNBTComponent.Pos.fromString(pos));
-      } catch (final IllegalArgumentException ex) {
-        throw ctx.newException(ex.getMessage(), args);
+    switch (type) {
+      case BLOCK -> {
+        final String pos = args.popOr("A position is required").value();
+        try {
+          builder = Component.blockNBT()
+            .pos(BlockNBTComponent.Pos.fromString(pos));
+        } catch (final IllegalArgumentException ex) {
+          throw ctx.newException(ex.getMessage(), args);
+        }
       }
-    } else if (ENTITY.equals(type)) {
-      builder = Component.entityNBT()
+      case ENTITY -> builder = Component.entityNBT()
         .selector(args.popOr("A selector is required").value());
-    } else if (STORAGE.equals(type)) {
-      builder = Component.storageNBT()
+      case STORAGE -> builder = Component.storageNBT()
         .storage(Key.key(args.popOr("A storage key is required").value()));
-    } else {
-      throw ctx.newException("Unknown nbt tag type '" + type + "'", args);
+      default -> throw ctx.newException("Unknown nbt tag type '" + type + "'", args);
     }
 
     builder.nbtPath(args.popOr("An NBT path is required").value());
@@ -106,28 +106,34 @@ final class NbtTag {
   static @Nullable Emitable emit(final Component comp) {
     final String type;
     final String id;
-    if (comp instanceof BlockNBTComponent) {
-      type = BLOCK;
-      id = ((BlockNBTComponent) comp).pos().asString();
-    } else if (comp instanceof EntityNBTComponent) {
-      type = ENTITY;
-      id = ((EntityNBTComponent) comp).selector();
-    } else if (comp instanceof StorageNBTComponent) {
-      type = STORAGE;
-      id = ((StorageNBTComponent) comp).storage().asString();
-    } else {
-      return null;
+    switch (comp) {
+      case BlockNBTComponent blockNBTComponent -> {
+        type = BLOCK;
+        id = blockNBTComponent.pos().asString();
+      }
+      case EntityNBTComponent entityNBTComponent -> {
+        type = ENTITY;
+        id = entityNBTComponent.selector();
+      }
+      case StorageNBTComponent storageNBTComponent -> {
+        type = STORAGE;
+        id = storageNBTComponent.storage().asString();
+      }
+      default -> {
+        return null;
+      }
     }
 
     return out -> {
-      final NBTComponent<?, ?> nbt = (NBTComponent<?, ?>) comp;
+      final NBTComponent<?> nbt = (NBTComponent<?>) comp;
       out.tag(NBT)
         .argument(type)
         .argument(id)
         .argument(nbt.nbtPath());
 
-      if (nbt.separator() != null) {
-        out.argument(nbt.separator());
+      final Component separator = nbt.separator();
+      if (separator != null) {
+        out.argument(separator);
       }
 
       if (nbt.interpret()) {

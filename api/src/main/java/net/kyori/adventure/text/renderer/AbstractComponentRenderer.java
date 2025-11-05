@@ -27,48 +27,82 @@ import net.kyori.adventure.text.BlockNBTComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.EntityNBTComponent;
 import net.kyori.adventure.text.KeybindComponent;
-import net.kyori.adventure.text.NBTComponent;
+import net.kyori.adventure.text.ObjectComponent;
 import net.kyori.adventure.text.ScoreComponent;
 import net.kyori.adventure.text.SelectorComponent;
 import net.kyori.adventure.text.StorageNBTComponent;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.VirtualComponent;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * An abstract implementation of a component renderer.
+ *
+ * <p><b>Note:</b> new {@code renderX} methods without default implementations may be
+ * added at any time with the addition of new component types into Minecraft.</p>
  *
  * @param <C> the context type
  * @since 4.0.0
  */
 public abstract class AbstractComponentRenderer<C> implements ComponentRenderer<C> {
-  @Override
-  public @NotNull Component render(@NotNull Component component, final @NotNull C context) {
-    if (component instanceof VirtualComponent) {
-      component = this.renderVirtual((VirtualComponent) component, context);
-    }
-    if (component instanceof TextComponent) {
-      return this.renderText((TextComponent) component, context);
-    } else if (component instanceof TranslatableComponent) {
-      return this.renderTranslatable((TranslatableComponent) component, context);
-    } else if (component instanceof KeybindComponent) {
-      return this.renderKeybind((KeybindComponent) component, context);
-    } else if (component instanceof ScoreComponent) {
-      return this.renderScore((ScoreComponent) component, context);
-    } else if (component instanceof SelectorComponent) {
-      return this.renderSelector((SelectorComponent) component, context);
-    } else if (component instanceof NBTComponent<?, ?>) {
-      if (component instanceof BlockNBTComponent) {
-        return this.renderBlockNbt((BlockNBTComponent) component, context);
-      } else if (component instanceof EntityNBTComponent) {
-        return this.renderEntityNbt((EntityNBTComponent) component, context);
-      } else if (component instanceof StorageNBTComponent) {
-        return this.renderStorageNbt((StorageNBTComponent) component, context);
-      }
-    }
-    return component;
+
+  /**
+   * Constructs a new abstract component renderer.
+   *
+   * @since 4.0.0
+   */
+  public AbstractComponentRenderer() {
   }
+
+  /**
+   * Renders a component.
+   *
+   * <p>This method exists to delegate calls to the protected
+   * {@link #render(Component, Object, boolean)} method with {@code skipVirtual} set to {@code false}.</p>
+   *
+   * @param component the component
+   * @param context the context
+   * @return the rendered component
+   * @since 4.0.0
+   */
+  @Override
+  public Component render(final Component component, final C context) {
+    return this.render(component, context, false);
+  }
+
+  /**
+   * Renders a component.
+   *
+   * @param component the component
+   * @param context the context
+   * @param skipVirtual if virtual components should be rendered as normal text components
+   * @return the rendered component
+   * @since 4.0.0
+   */
+  protected final Component render(final Component component, final C context, final boolean skipVirtual) {
+    return switch (component) {
+      case TranslatableComponent tc -> this.renderTranslatable(tc, context);
+      case KeybindComponent kc -> this.renderKeybind(kc, context);
+      case ScoreComponent sc -> this.renderScore(sc, context);
+      case SelectorComponent sc -> this.renderSelector(sc, context);
+      case VirtualComponent vc when !skipVirtual -> this.render(this.renderVirtual(vc, context), context, true);
+      case TextComponent tc -> this.renderText(tc, context);
+      case BlockNBTComponent bnc -> this.renderBlockNbt(bnc, context);
+      case EntityNBTComponent enc -> this.renderEntityNbt(enc, context);
+      case StorageNBTComponent snc -> this.renderStorageNbt(snc, context);
+      case ObjectComponent oc -> this.renderObject(oc, context);
+    };
+  }
+
+  /**
+   * Renders an object component.
+   *
+   * @param component the component
+   * @param context the context
+   * @return the rendered component
+   * @since 5.0.0
+   */
+  protected abstract Component renderObject(final ObjectComponent component, final C context);
 
   /**
    * Renders a block NBT component.
@@ -76,8 +110,9 @@ public abstract class AbstractComponentRenderer<C> implements ComponentRenderer<
    * @param component the component
    * @param context the context
    * @return the rendered component
+   * @since 4.0.0
    */
-  protected abstract @NotNull Component renderBlockNbt(final @NotNull BlockNBTComponent component, final @NotNull C context);
+  protected abstract Component renderBlockNbt(final BlockNBTComponent component, final C context);
 
   /**
    * Renders an entity NBT component.
@@ -85,8 +120,9 @@ public abstract class AbstractComponentRenderer<C> implements ComponentRenderer<
    * @param component the component
    * @param context the context
    * @return the rendered component
+   * @since 4.0.0
    */
-  protected abstract @NotNull Component renderEntityNbt(final @NotNull EntityNBTComponent component, final @NotNull C context);
+  protected abstract Component renderEntityNbt(final EntityNBTComponent component, final C context);
 
   /**
    * Renders a storage NBT component.
@@ -94,8 +130,9 @@ public abstract class AbstractComponentRenderer<C> implements ComponentRenderer<
    * @param component the component
    * @param context the context
    * @return the rendered component
+   * @since 4.0.0
    */
-  protected abstract @NotNull Component renderStorageNbt(final @NotNull StorageNBTComponent component, final @NotNull C context);
+  protected abstract Component renderStorageNbt(final StorageNBTComponent component, final C context);
 
   /**
    * Renders a keybind component.
@@ -103,8 +140,9 @@ public abstract class AbstractComponentRenderer<C> implements ComponentRenderer<
    * @param component the component
    * @param context the context
    * @return the rendered component
+   * @since 4.0.0
    */
-  protected abstract @NotNull Component renderKeybind(final @NotNull KeybindComponent component, final @NotNull C context);
+  protected abstract Component renderKeybind(final KeybindComponent component, final C context);
 
   /**
    * Renders a score component.
@@ -112,8 +150,9 @@ public abstract class AbstractComponentRenderer<C> implements ComponentRenderer<
    * @param component the component
    * @param context the context
    * @return the rendered component
+   * @since 4.0.0
    */
-  protected abstract @NotNull Component renderScore(final @NotNull ScoreComponent component, final @NotNull C context);
+  protected abstract Component renderScore(final ScoreComponent component, final C context);
 
   /**
    * Renders a selector component.
@@ -121,8 +160,9 @@ public abstract class AbstractComponentRenderer<C> implements ComponentRenderer<
    * @param component the component
    * @param context the context
    * @return the rendered component
+   * @since 4.0.0
    */
-  protected abstract @NotNull Component renderSelector(final @NotNull SelectorComponent component, final @NotNull C context);
+  protected abstract Component renderSelector(final SelectorComponent component, final C context);
 
   /**
    * Renders a text component.
@@ -130,8 +170,9 @@ public abstract class AbstractComponentRenderer<C> implements ComponentRenderer<
    * @param component the component
    * @param context the context
    * @return the rendered component
+   * @since 4.0.0
    */
-  protected abstract @NotNull Component renderText(final @NotNull TextComponent component, final @NotNull C context);
+  protected abstract Component renderText(final TextComponent component, final C context);
 
   /**
    * Renders a virtual component.
@@ -141,7 +182,7 @@ public abstract class AbstractComponentRenderer<C> implements ComponentRenderer<
    * @return the rendered component
    * @since 4.18.0
    */
-  protected @NotNull Component renderVirtual(final @NotNull VirtualComponent component, final @NotNull C context) {
+  protected Component renderVirtual(final VirtualComponent component, final C context) {
     return component;
   }
 
@@ -151,6 +192,7 @@ public abstract class AbstractComponentRenderer<C> implements ComponentRenderer<
    * @param component the component
    * @param context the context
    * @return the rendered component
+   * @since 4.0.0
    */
-  protected abstract @NotNull Component renderTranslatable(final @NotNull TranslatableComponent component, final @NotNull C context);
+  protected abstract Component renderTranslatable(final TranslatableComponent component, final C context);
 }

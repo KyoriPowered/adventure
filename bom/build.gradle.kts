@@ -14,7 +14,6 @@ dependencies {
     sequenceOf(
       "api",
       "annotation-processors",
-      "extra-kotlin",
       "key",
       "nbt",
       "serializer-configurate4",

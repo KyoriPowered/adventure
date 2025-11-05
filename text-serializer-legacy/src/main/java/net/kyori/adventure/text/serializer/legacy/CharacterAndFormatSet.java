@@ -28,20 +28,17 @@ import java.util.Collections;
 import java.util.List;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextFormat;
+import org.jspecify.annotations.Nullable;
 
-final class CharacterAndFormatSet {
+record CharacterAndFormatSet(List<@Nullable TextFormat> formats, List<TextColor> colors, String characters) {
   static final CharacterAndFormatSet DEFAULT = of(CharacterAndFormat.defaults());
-  final List<TextFormat> formats;
-  final List<TextColor> colors;
-  final String characters;
 
   static CharacterAndFormatSet of(final List<CharacterAndFormat> pairs) {
     final int size = pairs.size();
     final List<TextColor> colors = new ArrayList<>();
-    final List<TextFormat> formats = new ArrayList<>(size);
+    final List<@Nullable TextFormat> formats = new ArrayList<>(size);
     final StringBuilder characters = new StringBuilder(size);
-    for (int i = 0; i < size; i++) {
-      final CharacterAndFormat pair = pairs.get(i);
+    for (final CharacterAndFormat pair : pairs) {
       final char character = pair.character();
       final TextFormat format = pair.format();
       final boolean formatIsTextColor = format instanceof TextColor;
@@ -77,11 +74,5 @@ final class CharacterAndFormatSet {
       throw new IllegalStateException("formats length differs from characters length");
     }
     return new CharacterAndFormatSet(Collections.unmodifiableList(formats), Collections.unmodifiableList(colors), characters.toString());
-  }
-
-  CharacterAndFormatSet(final List<TextFormat> formats, final List<TextColor> colors, final String characters) {
-    this.formats = formats;
-    this.colors = colors;
-    this.characters = characters;
   }
 }

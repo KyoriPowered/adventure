@@ -37,8 +37,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.object.PlayerHeadObjectContents;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.title.Title;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.configurate.BasicConfigurationNode;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.ConfigurationOptions;
@@ -55,7 +54,7 @@ final class ConfigurateComponentSerializerImpl implements ConfigurateComponentSe
   private final @Nullable ComponentSerializer<Component, ?, String> stringSerializer;
   private final boolean serializeStringComponents;
 
-  private ConfigurateComponentSerializerImpl(final @NotNull Builder builder) {
+  private ConfigurateComponentSerializerImpl(final Builder builder) {
     this.stringSerializer = builder.stringSerializer;
     this.serializeStringComponents = builder.outputStringComponents;
     this.serializers = this.makeSerializers(TypeSerializerCollection.defaults().childBuilder());
@@ -65,9 +64,9 @@ final class ConfigurateComponentSerializerImpl implements ConfigurateComponentSe
   }
 
   @Override
-  public @NotNull Component deserialize(final @NotNull ConfigurationNode input) {
+  public Component deserialize(final ConfigurationNode input) {
     try {
-      final @Nullable Component deserialized = input.get(Component.class);
+      final Component deserialized = input.get(Component.class);
       if (deserialized != null) {
         return deserialized;
       }
@@ -78,7 +77,7 @@ final class ConfigurateComponentSerializerImpl implements ConfigurateComponentSe
   }
 
   @Override
-  public @NotNull ConfigurationNode serialize(final @NotNull Component component) {
+  public ConfigurationNode serialize(final Component component) {
     final ConfigurationNode base = BasicConfigurationNode.root(this.ownNodeOptions);
     try {
       base.set(Component.class, component);
@@ -88,7 +87,7 @@ final class ConfigurateComponentSerializerImpl implements ConfigurateComponentSe
     return base;
   }
 
-  private @NotNull TypeSerializerCollection makeSerializers(final TypeSerializerCollection.@NotNull Builder serializers) {
+  private TypeSerializerCollection makeSerializers(final TypeSerializerCollection.Builder serializers) {
     return serializers
       .register(Book.class, BookTypeSerializer.INSTANCE)
       .register(Title.class, TitleSerializer.INSTANCE)
@@ -103,20 +102,20 @@ final class ConfigurateComponentSerializerImpl implements ConfigurateComponentSe
       .register(TextColorSerializer.INSTANCE)
       .register(BlockNBTPosSerializer.INSTANCE)
       .register(TranslationArgument.class, TranslationArgumentTypeSerializer.INSTANCE)
-      .registerExact(new IndexSerializer<>(TypeToken.get(ClickEvent.Action.class), ClickEvent.Action.NAMES))
+      .registerExact(new IndexSerializer<>(new TypeToken<ClickEvent.Action<?>>() {}, ClickEvent.Action.NAMES))
       .registerExact(new IndexSerializer<>(new TypeToken<HoverEvent.Action<?>>() {}, HoverEvent.Action.NAMES))
       .registerExact(new IndexSerializer<>(TypeToken.get(Sound.Source.class), Sound.Source.NAMES))
       .registerExact(new IndexSerializer<>(TypeToken.get(TextDecoration.class), TextDecoration.NAMES))
       .registerExact(HoverEvent.ShowEntity.class, HoverEventShowEntitySerializer.INSTANCE)
       .registerExact(HoverEvent.ShowItem.class, HoverEventShowItemSerializer.INSTANCE)
       .register(ConfigurateDataComponentValue.class, ConfigurateDataComponentValueTypeSerializer.INSTANCE)
-      .register(ShadowColor.class, ShadowColorSerializer.INSTACE)
+      .register(ShadowColor.class, ShadowColorSerializer.INSTANCE)
       .register(PlayerHeadObjectContents.ProfileProperty.class, ProfilePropertySerializer.INSTANCE)
       .build();
   }
 
   @Override
-  public @NotNull TypeSerializerCollection serializers() {
+  public TypeSerializerCollection serializers() {
     return this.serializers;
   }
 
@@ -128,19 +127,19 @@ final class ConfigurateComponentSerializerImpl implements ConfigurateComponentSe
     }
 
     @Override
-    public ConfigurateComponentSerializer.@NotNull Builder scalarSerializer(final @NotNull ComponentSerializer<Component, ?, String> stringSerializer) {
+    public ConfigurateComponentSerializer.Builder scalarSerializer(final ComponentSerializer<Component, ?, String> stringSerializer) {
       this.stringSerializer = requireNonNull(stringSerializer, "stringSerializer");
       return this;
     }
 
     @Override
-    public ConfigurateComponentSerializer.@NotNull Builder outputStringComponents(final boolean stringComponents) {
+    public ConfigurateComponentSerializer.Builder outputStringComponents(final boolean stringComponents) {
       this.outputStringComponents = stringComponents;
       return this;
     }
 
     @Override
-    public @NotNull ConfigurateComponentSerializer build() {
+    public ConfigurateComponentSerializer build() {
       return new ConfigurateComponentSerializerImpl(this);
     }
   }

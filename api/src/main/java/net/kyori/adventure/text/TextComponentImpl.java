@@ -26,17 +26,16 @@ package net.kyori.adventure.text;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.internal.properties.AdventureProperties;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.util.Nag;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 import org.jetbrains.annotations.VisibleForTesting;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-class TextComponentImpl extends AbstractComponent implements TextComponent {
+sealed class TextComponentImpl implements TextComponent permits VirtualComponentImpl {
   private static final boolean WARN_WHEN_LEGACY_FORMATTING_DETECTED = Boolean.TRUE.equals(AdventureProperties.TEXT_WARN_WHEN_LEGACY_FORMATTING_DETECTED.value());
   @VisibleForTesting
   static final char SECTION_CHAR = '§';
@@ -45,7 +44,7 @@ class TextComponentImpl extends AbstractComponent implements TextComponent {
   static final TextComponent NEWLINE = createDirect("\n");
   static final TextComponent SPACE = createDirect(" ");
 
-  static TextComponent create(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final @NotNull String content) {
+  static TextComponent create(final List<? extends ComponentLike> children, final Style style, final String content) {
     final List<Component> filteredChildren = ComponentLike.asComponents(children, IS_NOT_EMPTY);
     if (filteredChildren.isEmpty() && style.isEmpty() && content.isEmpty()) return Component.empty();
 
@@ -56,19 +55,22 @@ class TextComponentImpl extends AbstractComponent implements TextComponent {
     );
   }
 
-  TextComponent create0(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final @NotNull String content) {
+  TextComponent create0(final List<? extends ComponentLike> children, final Style style, final String content) {
     return create(children, style, content);
   }
 
-  private static @NotNull TextComponent createDirect(final @NotNull String content) {
+  private static TextComponent createDirect(final String content) {
     return new TextComponentImpl(Collections.emptyList(), Style.empty(), content);
   }
 
   private final String content;
+  private final List<Component> children;
+  private final Style style;
 
-  TextComponentImpl(final @NotNull List<Component> children, final @NotNull Style style, final @NotNull String content) {
-    super(children, style);
+  TextComponentImpl(final List<Component> children, final Style style, final String content) {
     this.content = content;
+    this.children = children;
+    this.style = style;
 
     if (WARN_WHEN_LEGACY_FORMATTING_DETECTED) {
       final LegacyFormattingDetected nag = this.warnWhenLegacyFormattingDetected();
@@ -87,53 +89,64 @@ class TextComponentImpl extends AbstractComponent implements TextComponent {
   }
 
   @Override
-  public @NotNull String content() {
+  public @Unmodifiable List<Component> children() {
+    return this.children;
+  }
+
+  @Override
+  public Style style() {
+    return this.style;
+  }
+
+  @Override
+  public String content() {
     return this.content;
   }
 
   @Override
-  public @NotNull TextComponent content(final @NotNull String content) {
+  public TextComponent content(final String content) {
     if (Objects.equals(this.content, content)) return this;
     return this.create0(this.children, this.style, content);
   }
 
   @Override
-  public @NotNull TextComponent children(final @NotNull List<? extends ComponentLike> children) {
+  public TextComponent children(final List<? extends ComponentLike> children) {
     return this.create0(children, this.style, this.content);
   }
 
   @Override
-  public @NotNull TextComponent style(final @NotNull Style style) {
+  public TextComponent style(final Style style) {
     return this.create0(this.children, style, this.content);
   }
 
   @Override
-  public boolean equals(final @Nullable Object other) {
-    if (this == other) return true;
-    if (!(other instanceof TextComponentImpl)) return false;
-    if (!super.equals(other)) return false;
-    final TextComponentImpl that = (TextComponentImpl) other;
-    return Objects.equals(this.content, that.content);
+  public boolean equals(final Object o) {
+    if (!(o instanceof TextComponentImpl that)) return false;
+    return Objects.equals(this.content, that.content)
+      && Objects.equals(this.children, that.children)
+      && Objects.equals(this.style, that.style);
   }
 
   @Override
   public int hashCode() {
-    int result = super.hashCode();
+    int result = 0;
     result = (31 * result) + this.content.hashCode();
+    result = (31 * result) + this.children.hashCode();
+    result = (31 * result) + this.style.hashCode();
     return result;
   }
 
   @Override
   public String toString() {
-    return Internals.toString(this);
+    return "TextComponentImpl{content='" + this.content + '\'' + ", children=" + this.children + ", style=" + this.style + '}';
   }
 
   @Override
-  public @NotNull Builder toBuilder() {
+  public Builder toBuilder() {
     return new BuilderImpl(this);
   }
 
-  static class BuilderImpl extends AbstractComponentBuilder<TextComponent, Builder> implements TextComponent.Builder {
+  static sealed class BuilderImpl extends AbstractComponentBuilder<TextComponent, Builder> implements TextComponent.Builder permits VirtualComponentImpl.BuilderImpl {
     /*
      * We default to an empty string to avoid needing to manually set the
      * content of a newly-created builder when we only want to append other
@@ -144,24 +157,24 @@ class TextComponentImpl extends AbstractComponent implements TextComponent {
     BuilderImpl() {
     }
 
-    BuilderImpl(final @NotNull TextComponent component) {
+    BuilderImpl(final TextComponent component) {
       super(component);
       this.content = component.content();
     }
 
     @Override
-    public @NotNull Builder content(final @NotNull String content) {
+    public Builder content(final String content) {
       this.content = requireNonNull(content, "content");
       return this;
     }
 
     @Override
-    public @NotNull String content() {
+    public String content() {
       return this.content;
     }
 
     @Override
-    public @NotNull TextComponent build() {
+    public TextComponent build() {
       if (this.isEmpty()) {
         return Component.empty();
       }

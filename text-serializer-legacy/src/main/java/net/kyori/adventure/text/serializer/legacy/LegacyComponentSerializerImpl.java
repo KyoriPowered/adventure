@@ -23,6 +23,8 @@
  */
 package net.kyori.adventure.text.serializer.legacy;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -44,13 +46,13 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextFormat;
 import net.kyori.adventure.util.Services;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
+@SuppressWarnings("ClassCanBeRecord")
 final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
-  static final Pattern DEFAULT_URL_PATTERN = Pattern.compile("(?:(https?)://)?([-\\w_.]+\\.\\w{2,})(/\\S*)?");
+  static final Pattern DEFAULT_URL_PATTERN = Pattern.compile("(?:(https?)://)?([-\\w_.]+\\.\\w{2,})(/([A-Za-z0-9\\-._~!$&'()*+,;=:@/]|%[0-9A-Fa-f]{2})*)?");
   static final Pattern URL_SCHEME_PATTERN = Pattern.compile("^[a-z][a-z0-9+\\-.]*:");
   private static final TextDecoration[] DECORATIONS = TextDecoration.values();
   private static final char LEGACY_BUNGEE_HEX_CHAR = 'x';
@@ -104,23 +106,21 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
     if (legacy == this.hexCharacter && input.length() - pos >= 6) {
       return FormatCodeType.KYORI_HEX;
-    } else if (this.formats.characters.indexOf(legacy) != -1) {
+    } else if (this.formats.characters().indexOf(legacy) != -1) {
       return FormatCodeType.MOJANG_LEGACY;
     }
     return null;
   }
 
   static @Nullable LegacyFormat legacyFormat(final char character) {
-    final int index = CharacterAndFormatSet.DEFAULT.characters.indexOf(character);
+    final int index = CharacterAndFormatSet.DEFAULT.characters().indexOf(character);
     if (index != -1) {
-      final TextFormat format = CharacterAndFormatSet.DEFAULT.formats.get(index);
-      if (format instanceof NamedTextColor) {
-        return new LegacyFormat((NamedTextColor) format);
-      } else if (format instanceof TextDecoration) {
-        return new LegacyFormat((TextDecoration) format);
-      } else if (format instanceof Reset) {
-        return LegacyFormat.RESET;
-      }
+      final TextFormat format = CharacterAndFormatSet.DEFAULT.formats().get(index);
+      return switch (format) {
+        case NamedTextColor namedTextColor -> new LegacyFormat(namedTextColor);
+        case TextDecoration textDecoration -> new LegacyFormat(textDecoration);
+        case null, default -> LegacyFormat.RESET;
+      };
     }
     return null;
   }
@@ -130,21 +130,25 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     if (foundFormat == null) {
       return null;
     }
-    if (foundFormat == FormatCodeType.KYORI_HEX) {
-      final @Nullable TextColor parsed = tryParseHexColor(input.substring(pos, pos + 6));
-      if (parsed != null) {
-        return new DecodedFormat(foundFormat, parsed);
+    switch (foundFormat) {
+      case KYORI_HEX -> {
+        final TextColor parsed = tryParseHexColor(input.substring(pos, pos + 6));
+        if (parsed != null) {
+          return new DecodedFormat(foundFormat, parsed);
+        }
       }
-    } else if (foundFormat == FormatCodeType.MOJANG_LEGACY) {
-      return new DecodedFormat(foundFormat, this.formats.formats.get(this.formats.characters.indexOf(legacy)));
-    } else if (foundFormat == FormatCodeType.BUNGEECORD_UNUSUAL_HEX) {
-      final StringBuilder foundHex = new StringBuilder(6);
-      for (int i = pos - 1; i >= pos - 11; i -= 2) {
-        foundHex.append(input.charAt(i));
+      case MOJANG_LEGACY -> {
+        return new DecodedFormat(foundFormat, this.formats.formats().get(this.formats.characters().indexOf(legacy)));
       }
-      final @Nullable TextColor parsed = tryParseHexColor(foundHex.reverse().toString());
-      if (parsed != null) {
-        return new DecodedFormat(foundFormat, parsed);
+      case BUNGEECORD_UNUSUAL_HEX -> {
+        final StringBuilder foundHex = new StringBuilder(6);
+        for (int i = pos - 1; i >= pos - 11; i -= 2) {
+          foundHex.append(input.charAt(i));
+        }
+        final TextColor parsed = tryParseHexColor(foundHex.reverse().toString());
+        if (parsed != null) {
+          return new DecodedFormat(foundFormat, parsed);
+        }
       }
     }
     return null;
@@ -163,8 +167,8 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     return format instanceof TextColor && !(format instanceof NamedTextColor);
   }
 
-  private @Nullable String toLegacyCode(TextFormat format) {
-    if (isHexTextColor(format)) {
+  private @Nullable String toLegacyCode(@Nullable TextFormat format) {
+    if (format != null && isHexTextColor(format)) {
       final TextColor color = (TextColor) format;
       if (this.hexColours) {
         final String hex = String.format("%06x", color.value());
@@ -183,16 +187,16 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
         if (!(color instanceof NamedTextColor)) {
           // if we are not using hex colours, then convert the hex colour
           // to the "nearest" possible named/standard text colour
-          format = TextColor.nearestColorTo(this.formats.colors, color);
+          format = TextColor.nearestColorTo(this.formats.colors(), color);
         }
       }
     }
-    final int index = this.formats.formats.indexOf(format);
+    final int index = this.formats.formats().indexOf(format);
     if (index == -1) {
       // this format was removed from the formats list
       return null;
     }
-    return Character.toString(this.formats.characters.charAt(index));
+    return Character.toString(this.formats.characters().charAt(index));
   }
 
   private TextComponent extractUrl(final TextComponent component) {
@@ -203,7 +207,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   }
 
   @Override
-  public @NotNull TextComponent deserialize(final @NotNull String input) {
+  public TextComponent deserialize(final String input) {
     int next = input.lastIndexOf(this.character, input.length() - 2);
     if (next == -1) {
       return this.extractUrl(Component.text(input));
@@ -258,7 +262,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
 
     final String remaining = pos > 0 ? input.substring(0, pos) : "";
     if (parts.size() == 1 && remaining.isEmpty()) {
-      return this.extractUrl(parts.get(0));
+      return this.extractUrl(parts.getFirst());
     } else {
       Collections.reverse(parts);
       return this.extractUrl(Component.text().content(remaining).append(parts).build());
@@ -266,27 +270,28 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   }
 
   @Override
-  public @NotNull String serialize(final @NotNull Component component) {
+  public String serialize(final Component component) {
     final Cereal state = new Cereal();
     this.flattener.flatten(component, state);
     return state.toString();
   }
 
-  private static boolean applyFormat(final TextComponent.@NotNull Builder builder, final @NotNull TextFormat format) {
-    if (format instanceof TextColor) {
-      builder.colorIfAbsent((TextColor) format);
-      return true;
-    } else if (format instanceof TextDecoration) {
-      builder.decoration((TextDecoration) format, TextDecoration.State.TRUE);
-      return false;
-    } else if (format instanceof Reset) {
-      return true;
-    }
-    throw new IllegalArgumentException(String.format("unknown format '%s'", format.getClass()));
+  private static boolean applyFormat(final TextComponent.Builder builder, final @Nullable TextFormat format) {
+    return switch (format) {
+      case TextColor textColor -> {
+        builder.colorIfAbsent(textColor);
+        yield true;
+      }
+      case TextDecoration textDecoration -> {
+        builder.decoration(textDecoration, TextDecoration.State.TRUE);
+        yield false;
+      }
+      case null -> true;
+    };
   }
 
   @Override
-  public @NotNull Builder toBuilder() {
+  public Builder toBuilder() {
     return new BuilderImpl(this);
   }
 
@@ -299,7 +304,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     private int head = -1;
 
     @Override
-    public void pushStyle(final @NotNull Style pushed) {
+    public void pushStyle(final Style pushed) {
       final int idx = ++this.head;
       if (idx >= this.styles.length) {
         this.styles = Arrays.copyOf(this.styles, this.styles.length * 2);
@@ -322,7 +327,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
 
     @Override
-    public void component(final @NotNull String text) {
+    public void component(final String text) {
       if (!text.isEmpty()) {
         if (this.head < 0) throw new IllegalStateException("No style has been pushed!");
 
@@ -332,13 +337,13 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
 
     @Override
-    public void popStyle(final @NotNull Style style) {
+    public void popStyle(final Style style) {
       if (this.head-- < 0) {
         throw new IllegalStateException("Tried to pop beyond what was pushed!");
       }
     }
 
-    void append(final @NotNull TextFormat format) {
+    void append(final @Nullable TextFormat format) {
       if (this.lastWritten != format) {
         final String legacyCode = LegacyComponentSerializerImpl.this.toLegacyCode(format);
         if (legacyCode == null) {
@@ -363,7 +368,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
         this.decorations = EnumSet.noneOf(TextDecoration.class);
       }
 
-      void set(final @NotNull StyleState that) {
+      void set(final StyleState that) {
         this.color = that.color;
         this.decorations.clear();
         this.decorations.addAll(that.decorations);
@@ -374,24 +379,20 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
         this.decorations.clear();
       }
 
-      void apply(final @NotNull Style component) {
+      void apply(final Style component) {
         final TextColor color = component.color();
         if (color != null) {
           this.color = color;
         }
 
-        for (int i = 0, length = DECORATIONS.length; i < length; i++) {
-          final TextDecoration decoration = DECORATIONS[i];
+        for (final TextDecoration decoration : DECORATIONS) {
           switch (component.decoration(decoration)) {
-            case TRUE:
-              this.decorations.add(decoration);
-              break;
-            case FALSE:
+            case TRUE -> this.decorations.add(decoration);
+            case FALSE -> {
               if (this.decorations.remove(decoration)) {
                 this.needsReset = true;
               }
-              break;
-            default: break; // ignored
+            }
           }
         }
       }
@@ -400,14 +401,14 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
         final boolean colorChanged = this.color != Cereal.this.style.color;
         if (this.needsReset) {
           if (!colorChanged) {
-            Cereal.this.append(Reset.INSTANCE);
+            Cereal.this.append(null);
           }
           this.needsReset = false;
         }
 
         // If color changes, we need to do a full reset.
         // Additionally, if the last thing to be appended was a reset then we need to re-apply everything.
-        if (colorChanged || Cereal.this.lastWritten == Reset.INSTANCE) {
+        if (colorChanged || Cereal.this.lastWritten == null) {
           this.applyFullFormat();
           return;
         }
@@ -428,11 +429,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
       }
 
       private void applyFullFormat() {
-        if (this.color != null) {
-          Cereal.this.append(this.color);
-        } else {
-          Cereal.this.append(Reset.INSTANCE);
-        }
+        Cereal.this.append(this.color);
         Cereal.this.style.color = this.color;
 
         for (final TextDecoration decoration : this.decorations) {
@@ -458,7 +455,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
       BUILDER.accept(this); // let service provider touch the builder before anybody else touches it
     }
 
-    BuilderImpl(final @NotNull LegacyComponentSerializerImpl serializer) {
+    BuilderImpl(final LegacyComponentSerializerImpl serializer) {
       this();
       this.character = serializer.character;
       this.hexCharacter = serializer.hexCharacter;
@@ -470,34 +467,34 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
 
     @Override
-    public @NotNull Builder character(final char legacyCharacter) {
+    public Builder character(final char legacyCharacter) {
       this.character = legacyCharacter;
       return this;
     }
 
     @Override
-    public @NotNull Builder hexCharacter(final char legacyHexCharacter) {
+    public Builder hexCharacter(final char legacyHexCharacter) {
       this.hexCharacter = legacyHexCharacter;
       return this;
     }
 
     @Override
-    public @NotNull Builder extractUrls() {
+    public Builder extractUrls() {
       return this.extractUrls(DEFAULT_URL_PATTERN, null);
     }
 
     @Override
-    public @NotNull Builder extractUrls(final @NotNull Pattern pattern) {
+    public Builder extractUrls(final Pattern pattern) {
       return this.extractUrls(pattern, null);
     }
 
     @Override
-    public @NotNull Builder extractUrls(final @Nullable Style style) {
+    public Builder extractUrls(final @Nullable Style style) {
       return this.extractUrls(DEFAULT_URL_PATTERN, style);
     }
 
     @Override
-    public @NotNull Builder extractUrls(final @NotNull Pattern pattern, final @Nullable Style style) {
+    public Builder extractUrls(final Pattern pattern, final @Nullable Style style) {
       requireNonNull(pattern, "pattern");
       this.urlReplacementConfig = TextReplacementConfig.builder()
         .match(pattern)
@@ -506,38 +503,44 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
           if (!URL_SCHEME_PATTERN.matcher(clickUrl).find()) {
             clickUrl = "http://" + clickUrl;
           }
-          return (style == null ? url : url.style(style)).clickEvent(ClickEvent.openUrl(clickUrl));
+
+          try {
+            final URI ignored = new URI(clickUrl); // just to validate that the uri is valid
+            return (style == null ? url : url.style(style)).clickEvent(ClickEvent.openUrl(clickUrl));
+          } catch (final URISyntaxException ignored) {
+            return url;
+          }
         })
         .build();
       return this;
     }
 
     @Override
-    public @NotNull Builder hexColors() {
+    public Builder hexColors() {
       this.hexColours = true;
       return this;
     }
 
     @Override
-    public @NotNull Builder useUnusualXRepeatedCharacterHexFormat() {
+    public Builder useUnusualXRepeatedCharacterHexFormat() {
       this.useTerriblyStupidHexFormat = true; // :(
       return this;
     }
 
     @Override
-    public @NotNull Builder flattener(final @NotNull ComponentFlattener flattener) {
+    public Builder flattener(final ComponentFlattener flattener) {
       this.flattener = requireNonNull(flattener, "flattener");
       return this;
     }
 
     @Override
-    public @NotNull Builder formats(final @NotNull List<CharacterAndFormat> formats) {
+    public Builder formats(final List<CharacterAndFormat> formats) {
       this.formats = CharacterAndFormatSet.of(formats);
       return this;
     }
 
     @Override
-    public @NotNull LegacyComponentSerializer build() {
+    public LegacyComponentSerializer build() {
       return new LegacyComponentSerializerImpl(this.character, this.hexCharacter, this.urlReplacementConfig, this.hexColours, this.useTerriblyStupidHexFormat, this.flattener, this.formats);
     }
   }
@@ -548,16 +551,6 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     BUNGEECORD_UNUSUAL_HEX;
   }
 
-  static final class DecodedFormat {
-    final FormatCodeType encodedFormat;
-    final TextFormat format;
-
-    private DecodedFormat(final FormatCodeType encodedFormat, final TextFormat format) {
-      if (format == null) {
-        throw new IllegalStateException("No format found");
-      }
-      this.encodedFormat = encodedFormat;
-      this.format = format;
-    }
+  record DecodedFormat(FormatCodeType encodedFormat, @Nullable TextFormat format) {
   }
 }

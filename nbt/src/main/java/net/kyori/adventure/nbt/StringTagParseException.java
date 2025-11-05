@@ -24,18 +24,17 @@
 package net.kyori.adventure.nbt;
 
 import java.io.IOException;
+import java.io.Serial;
 
 /**
  * An exception thrown when parsing a string tag.
  */
 class StringTagParseException extends IOException {
-  private static final long serialVersionUID = -3001637554903912905l;
-  private final CharSequence buffer;
+  private static final @Serial long serialVersionUID = -3001637554903912905L;
   private final int position;
 
-  StringTagParseException(final String message, final CharSequence buffer, final int position) {
+  StringTagParseException(final String message, final CharSequence ignored, final int position) {
     super(message);
-    this.buffer = buffer;
     this.position = position;
   }
 

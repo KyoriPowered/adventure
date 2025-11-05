@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage.tag.standard;
 
+import java.util.Set;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.SelectorComponent;
@@ -33,7 +34,7 @@ import net.kyori.adventure.text.minimessage.internal.serializer.SerializableReso
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Insert a selector component into the result.
@@ -41,11 +42,11 @@ import org.jetbrains.annotations.Nullable;
  * @since 4.11.0
  */
 final class SelectorTag {
-  private static final String SEL = "sel";
-  private static final String SELECTOR = "selector";
+  static final String SEL = "sel";
+  static final String SELECTOR = "selector";
 
   static final TagResolver RESOLVER = SerializableResolver.claimingComponent(
-    StandardTags.names(SEL, SELECTOR),
+    Set.of(SEL, SELECTOR),
     SelectorTag::create,
     SelectorTag::claim
   );
@@ -64,14 +65,15 @@ final class SelectorTag {
   }
 
   static @Nullable Emitable claim(final Component input) {
-    if (!(input instanceof SelectorComponent)) return null;
+    if (!(input instanceof final SelectorComponent st)) return null;
 
-    final SelectorComponent st = (SelectorComponent) input;
     return emit -> {
       emit.tag(SEL);
       emit.argument(st.pattern());
-      if (st.separator() != null) {
-        emit.argument(st.separator());
+
+      final Component separator = st.separator();
+      if (separator != null) {
+        emit.argument(separator);
       }
     };
   }

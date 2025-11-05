@@ -1,0 +1,11 @@
+/**
+ * Gson based serialization and deserialization.
+ */
+module net.kyori.adventure.text.serializer.gson {
+  requires transitive net.kyori.adventure.text.serializer.json;
+  requires com.google.gson;
+  requires net.kyori.adventure.text.serializer.commons;
+  requires static com.google.auto.service;
+
+  exports net.kyori.adventure.text.serializer.gson;
+}

@@ -26,11 +26,7 @@ package net.kyori.adventure.key;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.OptionalInt;
-import java.util.stream.Stream;
-import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * An identifying object used to fetch and/or store unique objects.
@@ -57,7 +53,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 4.0.0
  */
-public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
+public interface Key extends Comparable<Key>, Namespaced, Keyed {
   /**
    * The namespace for Minecraft.
    *
@@ -85,7 +81,7 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
    * @throws InvalidKeyException if the namespace or value contains an invalid character
    * @since 4.0.0
    */
-  static @NotNull Key key(@KeyPattern final @NotNull String string) {
+  static Key key(@KeyPattern final String string) {
     return key(string, DEFAULT_SEPARATOR);
   }
 
@@ -105,7 +101,7 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
    * @since 4.0.0
    */
   @SuppressWarnings("PatternValidation") // impossible to validate since the character is variable
-  static @NotNull Key key(final @NotNull String string, final char character) {
+  static Key key(final String string, final char character) {
     Objects.requireNonNull(string, "string");
     final int index = string.indexOf(character);
     final String namespace = index >= 1 ? string.substring(0, index) : MINECRAFT_NAMESPACE;
@@ -122,7 +118,8 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
    * @throws InvalidKeyException if the namespace or value contains an invalid character
    * @since 4.4.0
    */
-  static @NotNull Key key(final @NotNull Namespaced namespaced, @KeyPattern.Value final @NotNull String value) {
+  @SuppressWarnings("PatternValidation") // The namespace is tested later.
+  static Key key(final Namespaced namespaced, @KeyPattern.Value final String value) {
     return key(Objects.requireNonNull(namespaced, "namespaced").namespace(), value);
   }
 
@@ -135,7 +132,7 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
    * @throws InvalidKeyException if the namespace or value contains an invalid character
    * @since 4.0.0
    */
-  static @NotNull Key key(@KeyPattern.Namespace final @NotNull String namespace, @KeyPattern.Value final @NotNull String value) {
+  static Key key(@KeyPattern.Namespace final String namespace, @KeyPattern.Value final String value) {
     return new KeyImpl(namespace, value);
   }
 
@@ -147,7 +144,7 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
    * @return a comparator for keys
    * @since 4.10.0
    */
-  static @NotNull Comparator<? super Key> comparator() {
+  static Comparator<? super Key> comparator() {
     return KeyImpl.COMPARATOR;
   }
 
@@ -175,8 +172,8 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
    * @return {@code true} if {@code value} is a valid namespace, {@code false} otherwise
    * @since 4.12.0
    */
-  static boolean parseableNamespace(final @NotNull String namespace) {
-    return !checkNamespace(namespace).isPresent();
+  static boolean parseableNamespace(final String namespace) {
+    return checkNamespace(namespace).isEmpty();
   }
 
   /**
@@ -186,7 +183,7 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
    * @return {@link OptionalInt#empty()} if {@code value} is a valid namespace, otherwise an {@code OptionalInt} containing the index of an invalid character
    * @since 4.14.0
    */
-  static @NotNull OptionalInt checkNamespace(final @NotNull String namespace) {
+  static OptionalInt checkNamespace(final String namespace) {
     Objects.requireNonNull(namespace, "namespace");
     for (int i = 0, length = namespace.length(); i < length; i++) {
       if (!allowedInNamespace(namespace.charAt(i))) {
@@ -203,8 +200,8 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
    * @return {@code true} if {@code value} is a valid value, {@code false} otherwise
    * @since 4.12.0
    */
-  static boolean parseableValue(final @NotNull String value) {
-    return !checkValue(value).isPresent();
+  static boolean parseableValue(final String value) {
+    return checkValue(value).isEmpty();
   }
 
   /**
@@ -214,7 +211,7 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
    * @return {@link OptionalInt#empty()} if {@code value} is a valid value, otherwise an {@code OptionalInt} containing the index of an invalid character
    * @since 4.14.0
    */
-  static @NotNull OptionalInt checkValue(final @NotNull String value) {
+  static OptionalInt checkValue(final String value) {
     Objects.requireNonNull(value, "value");
     for (int i = 0, length = value.length(); i < length; i++) {
       if (!allowedInValue(value.charAt(i))) {
@@ -254,7 +251,7 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
    */
   @KeyPattern.Namespace
   @Override
-  @NotNull String namespace();
+  String namespace();
 
   /**
    * Gets the value.
@@ -263,7 +260,7 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
    * @since 4.0.0
    */
   @KeyPattern.Value
-  @NotNull String value();
+  String value();
 
   /**
    * Returns the string representation of this key.
@@ -271,7 +268,7 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
    * @return the string representation
    * @since 4.0.0
    */
-  @NotNull String asString();
+  String asString();
 
   /**
    * Returns the string representation of this key in minimal form.
@@ -281,7 +278,7 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
    * @return the string representation
    * @since 4.15.0
    */
-  default @NotNull String asMinimalString() {
+  default String asMinimalString() {
     if (this.namespace().equals(MINECRAFT_NAMESPACE)) {
       return this.value();
     }
@@ -289,20 +286,12 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
   }
 
   @Override
-  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("namespace", this.namespace()),
-      ExaminableProperty.of("value", this.value())
-    );
-  }
-
-  @Override
-  default int compareTo(final @NotNull Key that) {
+  default int compareTo(final Key that) {
     return comparator().compare(this, that);
   }
 
   @Override
-  default @NotNull Key key() {
+  default Key key() {
     return this;
   }
 }

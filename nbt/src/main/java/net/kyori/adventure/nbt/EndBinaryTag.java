@@ -23,40 +23,24 @@
  */
 package net.kyori.adventure.nbt;
 
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-
 /**
  * An end tag.
  *
  * @since 4.0.0
  */
-public interface EndBinaryTag extends BinaryTag {
+public sealed interface EndBinaryTag extends BinaryTag permits EndBinaryTagImpl {
   /**
    * Gets the end tag.
    *
    * @return the end tag
    * @since 4.14.0
    */
-  static @NotNull EndBinaryTag endBinaryTag() {
-    return EndBinaryTagImpl.INSTANCE;
-  }
-
-  /**
-   * Gets the end tag.
-   *
-   * @return the end tag
-   * @since 4.0.0
-   * @deprecated for removal since 4.14.0, use {@link #endBinaryTag()} instead
-   */
-  @Deprecated
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  static @NotNull EndBinaryTag get() {
+  static EndBinaryTag endBinaryTag() {
     return EndBinaryTagImpl.INSTANCE;
   }
 
   @Override
-  default @NotNull BinaryTagType<EndBinaryTag> type() {
+  default BinaryTagType<EndBinaryTag> type() {
     return BinaryTagTypes.END;
   }
 }

@@ -32,7 +32,7 @@ import net.kyori.adventure.text.minimessage.internal.serializer.SerializableReso
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A transformation that inserts a key binding component.
@@ -52,11 +52,10 @@ final class KeybindTag {
   }
 
   static @Nullable Emitable emit(final Component component) {
-    if (!(component instanceof KeybindComponent)) return null;
+    if (!(component instanceof KeybindComponent keybindComponent)) return null;
 
-    final String key = ((KeybindComponent) component).keybind();
+    final String key = keybindComponent.keybind();
 
     return emit -> emit.tag(KEYBIND).argument(key);
   }
-
 }

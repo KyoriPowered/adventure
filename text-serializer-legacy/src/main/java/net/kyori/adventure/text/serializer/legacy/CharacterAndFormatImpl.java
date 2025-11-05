@@ -23,101 +23,44 @@
  */
 package net.kyori.adventure.text.serializer.legacy;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.format.TextFormat;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-import static java.util.Objects.requireNonNull;
-
-final class CharacterAndFormatImpl implements CharacterAndFormat {
-  private final char character;
-  private final TextFormat format;
-  private final boolean caseInsensitive;
-
-  CharacterAndFormatImpl(final char character, final @NotNull TextFormat format, final boolean caseInsensitive) {
-    this.character = character;
-    this.format = requireNonNull(format, "format");
-    this.caseInsensitive = caseInsensitive;
-  }
-
-  @Override
-  public char character() {
-    return this.character;
-  }
-
-  @Override
-  public @NotNull TextFormat format() {
-    return this.format;
-  }
-
-  @Override
-  public boolean caseInsensitive() {
-    return this.caseInsensitive;
-  }
-
-  @Override
-  public boolean equals(final @Nullable Object other) {
-    if (this == other) return true;
-    if (!(other instanceof CharacterAndFormatImpl)) return false;
-    final CharacterAndFormatImpl that = (CharacterAndFormatImpl) other;
-    return this.character == that.character
-      && this.format.equals(that.format)
-      && this.caseInsensitive == that.caseInsensitive;
-  }
-
-  @Override
-  public int hashCode() {
-    int result = this.character;
-    result = 31 * result + this.format.hashCode();
-    result = 31 * result + Boolean.hashCode(this.caseInsensitive);
-    return result;
-  }
-
-  @Override
-  public @NotNull String toString() {
-    return Internals.toString(this);
-  }
-
+record CharacterAndFormatImpl(char character, @Nullable TextFormat format, boolean caseInsensitive) implements CharacterAndFormat {
   static final class Defaults {
     static final List<CharacterAndFormat> DEFAULTS = createDefaults();
 
     private Defaults() {
     }
 
-    @SuppressWarnings("DuplicatedCode")
     static List<CharacterAndFormat> createDefaults() {
-      final List<CharacterAndFormat> formats = new ArrayList<>(16 + 5 + 1); // colours + decorations + reset
+      return List.of(
+        BLACK,
+        DARK_BLUE,
+        DARK_GREEN,
+        DARK_AQUA,
+        DARK_RED,
+        DARK_PURPLE,
+        GOLD,
+        GRAY,
+        DARK_GRAY,
+        BLUE,
+        GREEN,
+        AQUA,
+        RED,
+        LIGHT_PURPLE,
+        YELLOW,
+        WHITE,
 
-      formats.add(BLACK);
-      formats.add(DARK_BLUE);
-      formats.add(DARK_GREEN);
-      formats.add(DARK_AQUA);
-      formats.add(DARK_RED);
-      formats.add(DARK_PURPLE);
-      formats.add(GOLD);
-      formats.add(GRAY);
-      formats.add(DARK_GRAY);
-      formats.add(BLUE);
-      formats.add(GREEN);
-      formats.add(AQUA);
-      formats.add(RED);
-      formats.add(LIGHT_PURPLE);
-      formats.add(YELLOW);
-      formats.add(WHITE);
+        OBFUSCATED,
+        BOLD,
+        STRIKETHROUGH,
+        UNDERLINED,
+        ITALIC,
 
-      formats.add(OBFUSCATED);
-      formats.add(BOLD);
-      formats.add(STRIKETHROUGH);
-      formats.add(UNDERLINED);
-      formats.add(ITALIC);
-
-      formats.add(RESET);
-
-      return Collections.unmodifiableList(formats);
+        RESET
+      );
     }
   }
 }

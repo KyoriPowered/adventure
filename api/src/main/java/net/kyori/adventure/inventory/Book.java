@@ -31,10 +31,7 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.Buildable;
-import net.kyori.examination.Examinable;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
 /**
@@ -47,8 +44,7 @@ import org.jetbrains.annotations.Unmodifiable;
  * @see Audience#openBook(Book)
  * @since 4.0.0
  */
-@ApiStatus.NonExtendable
-public interface Book extends Buildable<Book, Book.Builder>, Examinable {
+public sealed interface Book extends Buildable<Book.Builder> permits BookImpl {
   /**
    * Creates a book.
    *
@@ -58,7 +54,7 @@ public interface Book extends Buildable<Book, Book.Builder>, Examinable {
    * @return a book
    * @since 4.0.0
    */
-  static @NotNull Book book(final @NotNull Component title, final @NotNull Component author, final @NotNull Collection<Component> pages) {
+  static Book book(final Component title, final Component author, final Collection<Component> pages) {
     return new BookImpl(title, author, new ArrayList<>(pages));
   }
 
@@ -71,7 +67,7 @@ public interface Book extends Buildable<Book, Book.Builder>, Examinable {
    * @return a book
    * @since 4.0.0
    */
-  static @NotNull Book book(final @NotNull Component title, final @NotNull Component author, final @NotNull Component@NotNull... pages) {
+  static Book book(final Component title, final Component author, final Component... pages) {
     return book(title, author, Arrays.asList(pages));
   }
 
@@ -81,7 +77,7 @@ public interface Book extends Buildable<Book, Book.Builder>, Examinable {
    * @return a builder
    * @since 4.0.0
    */
-  static @NotNull Builder builder() {
+  static Builder builder() {
     return new BookImpl.BuilderImpl();
   }
 
@@ -91,7 +87,7 @@ public interface Book extends Buildable<Book, Book.Builder>, Examinable {
    * @return the title
    * @since 4.0.0
    */
-  @NotNull Component title();
+  Component title();
 
   /**
    * Changes the book's title.
@@ -101,7 +97,7 @@ public interface Book extends Buildable<Book, Book.Builder>, Examinable {
    * @since 4.0.0
    */
   @Contract(value = "_ -> new", pure = true)
-  @NotNull Book title(final @NotNull Component title);
+  Book title(final Component title);
 
   /**
    * Gets the author.
@@ -109,7 +105,7 @@ public interface Book extends Buildable<Book, Book.Builder>, Examinable {
    * @return the author
    * @since 4.0.0
    */
-  @NotNull Component author();
+  Component author();
 
   /**
    * Changes the book's author.
@@ -119,7 +115,7 @@ public interface Book extends Buildable<Book, Book.Builder>, Examinable {
    * @since 4.0.0
    */
   @Contract(value = "_ -> new", pure = true)
-  @NotNull Book author(final @NotNull Component author);
+  Book author(final Component author);
 
   /**
    * Gets the list of pages.
@@ -129,7 +125,7 @@ public interface Book extends Buildable<Book, Book.Builder>, Examinable {
    * @return the list of pages
    * @since 4.0.0
    */
-  @Unmodifiable @NotNull List<Component> pages();
+  @Unmodifiable List<Component> pages();
 
   /**
    * Returns an updated book with the provided pages.
@@ -139,7 +135,7 @@ public interface Book extends Buildable<Book, Book.Builder>, Examinable {
    * @since 4.0.0
    */
   @Contract(value = "_ -> new", pure = true)
-  default @NotNull Book pages(final @NotNull Component@NotNull... pages) {
+  default Book pages(final Component... pages) {
     return this.pages(Arrays.asList(pages));
   }
 
@@ -151,27 +147,14 @@ public interface Book extends Buildable<Book, Book.Builder>, Examinable {
    * @since 4.0.0
    */
   @Contract(value = "_ -> new", pure = true)
-  @NotNull Book pages(final @NotNull List<Component> pages);
-
-  /**
-   * Create a new builder initialized with the attributes of this book.
-   *
-   * @return the builder
-   */
-  @Override
-  default @NotNull Builder toBuilder() {
-    return builder()
-      .title(this.title())
-      .author(this.author())
-      .pages(this.pages());
-  }
+  Book pages(final List<Component> pages);
 
   /**
    * A builder for a {@link Book}.
    *
    * @since 4.0.0
    */
-  interface Builder extends AbstractBuilder<Book>, Buildable.Builder<Book> {
+  sealed interface Builder extends AbstractBuilder<Book> permits BookImpl.BuilderImpl {
     /**
      * Set the title.
      *
@@ -180,7 +163,7 @@ public interface Book extends Buildable<Book, Book.Builder>, Examinable {
      * @since 4.0.0
      */
     @Contract("_ -> this")
-    @NotNull Builder title(final @NotNull Component title);
+    Builder title(final Component title);
 
     /**
      * Set the author.
@@ -190,7 +173,7 @@ public interface Book extends Buildable<Book, Book.Builder>, Examinable {
      * @since 4.0.0
      */
     @Contract("_ -> this")
-    @NotNull Builder author(final @NotNull Component author);
+    Builder author(final Component author);
 
     /**
      * Add a page to the book.
@@ -203,7 +186,7 @@ public interface Book extends Buildable<Book, Book.Builder>, Examinable {
      * @since 4.0.0
      */
     @Contract("_ -> this")
-    @NotNull Builder addPage(final @NotNull Component page);
+    Builder addPage(final Component page);
 
     /**
      * Add pages to the book.
@@ -214,7 +197,7 @@ public interface Book extends Buildable<Book, Book.Builder>, Examinable {
      * @since 4.0.0
      */
     @Contract("_ -> this")
-    @NotNull Builder pages(final @NotNull Component@NotNull... pages);
+    Builder pages(final Component... pages);
 
     /**
      * Add pages to the book.
@@ -225,14 +208,6 @@ public interface Book extends Buildable<Book, Book.Builder>, Examinable {
      * @since 4.0.0
      */
     @Contract("_ -> this")
-    @NotNull Builder pages(final @NotNull Collection<Component> pages);
-
-    /**
-     * Builds.
-     *
-     * @return a new book
-     */
-    @Override
-    @NotNull Book build();
+    Builder pages(final Collection<Component> pages);
   }
 }

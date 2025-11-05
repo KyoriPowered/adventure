@@ -26,4 +26,7 @@
  *
  * <p>This is a replacement for the old {@code adventure-text-serializer-gson-legacyimpl} module.</p>
  */
+@NullMarked
 package net.kyori.adventure.text.serializer.json.legacyimpl;
+
+import org.jspecify.annotations.NullMarked;

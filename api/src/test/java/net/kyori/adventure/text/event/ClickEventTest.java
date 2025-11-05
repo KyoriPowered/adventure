@@ -25,9 +25,11 @@ package net.kyori.adventure.text.event;
 
 import com.google.common.testing.EqualsTester;
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,35 +40,39 @@ class ClickEventTest {
     new EqualsTester()
       .addEqualityGroup(
         ClickEvent.openUrl("https://google.com/"),
-        ClickEvent.openUrl(new URL("https://google.com/")),
-        ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, "https://google.com/")
+        ClickEvent.openUrl(URI.create("https://google.com/").toURL()),
+        ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, ClickEvent.Payload.string("https://google.com/")),
+        ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, ClickEvent.Payload.string("https://google.com/"))
       )
       .addEqualityGroup(
         ClickEvent.runCommand("/test"),
-        ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/test")
+        ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, ClickEvent.Payload.string("/test"))
       )
       .addEqualityGroup(
         ClickEvent.suggestCommand("/test"),
-        ClickEvent.clickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/test")
+        ClickEvent.clickEvent(ClickEvent.Action.SUGGEST_COMMAND, ClickEvent.Payload.string("/test"))
       )
       .addEqualityGroup(
         ClickEvent.changePage(1),
-        ClickEvent.changePage("1"),
-        ClickEvent.clickEvent(ClickEvent.Action.CHANGE_PAGE, "1")
+        ClickEvent.clickEvent(ClickEvent.Action.CHANGE_PAGE, ClickEvent.Payload.integer(1))
       )
       .addEqualityGroup(
         ClickEvent.copyToClipboard("test"),
-        ClickEvent.clickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, "test")
+        ClickEvent.clickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, ClickEvent.Payload.string("test"))
+      )
+      .addEqualityGroup(
+        ClickEvent.custom(Key.key("test"), BinaryTagHolder.binaryTagHolder("test")),
+        ClickEvent.clickEvent(ClickEvent.Action.CUSTOM, ClickEvent.Payload.custom(Key.key("test"), BinaryTagHolder.binaryTagHolder("test")))
       )
       .testEquals();
   }
 
   @Test
   void assertReadable() {
-    final Set<ClickEvent.Action> unreadable = new HashSet();
+    final Set<ClickEvent.Action<?>> unreadable = new HashSet<>();
     unreadable.add(ClickEvent.Action.OPEN_FILE);
     unreadable.add(ClickEvent.Action.SHOW_DIALOG);
-    for (final ClickEvent.Action action : ClickEvent.Action.values()) {
+    for (final ClickEvent.Action<?> action : ClickEvent.Action.NAMES.values()) {
       assertEquals(action.readable(), !unreadable.contains(action));
     }
   }

@@ -24,4 +24,7 @@
 /**
  * A receiver of Minecraft media.
  */
+@NullMarked
 package net.kyori.adventure.audience;
+
+import org.jspecify.annotations.NullMarked;

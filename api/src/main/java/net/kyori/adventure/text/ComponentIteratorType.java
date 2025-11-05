@@ -24,11 +24,7 @@
 package net.kyori.adventure.text;
 
 import java.util.Deque;
-import java.util.List;
 import java.util.Set;
-import net.kyori.adventure.text.event.HoverEvent;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * The iterator types.
@@ -38,65 +34,19 @@ import org.jetbrains.annotations.NotNull;
  * @see Component#spliterator(ComponentIteratorType, Set)
  * @since 4.9.0
  */
-@ApiStatus.NonExtendable
-@FunctionalInterface
-public interface ComponentIteratorType {
+public sealed interface ComponentIteratorType permits ComponentIteratorTypeImpl.BreadthFirst, ComponentIteratorTypeImpl.DepthFirst {
   /**
    * A depth-first iteration.
    *
    * @since 4.9.0
    */
-  ComponentIteratorType DEPTH_FIRST = (component, deque, flags) -> {
-    if (flags.contains(ComponentIteratorFlag.INCLUDE_TRANSLATABLE_COMPONENT_ARGUMENTS) && component instanceof TranslatableComponent) {
-      final TranslatableComponent translatable = (TranslatableComponent) component;
-      final List<? extends ComponentLike> args = translatable.arguments();
-
-      for (int i = args.size() - 1; i >= 0; i--) {
-        deque.addFirst(args.get(i).asComponent());
-      }
-    }
-
-    final HoverEvent<?> hoverEvent = component.hoverEvent();
-    if (hoverEvent != null) {
-      final HoverEvent.Action<?> action = hoverEvent.action();
-
-      if (flags.contains(ComponentIteratorFlag.INCLUDE_HOVER_SHOW_ENTITY_NAME) && action == HoverEvent.Action.SHOW_ENTITY) {
-        deque.addFirst(((HoverEvent.ShowEntity) hoverEvent.value()).name());
-      } else if (flags.contains(ComponentIteratorFlag.INCLUDE_HOVER_SHOW_TEXT_COMPONENT) && action == HoverEvent.Action.SHOW_TEXT) {
-        deque.addFirst((Component) hoverEvent.value());
-      }
-    }
-
-    final List<Component> children = component.children();
-    for (int i = children.size() - 1; i >= 0; i--) {
-      deque.addFirst(children.get(i));
-    }
-  };
+  ComponentIteratorType DEPTH_FIRST = ComponentIteratorTypeImpl.DepthFirst.INSTANCE;
   /**
    * A breadth-first iteration.
    *
    * @since 4.9.0
    */
-  ComponentIteratorType BREADTH_FIRST = (component, deque, flags) -> {
-    if (flags.contains(ComponentIteratorFlag.INCLUDE_TRANSLATABLE_COMPONENT_ARGUMENTS) && component instanceof TranslatableComponent) {
-      for (final TranslationArgument argument : ((TranslatableComponent) component).arguments()) {
-        deque.add(argument.asComponent());
-      }
-    }
-
-    final HoverEvent<?> hoverEvent = component.hoverEvent();
-    if (hoverEvent != null) {
-      final HoverEvent.Action<?> action = hoverEvent.action();
-
-      if (flags.contains(ComponentIteratorFlag.INCLUDE_HOVER_SHOW_ENTITY_NAME) && action == HoverEvent.Action.SHOW_ENTITY) {
-        deque.addLast(((HoverEvent.ShowEntity) hoverEvent.value()).name());
-      } else if (flags.contains(ComponentIteratorFlag.INCLUDE_HOVER_SHOW_TEXT_COMPONENT) && action == HoverEvent.Action.SHOW_TEXT) {
-        deque.addLast((Component) hoverEvent.value());
-      }
-    }
-
-    deque.addAll(component.children());
-  };
+  ComponentIteratorType BREADTH_FIRST = ComponentIteratorTypeImpl.BreadthFirst.INSTANCE;
 
   /**
    * Populates a deque with the children of the provided component, based on the iterator type and flags.
@@ -106,5 +56,5 @@ public interface ComponentIteratorType {
    * @param flags the flags
    * @since 4.9.0
    */
-  void populate(final @NotNull Component component, final @NotNull Deque<Component> deque, final @NotNull Set<ComponentIteratorFlag> flags);
+  void populate(final Component component, final Deque<Component> deque, final Set<ComponentIteratorFlag> flags);
 }

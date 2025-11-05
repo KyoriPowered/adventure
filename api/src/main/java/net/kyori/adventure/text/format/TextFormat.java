@@ -24,11 +24,12 @@
 package net.kyori.adventure.text.format;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentBuilderApplicable;
 
 /**
  * A format which may be applied to a {@link Component}.
  *
  * @since 4.0.0
  */
-public interface TextFormat {
+public sealed interface TextFormat extends ComponentBuilderApplicable permits TextDecoration, TextColor {
 }

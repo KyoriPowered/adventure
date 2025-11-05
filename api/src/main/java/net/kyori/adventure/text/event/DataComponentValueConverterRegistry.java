@@ -35,12 +35,11 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.util.PlatformAPI;
 import net.kyori.adventure.util.Services;
-import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -64,9 +63,9 @@ public final class DataComponentValueConverterRegistry {
    * @since 4.1.7.0
    */
   public static Set<Key> knownProviders() {
-    return Collections.unmodifiableSet(PROVIDERS.stream()
+    return PROVIDERS.stream()
       .map(Provider::id)
-      .collect(Collectors.toSet()));
+      .collect(Collectors.toUnmodifiableSet());
   }
 
   /**
@@ -80,12 +79,12 @@ public final class DataComponentValueConverterRegistry {
    * @since 4.17.0
    */
   @SuppressWarnings({"unchecked", "rawtypes"})
-  public static <O extends DataComponentValue> @NotNull O convert(final @NotNull Class<O> target, final @NotNull Key key, final @NotNull DataComponentValue in) {
+  public static <O extends DataComponentValue> O convert(final Class<O> target, final Key key, final DataComponentValue in) {
     if (target.isInstance(in)) {
       return target.cast(in);
     }
 
-    final @Nullable RegisteredConversion converter = ConversionCache.converter(in.getClass(), target);
+    final RegisteredConversion converter = ConversionCache.converter(in.getClass(), target);
     if (converter == null) {
       throw new IllegalArgumentException("There is no data holder converter registered to convert from a " + in.getClass() + " instance to a " + target + " (on field " + key + ")");
     }
@@ -102,6 +101,9 @@ public final class DataComponentValueConverterRegistry {
    *
    * @since 4.17.0
    */
+  @ApiStatus.NonExtendable
+  @ApiStatus.Internal
+  @PlatformAPI
   public interface Provider {
     /**
      * An identifier for this provider.
@@ -109,7 +111,7 @@ public final class DataComponentValueConverterRegistry {
      * @return the provider id
      * @since 4.17.0
      */
-    @NotNull Key id();
+    Key id();
 
     /**
      * Return conversions available from this provider.
@@ -119,7 +121,7 @@ public final class DataComponentValueConverterRegistry {
      * @return the conversions available
      * @since 4.17.0
      */
-    @NotNull Iterable<Conversion<?, ?>> conversions();
+    Iterable<Conversion<?, ?>> conversions();
   }
 
   /**
@@ -129,8 +131,7 @@ public final class DataComponentValueConverterRegistry {
    * @param <O> output type
    * @since 4.17.0
    */
-  @ApiStatus.NonExtendable
-  public interface Conversion<I, O> extends Examinable {
+  public sealed interface Conversion<I, O> permits DataComponentValueConversionImpl {
     /**
      * Create a new conversion.
      *
@@ -142,7 +143,7 @@ public final class DataComponentValueConverterRegistry {
      * @return a conversion object
      * @since 4.17.0
      */
-    static <I1, O1> @NotNull Conversion<I1, O1> convert(final @NotNull Class<I1> src, final @NotNull Class<O1> dst, final @NotNull BiFunction<Key, I1, O1> op) {
+    static <I1, O1> Conversion<I1, O1> convert(final Class<I1> src, final Class<O1> dst, final BiFunction<Key, I1, O1> op) {
       return new DataComponentValueConversionImpl<>(
         requireNonNull(src, "src"),
         requireNonNull(dst, "dst"),
@@ -157,7 +158,7 @@ public final class DataComponentValueConverterRegistry {
      * @since 4.17.0
      */
     @Contract(pure = true)
-    @NotNull Class<I> source();
+    Class<I> source();
 
     /**
      * The destination type.
@@ -166,7 +167,7 @@ public final class DataComponentValueConverterRegistry {
      * @since 4.17.0
      */
     @Contract(pure = true)
-    @NotNull Class<O> destination();
+    Class<O> destination();
 
     /**
      * Perform the actual conversion.
@@ -176,7 +177,7 @@ public final class DataComponentValueConverterRegistry {
      * @return a data holder of the destination type
      * @since 4.17.0
      */
-    @NotNull O convert(final @NotNull Key key, final @NotNull I input);
+    O convert(final Key key, final I input);
   }
 
   static final class ConversionCache {
@@ -187,7 +188,7 @@ public final class DataComponentValueConverterRegistry {
     private static Map<Class<?>, Set<RegisteredConversion>> collectConversions() {
       final Map<Class<?>, Set<RegisteredConversion>> collected = new ConcurrentHashMap<>();
       for (final Provider provider : PROVIDERS) {
-        final @NotNull Key id = requireNonNull(provider.id(), () -> "ID of provider " + provider + " is null");
+        final Key id = requireNonNull(provider.id(), () -> "ID of provider " + provider + " is null");
         for (final Conversion<?, ?> conv : provider.conversions()) {
           collected.computeIfAbsent(conv.source(), $ -> ConcurrentHashMap.newKeySet()).add(new RegisteredConversion(id, conv));
         }
@@ -246,15 +247,7 @@ public final class DataComponentValueConverterRegistry {
     }
   }
 
-  static final class RegisteredConversion {
+  record RegisteredConversion(@Nullable Key provider, @Nullable Conversion<?, ?> conversion) {
     static final RegisteredConversion NONE = new RegisteredConversion(null, null);
-
-    final Key provider;
-    final Conversion<?, ?> conversion;
-
-    RegisteredConversion(final Key provider, final Conversion<?, ?> conversion) {
-      this.provider = provider;
-      this.conversion = conversion;
-    }
   }
 }

@@ -26,8 +26,6 @@ package net.kyori.adventure.text.minimessage.tag.standard;
 import java.util.Collections;
 import java.util.PrimitiveIterator;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
-import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TextComponent;
@@ -43,11 +41,8 @@ import net.kyori.adventure.text.minimessage.internal.serializer.TokenEmitter;
 import net.kyori.adventure.text.minimessage.tag.Inserting;
 import net.kyori.adventure.text.minimessage.tag.Modifying;
 import net.kyori.adventure.text.minimessage.tree.Node;
-import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A transformation that applies a colour change.
@@ -61,7 +56,7 @@ import org.jetbrains.annotations.UnknownNullability;
  *
  * @since 4.10.0
  */
-abstract class AbstractColorChangingTag implements Modifying, Examinable {
+abstract class AbstractColorChangingTag implements Modifying {
   private static final ComponentFlattener LENGTH_CALCULATOR = ComponentFlattener.builder()
     .mapper(TextComponent.class, TextComponent::content)
     .unknownMapper(x -> "_") // every unknown component gets a single colour
@@ -81,16 +76,15 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
   }
 
   @Override
-  public final void visit(final @NotNull Node current, final int depth) {
+  public final void visit(final Node current, final int depth) {
     if (this.visited) {
       throw new IllegalStateException("Color changing tag instances cannot be re-used, return a new one for each resolve");
     }
 
-    if (current instanceof ValueNode) {
-      final String value = ((ValueNode) current).value();
+    if (current instanceof ValueNode valueNode) {
+      final String value = valueNode.value();
       this.size += value.codePointCount(0, value.length());
-    } else if (current instanceof TagNode) {
-      final TagNode tag = (TagNode) current;
+    } else if (current instanceof final TagNode tag) {
       if (tag.tag() instanceof Inserting) {
         // ComponentTransformation.apply() returns the value of the component placeholder
         LENGTH_CALCULATOR.flatten(((Inserting) tag.tag()).value(), s -> this.size += s.codePointCount(0, s.length()));
@@ -106,7 +100,7 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
   }
 
   @Override
-  public final Component apply(final @NotNull Component current, final int depth) {
+  public final Component apply(final Component current, final int depth) {
     if (this.emitVirtuals && depth == 0) {
       // capture state into a virtual component, no other logic is needed in normal MM handling
       return Component.virtual(Void.class, new TagInfoHolder(this.preserveData(), current), current.style());
@@ -118,21 +112,20 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
       }
       // This component has its own color applied, which overrides ours
       // We still want to keep track of where we are though if this is text
-      if (current instanceof TextComponent) {
-        this.skipColorForLengthOf(((TextComponent) current).content());
+      if (current instanceof TextComponent textComponent) {
+        this.skipColorForLengthOf(textComponent.content());
       }
       return current.children(Collections.emptyList());
     }
 
     this.disableApplyingColorDepth = -1;
-    if (current instanceof VirtualComponent) {
+    if (current instanceof VirtualComponent virtualComponent) {
       // this component has its own information, so we can't rainbowify direct content -- we can process children tho
       // basically treat as if it's a non-text component
-      this.skipColorForLengthOf(((VirtualComponent) current).content());
+      this.skipColorForLengthOf(virtualComponent.content());
 
       return current.children(Collections.emptyList());
-    } else if (current instanceof TextComponent && ((TextComponent) current).content().length() > 0) {
-      final TextComponent textComponent = (TextComponent) current;
+    } else if (current instanceof final TextComponent textComponent && !textComponent.content().isEmpty()) {
       final String content = textComponent.content();
 
       final TextComponent.Builder parent = Component.text();
@@ -187,17 +180,9 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
    * @return the emitable for this tag
    * @since 4.18.0
    */
-  protected abstract @NotNull Consumer<TokenEmitter> preserveData();
+  protected abstract Consumer<TokenEmitter> preserveData();
 
   // misc
-
-  @Override
-  public abstract @NotNull Stream<? extends ExaminableProperty> examinableProperties();
-
-  @Override
-  public final @NotNull String toString() {
-    return Internals.toString(this);
-  }
 
   @Override
   public abstract boolean equals(final @Nullable Object other);
@@ -205,46 +190,36 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
   @Override
   public abstract int hashCode();
 
-  static final class TagInfoHolder implements VirtualComponentRenderer<Void>, Emitable {
-    private final Consumer<TokenEmitter> output;
-    private final Component originalComp;
+  @Override
+  public abstract String toString();
 
-    TagInfoHolder(final Consumer<TokenEmitter> output, final Component originalComp) {
-      this.output = output;
-      this.originalComp = originalComp;
+  private record TagInfoHolder(Consumer<TokenEmitter> output, Component substitute) implements VirtualComponentRenderer<Void>, Emitable {
+    @Override
+    public @UnknownNullability ComponentLike apply(final Void context) {
+      return this.substitute;
     }
 
     @Override
-    public @UnknownNullability ComponentLike apply(final @NotNull Void context) {
-      return this.originalComp;
-    }
-
-    @Override
-    public @NotNull String fallbackString() {
+    public String fallbackString() {
       return ""; // only holds data for reserialization, not for display
     }
 
     @Override
-    public void emit(final @NotNull TokenEmitter emitter) {
+    public void emit(final TokenEmitter emitter) {
       this.output.accept(emitter);
-    }
-
-    @Override
-    public @Nullable Component substitute() {
-      return this.originalComp;
     }
   }
 
   static @Nullable Emitable claimComponent(final Component comp) {
-    if (!(comp instanceof VirtualComponent)) {
+    if (!(comp instanceof VirtualComponent virtualComponent)) {
       return null;
     }
 
-    final VirtualComponentRenderer<?> holder = ((VirtualComponent) comp).renderer();
-    if (!(holder instanceof TagInfoHolder)) {
+    final VirtualComponentRenderer<?> holder = virtualComponent.renderer();
+    if (!(holder instanceof TagInfoHolder tagInfoHolder)) {
       return null;
     }
 
-    return (TagInfoHolder) holder;
+    return tagInfoHolder;
   }
 }

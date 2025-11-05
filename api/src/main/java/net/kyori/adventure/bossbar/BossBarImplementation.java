@@ -25,7 +25,6 @@ package net.kyori.adventure.bossbar;
 
 import java.util.Collections;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * {@link BossBar} internal implementation.
@@ -44,7 +43,7 @@ public interface BossBarImplementation {
    * @since 4.12.0
    */
   @ApiStatus.Internal
-  static <I extends BossBarImplementation> @NotNull I get(final @NotNull BossBar bar, final @NotNull Class<I> type) {
+  static <I extends BossBarImplementation> I get(final BossBar bar, final Class<I> type) {
     return BossBarImpl.ImplementationAccessor.get(bar, type);
   }
 
@@ -55,7 +54,7 @@ public interface BossBarImplementation {
    * @since 4.14.0
    */
   @ApiStatus.Internal
-  default @NotNull Iterable<? extends BossBarViewer> viewers() {
+  default Iterable<? extends BossBarViewer> viewers() {
     return Collections.emptyList();
   }
 
@@ -74,6 +73,6 @@ public interface BossBarImplementation {
      * @since 4.12.0
      */
     @ApiStatus.Internal
-    @NotNull BossBarImplementation create(final @NotNull BossBar bar);
+    BossBarImplementation create(final BossBar bar);
   }
 }

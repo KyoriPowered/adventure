@@ -27,8 +27,7 @@ import java.lang.reflect.Type;
 import java.util.OptionalLong;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
@@ -46,7 +45,7 @@ final class SoundSerializer implements TypeSerializer<Sound> {
   }
 
   @Override
-  public @Nullable Sound deserialize(final @NotNull Type type, final @NotNull ConfigurationNode value) throws SerializationException {
+  public @Nullable Sound deserialize(final Type type, final ConfigurationNode value) throws SerializationException {
     if (value.empty()) {
       return null;
     }
@@ -71,7 +70,7 @@ final class SoundSerializer implements TypeSerializer<Sound> {
   }
 
   @Override
-  public void serialize(final @NotNull Type type, final @Nullable Sound obj, final @NotNull ConfigurationNode value) throws SerializationException {
+  public void serialize(final Type type, final @Nullable Sound obj, final ConfigurationNode value) throws SerializationException {
     if (obj == null) {
       value.set(null);
       return;

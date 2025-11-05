@@ -26,10 +26,8 @@ package net.kyori.adventure.resource;
 import java.util.List;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
-import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -40,7 +38,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 4.15.0
  */
-public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike {
+public sealed interface ResourcePackRequest extends ResourcePackRequestLike permits ResourcePackRequestImpl {
   /**
    * Create a basic request to apply the provided resource packs.
    *
@@ -49,7 +47,7 @@ public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike
    * @return the created request
    * @since 4.15.0
    */
-  static @NotNull ResourcePackRequest addingRequest(final @NotNull ResourcePackInfoLike first, final @NotNull ResourcePackInfoLike@NotNull... others) {
+  static ResourcePackRequest addingRequest(final ResourcePackInfoLike first, final ResourcePackInfoLike... others) {
     return ResourcePackRequest.resourcePackRequest().packs(first, others).replace(false).build();
   }
 
@@ -59,7 +57,7 @@ public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike
    * @return the pack request builder
    * @since 4.15.0
    */
-  static @NotNull Builder resourcePackRequest() {
+  static Builder resourcePackRequest() {
     return new ResourcePackRequestImpl.BuilderImpl();
   }
 
@@ -70,7 +68,7 @@ public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike
    * @return the pack request builder
    * @since 4.15.0
    */
-  static @NotNull Builder resourcePackRequest(final @NotNull ResourcePackRequest existing) {
+  static Builder resourcePackRequest(final ResourcePackRequest existing) {
     return new ResourcePackRequestImpl.BuilderImpl(requireNonNull(existing, "existing"));
   }
 
@@ -80,7 +78,7 @@ public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike
    * @return an unmodifiable list of packs to apply
    * @since 4.15.0
    */
-  @NotNull List<ResourcePackInfo> packs();
+  List<ResourcePackInfo> packs();
 
   /**
    * Set the resource packs to apply.
@@ -89,7 +87,7 @@ public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike
    * @return an updated pack request
    * @since 4.15.0
    */
-  @NotNull ResourcePackRequest packs(final @NotNull Iterable<? extends ResourcePackInfoLike> packs);
+  ResourcePackRequest packs(final Iterable<? extends ResourcePackInfoLike> packs);
 
   /**
    * A callback to respond to resource pack application status events.
@@ -99,7 +97,7 @@ public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike
    * @return the callback
    * @since 4.15.0
    */
-  @NotNull ResourcePackCallback callback();
+  ResourcePackCallback callback();
 
   /**
    * Set the callback to respond to resource pack application status events.
@@ -108,7 +106,7 @@ public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike
    * @return an updated pack request
    * @since 4.15.0
    */
-  @NotNull ResourcePackRequest callback(final @NotNull ResourcePackCallback cb);
+  ResourcePackRequest callback(final ResourcePackCallback cb);
 
   /**
    * Whether to replace or add to existing resource packs.
@@ -126,7 +124,7 @@ public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike
    * @return an updated pack request
    * @since 4.15.0
    */
-  @NotNull ResourcePackRequest replace(final boolean replace);
+  ResourcePackRequest replace(final boolean replace);
 
   /**
    * Gets whether the resource packs in this request are required.
@@ -151,7 +149,7 @@ public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike
   @Nullable Component prompt();
 
   @Override
-  default @NotNull ResourcePackRequest asResourcePackRequest() {
+  default ResourcePackRequest asResourcePackRequest() {
     return this;
   }
 
@@ -160,7 +158,7 @@ public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike
    *
    * @since 4.15.0
    */
-  interface Builder extends AbstractBuilder<ResourcePackRequest>, ResourcePackRequestLike {
+  sealed interface Builder extends AbstractBuilder<ResourcePackRequest>, ResourcePackRequestLike permits ResourcePackRequestImpl.BuilderImpl {
     /**
      * Set the resource packs to apply.
      *
@@ -170,7 +168,7 @@ public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike
      * @since 4.15.0
      */
     @Contract("_, _ -> this")
-    @NotNull Builder packs(final @NotNull ResourcePackInfoLike first, final @NotNull ResourcePackInfoLike@NotNull... others);
+    Builder packs(final ResourcePackInfoLike first, final ResourcePackInfoLike... others);
 
     /**
      * Set the resource packs to apply.
@@ -180,7 +178,7 @@ public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike
      * @since 4.15.0
      */
     @Contract("_ -> this")
-    @NotNull Builder packs(final @NotNull Iterable<? extends ResourcePackInfoLike> packs);
+    Builder packs(final Iterable<? extends ResourcePackInfoLike> packs);
 
     /**
      * Set the callback to respond to resource pack application status events.
@@ -190,7 +188,7 @@ public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike
      * @since 4.15.0
      */
     @Contract("_ -> this")
-    @NotNull Builder callback(final @NotNull ResourcePackCallback cb);
+    Builder callback(final ResourcePackCallback cb);
 
     /**
      * Set whether to replace or add to existing resource packs.
@@ -200,7 +198,7 @@ public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike
      * @since 4.15.0
      */
     @Contract("_ -> this")
-    @NotNull Builder replace(final boolean replace);
+    Builder replace(final boolean replace);
 
     /**
      * Sets whether the resource pack is required or not.
@@ -215,7 +213,7 @@ public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike
      * @since 4.15.0
      */
     @Contract("_ -> this")
-    @NotNull Builder required(final boolean required);
+    Builder required(final boolean required);
 
     /**
      * Sets the prompt.
@@ -225,10 +223,10 @@ public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike
      * @since 4.15.0
      */
     @Contract("_ -> this")
-    @NotNull Builder prompt(final @Nullable Component prompt);
+    Builder prompt(final @Nullable Component prompt);
 
     @Override
-    default @NotNull ResourcePackRequest asResourcePackRequest() {
+    default ResourcePackRequest asResourcePackRequest() {
       return this.build();
     }
   }

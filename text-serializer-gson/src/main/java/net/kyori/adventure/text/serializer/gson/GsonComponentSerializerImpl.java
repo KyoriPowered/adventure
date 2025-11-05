@@ -33,8 +33,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.json.JSONOptions;
 import net.kyori.adventure.util.Services;
 import net.kyori.option.OptionState;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -75,49 +74,43 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
   }
 
   @Override
-  public @NotNull Gson serializer() {
+  public Gson serializer() {
     return this.serializer;
   }
 
   @Override
-  public @NotNull UnaryOperator<GsonBuilder> populator() {
+  public UnaryOperator<GsonBuilder> populator() {
     return this.populator;
   }
 
   @Override
-  public @NotNull Component deserialize(final @NotNull String string) {
-    final Component component = this.serializer().fromJson(string, Component.class);
-    if (component == null) throw ComponentSerializerImpl.notSureHowToDeserialize(string);
-    return component;
+  public Component deserialize(final String string) {
+    return this.serializer().fromJson(string, Component.class);
   }
 
   @Override
   public @Nullable Component deserializeOr(final @Nullable String input, final @Nullable Component fallback) {
     if (input == null) return fallback;
-    final Component component = this.serializer().fromJson(input, Component.class);
-    if (component == null) return fallback;
-    return component;
+    return this.serializer().fromJson(input, Component.class);
   }
 
   @Override
-  public @NotNull String serialize(final @NotNull Component component) {
+  public String serialize(final Component component) {
     return this.serializer().toJson(component);
   }
 
   @Override
-  public @NotNull Component deserializeFromTree(final @NotNull JsonElement input) {
-    final Component component = this.serializer().fromJson(input, Component.class);
-    if (component == null) throw ComponentSerializerImpl.notSureHowToDeserialize(input);
-    return component;
+  public Component deserializeFromTree(final JsonElement input) {
+    return this.serializer().fromJson(input, Component.class);
   }
 
   @Override
-  public @NotNull JsonElement serializeToTree(final @NotNull Component component) {
+  public JsonElement serializeToTree(final Component component) {
     return this.serializer().toJsonTree(component);
   }
 
   @Override
-  public @NotNull Builder toBuilder() {
+  public Builder toBuilder() {
     return new BuilderImpl(this);
   }
 
@@ -136,13 +129,13 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
     }
 
     @Override
-    public @NotNull Builder options(final @NotNull OptionState flags) {
+    public Builder options(final OptionState flags) {
       this.flags = requireNonNull(flags, "flags");
       return this;
     }
 
     @Override
-    public @NotNull Builder editOptions(final @NotNull Consumer<OptionState.Builder> optionEditor) {
+    public Builder editOptions(final Consumer<OptionState.Builder> optionEditor) {
       final OptionState.Builder builder = JSONOptions.schema().stateBuilder()
         .values(this.flags);
       requireNonNull(optionEditor, "flagEditor").accept(builder);
@@ -151,13 +144,13 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
     }
 
     @Override
-    public @NotNull Builder legacyHoverEventSerializer(final net.kyori.adventure.text.serializer.json.@Nullable LegacyHoverEventSerializer serializer) {
+    public Builder legacyHoverEventSerializer(final net.kyori.adventure.text.serializer.json.@Nullable LegacyHoverEventSerializer serializer) {
       this.legacyHoverSerializer = serializer;
       return this;
     }
 
     @Override
-    public @NotNull GsonComponentSerializer build() {
+    public GsonComponentSerializer build() {
       return new GsonComponentSerializerImpl(this.flags, this.legacyHoverSerializer);
     }
   }

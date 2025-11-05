@@ -23,51 +23,35 @@
  */
 package net.kyori.adventure.title;
 
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
-import org.jetbrains.annotations.ApiStatus;
 
 /**
  * A part of a title.
  *
- * @param <T> the type of the content of the part
- * @see net.kyori.adventure.audience.Audience#sendTitlePart(TitlePart, Object)
+ * @param <T> the type of the part's contents
+ * @see Audience#sendTitlePart(TitlePart, Object)
  * @since 4.9.0
  */
-@ApiStatus.NonExtendable
-public interface TitlePart<T> {
+public sealed interface TitlePart<T> permits TitlePartImpl {
   /**
    * The title part of a title.
    *
    * @since 4.9.0
    */
-  TitlePart<Component> TITLE = new TitlePart<Component>() {
-    @Override
-    public String toString() {
-      return "TitlePart.TITLE";
-    }
-  };
+  TitlePart<Component> TITLE = new TitlePartImpl<>("TITLE");
 
   /**
    * The subtitle part of a title.
    *
    * @since 4.9.0
    */
-  TitlePart<Component> SUBTITLE = new TitlePart<Component>() {
-    @Override
-    public String toString() {
-      return "TitlePart.SUBTITLE";
-    }
-  };
+  TitlePart<Component> SUBTITLE = new TitlePartImpl<>("SUBTITLE");
 
   /**
    * The times part of a title.
    *
    * @since 4.9.0
    */
-  TitlePart<Title.Times> TIMES = new TitlePart<Title.Times>() {
-    @Override
-    public String toString() {
-      return "TitlePart.TIMES";
-    }
-  };
+  TitlePart<Title.Times> TIMES = new TitlePartImpl<>("TIMES");
 }

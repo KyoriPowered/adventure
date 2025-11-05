@@ -25,4 +25,7 @@
  * Internal things, not for public use.
  */
 @org.jetbrains.annotations.ApiStatus.Internal
+@NullMarked
 package net.kyori.adventure.internal;
+
+import org.jspecify.annotations.NullMarked;

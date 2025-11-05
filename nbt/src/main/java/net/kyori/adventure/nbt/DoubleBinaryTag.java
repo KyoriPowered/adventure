@@ -23,15 +23,12 @@
  */
 package net.kyori.adventure.nbt;
 
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-
 /**
  * A binary tag holding a {@code double} value.
  *
  * @since 4.0.0
  */
-public interface DoubleBinaryTag extends NumberBinaryTag {
+public sealed interface DoubleBinaryTag extends NumberBinaryTag permits DoubleBinaryTagImpl {
   /**
    * Creates a binary tag holding a {@code double} value.
    *
@@ -39,26 +36,12 @@ public interface DoubleBinaryTag extends NumberBinaryTag {
    * @return a binary tag
    * @since 4.14.0
    */
-  static @NotNull DoubleBinaryTag doubleBinaryTag(final double value) {
-    return new DoubleBinaryTagImpl(value);
-  }
-
-  /**
-   * Creates a binary tag holding a {@code double} value.
-   *
-   * @param value the value
-   * @return a binary tag
-   * @since 4.0.0
-   * @deprecated for removal since 4.14.0, use {@link #doubleBinaryTag(double)} instead.
-   */
-  @Deprecated
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  static @NotNull DoubleBinaryTag of(final double value) {
+  static DoubleBinaryTag doubleBinaryTag(final double value) {
     return new DoubleBinaryTagImpl(value);
   }
 
   @Override
-  default @NotNull BinaryTagType<DoubleBinaryTag> type() {
+  default BinaryTagType<DoubleBinaryTag> type() {
     return BinaryTagTypes.DOUBLE;
   }
 

@@ -26,29 +26,19 @@ package net.kyori.adventure.text;
 import java.util.function.BiFunction;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
-import net.kyori.adventure.internal.Internals;
-import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-final class TextReplacementConfigImpl implements TextReplacementConfig {
-  private final Pattern matchPattern;
-  private final BiFunction<MatchResult, TextComponent.Builder, @Nullable ComponentLike> replacement;
-  private final Condition continuer;
-  private final boolean replaceInsideHoverEvents;
-
-  TextReplacementConfigImpl(final Builder builder) {
-    this.matchPattern = builder.matchPattern;
-    this.replacement = builder.replacement;
-    this.continuer = builder.continuer;
-    this.replaceInsideHoverEvents = builder.replaceInsideHoverEvents;
-  }
+record TextReplacementConfigImpl(
+  Pattern matchPattern,
+  BiFunction<MatchResult, TextComponent.Builder, @Nullable ComponentLike> replacement,
+  Condition continuer,
+  boolean replaceInsideHoverEvents
+) implements TextReplacementConfig {
 
   @Override
-  public @NotNull Pattern matchPattern() {
+  public Pattern matchPattern() {
     return this.matchPattern;
   }
 
@@ -56,69 +46,44 @@ final class TextReplacementConfigImpl implements TextReplacementConfig {
     return new TextReplacementRenderer.State(this.matchPattern, this.replacement, this.continuer, this.replaceInsideHoverEvents);
   }
 
-  @Override
-  public TextReplacementConfig.@NotNull Builder toBuilder() {
-    return new Builder(this);
-  }
-
-  @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("matchPattern", this.matchPattern),
-      ExaminableProperty.of("replacement", this.replacement),
-      ExaminableProperty.of("continuer", this.continuer)
-    );
-  }
-
-  @Override
-  public String toString() {
-    return Internals.toString(this);
-  }
-
   static final class Builder implements TextReplacementConfig.Builder {
     @Nullable Pattern matchPattern;
     @Nullable BiFunction<MatchResult, TextComponent.Builder, @Nullable ComponentLike> replacement;
-    TextReplacementConfig.Condition continuer = (matchResult, index, replacement) -> PatternReplacementResult.REPLACE;
+    Condition continuer = (matchResult, index, replacement) -> PatternReplacementResult.REPLACE;
     boolean replaceInsideHoverEvents = true;
 
     Builder() {
     }
 
-    Builder(final TextReplacementConfigImpl instance) {
-      this.matchPattern = instance.matchPattern;
-      this.replacement = instance.replacement;
-      this.continuer = instance.continuer;
-    }
-
     @Override
-    public @NotNull Builder match(final @NotNull Pattern pattern) {
+    public Builder match(final Pattern pattern) {
       this.matchPattern = requireNonNull(pattern, "pattern");
       return this;
     }
 
     @Override
-    public @NotNull Builder condition(final TextReplacementConfig.@NotNull Condition condition) {
+    public Builder condition(final Condition condition) {
       this.continuer = requireNonNull(condition, "continuation");
       return this;
     }
 
     @Override
-    public @NotNull Builder replacement(final @NotNull BiFunction<MatchResult, TextComponent.Builder, @Nullable ComponentLike> replacement) {
+    public Builder replacement(final BiFunction<MatchResult, TextComponent.Builder, @Nullable ComponentLike> replacement) {
       this.replacement = requireNonNull(replacement, "replacement");
       return this;
     }
 
     @Override
-    public TextReplacementConfig.@NotNull Builder replaceInsideHoverEvents(final boolean replace) {
+    public TextReplacementConfig.Builder replaceInsideHoverEvents(final boolean replace) {
       this.replaceInsideHoverEvents = replace;
       return this;
     }
 
     @Override
-    public @NotNull TextReplacementConfig build() {
+    public TextReplacementConfig build() {
       if (this.matchPattern == null) throw new IllegalStateException("A pattern must be provided to match against");
       if (this.replacement == null) throw new IllegalStateException("A replacement action must be provided");
-      return new TextReplacementConfigImpl(this);
+      return new TextReplacementConfigImpl(this.matchPattern, this.replacement, this.continuer, this.replaceInsideHoverEvents);
     }
   }
 }

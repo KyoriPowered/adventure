@@ -25,23 +25,19 @@ package net.kyori.adventure.text.minimessage.internal.parser;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Stream;
-import net.kyori.adventure.internal.Internals;
-import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Represents a token for the lexer.
  *
  * @since 4.10.0
  */
-public final class Token implements Examinable {
+public final class Token {
   private final int startIndex;
   private final int endIndex;
   private final TokenType type;
 
-  private List<Token> childTokens = null;
+  private @Nullable List<Token> childTokens = null;
 
   /**
    * Creates a new token.
@@ -93,7 +89,7 @@ public final class Token implements Examinable {
    * @return the child tokens
    * @since 4.10.0
    */
-  public List<Token> childTokens() {
+  public @Nullable List<Token> childTokens() {
     return this.childTokens;
   }
 
@@ -119,19 +115,9 @@ public final class Token implements Examinable {
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("startIndex", this.startIndex),
-      ExaminableProperty.of("endIndex", this.endIndex),
-      ExaminableProperty.of("type", this.type)
-    );
-  }
-
-  @Override
   public boolean equals(final Object other) {
     if (this == other) return true;
-    if (!(other instanceof Token)) return false;
-    final Token that = (Token) other;
+    if (!(other instanceof final Token that)) return false;
     return this.startIndex == that.startIndex && this.endIndex == that.endIndex && this.type == that.type;
   }
 
@@ -142,6 +128,11 @@ public final class Token implements Examinable {
 
   @Override
   public String toString() {
-    return Internals.toString(this);
+    return "Token{" +
+      "startIndex=" + this.startIndex +
+      ", endIndex=" + this.endIndex +
+      ", type=" + this.type +
+      ", childTokens=" + this.childTokens +
+      '}';
   }
 }

@@ -26,7 +26,6 @@ package net.kyori.adventure.text.serializer.json;
 import net.kyori.option.Option;
 import net.kyori.option.OptionSchema;
 import net.kyori.option.OptionState;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Options that can apply to JSON serializers.
@@ -58,7 +57,7 @@ public final class JSONOptions {
    * @since 4.15.0
    * @sinceMinecraft 1.16
    */
-  public static final Option<Boolean> EMIT_RGB = Option.booleanOption(key("emit/rgb"), true);
+  public static final Option<Boolean> EMIT_RGB = UNSAFE_SCHEMA.booleanOption(key("emit/rgb"), true);
 
   /**
    * Control how hover event values should be emitted.
@@ -72,7 +71,7 @@ public final class JSONOptions {
    *
    * @since 4.20.0
    */
-  public static final Option<ClickEventValueMode> EMIT_CLICK_EVENT_TYPE = Option.enumOption(key("emit/click_value_mode"), ClickEventValueMode.class, ClickEventValueMode.SNAKE_CASE);
+  public static final Option<ClickEventValueMode> EMIT_CLICK_EVENT_TYPE = UNSAFE_SCHEMA.enumOption(key("emit/click_value_mode"), ClickEventValueMode.class, ClickEventValueMode.SNAKE_CASE);
 
   /**
    * Whether to emit text components with no style and no children as plain text.
@@ -105,6 +104,7 @@ public final class JSONOptions {
    * @since 4.15.0
    */
   public static final Option<Boolean> VALIDATE_STRICT_EVENTS = UNSAFE_SCHEMA.booleanOption(key("validate/strict_events"), true);
+
   /**
    * Whether to emit the default hover event item stack quantity of {@code 1}.
    *
@@ -134,6 +134,15 @@ public final class JSONOptions {
    * @since 4.22.0
    */
   public static final Option<Boolean> EMIT_CHANGE_PAGE_CLICK_EVENT_PAGE_AS_STRING = UNSAFE_SCHEMA.booleanOption(key("emit/change_page_click_event_page_as_string"), false);
+
+  /**
+   * Whether to prepend {@code https://} to {@code open_url} click event URIs without a valid scheme.
+   *
+   * <p>As of minecraft 1.21.5 URIs that are not a {@code http://} or {@code https://} scheme fail to parse.</p>
+   *
+   * @since 4.25.0
+   */
+  public static final Option<Boolean> EMIT_CLICK_URL_HTTPS = UNSAFE_SCHEMA.booleanOption(key("emit/click_url_https"), false);
 
   // aim for compatibility? or something
   private static final OptionSchema SCHEMA = OptionSchema.childSchema(UNSAFE_SCHEMA).frozenView();
@@ -180,6 +189,7 @@ public final class JSONOptions {
       b -> b.value(EMIT_HOVER_EVENT_TYPE, HoverEventValueMode.SNAKE_CASE)
         .value(EMIT_CLICK_EVENT_TYPE, ClickEventValueMode.SNAKE_CASE)
         .value(EMIT_HOVER_SHOW_ENTITY_KEY_AS_TYPE_AND_UUID_AS_ID, false)
+        .value(EMIT_CLICK_URL_HTTPS, true)
     )
     .version(
       VERSION_1_21_6,
@@ -200,6 +210,7 @@ public final class JSONOptions {
     .value(VALIDATE_STRICT_EVENTS, false)
     .value(SHOW_ITEM_HOVER_DATA_MODE, ShowItemHoverDataMode.EMIT_EITHER)
     .value(SHADOW_COLOR_MODE, ShadowColorEmitMode.EMIT_INTEGER)
+    .value(EMIT_CLICK_URL_HTTPS, true)
     .build();
 
   private static String key(final String value) {
@@ -212,7 +223,7 @@ public final class JSONOptions {
    * @return the schema of known json options
    * @since 4.20.0
    */
-  public static @NotNull OptionSchema schema() {
+  public static OptionSchema schema() {
     return SCHEMA;
   }
 
@@ -222,7 +233,7 @@ public final class JSONOptions {
    * @return the versioned flag set
    * @since 4.15.0
    */
-  public static OptionState.@NotNull Versioned byDataVersion() {
+  public static OptionState.Versioned byDataVersion() {
     return BY_DATA_VERSION;
   }
 
@@ -234,7 +245,7 @@ public final class JSONOptions {
    * @return the most widely compatible feature flag set
    * @since 4.15.0
    */
-  public static @NotNull OptionState compatibility() {
+  public static OptionState compatibility() {
     return MOST_COMPATIBLE;
   }
 
@@ -267,26 +278,7 @@ public final class JSONOptions {
      *
      * @since 4.15.0
      */
-    ALL;
-
-    /**
-     * Only emit the 1.16+ hover events using the {@code hoverEvent} field.
-     *
-     * @deprecated use {@link #CAMEL_CASE} instead
-     */
-    public static final @Deprecated HoverEventValueMode MODERN_ONLY = CAMEL_CASE;
-    /**
-     * Only emit the pre-1.16 hover event {@code value} field.
-     *
-     * @deprecated use {@link #VALUE_FIELD} instead
-     */
-    public static final @Deprecated HoverEventValueMode LEGACY_ONLY = VALUE_FIELD;
-    /**
-     * Include all hover event fields, for maximum compatibility.
-     *
-     * @deprecated use {@link #ALL} instead
-     */
-    public static final @Deprecated HoverEventValueMode BOTH = ALL;
+    ALL
   }
 
   /**
@@ -364,6 +356,5 @@ public final class JSONOptions {
      * @since 4.18.0
      */
     EMIT_ARRAY
-
   }
 }

@@ -36,88 +36,33 @@ import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-import java.util.stream.Stream;
-import net.kyori.adventure.internal.Internals;
-import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-final class ResourcePackInfoImpl implements ResourcePackInfo {
-  private final UUID id;
-  private final URI uri;
-  private final String hash;
-
-  ResourcePackInfoImpl(final @NotNull UUID id, final @NotNull URI uri, final @NotNull String hash) {
+record ResourcePackInfoImpl(UUID id, URI uri, String hash) implements ResourcePackInfo {
+  ResourcePackInfoImpl(final UUID id, final URI uri, final String hash) {
     this.id = requireNonNull(id, "id");
     this.uri = requireNonNull(uri, "uri");
     this.hash = requireNonNull(hash, "hash");
   }
 
-  @Override
-  public @NotNull UUID id() {
-    return this.id;
-  }
-
-  @Override
-  public @NotNull URI uri() {
-    return this.uri;
-  }
-
-  @Override
-  public @NotNull String hash() {
-    return this.hash;
-  }
-
-  @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("id", this.id),
-      ExaminableProperty.of("uri", this.uri),
-      ExaminableProperty.of("hash", this.hash)
-    );
-  }
-
-  @Override
-  public String toString() {
-    return Internals.toString(this);
-  }
-
-  @Override
-  public boolean equals(final @Nullable Object other) {
-    if (this == other) return true;
-    if (!(other instanceof ResourcePackInfoImpl)) return false;
-    final ResourcePackInfoImpl that = (ResourcePackInfoImpl) other;
-    return this.id.equals(that.id) &&
-           this.uri.equals(that.uri) &&
-           this.hash.equals(that.hash);
-  }
-
-  @Override
-  public int hashCode() {
-    int result = this.id.hashCode();
-    result = 31 * result + this.uri.hashCode();
-    result = 31 * result + this.hash.hashCode();
-    return result;
-  }
-
   static final class BuilderImpl implements Builder {
-    private UUID id;
-    private URI uri;
-    private String hash;
+    private @Nullable UUID id;
+    private @Nullable URI uri;
+    private @Nullable String hash;
 
     BuilderImpl() {
     }
 
     @Override
-    public @NotNull Builder id(final @NotNull UUID id) {
+    public Builder id(final UUID id) {
       this.id = requireNonNull(id, "id");
       return this;
     }
 
     @Override
-    public @NotNull Builder uri(final @NotNull URI uri) {
+    public Builder uri(final URI uri) {
       this.uri = requireNonNull(uri, "uri");
       if (this.id == null) {
         this.id = UUID.nameUUIDFromBytes(uri.toString().getBytes(StandardCharsets.UTF_8));
@@ -126,18 +71,19 @@ final class ResourcePackInfoImpl implements ResourcePackInfo {
     }
 
     @Override
-    public @NotNull Builder hash(final @NotNull String hash) {
+    public Builder hash(final String hash) {
       this.hash = requireNonNull(hash, "hash");
       return this;
     }
 
+    @SuppressWarnings("DataFlowIssue") // Nullability is checked in constructor.
     @Override
-    public @NotNull ResourcePackInfo build() {
+    public ResourcePackInfo build() {
       return new ResourcePackInfoImpl(this.id, this.uri, this.hash);
     }
 
     @Override
-    public @NotNull CompletableFuture<ResourcePackInfo> computeHashAndBuild(final @NotNull Executor executor) {
+    public CompletableFuture<ResourcePackInfo> computeHashAndBuild(final Executor executor) {
       return computeHash(requireNonNull(this.uri, "uri"), executor)
         .thenApply(hash -> {
           this.hash(hash);
@@ -174,8 +120,8 @@ final class ResourcePackInfoImpl implements ResourcePackInfo {
   static String bytesToString(final byte[] arr) {
     final StringBuilder builder = new StringBuilder(arr.length * 2);
     final Formatter fmt = new Formatter(builder, Locale.ROOT);
-    for (int i = 0; i < arr.length; i++) {
-      fmt.format("%02x", arr[i] & 0xff);
+    for (final byte b : arr) {
+      fmt.format("%02x", b & 0xff);
     }
     return builder.toString();
   }

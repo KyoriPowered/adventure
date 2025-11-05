@@ -29,34 +29,23 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Debug;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
 @Debug.Renderer(text = "\"ListBinaryTag[type=\" + this.type.toString() + \"]\"", childrenArray = "this.tags.toArray()", hasChildren = "!this.tags.isEmpty()")
-final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag {
+record ListBinaryTagImpl(BinaryTagType<? extends BinaryTag> elementType, boolean permitsHeterogeneity, List<BinaryTag> tags) implements ListBinaryTag {
   static final ListBinaryTag EMPTY = new ListBinaryTagImpl(BinaryTagTypes.END, false, Collections.emptyList());
-  private final List<BinaryTag> tags;
-  private final boolean permitsHeterogeneity;
-  private final BinaryTagType<? extends BinaryTag> elementType;
-  private final int hashCode;
 
   ListBinaryTagImpl(final BinaryTagType<? extends BinaryTag> elementType, final boolean permitsHeterogeneity, final List<BinaryTag> tags) {
     this.tags = Collections.unmodifiableList(tags);
     this.permitsHeterogeneity = permitsHeterogeneity;
     this.elementType = elementType;
-    this.hashCode = tags.hashCode();
-  }
-
-  @Override
-  public @NotNull BinaryTagType<? extends BinaryTag> elementType() {
-    return this.elementType;
   }
 
   @Override
@@ -70,12 +59,12 @@ final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag
   }
 
   @Override
-  public @NotNull BinaryTag get(@Range(from = 0, to = Integer.MAX_VALUE) final int index) {
+  public BinaryTag get(@Range(from = 0, to = Integer.MAX_VALUE) final int index) {
     return this.tags.get(index);
   }
 
   @Override
-  public @NotNull ListBinaryTag set(final int index, final @NotNull BinaryTag newTag, final @Nullable Consumer<? super BinaryTag> removed) {
+  public ListBinaryTag set(final int index, final BinaryTag newTag, final @Nullable Consumer<? super BinaryTag> removed) {
     final BinaryTagType<?> targetType = ListBinaryTagImpl.validateTagType(newTag, this.elementType, this.permitsHeterogeneity);
     return this.edit(tags -> {
       final BinaryTag oldTag = tags.set(index, newTag);
@@ -86,7 +75,7 @@ final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag
   }
 
   @Override
-  public @NotNull ListBinaryTag remove(final int index, final @Nullable Consumer<? super BinaryTag> removed) {
+  public ListBinaryTag remove(final int index, final @Nullable Consumer<? super BinaryTag> removed) {
     return this.edit(tags -> {
       final BinaryTag oldTag = tags.remove(index);
       if (removed != null) {
@@ -96,13 +85,13 @@ final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag
   }
 
   @Override
-  public @NotNull ListBinaryTag add(final BinaryTag tag) {
+  public ListBinaryTag add(final BinaryTag tag) {
     final BinaryTagType<?> targetType = validateTagType(tag, this.elementType, this.permitsHeterogeneity);
     return this.edit(tags -> tags.add(tag), targetType);
   }
 
   @Override
-  public @NotNull ListBinaryTag add(final Iterable<? extends BinaryTag> tagsToAdd) {
+  public ListBinaryTag add(final Iterable<? extends BinaryTag> tagsToAdd) {
     if (tagsToAdd instanceof Collection<?> && ((Collection<?>) tagsToAdd).isEmpty()) {
       return this;
     }
@@ -164,12 +153,12 @@ final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag
   }
 
   @Override
-  public @NotNull Stream<BinaryTag> stream() {
+  public Stream<BinaryTag> stream() {
     return this.tags.stream();
   }
 
   @Override
-  public @NotNull ListBinaryTag unwrapHeterogeneity() {
+  public ListBinaryTag unwrapHeterogeneity() {
     // Unlock where it makes sense
     if (!this.permitsHeterogeneity) {
       if (this.elementType != BinaryTagTypes.COMPOUND) {
@@ -201,7 +190,7 @@ final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag
   }
 
   @Override
-  public @NotNull ListBinaryTag wrapHeterogeneity() {
+  public ListBinaryTag wrapHeterogeneity() {
     if (this.elementType != BinaryTagTypes.LIST_WILDCARD) {
       return this;
     }
@@ -215,9 +204,9 @@ final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag
   }
 
   @Override
-  public @NotNull Iterator<BinaryTag> iterator() {
+  public Iterator<BinaryTag> iterator() {
     final Iterator<BinaryTag> iterator = this.tags.iterator();
-    return new Iterator<BinaryTag>() {
+    return new Iterator<>() {
       @Override
       public boolean hasNext() {
         return iterator.hasNext();
@@ -247,20 +236,7 @@ final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag
 
   @Override
   public boolean equals(final Object that) {
-    return this == that || (that instanceof ListBinaryTagImpl && this.tags.equals(((ListBinaryTagImpl) that).tags));
-  }
-
-  @Override
-  public int hashCode() {
-    return this.hashCode;
-  }
-
-  @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("tags", this.tags),
-      ExaminableProperty.of("type", this.elementType)
-    );
+    return this == that || (that instanceof final ListBinaryTagImpl lat && this.tags.equals(lat.tags));
   }
 }
 
@@ -281,18 +257,17 @@ final class ListBinaryTag0 {
 
   static CompoundBinaryTag box(final BinaryTag tag) {
     if (needsBox(tag)) {
-      return new CompoundBinaryTagImpl(Collections.singletonMap(WRAPPER_KEY, tag));
+      return new CompoundBinaryTagImpl(Map.of(WRAPPER_KEY, tag));
     } else {
       return (CompoundBinaryTag) tag;
     }
   }
 
   private static boolean needsBox(final BinaryTag tag) {
-    if (!(tag instanceof CompoundBinaryTag)) {
+    if (!(tag instanceof final CompoundBinaryTag compound)) {
       return true;
     }
 
-    final CompoundBinaryTag compound = (CompoundBinaryTag) tag;
     return compound.size() == 1 && compound.get(WRAPPER_KEY) != null;
   }
 }

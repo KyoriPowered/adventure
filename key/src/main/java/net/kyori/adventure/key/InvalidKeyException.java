@@ -23,8 +23,8 @@
  */
 package net.kyori.adventure.key;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import java.io.Serial;
+import org.jspecify.annotations.Nullable;
 
 /**
  * This exception is thrown when an invalid namespace and/or value has been detected while creating a {@link Key}.
@@ -32,11 +32,12 @@ import org.jetbrains.annotations.Nullable;
  * @since 4.0.0
  */
 public final class InvalidKeyException extends RuntimeException {
+  @Serial
   private static final long serialVersionUID = -5413304087321449434L;
   private final String keyNamespace;
   private final String keyValue;
 
-  InvalidKeyException(final @NotNull String keyNamespace, final @NotNull String keyValue, final @Nullable String message) {
+  InvalidKeyException(final String keyNamespace, final String keyValue, final @Nullable String message) {
     super(message);
     this.keyNamespace = keyNamespace;
     this.keyValue = keyValue;
@@ -48,7 +49,7 @@ public final class InvalidKeyException extends RuntimeException {
    * @return a key
    * @since 4.0.0
    */
-  public final @NotNull String keyNamespace() {
+  public String keyNamespace() {
     return this.keyNamespace;
   }
 
@@ -58,7 +59,7 @@ public final class InvalidKeyException extends RuntimeException {
    * @return a key
    * @since 4.0.0
    */
-  public final @NotNull String keyValue() {
+  public String keyValue() {
     return this.keyValue;
   }
 }

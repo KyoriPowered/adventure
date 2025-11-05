@@ -5,6 +5,10 @@ pluginManagement {
       name = "stellardriftReleases"
       mavenContent { releasesOnly() }
     }
+    maven(url = "https://repo.papermc.io/repository/maven-snapshots/") {
+      name = "papermcSnapshots"
+      mavenContent { snapshotsOnly() }
+    }
     maven(url = "https://repo.stellardrift.ca/maven/snapshots/") {
       name = "stellardriftSnapshots"
       mavenContent { snapshotsOnly() }
@@ -34,7 +38,6 @@ sequenceOf(
   "api",
   "annotation-processors",
   "bom",
-  "extra-kotlin",
   "key",
   "nbt",
   "serializer-configurate4",
@@ -42,7 +45,6 @@ sequenceOf(
   "text-minimessage",
   "text-serializer-commons",
   "text-serializer-gson",
-  "text-serializer-gson-legacy-impl",
   "text-serializer-json",
   "text-serializer-json-legacy-impl",
   "text-serializer-legacy",

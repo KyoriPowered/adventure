@@ -25,68 +25,46 @@ package net.kyori.adventure.chat;
 
 import java.security.SecureRandom;
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.Objects;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.text.Component;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 // Used for system messages ONLY
-final class SignedMessageImpl implements SignedMessage {
+record SignedMessageImpl(String message, Component unsignedContent, Instant timestamp, long salt) implements SignedMessage {
   static final SecureRandom RANDOM = new SecureRandom();
 
-  private final Instant instant;
-  private final long salt;
-  private final String message;
-  private final Component unsignedContent;
-
   SignedMessageImpl(final String message, final Component unsignedContent) {
-    this.instant = Instant.now();
-    this.salt = RANDOM.nextLong();
-    this.message = message;
-    this.unsignedContent = unsignedContent;
+    this(message, unsignedContent, Instant.now(), RANDOM.nextLong());
   }
 
   @Override
-  public @NotNull Instant timestamp() {
-    return this.instant;
-  }
-
-  @Override
-  public long salt() {
-    return this.salt;
-  }
-
-  @Override
-  public Signature signature() {
+  public @Nullable Signature signature() {
     return null;
   }
 
   @Override
-  public @Nullable Component unsignedContent() {
-    return this.unsignedContent;
-  }
-
-  @Override
-  public @NotNull String message() {
-    return this.message;
-  }
-
-  @Override
-  public @NotNull Identity identity() {
+  public Identity identity() {
     return Identity.nil();
   }
 
-  static final class SignatureImpl implements Signature {
-
-    final byte[] signature;
-
-    SignatureImpl(final byte[] signature) {
-      this.signature = signature;
+  @SuppressWarnings("ArrayRecordComponent") // We handle equals/hashCode/toString ourselves.
+  record SignatureImpl(byte[] bytes) implements Signature {
+    @Override
+    public boolean equals(final Object o) {
+      if (!(o instanceof SignatureImpl(byte[] bytes1))) return false;
+      return Objects.deepEquals(this.bytes, bytes1);
     }
 
     @Override
-    public byte[] bytes() {
-      return this.signature;
+    public int hashCode() {
+      return Arrays.hashCode(this.bytes);
+    }
+
+    @Override
+    public String toString() {
+      return "SignatureImpl{bytes=" + Arrays.toString(this.bytes) + '}';
     }
   }
 }

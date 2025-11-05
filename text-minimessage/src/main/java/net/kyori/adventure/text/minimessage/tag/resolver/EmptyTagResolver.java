@@ -30,8 +30,7 @@ import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.internal.serializer.ClaimConsumer;
 import net.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
 import net.kyori.adventure.text.minimessage.tag.Tag;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 final class EmptyTagResolver implements TagResolver, MappableResolver, SerializableResolver {
   static final EmptyTagResolver INSTANCE = new EmptyTagResolver();
@@ -40,26 +39,26 @@ final class EmptyTagResolver implements TagResolver, MappableResolver, Serializa
   }
 
   @Override
-  public @Nullable Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) {
+  public @Nullable Tag resolve(final String name, final ArgumentQueue arguments, final Context ctx) {
     return null;
   }
 
   @Override
-  public @Nullable Tag resolveNamed(final @NotNull String name, final @NotNull NamedArgumentMap arguments, final @NotNull Context ctx) throws ParsingException {
+  public @Nullable Tag resolveNamed(final String name, final NamedArgumentMap arguments, final Context ctx) throws ParsingException {
     return null;
   }
 
   @Override
-  public boolean has(final @NotNull String name) {
+  public boolean has(final String name) {
     return false;
   }
 
   @Override
-  public boolean contributeToMap(final @NotNull Map<String, Tag> map) {
+  public boolean contributeToMap(final Map<String, Tag> map) {
     return true;
   }
 
   @Override
-  public void handle(final @NotNull Component serializable, final @NotNull ClaimConsumer consumer) {
+  public void handle(final Component serializable, final ClaimConsumer consumer) {
   }
 }

@@ -34,7 +34,6 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.KeybindComponent;
 import net.kyori.adventure.text.ObjectComponent;
-import net.kyori.adventure.text.ScoreComponent;
 import net.kyori.adventure.text.SelectorComponent;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
@@ -43,38 +42,27 @@ import net.kyori.adventure.text.object.ObjectContents;
 import net.kyori.adventure.text.object.PlayerHeadObjectContents;
 import net.kyori.adventure.text.object.SpriteObjectContents;
 import net.kyori.adventure.util.InheritanceAwareMap;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-final class ComponentFlattenerImpl implements ComponentFlattener {
-  @SuppressWarnings("deprecation")
+record ComponentFlattenerImpl(InheritanceAwareMap<Component, Handler> flatteners, @Nullable Function<Component, String> unknownHandler, int maxNestedDepth) implements ComponentFlattener {
   static final ComponentFlattener BASIC = new BuilderImpl()
-    .mapper(KeybindComponent.class, component -> component.keybind()) // IntelliJ is wrong here, this is fine
-    .mapper(ScoreComponent.class, component -> {
-      // Removed in Vanilla 1.16, but we keep it for backwards compat
-      final @Nullable String value = component.value();
-      return value != null ? value : "";
-    })
+    .mapper(KeybindComponent.class, component -> component.keybind())
     .mapper(SelectorComponent.class, SelectorComponent::pattern)
     .mapper(TextComponent.class, TextComponent::content)
     .mapper(TranslatableComponent.class, component -> {
-      final @Nullable String fallback = component.fallback();
+      final String fallback = component.fallback();
       return fallback != null ? fallback : component.key();
     })
     .mapper(ObjectComponent.class, component -> {
       final ObjectContents contents = component.contents();
-      if (contents instanceof SpriteObjectContents) {
-        final SpriteObjectContents spriteContents = (SpriteObjectContents) contents;
+      if (contents instanceof final SpriteObjectContents spriteContents) {
         final Key atlas = spriteContents.atlas();
-        return "[" + spriteContents.sprite().asMinimalString()
-          + (!atlas.equals(SpriteObjectContents.DEFAULT_ATLAS) ? "@" + atlas.asMinimalString() : "")
-          + "]";
-      } else if (contents instanceof PlayerHeadObjectContents) {
-        final PlayerHeadObjectContents playerHeadContents = (PlayerHeadObjectContents) contents;
-        return "[" + (playerHeadContents.name() != null ? playerHeadContents.name() : "unknown player") + " head]";
+        return String.format("[%s%s]", spriteContents.sprite().asMinimalString(), !atlas.equals(SpriteObjectContents.DEFAULT_ATLAS) ? "@" + atlas.asMinimalString() : "");
+      } else if (contents instanceof final PlayerHeadObjectContents playerHeadContents) {
+        return String.format("[%s head]", playerHeadContents.name() != null ? playerHeadContents.name() : "unknown player");
       }
       return "";
     })
@@ -86,34 +74,20 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
 
   private static final int MAX_DEPTH = 512;
 
-  private final InheritanceAwareMap<Component, Handler> flatteners;
-  private final Function<Component, String> unknownHandler;
-  private final int maxNestedDepth;
-
-  ComponentFlattenerImpl(final InheritanceAwareMap<Component, Handler> flatteners, final @Nullable Function<Component, String> unknownHandler, final int maxNestedDepth) {
-    this.flatteners = flatteners;
-    this.unknownHandler = unknownHandler;
-    this.maxNestedDepth = maxNestedDepth;
-  }
-
-  private static final class StackEntry {
-    final Component component;
-    final int depth;
-    final int stylesToPop;
-
-    StackEntry(final Component component, final int depth, final int stylesToPop) {
-      this.component = component;
-      this.depth = depth;
-      this.stylesToPop = stylesToPop;
-    }
+  private record StackEntry(Component component, int depth, int stylesToPop) {
   }
 
   @Override
-  public void flatten(final @NotNull Component input, final @NotNull FlattenerListener listener) {
+  public void flatten(final Component input, final FlattenerListener listener) {
     this.flatten0(input, listener, 0, 0);
   }
 
-  private void flatten0(final @NotNull Component input, final @NotNull FlattenerListener listener, final int depth, final int nestedDepth) {
+  @Override
+  public Builder toBuilder() {
+    return new BuilderImpl(this.flatteners, this.unknownHandler, this.maxNestedDepth);
+  }
+
+  private void flatten0(final Component input, final FlattenerListener listener, final int depth, final int nestedDepth) {
     requireNonNull(input, "input");
     requireNonNull(listener, "listener");
     if (input == Component.empty()) return;
@@ -137,7 +111,7 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
       }
 
       final Component component = entry.component;
-      final @Nullable Handler flattener = this.flattener(component);
+      final Handler flattener = this.flattener(component);
       final Style componentStyle = component.style();
 
       // Push the style to both the listener and the stack (so we can pop later).
@@ -185,11 +159,6 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
     }
   }
 
-  @Override
-  public ComponentFlattener.@NotNull Builder toBuilder() {
-    return new BuilderImpl(this.flatteners, this.unknownHandler, this.maxNestedDepth);
-  }
-
   // A function that allows nesting other flatten operations
   @FunctionalInterface
   interface Handler {
@@ -212,32 +181,32 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
     }
 
     @Override
-    public @NotNull ComponentFlattener build() {
+    public ComponentFlattener build() {
       return new ComponentFlattenerImpl(this.flatteners.build(), this.unknownHandler, this.maxNestedDepth);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T extends Component> ComponentFlattener.@NotNull Builder mapper(final @NotNull Class<T> type, final @NotNull Function<T, String> converter) {
+    public <T extends Component> Builder mapper(final Class<T> type, final Function<T, String> converter) {
       this.flatteners.put(type, (self, component, listener, depth, nestedDepth) -> listener.component(converter.apply((T) component)));
       return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T extends Component> ComponentFlattener.@NotNull Builder complexMapper(final @NotNull Class<T> type, final @NotNull BiConsumer<T, Consumer<Component>> converter) {
+    public <T extends Component> Builder complexMapper(final Class<T> type, final BiConsumer<T, Consumer<Component>> converter) {
       this.flatteners.put(type, (self, component, listener, depth, nestedDepth) -> converter.accept((T) component, c -> self.flatten0(c, listener, depth, nestedDepth + 1)));
       return this;
     }
 
     @Override
-    public ComponentFlattener.@NotNull Builder unknownMapper(final @Nullable Function<Component, String> converter) {
+    public Builder unknownMapper(final @Nullable Function<Component, String> converter) {
       this.unknownHandler = converter;
       return this;
     }
 
     @Override
-    public @NotNull Builder nestingLimit(final @Range(from = 1, to = Integer.MAX_VALUE) int limit) {
+    public Builder nestingLimit(final @Range(from = 1, to = Integer.MAX_VALUE) int limit) {
       // noinspection ConstantValue (the Range annotation tells IDEA this will never happen, but API users could ignore that)
       if (limit != ComponentFlattener.NO_NESTING_LIMIT && limit < 1) throw new IllegalArgumentException("limit must be positive or ComponentFlattener.NO_NESTING_LIMIT");
       this.maxNestedDepth = limit;

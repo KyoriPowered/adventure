@@ -23,57 +23,20 @@
  */
 package net.kyori.adventure.key;
 
-import java.util.stream.Stream;
-import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
-import net.kyori.examination.string.StringExaminer;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import java.util.Objects;
+import org.jspecify.annotations.Nullable;
 
-final class KeyedValueImpl<T> implements Examinable, KeyedValue<T> {
-  private final Key key;
-  private final T value;
+record KeyedValueImpl<T>(Key key, T value) implements KeyedValue<T> {
 
-  KeyedValueImpl(final Key key, final T value) {
-    this.key = key;
-    this.value = value;
-  }
-
-  @Override
-  public @NotNull Key key() {
-    return this.key;
-  }
-
-  @Override
-  public @NotNull T value() {
-    return this.value;
+  KeyedValueImpl {
+    Objects.requireNonNull(key, "key");
+    Objects.requireNonNull(value, "value");
   }
 
   @Override
   public boolean equals(final @Nullable Object other) {
     if (this == other) return true;
-    if (other == null || this.getClass() != other.getClass()) return false;
-    final KeyedValueImpl<?> that = (KeyedValueImpl<?>) other;
-    return this.key.equals(that.key) && this.value.equals(that.value);
-  }
-
-  @Override
-  public int hashCode() {
-    int result = this.key.hashCode();
-    result = (31 * result) + this.value.hashCode();
-    return result;
-  }
-
-  @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("key", this.key),
-      ExaminableProperty.of("value", this.value)
-    );
-  }
-
-  @Override
-  public String toString() {
-    return this.examine(StringExaminer.simpleEscaping());
+    if (!(other instanceof KeyedValue<?> that)) return false;
+    return this.key.equals(that.key()) && this.value.equals(that.value());
   }
 }

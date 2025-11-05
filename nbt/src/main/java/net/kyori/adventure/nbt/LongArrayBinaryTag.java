@@ -27,8 +27,6 @@ import java.util.PrimitiveIterator;
 import java.util.Spliterator;
 import java.util.function.LongConsumer;
 import java.util.stream.LongStream;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * A binary tag holding a {@code long}-array value.
@@ -36,7 +34,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.0.0
  * @sinceMinecraft 1.12
  */
-public interface LongArrayBinaryTag extends ArrayBinaryTag, Iterable<Long> {
+public sealed interface LongArrayBinaryTag extends ArrayBinaryTag, Iterable<Long> permits LongArrayBinaryTagImpl {
   /**
    * Creates a binary tag holding a {@code long}-array value.
    *
@@ -44,26 +42,12 @@ public interface LongArrayBinaryTag extends ArrayBinaryTag, Iterable<Long> {
    * @return a binary tag
    * @since 4.14.0
    */
-  static @NotNull LongArrayBinaryTag longArrayBinaryTag(final long@NotNull... value) {
-    return new LongArrayBinaryTagImpl(value);
-  }
-
-  /**
-   * Creates a binary tag holding a {@code long}-array value.
-   *
-   * @param value the value
-   * @return a binary tag
-   * @since 4.0.0
-   * @deprecated for removal since 4.14.0, use {@link #longArrayBinaryTag(long...)} instead.
-   */
-  @Deprecated
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  static @NotNull LongArrayBinaryTag of(final long@NotNull... value) {
+  static LongArrayBinaryTag longArrayBinaryTag(final long... value) {
     return new LongArrayBinaryTagImpl(value);
   }
 
   @Override
-  default @NotNull BinaryTagType<LongArrayBinaryTag> type() {
+  default BinaryTagType<LongArrayBinaryTag> type() {
     return BinaryTagTypes.LONG_ARRAY;
   }
 
@@ -75,7 +59,7 @@ public interface LongArrayBinaryTag extends ArrayBinaryTag, Iterable<Long> {
    * @return the value
    * @since 4.0.0
    */
-  long@NotNull[] value();
+  long[] value();
 
   /**
    * Gets the length of the array.
@@ -103,10 +87,10 @@ public interface LongArrayBinaryTag extends ArrayBinaryTag, Iterable<Long> {
    * @since 4.2.0
    */
   @Override
-  PrimitiveIterator.@NotNull OfLong iterator();
+  PrimitiveIterator.OfLong iterator();
 
   @Override
-  Spliterator.@NotNull OfLong spliterator();
+  Spliterator.OfLong spliterator();
 
   /**
    * Create a stream whose elements are the elements of this array tag.
@@ -114,7 +98,7 @@ public interface LongArrayBinaryTag extends ArrayBinaryTag, Iterable<Long> {
    * @return a new stream
    * @since 4.2.0
    */
-  @NotNull LongStream stream();
+  LongStream stream();
 
   /**
    * Perform an action for every long in the backing array.
@@ -122,5 +106,5 @@ public interface LongArrayBinaryTag extends ArrayBinaryTag, Iterable<Long> {
    * @param action the action to perform
    * @since 4.2.0
    */
-  void forEachLong(final @NotNull LongConsumer action);
+  void forEachLong(final LongConsumer action);
 }

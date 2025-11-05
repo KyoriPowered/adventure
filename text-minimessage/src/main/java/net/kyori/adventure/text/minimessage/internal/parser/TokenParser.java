@@ -47,8 +47,7 @@ import net.kyori.adventure.text.minimessage.tag.ParserDirective;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.util.TriState;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Handles parsing a string into a list of tokens and then into a tree of nodes.
@@ -83,10 +82,10 @@ public final class TokenParser {
    * @since 4.10.0
    */
   public static RootNode parse(
-    final @NotNull TagProvider tagProvider,
-    final @NotNull Predicate<String> tagNameChecker,
-    final @NotNull String message,
-    final @NotNull String originalMessage,
+    final TagProvider tagProvider,
+    final Predicate<String> tagNameChecker,
+    final String message,
+    final String originalMessage,
     final boolean strict
   ) throws ParsingException {
     // collect tokens...
@@ -172,7 +171,7 @@ public final class TokenParser {
           || nextChar == 'r'
           || (nextChar >= 'k' && nextChar <= 'o')) {
           throw new ParsingExceptionImpl(
-            "Legacy formatting codes have been detected in a MiniMessage string - this is unsupported behaviour. Please refer to the Adventure documentation (https://docs.advntr.dev) for more information.",
+            "Legacy formatting codes have been detected in a MiniMessage string - this is unsupported behaviour. Please refer to the Adventure documentation (https://docs.papermc.io/adventure/) for more information.",
             message,
             null,
             true,
@@ -190,21 +189,19 @@ public final class TokenParser {
           final int nextCodePoint = message.codePointAt(i + 1);
 
           switch (state) {
-            case NORMAL:
-              // allow escaping open tokens
-              escaped = nextCodePoint == TAG_START || nextCodePoint == ESCAPE;
-              break;
-            case STRING:
-              // allow escaping closing string chars
-              escaped = currentStringChar == nextCodePoint || nextCodePoint == ESCAPE;
-              break;
-            case TAG:
-              // Escape characters are not valid in tag names, so we aren't a tag token
+            // allow escaping open tokens
+            case NORMAL -> escaped = nextCodePoint == TAG_START || nextCodePoint == ESCAPE;
+
+            // allow escaping closing string chars
+            case STRING -> escaped = currentStringChar == nextCodePoint || nextCodePoint == ESCAPE;
+
+            // Escape characters are not valid in tag names, so we aren't a tag token
+            case TAG -> {
               if (nextCodePoint == TAG_START) {
                 escaped = true;
                 state = FirstPassState.NORMAL;
               }
-              break;
+            }
           }
 
           // only escape if we need to
@@ -218,16 +215,16 @@ public final class TokenParser {
       }
 
       switch (state) {
-        case NORMAL:
+        case NORMAL -> {
           if (codePoint == TAG_START) {
             // Possibly a tag
             marker = i;
             state = FirstPassState.TAG;
           }
-          break;
-        case TAG:
+        }
+        case TAG -> {
           switch (codePoint) {
-            case TAG_END:
+            case TAG_END -> {
               if (i == marker + 1) {
                 // This is empty, <>, so it's not a tag
                 state = FirstPassState.NORMAL;
@@ -250,26 +247,25 @@ public final class TokenParser {
               }
               consumer.accept(marker, currentTokenEnd, thisType);
               state = FirstPassState.NORMAL;
-              break;
-            case TAG_START:
-              // This isn't a tag, but we can re-start looking here
-              marker = i;
-              break;
-            case '\'':
-            case '"':
+            }
+
+            // This isn't a tag, but we can re-start looking here
+            case TAG_START -> marker = i;
+
+            case '\'', '"' -> {
               currentStringChar = (char) codePoint;
               // Look ahead if the quote being opened is ever closed
               if (message.indexOf(codePoint, i + 1) != -1) {
                 state = FirstPassState.STRING;
               }
-              break;
+            }
           }
-          break;
-        case STRING:
+        }
+        case STRING -> {
           if (codePoint == currentStringChar) {
             state = FirstPassState.TAG;
           }
-          break;
+        }
       }
 
       if (i == (length - 1) && state == FirstPassState.TAG) {
@@ -326,16 +322,13 @@ public final class TokenParser {
           if (codePoint == ESCAPE && i + 1 < message.length()) {
             final int nextCodePoint = message.codePointAt(i + 1);
 
-            switch (state) {
-              case NORMAL:
-                // allow escaping open tokens
-                escaped = nextCodePoint == TAG_START || nextCodePoint == ESCAPE;
-                break;
-              case STRING:
-                // allow escaping closing string chars
-                escaped = currentStringChar == nextCodePoint || nextCodePoint == ESCAPE;
-                break;
-            }
+            escaped = switch (state) {
+              // allow escaping open tokens
+              case NORMAL -> nextCodePoint == TAG_START || nextCodePoint == ESCAPE;
+
+              // allow escaping closing string chars
+              case STRING -> currentStringChar == nextCodePoint || nextCodePoint == ESCAPE;
+            };
 
             // only escape if we need to
             if (escaped) {
@@ -434,7 +427,7 @@ public final class TokenParser {
           }
         }
       } else {
-        final int end = token.childTokens().get(token.childTokens().size() - 1).endIndex();
+        final int end = token.childTokens().getLast().endIndex();
         if (end != endIndex) {
           insert(token, new Token(end + 1, endIndex, TokenType.TAG_VALUE));
         }
@@ -459,11 +452,11 @@ public final class TokenParser {
    * Build a tree from the OPEN_TAG and CLOSE_TAG tokens
    */
   private static RootNode buildTree(
-    final @NotNull TagProvider tagProvider,
-    final @NotNull Predicate<String> tagNameChecker,
-    final @NotNull List<Token> tokens,
-    final @NotNull String message,
-    final @NotNull String originalMessage,
+    final TagProvider tagProvider,
+    final Predicate<String> tagNameChecker,
+    final List<Token> tokens,
+    final String message,
+    final String originalMessage,
     final boolean strict
   ) throws ParsingException {
     final RootNode root = new RootNode(message, originalMessage);
@@ -472,14 +465,10 @@ public final class TokenParser {
     for (final Token token : tokens) {
       final TokenType type = token.type();
       switch (type) {
-        case TEXT:
-          node.addChild(new TextNode(node, token, message));
-          break;
-
-        case OPEN_TAG:
-        case OPEN_CLOSE_TAG:
+        case TEXT -> node.addChild(new TextNode(node, token, message));
+        case OPEN_TAG, OPEN_CLOSE_TAG -> {
           // Check if this even is a valid tag
-          final Token tagNamePart = token.childTokens().get(0);
+          final Token tagNamePart = token.childTokens().getFirst();
           final String tagName = message.substring(tagNamePart.startIndex(), tagNamePart.endIndex());
           if (!TagInternals.sanitizeAndCheckValidTagName(tagName)) {
             // This wouldn't be a valid tag, just parse it as text instead!
@@ -505,7 +494,7 @@ public final class TokenParser {
               // This is a recognized tag, goes in the tree
               tagNode.tag(tag);
               node.addChild(tagNode);
-              if (type != TokenType.OPEN_CLOSE_TAG && (!(tag instanceof Inserting) || ((Inserting) tag).allowsChildren())) {
+              if (type != TokenType.OPEN_CLOSE_TAG && (!(tag instanceof Inserting inserting) || inserting.allowsChildren())) {
                 node = tagNode;
               }
             }
@@ -513,9 +502,8 @@ public final class TokenParser {
             // not recognized, plain text
             node.addChild(new TextNode(node, token, message));
           }
-          break; // OPEN_TAG
-
-        case CLOSE_TAG:
+        }
+        case CLOSE_TAG -> {
           final List<Token> childTokens = token.childTokens();
           if (childTokens.isEmpty()) {
             throw new IllegalStateException("CLOSE_TAG token somehow has no children - " +
@@ -527,7 +515,7 @@ public final class TokenParser {
             closeValues.add(TagPart.unquoteAndEscape(message, childToken.startIndex(), childToken.endIndex()));
           }
 
-          final String closeTagName = closeValues.get(0);
+          final String closeTagName = closeValues.getFirst();
 
           if (tagNameChecker.test(closeTagName)) {
             final Tag tag = tagProvider.resolveSequential(closeTagName);
@@ -549,7 +537,7 @@ public final class TokenParser {
             if (tagCloses(closeValues, openParts)) {
               if (parentNode != node && strict) {
                 final String msg = "Unclosed tag encountered; " + ((TagNode) node).name() + " is not closed, because " +
-                  closeValues.get(0) + " was closed first.";
+                  closeValues.getFirst() + " was closed first.";
                 throw new ParsingExceptionImpl(msg, message, parentNode.token(), node.token(), token);
               }
 
@@ -569,11 +557,8 @@ public final class TokenParser {
             // This means the closing tag didn't match to anything
             // Since open tags which don't match to anything is never an error, neither is this
             node.addChild(new TextNode(node, token, message));
-            break;
           }
-          break; // CLOSE_TAG
-        default: // ignore other tags
-          break;
+        }
       }
     }
 
@@ -627,7 +612,7 @@ public final class TokenParser {
       return false;
     }
     // The tag name is case-insensitive, but the tag values are not
-    if (!closeParts.get(0).equalsIgnoreCase(openParts.get(0).value())) {
+    if (!closeParts.getFirst().equalsIgnoreCase(openParts.getFirst().value())) {
       return false;
     }
     for (int i = 1; i < closeParts.size(); i++) {
@@ -664,7 +649,7 @@ public final class TokenParser {
     }
     if (token.childTokens().size() == 1) {
       final ArrayList<Token> list = new ArrayList<>(3);
-      list.add(token.childTokens().get(0));
+      list.add(token.childTokens().getFirst());
       list.add(value);
       token.childTokens(list);
     } else {
@@ -752,7 +737,7 @@ public final class TokenParser {
      * @return a tag
      * @since 4.10.0
      */
-    @Nullable Tag resolveSequential(final @NotNull String name, final @NotNull List<T> trimmedArgs, final @Nullable Token token);
+    @Nullable Tag resolveSequential(final String name, final List<T> trimmedArgs, final @Nullable Token token);
   }
 
   /**
@@ -774,7 +759,7 @@ public final class TokenParser {
      * @return a tag
      * @since 4.10.0
      */
-    @Nullable Tag resolveNamed(final @NotNull String name, final @NotNull Map<String, T> trimmedArgs, final @Nullable Token token);
+    @Nullable Tag resolveNamed(final String name, final Map<String, T> trimmedArgs, final Token token);
   }
 
   /**
@@ -793,7 +778,7 @@ public final class TokenParser {
      * @return whether a list of tokens contains a {@link TokenType#TAG_VALUE_NAME} or {@link TokenType#TAG_VALUE_TOGGLE}
      * @since 4.25.0
      */
-    default boolean isNamed(final @NotNull List<Token> trimmedTokens) {
+    default boolean isNamed(final List<Token> trimmedTokens) {
       for (final Token trimmedToken : trimmedTokens) {
         if (trimmedToken.type() == TokenType.TAG_VALUE_NAME || trimmedToken.type() == TokenType.TAG_VALUE_TOGGLE) {
           return true;
@@ -809,7 +794,7 @@ public final class TokenParser {
      * @return whether this tag node has named arguments
      * @since 4.25.0
      */
-    default boolean isNamed(final @NotNull TagNode node) {
+    default boolean isNamed(final TagNode node) {
       return this.isNamed(node.token().childTokens());
     }
 
@@ -820,7 +805,7 @@ public final class TokenParser {
      * @return a tag, if any is available
      * @since 4.25.0
      */
-    default @Nullable Tag resolveSequential(final @NotNull String name) {
+    default @Nullable Tag resolveSequential(final String name) {
       return this.resolveSequential(name, Collections.emptyList(), null);
     }
 
@@ -831,7 +816,7 @@ public final class TokenParser {
      * @return a tag, if any is available
      * @since 4.25.0
      */
-    default @Nullable Tag resolveNamed(final @NotNull String name) {
+    default @Nullable Tag resolveNamed(final String name) {
       return this.resolveNamed(name, Collections.emptyMap(), null);
     }
 
@@ -848,7 +833,7 @@ public final class TokenParser {
      * @return the resolved tag, or null
      * @since 4.25.0
      */
-    default @Nullable Tag resolve(final @NotNull TagNode node) {
+    default @Nullable Tag resolve(final TagNode node) {
       if (this.isNamed(node)) {
         return this.resolveNamed(node);
       }
@@ -869,7 +854,7 @@ public final class TokenParser {
      * @return a tag, if any is available
      * @since 4.25.0
      */
-    default @Nullable Tag resolveSequential(final @NotNull TagNode node) {
+    default @Nullable Tag resolveSequential(final TagNode node) {
       return this.resolveSequential(
         TagProvider.sanitizePlaceholderName(node.name()),
         (List<T>) node.parts().subList(1, node.parts().size()),
@@ -884,7 +869,7 @@ public final class TokenParser {
      * @return a tag, if any is available
      * @since 4.25.0
      */
-    default @Nullable Tag resolveNamed(final @NotNull TagNode node) {
+    default @Nullable Tag resolveNamed(final TagNode node) {
       final Map<String, T> map = new TreeMap<>();
 
       final List<TagPart> parts = node.parts();
@@ -922,7 +907,7 @@ public final class TokenParser {
      * @return a sanitized name
      * @since 4.10.0
      */
-    static @NotNull String sanitizePlaceholderName(final @NotNull String name) {
+    static String sanitizePlaceholderName(final String name) {
       return name.toLowerCase(Locale.ROOT);
     }
   }
@@ -956,7 +941,7 @@ public final class TokenParser {
      * @since 4.25.0
      */
     @Override
-    public @Nullable Tag resolveNamed(final @NotNull String name, final @NotNull Map<String, T> trimmedArgs, final @Nullable Token token) {
+    public @Nullable Tag resolveNamed(final String name, final Map<String, T> trimmedArgs, final @Nullable Token token) {
       return this.named.resolveNamed(name, trimmedArgs, token);
     }
 
@@ -966,7 +951,7 @@ public final class TokenParser {
      * @since 4.25.0
      */
     @Override
-    public @Nullable Tag resolveSequential(final @NotNull String name, final @NotNull List<T> trimmedArgs, final @Nullable Token token) {
+    public @Nullable Tag resolveSequential(final String name, final List<T> trimmedArgs, final @Nullable Token token) {
       return this.sequential.resolveSequential(name, trimmedArgs, token);
     }
   }

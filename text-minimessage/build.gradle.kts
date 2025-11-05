@@ -17,7 +17,8 @@ tasks.checkstyleJmh {
 }
 
 tasks.javadoc {
-  exclude("net/kyori/adventure/text/minimessage/internal/**")
+  // TODO: I assume this is not welcome, but otherwise the javadoc task fails, so...
+  // exclude("net/kyori/adventure/text/minimessage/internal/**")
 }
 
 applyJarMetadata("net.kyori.adventure.text.minimessage")

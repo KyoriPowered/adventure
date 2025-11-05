@@ -28,22 +28,21 @@ import java.util.Locale;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 final class ComponentTranslationStore extends AbstractTranslationStore<Component> {
 
-  ComponentTranslationStore(final @NotNull Key name) {
+  ComponentTranslationStore(final Key name) {
     super(name);
   }
 
   @Override
-  public @Nullable MessageFormat translate(final @NotNull String key, final @NotNull Locale locale) {
+  public @Nullable MessageFormat translate(final String key, final Locale locale) {
     return null;
   }
 
   @Override
-  public @Nullable Component translate(final @NotNull TranslatableComponent component, final @NotNull Locale locale) {
+  public @Nullable Component translate(final TranslatableComponent component, final Locale locale) {
     final Component translatedComponent = this.translationValue(component.key(), locale);
     if (translatedComponent == null) return null;
     return translatedComponent.append(component.children());

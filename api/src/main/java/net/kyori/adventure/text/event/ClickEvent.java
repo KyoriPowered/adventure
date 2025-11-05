@@ -24,23 +24,15 @@
 package net.kyori.adventure.text.event;
 
 import java.net.URL;
-import java.util.Objects;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.dialog.DialogLike;
-import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
-import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.StyleBuilderApplicable;
 import net.kyori.adventure.util.Index;
-import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -49,18 +41,21 @@ import static java.util.Objects.requireNonNull;
  *
  * <p>A click event processes an {@link Action} when clicked on.</p>
  *
+ * @param <T> the payload type
  * @since 4.0.0
  */
-public final class ClickEvent implements Examinable, StyleBuilderApplicable {
+public sealed interface ClickEvent<T extends ClickEvent.Payload> extends StyleBuilderApplicable permits ClickEventImpl {
   /**
    * Creates a click event that opens a url.
+   *
+   * <p>Since <em>Minecraft: Java Edition</em> 1.21.5 the url will fail to parse if not a {@code http://} or {@code https://} scheme.</p>
    *
    * @param url the url to open
    * @return a click event
    * @since 4.0.0
    */
-  public static @NotNull ClickEvent openUrl(final @NotNull String url) {
-    return new ClickEvent(Action.OPEN_URL, Payload.string(url));
+  static ClickEvent<Payload.Text> openUrl(final String url) {
+    return ClickEventImpl.create(Action.OPEN_URL, Payload.string(url));
   }
 
   /**
@@ -70,7 +65,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @return a click event
    * @since 4.0.0
    */
-  public static @NotNull ClickEvent openUrl(final @NotNull URL url) {
+  static ClickEvent<Payload.Text> openUrl(final URL url) {
     return openUrl(url.toExternalForm());
   }
 
@@ -83,8 +78,8 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @return a click event
    * @since 4.0.0
    */
-  public static @NotNull ClickEvent openFile(final @NotNull String file) {
-    return new ClickEvent(Action.OPEN_FILE, Payload.string(file));
+  static ClickEvent<Payload.Text> openFile(final String file) {
+    return ClickEventImpl.create(Action.OPEN_FILE, Payload.string(file));
   }
 
   /**
@@ -94,8 +89,8 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @return a click event
    * @since 4.0.0
    */
-  public static @NotNull ClickEvent runCommand(final @NotNull String command) {
-    return new ClickEvent(Action.RUN_COMMAND, Payload.string(command));
+  static ClickEvent<Payload.Text> runCommand(final String command) {
+    return ClickEventImpl.create(Action.RUN_COMMAND, Payload.string(command));
   }
 
   /**
@@ -105,23 +100,8 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @return a click event
    * @since 4.0.0
    */
-  public static @NotNull ClickEvent suggestCommand(final @NotNull String command) {
-    return new ClickEvent(Action.SUGGEST_COMMAND, Payload.string(command));
-  }
-
-  /**
-   * Creates a click event that changes to a page.
-   *
-   * @param page the page to change to
-   * @return a click event
-   * @throws IllegalArgumentException if the page cannot be represented as an integer using
-   * @since 4.0.0
-   * @deprecated For removal since 4.22.0, pages are integers, use {@link #changePage(int)}
-   */
-  @Deprecated
-  public static @NotNull ClickEvent changePage(final @NotNull String page) {
-    requireNonNull(page, "page");
-    return new ClickEvent(Action.CHANGE_PAGE, Payload.integer(Integer.parseInt(page)));
+  static ClickEvent<Payload.Text> suggestCommand(final String command) {
+    return ClickEventImpl.create(Action.SUGGEST_COMMAND, Payload.string(command));
   }
 
   /**
@@ -131,8 +111,8 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @return a click event
    * @since 4.0.0
    */
-  public static @NotNull ClickEvent changePage(final int page) {
-    return new ClickEvent(Action.CHANGE_PAGE, Payload.integer(page));
+  static ClickEvent<Payload.Int> changePage(final int page) {
+    return ClickEventImpl.create(Action.CHANGE_PAGE, Payload.integer(page));
   }
 
   /**
@@ -143,8 +123,8 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @since 4.0.0
    * @sinceMinecraft 1.15
    */
-  public static @NotNull ClickEvent copyToClipboard(final @NotNull String text) {
-    return new ClickEvent(Action.COPY_TO_CLIPBOARD, Payload.string(text));
+  static ClickEvent<Payload.Text> copyToClipboard(final String text) {
+    return ClickEventImpl.create(Action.COPY_TO_CLIPBOARD, Payload.string(text));
   }
 
   /**
@@ -156,7 +136,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @return a callback click event
    * @since 4.13.0
    */
-  public static @NotNull ClickEvent callback(final @NotNull ClickCallback<Audience> function) {
+  static ClickEvent<?> callback(final ClickCallback<Audience> function) {
     return ClickCallbackInternals.PROVIDER.create(requireNonNull(function, "function"), ClickCallbackOptionsImpl.DEFAULT);
   }
 
@@ -168,7 +148,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @return a callback click event
    * @since 4.13.0
    */
-  public static @NotNull ClickEvent callback(final @NotNull ClickCallback<Audience> function, final ClickCallback.@NotNull Options options) {
+  static ClickEvent<?> callback(final ClickCallback<Audience> function, final ClickCallback.Options options) {
     return ClickCallbackInternals.PROVIDER.create(requireNonNull(function, "function"), requireNonNull(options, "options"));
   }
 
@@ -180,7 +160,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @return a callback click event
    * @since 4.13.0
    */
-  public static @NotNull ClickEvent callback(final @NotNull ClickCallback<Audience> function, final @NotNull Consumer<ClickCallback.Options.@NotNull Builder> optionsBuilder) {
+  static ClickEvent<?> callback(final ClickCallback<Audience> function, final Consumer<ClickCallback.Options.Builder> optionsBuilder) {
     return ClickCallbackInternals.PROVIDER.create(
       requireNonNull(function, "function"),
       AbstractBuilder.configureAndBuild(ClickCallback.Options.builder(), requireNonNull(optionsBuilder, "optionsBuilder"))
@@ -194,24 +174,9 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @return the click event
    * @since 4.22.0
    */
-  public static @NotNull ClickEvent showDialog(final @NotNull DialogLike dialog) {
+  static ClickEvent<Payload.Dialog> showDialog(final DialogLike dialog) {
     requireNonNull(dialog, "dialog");
-    return new ClickEvent(Action.SHOW_DIALOG, Payload.dialog(dialog));
-  }
-
-  /**
-   * Creates a click event sends a custom event to the server.
-   *
-   * @param key the key
-   * @param data the data
-   * @return the click event
-   * @since 4.22.0
-   * @deprecated For removal since 4.23.0, payloads hold NBT data, use {@link #custom(Key, BinaryTagHolder)} instead.
-   *     This method will create NBT using {@link BinaryTagHolder#binaryTagHolder(String)}.
-   */
-  @Deprecated
-  public static @NotNull ClickEvent custom(final @NotNull Key key, final @NotNull String data) {
-    return custom(key, BinaryTagHolder.binaryTagHolder(data));
+    return ClickEventImpl.create(Action.SHOW_DIALOG, Payload.dialog(dialog));
   }
 
   /**
@@ -225,37 +190,24 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @return the click event
    * @since 4.23.0
    */
-  public static @NotNull ClickEvent custom(final @NotNull Key key, final @NotNull BinaryTagHolder nbt) {
+  static ClickEvent<Payload.Custom> custom(final Key key, final BinaryTagHolder nbt) {
     requireNonNull(key, "key");
     requireNonNull(nbt, "nbt");
-    return new ClickEvent(Action.CUSTOM, Payload.custom(key, nbt));
+    return ClickEventImpl.create(Action.CUSTOM, Payload.custom(key, nbt));
   }
 
   /**
-   * Creates a click event with a {@link Payload.Text string payload}.
+   * Creates a click event with a {@link Payload payload}.
    *
    * @param action the action
-   * @param value the value
+   * @param payload the payload
+   * @param <T> the payload type
    * @return a click event
-   * @throws IllegalArgumentException if the action does not support a string payload
-   * @since 4.0.0
-   * @deprecated For removal since 4.22.0, not all actions support string payloads
+   * @throws IllegalArgumentException if the action does not support that payload
+   * @since 4.25.0
    */
-  @Deprecated
-  public static @NotNull ClickEvent clickEvent(final @NotNull Action action, final @NotNull String value) {
-    // A special case here to ensure that page can still accept a string.
-    if (action == Action.CHANGE_PAGE) return changePage(value);
-    if (!action.payloadType().equals(Payload.Text.class)) throw new IllegalArgumentException("Action " + action + " does not support string payloads");
-    return new ClickEvent(action, Payload.string(value));
-  }
-
-  private final Action action;
-  private final Payload payload;
-
-  private ClickEvent(final @NotNull Action action, final @NotNull Payload payload) {
-    if (!action.supports(payload)) throw new IllegalArgumentException("Action " + action + " does not support payload " + payload);
-    this.action = requireNonNull(action, "action");
-    this.payload = requireNonNull(payload, "payload");
+  static <T extends ClickEvent.Payload> ClickEvent<T> clickEvent(final Action<T> action, final T payload) {
+    return ClickEventImpl.create(action, payload);
   }
 
   /**
@@ -264,28 +216,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @return the click event action
    * @since 4.0.0
    */
-  public @NotNull Action action() {
-    return this.action;
-  }
-
-  /**
-   * Gets the click event value if the payload is a {@link Payload.Text string payload}.
-   *
-   * @return the click event value
-   * @throws IllegalStateException if the payload is not a string payload
-   * @since 4.0.0
-   * @deprecated For removal since 4.22.0, click events can hold more than just strings, see {@link #payload()}
-   */
-  @Deprecated
-  public @NotNull String value() {
-    if (this.payload instanceof Payload.Text) {
-      return ((Payload.Text) this.payload).value();
-    } else if (this.action == Action.CHANGE_PAGE) { // Special case for page.
-      return String.valueOf(((Payload.Int) this.payload).integer());
-    } else {
-      throw new IllegalStateException("Payload is not a string payload, is " + this.payload);
-    }
-  }
+  Action<T> action();
 
   /**
    * Gets the payload associated with this click event.
@@ -293,49 +224,203 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @return the payload
    * @since 4.22.0
    */
-  public @NotNull Payload payload() {
-    return this.payload;
-  }
+  Payload payload();
 
-  @Override
-  public void styleApply(final Style.@NotNull Builder style) {
-    style.clickEvent(this);
-  }
+  /**
+   * An enumeration of click event actions.
+   *
+   * <p><b>Note:</b> although this interface is sealed, new implementations
+   * may be added at any time as and when needed.</p>
+   *
+   * @param <T> the payload type
+   * @since 4.0.0
+   */
+  sealed interface Action<T extends Payload> {
+    /**
+     * Opens a url when clicked.
+     *
+     * @since 4.0.0
+     */
+    OpenUrl OPEN_URL = ClickEventImpl.OPEN_URL;
 
-  @Override
-  public boolean equals(final @Nullable Object other) {
-    if (this == other) return true;
-    if (other == null || this.getClass() != other.getClass()) return false;
-    final ClickEvent that = (ClickEvent) other;
-    return this.action == that.action && Objects.equals(this.payload, that.payload);
-  }
+    /**
+     * Opens a file when clicked.
+     *
+     * <p>This action is not readable, and may only be used locally on the client.</p>
+     *
+     * @since 4.0.0
+     */
+    OpenFile OPEN_FILE = ClickEventImpl.OPEN_FILE;
 
-  @Override
-  public int hashCode() {
-    int result = this.action.hashCode();
-    result = (31 * result) + this.payload.hashCode();
-    return result;
-  }
+    /**
+     * Runs a command when clicked.
+     *
+     * @since 4.0.0
+     */
+    RunCommand RUN_COMMAND = ClickEventImpl.RUN_COMMAND;
 
-  @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("action", this.action),
-      ExaminableProperty.of("payload", this.payload)
-    );
-  }
+    /**
+     * Suggests a command into the chat box.
+     *
+     * @since 4.0.0
+     */
+    SuggestCommand SUGGEST_COMMAND = ClickEventImpl.SUGGEST_COMMAND;
 
-  @Override
-  public String toString() {
-    return Internals.toString(this);
+    /**
+     * Changes the page of a book.
+     *
+     * @since 4.0.0
+     */
+    ChangePage CHANGE_PAGE = ClickEventImpl.CHANGE_PAGE;
+
+    /**
+     * Copies text to the clipboard.
+     *
+     * @since 4.0.0
+     * @sinceMinecraft 1.15
+     */
+    CopyToClipboard COPY_TO_CLIPBOARD = ClickEventImpl.COPY_TO_CLIPBOARD;
+
+    /**
+     * Shows a dialog.
+     *
+     * <p>This action is not readable at this time until Adventure has a full Dialog API.</p>
+     *
+     * @since 4.22.0
+     * @sinceMinecraft 1.21.6
+     */
+    ShowDialog SHOW_DIALOG = ClickEventImpl.SHOW_DIALOG;
+
+    /**
+     * Sends a custom event to the server.
+     *
+     * @since 4.22.0
+     * @sinceMinecraft 1.21.6
+     */
+    Custom CUSTOM = ClickEventImpl.CUSTOM;
+
+    /**
+     * The name map.
+     *
+     * @since 4.0.0
+     */
+    Index<String, ClickEvent.Action<?>> NAMES = Index.create(Action::toString, OPEN_URL, OPEN_FILE, RUN_COMMAND, SUGGEST_COMMAND, CHANGE_PAGE, COPY_TO_CLIPBOARD, SHOW_DIALOG, CUSTOM);
+
+    /**
+     * Tests if this action is readable.
+     *
+     * @return {@code true} if this action is readable, {@code false} if this
+     *     action is not readable
+     * @since 4.0.0
+     */
+    boolean readable();
+
+    /**
+     * Returns if this action supports the provided payload.
+     *
+     * @param payload the payload
+     * @return {@code true} if this action supports the payload
+     * @since 4.22.0
+     */
+    boolean supports(final Payload payload);
+
+    /**
+     * An action with a text payload.
+     *
+     * @since 5.0.0
+     */
+    sealed interface TextCarrier extends ClickEvent.Action<Payload.Text> {
+    }
+
+    /**
+     * Opens a url when clicked.
+     *
+     * @see #OPEN_URL
+     * @since 5.0.0
+     */
+    sealed interface OpenUrl extends TextCarrier permits ClickEventImpl.AbstractAction.OpenUrlImpl {
+    }
+
+    /**
+     * Opens a file when clicked.
+     *
+     * <p>This action is not readable, and may only be used locally on the client.</p>
+     *
+     * @see #OPEN_FILE
+     * @since 5.0.0
+     */
+    sealed interface OpenFile extends TextCarrier permits ClickEventImpl.AbstractAction.OpenFileImpl {
+    }
+
+    /**
+     * Runs a command when clicked.
+     *
+     * @see #RUN_COMMAND
+     * @since 5.0.0
+     */
+    sealed interface RunCommand extends TextCarrier permits ClickEventImpl.AbstractAction.RunCommandImpl {
+    }
+
+    /**
+     * Suggests a command into the chat box.
+     *
+     * @see #SUGGEST_COMMAND
+     * @since 5.0.0
+     */
+    sealed interface SuggestCommand extends TextCarrier permits ClickEventImpl.AbstractAction.SuggestCommandImpl {
+    }
+
+    /**
+     * Changes the page of a book.
+     *
+     * @see #CHANGE_PAGE
+     * @since 5.0.0
+     */
+    sealed interface ChangePage extends ClickEvent.Action<Payload.Int> permits ClickEventImpl.AbstractAction.ChangePageImpl {
+    }
+
+    /**
+     * Copies text to the clipboard.
+     *
+     * @see #COPY_TO_CLIPBOARD
+     * @since 4.0.0
+     * @sinceMinecraft 1.15
+     */
+    sealed interface CopyToClipboard extends TextCarrier permits ClickEventImpl.AbstractAction.CopyToClipboardImpl {
+    }
+
+    /**
+     * Shows a dialog.
+     *
+     * <p>This action is not readable at this time until Adventure has a full Dialog API.</p>
+     *
+     * @see #SHOW_DIALOG
+     * @since 5.0.0
+     * @sinceMinecraft 1.21.6
+     */
+    sealed interface ShowDialog extends ClickEvent.Action<Payload.Dialog> permits ClickEventImpl.AbstractAction.ShowDialogImpl {
+    }
+
+    /**
+     * Sends a custom event to the server.
+     *
+     * @see #CUSTOM
+     * @since 5.0.0
+     * @sinceMinecraft 1.21.6
+     */
+    sealed interface Custom extends ClickEvent.Action<Payload.Custom> permits ClickEventImpl.AbstractAction.CustomImpl {
+    }
   }
 
   /**
    * A payload for a click event.
    *
+   * <p><b>Note:</b> although this interface is sealed, new implementations
+   * may be added at any time as and when needed.</p>
+   *
    * @since 4.22.0
    */
-  public /* sealed */ interface Payload /* permits String, Dialog, Custom */ extends Examinable {
+  sealed interface Payload permits ClickEvent.Payload.Custom, ClickEvent.Payload.Dialog, ClickEvent.Payload.Int, ClickEvent.Payload.Text {
     /**
      * Creates a text payload.
      *
@@ -343,7 +428,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
      * @return the payload
      * @since 4.22.0
      */
-    static ClickEvent.Payload.@NotNull Text string(final @NotNull String value) {
+    static ClickEvent.Payload.Text string(final String value) {
       requireNonNull(value, "value");
       return new PayloadImpl.TextImpl(value);
     }
@@ -355,7 +440,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
      * @return the payload
      * @since 4.22.0
      */
-    static ClickEvent.Payload.@NotNull Int integer(final int integer) {
+    static ClickEvent.Payload.Int integer(final int integer) {
       return new PayloadImpl.IntImpl(integer);
     }
 
@@ -366,24 +451,9 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
      * @return the payload
      * @since 4.22.0
      */
-    static Payload.@NotNull Dialog dialog(final @NotNull DialogLike dialog) {
+    static ClickEvent.Payload.Dialog dialog(final DialogLike dialog) {
       requireNonNull(dialog, "dialog");
       return new PayloadImpl.DialogImpl(dialog);
-    }
-
-    /**
-     * Creates a custom payload.
-     *
-     * @param key the key identifying the payload
-     * @param data the payload data
-     * @return the payload
-     * @since 4.22.0
-     * @deprecated For removal since 4.23.0, payloads hold NBT data, use {@link #custom(Key, BinaryTagHolder)} instead.
-     *     This method will create NBT using {@link BinaryTagHolder#binaryTagHolder(String)}.
-     */
-    @Deprecated
-    static Payload.@NotNull Custom custom(final @NotNull Key key, final @NotNull String data) {
-      return Payload.custom(key, BinaryTagHolder.binaryTagHolder(data));
     }
 
     /**
@@ -397,7 +467,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
      * @return the payload
      * @since 4.23.0
      */
-    static Payload.@NotNull Custom custom(final @NotNull Key key, final @NotNull BinaryTagHolder nbt) {
+    static ClickEvent.Payload.Custom custom(final Key key, final BinaryTagHolder nbt) {
       requireNonNull(key, "key");
       requireNonNull(nbt, "nbt");
       return new PayloadImpl.CustomImpl(key, nbt);
@@ -408,14 +478,14 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
      *
      * @since 4.22.0
      */
-    interface Text extends Payload {
+    sealed interface Text extends Payload permits PayloadImpl.TextImpl {
       /**
        * The string value for this payload.
        *
        * @return the string
        * @since 4.22.0
        */
-      @NotNull String value();
+      String value();
     }
 
     /**
@@ -423,7 +493,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
      *
      * @since 4.22.0
      */
-    interface Int extends Payload {
+    sealed interface Int extends Payload permits PayloadImpl.IntImpl {
       /**
        * The integer value for this payload.
        *
@@ -439,14 +509,14 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
      * @see Action#SHOW_DIALOG
      * @since 4.22.0
      */
-    interface Dialog extends Payload {
+    sealed interface Dialog extends Payload permits PayloadImpl.DialogImpl {
       /**
        * The dialog.
        *
        * @return the dialog
        * @since 4.22.0
        */
-      @NotNull DialogLike dialog();
+      DialogLike dialog();
     }
 
     /**
@@ -455,18 +525,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
      * @see Action#CUSTOM
      * @since 4.22.0
      */
-    interface Custom extends Payload, Keyed {
-      /**
-       * The custom data.
-       *
-       * @return the data
-       * @since 4.22.0
-       * @deprecated For removal since 4.23.0, custom payloads contain NBT data, use {@link #nbt()} instead.
-       *     This method will return {@link BinaryTagHolder#string()} on the held NBT.
-       */
-      @Deprecated
-      @NotNull String data();
-
+    sealed interface Custom extends Payload, Keyed permits PayloadImpl.CustomImpl {
       /**
        * The custom data.
        *
@@ -475,129 +534,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
        * @return the data
        * @since 4.23.0
        */
-      @NotNull BinaryTagHolder nbt();
-    }
-  }
-
-  /**
-   * An enumeration of click event actions.
-   *
-   * @since 4.0.0
-   */
-  public enum Action {
-    /**
-     * Opens a url when clicked.
-     *
-     * @since 4.0.0
-     */
-    OPEN_URL("open_url", true, Payload.Text.class),
-    /**
-     * Opens a file when clicked.
-     *
-     * <p>This action is not readable, and may only be used locally on the client.</p>
-     *
-     * @since 4.0.0
-     */
-    OPEN_FILE("open_file", false, Payload.Text.class),
-    /**
-     * Runs a command when clicked.
-     *
-     * @since 4.0.0
-     */
-    RUN_COMMAND("run_command", true, Payload.Text.class),
-    /**
-     * Suggests a command into the chat box.
-     *
-     * @since 4.0.0
-     */
-    SUGGEST_COMMAND("suggest_command", true, Payload.Text.class),
-    /**
-     * Changes the page of a book.
-     *
-     * @since 4.0.0
-     */
-    CHANGE_PAGE("change_page", true, Payload.Int.class),
-    /**
-     * Copies text to the clipboard.
-     *
-     * @since 4.0.0
-     * @sinceMinecraft 1.15
-     */
-    COPY_TO_CLIPBOARD("copy_to_clipboard", true, Payload.Text.class),
-    /**
-     * Shows a dialog.
-     *
-     * <p>This action is not readable at this time until Adventure has a full Dialog API.</p>
-     *
-     * @since 4.22.0
-     * @sinceMinecraft 1.21.6
-     */
-    SHOW_DIALOG("show_dialog", false, Payload.Dialog.class),
-    /**
-     * Sends a custom event to the server.
-     *
-     * @since 4.22.0
-     * @sinceMinecraft 1.21.6
-     */
-    CUSTOM("custom", true, Payload.Custom.class);
-
-    /**
-     * The name map.
-     *
-     * @since 4.0.0
-     */
-    public static final Index<String, Action> NAMES = Index.create(Action.class, constant -> constant.name);
-    private final String name;
-    /**
-     * If this action is readable.
-     *
-     * <p>When an action is not readable it will not be deserialized.</p>
-     */
-    private final boolean readable;
-    private final Class<? extends Payload> payloadType;
-
-    Action(final @NotNull String name, final boolean readable, final @NotNull Class<? extends Payload> payloadType) {
-      this.name = name;
-      this.readable = readable;
-      this.payloadType = payloadType;
-    }
-
-    /**
-     * Tests if this action is readable.
-     *
-     * @return {@code true} if this action is readable, {@code false} if this
-     *     action is not readable
-     * @since 4.0.0
-     */
-    public boolean readable() {
-      return this.readable;
-    }
-
-    /**
-     * Returns if this action supports the provided payload.
-     *
-     * @param payload the payload
-     * @return {@code true} if this action supports the payload
-     * @since 4.22.0
-     */
-    public boolean supports(final @NotNull Payload payload) {
-      requireNonNull(payload, "payload");
-      return this.payloadType.isAssignableFrom(payload.getClass());
-    }
-
-    /**
-     * The type of the payload this click event supports.
-     *
-     * @return the payload type
-     * @since 4.22.0
-     */
-    public @NotNull Class<? extends Payload> payloadType() {
-      return this.payloadType;
-    }
-
-    @Override
-    public @NotNull String toString() {
-      return this.name;
+      BinaryTagHolder nbt();
     }
   }
 }

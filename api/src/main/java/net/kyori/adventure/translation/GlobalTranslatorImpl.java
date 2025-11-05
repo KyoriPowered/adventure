@@ -28,15 +28,12 @@ import java.util.Collections;
 import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.renderer.TranslatableComponentRenderer;
 import net.kyori.adventure.util.TriState;
-import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -50,30 +47,30 @@ final class GlobalTranslatorImpl implements GlobalTranslator {
   }
 
   @Override
-  public @NotNull Key name() {
+  public Key name() {
     return NAME;
   }
 
   @Override
-  public @NotNull Iterable<? extends Translator> sources() {
+  public Iterable<? extends Translator> sources() {
     return Collections.unmodifiableSet(this.sources);
   }
 
   @Override
-  public boolean addSource(final @NotNull Translator source) {
+  public boolean addSource(final Translator source) {
     requireNonNull(source, "source");
     if (source == this) throw new IllegalArgumentException("GlobalTranslationSource");
     return this.sources.add(source);
   }
 
   @Override
-  public boolean removeSource(final @NotNull Translator source) {
+  public boolean removeSource(final Translator source) {
     requireNonNull(source, "source");
     return this.sources.remove(source);
   }
 
   @Override
-  public @NotNull TriState hasAnyTranslations() {
+  public TriState hasAnyTranslations() {
     if (!this.sources.isEmpty()) {
       return TriState.TRUE;
     }
@@ -81,7 +78,7 @@ final class GlobalTranslatorImpl implements GlobalTranslator {
   }
 
   @Override
-  public boolean canTranslate(final @NotNull String key, final @NotNull Locale locale) {
+  public boolean canTranslate(final String key, final Locale locale) {
     requireNonNull(key, "key");
     requireNonNull(locale, "locale");
     for (final Translator source : this.sources) {
@@ -91,7 +88,7 @@ final class GlobalTranslatorImpl implements GlobalTranslator {
   }
 
   @Override
-  public @Nullable MessageFormat translate(final @NotNull String key, final @NotNull Locale locale) {
+  public @Nullable MessageFormat translate(final String key, final Locale locale) {
     requireNonNull(key, "key");
     requireNonNull(locale, "locale");
     for (final Translator source : this.sources) {
@@ -102,7 +99,7 @@ final class GlobalTranslatorImpl implements GlobalTranslator {
   }
 
   @Override
-  public @Nullable Component translate(final @NotNull TranslatableComponent component, final @NotNull Locale locale) {
+  public @Nullable Component translate(final TranslatableComponent component, final Locale locale) {
     requireNonNull(component, "component");
     requireNonNull(locale, "locale");
     for (final Translator source : this.sources) {
@@ -110,10 +107,5 @@ final class GlobalTranslatorImpl implements GlobalTranslator {
       if (translation != null) return translation;
     }
     return null;
-  }
-
-  @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(ExaminableProperty.of("sources", this.sources));
   }
 }

@@ -25,7 +25,6 @@ package net.kyori.adventure.text.minimessage.tag.standard;
 
 import java.util.Objects;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
@@ -34,9 +33,7 @@ import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.util.HSVLike;
-import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Applies rainbow color to a component.
@@ -45,7 +42,7 @@ import org.jetbrains.annotations.Nullable;
  */
 final class RainbowTag extends AbstractColorChangingTag {
   private static final String REVERSE = "!";
-  private static final String RAINBOW = "rainbow";
+  static final String RAINBOW = "rainbow";
 
   static final TagResolver RESOLVER = SerializableResolver.claimingComponent(RAINBOW, RainbowTag::create, AbstractColorChangingTag::claimComponent);
 
@@ -64,7 +61,7 @@ final class RainbowTag extends AbstractColorChangingTag {
         reversed = true;
         value = value.substring(REVERSE.length());
       }
-      if (value.length() > 0) {
+      if (!value.isEmpty()) {
         try {
           phase = Integer.parseInt(value);
         } catch (final NumberFormatException ex) {
@@ -110,7 +107,7 @@ final class RainbowTag extends AbstractColorChangingTag {
   }
 
   @Override
-  protected @NotNull Consumer<TokenEmitter> preserveData() {
+  protected Consumer<TokenEmitter> preserveData() {
     final boolean reversed = this.reversed;
     final int phase = (int) Math.round(this.dividedPhase * 10);
     return emit -> {
@@ -126,20 +123,19 @@ final class RainbowTag extends AbstractColorChangingTag {
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(ExaminableProperty.of("phase", this.dividedPhase));
-  }
-
-  @Override
   public boolean equals(final @Nullable Object other) {
     if (this == other) return true;
-    if (other == null || this.getClass() != other.getClass()) return false;
-    final RainbowTag that = (RainbowTag) other;
+    if (!(other instanceof final RainbowTag that)) return false;
     return this.colorIndex == that.colorIndex && this.dividedPhase == that.dividedPhase;
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(this.colorIndex, this.dividedPhase);
+  }
+
+  @Override
+  public String toString() {
+    return "RainbowTag{reversed=" + this.reversed + ", phase=" + this.dividedPhase + '}';
   }
 }

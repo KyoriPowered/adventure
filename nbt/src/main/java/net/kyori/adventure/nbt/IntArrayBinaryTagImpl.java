@@ -25,26 +25,23 @@ package net.kyori.adventure.nbt;
 
 import java.util.Arrays;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.PrimitiveIterator;
 import java.util.Spliterator;
 import java.util.function.IntConsumer;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Debug;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
+@SuppressWarnings("ArrayRecordComponent") // We override equals/hashCode/toString.
 @Debug.Renderer(text = "\"int[\" + this.value.length + \"]\"", childrenArray = "this.value", hasChildren = "this.value.length > 0")
-final class IntArrayBinaryTagImpl extends ArrayBinaryTagImpl implements IntArrayBinaryTag {
-  final int[] value;
+record IntArrayBinaryTagImpl(int... value) implements IntArrayBinaryTag {
 
   IntArrayBinaryTagImpl(final int... value) {
     this.value = Arrays.copyOf(value, value.length);
   }
 
   @Override
-  public int@NotNull[] value() {
+  public int[] value() {
     return Arrays.copyOf(this.value, this.value.length);
   }
 
@@ -55,12 +52,12 @@ final class IntArrayBinaryTagImpl extends ArrayBinaryTagImpl implements IntArray
 
   @Override
   public int get(final int index) {
-    checkIndex(index, this.value.length);
+    ShadyPines.checkIndex(index, this.value.length);
     return this.value[index];
   }
 
   @Override
-  public PrimitiveIterator.@NotNull OfInt iterator() {
+  public PrimitiveIterator.OfInt iterator() {
     return new PrimitiveIterator.OfInt() {
       private int index;
 
@@ -80,33 +77,26 @@ final class IntArrayBinaryTagImpl extends ArrayBinaryTagImpl implements IntArray
   }
 
   @Override
-  public Spliterator.@NotNull OfInt spliterator() {
+  public Spliterator.OfInt spliterator() {
     return Arrays.spliterator(this.value);
   }
 
   @Override
-  public @NotNull IntStream stream() {
+  public IntStream stream() {
     return Arrays.stream(this.value);
   }
 
   @Override
-  public void forEachInt(final @NotNull IntConsumer action) {
-    for (int i = 0, length = this.value.length; i < length; i++) {
-      action.accept(this.value[i]);
+  public void forEachInt(final IntConsumer action) {
+    for (final int j : this.value) {
+      action.accept(j);
     }
   }
 
-  // to avoid copying array internally
-  static int[] value(final IntArrayBinaryTag tag) {
-    return (tag instanceof IntArrayBinaryTagImpl) ? ((IntArrayBinaryTagImpl) tag).value : tag.value();
-  }
-
   @Override
-  public boolean equals(final @Nullable Object other) {
-    if (this == other) return true;
-    if (other == null || this.getClass() != other.getClass()) return false;
-    final IntArrayBinaryTagImpl that = (IntArrayBinaryTagImpl) other;
-    return Arrays.equals(this.value, that.value);
+  public boolean equals(final Object o) {
+    if (!(o instanceof IntArrayBinaryTagImpl(int[] value1))) return false;
+    return Objects.deepEquals(this.value, value1);
   }
 
   @Override
@@ -115,7 +105,14 @@ final class IntArrayBinaryTagImpl extends ArrayBinaryTagImpl implements IntArray
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(ExaminableProperty.of("value", this.value));
+  public String toString() {
+    return "IntArrayBinaryTagImpl{" +
+      "value=" + Arrays.toString(this.value) +
+      '}';
+  }
+
+  // to avoid copying array internally
+  static int[] value(final IntArrayBinaryTag tag) {
+    return (tag instanceof IntArrayBinaryTagImpl(int[] value1)) ? value1 : tag.value();
   }
 }

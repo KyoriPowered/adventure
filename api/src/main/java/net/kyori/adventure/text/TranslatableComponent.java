@@ -26,15 +26,12 @@ package net.kyori.adventure.text;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.stream.Stream;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.translation.GlobalTranslator;
 import net.kyori.adventure.translation.Translatable;
-import net.kyori.adventure.translation.TranslationRegistry;
-import net.kyori.examination.ExaminableProperty;
+import net.kyori.adventure.translation.TranslationStore;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A component that can display translated text.
@@ -51,24 +48,24 @@ import org.jetbrains.annotations.Nullable;
  * <p>Displaying this component through an {@link Audience} will run it through the {@link GlobalTranslator} by default,
  * rendering the key as translated text if a translation with a key matching this components key is found in the viewers locale,
  * optionally switching arguments with any placeholders in the discovered translation. If no translation is registered for the viewers locale
- * adventure will first try to find similar locales that has a valid translation, and then find a translation in the default language({@link TranslationRegistry#defaultLocale(Locale) relevant method}).</p>
+ * adventure will first try to find similar locales that has a valid translation, and then find a translation in the default language({@link TranslationStore#defaultLocale(Locale) relevant method}).</p>
  *
  * <p>In addition to the initial attempts, if no translation is found in the serverside registry,
  * the translation key and arguments will be passed through to the client which will perform translation using any
  * keys defined in an active resource pack. (Hint: vanilla Minecraft is also considered a resource pack)</p>
  *
  * @see GlobalTranslator
- * @see TranslationRegistry
+ * @see TranslationStore
  * @since 4.0.0
  */
-public interface TranslatableComponent extends BuildableComponent<TranslatableComponent, TranslatableComponent.Builder>, ScopedComponent<TranslatableComponent> {
+public sealed interface TranslatableComponent extends ScopedComponent<TranslatableComponent> permits TranslatableComponentImpl {
   /**
    * Gets the translation key.
    *
    * @return the translation key
    * @since 4.0.0
    */
-  @NotNull String key();
+  String key();
 
   /**
    * Sets the translation key.
@@ -78,7 +75,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @since 4.8.0
    */
   @Contract(pure = true)
-  default @NotNull TranslatableComponent key(final @NotNull Translatable translatable) {
+  default TranslatableComponent key(final Translatable translatable) {
     return this.key(Objects.requireNonNull(translatable, "translatable").translationKey());
   }
 
@@ -90,50 +87,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @since 4.0.0
    */
   @Contract(pure = true)
-  @NotNull TranslatableComponent key(final @NotNull String key);
-
-  /**
-   * Gets the unmodifiable list of translation arguments.
-   *
-   * @return the unmodifiable list of translation arguments
-   * @since 4.0.0
-   * @deprecated for removal since 4.15.0, use {@link #arguments()} instead.
-   */
-  @Deprecated
-  @NotNull List<Component> args();
-
-  /**
-   * Sets the translation arguments for this component.
-   *
-   * <p>Non-{@link Component} arguments can be wrapped in {@link TranslationArgument}, or represented with a {@link TranslationArgumentLike}.</p>
-   *
-   * @param args the translation arguments
-   * @return a translatable component
-   * @see TranslationArgument
-   * @since 4.0.0
-   * @deprecated for removal since 4.15.0, use {@link #arguments(ComponentLike...)} instead
-   */
-  @Deprecated
-  @Contract(pure = true)
-  default @NotNull TranslatableComponent args(final @NotNull ComponentLike@NotNull... args) {
-    return this.arguments(args);
-  }
-
-  /**
-   * Sets the translation arguments for this component.
-   *
-   * <p>Non-{@link Component} arguments can be wrapped in {@link TranslationArgument}, or represented with a {@link TranslationArgumentLike}.</p>
-   *
-   * @param args the translation arguments
-   * @return a translatable component
-   * @since 4.0.0
-   * @deprecated for removal since 4.15.0, use {@link #arguments(List)} instead
-   */
-  @Deprecated
-  @Contract(pure = true)
-  default @NotNull TranslatableComponent args(final @NotNull List<? extends ComponentLike> args) {
-    return this.arguments(args);
-  }
+  TranslatableComponent key(final String key);
 
   /**
    * Gets the unmodifiable list of translation arguments.
@@ -141,7 +95,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @return the unmodifiable list of translation arguments
    * @since 4.0.0
    */
-  @NotNull List<TranslationArgument> arguments();
+  List<TranslationArgument> arguments();
 
   /**
    * Sets the translation arguments for this component.
@@ -154,7 +108,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @since 4.15.0
    */
   @Contract(pure = true)
-  @NotNull TranslatableComponent arguments(final @NotNull ComponentLike@NotNull... args);
+  TranslatableComponent arguments(final ComponentLike... args);
 
   /**
    * Sets the translation arguments for this component.
@@ -166,7 +120,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @since 4.15.0
    */
   @Contract(pure = true)
-  @NotNull TranslatableComponent arguments(final @NotNull List<? extends ComponentLike> args);
+  TranslatableComponent arguments(final List<? extends ComponentLike> args);
 
   /**
    * Gets the translation fallback text for this component.
@@ -190,26 +144,17 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @sinceMinecraft 1.19.4
    */
   @Contract(pure = true)
-  @NotNull TranslatableComponent fallback(final @Nullable String fallback);
+  TranslatableComponent fallback(final @Nullable String fallback);
 
   @Override
-  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.concat(
-      Stream.of(
-        ExaminableProperty.of("key", this.key()),
-        ExaminableProperty.of("arguments", this.arguments()),
-        ExaminableProperty.of("fallback", this.fallback())
-      ),
-      BuildableComponent.super.examinableProperties()
-    );
-  }
+  Builder toBuilder();
 
   /**
    * A text component builder.
    *
    * @since 4.0.0
    */
-  interface Builder extends ComponentBuilder<TranslatableComponent, Builder> {
+  sealed interface Builder extends ComponentBuilder<TranslatableComponent, Builder> permits TranslatableComponentImpl.BuilderImpl {
     /**
      * Sets the translation key.
      *
@@ -218,7 +163,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      * @since 4.8.0
      */
     @Contract(pure = true)
-    default @NotNull Builder key(final @NotNull Translatable translatable) {
+    default Builder key(final Translatable translatable) {
       return this.key(Objects.requireNonNull(translatable, "translatable").translationKey());
     }
 
@@ -230,82 +175,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      * @since 4.0.0
      */
     @Contract("_ -> this")
-    @NotNull Builder key(final @NotNull String key);
-
-    /**
-     * Sets the translation args.
-     *
-     * @param arg the translation arg
-     * @return this builder
-     * @since 4.0.0
-     * @deprecated for removal since 4.15.0, use {@link #arguments(ComponentLike...)} instead
-     */
-    @Deprecated
-    @Contract("_ -> this")
-    default @NotNull Builder args(final @NotNull ComponentBuilder<?, ?> arg) {
-      return this.arguments(arg);
-    }
-
-    /**
-     * Sets the translation args.
-     *
-     * @param args the translation args
-     * @return this builder
-     * @since 4.0.0
-     * @deprecated for removal since 4.15.0, use {@link #arguments(ComponentLike...)} instead
-     */
-    @Deprecated
-    @Contract("_ -> this")
-    @SuppressWarnings("checkstyle:GenericWhitespace")
-    default @NotNull Builder args(final @NotNull ComponentBuilder<?, ?>@NotNull... args) {
-      return this.arguments(args);
-    }
-
-    /**
-     * Sets the translation args.
-     *
-     * @param arg the translation arg
-     * @return this builder
-     * @since 4.0.0
-     * @deprecated for removal since 4.15.0, use {@link #arguments(ComponentLike...)} instead
-     */
-    @Deprecated
-    @Contract("_ -> this")
-    default @NotNull Builder args(final @NotNull Component arg) {
-      return this.arguments(arg);
-    }
-
-    /**
-     * Sets the translation args.
-     *
-     * <p>Non-{@link Component} arguments can be wrapped in {@link TranslationArgument}, or represented with a {@link TranslationArgumentLike}.</p>
-     *
-     * @param args the translation args
-     * @return this builder
-     * @since 4.0.0
-     * @deprecated for removal since 4.15.0, use {@link #arguments(ComponentLike...)} instead
-     */
-    @Deprecated
-    @Contract("_ -> this")
-    default @NotNull Builder args(final @NotNull ComponentLike@NotNull... args) {
-      return this.arguments(args);
-    }
-
-    /**
-     * Sets the translation args.
-     *
-     * <p>Non-{@link Component} arguments can be wrapped in {@link TranslationArgument}, or represented with a {@link TranslationArgumentLike}.</p>
-     *
-     * @param args the translation args
-     * @return this builder
-     * @since 4.0.0
-     * @deprecated for removal since 4.15.0, use {@link #arguments(List)} instead
-     */
-    @Deprecated
-    @Contract("_ -> this")
-    default @NotNull Builder args(final @NotNull List<? extends ComponentLike> args) {
-      return this.arguments(args);
-    }
+    Builder key(final String key);
 
     /**
      * Sets the translation args.
@@ -317,7 +187,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      * @since 4.15.0
      */
     @Contract("_ -> this")
-    @NotNull Builder arguments(final @NotNull ComponentLike@NotNull... args);
+    Builder arguments(final ComponentLike... args);
 
     /**
      * Sets the translation args.
@@ -329,7 +199,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      * @since 4.15.0
      */
     @Contract("_ -> this")
-    @NotNull Builder arguments(final @NotNull List<? extends ComponentLike> args);
+    Builder arguments(final List<? extends ComponentLike> args);
 
     /**
      * Sets the translation fallback text.
@@ -342,6 +212,6 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      * @sinceMinecraft 1.19.4
      */
     @Contract("_ -> this")
-    @NotNull Builder fallback(final @Nullable String fallback);
+    Builder fallback(final @Nullable String fallback);
   }
 }

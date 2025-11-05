@@ -23,10 +23,7 @@
  */
 package net.kyori.adventure.text;
 
-import java.util.stream.Stream;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Given a Minecraft selector, this component reads the NBT of the associated entity and displays that information.
@@ -43,14 +40,14 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.0.0
  * @sinceMinecraft 1.14
  */
-public interface EntityNBTComponent extends NBTComponent<EntityNBTComponent, EntityNBTComponent.Builder>, ScopedComponent<EntityNBTComponent> {
+public sealed interface EntityNBTComponent extends NBTComponent<EntityNBTComponent>, ScopedComponent<EntityNBTComponent> permits EntityNBTComponentImpl {
   /**
    * Gets the entity selector.
    *
    * @return the entity selector
    * @since 4.0.0
    */
-  @NotNull String selector();
+  String selector();
 
   /**
    * Sets the entity selector.
@@ -60,24 +57,17 @@ public interface EntityNBTComponent extends NBTComponent<EntityNBTComponent, Ent
    * @since 4.0.0
    */
   @Contract(pure = true)
-  @NotNull EntityNBTComponent selector(final @NotNull String selector);
+  EntityNBTComponent selector(final String selector);
 
   @Override
-  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.concat(
-      Stream.of(
-        ExaminableProperty.of("selector", this.selector())
-      ),
-      NBTComponent.super.examinableProperties()
-    );
-  }
+  Builder toBuilder();
 
   /**
    * An entity NBT component builder.
    *
    * @since 4.0.0
    */
-  interface Builder extends NBTComponentBuilder<EntityNBTComponent, Builder> {
+  sealed interface Builder extends NBTComponentBuilder<EntityNBTComponent, Builder> permits EntityNBTComponentImpl.BuilderImpl {
     /**
      * Sets the entity selector.
      *
@@ -86,6 +76,6 @@ public interface EntityNBTComponent extends NBTComponent<EntityNBTComponent, Ent
      * @since 4.0.0
      */
     @Contract("_ -> this")
-    @NotNull Builder selector(final @NotNull String selector);
+    Builder selector(final String selector);
   }
 }

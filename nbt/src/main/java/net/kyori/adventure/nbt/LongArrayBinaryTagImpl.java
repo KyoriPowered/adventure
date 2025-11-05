@@ -25,26 +25,23 @@ package net.kyori.adventure.nbt;
 
 import java.util.Arrays;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.PrimitiveIterator;
 import java.util.Spliterator;
 import java.util.function.LongConsumer;
 import java.util.stream.LongStream;
-import java.util.stream.Stream;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Debug;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
+@SuppressWarnings("ArrayRecordComponent") // We override equals/hashCode/toString.
 @Debug.Renderer(text = "\"long[\" + this.value.length + \"]\"", childrenArray = "this.value", hasChildren = "this.value.length > 0")
-final class LongArrayBinaryTagImpl extends ArrayBinaryTagImpl implements LongArrayBinaryTag {
-  final long[] value;
+record LongArrayBinaryTagImpl(long[] value) implements LongArrayBinaryTag {
 
   LongArrayBinaryTagImpl(final long[] value) {
     this.value = Arrays.copyOf(value, value.length);
   }
 
   @Override
-  public long@NotNull[] value() {
+  public long[] value() {
     return Arrays.copyOf(this.value, this.value.length);
   }
 
@@ -55,12 +52,12 @@ final class LongArrayBinaryTagImpl extends ArrayBinaryTagImpl implements LongArr
 
   @Override
   public long get(final int index) {
-    checkIndex(index, this.value.length);
+    ShadyPines.checkIndex(index, this.value.length);
     return this.value[index];
   }
 
   @Override
-  public PrimitiveIterator.@NotNull OfLong iterator() {
+  public PrimitiveIterator.OfLong iterator() {
     return new PrimitiveIterator.OfLong() {
       private int index;
 
@@ -80,33 +77,26 @@ final class LongArrayBinaryTagImpl extends ArrayBinaryTagImpl implements LongArr
   }
 
   @Override
-  public Spliterator.@NotNull OfLong spliterator() {
+  public Spliterator.OfLong spliterator() {
     return Arrays.spliterator(this.value);
   }
 
   @Override
-  public @NotNull LongStream stream() {
+  public LongStream stream() {
     return Arrays.stream(this.value);
   }
 
   @Override
-  public void forEachLong(final @NotNull LongConsumer action) {
-    for (int i = 0, length = this.value.length; i < length; i++) {
-      action.accept(this.value[i]);
+  public void forEachLong(final LongConsumer action) {
+    for (final long l : this.value) {
+      action.accept(l);
     }
   }
 
-  // to avoid copying array internally
-  static long[] value(final LongArrayBinaryTag tag) {
-    return (tag instanceof LongArrayBinaryTagImpl) ? ((LongArrayBinaryTagImpl) tag).value : tag.value();
-  }
-
   @Override
-  public boolean equals(final @Nullable Object other) {
-    if (this == other) return true;
-    if (other == null || this.getClass() != other.getClass()) return false;
-    final LongArrayBinaryTagImpl that = (LongArrayBinaryTagImpl) other;
-    return Arrays.equals(this.value, that.value);
+  public boolean equals(final Object o) {
+    if (!(o instanceof LongArrayBinaryTagImpl(long[] value1))) return false;
+    return Objects.deepEquals(this.value, value1);
   }
 
   @Override
@@ -115,7 +105,14 @@ final class LongArrayBinaryTagImpl extends ArrayBinaryTagImpl implements LongArr
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(ExaminableProperty.of("value", this.value));
+  public String toString() {
+    return "LongArrayBinaryTagImpl{" +
+      "value=" + Arrays.toString(this.value) +
+      '}';
+  }
+
+  // to avoid copying array internally
+  static long[] value(final LongArrayBinaryTag tag) {
+    return (tag instanceof LongArrayBinaryTagImpl(long[] value1)) ? value1 : tag.value();
   }
 }

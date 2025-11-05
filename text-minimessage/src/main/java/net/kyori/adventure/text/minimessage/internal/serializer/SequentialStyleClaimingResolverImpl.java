@@ -30,29 +30,21 @@ import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-final class SequentialStyleClaimingResolverImpl implements TagResolver.Sequential, SerializableResolver.Single {
-  private final @NotNull Set<String> names;
-  private final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler;
-  private final @NotNull StyleClaim<?> styleClaim;
-
-  SequentialStyleClaimingResolverImpl(final @NotNull Set<String> names, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler, final @NotNull StyleClaim<?> styleClaim) {
-    this.names = names;
-    this.handler = handler;
-    this.styleClaim = styleClaim;
-  }
-
+record SequentialStyleClaimingResolverImpl(Set<String> names, BiFunction<ArgumentQueue, Context, Tag> handler, @Nullable StyleClaim<?> styleClaim)
+  implements TagResolver, SerializableResolver.Single {
   @Override
-  public @Nullable Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) throws ParsingException {
-    if (!this.names.contains(name)) return null;
+  public @Nullable Tag resolve(final String name, final ArgumentQueue arguments, final Context ctx) throws ParsingException {
+    if (!this.names.contains(name)) {
+      return null;
+    }
 
     return this.handler.apply(arguments, ctx);
   }
 
   @Override
-  public boolean has(final @NotNull String name) {
+  public boolean has(final String name) {
     return this.names.contains(name);
   }
 

@@ -28,10 +28,10 @@ import java.util.function.Consumer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.flattener.ComponentFlattener;
 import net.kyori.adventure.util.Services;
-import org.jetbrains.annotations.NotNull;
 
 import static java.util.Objects.requireNonNull;
 
+@SuppressWarnings("ClassCanBeRecord")
 final class PlainTextComponentSerializerImpl implements PlainTextComponentSerializer {
   private static final ComponentFlattener DEFAULT_FLATTENER = ComponentFlattener.basic().toBuilder()
     .unknownMapper(component -> {
@@ -58,12 +58,12 @@ final class PlainTextComponentSerializerImpl implements PlainTextComponentSerial
   }
 
   @Override
-  public void serialize(final @NotNull StringBuilder sb, final @NotNull Component component) {
+  public void serialize(final StringBuilder sb, final Component component) {
     this.flattener.flatten(requireNonNull(component, "component"), sb::append);
   }
 
   @Override
-  public @NotNull Builder toBuilder() {
+  public Builder toBuilder() {
     return new BuilderImpl(this);
   }
 
@@ -80,13 +80,13 @@ final class PlainTextComponentSerializerImpl implements PlainTextComponentSerial
     }
 
     @Override
-    public PlainTextComponentSerializer.@NotNull Builder flattener(final @NotNull ComponentFlattener flattener) {
+    public PlainTextComponentSerializer.Builder flattener(final ComponentFlattener flattener) {
       this.flattener = requireNonNull(flattener, "flattener");
       return this;
     }
 
     @Override
-    public @NotNull PlainTextComponentSerializer build() {
+    public PlainTextComponentSerializer build() {
       return new PlainTextComponentSerializerImpl(this.flattener);
     }
   }

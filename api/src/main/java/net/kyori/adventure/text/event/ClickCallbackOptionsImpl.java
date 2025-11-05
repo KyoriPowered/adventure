@@ -25,46 +25,11 @@ package net.kyori.adventure.text.event;
 
 import java.time.Duration;
 import java.time.temporal.TemporalAmount;
-import java.util.stream.Stream;
-import net.kyori.adventure.internal.Internals;
-import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
 
 import static java.util.Objects.requireNonNull;
 
-final class ClickCallbackOptionsImpl implements ClickCallback.Options {
-  static final ClickCallback.Options DEFAULT = new ClickCallbackOptionsImpl.BuilderImpl().build();
-
-  private final int uses;
-  private final Duration lifetime;
-
-  ClickCallbackOptionsImpl(final int uses, final Duration lifetime) {
-    this.uses = uses;
-    this.lifetime = lifetime;
-  }
-
-  @Override
-  public int uses() {
-    return this.uses;
-  }
-
-  @Override
-  public @NotNull Duration lifetime() {
-    return this.lifetime;
-  }
-
-  @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("uses", this.uses),
-      ExaminableProperty.of("expiration", this.lifetime)
-    );
-  }
-
-  @Override
-  public String toString() {
-    return Internals.toString(this);
-  }
+record ClickCallbackOptionsImpl(int uses, Duration lifetime) implements ClickCallback.Options {
+  static final ClickCallback.Options DEFAULT = new BuilderImpl().build();
 
   static final class BuilderImpl implements Builder {
     private static final int DEFAULT_USES = 1;
@@ -77,25 +42,25 @@ final class ClickCallbackOptionsImpl implements ClickCallback.Options {
       this.lifetime = ClickCallback.DEFAULT_LIFETIME;
     }
 
-    BuilderImpl(final ClickCallback.@NotNull Options existing) {
+    BuilderImpl(final ClickCallback.Options existing) {
       this.uses = existing.uses();
       this.lifetime = existing.lifetime();
     }
 
     @Override
-    public ClickCallback.@NotNull Options build() {
+    public ClickCallback.Options build() {
       return new ClickCallbackOptionsImpl(this.uses, this.lifetime);
     }
 
     @Override
-    public @NotNull Builder uses(final int uses) {
+    public Builder uses(final int uses) {
       this.uses = uses;
       return this;
     }
 
     @Override
-    public @NotNull Builder lifetime(final @NotNull TemporalAmount lifetime) {
-      this.lifetime = lifetime instanceof Duration ? (Duration) lifetime : Duration.from(requireNonNull(lifetime, "lifetime"));
+    public Builder lifetime(final TemporalAmount lifetime) {
+      this.lifetime = lifetime instanceof final Duration duration ? duration : Duration.from(requireNonNull(lifetime, "lifetime"));
       return this;
     }
   }

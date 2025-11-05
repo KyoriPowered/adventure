@@ -28,7 +28,6 @@ import java.util.function.Supplier;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.NamedArgumentMap;
 import net.kyori.adventure.util.TriState;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
@@ -43,7 +42,7 @@ final class NamedArgumentMapImpl<T extends Tag.Argument> implements NamedArgumen
   }
 
   @Override
-  public boolean isPresent(final @NotNull String name) {
+  public boolean isPresent(final String name) {
     requireNonNull(name, "name");
     return this.args.containsKey(name);
   }
@@ -54,13 +53,13 @@ final class NamedArgumentMapImpl<T extends Tag.Argument> implements NamedArgumen
   }
 
   @Override
-  public Tag.@Nullable Argument get(final @NotNull String name) {
+  public Tag.@Nullable Argument get(final String name) {
     requireNonNull(name, "name");
     return this.args.get(name);
   }
 
   @Override
-  public @NotNull TriState flag(final @NotNull String name) {
+  public TriState flag(final String name) {
     final Tag.Argument argument = this.get(name);
     if (argument == null) {
       // The normal flag is not preset, so try the inverted flag
@@ -76,7 +75,7 @@ final class NamedArgumentMapImpl<T extends Tag.Argument> implements NamedArgumen
   }
 
   @Override
-  public boolean isFlagPresent(final @NotNull String name) {
+  public boolean isFlagPresent(final String name) {
     if (this.isPresent(name)) {
       return true;
     }
@@ -84,7 +83,7 @@ final class NamedArgumentMapImpl<T extends Tag.Argument> implements NamedArgumen
   }
 
   @Override
-  public Tag.@NotNull Argument orThrow(final @NotNull String name, final @NotNull String errorMessage) {
+  public Tag.Argument orThrow(final String name, final String errorMessage) {
     requireNonNull(errorMessage, "errorMessage");
     final Tag.Argument arg = this.get(name);
     if (arg == null) {
@@ -94,7 +93,7 @@ final class NamedArgumentMapImpl<T extends Tag.Argument> implements NamedArgumen
   }
 
   @Override
-  public Tag.@NotNull Argument orThrow(final @NotNull String name, final @NotNull Supplier<String> errorMessage) {
+  public Tag.Argument orThrow(final String name, final Supplier<String> errorMessage) {
     requireNonNull(errorMessage, "errorMessage");
     final Tag.Argument arg = this.get(name);
     if (arg == null) {

@@ -23,42 +23,14 @@
  */
 package net.kyori.adventure.text.minimessage.tag;
 
-import java.util.Arrays;
-import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.StyleBuilderApplicable;
-import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-final class StylingTagImpl extends AbstractTag implements Inserting {
-  private final StyleBuilderApplicable[] styles;
-
-  StylingTagImpl(final StyleBuilderApplicable[] styles) {
-    this.styles = styles;
-  }
+record StylingTagImpl(StyleBuilderApplicable[] styles) implements Inserting {
 
   @Override
-  public @NotNull Component value() {
+  public Component value() {
     return Component.text("", Style.style(this.styles));
-  }
-
-  @Override
-  public int hashCode() {
-    return 31 + Arrays.hashCode(this.styles);
-  }
-
-  @Override
-  public boolean equals(final @Nullable Object other) {
-    if (this == other) return true;
-    if (!(other instanceof StylingTagImpl)) return false;
-    final StylingTagImpl that = (StylingTagImpl) other;
-    return Arrays.equals(this.styles, that.styles);
-  }
-
-  @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(ExaminableProperty.of("styles", this.styles));
   }
 }

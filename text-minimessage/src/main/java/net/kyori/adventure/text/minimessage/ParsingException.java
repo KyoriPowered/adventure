@@ -23,9 +23,9 @@
  */
 package net.kyori.adventure.text.minimessage;
 
+import java.io.Serial;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * An exception thrown when an error occurs while parsing a MiniMessage string.
@@ -34,7 +34,7 @@ import org.jetbrains.annotations.Nullable;
  */
 @ApiStatus.NonExtendable
 public abstract class ParsingException extends RuntimeException {
-  private static final long serialVersionUID = 4502774670340827070L;
+  private static final @Serial long serialVersionUID = 4502774670340827070L;
 
   public static final int LOCATION_UNKNOWN = -1;
 
@@ -78,7 +78,7 @@ public abstract class ParsingException extends RuntimeException {
    * @return the original input message
    * @since 4.10.0
    */
-  public abstract @NotNull String originalText();
+  public abstract String originalText();
 
   /**
    * Get the detail message optionally passed with this exception.

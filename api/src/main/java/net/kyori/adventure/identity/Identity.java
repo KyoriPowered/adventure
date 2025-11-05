@@ -25,14 +25,10 @@ package net.kyori.adventure.identity;
 
 import java.util.Locale;
 import java.util.UUID;
-import java.util.stream.Stream;
 import net.kyori.adventure.Adventure;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.pointer.Pointer;
 import net.kyori.adventure.text.Component;
-import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * An identity used to track the sender of messages for the social interaction features
@@ -41,7 +37,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.0.0
  * @sinceMinecraft 1.16
  */
-public interface Identity extends Examinable, Identified {
+public sealed interface Identity extends Identified permits IdentityImpl, NilIdentity {
   /**
    * A pointer to a name.
    *
@@ -75,7 +71,7 @@ public interface Identity extends Examinable, Identified {
    * @return the {@code null} identity
    * @since 4.0.0
    */
-  static @NotNull Identity nil() {
+  static Identity nil() {
     return NilIdentity.INSTANCE;
   }
 
@@ -86,7 +82,7 @@ public interface Identity extends Examinable, Identified {
    * @return an identity
    * @since 4.0.0
    */
-  static @NotNull Identity identity(final @NotNull UUID uuid) {
+  static Identity identity(final UUID uuid) {
     if (uuid.equals(NilIdentity.NIL_UUID)) return NilIdentity.INSTANCE;
     return new IdentityImpl(uuid);
   }
@@ -97,15 +93,10 @@ public interface Identity extends Examinable, Identified {
    * @return the uuid
    * @since 4.0.0
    */
-  @NotNull UUID uuid();
+  UUID uuid();
 
   @Override
-  default @NotNull Identity identity() {
+  default Identity identity() {
     return this;
-  }
-
-  @Override
-  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(ExaminableProperty.of("uuid", this.uuid()));
   }
 }

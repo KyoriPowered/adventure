@@ -80,12 +80,6 @@ class BookTest {
   }
 
   @Test
-  void testRebuild() {
-    final Book book = Book.book(TITLE, AUTHOR, arrayOfPages(1));
-    assertEquals(book, book.toBuilder().build());
-  }
-
-  @Test
   void testBuild() {
     final Book b0 = Book.builder()
       .title(TITLE)

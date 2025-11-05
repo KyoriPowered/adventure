@@ -23,11 +23,8 @@
  */
 package net.kyori.adventure.text;
 
-import java.util.stream.Stream;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A component that can display NBT fetched from different locations, optionally trying to interpret the NBT as JSON
@@ -47,18 +44,24 @@ import org.jetbrains.annotations.Nullable;
  * platform for more info</p>
  *
  * @param <C> component type
- * @param <B> builder type
  * @since 4.0.0
  * @sinceMinecraft 1.14
  */
-public interface NBTComponent<C extends NBTComponent<C, B>, B extends NBTComponentBuilder<C, B>> extends BuildableComponent<C, B> {
+public sealed interface NBTComponent<C extends NBTComponent<C>> extends Component permits BlockNBTComponent, EntityNBTComponent, StorageNBTComponent {
+  /**
+   * The default value for {@link #interpret()}.
+   *
+   * @since 5.0.0
+   */
+  boolean INTERPRET_DEFAULT = false;
+
   /**
    * Gets the NBT path.
    *
    * @return the NBT path
    * @since 4.0.0
    */
-  @NotNull String nbtPath();
+  String nbtPath();
 
   /**
    * Sets the NBT path.
@@ -68,7 +71,7 @@ public interface NBTComponent<C extends NBTComponent<C, B>, B extends NBTCompone
    * @since 4.0.0
    */
   @Contract(pure = true)
-  @NotNull C nbtPath(final @NotNull String nbtPath);
+  C nbtPath(final String nbtPath);
 
   /**
    * Gets if we should be interpreting.
@@ -86,7 +89,7 @@ public interface NBTComponent<C extends NBTComponent<C, B>, B extends NBTCompone
    * @since 4.0.0
    */
   @Contract(pure = true)
-  @NotNull C interpret(final boolean interpret);
+  C interpret(final boolean interpret);
 
   /**
    * Gets the separator.
@@ -103,17 +106,8 @@ public interface NBTComponent<C extends NBTComponent<C, B>, B extends NBTCompone
    * @return the separator
    * @since 4.8.0
    */
-  @NotNull C separator(final @Nullable ComponentLike separator);
+  C separator(final @Nullable ComponentLike separator);
 
   @Override
-  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.concat(
-      Stream.of(
-        ExaminableProperty.of("nbtPath", this.nbtPath()),
-        ExaminableProperty.of("interpret", this.interpret()),
-        ExaminableProperty.of("separator", this.separator())
-      ),
-      BuildableComponent.super.examinableProperties()
-    );
-  }
+  NBTComponentBuilder<C, ? extends NBTComponentBuilder<C, ?>> toBuilder();
 }

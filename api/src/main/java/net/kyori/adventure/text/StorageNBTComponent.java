@@ -23,11 +23,8 @@
  */
 package net.kyori.adventure.text;
 
-import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Given a {@link Key}, this component reads the NBT of the associated command storage and displays that information.
@@ -44,14 +41,14 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.0.0
  * @sinceMinecraft 1.15
  */
-public interface StorageNBTComponent extends NBTComponent<StorageNBTComponent, StorageNBTComponent.Builder>, ScopedComponent<StorageNBTComponent> {
+public sealed interface StorageNBTComponent extends NBTComponent<StorageNBTComponent>, ScopedComponent<StorageNBTComponent> permits StorageNBTComponentImpl {
   /**
    * Gets the NBT storage's ID.
    *
    * @return the NBT storage
    * @since 4.0.0
    */
-  @NotNull Key storage();
+  Key storage();
 
   /**
    * Sets the NBT storage.
@@ -61,24 +58,17 @@ public interface StorageNBTComponent extends NBTComponent<StorageNBTComponent, S
    * @since 4.0.0
    */
   @Contract(pure = true)
-  @NotNull StorageNBTComponent storage(final @NotNull Key storage);
+  StorageNBTComponent storage(final Key storage);
 
   @Override
-  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.concat(
-      Stream.of(
-        ExaminableProperty.of("storage", this.storage())
-      ),
-      NBTComponent.super.examinableProperties()
-    );
-  }
+  Builder toBuilder();
 
   /**
    * A command storage NBT component builder.
    *
    * @since 4.0.0
    */
-  interface Builder extends NBTComponentBuilder<StorageNBTComponent, Builder> {
+  sealed interface Builder extends NBTComponentBuilder<StorageNBTComponent, Builder> permits StorageNBTComponentImpl.BuilderImpl {
     /**
      * Sets the NBT storage.
      *
@@ -87,6 +77,6 @@ public interface StorageNBTComponent extends NBTComponent<StorageNBTComponent, S
      * @since 4.0.0
      */
     @Contract("_ -> this")
-    @NotNull Builder storage(final @NotNull Key storage);
+    Builder storage(final Key storage);
   }
 }

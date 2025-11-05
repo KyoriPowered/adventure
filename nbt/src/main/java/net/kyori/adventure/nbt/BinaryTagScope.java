@@ -31,18 +31,16 @@ import java.io.IOException;
  * @since 4.4.0
  */
 interface BinaryTagScope extends AutoCloseable {
+  /**
+   * A no-op depth tracker.
+   *
+   * @return the depth tracker
+   * @since 4.25.0
+   */
+  static BinaryTagScope noOp() {
+    return NoOpBinaryTagScope.INSTANCE;
+  }
+
   @Override
   void close() throws IOException;
-
-  final class NoOp implements BinaryTagScope {
-    static final NoOp INSTANCE = new NoOp();
-
-    private NoOp() {
-    }
-
-    @Override
-    public void close() {
-
-    }
-  }
 }

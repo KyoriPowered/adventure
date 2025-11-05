@@ -23,14 +23,12 @@
  */
 package net.kyori.adventure.nbt;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * An array binary tag.
  *
  * @since 4.2.0
  */
-public interface ArrayBinaryTag extends BinaryTag {
+public sealed interface ArrayBinaryTag extends BinaryTag permits ByteArrayBinaryTag, IntArrayBinaryTag, LongArrayBinaryTag {
   @Override
-  @NotNull BinaryTagType<? extends ArrayBinaryTag> type();
+  BinaryTagType<? extends ArrayBinaryTag> type();
 }
