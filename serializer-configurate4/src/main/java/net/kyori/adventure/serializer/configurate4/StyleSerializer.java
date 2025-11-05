@@ -61,6 +61,7 @@ final class StyleSerializer implements TypeSerializer<Style> {
   private static final TextDecoration[] DECORATIONS = TextDecoration.values();
 
   static final TypeToken<HoverEvent.Action<?>> HOVER_EVENT_ACTION_TYPE = new TypeToken<HoverEvent.Action<?>>() {};
+  static final TypeToken<ClickEvent.Action<?>> CLICK_EVENT_ACTION_TYPE = new TypeToken<ClickEvent.Action<?>>() {};
 
   private StyleSerializer() {
   }
@@ -100,7 +101,7 @@ final class StyleSerializer implements TypeSerializer<Style> {
 
     final ConfigurationNode clickEvent = value.node(CLICK_EVENT_CAMEL);
     if (!clickEvent.virtual()) {
-      final ClickEvent.Action<?> action = nonNull(clickEvent.node(CLICK_EVENT_ACTION).get(ClickEvent.Action.class), "click event action");
+      final ClickEvent.Action<?> action = nonNull(clickEvent.node(CLICK_EVENT_ACTION).get(CLICK_EVENT_ACTION_TYPE), "click event action");
       switch (action) {
         case ClickEvent.Action.ChangePage ignored -> {
           ConfigurationNode page;
