@@ -223,4 +223,7 @@ public sealed interface ScopedComponent<C extends Component> extends Component p
   default C font(final @Nullable Key key) {
     return (C) Component.super.font(key);
   }
+
+  @Override
+  ComponentBuilder<C, ?> toBuilder();
 }

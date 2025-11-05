@@ -37,6 +37,14 @@ public abstract class Listenable<L> {
   private final List<L> listeners = new CopyOnWriteArrayList<>();
 
   /**
+   * Creates a new listenable.
+   *
+   * @since 4.0.0
+   */
+  public Listenable() {
+  }
+
+  /**
    * Process an action for each listener.
    *
    * @param consumer the consumer
