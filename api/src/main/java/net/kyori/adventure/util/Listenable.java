@@ -36,9 +36,6 @@ import java.util.function.Consumer;
 public abstract class Listenable<L> {
   private final List<L> listeners = new CopyOnWriteArrayList<>();
 
-  public Listenable() {
-  }
-
   /**
    * Process an action for each listener.
    *

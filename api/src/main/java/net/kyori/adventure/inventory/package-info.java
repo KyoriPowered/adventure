@@ -24,4 +24,7 @@
 /**
  * Content that works on inventory items.
  */
+@NullMarked
 package net.kyori.adventure.inventory;
+
+import org.jspecify.annotations.NullMarked;

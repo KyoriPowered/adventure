@@ -24,4 +24,7 @@
 /**
  * Serialization to ANSI escape sequences. Does not support deserialization.
  */
+@NullMarked
 package net.kyori.adventure.text.serializer.ansi;
+
+import org.jspecify.annotations.NullMarked;

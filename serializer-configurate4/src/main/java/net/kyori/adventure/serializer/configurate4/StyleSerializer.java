@@ -28,9 +28,7 @@ import java.lang.reflect.Type;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.ClickEventImpl;
 import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.event.HoverEventImpl;
 import net.kyori.adventure.text.format.ShadowColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
@@ -58,7 +56,7 @@ final class StyleSerializer implements TypeSerializer<Style> {
 
   private static final TextDecoration[] DECORATIONS = TextDecoration.values();
 
-  static final TypeToken<HoverEventImpl.Action<?>> HOVER_EVENT_ACTION_TYPE = new TypeToken<HoverEventImpl.Action<?>>() {};
+  static final TypeToken<HoverEvent.Action<?>> HOVER_EVENT_ACTION_TYPE = new TypeToken<HoverEvent.Action<?>>() {};
 
   private StyleSerializer() {
   }
@@ -71,15 +69,15 @@ final class StyleSerializer implements TypeSerializer<Style> {
 
     final Style.Builder builder = Style.style();
 
-    final @Nullable Key font = value.node(FONT).get(Key.class);
+    final Key font = value.node(FONT).get(Key.class);
     if (font != null) {
       builder.font(font);
     }
-    final @Nullable TextColor color = value.node(COLOR).get(TextColor.class);
+    final TextColor color = value.node(COLOR).get(TextColor.class);
     if (color != null) {
       builder.color(color);
     }
-    final @Nullable ShadowColor shadowColor = value.node(SHADOW_COLOR).get(ShadowColor.class);
+    final ShadowColor shadowColor = value.node(SHADOW_COLOR).get(ShadowColor.class);
     if (shadowColor != null) {
       builder.shadowColor(shadowColor);
     }
@@ -91,39 +89,39 @@ final class StyleSerializer implements TypeSerializer<Style> {
       }
     }
 
-    final @Nullable String insertion = value.node(INSERTION).getString();
+    final String insertion = value.node(INSERTION).getString();
     if (insertion != null) {
       builder.insertion(insertion);
     }
 
     final ConfigurationNode clickEvent = value.node(CLICK_EVENT_CAMEL);
     if (!clickEvent.virtual()) {
-      final ClickEventImpl.Action action = nonNull(clickEvent.node(CLICK_EVENT_ACTION).get(ClickEventImpl.Action.class), "click event action");
-      builder.clickEvent(ClickEventImpl.clickEvent(action, nonNull(clickEvent.node(CLICK_EVENT_VALUE).getString(), "click event value")));
+      final ClickEvent.Action<?> action = nonNull(clickEvent.node(CLICK_EVENT_ACTION).get(ClickEvent.Action.class), "click event action");
+      builder.clickEvent(ClickEvent.clickEvent(action, nonNull(clickEvent.node(CLICK_EVENT_VALUE).getString(), "click event value")));
     }
 
     final ConfigurationNode hoverEvent = value.node(HOVER_EVENT_CAMEL);
     if (!hoverEvent.virtual()) {
-      final HoverEventImpl.Action<?> action = hoverEvent.node(HOVER_EVENT_ACTION).get(HOVER_EVENT_ACTION_TYPE);
+      final HoverEvent.Action<?> action = hoverEvent.node(HOVER_EVENT_ACTION).get(HOVER_EVENT_ACTION_TYPE);
       final ConfigurationNode contents = hoverEvent.node(HOVER_EVENT_CONTENTS);
       if (contents.virtual()) {
         final Component legacyValue = hoverEvent.node(HOVER_EVENT_VALUE).get(Component.class);
         if (legacyValue == null) {
           throw new SerializationException("No modern contents or legacy value present for hover event");
         }
-        if (action == HoverEventImpl.Action.SHOW_TEXT) {
+        if (action == HoverEvent.Action.SHOW_TEXT) {
           builder.hoverEvent(HoverEvent.showText(legacyValue));
         } else {
           throw new SerializationException("Unable to deserialize legacy hover event of type " + action);
         }
         // TODO: Legacy hover event
       } else {
-        if (action == HoverEventImpl.Action.SHOW_TEXT) {
+        if (action == HoverEvent.Action.SHOW_TEXT) {
           builder.hoverEvent(HoverEvent.showText(nonNull(contents.get(Component.class), "hover event text contents")));
-        } else if (action == HoverEventImpl.Action.SHOW_ENTITY) {
-          builder.hoverEvent(HoverEvent.showEntity(nonNull(contents.get(HoverEventImpl.ShowEntity.class), "hover event show entity contents")));
-        } else if (action == HoverEventImpl.Action.SHOW_ITEM) {
-          builder.hoverEvent(HoverEvent.showItem(nonNull(contents.get(HoverEventImpl.ShowItem.class), "hover event show item contents")));
+        } else if (action == HoverEvent.Action.SHOW_ENTITY) {
+          builder.hoverEvent(HoverEvent.showEntity(nonNull(contents.get(HoverEvent.ShowEntity.class), "hover event show entity contents")));
+        } else if (action == HoverEvent.Action.SHOW_ITEM) {
+          builder.hoverEvent(HoverEvent.showItem(nonNull(contents.get(HoverEvent.ShowItem.class), "hover event show item contents")));
         } else {
           throw new SerializationException("Unsupported hover event action " + action);
         }
@@ -153,11 +151,11 @@ final class StyleSerializer implements TypeSerializer<Style> {
     value.node(INSERTION).set(obj.insertion());
 
     final ConfigurationNode clickNode = value.node(CLICK_EVENT_CAMEL);
-    final ClickEvent clickEvent = obj.clickEvent();
+    final ClickEvent<?> clickEvent = obj.clickEvent();
     if (clickEvent == null) {
       clickNode.set(null);
     } else {
-      clickNode.node(CLICK_EVENT_ACTION).set(ClickEventImpl.Action.class, clickEvent.action());
+      clickNode.node(CLICK_EVENT_ACTION).set(ClickEvent.Action.class, clickEvent.action());
       clickNode.node(CLICK_EVENT_VALUE).set(clickEvent.value());
     }
 
@@ -168,12 +166,12 @@ final class StyleSerializer implements TypeSerializer<Style> {
       final HoverEvent<?> event = obj.hoverEvent();
       hoverNode.node(HOVER_EVENT_ACTION).set(HOVER_EVENT_ACTION_TYPE, event.action());
       final ConfigurationNode contentsNode = hoverNode.node(HOVER_EVENT_CONTENTS);
-      if (event.action() == HoverEventImpl.Action.SHOW_TEXT) {
+      if (event.action() == HoverEvent.Action.SHOW_TEXT) {
         contentsNode.set(Component.class, (Component) event.value());
-      } else if (event.action() == HoverEventImpl.Action.SHOW_ENTITY) {
-        contentsNode.set(HoverEventImpl.ShowEntity.class, (HoverEventImpl.ShowEntity) event.value());
-      } else if (event.action() == HoverEventImpl.Action.SHOW_ITEM) {
-        contentsNode.set(HoverEventImpl.ShowItem.class, (HoverEventImpl.ShowItem) event.value());
+      } else if (event.action() == HoverEvent.Action.SHOW_ENTITY) {
+        contentsNode.set(HoverEvent.ShowEntity.class, (HoverEvent.ShowEntity) event.value());
+      } else if (event.action() == HoverEvent.Action.SHOW_ITEM) {
+        contentsNode.set(HoverEvent.ShowItem.class, (HoverEvent.ShowItem) event.value());
       }
     }
   }

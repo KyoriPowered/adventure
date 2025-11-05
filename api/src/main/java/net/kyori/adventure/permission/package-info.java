@@ -24,4 +24,7 @@
 /**
  * {@link net.kyori.adventure.util.TriState} based permission checking.
  */
+@NullMarked
 package net.kyori.adventure.permission;
+
+import org.jspecify.annotations.NullMarked;

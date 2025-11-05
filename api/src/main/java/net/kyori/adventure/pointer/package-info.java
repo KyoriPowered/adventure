@@ -24,4 +24,7 @@
 /**
  * Key/Value based pointers to information.
  */
+@NullMarked
 package net.kyori.adventure.pointer;
+
+import org.jspecify.annotations.NullMarked;

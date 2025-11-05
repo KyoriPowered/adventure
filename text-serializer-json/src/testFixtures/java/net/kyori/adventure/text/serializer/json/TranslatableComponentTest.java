@@ -27,9 +27,7 @@ import java.util.UUID;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.ClickEventImpl;
 import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.event.HoverEventImpl;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import org.junit.jupiter.api.Test;
@@ -77,7 +75,7 @@ final class TranslatableComponentTest extends SerializerTest {
         KEY,
         Component.text().content(name)
           .clickEvent(ClickEvent.suggestCommand(command))
-          .hoverEvent(HoverEvent.showEntity(HoverEventImpl.ShowEntity.showEntity(
+          .hoverEvent(HoverEvent.showEntity(HoverEvent.ShowEntity.showEntity(
             Key.key("minecraft", "player"),
             id,
             Component.text(name)
@@ -90,11 +88,11 @@ final class TranslatableComponentTest extends SerializerTest {
         json.add(ComponentTreeConstants.TRANSLATE_WITH, array(with -> with.add(object(item -> {
           item.addProperty(ComponentTreeConstants.TEXT, name);
           item.add(ComponentTreeConstants.CLICK_EVENT_SNAKE, object(event -> {
-            event.addProperty(ComponentTreeConstants.CLICK_EVENT_ACTION, name(ClickEventImpl.Action.SUGGEST_COMMAND));
+            event.addProperty(ComponentTreeConstants.CLICK_EVENT_ACTION, name(ClickEvent.Action.SUGGEST_COMMAND));
             event.addProperty(ComponentTreeConstants.CLICK_EVENT_COMMAND, command);
           }));
           item.add(ComponentTreeConstants.HOVER_EVENT_SNAKE, object(event -> {
-            event.addProperty(ComponentTreeConstants.HOVER_EVENT_ACTION, name(HoverEventImpl.Action.SHOW_ENTITY));
+            event.addProperty(ComponentTreeConstants.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ENTITY));
             event.addProperty(ComponentTreeConstants.SHOW_ENTITY_ID, "minecraft:player");
             event.add(ComponentTreeConstants.SHOW_ENTITY_UUID, array(arr -> {
               arr.add(-351136121);

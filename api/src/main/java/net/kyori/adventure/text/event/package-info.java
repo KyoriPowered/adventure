@@ -24,4 +24,7 @@
 /**
  * Events that occur when players interact with components.
  */
+@NullMarked
 package net.kyori.adventure.text.event;
+
+import org.jspecify.annotations.NullMarked;

@@ -529,6 +529,14 @@ public final class BinaryTagIO {
    */
   public static abstract class Compression {
     /**
+     * Constructs a new {@link Compression} instance.
+     *
+     * @since 4.4.0
+     */
+    public Compression() {
+    }
+
+    /**
      * No compression.
      *
      * @since 4.4.0

@@ -25,4 +25,7 @@
  * Parser nodes.
  */
 @org.jetbrains.annotations.ApiStatus.Internal
+@NullMarked
 package net.kyori.adventure.text.minimessage.internal.parser.node;
+
+import org.jspecify.annotations.NullMarked;

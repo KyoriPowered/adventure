@@ -28,4 +28,7 @@
  * Some elements may be promoted to public API based on user interest.</p>
  */
 @org.jetbrains.annotations.ApiStatus.Internal
+@NullMarked
 package net.kyori.adventure.text.minimessage.internal;
+
+import org.jspecify.annotations.NullMarked;

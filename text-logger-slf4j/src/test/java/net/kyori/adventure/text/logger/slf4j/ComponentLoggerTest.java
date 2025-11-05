@@ -28,6 +28,7 @@ import com.github.valfirst.slf4jtest.TestLogger;
 import com.github.valfirst.slf4jtest.TestLoggerFactory;
 import com.github.valfirst.slf4jtest.TestLoggerFactoryExtension;
 import com.google.common.collect.ImmutableList;
+import java.io.Serial;
 import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -123,7 +124,7 @@ public class ComponentLoggerTest {
   }
 
   static class RichTestException extends Exception implements ComponentMessageThrowable {
-    private static final long serialVersionUID = -1l;
+    private static final @Serial long serialVersionUID = -1L;
 
     private final Component richMessage;
 

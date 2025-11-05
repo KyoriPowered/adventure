@@ -119,7 +119,7 @@ record ClickEventImpl<T extends ClickEvent.Payload>(Action<T> action, Payload pa
 
     static final class ShowDialogImpl extends AbstractAction implements Action.ShowDialog {
       private ShowDialogImpl() {
-        super("show_dialog", true, Payload.Dialog.class);
+        super("show_dialog", false, Payload.Dialog.class);
       }
     }
 

@@ -113,7 +113,7 @@ final class StyleSerializer extends TypeAdapter<Style> {
     ).nullSafe();
   }
 
-  private final net.kyori.adventure.text.serializer.json.LegacyHoverEventSerializer legacyHover;
+  private final net.kyori.adventure.text.serializer.json.@Nullable LegacyHoverEventSerializer legacyHover;
   private final boolean emitValueFieldHover;
   private final boolean emitCamelCaseHover;
   private final boolean emitSnakeCaseHover;
@@ -210,26 +210,28 @@ final class StyleSerializer extends TypeAdapter<Style> {
         }
         if (action != null && action.readable()) {
           switch (action) {
-            case OPEN_URL -> {
+            case ClickEvent.Action.OpenUrl ignored -> {
               if (value != null) style.clickEvent(ClickEvent.openUrl(value));
             }
-            case RUN_COMMAND -> {
+            case ClickEvent.Action.RunCommand ignored -> {
               if (value != null) style.clickEvent(ClickEvent.runCommand(value));
             }
-            case SUGGEST_COMMAND -> {
+            case ClickEvent.Action.SuggestCommand ignored -> {
               if (value != null) style.clickEvent(ClickEvent.suggestCommand(value));
             }
-            case CHANGE_PAGE -> {
+            case ClickEvent.Action.ChangePage ignored -> {
               if (page != null) style.clickEvent(ClickEvent.changePage(page));
             }
-            case COPY_TO_CLIPBOARD -> {
+            case ClickEvent.Action.CopyToClipboard ignored -> {
               if (value != null) style.clickEvent(ClickEvent.copyToClipboard(value));
             }
-            case CUSTOM -> {
+            case ClickEvent.Action.Custom ignored -> {
               if (key != null && value != null) style.clickEvent(ClickEvent.custom(key, value));
             }
             // Not readable.
-            case SHOW_DIALOG, OPEN_FILE -> {
+            case ClickEvent.Action.ShowDialog ignored -> {
+            }
+            case ClickEvent.Action.OpenFile ignored -> {
             }
           }
         }
@@ -245,10 +247,10 @@ final class StyleSerializer extends TypeAdapter<Style> {
           @SuppressWarnings("unchecked")
           final HoverEvent.Action<Object> action = this.gson.fromJson(serializedAction, SerializerFactory.HOVER_ACTION_TYPE);
           if (action.readable()) {
-            final @Nullable Object value;
+            final Object value;
             final Class<?> actionType = action.type();
             if (hoverEventObject.has(HOVER_EVENT_CONTENTS)) {
-              final @Nullable JsonElement rawValue = hoverEventObject.get(HOVER_EVENT_CONTENTS);
+              final JsonElement rawValue = hoverEventObject.get(HOVER_EVENT_CONTENTS);
               if (GsonHacks.isNullOrEmpty(rawValue)) {
                 if (this.strictEventValues) {
                   throw ComponentSerializerImpl.notSureHowToDeserialize(rawValue);
@@ -306,7 +308,7 @@ final class StyleSerializer extends TypeAdapter<Style> {
   private Object legacyHoverEventContents(final HoverEvent.Action<?> action, final Component rawValue) {
     if (action == HoverEvent.Action.SHOW_TEXT) {
       return rawValue; // Passthrough -- no serialization needed
-    } else if (this.legacyHover != null) {
+    } else {
       try {
         if (action == HoverEvent.Action.SHOW_ENTITY) {
           return this.legacyHover.deserializeShowEntity(rawValue, this.decoder());
@@ -343,27 +345,27 @@ final class StyleSerializer extends TypeAdapter<Style> {
       }
     }
 
-    final @Nullable TextColor color = value.color();
+    final TextColor color = value.color();
     if (color != null) {
       out.name(COLOR);
       this.gson.toJson(color, SerializerFactory.COLOR_TYPE, out);
     }
 
-    final @Nullable ShadowColor shadowColor = value.shadowColor();
+    final ShadowColor shadowColor = value.shadowColor();
     if (shadowColor != null && this.emitShadowColor) {
       out.name(SHADOW_COLOR);
       this.gson.toJson(shadowColor, SerializerFactory.SHADOW_COLOR_TYPE, out);
     }
 
-    final @Nullable String insertion = value.insertion();
+    final String insertion = value.insertion();
     if (insertion != null) {
       out.name(INSERTION);
       out.value(insertion);
     }
 
-    final @Nullable ClickEvent clickEvent = value.clickEvent();
+    final ClickEvent<?> clickEvent = value.clickEvent();
     if (clickEvent != null) {
-      final ClickEvent.Action action = clickEvent.action();
+      final ClickEvent.Action<?> action = clickEvent.action();
 
       if (this.emitSnakeCaseClick) {
         out.name(CLICK_EVENT_SNAKE);
@@ -377,16 +379,12 @@ final class StyleSerializer extends TypeAdapter<Style> {
           switch (payload) {
             case ClickEvent.Payload.Text text -> {
               switch (action) {
-                case OPEN_URL:
-                  out.name(CLICK_EVENT_URL);
-                  break;
-                case RUN_COMMAND:
-                case SUGGEST_COMMAND:
-                  out.name(CLICK_EVENT_COMMAND);
-                  break;
-                case COPY_TO_CLIPBOARD:
-                  out.name(CLICK_EVENT_VALUE);
-                  break;
+                case ClickEvent.Action.OpenUrl ignored -> out.name(CLICK_EVENT_URL);
+                case ClickEvent.Action.RunCommand ignored -> out.name(CLICK_EVENT_COMMAND);
+                case ClickEvent.Action.SuggestCommand ignored -> out.name(CLICK_EVENT_COMMAND);
+                case ClickEvent.Action.CopyToClipboard ignored -> out.name(CLICK_EVENT_VALUE);
+                default -> {
+                }
               }
               String payloadValue = text.value();
               if (action == ClickEvent.Action.OPEN_URL && this.emitClickUrlHttps && !StyleSerializer.isValidUrlScheme(payloadValue)) {
@@ -431,7 +429,7 @@ final class StyleSerializer extends TypeAdapter<Style> {
       }
     }
 
-    final @Nullable HoverEvent<?> hoverEvent = value.hoverEvent();
+    final HoverEvent<?> hoverEvent = value.hoverEvent();
     if (hoverEvent != null && (((this.emitSnakeCaseHover || this.emitCamelCaseHover) && hoverEvent.action() != HoverEvent.Action.SHOW_ACHIEVEMENT) || this.emitValueFieldHover)) {
       final HoverEvent.Action<?> action = hoverEvent.action();
 
@@ -491,7 +489,7 @@ final class StyleSerializer extends TypeAdapter<Style> {
       }
     }
 
-    final @Nullable Key font = value.font();
+    final Key font = value.font();
     if (font != null) {
       out.name(FONT);
       this.gson.toJson(font, SerializerFactory.KEY_TYPE, out);

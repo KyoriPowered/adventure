@@ -25,6 +25,7 @@ package net.kyori.adventure.text.minimessage.internal.parser;
 
 import java.util.List;
 import java.util.Objects;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Represents a token for the lexer.
@@ -36,7 +37,7 @@ public final class Token {
   private final int endIndex;
   private final TokenType type;
 
-  private List<Token> childTokens = null;
+  private @Nullable List<Token> childTokens = null;
 
   /**
    * Creates a new token.
@@ -88,7 +89,7 @@ public final class Token {
    * @return the child tokens
    * @since 4.10.0
    */
-  public List<Token> childTokens() {
+  public @Nullable List<Token> childTokens() {
     return this.childTokens;
   }
 

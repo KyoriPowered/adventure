@@ -3,6 +3,7 @@
  */
 module net.kyori.adventure.text.serializer.commons {
   requires transitive org.jetbrains.annotations;
+  requires transitive org.jspecify;
 
   exports net.kyori.adventure.text.serializer.commons;
 }

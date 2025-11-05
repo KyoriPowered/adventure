@@ -42,7 +42,7 @@ final class TranslationArgumentTypeSerializer implements TypeSerializer<Translat
     return switch (node.rawScalar()) {
       case Boolean bool -> TranslationArgument.bool(bool);
       case Number number -> TranslationArgument.numeric(number);
-      default -> TranslationArgument.component(node.require(Component.class));
+      case null, default -> TranslationArgument.component(node.require(Component.class));
     };
   }
 

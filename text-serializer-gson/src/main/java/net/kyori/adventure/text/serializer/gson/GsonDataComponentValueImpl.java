@@ -26,10 +26,7 @@ package net.kyori.adventure.text.serializer.gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import java.util.Objects;
-import java.util.stream.Stream;
-import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.event.DataComponentValue;
-import net.kyori.examination.ExaminableProperty;
 import org.jspecify.annotations.Nullable;
 
 sealed class GsonDataComponentValueImpl implements GsonDataComponentValue {
@@ -45,15 +42,10 @@ sealed class GsonDataComponentValueImpl implements GsonDataComponentValue {
   }
 
   @Override
-  public Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("element", this.element)
-    );
-  }
-
-  @Override
   public String toString() {
-    return Internals.toString(this);
+    return "GsonDataComponentValueImpl{" +
+      "element=" + this.element +
+      '}';
   }
 
   @Override

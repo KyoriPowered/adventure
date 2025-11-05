@@ -60,7 +60,7 @@ final class TextColorSerializer extends ScalarSerializer<TextColor> {
   @Override
   public Object serialize(final TextColor item, final Predicate<Class<?>> typeSupported) {
     if (item instanceof NamedTextColor namedTextColor) { // TODO: Downsampling
-      return NamedTextColor.NAMES.key(namedTextColor);
+      return namedTextColor.name();
     } else {
       return item.asHexString();
     }

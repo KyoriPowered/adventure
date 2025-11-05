@@ -29,14 +29,14 @@ import java.util.HashMap;
 import java.util.Map;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
-import net.kyori.adventure.text.event.HoverEventImpl;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
 
-final class HoverEventShowItemSerializer implements TypeSerializer<HoverEventImpl.ShowItem> {
+final class HoverEventShowItemSerializer implements TypeSerializer<HoverEvent.ShowItem> {
   static final HoverEventShowItemSerializer INSTANCE = new HoverEventShowItemSerializer();
 
   private static final TypeToken<Map<Key, ConfigurateDataComponentValue>> COMPONENT_MAP_TYPE = new TypeToken<Map<Key, ConfigurateDataComponentValue>>() {
@@ -46,7 +46,7 @@ final class HoverEventShowItemSerializer implements TypeSerializer<HoverEventImp
   }
 
   @Override
-  public HoverEventImpl.ShowItem deserialize(final Type type, final ConfigurationNode value) throws SerializationException {
+  public HoverEvent.ShowItem deserialize(final Type type, final ConfigurationNode value) throws SerializationException {
     final Key id = value.node(ComponentTreeConstants.SHOW_ITEM_ID).get(Key.class);
     if (id == null) {
       throw new SerializationException("An id is required to deserialize the show_item hover event");
@@ -56,17 +56,17 @@ final class HoverEventShowItemSerializer implements TypeSerializer<HoverEventImp
     if (!components.virtual()) {
       final Map<Key, ConfigurateDataComponentValue> componentsMap = components.require(COMPONENT_MAP_TYPE);
 
-      return HoverEventImpl.ShowItem.showItem(id, count, new HashMap<>(componentsMap));
+      return HoverEvent.ShowItem.showItem(id, count, new HashMap<>(componentsMap));
     } else {
       // legacy (pre-1.20.5)
       @SuppressWarnings("deprecation")
       final String tag = value.node(ComponentTreeConstants.SHOW_ITEM_TAG).getString();
-      return HoverEventImpl.ShowItem.showItem(id, count, tag == null ? null : BinaryTagHolder.binaryTagHolder(tag));
+      return HoverEvent.ShowItem.showItem(id, count, tag == null ? null : BinaryTagHolder.binaryTagHolder(tag));
     }
   }
 
   @Override
-  public void serialize(final Type type, final HoverEventImpl.@Nullable ShowItem obj, final ConfigurationNode value) throws SerializationException {
+  public void serialize(final Type type, final HoverEvent.@Nullable ShowItem obj, final ConfigurationNode value) throws SerializationException {
     if (obj == null) {
       value.set(null);
       return;

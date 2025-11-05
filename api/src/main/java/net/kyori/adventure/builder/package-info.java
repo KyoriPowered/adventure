@@ -24,4 +24,7 @@
 /**
  * Common builder-related gizmos.
  */
+@NullMarked
 package net.kyori.adventure.builder;
+
+import org.jspecify.annotations.NullMarked;

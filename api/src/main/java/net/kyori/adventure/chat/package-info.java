@@ -24,4 +24,7 @@
 /**
  * Chat-related data.
  */
+@NullMarked
 package net.kyori.adventure.chat;
+
+import org.jspecify.annotations.NullMarked;

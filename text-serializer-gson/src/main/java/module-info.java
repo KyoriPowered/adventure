@@ -1,12 +1,9 @@
-import org.jspecify.annotations.NullMarked;
-
 /**
  * Gson based serialization and deserialization.
  */
-@NullMarked
 module net.kyori.adventure.text.serializer.gson {
   requires transitive net.kyori.adventure.text.serializer.json;
-  requires gson;
+  requires com.google.gson;
   requires net.kyori.adventure.text.serializer.commons;
   requires static com.google.auto.service;
 

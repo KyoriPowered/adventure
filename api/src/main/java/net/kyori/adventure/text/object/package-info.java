@@ -24,4 +24,7 @@
 /**
  * Types related to {@link net.kyori.adventure.text.ObjectComponent}.
  */
+@NullMarked
 package net.kyori.adventure.text.object;
+
+import org.jspecify.annotations.NullMarked;

@@ -47,9 +47,9 @@ import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-record ComponentFlattenerImpl(InheritanceAwareMap<Component, Handler> flatteners, Function<Component, String> unknownHandler, int maxNestedDepth) implements ComponentFlattener {
+record ComponentFlattenerImpl(InheritanceAwareMap<Component, Handler> flatteners, @Nullable Function<Component, String> unknownHandler, int maxNestedDepth) implements ComponentFlattener {
   static final ComponentFlattener BASIC = new BuilderImpl()
-    .mapper(KeybindComponent.class, component -> component.keybind()) // IntelliJ is wrong here, this is fine
+    .mapper(KeybindComponent.class, component -> component.keybind())
     .mapper(SelectorComponent.class, SelectorComponent::pattern)
     .mapper(TextComponent.class, TextComponent::content)
     .mapper(TranslatableComponent.class, component -> {
@@ -60,7 +60,7 @@ record ComponentFlattenerImpl(InheritanceAwareMap<Component, Handler> flatteners
       final ObjectContents contents = component.contents();
       if (contents instanceof final SpriteObjectContents spriteContents) {
         final Key atlas = spriteContents.atlas();
-        return String.format("[%s:%s]", spriteContents.sprite().asMinimalString(), !atlas.equals(SpriteObjectContents.DEFAULT_ATLAS) ? "@" + atlas.asMinimalString() : "");
+        return String.format("[%s%s]", spriteContents.sprite().asMinimalString(), !atlas.equals(SpriteObjectContents.DEFAULT_ATLAS) ? "@" + atlas.asMinimalString() : "");
       } else if (contents instanceof final PlayerHeadObjectContents playerHeadContents) {
         return String.format("[%s head]", playerHeadContents.name() != null ? playerHeadContents.name() : "unknown player");
       }
@@ -111,7 +111,7 @@ record ComponentFlattenerImpl(InheritanceAwareMap<Component, Handler> flatteners
       }
 
       final Component component = entry.component;
-      final @Nullable Handler flattener = this.flattener(component);
+      final Handler flattener = this.flattener(component);
       final Style componentStyle = component.style();
 
       // Push the style to both the listener and the stack (so we can pop later).

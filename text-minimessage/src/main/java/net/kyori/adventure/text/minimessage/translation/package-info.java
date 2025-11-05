@@ -24,4 +24,7 @@
 /**
  * Tools for working with Adventure's translation API.
  */
+@NullMarked
 package net.kyori.adventure.text.minimessage.translation;
+
+import org.jspecify.annotations.NullMarked;

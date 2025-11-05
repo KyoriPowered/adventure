@@ -29,6 +29,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import net.kyori.adventure.util.Index;
+import org.jspecify.annotations.Nullable;
 
 final class IndexedSerializer<E> extends TypeAdapter<E> {
   private final String name;
@@ -55,7 +56,7 @@ final class IndexedSerializer<E> extends TypeAdapter<E> {
   }
 
   @Override
-  public E read(final JsonReader in) throws IOException {
+  public @Nullable E read(final JsonReader in) throws IOException {
     final String string = in.nextString();
     final E value = this.map.value(string);
     if (value != null) {

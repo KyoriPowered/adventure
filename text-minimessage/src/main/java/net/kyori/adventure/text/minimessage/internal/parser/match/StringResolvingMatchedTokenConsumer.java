@@ -34,7 +34,6 @@ import net.kyori.adventure.text.minimessage.internal.parser.TokenType;
 import net.kyori.adventure.text.minimessage.internal.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.tag.PreProcess;
 import net.kyori.adventure.text.minimessage.tag.Tag;
-import org.jspecify.annotations.Nullable;
 
 import static net.kyori.adventure.text.minimessage.internal.parser.TokenParser.SEPARATOR;
 import static net.kyori.adventure.text.minimessage.internal.parser.TokenParser.tokenize;
@@ -90,7 +89,7 @@ public final class StringResolvingMatchedTokenConsumer extends MatchedTokenConsu
           }
         }
         // we might care if it's a pre-process!
-        final @Nullable Tag replacement = this.tagProvider.resolve(TokenParser.TagProvider.sanitizePlaceholderName(tag), parts, tokens.get(0));
+        final Tag replacement = this.tagProvider.resolve(TokenParser.TagProvider.sanitizePlaceholderName(tag), parts, tokens.get(0));
 
         if (replacement instanceof PreProcess preProcess) {
           this.builder.append(Objects.requireNonNull(preProcess.value(), "PreProcess replacements cannot return null"));
