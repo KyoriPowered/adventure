@@ -131,7 +131,7 @@ final class MiniMessageSerializer {
         throw new IllegalStateException("Unbalanced tags, tried to pop below depth");
       }
       final String tag = this.activeTags[this.tagLevel];
-      if (!allowMarks && tag == MARK) {
+      if (!allowMarks && tag.equals(MARK)) {
         throw new IllegalStateException("Tried to pop past mark, tag stack: " + Arrays.toString(this.activeTags) + " @ " + this.tagLevel);
       }
       return tag;
@@ -146,7 +146,7 @@ final class MiniMessageSerializer {
         return;
       }
       String tag;
-      while ((tag = this.popTag(true)) != MARK) {
+      while (!(tag = this.popTag(true)).equals(MARK)) {
         this.emitClose(tag);
       }
     }
@@ -154,7 +154,7 @@ final class MiniMessageSerializer {
     void popAll() {
       while (this.tagLevel > 0) {
         final String tag = this.activeTags[--this.tagLevel];
-        if (tag != MARK) {
+        if (!tag.equals(MARK)) {
           this.emitClose(tag);
         }
       }
@@ -271,13 +271,11 @@ final class MiniMessageSerializer {
         final char active = content.charAt(i);
         if (active == TokenParser.TAG_END || active == TokenParser.SEPARATOR || active == ' ') { // space is not technically required here, but is preferred
           mustBeQuoted = true;
-          if (hasSingleQuote && hasDoubleQuote) break;
         } else if (active == '\'') {
           hasSingleQuote = true;
           break; // we know our quoting style
         } else if (active == '"') {
           hasDoubleQuote = true;
-          if (mustBeQuoted && hasSingleQuote) break;
         }
       }
 

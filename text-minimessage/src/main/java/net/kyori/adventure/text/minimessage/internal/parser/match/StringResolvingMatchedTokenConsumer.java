@@ -33,6 +33,7 @@ import net.kyori.adventure.text.minimessage.internal.parser.TokenType;
 import net.kyori.adventure.text.minimessage.internal.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.tag.PreProcess;
 import net.kyori.adventure.text.minimessage.tag.Tag;
+import org.intellij.lang.annotations.Subst;
 
 import static net.kyori.adventure.text.minimessage.internal.parser.TokenParser.SEPARATOR;
 import static net.kyori.adventure.text.minimessage.internal.parser.TokenParser.tokenize;
@@ -75,7 +76,7 @@ public final class StringResolvingMatchedTokenConsumer extends MatchedTokenConsu
       final String cleanup = this.input.substring(start + 1, end - 1);
 
       final int index = cleanup.indexOf(SEPARATOR);
-      final String tag = index == -1 ? cleanup : cleanup.substring(0, index);
+      final @Subst("") String tag = index == -1 ? cleanup : cleanup.substring(0, index);
 
       // we might care if it's a valid tag!
       if (TagInternals.sanitizeAndCheckValidTagName(tag)) {

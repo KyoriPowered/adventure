@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 import java.util.function.IntPredicate;
 import java.util.function.Predicate;
@@ -46,6 +47,7 @@ import net.kyori.adventure.text.minimessage.tag.Inserting;
 import net.kyori.adventure.text.minimessage.tag.ParserDirective;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.util.TriState;
+import org.intellij.lang.annotations.Subst;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
@@ -468,8 +470,8 @@ public final class TokenParser {
         case TEXT -> node.addChild(new TextNode(node, token, message));
         case OPEN_TAG, OPEN_CLOSE_TAG -> {
           // Check if this even is a valid tag
-          final Token tagNamePart = token.childTokens().getFirst();
-          final String tagName = message.substring(tagNamePart.startIndex(), tagNamePart.endIndex());
+          final @Subst("") Token tagNamePart = Objects.requireNonNull(token.childTokens()).getFirst();
+          final @Subst("") String tagName = message.substring(tagNamePart.startIndex(), tagNamePart.endIndex());
           if (!TagInternals.sanitizeAndCheckValidTagName(tagName)) {
             // This wouldn't be a valid tag, just parse it as text instead!
             node.addChild(new TextNode(node, token, message));
@@ -504,7 +506,7 @@ public final class TokenParser {
           }
         }
         case CLOSE_TAG -> {
-          final List<Token> childTokens = token.childTokens();
+          final List<Token> childTokens = Objects.requireNonNull(token.childTokens());
           if (childTokens.isEmpty()) {
             throw new IllegalStateException("CLOSE_TAG token somehow has no children - " +
               "the parser should not allow this. Original text: " + message);
@@ -722,7 +724,7 @@ public final class TokenParser {
    * A special tag provider for tags with queued arguments.
    *
    * @param <T> argument
-   * @since 4.25.0
+   * @since 5.1.0
    */
   @ApiStatus.Internal
   public interface SequentialTagProvider<T extends Tag.Argument> {
@@ -744,7 +746,7 @@ public final class TokenParser {
    * A special tag provider for tags with named arguments.
    *
    * @param <T> argument
-   * @since 4.25.0
+   * @since 5.1.0
    */
   @ApiStatus.Internal
   public interface NamedTagProvider<T extends Tag.Argument> {
@@ -759,7 +761,7 @@ public final class TokenParser {
      * @return a tag
      * @since 4.10.0
      */
-    @Nullable Tag resolveNamed(final String name, final Map<String, T> trimmedArgs, final Token token);
+    @Nullable Tag resolveNamed(final String name, final Map<String, T> trimmedArgs, final @Nullable Token token);
   }
 
   /**
@@ -776,7 +778,7 @@ public final class TokenParser {
      *
      * @param trimmedTokens list of tokens
      * @return whether a list of tokens contains a {@link TokenType#TAG_VALUE_NAME} or {@link TokenType#TAG_VALUE_TOGGLE}
-     * @since 4.25.0
+     * @since 5.1.0
      */
     default boolean isNamed(final List<Token> trimmedTokens) {
       for (final Token trimmedToken : trimmedTokens) {
@@ -792,10 +794,10 @@ public final class TokenParser {
      *
      * @param node the node
      * @return whether this tag node has named arguments
-     * @since 4.25.0
+     * @since 5.1.0
      */
     default boolean isNamed(final TagNode node) {
-      return this.isNamed(node.token().childTokens());
+      return this.isNamed(Objects.requireNonNull(node.token().childTokens()));
     }
 
     /**
@@ -803,7 +805,7 @@ public final class TokenParser {
      *
      * @param name sanitized name
      * @return a tag, if any is available
-     * @since 4.25.0
+     * @since 5.1.0
      */
     default @Nullable Tag resolveSequential(final String name) {
       return this.resolveSequential(name, Collections.emptyList(), null);
@@ -814,7 +816,7 @@ public final class TokenParser {
      *
      * @param name sanitized name
      * @return a tag, if any is available
-     * @since 4.25.0
+     * @since 5.1.0
      */
     default @Nullable Tag resolveNamed(final String name) {
       return this.resolveNamed(name, Collections.emptyMap(), null);
@@ -831,7 +833,7 @@ public final class TokenParser {
      *
      * @param node the node
      * @return the resolved tag, or null
-     * @since 4.25.0
+     * @since 5.1.0
      */
     default @Nullable Tag resolve(final TagNode node) {
       if (this.isNamed(node)) {
@@ -852,7 +854,7 @@ public final class TokenParser {
      *
      * @param node tag node
      * @return a tag, if any is available
-     * @since 4.25.0
+     * @since 5.1.0
      */
     default @Nullable Tag resolveSequential(final TagNode node) {
       return this.resolveSequential(
@@ -867,7 +869,7 @@ public final class TokenParser {
      *
      * @param node tag node
      * @return a tag, if any is available
-     * @since 4.25.0
+     * @since 5.1.0
      */
     default @Nullable Tag resolveNamed(final TagNode node) {
       final Map<String, T> map = new TreeMap<>();
@@ -915,30 +917,18 @@ public final class TokenParser {
   /**
    * A basic implementation of a {@link TagProvider} for convenience.
    *
+   * @param sequential the sequential provider
+   * @param named the named provider
    * @param <T> tag argument
-   * @since 4.25.0
+   * @since 5.1.0
    */
   @ApiStatus.Internal
-  public static final class TagProviderImpl<T extends Tag.Argument> implements TagProvider<T> {
-    private final SequentialTagProvider<T> sequential;
-    private final NamedTagProvider<T> named;
-
-    /**
-     * Construct a new {@link TagProviderImpl} object.
-     *
-     * @param sequential the sequential provider
-     * @param named the named provider
-     * @since 4.25.0
-     */
-    public TagProviderImpl(final SequentialTagProvider<T> sequential, final NamedTagProvider<T> named) {
-      this.sequential = sequential;
-      this.named = named;
-    }
+  public record TagProviderImpl<T extends Tag.Argument>(SequentialTagProvider<T> sequential, NamedTagProvider<T> named) implements TagProvider<T> {
 
     /**
      * {@inheritDoc}
      *
-     * @since 4.25.0
+     * @since 5.1.0
      */
     @Override
     public @Nullable Tag resolveNamed(final String name, final Map<String, T> trimmedArgs, final @Nullable Token token) {
@@ -948,7 +938,7 @@ public final class TokenParser {
     /**
      * {@inheritDoc}
      *
-     * @since 4.25.0
+     * @since 5.1.0
      */
     @Override
     public @Nullable Tag resolveSequential(final String name, final List<T> trimmedArgs, final @Nullable Token token) {

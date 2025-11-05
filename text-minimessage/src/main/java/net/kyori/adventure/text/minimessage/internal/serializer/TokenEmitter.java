@@ -86,7 +86,7 @@ public interface TokenEmitter {
    * @param name name of the argument
    * @param arg argument value
    * @return this emitter
-   * @since 4.25.0
+   * @since 5.1.0
    */
   TokenEmitter namedArgument(final String name, final String arg);
 
@@ -111,7 +111,7 @@ public interface TokenEmitter {
    * @param arg argument value
    * @param quotingPreference an argument-specific quoting instruction
    * @return this emitter
-   * @since 4.25.0
+   * @since 5.1.0
    */
   TokenEmitter namedArgument(final String name, final String arg, final QuotingOverride quotingPreference);
 
@@ -134,7 +134,7 @@ public interface TokenEmitter {
    * @param name name of the argument
    * @param arg argument value, serialized as a nested MiniMessage string
    * @return this emitter
-   * @since 4.25.0
+   * @since 5.1.0
    */
   TokenEmitter namedArgument(final String name, final Component arg);
 
@@ -146,7 +146,7 @@ public interface TokenEmitter {
    * @param name the name of the flag
    * @param value the value to set the flag to
    * @return this emitter
-   * @since 4.25.0
+   * @since 5.1.0
    */
   TokenEmitter flag(final String name, final boolean value);
 

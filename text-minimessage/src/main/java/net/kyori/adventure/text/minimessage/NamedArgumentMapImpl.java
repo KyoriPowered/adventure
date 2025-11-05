@@ -32,15 +32,7 @@ import org.jetbrains.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-final class NamedArgumentMapImpl<T extends Tag.Argument> implements NamedArgumentMap {
-  private final Context context;
-  final Map<String, T> args;
-
-  NamedArgumentMapImpl(final Context context, final Map<String, T> args) {
-    this.context = context;
-    this.args = args;
-  }
-
+record NamedArgumentMapImpl<T extends Tag.Argument>(Context context, Map<String, T> args) implements NamedArgumentMap {
   @Override
   public boolean isPresent(final String name) {
     requireNonNull(name, "name");

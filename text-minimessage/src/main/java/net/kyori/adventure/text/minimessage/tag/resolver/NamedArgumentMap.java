@@ -32,7 +32,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * A map of named {@link Tag} arguments.
  *
- * @since 4.25.0
+ * @since 5.1.0
  */
 @ApiStatus.NonExtendable
 public interface NamedArgumentMap {
@@ -42,7 +42,7 @@ public interface NamedArgumentMap {
    *
    * @param name name of the argument or flag
    * @return whether an argument by this name is present
-   * @since 4.25.0
+   * @since 5.1.0
    */
   boolean isPresent(String name);
 
@@ -50,7 +50,7 @@ public interface NamedArgumentMap {
    * Get the number of arguments present.
    *
    * @return the number of arguments present
-   * @since 4.25.0
+   * @since 5.1.0
    */
   int size();
 
@@ -59,7 +59,7 @@ public interface NamedArgumentMap {
    *
    * @param name name of the argument
    * @return the argument
-   * @since 4.25.0
+   * @since 5.1.0
    */
   Tag.@Nullable Argument get(String name);
 
@@ -71,7 +71,7 @@ public interface NamedArgumentMap {
    *
    * @param name the name of the flag
    * @return its presence status in the tag
-   * @since 4.25.0
+   * @since 5.1.0
    */
   TriState flag(String name);
 
@@ -80,7 +80,7 @@ public interface NamedArgumentMap {
    *
    * @param name the name of the flag
    * @return whether it is present
-   * @since 4.25.0
+   * @since 5.1.0
    */
   boolean isFlagPresent(String name);
 
@@ -89,7 +89,7 @@ public interface NamedArgumentMap {
    *
    * @param name name of the argument
    * @return the argument
-   * @since 4.25.0
+   * @since 5.1.0
    */
   default Tag.Argument orThrow(final String name) {
     return this.orThrow(name, name + " is not present");
@@ -101,7 +101,7 @@ public interface NamedArgumentMap {
    * @param name name of the argument
    * @param errorMessage the error to throw if an argument with that name is not present
    * @return the argument
-   * @since 4.25.0
+   * @since 5.1.0
    */
   Tag.Argument orThrow(String name, String errorMessage);
 
@@ -111,7 +111,7 @@ public interface NamedArgumentMap {
    * @param name name of the argument
    * @param errorMessage the error to throw if an argument with that name is not present
    * @return the argument
-   * @since 4.25.0
+   * @since 5.1.0
    */
   Tag.Argument orThrow(String name, Supplier<String> errorMessage);
 }

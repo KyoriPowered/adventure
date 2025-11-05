@@ -121,7 +121,7 @@ public sealed interface Context permits ContextImpl {
    * @param message a detail message describing the error
    * @param tags the tag parts which caused the error
    * @return the new parsing exception
-   * @since 4.25.0
+   * @since 5.1.0
    */
   ParsingException newException(
     final String message,
@@ -159,6 +159,7 @@ public sealed interface Context permits ContextImpl {
    * @param cause the cause
    * @param args arguments that caused the errors
    * @return the new parsing exception
+   * @since 5.1.0
    */
   ParsingException newException(
     final String message,

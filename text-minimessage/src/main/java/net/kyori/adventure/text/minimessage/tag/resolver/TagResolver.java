@@ -36,6 +36,7 @@ import net.kyori.adventure.text.minimessage.internal.TagInternals;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.TagPattern;
 import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
+import org.intellij.lang.annotations.Subst;
 import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
@@ -120,7 +121,7 @@ public interface TagResolver {
    */
   static TagResolver resolver(final Set<String> names, final BiFunction<ArgumentQueue, Context, Tag> handler) {
     final Set<String> ownNames = new HashSet<>(names);
-    for (final String name : ownNames) {
+    for (final @Subst("") String name : ownNames) {
       TagInternals.assertValidTagName(name);
     }
     requireNonNull(handler, "handler");
@@ -150,7 +151,7 @@ public interface TagResolver {
    * @param name the name to respond to
    * @param handler the tag handler, may throw {@link ParsingException} if provided arguments are in an invalid format
    * @return a resolver that creates tags using the provided handler
-   * @since 4.25.0
+   * @since 5.1.0
    */
   static TagResolver namedResolver(final String name, final BiFunction<NamedArgumentMap, Context, Tag> handler) {
     return namedResolver(Collections.singleton(name), handler);
@@ -166,11 +167,11 @@ public interface TagResolver {
    * @param names the names to respond to
    * @param handler the tag handler, may throw {@link ParsingException} if provided arguments are in an invalid format
    * @return a resolver that creates tags using the provided handler
-   * @since 4.25.0
+   * @since 5.1.0
    */
   static TagResolver namedResolver(final Set<String> names, final BiFunction<NamedArgumentMap, Context, Tag> handler) {
     final Set<String> ownNames = new HashSet<>(names);
-    for (final String name : ownNames) {
+    for (final @Subst("") String name : ownNames) {
       TagInternals.assertValidTagName(name);
     }
     requireNonNull(handler, "handler");
@@ -281,7 +282,7 @@ public interface TagResolver {
    * @param ctx the parse context
    * @return a possible tag
    * @throws ParsingException if the provided arguments are invalid
-   * @since 4.25.0
+   * @since 5.1.0
    */
   default @Nullable Tag resolveNamed(@TagPattern final String name, final NamedArgumentMap arguments, final Context ctx) throws ParsingException {
     return null;
@@ -361,7 +362,7 @@ public interface TagResolver {
      * @since 4.10.0
      */
     @Override
-    default boolean has(final String name) {
+    default boolean has(final @Subst("") String name) {
       return this.resolve(name) != null;
     }
 
@@ -378,7 +379,7 @@ public interface TagResolver {
   /**
    * A {@link TagResolver} which only listens to sequential arguments.
    *
-   * @since 4.25.0
+   * @since 5.1.0
    */
   interface Sequential extends TagResolver {
     @Override
@@ -388,7 +389,7 @@ public interface TagResolver {
   /**
    * A {@link TagResolver} which only listens to named arguments.
    *
-   * @since 4.25.0
+   * @since 5.1.0
    */
   interface Named extends TagResolver {
     @Override
@@ -445,7 +446,7 @@ public interface TagResolver {
      * @param name the name to respond to
      * @param handler the tag handler, may throw {@link ParsingException} if provided arguments are in an invalid format
      * @return this builder
-     * @since 4.25.0
+     * @since 5.1.0
      */
     default Builder namedArgumentsTag(@TagPattern final String name, final BiFunction<NamedArgumentMap, Context, Tag> handler) {
       return this.namedArgumentsTag(Collections.singleton(name), handler);
@@ -459,7 +460,7 @@ public interface TagResolver {
      * @param names the names to respond to
      * @param handler the tag handler, may throw {@link ParsingException} if provided arguments are in an invalid format
      * @return this builder
-     * @since 4.25.0
+     * @since 5.1.0
      */
     default Builder namedArgumentsTag(final Set<String> names, final BiFunction<NamedArgumentMap, Context, Tag> handler) {
       return this.resolver(TagResolver.namedResolver(names, handler));

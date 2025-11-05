@@ -168,7 +168,7 @@ final class ContextImpl implements Context {
 
   @Override
   public ParsingException newException(final String message, final NamedArgumentMap tags) {
-    return new ParsingExceptionImpl(message, this.message, null, false, tagsToTokens(((NamedArgumentMapImpl<?>) tags).args));
+    return new ParsingExceptionImpl(message, this.message, null, false, tagsToTokens(((NamedArgumentMapImpl<?>) tags).args()));
   }
 
   @Override
@@ -178,7 +178,7 @@ final class ContextImpl implements Context {
 
   @Override
   public ParsingException newException(final String message, final @Nullable Throwable cause, final NamedArgumentMap args) {
-    return new ParsingExceptionImpl(message, this.message, cause, false, tagsToTokens(((NamedArgumentMapImpl<?>) args).args));
+    return new ParsingExceptionImpl(message, this.message, cause, false, tagsToTokens(((NamedArgumentMapImpl<?>) args).args()));
   }
 
   private Component deserializeWithOptionalTarget(final String message, final TagResolver tagResolver) {

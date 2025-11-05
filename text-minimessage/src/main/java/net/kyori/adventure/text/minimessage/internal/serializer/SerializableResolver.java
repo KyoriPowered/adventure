@@ -36,6 +36,7 @@ import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.NamedArgumentMap;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import org.intellij.lang.annotations.Subst;
 import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
@@ -68,7 +69,7 @@ public interface SerializableResolver {
    * @param handler the tag handler, may throw {@link ParsingException} if provided arguments are in an invalid format
    * @param componentClaim the claim to test components against
    * @return a resolver that creates tags using the provided handler
-   * @since 4.25.0
+   * @since 5.1.0
    */
   static TagResolver claimingComponentNamed(final String name, final BiFunction<NamedArgumentMap, Context, Tag> handler, final Function<Component, @Nullable Emitable> componentClaim) {
     return claimingComponentNamed(Collections.singleton(name), handler, componentClaim);
@@ -85,7 +86,7 @@ public interface SerializableResolver {
    */
   static TagResolver claimingComponent(final Set<String> names, final BiFunction<ArgumentQueue, Context, Tag> handler, final Function<Component, @Nullable Emitable> componentClaim) {
     final Set<String> ownNames = new HashSet<>(names);
-    for (final String name : ownNames) {
+    for (final @Subst("") String name : ownNames) {
       TagInternals.assertValidTagName(name);
     }
     requireNonNull(handler, "handler");
@@ -101,11 +102,11 @@ public interface SerializableResolver {
    * @param handler the tag handler, may throw {@link ParsingException} if provided arguments are in an invalid format
    * @param componentClaim the claim to test components against
    * @return a resolver that creates tags using the provided handler
-   * @since 4.25.0
+   * @since 5.1.0
    */
   static TagResolver claimingComponentNamed(final Set<String> names, final BiFunction<NamedArgumentMap, Context, Tag> handler, final Function<Component, @Nullable Emitable> componentClaim) {
     final Set<String> ownNames = new HashSet<>(names);
-    for (final String name : ownNames) {
+    for (final @Subst("") String name : ownNames) {
       TagInternals.assertValidTagName(name);
     }
     requireNonNull(handler, "handler");
@@ -134,7 +135,7 @@ public interface SerializableResolver {
    * @param handler the tag handler, may throw {@link ParsingException} if provided arguments are in an invalid format
    * @param styleClaim the extractor for style claims on components
    * @return a resolver that creates tags using the provided handler
-   * @since 4.25.0
+   * @since 5.1.0
    */
   static TagResolver claimingStyleNamed(final String name, final BiFunction<NamedArgumentMap, Context, Tag> handler, final StyleClaim<?> styleClaim) {
     return claimingStyleNamed(Collections.singleton(name), handler, styleClaim);
@@ -151,7 +152,7 @@ public interface SerializableResolver {
    */
   static TagResolver claimingStyle(final Set<String> names, final BiFunction<ArgumentQueue, Context, Tag> handler, final StyleClaim<?> styleClaim) {
     final Set<String> ownNames = new HashSet<>(names);
-    for (final String name : ownNames) {
+    for (final @Subst("") String name : ownNames) {
       TagInternals.assertValidTagName(name);
     }
     requireNonNull(handler, "handler");
@@ -167,11 +168,11 @@ public interface SerializableResolver {
    * @param handler the tag handler, may throw {@link ParsingException} if provided arguments are in an invalid format
    * @param styleClaim the extractor for style claims on components
    * @return a resolver that creates tags using the provided handler
-   * @since 4.25.0
+   * @since 5.1.0
    */
   static TagResolver claimingStyleNamed(final Set<String> names, final BiFunction<NamedArgumentMap, Context, Tag> handler, final StyleClaim<?> styleClaim) {
     final Set<String> ownNames = new HashSet<>(names);
-    for (final String name : ownNames) {
+    for (final @Subst("") String name : ownNames) {
       TagInternals.assertValidTagName(name);
     }
     requireNonNull(handler, "handler");
@@ -195,15 +196,15 @@ public interface SerializableResolver {
   interface Single extends SerializableResolver {
     @Override
     default void handle(final Component serializable, final ClaimConsumer consumer) {
-      final @Nullable StyleClaim<?> style = this.claimStyle();
+      final StyleClaim<?> style = this.claimStyle();
       if (style != null && !consumer.styleClaimed(style.claimKey())) {
-        final @Nullable Emitable applied = style.apply(serializable.style());
+        final Emitable applied = style.apply(serializable.style());
         if (applied != null) {
           consumer.style(style.claimKey(), applied);
         }
       }
       if (!consumer.componentClaimed()) {
-        final @Nullable Emitable component = this.claimComponent(serializable);
+        final Emitable component = this.claimComponent(serializable);
         if (component != null) {
           consumer.component(component);
         }

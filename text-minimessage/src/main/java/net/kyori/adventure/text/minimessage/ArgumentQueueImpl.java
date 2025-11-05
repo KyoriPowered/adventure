@@ -27,10 +27,20 @@ import java.util.List;
 import java.util.function.Supplier;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
+import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Note to anyone looking at this class and wondering about the {@link NotNull}s. For
+ * some reason, IntelliJ completely ignores any {@link NullMarked} annotations on the package
+ * or on the class, so these pop methods had to be annotated explicitly ¯\_(ツ)_/¯.
+ *
+ * @param <T> type of the tag argument
+ */
 final class ArgumentQueueImpl<T extends Tag.Argument> implements ArgumentQueue {
   private final Context context;
   private final List<T> args;
@@ -46,7 +56,7 @@ final class ArgumentQueueImpl<T extends Tag.Argument> implements ArgumentQueue {
   }
 
   @Override
-  public T pop() {
+  public @NonNull T pop() {
     if (!this.hasNext()) {
       throw this.context.newException("Missing argument for this tag!", this);
     }
@@ -54,7 +64,7 @@ final class ArgumentQueueImpl<T extends Tag.Argument> implements ArgumentQueue {
   }
 
   @Override
-  public T popOr(final String errorMessage) {
+  public @NonNull T popOr(final String errorMessage) {
     requireNonNull(errorMessage, "errorMessage");
     if (!this.hasNext()) {
       throw this.context.newException(errorMessage, this);
@@ -63,7 +73,7 @@ final class ArgumentQueueImpl<T extends Tag.Argument> implements ArgumentQueue {
   }
 
   @Override
-  public T popOr(final Supplier<String> errorMessage) {
+  public @NonNull T popOr(final Supplier<String> errorMessage) {
     requireNonNull(errorMessage, "errorMessage");
     if (!this.hasNext()) {
       throw this.context.newException(requireNonNull(errorMessage.get(), "errorMessage.get()"), this);

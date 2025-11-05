@@ -42,6 +42,7 @@ import net.kyori.adventure.text.minimessage.tag.Inserting;
 import net.kyori.adventure.text.minimessage.tag.Modifying;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import org.jspecify.annotations.Nullable;
 
 record MiniMessageParser(TagResolver tagResolver) {
 
@@ -61,7 +62,7 @@ record MiniMessageParser(TagResolver tagResolver) {
       if (token.type() == TokenType.CLOSE_TAG) {
         builder.append(TokenParser.CLOSE_TAG);
       }
-      final List<Token> childTokens = token.childTokens();
+      final List<Token> childTokens = Objects.requireNonNull(token.childTokens());
       for (int i = 0; i < childTokens.size(); i++) {
         if (i != 0) {
           builder.append(TokenParser.SEPARATOR);
@@ -91,7 +92,7 @@ record MiniMessageParser(TagResolver tagResolver) {
         case TEXT -> sb.append(richMessage, token.startIndex(), token.endIndex());
         case OPEN_TAG, CLOSE_TAG, OPEN_CLOSE_TAG -> {
           // extract tag name
-          if (token.childTokens().isEmpty()) {
+          if (Objects.requireNonNull(token.childTokens()).isEmpty()) {
             sb.append(richMessage, token.startIndex(), token.endIndex());
             continue;
           }
@@ -134,30 +135,9 @@ record MiniMessageParser(TagResolver tagResolver) {
 
           final Tag transformation = combinedResolver.resolve(name, new ArgumentQueueImpl<>(context, args), context);
 
-          if (transformation == null) {
-            debug.accept("Could not match node '");
-            debug.accept(name);
-            debug.accept("'\n");
-          } else {
-            debug.accept("Successfully matched node '");
-            debug.accept(name);
-            debug.accept("' to tag ");
-            debug.accept(transformation.getClass().getName());
-            debug.accept("\n");
-          }
-
-          return transformation;
+          return this.debugPrintTransformation(debug, name, transformation);
         } catch (final ParsingException e) {
-          if (token != null && e instanceof final ParsingExceptionImpl impl) {
-            if (impl.tokens().length == 0) {
-              impl.tokens(new Token[]{token});
-            }
-          }
-          debug.accept("Could not match node '");
-          debug.accept(name);
-          debug.accept("' - ");
-          debug.accept(e.getMessage());
-          debug.accept("\n");
+          this.handleParsingException(e, token, debug, name);
           return null;
         }
       };
@@ -174,31 +154,9 @@ record MiniMessageParser(TagResolver tagResolver) {
 
           final Tag transformation = combinedResolver.resolveNamed(name, new NamedArgumentMapImpl<>(context, args), context);
 
-          if (transformation == null) {
-            debug.accept("Could not match node '");
-            debug.accept(name);
-            debug.accept("'\n");
-          } else {
-            debug.accept("Successfully matched node '");
-            debug.accept(name);
-            debug.accept("' to tag ");
-            debug.accept(transformation.getClass().getName());
-            debug.accept("\n");
-          }
-
-          return transformation;
+          return this.debugPrintTransformation(debug, name, transformation);
         } catch (final ParsingException e) {
-          if (token != null && e instanceof ParsingExceptionImpl) {
-            final ParsingExceptionImpl impl = (ParsingExceptionImpl) e;
-            if (impl.tokens().length == 0) {
-              impl.tokens(new Token[]{token});
-            }
-          }
-          debug.accept("Could not match node '");
-          debug.accept(name);
-          debug.accept("' - ");
-          debug.accept(e.getMessage());
-          debug.accept("\n");
+          this.handleParsingException(e, token, debug, name);
           return null;
         }
       };
@@ -236,6 +194,35 @@ record MiniMessageParser(TagResolver tagResolver) {
     }
 
     return root;
+  }
+
+  private void handleParsingException(final ParsingException exception, final @Nullable Token token, final Consumer<String> debug, final String name) {
+    if (token != null && exception instanceof final ParsingExceptionImpl impl) {
+      if (impl.tokens().length == 0) {
+        impl.tokens(new Token[]{token});
+      }
+    }
+    debug.accept("Could not match node '");
+    debug.accept(name);
+    debug.accept("' - ");
+    debug.accept(exception.getMessage());
+    debug.accept("\n");
+  }
+
+  private @Nullable Tag debugPrintTransformation(final Consumer<String> debug, final String name, final @Nullable Tag transformation) {
+    if (transformation == null) {
+      debug.accept("Could not match node '");
+      debug.accept(name);
+      debug.accept("'\n");
+    } else {
+      debug.accept("Successfully matched node '");
+      debug.accept(name);
+      debug.accept("' to tag ");
+      debug.accept(transformation.getClass().getName());
+      debug.accept("\n");
+    }
+
+    return transformation;
   }
 
   Component parseFormat(final ContextImpl context) {
