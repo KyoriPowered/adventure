@@ -26,6 +26,7 @@ package net.kyori.adventure.serializer.configurate4;
 import io.leangen.geantyref.TypeToken;
 import java.lang.reflect.Type;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -41,6 +42,9 @@ import org.spongepowered.configurate.serialize.TypeSerializer;
 
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_ACTION;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_CAMEL;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_ID;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_PAGE;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_PAYLOAD;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.CLICK_EVENT_VALUE;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.COLOR;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.FONT;
@@ -97,7 +101,29 @@ final class StyleSerializer implements TypeSerializer<Style> {
     final ConfigurationNode clickEvent = value.node(CLICK_EVENT_CAMEL);
     if (!clickEvent.virtual()) {
       final ClickEvent.Action<?> action = nonNull(clickEvent.node(CLICK_EVENT_ACTION).get(ClickEvent.Action.class), "click event action");
-      builder.clickEvent(ClickEvent.clickEvent(action, nonNull(clickEvent.node(CLICK_EVENT_VALUE).getString(), "click event value")));
+      switch (action) {
+        case ClickEvent.Action.ChangePage ignored -> {
+          ConfigurationNode page;
+          page = clickEvent.node(CLICK_EVENT_PAGE);
+          if (page.virtual()) page = clickEvent.node(CLICK_EVENT_VALUE);
+          nonNull(page, "click event page");
+          builder.clickEvent(ClickEvent.changePage(page.getInt()));
+        }
+        case ClickEvent.Action.Custom ignored -> {
+          builder.clickEvent(
+            ClickEvent.custom(
+              nonNull(clickEvent.node(CLICK_EVENT_ID).get(Key.class), "click event id"),
+              BinaryTagHolder.binaryTagHolder(nonNull(clickEvent.node(CLICK_EVENT_PAYLOAD).getString(), "click event payload"))
+            )
+          );
+        }
+        case ClickEvent.Action.ShowDialog ignored -> {
+          throw new SerializationException("Unable to serialize show_dialog click event");
+        }
+        case ClickEvent.Action.TextCarrier textCarrier -> {
+          builder.clickEvent(ClickEvent.clickEvent(textCarrier, ClickEvent.Payload.string(nonNull(clickEvent.node(CLICK_EVENT_VALUE).getString(), "click event value"))));
+        }
+      }
     }
 
     final ConfigurationNode hoverEvent = value.node(HOVER_EVENT_CAMEL);
@@ -155,8 +181,23 @@ final class StyleSerializer implements TypeSerializer<Style> {
     if (clickEvent == null) {
       clickNode.set(null);
     } else {
-      clickNode.node(CLICK_EVENT_ACTION).set(ClickEvent.Action.class, clickEvent.action());
-      clickNode.node(CLICK_EVENT_VALUE).set(clickEvent.value());
+      clickNode.node(CLICK_EVENT_ACTION).set(clickEvent.action().toString());
+      switch (clickEvent.payload()) {
+        case ClickEvent.Payload.Custom custom -> {
+          clickNode.node(CLICK_EVENT_ID).set(Key.class, custom.key());
+          clickNode.set(CLICK_EVENT_PAYLOAD).set(custom.nbt().string());
+        }
+        case ClickEvent.Payload.Dialog ignored -> {
+          throw new SerializationException("Unable to serialize show_dialog click event");
+        }
+        case ClickEvent.Payload.Int integer -> {
+          // currently only change_page uses this, might need more complicated logic in the future
+          clickNode.node(CLICK_EVENT_PAGE).set(integer.integer());
+        }
+        case ClickEvent.Payload.Text text -> {
+          clickNode.node(CLICK_EVENT_VALUE).set(text.value());
+        }
+      }
     }
 
     final ConfigurationNode hoverNode = value.node(HOVER_EVENT_CAMEL);

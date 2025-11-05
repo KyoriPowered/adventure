@@ -120,7 +120,7 @@ class StyleTest extends SerializerTest {
       .build();
 
     this.testStyle(floatSerial, Style.style(ShadowColor.shadowColor(0x80, 0x40, 0xcc, 0xff)), json -> json.add(ComponentTreeConstants.SHADOW_COLOR, array(arr -> {
-      arr.add(0.501960813999176);
+      arr.add(0.501960813999176f);
       arr.add(0.250980406999588f);
       arr.add(0.800000011920929f);
       arr.add(1f);

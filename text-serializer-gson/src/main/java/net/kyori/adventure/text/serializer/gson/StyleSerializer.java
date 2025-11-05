@@ -38,6 +38,7 @@ import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -226,7 +227,7 @@ final class StyleSerializer extends TypeAdapter<Style> {
               if (value != null) style.clickEvent(ClickEvent.copyToClipboard(value));
             }
             case ClickEvent.Action.Custom ignored -> {
-              if (key != null && value != null) style.clickEvent(ClickEvent.custom(key, value));
+              if (key != null && value != null) style.clickEvent(ClickEvent.custom(key, BinaryTagHolder.binaryTagHolder(value)));
             }
             // Not readable.
             case ClickEvent.Action.ShowDialog ignored -> {
@@ -331,6 +332,53 @@ final class StyleSerializer extends TypeAdapter<Style> {
     return component -> this.gson.toJson(component, SerializerFactory.COMPONENT_TYPE);
   }
 
+  private void writeClickEvent(final ClickEvent<?> clickEvent, final JsonWriter out) throws IOException {
+    final ClickEvent.Action<?> action = clickEvent.action();
+    out.beginObject();
+    out.name(CLICK_EVENT_ACTION);
+    this.gson.toJson(action, SerializerFactory.CLICK_ACTION_TYPE, out);
+
+    if (action.readable()) {
+      final ClickEvent.Payload payload = clickEvent.payload();
+
+      switch (payload) {
+        case ClickEvent.Payload.Text text -> {
+          switch (action) {
+            case ClickEvent.Action.OpenUrl ignored -> out.name(CLICK_EVENT_URL);
+            case ClickEvent.Action.RunCommand ignored -> out.name(CLICK_EVENT_COMMAND);
+            case ClickEvent.Action.SuggestCommand ignored -> out.name(CLICK_EVENT_COMMAND);
+            case ClickEvent.Action.CopyToClipboard ignored -> out.name(CLICK_EVENT_VALUE);
+            default -> {
+            }
+          }
+          String payloadValue = text.value();
+          if (action == ClickEvent.Action.OPEN_URL && this.emitClickUrlHttps && !StyleSerializer.isValidUrlScheme(payloadValue)) {
+            payloadValue = StyleSerializer.FALLBACK_URL_PROTOCOL + payloadValue;
+          }
+          out.value(payloadValue);
+        }
+        case ClickEvent.Payload.Custom customPayload -> {
+          out.name(CLICK_EVENT_ID);
+          this.gson.toJson(customPayload.key(), SerializerFactory.KEY_TYPE, out);
+          out.name(CLICK_EVENT_PAYLOAD);
+          out.value(customPayload.nbt().string());
+        }
+        case ClickEvent.Payload.Int intPayload -> {
+          out.name(CLICK_EVENT_PAGE);
+          if (this.emitStringPage) {
+            out.value(String.valueOf(intPayload.integer()));
+          } else {
+            out.value(intPayload.integer());
+          }
+        }
+        default -> {
+        }
+      }
+    }
+
+    out.endObject();
+  }
+
   @Override
   public void write(final JsonWriter out, final Style value) throws IOException {
     out.beginObject();
@@ -365,67 +413,14 @@ final class StyleSerializer extends TypeAdapter<Style> {
 
     final ClickEvent<?> clickEvent = value.clickEvent();
     if (clickEvent != null) {
-      final ClickEvent.Action<?> action = clickEvent.action();
-
       if (this.emitSnakeCaseClick) {
         out.name(CLICK_EVENT_SNAKE);
-        out.beginObject();
-        out.name(CLICK_EVENT_ACTION);
-        this.gson.toJson(action, SerializerFactory.CLICK_ACTION_TYPE, out);
-
-        if (action.readable()) {
-          final ClickEvent.Payload payload = clickEvent.payload();
-
-          switch (payload) {
-            case ClickEvent.Payload.Text text -> {
-              switch (action) {
-                case ClickEvent.Action.OpenUrl ignored -> out.name(CLICK_EVENT_URL);
-                case ClickEvent.Action.RunCommand ignored -> out.name(CLICK_EVENT_COMMAND);
-                case ClickEvent.Action.SuggestCommand ignored -> out.name(CLICK_EVENT_COMMAND);
-                case ClickEvent.Action.CopyToClipboard ignored -> out.name(CLICK_EVENT_VALUE);
-                default -> {
-                }
-              }
-              String payloadValue = text.value();
-              if (action == ClickEvent.Action.OPEN_URL && this.emitClickUrlHttps && !StyleSerializer.isValidUrlScheme(payloadValue)) {
-                payloadValue = StyleSerializer.FALLBACK_URL_PROTOCOL + payloadValue;
-              }
-              out.value(payloadValue);
-            }
-            case ClickEvent.Payload.Custom customPayload -> {
-              out.name(CLICK_EVENT_ID);
-              this.gson.toJson(customPayload.key(), SerializerFactory.KEY_TYPE, out);
-              out.name(CLICK_EVENT_PAYLOAD);
-              out.value(customPayload.data());
-            }
-            case ClickEvent.Payload.Int intPayload -> {
-              out.name(CLICK_EVENT_PAGE);
-              if (this.emitStringPage) {
-                out.value(String.valueOf(intPayload.integer()));
-              } else {
-                out.value(intPayload.integer());
-              }
-            }
-            default -> {
-            }
-          }
-        }
-
-        out.endObject();
+        this.writeClickEvent(clickEvent, out);
       }
 
-      if (this.emitCamelCaseClick && action.payloadType() == ClickEvent.Payload.Text.class) {
+      if (this.emitCamelCaseClick) {
         out.name(CLICK_EVENT_CAMEL);
-        out.beginObject();
-        out.name(CLICK_EVENT_ACTION);
-        this.gson.toJson(action, SerializerFactory.CLICK_ACTION_TYPE, out);
-        out.name(CLICK_EVENT_VALUE);
-        String payloadValue = clickEvent.value();
-        if (action == ClickEvent.Action.OPEN_URL && this.emitClickUrlHttps && !StyleSerializer.isValidUrlScheme(payloadValue)) {
-          payloadValue = StyleSerializer.FALLBACK_URL_PROTOCOL + payloadValue;
-        }
-        out.value(payloadValue);
-        out.endObject();
+        this.writeClickEvent(clickEvent, out);
       }
     }
 
