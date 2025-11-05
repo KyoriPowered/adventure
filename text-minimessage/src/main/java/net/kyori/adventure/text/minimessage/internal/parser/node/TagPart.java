@@ -44,10 +44,10 @@ public final class TagPart implements Tag.Argument {
    * @param tagResolver the combined tag resolver
    * @since 4.10.0
    */
-  public TagPart(
+  public <T extends Tag.Argument> TagPart(
     final String sourceMessage,
     final Token token,
-    final TokenParser.TagProvider tagResolver
+    final TokenParser.TagProvider<T> tagResolver
   ) {
     String v = unquoteAndEscape(sourceMessage, token.startIndex(), token.endIndex());
     v = TokenParser.resolvePreProcessTags(v, tagResolver);

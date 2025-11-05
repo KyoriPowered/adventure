@@ -108,7 +108,7 @@ record MiniMessageParser(TagResolver tagResolver) {
     }
   }
 
-  RootNode parseToTree(final ContextImpl context) {
+  <T extends Tag.Argument> RootNode parseToTree(final ContextImpl context) {
     final TagResolver combinedResolver = TagResolver.resolver(this.tagResolver, context.extraTags());
     final String processedMessage = context.preProcessor().apply(context.message());
     final Consumer<String> debug = context.debugOutput();
@@ -118,66 +118,8 @@ record MiniMessageParser(TagResolver tagResolver) {
       debug.accept("\n");
     }
 
-    final TokenParser.SequentialTagProvider sequentialTagProvider;
-    final TokenParser.NamedTagProvider namedTagProvider;
+    final TokenParser.TagProvider<T> transformationFactory = getTransformationFactory(context, debug, combinedResolver);
 
-    if (debug != null) {
-      sequentialTagProvider = (name, args, token) -> {
-        try {
-          debug.accept("Attempting to match node as sequential '");
-          debug.accept(name);
-          debug.accept("'");
-          if (token != null) {
-            debug.accept(" at column ");
-            debug.accept(String.valueOf(token.startIndex()));
-          }
-          debug.accept("\n");
-
-          final Tag transformation = combinedResolver.resolve(name, new ArgumentQueueImpl<>(context, args), context);
-
-          return this.debugPrintTransformation(debug, name, transformation);
-        } catch (final ParsingException e) {
-          this.handleParsingException(e, token, debug, name);
-          return null;
-        }
-      };
-      namedTagProvider = (name, args, token) -> {
-        try {
-          debug.accept("Attempting to match node as named '");
-          debug.accept(name);
-          debug.accept("'");
-          if (token != null) {
-            debug.accept(" at column ");
-            debug.accept(String.valueOf(token.startIndex()));
-          }
-          debug.accept("\n");
-
-          final Tag transformation = combinedResolver.resolveNamed(name, new NamedArgumentMapImpl<>(context, args), context);
-
-          return this.debugPrintTransformation(debug, name, transformation);
-        } catch (final ParsingException e) {
-          this.handleParsingException(e, token, debug, name);
-          return null;
-        }
-      };
-    } else {
-      sequentialTagProvider = (name, args, token) -> {
-        try {
-          return combinedResolver.resolve(name, new ArgumentQueueImpl<>(context, args), context);
-        } catch (final ParsingException ignored) {
-          return null;
-        }
-      };
-      namedTagProvider = (name, args, token) -> {
-        try {
-          return combinedResolver.resolveNamed(name, new NamedArgumentMapImpl<>(context, args), context);
-        } catch (final ParsingException ignored) {
-          return null;
-        }
-      };
-    }
-
-    final TokenParser.TagProvider transformationFactory = new TokenParser.TagProviderImpl(sequentialTagProvider, namedTagProvider);
     final Predicate<String> tagNameChecker = name -> {
       final String sanitized = TokenParser.TagProvider.sanitizePlaceholderName(name);
       return combinedResolver.has(sanitized);
@@ -194,6 +136,41 @@ record MiniMessageParser(TagResolver tagResolver) {
     }
 
     return root;
+  }
+
+  private <T extends Tag.Argument> TokenParser.TagProvider<T> getTransformationFactory(final ContextImpl context, final @Nullable Consumer<String> debug, final TagResolver combinedResolver) {
+    final TokenParser.TagProvider<T> transformationFactory;
+
+    if (debug != null) {
+      transformationFactory = (name, args, token) -> {
+        try {
+          debug.accept("Attempting to match node '");
+          debug.accept(name);
+          debug.accept("'");
+          if (token != null) {
+            debug.accept(" at column ");
+            debug.accept(String.valueOf(token.startIndex()));
+          }
+          debug.accept("\n");
+
+          final Tag transformation = combinedResolver.resolve(name, new ArgumentQueueImpl<>(context, args), context);
+
+          return this.debugPrintTransformation(debug, name, transformation);
+        } catch (final ParsingException e) {
+          this.handleParsingException(e, token, debug, name);
+          return null;
+        }
+      };
+    } else {
+      transformationFactory = (name, args, token) -> {
+        try {
+          return combinedResolver.resolve(name, new ArgumentQueueImpl<>(context, args), context);
+        } catch (final ParsingException ignored) {
+          return null;
+        }
+      };
+    }
+    return transformationFactory;
   }
 
   private void handleParsingException(final ParsingException exception, final @Nullable Token token, final Consumer<String> debug, final String name) {

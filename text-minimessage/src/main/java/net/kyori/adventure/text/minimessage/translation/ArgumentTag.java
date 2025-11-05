@@ -31,7 +31,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jspecify.annotations.Nullable;
 
-record ArgumentTag(List<Tag> arguments, TagResolver tagResolver) implements TagResolver.Sequential {
+record ArgumentTag(List<Tag> arguments, TagResolver tagResolver) implements TagResolver {
   private static final String NAME = "argument";
   private static final String NAME_1 = "arg";
 

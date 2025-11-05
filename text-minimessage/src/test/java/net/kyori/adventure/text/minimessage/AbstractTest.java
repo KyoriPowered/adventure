@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
+import net.kyori.adventure.text.minimessage.internal.util.ListMapHolder;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -75,7 +76,7 @@ public abstract class AbstractTest {
   }
 
   public static ArgumentQueue emptyArgumentQueue(final Context context) {
-    return new ArgumentQueueImpl<>(context, Collections.<Tag.Argument>emptyList());
+    return new ArgumentQueueImpl<>(context, ListMapHolder.empty());
   }
 
   public static Component virtualOfChildren(final ComponentLike... children) {

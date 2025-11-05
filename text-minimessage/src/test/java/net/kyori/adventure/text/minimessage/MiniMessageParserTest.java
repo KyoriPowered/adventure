@@ -34,7 +34,6 @@ import net.kyori.adventure.text.minimessage.internal.parser.TokenParser;
 import net.kyori.adventure.text.minimessage.internal.parser.TokenType;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
-import net.kyori.adventure.text.minimessage.tag.resolver.NamedArgumentMap;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.minimessage.tree.Node;
@@ -585,14 +584,9 @@ public class MiniMessageParserTest extends AbstractTest {
     this.assertParsedEquals(expected, input);
   }
 
-  private static final class AlwaysMatchingResolver implements TagResolver.Sequential, TagResolver.Named {
+  private static final class AlwaysMatchingResolver implements TagResolver {
     @Override
     public @NotNull Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) throws ParsingException {
-      return Tag.preProcessParsed("(meow)");
-    }
-
-    @Override
-    public @NotNull Tag resolveNamed(final @NotNull String name, final @NotNull NamedArgumentMap arguments, final @NotNull Context ctx) throws ParsingException {
       return Tag.preProcessParsed("(meow)");
     }
 

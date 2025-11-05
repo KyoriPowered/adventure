@@ -26,6 +26,7 @@ package net.kyori.adventure.text.minimessage;
 import java.util.ArrayList;
 import java.util.List;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -40,7 +41,7 @@ import static net.kyori.adventure.text.format.TextDecoration.ITALIC;
 
 public class MiniMessageNamedArgumentsTest extends AbstractTest {
 
-  private static final TagResolver INSERT_VALUE_RESOLVER = TagResolver.namedResolver("insert", (args, ctx) -> Tag.selfClosingInserting(
+  private static final TagResolver INSERT_VALUE_RESOLVER = TagResolver.resolver("insert", (args, ctx) -> Tag.selfClosingInserting(
     text(args.orThrow("value", "value is missing").value())
   ));
 
@@ -69,7 +70,7 @@ public class MiniMessageNamedArgumentsTest extends AbstractTest {
     final String input = "<repeat amount=5 text='Hello, World'>";
     final Component expected = text("Hello, World Hello, World Hello, World Hello, World Hello, World");
 
-    assertParsedEquals(MiniMessage.miniMessage(), expected, input, TagResolver.namedResolver("repeat",
+    assertParsedEquals(MiniMessage.miniMessage(), expected, input, TagResolver.resolver("repeat",
       (args, ctx) -> {
         final int amount = args.isPresent("amount") ? args.get("amount").asInt().getAsInt() : 1;
         final String text = args.orThrow("text", "text is missing").value();
@@ -94,7 +95,7 @@ public class MiniMessageNamedArgumentsTest extends AbstractTest {
       .append(text(" text!"))
       .build();
 
-    assertParsedEquals(MiniMessage.miniMessage(), expected, input, TagResolver.namedResolver("styled",
+    assertParsedEquals(MiniMessage.miniMessage(), expected, input, TagResolver.resolver("styled",
       (args, ctx) -> Tag.styling(builder -> {
         if (args.isPresent("color")) {
           builder.color(TextColor.fromCSSHexString(args.orThrow("color", "color is missing").value()));
@@ -140,16 +141,9 @@ public class MiniMessageNamedArgumentsTest extends AbstractTest {
 
   @Test
   void testQueuedTreatedAsNamed() {
-    final String input = "<red value=true>";
-    final Component expected = text("<red value=true>");
+    final String input = "<red value=true>test";
+    final Component expected = text("test", RED);
     assertParsedEquals(expected, input);
-  }
-
-  @Test
-  void testNamedTreatedAsQueued() {
-    final String input = "<named:valone:valtwo>";
-    final Component expected = text("<named:valone:valtwo>");
-    assertParsedEquals(MiniMessage.miniMessage(), expected, input, TagResolver.namedResolver("named", (args, ctx) -> Tag.inserting(text("wrong!"))));
   }
 
   @Test
@@ -157,18 +151,8 @@ public class MiniMessageNamedArgumentsTest extends AbstractTest {
     final String input = "<test>";
     final Component expected = text("pass");
     assertParsedEquals(MiniMessage.miniMessage(), expected, input,
-      TagResolver.namedResolver("test", (args, ctx) -> Tag.inserting(text("fail"))),
+      TagResolver.resolver("test", (args, ctx) -> Tag.inserting(text("fail"))),
       TagResolver.resolver("test", (args, ctx) -> Tag.inserting(text("pass")))
-    );
-  }
-
-  @Test
-  void testNamedQueuedCanCoexist() {
-    final String input = "<test> <test this_is_needed_for_it_to_be_recognized_correctly>";
-    final Component expected = text("Hello World!");
-    assertParsedEquals(MiniMessage.miniMessage(), expected, input,
-      TagResolver.resolver("test", (args, ctx) -> Tag.inserting(text("Hello"))),
-      TagResolver.namedResolver("test", (args, ctx) -> Tag.inserting(text("World!")))
     );
   }
 
@@ -176,7 +160,7 @@ public class MiniMessageNamedArgumentsTest extends AbstractTest {
   void testArgumentlessNamedTag() {
     final String input = "<no_args>";
     final Component expected = text("Works!");
-    assertParsedEquals(MiniMessage.miniMessage(), expected, input, TagResolver.namedResolver(
+    assertParsedEquals(MiniMessage.miniMessage(), expected, input, TagResolver.resolver(
       "no_args", (args, ctx) -> Tag.inserting(text("Works!"))
     ));
   }
@@ -206,7 +190,7 @@ public class MiniMessageNamedArgumentsTest extends AbstractTest {
   void testInvertedFlags() {
     final String input = "<test flag other_flag> <test !flag !other_flag>!";
     final Component expected = text("Adventure is very cool!");
-    assertParsedEquals(MiniMessage.miniMessage(), expected, input, TagResolver.namedResolver(
+    assertParsedEquals(MiniMessage.miniMessage(), expected, input, TagResolver.resolver(
       "test", (args, ctx) -> {
         final List<String> strings = new ArrayList<>();
         final TriState flag = args.flag("flag");

@@ -26,7 +26,6 @@ package net.kyori.adventure.text.minimessage;
 import net.kyori.adventure.pointer.Pointered;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
-import net.kyori.adventure.text.minimessage.tag.resolver.NamedArgumentMap;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jspecify.annotations.Nullable;
 
@@ -116,19 +115,6 @@ public sealed interface Context permits ContextImpl {
   );
 
   /**
-   * Create a new parsing exception.
-   *
-   * @param message a detail message describing the error
-   * @param tags the tag parts which caused the error
-   * @return the new parsing exception
-   * @since 5.1.0
-   */
-  ParsingException newException(
-    final String message,
-    final NamedArgumentMap tags
-  );
-
-  /**
    * Create a new parsing exception without reference to a specific location.
    *
    * @param message a detail message describing the error
@@ -150,21 +136,6 @@ public sealed interface Context permits ContextImpl {
     final String message,
     final @Nullable Throwable cause,
     final ArgumentQueue args
-  );
-
-  /**
-   * Create a new parsing exception.
-   *
-   * @param message a detail message describing the error
-   * @param cause the cause
-   * @param args arguments that caused the errors
-   * @return the new parsing exception
-   * @since 5.1.0
-   */
-  ParsingException newException(
-    final String message,
-    final @Nullable Throwable cause,
-    final NamedArgumentMap args
   );
 
   /**

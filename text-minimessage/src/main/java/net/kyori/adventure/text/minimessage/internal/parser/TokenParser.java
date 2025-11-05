@@ -25,6 +25,7 @@ package net.kyori.adventure.text.minimessage.internal.parser;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
@@ -43,10 +44,10 @@ import net.kyori.adventure.text.minimessage.internal.parser.node.RootNode;
 import net.kyori.adventure.text.minimessage.internal.parser.node.TagNode;
 import net.kyori.adventure.text.minimessage.internal.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.internal.parser.node.TextNode;
+import net.kyori.adventure.text.minimessage.internal.util.ListMapHolder;
 import net.kyori.adventure.text.minimessage.tag.Inserting;
 import net.kyori.adventure.text.minimessage.tag.ParserDirective;
 import net.kyori.adventure.text.minimessage.tag.Tag;
-import net.kyori.adventure.util.TriState;
 import org.intellij.lang.annotations.Subst;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
@@ -83,8 +84,8 @@ public final class TokenParser {
    * @throws ParsingException if invalid input is provided when in strict mode
    * @since 4.10.0
    */
-  public static RootNode parse(
-    final TagProvider tagProvider,
+  public static <T extends Tag.Argument> RootNode parse(
+    final TagProvider<T> tagProvider,
     final Predicate<String> tagNameChecker,
     final String message,
     final String originalMessage,
@@ -105,14 +106,14 @@ public final class TokenParser {
    * @return the resulting string
    * @since 4.10.0
    */
-  public static String resolvePreProcessTags(final String message, final TagProvider provider) {
+  public static <T extends Tag.Argument> String resolvePreProcessTags(final String message, final TagProvider<T> provider) {
     int passes = 0;
     String lastResult;
     String result = message;
 
     do {
       lastResult = result;
-      final StringResolvingMatchedTokenConsumer stringTokenResolver = new StringResolvingMatchedTokenConsumer(lastResult, provider);
+      final StringResolvingMatchedTokenConsumer<T> stringTokenResolver = new StringResolvingMatchedTokenConsumer<>(lastResult, provider);
 
       parseString(lastResult, false, stringTokenResolver);
       result = stringTokenResolver.result();
@@ -303,138 +304,93 @@ public final class TokenParser {
       final int startIndex = type == TokenType.CLOSE_TAG ? token.startIndex() + 2 : token.startIndex() + 1;
       final int endIndex = type == TokenType.OPEN_CLOSE_TAG ? token.endIndex() - 2 : token.endIndex() - 1;
 
-      SecondPassState state = SecondPassState.NORMAL;
-      boolean escaped = false;
-      char currentStringChar = 0;
+      boolean parseSequential = false;
 
-      TriState namedArguments = TriState.NOT_SET;
-      boolean nextNormalIsArgumentValue = false;
+      int currentIndex;
 
-      // Marker is the starting index for the current token
-      int marker = startIndex;
+      final String subString = message.substring(startIndex, endIndex);
+      currentIndex = readIdentifier(subString, 0, false);
+      insert(token, new Token(startIndex, startIndex + currentIndex, TokenType.TAG_VALUE));
 
-      for (int i = startIndex; i < endIndex; i++) {
-        final int codePoint = message.codePointAt(i);
-        if (!Character.isBmpCodePoint(i)) {
-          i++;
+      char currentChar;
+      while (currentIndex < subString.length()) {
+        currentChar = subString.charAt(currentIndex);
+
+        if (!parseSequential) {
+          if (currentChar == ' ') {
+            currentIndex++;
+            continue;
+          }
         }
 
-        if (!escaped) {
-          // if we're trying to escape and the next character exists
-          if (codePoint == ESCAPE && i + 1 < message.length()) {
-            final int nextCodePoint = message.codePointAt(i + 1);
-
-            escaped = switch (state) {
-              // allow escaping open tokens
-              case NORMAL -> nextCodePoint == TAG_START || nextCodePoint == ESCAPE;
-
-              // allow escaping closing string chars
-              case STRING -> currentStringChar == nextCodePoint || nextCodePoint == ESCAPE;
-            };
-
-            // only escape if we need to
-            if (escaped) {
-              continue;
-            }
-          }
-        } else {
-          escaped = false;
+        if (currentChar == SEPARATOR) {
+          parseSequential = true;
+          currentIndex++;
           continue;
         }
 
-        switch (state) {
-          case NORMAL:
-            // Values are split by : unless it's in a URL
-            if (codePoint == SEPARATOR) {
-              if (namedArguments == TriState.NOT_SET) {
-                namedArguments = TriState.FALSE;
-              } else if (namedArguments == TriState.TRUE) {
-                // If the arguments are named, colons should be interpreted as plain text.
-                break;
-              }
-
-              if (boundsCheck(message, i, 2) && message.charAt(i + 1) == '/' && message.charAt(i + 2) == '/') {
-                break;
-              }
-              if (marker == i) {
-                // 2 colons side-by-side like <::> or <:text> or <text::text> would lead to this happening
-                insert(token, new Token(i, i, TokenType.TAG_VALUE));
-                marker++;
-              } else {
-                insert(token, new Token(marker, i, TokenType.TAG_VALUE));
-                marker = i + 1;
-              }
-            } else if (codePoint == '\'' || codePoint == '"') {
-              state = SecondPassState.STRING;
-              currentStringChar = (char) codePoint;
-            } else if (codePoint == ' ') {
-              if (namedArguments == TriState.NOT_SET) {
-                // Having a whitespace here is nice and all, but there is a slight issue. In the event of a tag just looking like this <name >,
-                // it should not actually be interpreted as a named argument tag, since it has no arguments which would actually use that.
-                // We can simply check whether the remainer of this message is blank.
-                final String substring = message.substring(i, endIndex);
-                if (isBlank(substring)) {
-                  i += substring.length();
-                  break;
-                }
-
-                insert(token, new Token(marker, i, TokenType.TAG_VALUE));
-                namedArguments = TriState.TRUE;
-                marker = i + 1;
-                break;
-              } else if (namedArguments == TriState.FALSE) {
-                // If the arguments are unnamed, spaces are to be interpreted literally
-                break;
-              }
-
-              if (marker == i) {
-                // If two whitespace follow up on each other, like <name  toggle>, we just want to move the marker up by one without creating a token
-                marker++;
-                break;
-              }
-
-              insert(token, new Token(marker, i, nextNormalIsArgumentValue ? TokenType.TAG_VALUE : TokenType.TAG_VALUE_TOGGLE));
-              marker = i + 1;
-              nextNormalIsArgumentValue = false;
-            } else if (codePoint == NAME_VALUE_SEPARATOR) {
-              if (namedArguments != TriState.TRUE) {
-                break;
-              }
-
-              nextNormalIsArgumentValue = true;
-              insert(token, new Token(marker, i, TokenType.TAG_VALUE_NAME));
-              marker = i + 1;
-            }
-            break;
-          case STRING:
-            if (codePoint == currentStringChar) {
-              state = SecondPassState.NORMAL;
-            }
-            break;
+        if (parseSequential) {
+          final int nextIndex = readValue(subString, currentIndex, true, true);
+          insert(token, new Token(currentIndex + startIndex, nextIndex + startIndex, TokenType.TAG_VALUE));
+          currentIndex = nextIndex + 1;
+          continue;
         }
-      }
 
-      // anything not matched is the final part
-      if (token.childTokens() == null || token.childTokens().isEmpty()) {
-        insert(token, new Token(startIndex, endIndex, TokenType.TAG_VALUE));
-      } else if (namedArguments == TriState.TRUE) {
-        if (marker < endIndex) {
-          if (nextNormalIsArgumentValue) {
-            insert(token, new Token(marker, endIndex, TokenType.TAG_VALUE));
-          } else {
-            // If there are only whitespace characters remaining, we do not want to create a new token here, as it would be empty
-            if (!isBlank(message.substring(marker, endIndex))) {
-              insert(token, new Token(marker, endIndex, TokenType.TAG_VALUE_TOGGLE));
-            }
-          }
-        }
-      } else {
-        final int end = token.childTokens().getLast().endIndex();
-        if (end != endIndex) {
-          insert(token, new Token(end + 1, endIndex, TokenType.TAG_VALUE));
+        final int identifierIndex = readIdentifier(subString, currentIndex, true);
+        if (identifierIndex == subString.length() || (currentChar = subString.charAt(identifierIndex)) == ' ') {
+          insert(token, new Token(currentIndex + startIndex, identifierIndex + startIndex, TokenType.TAG_VALUE_TOGGLE));
+          currentIndex = identifierIndex + 1;
+        } else if (currentChar == NAME_VALUE_SEPARATOR) {
+          insert(token, new Token(currentIndex + startIndex, identifierIndex + startIndex, TokenType.TAG_VALUE_NAME));
+          currentIndex = identifierIndex + 1;
+          final int valueIndex = readValue(subString, currentIndex, false, true);
+          insert(token, new Token(currentIndex + startIndex, valueIndex + startIndex, TokenType.TAG_VALUE));
+          currentIndex = valueIndex + 1;
         }
       }
     }
+  }
+
+  /**
+   * Consume an identifier.
+   * @return the end index of the identifier
+   */
+  private static int readIdentifier(final String message, final int index, final boolean expectNamedSeparator) {
+    for (int i = index; i < message.length(); i++) {
+      final char curr = message.charAt(i);
+
+      if (curr == ' ' || (expectNamedSeparator && curr == NAME_VALUE_SEPARATOR) || (!expectNamedSeparator && curr == SEPARATOR)) {
+        return i;
+      }
+    }
+    return message.length();
+  }
+
+  private static int readValue(final String message, final int index, final boolean expectColon, final boolean mayAttemptString) {
+    final char firstChar = message.charAt(index);
+    final boolean attemptString = mayAttemptString && (firstChar == '\'' || firstChar == '"');
+
+    for (int i = attemptString ? index + 1 : index; i < message.length(); i++) {
+      final char curr = message.charAt(i);
+
+      if (attemptString) {
+        if (curr == firstChar && message.charAt(i - 1) != '\\') {
+          return i + 1;
+        }
+        continue;
+      }
+
+      if ((!expectColon && curr == ' ') || (expectColon && curr == SEPARATOR)) {
+        return i;
+      }
+    }
+
+    if (attemptString) {
+      // No closing ' or " found; trying again, but disabling stringification
+      return readValue(message, index, expectColon, false);
+    }
+
+    return message.length();
   }
 
   private static boolean isBlank(final CharSequence cs) {
@@ -453,8 +409,8 @@ public final class TokenParser {
   /*
    * Build a tree from the OPEN_TAG and CLOSE_TAG tokens
    */
-  private static RootNode buildTree(
-    final TagProvider tagProvider,
+  private static <T extends Tag.Argument> RootNode buildTree(
+    final TagProvider<T> tagProvider,
     final Predicate<String> tagNameChecker,
     final List<Token> tokens,
     final String message,
@@ -520,7 +476,7 @@ public final class TokenParser {
           final String closeTagName = closeValues.getFirst();
 
           if (tagNameChecker.test(closeTagName)) {
-            final Tag tag = tagProvider.resolveSequential(closeTagName);
+            final Tag tag = tagProvider.resolve(closeTagName);
 
             if (tag == ParserDirective.RESET) {
               // This is a synthetic node, closing it means nothing in the context of building a tree
@@ -721,57 +677,25 @@ public final class TokenParser {
   }
 
   /**
-   * A special tag provider for tags with queued arguments.
-   *
-   * @param <T> argument
-   * @since 5.1.0
-   */
-  @ApiStatus.Internal
-  public interface SequentialTagProvider<T extends Tag.Argument> {
-    /**
-     * Look up a tag.
-     *
-     * <p>Parsing exceptions must be caught and handled within this method.</p>
-     *
-     * @param name the tag name, pre-sanitized
-     * @param trimmedArgs arguments, with the tag name trimmed off
-     * @param token the token, if this tag is from a parse stream
-     * @return a tag
-     * @since 4.10.0
-     */
-    @Nullable Tag resolveSequential(final String name, final List<T> trimmedArgs, final @Nullable Token token);
-  }
-
-  /**
-   * A special tag provider for tags with named arguments.
-   *
-   * @param <T> argument
-   * @since 5.1.0
-   */
-  @ApiStatus.Internal
-  public interface NamedTagProvider<T extends Tag.Argument> {
-    /**
-     * Look up a tag.
-     *
-     * <p>Parsing exceptions must be caught and handled within this method.</p>
-     *
-     * @param name the tag name, pre-sanitized
-     * @param trimmedArgs arguments, with the tag name trimmed off
-     * @param token the token, if this tag is from a parse stream
-     * @return a tag
-     * @since 4.10.0
-     */
-    @Nullable Tag resolveNamed(final String name, final Map<String, T> trimmedArgs, final @Nullable Token token);
-  }
-
-  /**
-   * Normalizing provider for tag information.
+   * A provider for tag information.
    *
    * @param <T> tag argument
    * @since 4.10.0
    */
   @ApiStatus.Internal
-  public interface TagProvider<T extends Tag.Argument> extends SequentialTagProvider<T>, NamedTagProvider<T> {
+  public interface TagProvider<T extends Tag.Argument> {
+    /**
+     * Look up a tag.
+     *
+     * <p>Parsing exceptions must be caught and handled within this method.</p>
+     *
+     * @param name the tag name, pre-sanitized
+     * @param trimmedArgs arguments, with the tag name trimmed off
+     * @param token the token, if this tag is from a parse stream
+     * @return a tag
+     * @since 4.10.0
+     */
+    @Nullable Tag resolve(final String name, final ListMapHolder<T, String, T> trimmedArgs, final @Nullable Token token);
 
     /**
      * Get whether a list of tokens contains a {@link TokenType#TAG_VALUE_NAME} or {@link TokenType#TAG_VALUE_TOGGLE}.
@@ -807,72 +731,20 @@ public final class TokenParser {
      * @return a tag, if any is available
      * @since 5.1.0
      */
-    default @Nullable Tag resolveSequential(final String name) {
-      return this.resolveSequential(name, Collections.emptyList(), null);
+    default @Nullable Tag resolve(final String name) {
+      return this.resolve(name, ListMapHolder.empty(), null);
     }
 
     /**
-     * Resolve by sanitized name.
+     * Resolve by node.
      *
-     * @param name sanitized name
+     * @param node tag node
      * @return a tag, if any is available
-     * @since 5.1.0
-     */
-    default @Nullable Tag resolveNamed(final String name) {
-      return this.resolveNamed(name, Collections.emptyMap(), null);
-    }
-
-    /**
-     * Resolve the provided node smartly.
-     *
-     * <p>
-     * This method first checks if the node is named and then routes
-     * the call to either {@link #resolveNamed(TagNode)} or {@link #resolveSequential(TagNode)}
-     * depending on the result.
-     * </p>
-     *
-     * @param node the node
-     * @return the resolved tag, or null
      * @since 5.1.0
      */
     default @Nullable Tag resolve(final TagNode node) {
-      if (this.isNamed(node)) {
-        return this.resolveNamed(node);
-      }
-
-      final Tag out = this.resolveSequential(node);
-      if (node.parts().size() == 1 && out == null) {
-        // This might be a named tag which has no arguments provided.
-        return this.resolveNamed(node);
-      }
-
-      return out;
-    }
-
-    /**
-     * Resolve by node.
-     *
-     * @param node tag node
-     * @return a tag, if any is available
-     * @since 5.1.0
-     */
-    default @Nullable Tag resolveSequential(final TagNode node) {
-      return this.resolveSequential(
-        TagProvider.sanitizePlaceholderName(node.name()),
-        (List<T>) node.parts().subList(1, node.parts().size()),
-        node.token()
-      );
-    }
-
-    /**
-     * Resolve by node.
-     *
-     * @param node tag node
-     * @return a tag, if any is available
-     * @since 5.1.0
-     */
-    default @Nullable Tag resolveNamed(final TagNode node) {
       final Map<String, T> map = new TreeMap<>();
+      final List<T> list = new LinkedList<>();
 
       final List<TagPart> parts = node.parts();
       for (int i = 1, partsSize = parts.size(); i < partsSize; i++) {
@@ -885,17 +757,16 @@ public final class TokenParser {
 
           map.put(part.value(), (T) parts.get(i + 1));
           i++;
-          continue;
-        }
-
-        if (part.token().type() == TokenType.TAG_VALUE_TOGGLE) {
+        } else if (part.token().type() == TokenType.TAG_VALUE_TOGGLE) {
           map.put(part.value(), (T) part);
+        } else {
+          list.add((T) part);
         }
       }
 
-      return this.resolveNamed(
+      return this.resolve(
         TagProvider.sanitizePlaceholderName(node.name()),
-        map,
+        ListMapHolder.of(list, map),
         node.token()
       );
     }
@@ -911,38 +782,6 @@ public final class TokenParser {
      */
     static String sanitizePlaceholderName(final String name) {
       return name.toLowerCase(Locale.ROOT);
-    }
-  }
-
-  /**
-   * A basic implementation of a {@link TagProvider} for convenience.
-   *
-   * @param sequential the sequential provider
-   * @param named the named provider
-   * @param <T> tag argument
-   * @since 5.1.0
-   */
-  @ApiStatus.Internal
-  public record TagProviderImpl<T extends Tag.Argument>(SequentialTagProvider<T> sequential, NamedTagProvider<T> named) implements TagProvider<T> {
-
-    /**
-     * {@inheritDoc}
-     *
-     * @since 5.1.0
-     */
-    @Override
-    public @Nullable Tag resolveNamed(final String name, final Map<String, T> trimmedArgs, final @Nullable Token token) {
-      return this.named.resolveNamed(name, trimmedArgs, token);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @since 5.1.0
-     */
-    @Override
-    public @Nullable Tag resolveSequential(final String name, final List<T> trimmedArgs, final @Nullable Token token) {
-      return this.sequential.resolveSequential(name, trimmedArgs, token);
     }
   }
 }

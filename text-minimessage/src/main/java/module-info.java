@@ -5,6 +5,8 @@
  */
 module net.kyori.adventure.text.minimessage {
   requires transitive net.kyori.adventure.api;
+  requires org.jetbrains.annotations;
+  requires java.management;
 
   exports net.kyori.adventure.text.minimessage;
   exports net.kyori.adventure.text.minimessage.tag;

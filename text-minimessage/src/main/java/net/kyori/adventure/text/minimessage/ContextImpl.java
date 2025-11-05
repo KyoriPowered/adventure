@@ -23,8 +23,8 @@
  */
 package net.kyori.adventure.text.minimessage;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.pointer.Pointered;
@@ -32,9 +32,9 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.internal.parser.ParsingExceptionImpl;
 import net.kyori.adventure.text.minimessage.internal.parser.Token;
 import net.kyori.adventure.text.minimessage.internal.parser.node.TagPart;
+import net.kyori.adventure.text.minimessage.internal.util.ListMapHolder;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
-import net.kyori.adventure.text.minimessage.tag.resolver.NamedArgumentMap;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jspecify.annotations.Nullable;
 
@@ -167,18 +167,8 @@ final class ContextImpl implements Context {
   }
 
   @Override
-  public ParsingException newException(final String message, final NamedArgumentMap tags) {
-    return new ParsingExceptionImpl(message, this.message, null, false, tagsToTokens(((NamedArgumentMapImpl<?>) tags).args()));
-  }
-
-  @Override
   public ParsingException newException(final String message, final @Nullable Throwable cause, final ArgumentQueue tags) {
     return new ParsingExceptionImpl(message, this.message, cause, false, tagsToTokens(((ArgumentQueueImpl<?>) tags).args()));
-  }
-
-  @Override
-  public ParsingException newException(final String message, final @Nullable Throwable cause, final NamedArgumentMap args) {
-    return new ParsingExceptionImpl(message, this.message, cause, false, tagsToTokens(((NamedArgumentMapImpl<?>) args).args()));
   }
 
   private Component deserializeWithOptionalTarget(final String message, final TagResolver tagResolver) {
@@ -189,21 +179,17 @@ final class ContextImpl implements Context {
     }
   }
 
-  private static Token[] tagsToTokens(final List<? extends Tag.Argument> tags) {
-    final Token[] tokens = new Token[tags.size()];
-    for (int i = 0, length = tokens.length; i < length; i++) {
-      tokens[i] = ((TagPart) tags.get(i)).token();
-    }
-    return tokens;
-  }
+  private static <T extends Tag.Argument> Token[] tagsToTokens(final ListMapHolder<T, String, T> tags) {
+    final List<Token> tokens = new ArrayList<>(tags.map().size() + tags.list().size());
 
-  private static Token[] tagsToTokens(final Map<String, ? extends Tag.Argument> tags) {
-    final Token[] tokens = new Token[tags.size()];
-
-    int index = 0;
-    for (final Tag.Argument value : tags.values()) {
-      tokens[index++] = ((TagPart) value).token();
+    for (final T tag : tags.list()) {
+      tokens.add(((TagPart) tag).token());
     }
-    return tokens;
+
+    for (final Tag.Argument value : tags.map().values()) {
+      tokens.add(((TagPart) value).token());
+    }
+
+    return tokens.toArray(Token[]::new);
   }
 }

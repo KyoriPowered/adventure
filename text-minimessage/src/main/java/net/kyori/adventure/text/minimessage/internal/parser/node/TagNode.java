@@ -50,11 +50,11 @@ public final class TagNode extends ElementNode {
    * @param tagProvider the tag provider
    * @since 4.10.0
    */
-  public TagNode(
+  public <T extends Tag.Argument> TagNode(
       final ElementNode parent,
       final Token token,
       final String sourceMessage,
-      final TokenParser.TagProvider tagProvider
+      final TokenParser.TagProvider<T> tagProvider
   ) {
     super(parent, token, sourceMessage);
     this.parts = genParts(token, sourceMessage, tagProvider);
@@ -65,10 +65,10 @@ public final class TagNode extends ElementNode {
     }
   }
 
-  private static List<TagPart> genParts(
+  private static <T extends Tag.Argument> List<TagPart> genParts(
     final Token token,
     final String sourceMessage,
-    final TokenParser.TagProvider tagProvider
+    final TokenParser.TagProvider<T> tagProvider
   ) {
     final ArrayList<TagPart> parts = new ArrayList<>();
 

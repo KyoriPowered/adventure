@@ -44,11 +44,6 @@ final class EmptyTagResolver implements TagResolver, MappableResolver, Serializa
   }
 
   @Override
-  public @Nullable Tag resolveNamed(final String name, final NamedArgumentMap arguments, final Context ctx) throws ParsingException {
-    return null;
-  }
-
-  @Override
   public boolean has(final String name) {
     return false;
   }

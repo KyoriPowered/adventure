@@ -34,7 +34,6 @@ import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.internal.TagInternals;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
-import net.kyori.adventure.text.minimessage.tag.resolver.NamedArgumentMap;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.intellij.lang.annotations.Subst;
 import org.jspecify.annotations.Nullable;
@@ -61,21 +60,6 @@ public interface SerializableResolver {
   }
 
   /**
-   * Create a tag resolver that only responds to a single tag name, and whose value does not depend on that name.
-   *
-   * <p>The resolver created is a special resolver, which listens to named arguments instead of sequential ones.</p>
-   *
-   * @param name the name to respond to
-   * @param handler the tag handler, may throw {@link ParsingException} if provided arguments are in an invalid format
-   * @param componentClaim the claim to test components against
-   * @return a resolver that creates tags using the provided handler
-   * @since 5.1.0
-   */
-  static TagResolver claimingComponentNamed(final String name, final BiFunction<NamedArgumentMap, Context, Tag> handler, final Function<Component, @Nullable Emitable> componentClaim) {
-    return claimingComponentNamed(Collections.singleton(name), handler, componentClaim);
-  }
-
-  /**
    * Create a tag resolver that only responds to certain tag names, and whose value does not depend on that name.
    *
    * @param names the names to respond to
@@ -90,27 +74,7 @@ public interface SerializableResolver {
       TagInternals.assertValidTagName(name);
     }
     requireNonNull(handler, "handler");
-    return new SequentialComponentClaimingResolverImpl(ownNames, handler, componentClaim);
-  }
-
-  /**
-   * Create a tag resolver that only responds to certain tag names, and whose value does not depend on that name.
-   *
-   * <p>The resolver created is a special resolver, which listens to named arguments instead of sequential ones.</p>
-   *
-   * @param names the names to respond to
-   * @param handler the tag handler, may throw {@link ParsingException} if provided arguments are in an invalid format
-   * @param componentClaim the claim to test components against
-   * @return a resolver that creates tags using the provided handler
-   * @since 5.1.0
-   */
-  static TagResolver claimingComponentNamed(final Set<String> names, final BiFunction<NamedArgumentMap, Context, Tag> handler, final Function<Component, @Nullable Emitable> componentClaim) {
-    final Set<String> ownNames = new HashSet<>(names);
-    for (final @Subst("") String name : ownNames) {
-      TagInternals.assertValidTagName(name);
-    }
-    requireNonNull(handler, "handler");
-    return new NamedComponentClaimingResolverImpl(ownNames, handler, componentClaim);
+    return new ComponentClaimingResolverImpl(ownNames, handler, componentClaim);
   }
 
   /**
@@ -124,21 +88,6 @@ public interface SerializableResolver {
    */
   static TagResolver claimingStyle(final String name, final BiFunction<ArgumentQueue, Context, Tag> handler, final StyleClaim<?> styleClaim) {
     return claimingStyle(Collections.singleton(name), handler, styleClaim);
-  }
-
-  /**
-   * Create a tag resolver that only responds to a single tag name, and whose value does not depend on that name.
-   *
-   * <p>The resolver created is a special resolver, which listens to named arguments instead of sequential ones.</p>
-   *
-   * @param name the name to respond to
-   * @param handler the tag handler, may throw {@link ParsingException} if provided arguments are in an invalid format
-   * @param styleClaim the extractor for style claims on components
-   * @return a resolver that creates tags using the provided handler
-   * @since 5.1.0
-   */
-  static TagResolver claimingStyleNamed(final String name, final BiFunction<NamedArgumentMap, Context, Tag> handler, final StyleClaim<?> styleClaim) {
-    return claimingStyleNamed(Collections.singleton(name), handler, styleClaim);
   }
 
   /**
@@ -156,27 +105,7 @@ public interface SerializableResolver {
       TagInternals.assertValidTagName(name);
     }
     requireNonNull(handler, "handler");
-    return new SequentialStyleClaimingResolverImpl(ownNames, handler, styleClaim);
-  }
-
-  /**
-   * Create a tag resolver that only responds to certain tag names, and whose value does not depend on that name.
-   *
-   * <p>The resolver created is a special resolver, which listens to named arguments instead of sequential ones.</p>
-   *
-   * @param names the names to respond to
-   * @param handler the tag handler, may throw {@link ParsingException} if provided arguments are in an invalid format
-   * @param styleClaim the extractor for style claims on components
-   * @return a resolver that creates tags using the provided handler
-   * @since 5.1.0
-   */
-  static TagResolver claimingStyleNamed(final Set<String> names, final BiFunction<NamedArgumentMap, Context, Tag> handler, final StyleClaim<?> styleClaim) {
-    final Set<String> ownNames = new HashSet<>(names);
-    for (final @Subst("") String name : ownNames) {
-      TagInternals.assertValidTagName(name);
-    }
-    requireNonNull(handler, "handler");
-    return new NamedStyleClaimingResolverImpl(ownNames, handler, styleClaim);
+    return new StyleClaimingResolverImpl(ownNames, handler, styleClaim);
   }
 
   /**

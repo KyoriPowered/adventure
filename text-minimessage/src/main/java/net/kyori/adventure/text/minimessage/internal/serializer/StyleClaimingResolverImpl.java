@@ -32,7 +32,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jspecify.annotations.Nullable;
 
-record SequentialStyleClaimingResolverImpl(Set<String> names, BiFunction<ArgumentQueue, Context, Tag> handler, @Nullable StyleClaim<?> styleClaim)
+record StyleClaimingResolverImpl(Set<String> names, BiFunction<ArgumentQueue, Context, Tag> handler, @Nullable StyleClaim<?> styleClaim)
   implements TagResolver, SerializableResolver.Single {
   @Override
   public @Nullable Tag resolve(final String name, final ArgumentQueue arguments, final Context ctx) throws ParsingException {

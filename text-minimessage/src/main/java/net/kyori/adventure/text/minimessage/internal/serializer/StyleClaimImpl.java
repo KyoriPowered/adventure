@@ -30,7 +30,7 @@ import java.util.function.Predicate;
 import net.kyori.adventure.text.format.Style;
 import org.jspecify.annotations.Nullable;
 
-record StyleClaimImpl<V>(String claimKey, Function<Style, V> lens, Predicate<V> filter, BiConsumer<V, TokenEmitter> emitable) implements StyleClaim<V> {
+record StyleClaimImpl<V>(String claimKey, Function<Style, @Nullable V> lens, Predicate<V> filter, BiConsumer<V, TokenEmitter> emitable) implements StyleClaim<V> {
   @Override
   public @Nullable Emitable apply(final Style style) {
     final V element = this.lens.apply(style);

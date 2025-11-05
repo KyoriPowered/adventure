@@ -36,36 +36,6 @@ import org.jspecify.annotations.Nullable;
 record SequentialTagResolver(TagResolver[] resolvers) implements TagResolver, SerializableResolver {
 
   @Override
-  public @Nullable Tag resolveNamed(final String name, final NamedArgumentMap arguments, final Context ctx) throws ParsingException {
-    ParsingException thrown = null;
-    for (final TagResolver resolver : this.resolvers) {
-      try {
-        final Tag placeholder = resolver.resolveNamed(name, arguments, ctx);
-
-        if (placeholder != null) return placeholder;
-      } catch (final ParsingException ex) {
-        if (thrown == null) {
-          thrown = ex;
-        } else {
-          thrown.addSuppressed(ex);
-        }
-      } catch (final Exception ex) {
-        final ParsingException err = ctx.newException("Exception thrown while parsing <" + name + ">", ex, arguments);
-        if (thrown == null) {
-          thrown = err;
-        } else {
-          thrown.addSuppressed(err);
-        }
-      }
-    }
-
-    if (thrown != null) {
-      throw thrown;
-    }
-    return null;
-  }
-
-  @Override
   public @Nullable Tag resolve(final String name, final ArgumentQueue arguments, final Context ctx) throws ParsingException {
     ParsingException thrown = null;
     for (final TagResolver resolver : this.resolvers) {
