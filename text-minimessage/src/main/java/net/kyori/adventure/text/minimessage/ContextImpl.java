@@ -182,12 +182,12 @@ final class ContextImpl implements Context {
   private static <T extends Tag.Argument> Token[] tagsToTokens(final ListMapHolder<T, String, T> tags) {
     final List<Token> tokens = new ArrayList<>(tags.map().size() + tags.list().size());
 
-    for (final T tag : tags.list()) {
-      tokens.add(((TagPart) tag).token());
-    }
-
     for (final Tag.Argument value : tags.map().values()) {
       tokens.add(((TagPart) value).token());
+    }
+
+    for (final T tag : tags.list()) {
+      tokens.add(((TagPart) tag).token());
     }
 
     return tokens.toArray(Token[]::new);

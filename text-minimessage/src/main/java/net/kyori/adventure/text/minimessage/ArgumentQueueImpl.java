@@ -29,17 +29,14 @@ import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.util.TriState;
 import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-/**
+/*
  * Note to anyone looking at this class and wondering about the {@link NonNull}s. For
  * some reason, IntelliJ completely ignores any {@link NullMarked} annotations on the package
  * or on the class, so these pop methods had to be annotated explicitly ¯\_(ツ)_/¯.
- *
- * @param <T> type of the tag argument
  */
 final class ArgumentQueueImpl<T extends Tag.Argument> implements ArgumentQueue {
   private final Context context;

@@ -767,7 +767,7 @@ public final class TokenParser {
      * @param trimmedArgs arguments, with the tag name trimmed off
      * @param token the token, if this tag is from a parse stream
      * @return a tag
-     * @since 4.10.0
+     * @since 5.1.0
      */
     @Nullable Tag resolve(final String name, final ListMapHolder<T, String, T> trimmedArgs, final @Nullable Token token);
 
@@ -776,7 +776,7 @@ public final class TokenParser {
      *
      * @param name sanitized name
      * @return a tag, if any is available
-     * @since 5.1.0
+     * @since 4.10.0
      */
     default @Nullable Tag resolve(final String name) {
       return this.resolve(name, ListMapHolder.empty(), null);
@@ -787,7 +787,7 @@ public final class TokenParser {
      *
      * @param node tag node
      * @return a tag, if any is available
-     * @since 5.1.0
+     * @since 4.10.0
      */
     @SuppressWarnings("unchecked")
     default @Nullable Tag resolve(final TagNode node) {
