@@ -34,6 +34,7 @@ import org.jspecify.annotations.Nullable;
 
 record StyleClaimingResolverImpl(Set<String> names, BiFunction<ArgumentQueue, Context, Tag> handler, @Nullable StyleClaim<?> styleClaim)
   implements TagResolver, SerializableResolver.Single {
+
   @Override
   public @Nullable Tag resolve(final String name, final ArgumentQueue arguments, final Context ctx) throws ParsingException {
     if (!this.names.contains(name)) {

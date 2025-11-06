@@ -80,6 +80,7 @@ public final class TokenParser {
    * @param message the minimessage string to parse, after processing for preprocess tags
    * @param originalMessage the string to parse, before preprocess tags
    * @param strict whether parsing in strict mode
+   * @param <T> type of the tag argument
    * @return the root of the resulting tree
    * @throws ParsingException if invalid input is provided when in strict mode
    * @since 4.10.0
@@ -103,6 +104,7 @@ public final class TokenParser {
    *
    * @param message the message
    * @param provider the tag resolver, to gather preprocess tags
+   * @param <T> type of the tag argument
    * @return the resulting string
    * @since 4.10.0
    */
@@ -385,6 +387,10 @@ public final class TokenParser {
 
   /**
    * Read an identifier.
+   *
+   * @param message the inner part of a token
+   * @param index the index to start reading at
+   * @param expectNamedSeparator whether to expect a separator between named arguments or a colon for sequential ones
    * @return the end index of the identifier
    */
   private static int readIdentifier(final String message, final int index, final boolean expectNamedSeparator) {
@@ -411,6 +417,10 @@ public final class TokenParser {
 
   /**
    * Read a named value.
+   *
+   * @param message the inner part of a token
+   * @param index the index to start reading at
+   * @param mayAttemptString whether this pass is allowed to try parse strings
    * @return the end index of the value
    */
   private static int readNamedValue(final String message, final int index, final boolean mayAttemptString) {
@@ -424,10 +434,7 @@ public final class TokenParser {
         if (curr == firstChar && message.charAt(i - 1) != '\\') {
           return i + 1;
         }
-        continue;
-      }
-
-      if (curr == ' ') {
+      } else if (curr == ' ') {
         return i;
       }
     }
@@ -442,6 +449,10 @@ public final class TokenParser {
 
   /**
    * Read a sequential value.
+   *
+   * @param message the inner part of a token
+   * @param index the index to start reading at
+   * @param mayAttemptString whether this pass is allowed to try parse strings
    * @return the end index of the value
    */
   private static int readSequentialValue(final String message, final int index, final boolean mayAttemptString) {

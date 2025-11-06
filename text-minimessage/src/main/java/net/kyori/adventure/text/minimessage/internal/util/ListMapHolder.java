@@ -27,12 +27,42 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A holder for a string and a map.
+ *
+ * @param list list to hold
+ * @param map map to hold
+ * @param <E> type of the list
+ * @param <K> type of the map key
+ * @param <V> type of the map value
+ * @since 5.1.0
+ */
 public record ListMapHolder<E, K, V>(List<E> list, Map<K, V> map) {
+  /**
+   * Create a new empty {@link ListMapHolder}.
+   *
+   * @param <E> type of the list
+   * @param <K> type of the map key
+   * @param <V> type of the map value
+   * @return a new empty instance
+   * @since 5.1.0
+   */
   public static <E, K, V> ListMapHolder<E, K, V> empty() {
     return new ListMapHolder<>(Collections.emptyList(), Collections.emptyMap());
   }
 
-  public static <E, K, V> ListMapHolder<E, K, V> of(List<E> list, Map<K, V> map) {
+  /**
+   * Create a new {@link ListMapHolder}.
+   *
+   * @param list list to hold
+   * @param map map to hold
+   * @param <E> type of the list
+   * @param <K> type of the map key
+   * @param <V> type of the map value
+   * @return a new instance
+   * @since 5.1.0
+   */
+  public static <E, K, V> ListMapHolder<E, K, V> of(final List<E> list, final Map<K, V> map) {
     return new ListMapHolder<>(list, map);
   }
 }

@@ -107,7 +107,7 @@ public interface ArgumentQueue {
    * @return the argument
    * @since 5.1.0
    */
-  Tag.@org.jetbrains.annotations.Nullable Argument get(String name);
+  Tag.@Nullable Argument get(String name);
 
   /**
    * Get the value of a flag. If a flag is present {@code flag},

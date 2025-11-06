@@ -44,6 +44,7 @@ import static net.kyori.adventure.text.minimessage.internal.parser.TokenParser.t
 /**
  * A matched token consumer that produces a string and returns a copy of the string with {@link PreProcess} tags resolved.
  *
+ * @param <T> type of the tag argument
  * @since 4.10.0
  */
 public final class StringResolvingMatchedTokenConsumer<T extends Tag.Argument> extends MatchedTokenConsumer<String> {

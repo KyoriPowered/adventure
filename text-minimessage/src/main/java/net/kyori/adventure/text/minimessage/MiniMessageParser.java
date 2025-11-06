@@ -118,7 +118,7 @@ record MiniMessageParser(TagResolver tagResolver) {
       debug.accept("\n");
     }
 
-    final TokenParser.TagProvider<T> transformationFactory = getTransformationFactory(context, debug, combinedResolver);
+    final TokenParser.TagProvider<T> transformationFactory = this.transformationFactory(context, debug, combinedResolver);
 
     final Predicate<String> tagNameChecker = name -> {
       final String sanitized = TokenParser.TagProvider.sanitizePlaceholderName(name);
@@ -138,7 +138,7 @@ record MiniMessageParser(TagResolver tagResolver) {
     return root;
   }
 
-  private <T extends Tag.Argument> TokenParser.TagProvider<T> getTransformationFactory(final ContextImpl context, final @Nullable Consumer<String> debug, final TagResolver combinedResolver) {
+  private <T extends Tag.Argument> TokenParser.TagProvider<T> transformationFactory(final ContextImpl context, final @Nullable Consumer<String> debug, final TagResolver combinedResolver) {
     final TokenParser.TagProvider<T> transformationFactory;
 
     if (debug != null) {

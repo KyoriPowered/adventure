@@ -48,6 +48,7 @@ public final class TagNode extends ElementNode {
    * @param token the token that created this node
    * @param sourceMessage the source message
    * @param tagProvider the tag provider
+   * @param <T> type of the tag argument
    * @since 4.10.0
    */
   public <T extends Tag.Argument> TagNode(

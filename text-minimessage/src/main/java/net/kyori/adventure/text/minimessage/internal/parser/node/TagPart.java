@@ -42,6 +42,7 @@ public final class TagPart implements Tag.Argument {
    * @param sourceMessage the source message
    * @param token the token that creates this tag part
    * @param tagResolver the combined tag resolver
+   * @param <T> type of the tag argument
    * @since 4.10.0
    */
   public <T extends Tag.Argument> TagPart(

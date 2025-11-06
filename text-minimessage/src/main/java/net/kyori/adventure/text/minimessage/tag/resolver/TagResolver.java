@@ -220,9 +220,7 @@ public interface TagResolver {
    * @throws ParsingException if the provided arguments are invalid
    * @since 4.10.0
    */
-  default @Nullable Tag resolve(@TagPattern final String name, final ArgumentQueue arguments, final Context ctx) throws ParsingException {
-    return null;
-  }
+  @Nullable Tag resolve(@TagPattern final String name, final ArgumentQueue arguments, final Context ctx) throws ParsingException;
 
   /**
    * Get whether this resolver handles tags with a certain name.
@@ -233,7 +231,7 @@ public interface TagResolver {
    * @return whether this resolver has a tag with this name
    * @since 4.10.0
    */
-  boolean has(final String name);
+  boolean has(@TagPattern final String name);
 
   /**
    * A resolver that only handles a single tag key.
@@ -298,7 +296,7 @@ public interface TagResolver {
      * @since 4.10.0
      */
     @Override
-    default boolean has(final @Subst("") String name) {
+    default boolean has(@TagPattern final String name) {
       return this.resolve(name) != null;
     }
 
