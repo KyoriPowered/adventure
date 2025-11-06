@@ -23,11 +23,14 @@
  */
 package net.kyori.adventure.text.minimessage.benchmark;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.internal.parser.Token;
+import net.kyori.adventure.text.minimessage.internal.parser.TokenParser;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -35,9 +38,9 @@ import org.openjdk.jmh.annotations.Fork;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
 
-@Fork(value = 1, warmups = 1)
+@Fork(value = 2, warmups = 5)
 @BenchmarkMode(Mode.SampleTime)
-@OutputTimeUnit(TimeUnit.MICROSECONDS)
+@OutputTimeUnit(TimeUnit.NANOSECONDS)
 public class MiniMessageBenchmark {
   private static final Component MANY_COLORS = Component.textOfChildren(
     Component.text("red", NamedTextColor.RED),
@@ -46,6 +49,12 @@ public class MiniMessageBenchmark {
     Component.text("another", TextColor.color(0xb1b2b3)),
     Component.text("another", TextColor.color(0xf6a6a6))
   );
+
+  @Benchmark
+  public List<Token> testTokenization() {
+    final String input = "<red>A very <gradient:red:blue>cool<b> but also</b> <i>some <!i>what <i>complex<!i> and <click:run_command:/lol>crazy (<click:open_url:https://youtube.com/>click here for cool video</click>) <b><st><gold>MiniMessage String.";
+    return TokenParser.tokenize(input, true);
+  }
 
   @Benchmark
   public Component testNiceMix() {
