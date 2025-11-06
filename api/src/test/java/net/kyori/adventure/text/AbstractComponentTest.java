@@ -34,6 +34,7 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.format.StyleBuilderApplicable;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;
 
@@ -190,7 +191,7 @@ abstract class AbstractComponentTest<C extends ScopedComponent<C>, B extends Com
     assertNull(c0.color());
     TextAssertions.assertDecorations(c0, ImmutableSet.of(), ImmutableSet.of());
     assertNull(c0.clickEvent());
-    final C c1 = c0.mergeStyle(Component.text("xyz", NamedTextColor.RED, ImmutableSet.of(TextDecoration.BOLD)).clickEvent(ClickEvent.runCommand("/foo")), Collections.singleton(Style.Merge.COLOR));
+    final C c1 = c0.mergeStyle(Component.text("xyz", (StyleBuilderApplicable) NamedTextColor.RED, TextDecoration.BOLD).clickEvent(ClickEvent.runCommand("/foo")), Collections.singleton(Style.Merge.COLOR));
     assertEquals(NamedTextColor.RED, c1.color());
     TextAssertions.assertDecorations(c1, ImmutableSet.of(), ImmutableSet.of());
     assertNull(c1.clickEvent());
@@ -203,7 +204,7 @@ abstract class AbstractComponentTest<C extends ScopedComponent<C>, B extends Com
     assertNull(c0.color());
     TextAssertions.assertDecorations(c0, ImmutableSet.of(), ImmutableSet.of());
     assertNull(c0.clickEvent());
-    final C c1 = c0.mergeStyle(Component.text("xyz", NamedTextColor.RED, ImmutableSet.of(TextDecoration.BOLD)).clickEvent(ClickEvent.runCommand("/foo")), Collections.singleton(Style.Merge.DECORATIONS));
+    final C c1 = c0.mergeStyle(Component.text("xyz", (StyleBuilderApplicable) NamedTextColor.RED, TextDecoration.BOLD).clickEvent(ClickEvent.runCommand("/foo")), Collections.singleton(Style.Merge.DECORATIONS));
     assertNull(c1.color());
     TextAssertions.assertDecorations(c1, ImmutableSet.of(TextDecoration.BOLD), ImmutableSet.of());
     assertNull(c1.clickEvent());
@@ -216,7 +217,7 @@ abstract class AbstractComponentTest<C extends ScopedComponent<C>, B extends Com
     assertNull(c0.color());
     TextAssertions.assertDecorations(c0, ImmutableSet.of(), ImmutableSet.of());
     assertNull(c0.clickEvent());
-    final C c1 = c0.mergeStyle(Component.text("xyz", NamedTextColor.RED, ImmutableSet.of(TextDecoration.BOLD)).clickEvent(ClickEvent.runCommand("/foo")), Collections.singleton(Style.Merge.EVENTS));
+    final C c1 = c0.mergeStyle(Component.text("xyz", (StyleBuilderApplicable) NamedTextColor.RED, TextDecoration.BOLD).clickEvent(ClickEvent.runCommand("/foo")), Collections.singleton(Style.Merge.EVENTS));
     assertNull(c1.color());
     TextAssertions.assertDecorations(c1, ImmutableSet.of(), ImmutableSet.of());
     assertNotNull(c1.clickEvent());
@@ -228,7 +229,7 @@ abstract class AbstractComponentTest<C extends ScopedComponent<C>, B extends Com
     assertNull(c0.color());
     TextAssertions.assertDecorations(c0, ImmutableSet.of(), ImmutableSet.of());
     assertNull(c0.clickEvent());
-    final C c1 = c0.style(Component.text("xyz", NamedTextColor.RED, ImmutableSet.of(TextDecoration.BOLD)).clickEvent(ClickEvent.runCommand("/foo")).style());
+    final C c1 = c0.style(Component.text("xyz", (StyleBuilderApplicable) NamedTextColor.RED, TextDecoration.BOLD).clickEvent(ClickEvent.runCommand("/foo")).style());
     assertEquals(NamedTextColor.RED, c1.color());
     TextAssertions.assertDecorations(c1, ImmutableSet.of(TextDecoration.BOLD), ImmutableSet.of());
     assertNotNull(c1.clickEvent());
@@ -331,8 +332,8 @@ abstract class AbstractComponentTest<C extends ScopedComponent<C>, B extends Com
   @Test
   void testBuilderApplyDeep() {
     final C c0 = this.builder()
-      .append(Component.text("a", NamedTextColor.RED))
-      .append(Component.text("b", NamedTextColor.RED))
+      .append(Component.text("a", (StyleBuilderApplicable) NamedTextColor.RED))
+      .append(Component.text("b", (StyleBuilderApplicable) NamedTextColor.RED))
       .applyDeep(builder -> builder.color(NamedTextColor.GREEN))
       .build();
     final List<Component> children = c0.children();
@@ -345,11 +346,11 @@ abstract class AbstractComponentTest<C extends ScopedComponent<C>, B extends Com
   @Test
   void testCollectorNoSeparator() {
     final Component joined = Stream.of(
-      Component.text("Hello", NamedTextColor.RED),
+      Component.text("Hello", (StyleBuilderApplicable) NamedTextColor.RED),
       Component.text("World")
     ).collect(Component.toComponent());
     final Component expected = Component.text()
-      .append(Component.text("Hello", NamedTextColor.RED))
+      .append(Component.text("Hello", (StyleBuilderApplicable) NamedTextColor.RED))
       .append(Component.text("World"))
       .build();
 
@@ -359,12 +360,12 @@ abstract class AbstractComponentTest<C extends ScopedComponent<C>, B extends Com
   @Test
   void testCollectorWithSeparator() {
     final Component joined = Stream.of(
-      Component.text("Hello", NamedTextColor.RED),
+      Component.text("Hello", (StyleBuilderApplicable) NamedTextColor.RED),
       Component.text("World")
     ).collect(Component.toComponent(Component.space()));
 
     final Component expected = Component.text()
-      .append(Component.text("Hello", NamedTextColor.RED))
+      .append(Component.text("Hello", (StyleBuilderApplicable) NamedTextColor.RED))
       .append(Component.space())
       .append(Component.text("World"))
       .build();

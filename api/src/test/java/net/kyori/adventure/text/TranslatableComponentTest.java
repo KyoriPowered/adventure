@@ -26,6 +26,7 @@ package net.kyori.adventure.text;
 import com.google.common.collect.ImmutableSet;
 import java.util.Collections;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.StyleBuilderApplicable;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;
 
@@ -51,7 +52,7 @@ class TranslatableComponentTest extends AbstractComponentTest<TranslatableCompon
 
   @Test
   void testOf_color() {
-    final TranslatableComponent component = Component.translatable("multiplayer.player.left", NamedTextColor.GREEN);
+    final TranslatableComponent component = Component.translatable("multiplayer.player.left", (StyleBuilderApplicable) NamedTextColor.GREEN);
     assertEquals("multiplayer.player.left", component.key());
     assertEquals(NamedTextColor.GREEN, component.color());
     assertDecorations(component, ImmutableSet.of(), ImmutableSet.of());
@@ -59,8 +60,8 @@ class TranslatableComponentTest extends AbstractComponentTest<TranslatableCompon
 
   @Test
   void testOf_color_decorations() {
-    final TranslatableComponent c0 = Component.translatable("multiplayer.player.left", NamedTextColor.GREEN, TextDecoration.BOLD);
-    final TranslatableComponent c1 = Component.translatable("multiplayer.player.left", NamedTextColor.GREEN, ImmutableSet.of(TextDecoration.BOLD));
+    final TranslatableComponent c0 = Component.translatable("multiplayer.player.left", (StyleBuilderApplicable) NamedTextColor.GREEN, TextDecoration.BOLD);
+    final TranslatableComponent c1 = Component.translatable("multiplayer.player.left", (StyleBuilderApplicable) NamedTextColor.GREEN, TextDecoration.BOLD);
     assertEquals("multiplayer.player.left", c1.key());
     assertEquals(NamedTextColor.GREEN, c0.color());
     assertEquals(NamedTextColor.GREEN, c1.color());

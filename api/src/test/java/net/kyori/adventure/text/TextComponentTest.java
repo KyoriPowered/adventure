@@ -28,6 +28,7 @@ import com.google.common.testing.EqualsTester;
 import java.util.Collections;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.format.StyleBuilderApplicable;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;
@@ -89,13 +90,11 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
     new EqualsTester()
       .addEqualityGroup(
         Component.text("foo", Style.style(TextColor.color(0x0a1ab9))),
-        Component.text("foo", TextColor.color(0x0a1ab9)),
-        Component.text("foo", TextColor.color(0x0a1ab9), ImmutableSet.of())
+        Component.text("foo", (StyleBuilderApplicable) TextColor.color(0x0a1ab9))
       )
       .addEqualityGroup(
         Component.text("foo", Style.style(TextColor.color(0x0a1ab9), TextDecoration.BOLD)),
-        Component.text("foo", TextColor.color(0x0a1ab9), TextDecoration.BOLD),
-        Component.text("foo", TextColor.color(0x0a1ab9), ImmutableSet.of(TextDecoration.BOLD))
+        Component.text("foo", (StyleBuilderApplicable) TextColor.color(0x0a1ab9), TextDecoration.BOLD)
       )
       .testEquals();
   }
@@ -108,7 +107,7 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
 
   @Test
   void testOf_color() {
-    final TextComponent component = Component.text("foo", NamedTextColor.GREEN);
+    final TextComponent component = Component.text("foo", (StyleBuilderApplicable) NamedTextColor.GREEN);
     assertEquals("foo", component.content());
     assertEquals(NamedTextColor.GREEN, component.color());
     assertDecorations(component, ImmutableSet.of(), ImmutableSet.of());
@@ -116,7 +115,7 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
 
   @Test
   void testOf_color_decorations() {
-    final TextComponent component = Component.text("foo", NamedTextColor.GREEN, ImmutableSet.of(TextDecoration.BOLD));
+    final TextComponent component = Component.text("foo", (StyleBuilderApplicable) NamedTextColor.GREEN, TextDecoration.BOLD);
     assertEquals("foo", component.content());
     assertEquals(NamedTextColor.GREEN, component.color());
     assertDecorations(component, ImmutableSet.of(TextDecoration.BOLD), ImmutableSet.of());
