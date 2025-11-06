@@ -332,6 +332,13 @@ public class MiniMessageParserTest extends AbstractTest {
   }
 
   @Test
+  void testSequencedArgumentsWithSpace() {
+    final String input = "<c :red>Is this part of the named arguments update?";
+    final Component expected = Component.text("Is this part of the named arguments update?", RED);
+    assertParsedEquals(expected, input);
+  }
+
+  @Test
   void testNamedArgumentsTokens() {
     final String basicInput = "<gold>";
     final List<Token> expectedTokensBasicInput = Collections.singletonList(new Token(0, basicInput.length(), TokenType.OPEN_TAG));

@@ -26,6 +26,7 @@ package net.kyori.adventure.text.minimessage;
 import java.util.ArrayList;
 import java.util.List;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -217,5 +218,26 @@ public class MiniMessageNamedArgumentsTest extends AbstractTest {
     final String input = "<insert text = 'lol'>";
     final Component expected = text("<insert text = 'lol'>");
     assertParsedEquals(MiniMessage.miniMessage(), expected, input, INSERT_VALUE_RESOLVER);
+  }
+
+  @Test
+  void testCombined() {
+    final String input = "<double say_wassup value=hey! :true>";
+    final Component expected = text("hey!", Style.style(BOLD));
+    assertParsedEquals(expected, input, TagResolver.resolver("double", (args, ctx) -> {
+      if (args.flag("say_wassup").toBooleanOrElse(false)) {
+        return Tag.inserting(Component.text()
+          .content(args.get("value").value())
+          .style(builder -> {
+            if (args.popOr("Failed to pop style").isTrue()) {
+              builder.decoration(BOLD, true);
+            } else {
+              builder.decoration(BOLD, false);
+            }
+          })
+        );
+      }
+      return Tag.inserting(Component.text("Failed!"));
+    }));
   }
 }
