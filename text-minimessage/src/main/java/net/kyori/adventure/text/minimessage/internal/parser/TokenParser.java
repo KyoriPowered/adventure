@@ -23,17 +23,6 @@
  */
 package net.kyori.adventure.text.minimessage.internal.parser;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.TreeMap;
-import java.util.function.IntPredicate;
-import java.util.function.Predicate;
 import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.internal.TagInternals;
 import net.kyori.adventure.text.minimessage.internal.parser.match.MatchedTokenConsumer;
@@ -51,6 +40,17 @@ import net.kyori.adventure.text.minimessage.tag.Tag;
 import org.intellij.lang.annotations.Subst;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.TreeMap;
+import java.util.function.IntPredicate;
+import java.util.function.Predicate;
 
 /**
  * Handles parsing a string into a list of tokens and then into a tree of nodes.
@@ -306,13 +306,37 @@ public final class TokenParser {
 
       boolean parseSequential = false;
 
-      int currentIndex;
-
       final String subString = message.substring(startIndex, endIndex);
-      currentIndex = readIdentifier(subString, 0, false);
-      insert(token, new Token(startIndex, startIndex + currentIndex, TokenType.TAG_VALUE));
+      final int nameIndex = readIdentifier(subString, 0, false);
 
-      char currentChar;
+      if (nameIndex >= subString.length()) {
+        // special case where the tag is structured simply like '<name>'.
+        insert(token, new Token(startIndex, endIndex, TokenType.TAG_VALUE));
+        continue;
+      }
+
+      int currentIndex = nameIndex;
+      boolean onlyWhitespace = false;
+
+      char currentChar = subString.charAt(currentIndex);
+      while (currentChar == ' ') {
+        currentIndex++;
+        if (currentIndex >= subString.length()) {
+          onlyWhitespace = true;
+          break;
+        }
+        currentChar = subString.charAt(currentIndex);
+      }
+
+      if (onlyWhitespace) {
+        // the tag looks something like this '<name >', which should be an invalid tag.
+        insert(token, new Token(startIndex, endIndex, TokenType.TAG_VALUE));
+        continue;
+      }
+
+      // IF there are arguments, the tag name should be without spaces
+      insert(token, new Token(startIndex, startIndex + nameIndex, TokenType.TAG_VALUE));
+
       while (currentIndex < subString.length()) {
         currentChar = subString.charAt(currentIndex);
 
@@ -326,13 +350,18 @@ public final class TokenParser {
         if (currentChar == SEPARATOR) {
           parseSequential = true;
           currentIndex++;
+
+          if (currentIndex >= subString.length()) {
+            insert(token, new Token(currentIndex - 1, currentIndex - 1, TokenType.TAG_VALUE));
+            break;
+          }
           continue;
         }
 
         if (parseSequential) {
           final int nextIndex = readValue(subString, currentIndex, true, true);
           insert(token, new Token(currentIndex + startIndex, nextIndex + startIndex, TokenType.TAG_VALUE));
-          currentIndex = nextIndex + 1;
+          currentIndex = nextIndex;
           continue;
         }
 
@@ -380,7 +409,14 @@ public final class TokenParser {
         continue;
       }
 
-      if ((!expectColon && curr == ' ') || (expectColon && curr == SEPARATOR)) {
+      if (expectColon && curr == SEPARATOR) {
+        if (i + 2 < message.length() && message.charAt(i + 1) == '/' && message.charAt(i + 2) == '/') {
+          continue;
+        }
+        return i;
+      }
+
+      if ((!expectColon && curr == ' ')) {
         return i;
       }
     }
