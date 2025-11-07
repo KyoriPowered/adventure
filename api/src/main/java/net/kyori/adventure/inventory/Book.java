@@ -24,7 +24,6 @@
 package net.kyori.adventure.inventory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import net.kyori.adventure.audience.Audience;
@@ -68,7 +67,7 @@ public sealed interface Book extends Buildable<Book.Builder> permits BookImpl {
    * @since 4.0.0
    */
   static Book book(final Component title, final Component author, final Component... pages) {
-    return book(title, author, Arrays.asList(pages));
+    return book(title, author, List.of(pages));
   }
 
   /**
@@ -136,7 +135,7 @@ public sealed interface Book extends Buildable<Book.Builder> permits BookImpl {
    */
   @Contract(value = "_ -> new", pure = true)
   default Book pages(final Component... pages) {
-    return this.pages(Arrays.asList(pages));
+    return this.pages(List.of(pages));
   }
 
   /**

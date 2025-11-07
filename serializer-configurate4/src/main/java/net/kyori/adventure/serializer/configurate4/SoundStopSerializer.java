@@ -24,7 +24,7 @@
 package net.kyori.adventure.serializer.configurate4;
 
 import java.lang.reflect.Type;
-import java.util.Collections;
+import java.util.Map;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
@@ -62,7 +62,7 @@ final class SoundStopSerializer implements TypeSerializer<SoundStop> {
     value.node(SOUND).set(Key.class, obj == null ? null : obj.sound());
     value.node(SOURCE).set(Sound.Source.class, obj == null ? null : obj.source());
     if (value.empty()) {
-      value.set(Collections.emptyMap());
+      value.set(Map.of());
     }
   }
 }

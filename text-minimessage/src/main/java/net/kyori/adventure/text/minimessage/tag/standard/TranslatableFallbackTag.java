@@ -24,7 +24,6 @@
 package net.kyori.adventure.text.minimessage.tag.standard;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import net.kyori.adventure.text.Component;
@@ -73,7 +72,7 @@ final class TranslatableFallbackTag {
         with.add(ctx.deserialize(args.pop().value()));
       }
     } else {
-      with = Collections.emptyList();
+      with = List.of();
     }
     return with;
   }

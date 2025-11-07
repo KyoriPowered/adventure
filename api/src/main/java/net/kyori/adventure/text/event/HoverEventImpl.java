@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.text.event;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -92,25 +91,25 @@ record HoverEventImpl<V>(Action<V> action, V value) implements HoverEvent<V> {
     @Deprecated
     public ShowItem nbt(final @Nullable BinaryTagHolder nbt) {
       if (Objects.equals(nbt, this.nbt)) return this;
-      return new ShowItemImpl(this.item, this.count, nbt, Collections.emptyMap());
+      return new ShowItemImpl(this.item, this.count, nbt, Map.of());
     }
 
     @Override
     public ShowItem dataComponents(final Map<Key, DataComponentValue> holder) {
       if (Objects.equals(this.dataComponents, holder)) return this;
-      return new ShowItemImpl(this.item, this.count, null, holder.isEmpty() ? Collections.emptyMap() : Collections.unmodifiableMap(new HashMap<>(holder)));
+      return new ShowItemImpl(this.item, this.count, null, Map.copyOf(holder));
     }
 
     @Override
     public <V extends DataComponentValue> Map<Key, V> dataComponentsAs(final Class<V> targetType) {
       if (this.dataComponents.isEmpty()) {
-        return Collections.emptyMap();
+        return Map.of();
       } else {
         final Map<Key, V> results = new HashMap<>(this.dataComponents.size());
         for (final Map.Entry<Key, DataComponentValue> entry : this.dataComponents.entrySet()) {
           results.put(entry.getKey(), DataComponentValueConverterRegistry.convert(targetType, entry.getKey(), entry.getValue()));
         }
-        return Collections.unmodifiableMap(results);
+        return Map.copyOf(results);
       }
     }
   }

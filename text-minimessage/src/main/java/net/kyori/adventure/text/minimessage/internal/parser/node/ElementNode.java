@@ -25,7 +25,6 @@ package net.kyori.adventure.text.minimessage.internal.parser.node;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import net.kyori.adventure.text.minimessage.internal.parser.Token;
 import net.kyori.adventure.text.minimessage.internal.parser.TokenType;
@@ -96,7 +95,7 @@ public sealed class ElementNode implements Node permits RootNode, TagNode, Value
    */
   @Override
   public List<ElementNode> children() {
-    return Collections.unmodifiableList(this.children);
+    return List.copyOf(this.children);
   }
 
   /**

@@ -25,7 +25,7 @@ package net.kyori.adventure.text;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.testing.EqualsTester;
-import java.util.Collections;
+import java.util.List;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
@@ -193,7 +193,7 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
   void testEmptyChildrenKeepsEmpty() {
     assertSame(
       Component.empty(),
-      Component.text("").children(Collections.emptyList())
+      Component.text("").children(List.of())
     );
   }
 

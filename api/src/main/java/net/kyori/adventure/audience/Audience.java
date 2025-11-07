@@ -24,7 +24,6 @@
 package net.kyori.adventure.audience;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -124,7 +123,7 @@ public interface Audience extends Pointered {
     } else if (length == 1) {
       return audiences[0];
     }
-    return audience(Arrays.asList(audiences));
+    return audience(List.of(audiences));
   }
 
   /**

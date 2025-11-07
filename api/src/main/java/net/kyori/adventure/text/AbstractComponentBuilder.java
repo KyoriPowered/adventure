@@ -24,7 +24,6 @@
 package net.kyori.adventure.text;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
@@ -49,7 +48,7 @@ import static java.util.Objects.requireNonNull;
  */
 abstract sealed class AbstractComponentBuilder<C extends Component, B extends ComponentBuilder<C, B>> implements ComponentBuilder<C, B> permits AbstractNBTComponentBuilder, KeybindComponentImpl.BuilderImpl, ObjectComponentImpl.BuilderImpl, ScoreComponentImpl.BuilderImpl, SelectorComponentImpl.BuilderImpl, TextComponentImpl.BuilderImpl, TranslatableComponentImpl.BuilderImpl {
   // We use an empty list by default to prevent unnecessary list creation for components with no children
-  protected List<Component> children = Collections.emptyList();
+  protected List<Component> children = List.of();
   /*
    * We maintain two separate fields here - a style, and style builder. If we're creating this component builder from
    * another component, or someone provides a style via style(Style), then we don't need a builder - unless someone later
@@ -122,7 +121,7 @@ abstract sealed class AbstractComponentBuilder<C extends Component, B extends Co
   }
 
   private void prepareChildren() {
-    if (this.children == Collections.<Component>emptyList()) {
+    if (this.children.isEmpty()) {
       this.children = new ArrayList<>();
     }
   }
@@ -131,7 +130,7 @@ abstract sealed class AbstractComponentBuilder<C extends Component, B extends Co
   @SuppressWarnings("unchecked")
   public B applyDeep(final Consumer<? super ComponentBuilder<?, ?>> consumer) {
     this.apply(consumer);
-    if (this.children == Collections.<Component>emptyList()) {
+    if (this.children.isEmpty()) {
       return (B) this;
     }
     final ListIterator<Component> it = this.children.listIterator();
@@ -146,7 +145,7 @@ abstract sealed class AbstractComponentBuilder<C extends Component, B extends Co
   @Override
   @SuppressWarnings("unchecked")
   public B mapChildren(final Function<Component, ? extends Component> function) {
-    if (this.children == Collections.<Component>emptyList()) {
+    if (this.children.isEmpty()) {
       return (B) this;
     }
     final ListIterator<Component> it = this.children.listIterator();
@@ -164,7 +163,7 @@ abstract sealed class AbstractComponentBuilder<C extends Component, B extends Co
   @Override
   @SuppressWarnings("unchecked")
   public B mapChildrenDeep(final Function<Component, ? extends Component> function) {
-    if (this.children == Collections.<Component>emptyList()) {
+    if (this.children.isEmpty()) {
       return (B) this;
     }
     final ListIterator<Component> it = this.children.listIterator();
@@ -187,7 +186,7 @@ abstract sealed class AbstractComponentBuilder<C extends Component, B extends Co
 
   @Override
   public List<Component> children() {
-    return Collections.unmodifiableList(this.children);
+    return List.copyOf(this.children);
   }
 
   @Override

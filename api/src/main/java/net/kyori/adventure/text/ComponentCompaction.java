@@ -24,7 +24,6 @@
 package net.kyori.adventure.text;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import net.kyori.adventure.text.format.Style;
@@ -41,7 +40,7 @@ final class ComponentCompaction {
 
   static Component compact(final Component self, final @Nullable Style parentStyle) {
     final List<Component> children = self.children();
-    Component optimized = self.children(Collections.emptyList());
+    Component optimized = self.children(List.of());
     if (parentStyle != null) {
       optimized = optimized.style(self.style().unmerge(parentStyle));
     }

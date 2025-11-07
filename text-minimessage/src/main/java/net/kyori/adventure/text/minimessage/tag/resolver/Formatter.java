@@ -29,7 +29,7 @@ import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
-import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
@@ -198,6 +198,6 @@ public final class Formatter {
    * @since 4.18.0
    */
   public static TagResolver joining(@TagPattern final String key, final ComponentLike... components) {
-    return joining(key, Arrays.asList(components));
+    return joining(key, List.of(components));
   }
 }

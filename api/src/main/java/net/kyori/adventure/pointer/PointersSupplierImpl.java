@@ -77,11 +77,7 @@ record PointersSupplierImpl<T>(@Nullable PointersSupplier<? super T> parent, Map
       }
 
       // Finally, wrap in an optional.
-      if (resolver == null) {
-        return Optional.empty();
-      } else {
-        return Optional.ofNullable((T) resolver.apply(this.instance));
-      }
+      return Optional.ofNullable(resolver).map(r -> (T) r.apply(this.instance));
     }
 
     @Override

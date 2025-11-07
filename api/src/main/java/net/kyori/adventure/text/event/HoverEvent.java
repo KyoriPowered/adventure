@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.text.event;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
 import net.kyori.adventure.key.Key;
@@ -82,7 +81,7 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
    * @since 4.0.0
    */
   static HoverEvent<ShowItem> showItem(final Key item, @Range(from = 0, to = Integer.MAX_VALUE) final int count) {
-    return showItem(item, count, Collections.emptyMap());
+    return showItem(item, count, Map.of());
   }
 
   /**
@@ -94,7 +93,7 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
    * @since 4.6.0
    */
   static HoverEvent<ShowItem> showItem(final Keyed item, @Range(from = 0, to = Integer.MAX_VALUE) final int count) {
-    return showItem(item, count, Collections.emptyMap());
+    return showItem(item, count, Map.of());
   }
 
   /**
@@ -300,7 +299,7 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      * @since 4.14.0
      */
     static ShowItem showItem(final Key item, final @Range(from = 0, to = Integer.MAX_VALUE) int count) {
-      return ShowItem.showItem(item, count, Collections.emptyMap());
+      return ShowItem.showItem(item, count, Map.of());
     }
 
     /**
@@ -312,7 +311,7 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      * @since 4.14.0
      */
     static ShowItem showItem(final Keyed item, final @Range(from = 0, to = Integer.MAX_VALUE) int count) {
-      return ShowItem.showItem(item, count, Collections.emptyMap());
+      return ShowItem.showItem(item, count, Map.of());
     }
 
     /**
@@ -327,7 +326,7 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      */
     @Deprecated
     static ShowItem showItem(final Key item, final @Range(from = 0, to = Integer.MAX_VALUE) int count, final @Nullable BinaryTagHolder nbt) {
-      return new HoverEventImpl.ShowItemImpl(requireNonNull(item, "item"), count, nbt, Collections.emptyMap());
+      return new HoverEventImpl.ShowItemImpl(requireNonNull(item, "item"), count, nbt, Map.of());
     }
 
     /**
@@ -342,7 +341,7 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      */
     @Deprecated
     static ShowItem showItem(final Keyed item, final @Range(from = 0, to = Integer.MAX_VALUE) int count, final @Nullable BinaryTagHolder nbt) {
-      return new HoverEventImpl.ShowItemImpl(requireNonNull(item, "item").key(), count, nbt, Collections.emptyMap());
+      return new HoverEventImpl.ShowItemImpl(requireNonNull(item, "item").key(), count, nbt, Map.of());
     }
 
     /**

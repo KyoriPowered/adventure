@@ -24,7 +24,7 @@
 package net.kyori.adventure.text.event;
 
 import com.google.auto.service.AutoService;
-import java.util.Arrays;
+import java.util.List;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import org.junit.jupiter.api.Test;
@@ -108,8 +108,7 @@ class DataComponentValueConverterRegistryTest {
 
     @Override
     public Iterable<DataComponentValueConverterRegistry.Conversion<?, ?>> conversions() {
-      // gah j8
-      return Arrays.asList(
+      return List.of(
         DataComponentValueConverterRegistry.Conversion.convert(DirectValue.class, ItfValueImpl.class, (key, dir) -> new ItfValueImpl(dir.value)),
         DataComponentValueConverterRegistry.Conversion.convert(ItfValue.class, DirectValue.class, (key, itf) -> new DirectValue(itf.value())),
         DataComponentValueConverterRegistry.Conversion.convert(BinaryTagHolder.class, Failing.class, (key, itf) -> {

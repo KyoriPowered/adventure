@@ -23,8 +23,6 @@
  */
 package net.kyori.adventure.util;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +36,7 @@ import org.jspecify.annotations.Nullable;
 record IndexImpl<K, V>(Map<K, V> keyToValue, Map<V, K> valueToKey) implements Index<K, V> {
 
   static <K, V> Index<K, V> create(final V[] values, final IntFunction<Map<V, K>> valueToKeyFactory, final Function<? super V, ? extends K> keyFunction) {
-    return create(Arrays.asList(values), valueToKeyFactory, keyFunction);
+    return create(List.of(values), valueToKeyFactory, keyFunction);
   }
 
   static <K, V> Index<K, V> create(final List<V> values, final IntFunction<Map<V, K>> valueToKeyFactory, final Function<? super V, ? extends K> keyFunction) {
@@ -55,12 +53,12 @@ record IndexImpl<K, V>(Map<K, V> keyToValue, Map<V, K> valueToKey) implements In
         throw new IllegalStateException(String.format("Value %s already mapped to key %s", value, valueToKey.get(value)));
       }
     }
-    return new IndexImpl<>(Collections.unmodifiableMap(keyToValue), Collections.unmodifiableMap(valueToKey));
+    return new IndexImpl<>(Map.copyOf(keyToValue), Map.copyOf(valueToKey));
   }
 
   @Override
   public Set<K> keys() {
-    return Collections.unmodifiableSet(this.keyToValue.keySet());
+    return Set.copyOf(this.keyToValue.keySet());
   }
 
   @Override
@@ -86,7 +84,7 @@ record IndexImpl<K, V>(Map<K, V> keyToValue, Map<V, K> valueToKey) implements In
 
   @Override
   public Set<V> values() {
-    return Collections.unmodifiableSet(this.valueToKey.keySet());
+    return Set.copyOf(this.valueToKey.keySet());
   }
 
   @Override
@@ -111,11 +109,11 @@ record IndexImpl<K, V>(Map<K, V> keyToValue, Map<V, K> valueToKey) implements In
 
   @Override
   public Map<K, V> keyToValue() {
-    return Collections.unmodifiableMap(this.keyToValue);
+    return Map.copyOf(this.keyToValue);
   }
 
   @Override
   public Map<V, K> valueToKey() {
-    return Collections.unmodifiableMap(this.valueToKey);
+    return Map.copyOf(this.valueToKey);
   }
 }

@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.resource;
 
-import java.util.Collections;
 import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.MonkeyBars;
@@ -74,7 +73,7 @@ record ResourcePackRequestImpl(List<ResourcePackInfo> packs, ResourcePackCallbac
     private @Nullable Component prompt;
 
     BuilderImpl() {
-      this.packs = Collections.emptyList();
+      this.packs = List.of();
       this.cb = ResourcePackCallback.noOp();
       this.replace = false;
     }

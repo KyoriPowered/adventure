@@ -25,7 +25,7 @@ package net.kyori.adventure.text.event;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.testing.EqualsTester;
-import java.util.Collections;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.key.Key;
@@ -114,8 +114,8 @@ class HoverEventTest {
         HoverEvent.hoverEvent(HoverEventImpl.Action.SHOW_TEXT, Component.empty())
       )
       .addEqualityGroup(
-        HoverEvent.showItem(HoverEventImpl.ShowItem.showItem(Key.key("air"), 1, Collections.emptyMap())),
-        HoverEvent.hoverEvent(HoverEventImpl.Action.SHOW_ITEM, HoverEventImpl.ShowItem.showItem(Key.key("air"), 1, Collections.emptyMap()))
+        HoverEvent.showItem(HoverEventImpl.ShowItem.showItem(Key.key("air"), 1, Map.of())),
+        HoverEvent.hoverEvent(HoverEventImpl.Action.SHOW_ITEM, HoverEventImpl.ShowItem.showItem(Key.key("air"), 1, Map.of()))
       )
       .addEqualityGroup(
         HoverEvent.showEntity(HoverEventImpl.ShowEntity.showEntity(Key.key("cat"), entity)),

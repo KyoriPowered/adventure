@@ -25,7 +25,6 @@ package net.kyori.adventure.nbt;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -40,10 +39,10 @@ import org.jspecify.annotations.Nullable;
 
 @Debug.Renderer(text = "\"ListBinaryTag[type=\" + this.type.toString() + \"]\"", childrenArray = "this.tags.toArray()", hasChildren = "!this.tags.isEmpty()")
 record ListBinaryTagImpl(BinaryTagType<? extends BinaryTag> elementType, boolean permitsHeterogeneity, List<BinaryTag> tags) implements ListBinaryTag {
-  static final ListBinaryTag EMPTY = new ListBinaryTagImpl(BinaryTagTypes.END, false, Collections.emptyList());
+  static final ListBinaryTag EMPTY = new ListBinaryTagImpl(BinaryTagTypes.END, false, List.of());
 
   ListBinaryTagImpl(final BinaryTagType<? extends BinaryTag> elementType, final boolean permitsHeterogeneity, final List<BinaryTag> tags) {
-    this.tags = Collections.unmodifiableList(tags);
+    this.tags = List.copyOf(tags);
     this.permitsHeterogeneity = permitsHeterogeneity;
     this.elementType = elementType;
   }

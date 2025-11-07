@@ -23,7 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage.tag.standard;
 
-import java.util.Collections;
+import java.util.List;
 import java.util.PrimitiveIterator;
 import java.util.function.Consumer;
 import net.kyori.adventure.text.Component;
@@ -115,7 +115,7 @@ abstract class AbstractColorChangingTag implements Modifying {
       if (current instanceof TextComponent textComponent) {
         this.skipColorForLengthOf(textComponent.content());
       }
-      return current.children(Collections.emptyList());
+      return current.children(List.of());
     }
 
     this.disableApplyingColorDepth = -1;
@@ -124,7 +124,7 @@ abstract class AbstractColorChangingTag implements Modifying {
       // basically treat as if it's a non-text component
       this.skipColorForLengthOf(virtualComponent.content());
 
-      return current.children(Collections.emptyList());
+      return current.children(List.of());
     } else if (current instanceof final TextComponent textComponent && !textComponent.content().isEmpty()) {
       final String content = textComponent.content();
 
@@ -141,7 +141,7 @@ abstract class AbstractColorChangingTag implements Modifying {
 
       return parent.build();
     } else if (!(current instanceof TextComponent)) {
-      final Component ret = current.children(Collections.emptyList()).colorIfAbsent(this.color());
+      final Component ret = current.children(List.of()).colorIfAbsent(this.color());
       this.advanceColor();
       return ret;
     }

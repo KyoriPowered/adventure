@@ -24,7 +24,6 @@
 package net.kyori.adventure.text;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -39,7 +38,7 @@ class JoinTest {
   void testJoin() {
     final JoinConfiguration config = JoinConfiguration.separator(Component.space());
 
-    assertEquals(Component.empty(), Component.join(JoinConfiguration.separator(Component.space()), Collections.emptyList()));
+    assertEquals(Component.empty(), Component.join(JoinConfiguration.separator(Component.space()), List.of()));
 
     final Component c0 = Component.text("test");
     assertEquals(c0, Component.join(config, c0));
@@ -66,7 +65,7 @@ class JoinTest {
   void testJoinWithFinalSeparator() {
     final JoinConfiguration config = JoinConfiguration.separators(Component.space(), Component.text(" and "));
 
-    assertEquals(Component.empty(), Component.join(config, Collections.emptyList()));
+    assertEquals(Component.empty(), Component.join(config, List.of()));
 
     final Component c0 = Component.text("test");
     assertEquals(c0, Component.join(config, c0));
@@ -116,7 +115,7 @@ class JoinTest {
         .append(Component.text("prefix"))
         .append(Component.text("suffix"))
         .build(),
-      Component.join(config, Collections.emptyList())
+      Component.join(config, List.of())
     );
 
     final Component c0 = Component.join(
@@ -146,7 +145,7 @@ class JoinTest {
       .convertor(component -> component.asComponent().color(NamedTextColor.RED))
       .build();
 
-    assertEquals(Component.empty(), Component.join(JoinConfiguration.separator(Component.space()), Collections.emptyList()));
+    assertEquals(Component.empty(), Component.join(JoinConfiguration.separator(Component.space()), List.of()));
 
     final Component c0 = Component.text("test");
     assertEquals(c0.color(NamedTextColor.RED), Component.join(config, c0));
@@ -173,7 +172,7 @@ class JoinTest {
   void testJoinWithNoSeparators() {
     final JoinConfiguration config = JoinConfiguration.noSeparators();
 
-    assertEquals(Component.empty(), Component.join(config, Collections.emptyList()));
+    assertEquals(Component.empty(), Component.join(config, List.of()));
 
     final Component c0 = Component.text("test");
     assertEquals(c0, Component.join(config, c0));
@@ -206,7 +205,7 @@ class JoinTest {
       .lastSeparatorIfSerial(serialAnd)
       .build();
 
-    assertEquals(Component.empty(), Component.join(config, Collections.emptyList()));
+    assertEquals(Component.empty(), Component.join(config, List.of()));
 
     final Component c0 = Component.text("test");
     assertEquals(c0, Component.join(config, c0));

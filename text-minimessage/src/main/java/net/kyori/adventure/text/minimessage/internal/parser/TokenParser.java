@@ -671,7 +671,7 @@ public final class TokenParser {
      * @since 4.10.0
      */
     default @Nullable Tag resolve(final String name) {
-      return this.resolve(name, Collections.emptyList(), null);
+      return this.resolve(name, List.of(), null);
     }
 
     /**

@@ -24,8 +24,6 @@
 package net.kyori.adventure.text;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import net.kyori.adventure.text.format.Style;
@@ -36,7 +34,7 @@ import static java.util.Objects.requireNonNull;
 record TranslatableComponentImpl(List<Component> children, Style style, String key, @Nullable String fallback, List<TranslationArgument> args) implements TranslatableComponent {
   static TranslatableComponent create(final List<Component> children, final Style style, final String key, final @Nullable String fallback, final ComponentLike[] args) {
     requireNonNull(args, "args");
-    return create(children, style, key, fallback, Arrays.asList(args));
+    return create(children, style, key, fallback, List.of(args));
   }
 
   static TranslatableComponent create(final List<? extends ComponentLike> children, final Style style, final String key, final @Nullable String fallback, final List<? extends ComponentLike> args) {
@@ -98,7 +96,7 @@ record TranslatableComponentImpl(List<Component> children, Style style, String k
   static final class BuilderImpl extends AbstractComponentBuilder<TranslatableComponent, Builder> implements Builder {
     private @Nullable String key;
     private @Nullable String fallback;
-    private List<TranslationArgument> args = Collections.emptyList();
+    private List<TranslationArgument> args = List.of();
 
     BuilderImpl() {
     }
@@ -119,8 +117,8 @@ record TranslatableComponentImpl(List<Component> children, Style style, String k
     @Override
     public Builder arguments(final ComponentLike ... args) {
       requireNonNull(args, "args");
-      if (args.length == 0) return this.arguments(Collections.emptyList());
-      return this.arguments(Arrays.asList(args));
+      if (args.length == 0) return this.arguments(List.of());
+      return this.arguments(List.of(args));
     }
 
     @Override
@@ -144,7 +142,7 @@ record TranslatableComponentImpl(List<Component> children, Style style, String k
 
   static List<TranslationArgument> asArguments(final List<? extends ComponentLike> likes) {
     if (likes.isEmpty()) {
-      return Collections.emptyList();
+      return List.of();
     }
 
     final List<TranslationArgument> ret = new ArrayList<>(likes.size());
@@ -158,6 +156,6 @@ record TranslatableComponentImpl(List<Component> children, Style style, String k
       }
     }
 
-    return Collections.unmodifiableList(ret);
+    return List.copyOf(ret);
   }
 }

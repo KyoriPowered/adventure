@@ -56,7 +56,7 @@ public final class MonkeyBars {
   public static <E extends Enum<E>> Set<E> enumSet(final Class<E> type, final E... constants) {
     final Set<E> set = EnumSet.noneOf(type);
     Collections.addAll(set, constants);
-    return Collections.unmodifiableSet(set);
+    return Set.copyOf(set);
   }
 
   /**

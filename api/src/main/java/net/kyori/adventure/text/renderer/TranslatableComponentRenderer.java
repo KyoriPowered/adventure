@@ -26,7 +26,6 @@ package net.kyori.adventure.text.renderer;
 import java.text.AttributedCharacterIterator;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Locale;
@@ -66,7 +65,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
   static {
     final Set<Style.Merge> merges = EnumSet.allOf(Style.Merge.class);
     merges.remove(Style.Merge.EVENTS);
-    MERGES = Collections.unmodifiableSet(merges);
+    MERGES = Set.copyOf(merges);
   }
 
   /**

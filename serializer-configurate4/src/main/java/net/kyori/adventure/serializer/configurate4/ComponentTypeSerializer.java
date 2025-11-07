@@ -25,7 +25,6 @@ package net.kyori.adventure.serializer.configurate4;
 
 import io.leangen.geantyref.TypeToken;
 import java.lang.reflect.Type;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -310,7 +309,7 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
           if (playerName != null) {
             player.set(playerName);
           } else {
-            player.set(Collections.emptyMap());
+            player.set(Map.of());
           }
         } else {
           if (playerName != null) {
