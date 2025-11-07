@@ -52,4 +52,9 @@ record NamedTextColorImpl(String name, int value) implements NamedTextColor {
   public HSVLike asHSV() {
     return HSVLike.fromRGB(this.red(), this.green(), this.blue());
   }
+
+  @Override
+  public String toString() {
+    return this.name;
+  }
 }
