@@ -66,6 +66,10 @@ record ClickEventImpl<T extends ClickEvent.Payload>(Action<T> action, Payload pa
       return this.payloadType.isInstance(payload);
     }
 
+    public String name() {
+      return this.name;
+    }
+
     @Override
     public String toString() {
       return this.name;

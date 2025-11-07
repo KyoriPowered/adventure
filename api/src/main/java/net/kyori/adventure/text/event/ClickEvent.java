@@ -325,6 +325,14 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends StyleBu
     boolean supports(final Payload payload);
 
     /**
+     * Returns the name of this action.
+     *
+     * @return the name of the action
+     * @since 4.0.0
+     */
+    String name();
+
+    /**
      * An action with a text payload.
      *
      * @since 5.0.0
