@@ -38,6 +38,7 @@ import net.kyori.adventure.chat.ChatType;
 import net.kyori.adventure.chat.SignedMessage;
 import net.kyori.adventure.dialog.DialogLike;
 import net.kyori.adventure.inventory.Book;
+import net.kyori.adventure.inventory.BookLike;
 import net.kyori.adventure.pointer.Pointered;
 import net.kyori.adventure.resource.ResourcePackInfo;
 import net.kyori.adventure.resource.ResourcePackInfoLike;
@@ -514,7 +515,21 @@ public interface Audience extends Pointered {
    */
   @ForwardingAudienceOverrideNotRequired
   default void openBook(final Book.Builder book) {
-    this.openBook(book.build());
+    this.openBook(Objects.requireNonNull(book, "book").build());
+  }
+
+  /**
+   * Opens a book.
+   *
+   * <p>When possible, no item should persist after closing the book.</p>
+   *
+   * @param book a book
+   * @see Book
+   * @since 5.0.0
+   */
+  @ForwardingAudienceOverrideNotRequired
+  default void openBook(final BookLike book) {
+    this.openBook(Objects.requireNonNull(book, "book").asBook());
   }
 
   /**

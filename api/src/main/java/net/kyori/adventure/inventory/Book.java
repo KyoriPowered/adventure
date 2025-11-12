@@ -43,7 +43,7 @@ import org.jetbrains.annotations.Unmodifiable;
  * @see Audience#openBook(Book)
  * @since 4.0.0
  */
-public sealed interface Book extends Buildable<Book.Builder> permits BookImpl {
+public sealed interface Book extends Buildable<Book.Builder>, BookLike permits BookImpl {
   /**
    * Creates a book.
    *
