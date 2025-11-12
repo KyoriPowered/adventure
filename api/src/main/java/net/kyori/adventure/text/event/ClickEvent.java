@@ -185,7 +185,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends StyleBu
    *
    * @param key the key identifying the payload
    * @return the click event
-   * @since 4.23.0
+   * @since 5.0.0
    */
   static ClickEvent<Payload.Custom> custom(final Key key) {
     return ClickEvent.custom(key, null);
@@ -480,7 +480,7 @@ public sealed interface ClickEvent<T extends ClickEvent.Payload> extends StyleBu
      *
      * @param key the key identifying the payload
      * @return the payload
-     * @since 4.23.0
+     * @since 5.0.0
      */
     static ClickEvent.Payload.Custom custom(final Key key) {
       return ClickEvent.Payload.custom(key, null);
