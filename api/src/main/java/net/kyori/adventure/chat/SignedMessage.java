@@ -37,7 +37,7 @@ import org.jspecify.annotations.Nullable;
  * @since 4.12.0
  * @sinceMinecraft 1.19
  */
-public sealed interface SignedMessage extends Identified permits SignedMessageImpl {
+public interface SignedMessage extends Identified {
 
   /**
    * Creates a signature wrapper.
