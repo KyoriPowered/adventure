@@ -26,6 +26,7 @@ package net.kyori.adventure.text.event;
 import net.kyori.adventure.dialog.DialogLike;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
+import org.jspecify.annotations.Nullable;
 
 final class PayloadImpl {
   private PayloadImpl() {
@@ -40,6 +41,6 @@ final class PayloadImpl {
   record DialogImpl(DialogLike dialog) implements ClickEvent.Payload.Dialog {
   }
 
-  record CustomImpl(Key key, BinaryTagHolder nbt) implements ClickEvent.Payload.Custom {
+  record CustomImpl(Key key, @Nullable BinaryTagHolder nbt) implements ClickEvent.Payload.Custom {
   }
 }
