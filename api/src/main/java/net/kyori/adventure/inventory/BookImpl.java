@@ -76,6 +76,11 @@ record BookImpl(Component title, Component author, List<Component> pages) implem
       .pages(this.pages);
   }
 
+  @Override
+  public Book asBook() {
+    return this;
+  }
+
   static final class BuilderImpl implements Builder {
     private Component title = Component.empty();
     private Component author = Component.empty();
