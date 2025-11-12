@@ -38,7 +38,7 @@ import static java.util.Objects.requireNonNull;
  * @since 4.12.0
  * @sinceMinecraft 1.19
  */
-public interface ChatType extends Keyed {
+public interface ChatType {
   /**
    * A chat message from a player.
    *
@@ -132,6 +132,17 @@ public interface ChatType extends Keyed {
   default ChatType.Bound bind(final ComponentLike name, final @Nullable ComponentLike target) {
     return new ChatTypeImpl.BoundImpl(this, requireNonNull(name.asComponent(), "name"), ComponentLike.unbox(target));
   }
+
+  /**
+   * Gets the key associated with this chat type.
+   *
+   * <p>In some circumstances, such as an inlined chat type, there may not be a key.
+   * In these cases, this method will return {@code null}.</p>
+   *
+   * @return the key, if possible
+   * @since 4.12.0
+   */
+  @Nullable Key key();
 
   /**
    * A bound {@link ChatType}.
