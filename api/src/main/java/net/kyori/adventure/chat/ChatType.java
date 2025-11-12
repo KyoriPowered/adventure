@@ -39,6 +39,8 @@ import static java.util.Objects.requireNonNull;
 /**
  * A type of chat.
  *
+ * <p><b>Warning: </b>in Adventure 5.0 this interface will no longer implement {@link Keyed}.</p>
+ *
  * @since 4.12.0
  * @sinceMinecraft 1.19
  */
@@ -141,6 +143,17 @@ public interface ChatType extends Examinable, Keyed {
   default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(ExaminableProperty.of("key", this.key()));
   }
+
+  /**
+   * Returns the key associated with this chat type.
+   *
+   * <p><b>Warning: </b>in Adventure 5.0 this method will be nullable to support non-keyed chat types.</p>
+   *
+   * @return the key
+   * @since 4.12.0
+   */
+  @Override
+  @NotNull Key key();
 
   /**
    * A bound {@link ChatType}.
