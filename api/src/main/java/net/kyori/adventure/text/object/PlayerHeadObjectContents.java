@@ -211,7 +211,7 @@ public sealed interface PlayerHeadObjectContents extends ObjectContents permits 
      * @since 4.25.0
      */
     @Contract(value = "_ -> this")
-    Builder profileProperties(final Collection<ProfileProperty> properties);
+    Builder profileProperties(final Collection<? extends ProfileProperty> properties);
 
     /**
      * Sets the skin (name, id, properties, and texture) from the given source, overriding any existing values.
