@@ -104,9 +104,9 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
    * @param nbt the nbt
    * @return a hover event
    * @since 4.0.0
-   * @deprecated since Minecraft 1.20.5 and replaced with data components, not scheduled for removal
+   * @obsoleteSinceMinecraft obsolete since 1.20.5 and replaced with data components
    */
-  @Deprecated
+  @ApiStatus.Obsolete
   static HoverEvent<ShowItem> showItem(final Key item, @Range(from = 0, to = Integer.MAX_VALUE) final int count, final @Nullable BinaryTagHolder nbt) {
     return showItem(ShowItem.showItem(item, count, nbt));
   }
@@ -119,9 +119,9 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
    * @param nbt the nbt
    * @return a hover event
    * @since 4.6.0
-   * @deprecated since Minecraft 1.20.5 and replaced with data components, not scheduled for removal
+   * @obsoleteSinceMinecraft obsolete since 1.20.5 and replaced with data components
    */
-  @Deprecated
+  @ApiStatus.Obsolete
   static HoverEvent<ShowItem> showItem(final Keyed item, @Range(from = 0, to = Integer.MAX_VALUE) final int count, final @Nullable BinaryTagHolder nbt) {
     return showItem(ShowItem.showItem(item, count, nbt));
   }
@@ -227,9 +227,9 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
    * @param value the achievement value
    * @return a hover event
    * @since 4.14.0
-   * @deprecated Removed in Vanilla 1.12, but we keep it for backwards compatibility
+   * @obsoleteSinceMinecraft removed in 1.12
    */
-  @Deprecated
+  @ApiStatus.Obsolete
   static HoverEvent<String> showAchievement(final String value) {
     return new HoverEventImpl<>(Action.SHOW_ACHIEVEMENT, value);
   }
@@ -322,9 +322,9 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      * @param nbt the nbt
      * @return a {@code ShowItem}
      * @since 4.14.0
-     * @deprecated since Minecraft 1.20.5 and replaced with data components, not scheduled for removal
+     * @obsoleteSinceMinecraft since 1.20.5 and replaced with data components
      */
-    @Deprecated
+    @ApiStatus.Obsolete
     static ShowItem showItem(final Key item, final @Range(from = 0, to = Integer.MAX_VALUE) int count, final @Nullable BinaryTagHolder nbt) {
       return new HoverEventImpl.ShowItemImpl(requireNonNull(item, "item"), count, nbt, Map.of());
     }
@@ -337,9 +337,9 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      * @param nbt the nbt
      * @return a {@code ShowItem}
      * @since 4.14.0
-     * @deprecated since Minecraft 1.20.5 and replaced with data components, not scheduled for removal
+     * @deprecated since 1.20.5 and replaced with data components
      */
-    @Deprecated
+    @ApiStatus.Obsolete
     static ShowItem showItem(final Keyed item, final @Range(from = 0, to = Integer.MAX_VALUE) int count, final @Nullable BinaryTagHolder nbt) {
       return new HoverEventImpl.ShowItemImpl(requireNonNull(item, "item").key(), count, nbt, Map.of());
     }
@@ -399,9 +399,9 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      *
      * @return the nbt
      * @since 4.0.0
-     * @deprecated since Minecraft 1.20.5 and replaced with data components, not scheduled for removal
+     * @obsoleteSinceMinecraft since 1.20.5 and replaced with data components
      */
-    @Deprecated
+    @ApiStatus.Obsolete
     @Nullable BinaryTagHolder nbt();
 
     /**
@@ -412,9 +412,9 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      * @param nbt the nbt
      * @return a {@code ShowItem}
      * @since 4.0.0
-     * @deprecated since Minecraft 1.20.5 and replaced with data components, not scheduled for removal
+     * @deprecated since 1.20.5 and replaced with data components
      */
-    @Deprecated
+    @ApiStatus.Obsolete
     ShowItem nbt(final @Nullable BinaryTagHolder nbt);
 
     /**
@@ -619,9 +619,9 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      * Shows a {@link Component} when hovered over.
      *
      * @since 4.14.0
-     * @deprecated Removed in Vanilla 1.12, but we keep it for backwards compat
+     * @deprecated removed in 1.12
      */
-    @Deprecated
+    @ApiStatus.Obsolete
     Action<String> SHOW_ACHIEVEMENT = new HoverEventImpl.ActionImpl<>("show_achievement", String.class, true, new Renderer<>() {
       @Override
       public <C> String render(final ComponentRenderer<C> renderer, final C context, final String value) {
