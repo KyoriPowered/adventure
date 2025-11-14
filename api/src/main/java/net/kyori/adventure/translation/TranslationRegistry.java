@@ -37,7 +37,6 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import net.kyori.adventure.key.Key;
-import net.kyori.adventure.util.UTF8ResourceBundleControl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -183,18 +182,10 @@ public interface TranslationRegistry extends Translator, TranslationStore.String
   /**
    * Registers a resource bundle of translations.
    *
-   * <p>It is highly recommended to create your bundle using {@link UTF8ResourceBundleControl} as your bundle control for UTF-8 support - for example:</p>
-   *
-   * <pre>
-   *   final ResourceBundle bundle = ResourceBundle.getBundle("my_bundle", Locale.GERMANY, UTF8ResourceBundleControl.get());
-   *   registry.registerAll(Locale.GERMANY, bundle, false);
-   * </pre>
-   *
    * @param locale a locale
    * @param bundle a resource bundle
    * @param escapeSingleQuotes whether to escape single quotes
    * @throws IllegalArgumentException if a translation key already exists
-   * @see UTF8ResourceBundleControl
    * @since 4.0.0
    * @deprecated For removal since 4.20.0. Use {@link TranslationStore#messageFormat(Key)} instead.
    */
