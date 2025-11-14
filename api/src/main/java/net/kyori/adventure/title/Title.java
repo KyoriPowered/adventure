@@ -126,6 +126,7 @@ public interface Title extends Examinable {
    *
    * @since 4.0.0
    */
+  @ApiStatus.NonExtendable
   interface Times extends Examinable {
     /**
      * Creates times.

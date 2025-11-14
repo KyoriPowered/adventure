@@ -27,6 +27,7 @@ import java.util.List;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.examination.Examinable;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -40,6 +41,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 4.15.0
  */
+@ApiStatus.NonExtendable
 public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike {
   /**
    * Create a basic request to apply the provided resource packs.
@@ -160,6 +162,7 @@ public interface ResourcePackRequest extends Examinable, ResourcePackRequestLike
    *
    * @since 4.15.0
    */
+  @ApiStatus.NonExtendable
   interface Builder extends AbstractBuilder<ResourcePackRequest>, ResourcePackRequestLike {
     /**
      * Set the resource packs to apply.

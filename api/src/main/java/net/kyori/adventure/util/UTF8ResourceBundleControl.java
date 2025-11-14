@@ -40,7 +40,9 @@ import org.jetbrains.annotations.NotNull;
  * <p>See <a href="https://stackoverflow.com/a/4660195">this Stack Overflow post</a> for more details.</p>
  *
  * @since 4.0.0
+ * @deprecated For removal since 4.26.0, resource bundles are UTF-8 by default in Java 9+
  */
+@Deprecated
 public final class UTF8ResourceBundleControl extends ResourceBundle.Control {
   private static final UTF8ResourceBundleControl INSTANCE = new UTF8ResourceBundleControl();
 
@@ -61,7 +63,9 @@ public final class UTF8ResourceBundleControl extends ResourceBundle.Control {
    *
    * @return a resource bundle control
    * @since 4.24.0
+   * @deprecated For removal since 4.26.0, resource bundles are UTF-8 by default in Java 9+
    */
+  @Deprecated
   public static ResourceBundle.@NotNull Control utf8ResourceBundleControl() {
     return INSTANCE;
   }

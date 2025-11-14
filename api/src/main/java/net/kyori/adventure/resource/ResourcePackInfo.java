@@ -31,6 +31,7 @@ import java.util.concurrent.ForkJoinPool;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.examination.Examinable;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,6 +42,7 @@ import org.jetbrains.annotations.NotNull;
  * @see Audience#sendResourcePacks(ResourcePackInfoLike, ResourcePackInfoLike...)
  * @since 4.15.0
  */
+@ApiStatus.NonExtendable
 public interface ResourcePackInfo extends Examinable, ResourcePackInfoLike {
   /**
    * Creates information about a resource pack.
@@ -99,6 +101,7 @@ public interface ResourcePackInfo extends Examinable, ResourcePackInfoLike {
    *
    * @since 4.15.0
    */
+  @ApiStatus.NonExtendable
   interface Builder extends AbstractBuilder<ResourcePackInfo>, ResourcePackInfoLike {
     /**
      * Sets the id.

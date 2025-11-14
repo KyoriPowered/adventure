@@ -31,6 +31,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 4.0.0
  */
+@ApiStatus.NonExtendable
 public interface ByteArrayBinaryTag extends ArrayBinaryTag, Iterable<Byte> {
   /**
    * Creates a binary tag holding a {@code byte}-array value.

@@ -27,6 +27,7 @@ import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -35,6 +36,7 @@ import org.jetbrains.annotations.NotNull;
  * @param <V> the value type
  * @since 4.8.0
  */
+@ApiStatus.NonExtendable
 public interface Pointer<V> extends Examinable {
   /**
    * Creates a pointer.

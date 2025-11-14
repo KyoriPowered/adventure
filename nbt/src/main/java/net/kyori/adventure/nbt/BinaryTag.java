@@ -24,6 +24,7 @@
 package net.kyori.adventure.nbt;
 
 import net.kyori.examination.Examinable;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -31,6 +32,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 4.0.0
  */
+@ApiStatus.NonExtendable
 public interface BinaryTag extends BinaryTagLike, Examinable {
   /**
    * Gets the tag type.

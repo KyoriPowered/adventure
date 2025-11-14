@@ -33,7 +33,6 @@ import java.util.Set;
 import java.util.function.Function;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.util.UTF8ResourceBundleControl;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -193,19 +192,10 @@ public interface TranslationStore<T> extends Translator {
     /**
      * Registers a resource bundle of translations.
      *
-     * <p>It is highly recommended to create your bundle using {@link UTF8ResourceBundleControl} as your bundle control for UTF-8 support - for example:</p>
-     *
-     * <pre>{@code
-     *   final TranslationStore store = ...;
-     *   final ResourceBundle bundle = ResourceBundle.getBundle("my_bundle", Locale.GERMANY, UTF8ResourceBundleControl.get());
-     *   store.registerAll(Locale.GERMANY, bundle, false);
-     * }</pre>
-     *
      * @param locale a locale
      * @param bundle a resource bundle
      * @param escapeSingleQuotes whether to escape single quotes
      * @throws IllegalArgumentException if a translation key already exists
-     * @see UTF8ResourceBundleControl
      * @since 4.20.0
      */
     void registerAll(final @NotNull Locale locale, final @NotNull ResourceBundle bundle, final boolean escapeSingleQuotes);

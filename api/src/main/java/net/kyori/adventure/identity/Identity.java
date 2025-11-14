@@ -32,6 +32,7 @@ import net.kyori.adventure.pointer.Pointer;
 import net.kyori.adventure.text.Component;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -41,6 +42,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.0.0
  * @sinceMinecraft 1.16
  */
+@ApiStatus.NonExtendable
 public interface Identity extends Examinable, Identified {
   /**
    * A pointer to a name.

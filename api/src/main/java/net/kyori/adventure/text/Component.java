@@ -2875,6 +2875,14 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
     return this.replaceText(b -> b.match(pattern).replacement(replacement).condition(fn));
   }
 
+  /**
+   * Returns a builder for this component.
+   *
+   * @return the builder
+   * @since 4.26.0
+   */
+  @NotNull ComponentBuilder<?, ?> toBuilder();
+
   @Override
   default void componentBuilderApply(final @NotNull ComponentBuilder<?, ?> component) {
     component.append(this);

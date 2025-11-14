@@ -81,6 +81,12 @@ public abstract class AbstractComponent implements Component {
   @Override
   public abstract String toString();
 
+  @Override
+  public @NotNull ComponentBuilder<?, ?> toBuilder() {
+    // Shim for now as this whole class is removed in the future.
+    return ((BuildableComponent<?, ?>) this).toBuilder();
+  }
+
   @SuppressWarnings("unused")
   private String debuggerString() {
     final Stream<? extends ExaminableProperty> examinablePropertiesWithoutChildren = this.examinableProperties()

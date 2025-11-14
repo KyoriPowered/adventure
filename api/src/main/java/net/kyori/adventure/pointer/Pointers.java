@@ -27,6 +27,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.util.Buildable;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -37,6 +38,7 @@ import org.jetbrains.annotations.UnknownNullability;
  *
  * @since 4.8.0
  */
+@ApiStatus.NonExtendable
 public interface Pointers extends Buildable<Pointers, Pointers.Builder> {
   /**
    * Gets an empty pointers collection.
@@ -122,6 +124,7 @@ public interface Pointers extends Buildable<Pointers, Pointers.Builder> {
    * @see Pointers
    * @since 4.8.0
    */
+  @ApiStatus.NonExtendable
   interface Builder extends AbstractBuilder<Pointers>, Buildable.Builder<Pointers> {
     /**
      * Adds a pointer with a static, optional value.

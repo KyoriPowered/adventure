@@ -25,6 +25,7 @@ package net.kyori.adventure.pointer;
 
 import java.util.function.Function;
 import net.kyori.adventure.builder.AbstractBuilder;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -53,6 +54,7 @@ import org.jetbrains.annotations.Nullable;
  * @param <T> the type
  * @since 4.17.0
  */
+@ApiStatus.NonExtendable
 public interface PointersSupplier<T> {
   /**
    * Gets a new pointers supplier builder.
@@ -100,6 +102,7 @@ public interface PointersSupplier<T> {
    * @param <T> the type to supply pointers for
    * @since 4.17.0
    */
+  @ApiStatus.NonExtendable
   interface Builder<T> extends AbstractBuilder<PointersSupplier<T>> {
     /**
      * Sets (or removes, if {@code null}) the parent pointer supplier that will be used

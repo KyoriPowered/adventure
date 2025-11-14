@@ -135,7 +135,9 @@ public interface GsonComponentSerializer extends JSONComponentSerializer, Builda
      *
      * @return this builder
      * @since 4.0.0
+     * @deprecated for removal since 4.26.0, change the {@link JSONOptions#EMIT_RGB} flag instead
      */
+    @Deprecated
     @Override
     default @NotNull Builder downsampleColors() {
       return this.editOptions(features -> features.value(JSONOptions.EMIT_RGB, false));
@@ -163,6 +165,7 @@ public interface GsonComponentSerializer extends JSONComponentSerializer, Builda
      * {@inheritDoc}
      *
      * @since 4.0.0
+     * @deprecated for removal since 4.15.0, change the {@link JSONOptions#EMIT_HOVER_EVENT_TYPE} flag instead
      */
     @Deprecated
     @Override
