@@ -33,7 +33,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.renderer.TranslatableComponentRenderer;
-import net.kyori.adventure.util.UTF8ResourceBundleControl;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -50,7 +49,7 @@ class TranslationStoreTest {
   static void testRegister() {
     REGISTRY.register("what", Locale.CANADA, new MessageFormat("A what?", Locale.CANADA));
 
-    final ResourceBundle bundle = ResourceBundle.getBundle("adventure-test", Locale.US, UTF8ResourceBundleControl.utf8ResourceBundleControl());
+    final ResourceBundle bundle = ResourceBundle.getBundle("adventure-test", Locale.US);
     REGISTRY.registerAll(Locale.US, bundle, true);
   }
 
