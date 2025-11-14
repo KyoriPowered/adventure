@@ -34,6 +34,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
+import net.kyori.adventure.util.Buildable;
 import net.kyori.adventure.util.MonkeyBars;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.UnknownNullability;
@@ -56,7 +57,7 @@ import org.jspecify.annotations.Nullable;
  *
  * @since 4.0.0
  */
-public sealed interface Style extends StyleGetter, StyleSetter<Style> permits StyleImpl {
+public sealed interface Style extends StyleGetter, StyleSetter<Style>, Buildable<Style.Builder> permits StyleImpl {
   /**
    * The default font.
    *
