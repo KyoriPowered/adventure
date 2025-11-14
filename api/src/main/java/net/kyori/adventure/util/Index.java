@@ -30,17 +30,19 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.IntFunction;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
 
 /**
- * A bi-directional map in which keys and values must be unique.
+ * A bidirectional map in which keys and values must be unique.
  *
  * @param <K> the key type
  * @param <V> the value type
  * @since 4.0.0
  */
-public sealed interface Index<K, V> permits IndexImpl {
+@SuppressWarnings("ClassCanBeRecord") // We'd like a private constructor.
+public final class Index<K, V> {
 
   /**
    * Creates an index map.
@@ -52,7 +54,7 @@ public sealed interface Index<K, V> permits IndexImpl {
    * @return the key map
    * @since 4.0.0
    */
-  static <K, V extends Enum<V>> Index<K, V> create(final Class<V> type, final Function<? super V, ? extends K> keyFunction) {
+  public static <K, V extends Enum<V>> Index<K, V> create(final Class<V> type, final Function<? super V, ? extends K> keyFunction) {
     return create(type, keyFunction, type.getEnumConstants());
   }
 
@@ -69,8 +71,8 @@ public sealed interface Index<K, V> permits IndexImpl {
    */
   @SafeVarargs
   @SuppressWarnings("varargs")
-  static <K, V extends Enum<V>> Index<K, V> create(final Class<V> type, final Function<? super V, ? extends K> keyFunction, final V... values) {
-    return IndexImpl.create(values, length -> new EnumMap<>(type), keyFunction);
+  public static <K, V extends Enum<V>> Index<K, V> create(final Class<V> type, final Function<? super V, ? extends K> keyFunction, final V... values) {
+    return create(List.of(values), length -> new EnumMap<>(type), keyFunction);
   }
 
   /**
@@ -85,8 +87,8 @@ public sealed interface Index<K, V> permits IndexImpl {
    */
   @SafeVarargs
   @SuppressWarnings("varargs")
-  static <K, V> Index<K, V> create(final Function<? super V, ? extends K> keyFunction, final V... values) {
-    return IndexImpl.create(values, HashMap::new, keyFunction);
+  public static <K, V> Index<K, V> create(final Function<? super V, ? extends K> keyFunction, final V... values) {
+    return create(List.of(values), HashMap::new, keyFunction);
   }
 
   /**
@@ -99,8 +101,33 @@ public sealed interface Index<K, V> permits IndexImpl {
    * @return the key map
    * @since 4.0.0
    */
-  static <K, V> Index<K, V> create(final Function<? super V, ? extends K> keyFunction, final List<V> constants) {
-    return IndexImpl.create(constants, HashMap::new, keyFunction);
+  public static <K, V> Index<K, V> create(final Function<? super V, ? extends K> keyFunction, final List<V> constants) {
+    return create(constants, HashMap::new, keyFunction);
+  }
+
+  private final Map<K, V> keyToValue;
+  private final Map<V, K> valueToKey;
+
+  private static <K, V> Index<K, V> create(final List<V> values, final IntFunction<Map<V, K>> valueToKeyFactory, final Function<? super V, ? extends K> keyFunction) {
+    final int length = values.size();
+    final Map<K, V> keyToValue = new HashMap<>(length);
+    final Map<V, K> valueToKey = valueToKeyFactory.apply(length); // to support using EnumMap instead of HashMap when possible
+    for (int i = 0; i < length; i++) {
+      final V value = values.get(i);
+      final K key = keyFunction.apply(value);
+      if (keyToValue.putIfAbsent(key, value) != null) {
+        throw new IllegalStateException(String.format("Key %s already mapped to value %s", key, keyToValue.get(key)));
+      }
+      if (valueToKey.putIfAbsent(value, key) != null) {
+        throw new IllegalStateException(String.format("Value %s already mapped to key %s", value, valueToKey.get(value)));
+      }
+    }
+    return new Index<>(Map.copyOf(keyToValue), Map.copyOf(valueToKey));
+  }
+
+  private Index(final Map<K, V> keyToValue, final Map<V, K> valueToKey) {
+    this.keyToValue = keyToValue;
+    this.valueToKey = valueToKey;
   }
 
   /**
@@ -109,7 +136,9 @@ public sealed interface Index<K, V> permits IndexImpl {
    * @return the keys
    * @since 4.0.0
    */
-  Set<K> keys();
+  public Set<K> keys() {
+    return Set.copyOf(this.keyToValue.keySet());
+  }
 
   /**
    * Gets the key for a value.
@@ -118,7 +147,9 @@ public sealed interface Index<K, V> permits IndexImpl {
    * @return the key
    * @since 4.0.0
    */
-  @Nullable K key(final V value);
+  public @Nullable K key(final V value) {
+    return this.valueToKey.get(value);
+  }
 
   /**
    * Gets the key for a value or throws an exception.
@@ -128,7 +159,13 @@ public sealed interface Index<K, V> permits IndexImpl {
    * @throws NoSuchElementException if there is no key for the value
    * @since 4.11.0
    */
-  K keyOrThrow(final V value);
+  public K keyOrThrow(final V value) {
+    final K key = this.key(value);
+    if (key == null) {
+      throw new NoSuchElementException("There is no key for value " + value);
+    }
+    return key;
+  }
 
   /**
    * Gets a key by its value or returns a fallback key.
@@ -139,7 +176,10 @@ public sealed interface Index<K, V> permits IndexImpl {
    * @since 4.11.0
    */
   @Contract("_, null -> null; _, !null -> !null")
-  K keyOr(final V value, final @Nullable K defaultKey);
+  public @Nullable K keyOr(final V value, final @Nullable K defaultKey) {
+    final K key = this.key(value);
+    return key == null ? defaultKey : key;
+  }
 
   /**
    * Gets the keys.
@@ -147,7 +187,9 @@ public sealed interface Index<K, V> permits IndexImpl {
    * @return the keys
    * @since 4.0.0
    */
-  Set<V> values();
+  public Set<V> values() {
+    return Set.copyOf(this.valueToKey.keySet());
+  }
 
   /**
    * Gets a value by its key.
@@ -156,7 +198,9 @@ public sealed interface Index<K, V> permits IndexImpl {
    * @return the value
    * @since 4.0.0
    */
-  @Nullable V value(final K key);
+  public @Nullable V value(final K key) {
+    return this.keyToValue.get(key);
+  }
 
   /**
    * Gets a value by its key.
@@ -166,7 +210,13 @@ public sealed interface Index<K, V> permits IndexImpl {
    * @throws NoSuchElementException if there is no value for the key
    * @since 4.11.0
    */
-  V valueOrThrow(final K key);
+  public V valueOrThrow(final K key) {
+    final V value = this.value(key);
+    if (value == null) {
+      throw new NoSuchElementException("There is no value for key " + key);
+    }
+    return value;
+  }
 
   /**
    * Gets a value by its key or returns a fallback value.
@@ -177,7 +227,10 @@ public sealed interface Index<K, V> permits IndexImpl {
    * @since 4.11.0
    */
   @Contract("_, null -> null; _, !null -> !null")
-  V valueOr(final K key, final @Nullable V defaultValue);
+  public @Nullable V valueOr(final K key, final @Nullable V defaultValue) {
+    final V value = this.value(key);
+    return value == null ? defaultValue : value;
+  }
 
   /**
    * Get an unmodifiable mapping of index entries from key to value.
@@ -185,7 +238,9 @@ public sealed interface Index<K, V> permits IndexImpl {
    * @return a mapping from key to value in the index
    * @since 4.10.0
    */
-  Map<K, V> keyToValue();
+  public Map<K, V> keyToValue() {
+    return Map.copyOf(this.keyToValue);
+  }
 
   /**
    * Get an unmodifiable mapping of index entries from value to key.
@@ -193,5 +248,7 @@ public sealed interface Index<K, V> permits IndexImpl {
    * @return a mapping from value to key in the index
    * @since 4.10.0
    */
-  Map<V, K> valueToKey();
+  public Map<V, K> valueToKey() {
+    return Map.copyOf(this.valueToKey);
+  }
 }
