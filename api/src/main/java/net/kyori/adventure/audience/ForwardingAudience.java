@@ -25,8 +25,10 @@ package net.kyori.adventure.audience;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -46,6 +48,7 @@ import net.kyori.adventure.title.TitlePart;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.UnknownNullability;
+import org.jetbrains.annotations.UnmodifiableView;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -160,6 +163,18 @@ public interface ForwardingAudience extends Audience {
   @Override
   default void hideBossBar(final BossBar bar) {
     for (final Audience audience : this.audiences()) audience.hideBossBar(bar);
+  }
+
+  @Override
+  default @UnmodifiableView Iterable<? extends BossBar> activeBossBars() {
+    Set<BossBar> bossBars = new HashSet<>();
+    for (final Audience audience : this.audiences()) {
+      for (BossBar bb : audience.activeBossBars()) {
+        bossBars.add(bb);
+      }
+    }
+
+    return bossBars;
   }
 
   @Override
@@ -341,6 +356,11 @@ public interface ForwardingAudience extends Audience {
     @Override
     default void hideBossBar(final BossBar bar) {
       this.audience().hideBossBar(bar);
+    }
+
+    @Override
+    default @UnmodifiableView Iterable<? extends BossBar> activeBossBars() {
+        return this.audience().activeBossBars();
     }
 
     @Override
