@@ -32,8 +32,8 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collector;
+import org.jetbrains.annotations.UnmodifiableView;
 import net.kyori.adventure.bossbar.BossBar;
-import net.kyori.adventure.bossbar.BossBarViewer;
 import net.kyori.adventure.chat.ChatType;
 import net.kyori.adventure.chat.SignedMessage;
 import net.kyori.adventure.dialog.DialogLike;
@@ -95,7 +95,6 @@ import net.kyori.adventure.title.TitlePart;
  * and any new methods will be stubbed by default.</p>
  *
  * @see ForwardingAudience
- * @see BossBarViewer
  * @since 4.0.0
  */
 public interface Audience extends Pointered {
@@ -439,6 +438,17 @@ public interface Audience extends Pointered {
    * @since 4.0.0
    */
   default void hideBossBar(final BossBar bar) {
+  }
+
+  /**
+   * Gets an unmodifiable view of all known currently active bossbars.
+   *
+   * @return an unmodifiable view of all known currently active bossbars
+   * @since 4.14.0
+   */
+  @UnmodifiableView
+  default Iterable<? extends BossBar> activeBossBars() {
+    return List.of();
   }
 
   /**

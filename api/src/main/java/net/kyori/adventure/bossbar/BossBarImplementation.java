@@ -25,6 +25,7 @@ package net.kyori.adventure.bossbar;
 
 import java.util.List;
 import org.jetbrains.annotations.ApiStatus;
+import net.kyori.adventure.audience.Audience;
 
 /**
  * {@link BossBar} internal implementation.
@@ -54,7 +55,7 @@ public interface BossBarImplementation {
    * @since 4.14.0
    */
   @ApiStatus.Internal
-  default Iterable<? extends BossBarViewer> viewers() {
+  default Iterable<? extends Audience> viewers() {
     return List.of();
   }
 

@@ -32,6 +32,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.Services;
 import org.jspecify.annotations.Nullable;
@@ -261,7 +262,7 @@ final class BossBarImpl extends HackyBossBarPlatformBridge implements BossBar {
   }
 
   @Override
-  public Iterable<? extends BossBarViewer> viewers() {
+  public Iterable<? extends Audience> viewers() {
     if (this.implementation != null) {
       return this.implementation.viewers();
     }

@@ -335,7 +335,7 @@ public sealed interface BossBar permits BossBarImpl {
    * @since 4.14.0
    */
   @UnmodifiableView
-  Iterable<? extends BossBarViewer> viewers();
+  Iterable<? extends Audience> viewers();
 
   /**
    * Show this bossbar to {@code viewer}.
