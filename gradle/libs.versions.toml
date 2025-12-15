@@ -3,8 +3,8 @@ version = "1.0"
 
 [versions]
 autoService = "1.1.1"
-checkstyle = "12.1.2"
-errorprone = "2.42.0"
+checkstyle = "12.3.0"
+errorprone = "2.45.0"
 guava = "33.5.0-jre"
 indra = "4.0.0"
 jmh = "1.37"
@@ -57,7 +57,7 @@ build-indra = { module = "net.kyori:indra-common", version.ref = "indra" }
 build-indra-crossdoc = { module = "net.kyori:indra-crossdoc", version.ref = "indra" }
 build-indra-sonatype = { module = "net.kyori:indra-publishing-sonatype", version.ref = "indra" }
 build-indra-spotless = { module = "net.kyori:indra-licenser-spotless", version.ref = "indra" }
-build-goomph = "com.diffplug.gradle:goomph:4.4.0"
+build-goomph = "com.diffplug.gradle:goomph:4.4.1"
 build-jmh = { module = "me.champeau.jmh:jmh-gradle-plugin", version.ref = "jmhPlugin" }
 build-testLogger = "com.adarshr:gradle-test-logger-plugin:4.0.0"
 
