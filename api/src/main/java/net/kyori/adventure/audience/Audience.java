@@ -32,7 +32,6 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collector;
-import org.jetbrains.annotations.UnmodifiableView;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.chat.ChatType;
 import net.kyori.adventure.chat.SignedMessage;
@@ -50,6 +49,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.title.Title;
 import net.kyori.adventure.title.TitlePart;
+import org.jetbrains.annotations.UnmodifiableView;
 
 /**
  * A receiver of Minecraft media.

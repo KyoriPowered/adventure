@@ -169,9 +169,7 @@ public interface ForwardingAudience extends Audience {
   default @UnmodifiableView Iterable<? extends BossBar> activeBossBars() {
     Set<BossBar> bossBars = new HashSet<>();
     for (final Audience audience : this.audiences()) {
-      for (BossBar bb : audience.activeBossBars()) {
-        bossBars.add(bb);
-      }
+      for (final BossBar bb : audience.activeBossBars()) bossBars.add(bb);
     }
 
     return bossBars;
@@ -360,7 +358,7 @@ public interface ForwardingAudience extends Audience {
 
     @Override
     default @UnmodifiableView Iterable<? extends BossBar> activeBossBars() {
-        return this.audience().activeBossBars();
+      return this.audience().activeBossBars();
     }
 
     @Override

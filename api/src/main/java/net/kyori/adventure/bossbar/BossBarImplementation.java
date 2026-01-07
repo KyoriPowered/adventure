@@ -24,8 +24,8 @@
 package net.kyori.adventure.bossbar;
 
 import java.util.List;
-import org.jetbrains.annotations.ApiStatus;
 import net.kyori.adventure.audience.Audience;
+import org.jetbrains.annotations.ApiStatus;
 
 /**
  * {@link BossBar} internal implementation.
