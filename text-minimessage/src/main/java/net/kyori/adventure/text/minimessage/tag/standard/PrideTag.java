@@ -65,6 +65,8 @@ final class PrideTag extends GradientTag {
       Map.entry("intersex", colors(0xFFD800, 0x7902AA, 0xFFD800)),
       Map.entry("aro", colors(0x3BA740, 0xA8D47A, 0xFFFFFF, 0xABABAB, 0x000000)),
 
+      Map.entry("femboy", colors(0xD260A5, 0xE4AFCD, 0xFEFEFE, 0x57CEF8, 0xFEFEFE, 0xE4AFCD, 0xD260A5)),
+
       // Colours taken from https://www.hrc.org/resources/lgbtq-pride-flags.
       Map.entry("baker", colors(0xCD66FF, 0xFF6599, 0xFE0000, 0xFE9900, 0xFFFF01, 0x009900, 0x0099CB, 0x350099, 0x990099)),
       Map.entry("philly", colors(0x000000, 0x784F17, 0xFE0000, 0xFD8C00, 0xFFE500, 0x119F0B, 0x0644B3, 0xC22EDC)),
