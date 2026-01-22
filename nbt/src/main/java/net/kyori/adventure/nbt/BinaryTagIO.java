@@ -543,12 +543,12 @@ public final class BinaryTagIO {
      */
     public static final Compression NONE = new Compression() {
       @Override
-      InputStream decompress(final InputStream is) {
+      public InputStream decompress(final InputStream is) {
         return is;
       }
 
       @Override
-      OutputStream compress(final OutputStream os) {
+      public OutputStream compress(final OutputStream os) {
         return os;
       }
 
@@ -564,12 +564,12 @@ public final class BinaryTagIO {
      */
     public static final Compression GZIP = new Compression() {
       @Override
-      InputStream decompress(final InputStream is) throws IOException {
+      public InputStream decompress(final InputStream is) throws IOException {
         return new GZIPInputStream(is);
       }
 
       @Override
-      OutputStream compress(final OutputStream os) throws IOException {
+      public OutputStream compress(final OutputStream os) throws IOException {
         return new GZIPOutputStream(os);
       }
 
@@ -585,12 +585,12 @@ public final class BinaryTagIO {
      */
     public static final Compression ZLIB = new Compression() {
       @Override
-      InputStream decompress(final InputStream is) {
+      public InputStream decompress(final InputStream is) {
         return new InflaterInputStream(is);
       }
 
       @Override
-      OutputStream compress(final OutputStream os) {
+      public OutputStream compress(final OutputStream os) {
         return new DeflaterOutputStream(os);
       }
 
@@ -608,7 +608,7 @@ public final class BinaryTagIO {
      * @throws IOException if an exception was encountered while decompressing the stream
      * @since 4.4.0
      */
-    abstract InputStream decompress(final InputStream is) throws IOException;
+    public abstract InputStream decompress(final InputStream is) throws IOException;
 
     /**
      * Compresses an output stream.
@@ -618,6 +618,6 @@ public final class BinaryTagIO {
      * @throws IOException if an exception was encountered while compressing the stream
      * @since 4.4.0
      */
-    abstract OutputStream compress(final OutputStream os) throws IOException;
+    public abstract OutputStream compress(final OutputStream os) throws IOException;
   }
 }
