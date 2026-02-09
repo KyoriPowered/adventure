@@ -30,6 +30,11 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Marker;
 import org.slf4j.event.Level;
 
+/**
+ * A single component logger call captured for context injection.
+ *
+ * @since 4.27.0
+ */
 @ApiStatus.Internal
 public final class ComponentLogRecord {
   private final @NotNull Level level;
@@ -39,6 +44,17 @@ public final class ComponentLogRecord {
   private final @Nullable Object[] arguments;
   private final @Nullable Throwable throwable;
 
+  /**
+   * Create a new log record for context injection.
+   *
+   * @param level the log level
+   * @param marker the log marker, if any
+   * @param componentFormatOrMessage the component format or message, if any
+   * @param stringFormatOrMessage the string format or message, if any
+   * @param arguments the log arguments, if any
+   * @param throwable the associated throwable, if any
+   * @since 4.27.0
+   */
   public ComponentLogRecord(
     final @NotNull Level level,
     final @Nullable Marker marker,
@@ -55,26 +71,62 @@ public final class ComponentLogRecord {
     this.throwable = throwable;
   }
 
+  /**
+   * Get the level for this record.
+   *
+   * @return the log level
+   * @since 4.27.0
+   */
   public @NotNull Level level() {
     return this.level;
   }
 
+  /**
+   * Get the marker associated with this record.
+   *
+   * @return the marker, if present
+   * @since 4.27.0
+   */
   public @Nullable Marker marker() {
     return this.marker;
   }
 
+  /**
+   * Get the component format or message associated with this record.
+   *
+   * @return the component format or message, if present
+   * @since 4.27.0
+   */
   public @Nullable Component componentFormatOrMessage() {
     return this.componentFormatOrMessage;
   }
 
+  /**
+   * Get the string format or message associated with this record.
+   *
+   * @return the string format or message, if present
+   * @since 4.27.0
+   */
   public @Nullable String stringFormatOrMessage() {
     return this.stringFormatOrMessage;
   }
 
+  /**
+   * Get the argument array associated with this record.
+   *
+   * @return the argument array, if present
+   * @since 4.27.0
+   */
   public @Nullable Object[] arguments() {
     return this.arguments;
   }
 
+  /**
+   * Get the throwable associated with this record.
+   *
+   * @return the throwable, if present
+   * @since 4.27.0
+   */
   public @Nullable Throwable throwable() {
     return this.throwable;
   }

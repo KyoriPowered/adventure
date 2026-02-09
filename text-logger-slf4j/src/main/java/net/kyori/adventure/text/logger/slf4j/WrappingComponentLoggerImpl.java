@@ -94,7 +94,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
     return writable;
   }
 
-  private @Nullable ComponentLogContextInjector.Scope beginContext(
+  private ComponentLogContextInjector.@Nullable Scope beginContext(
     final @NotNull Level level,
     final @Nullable Marker marker,
     final @Nullable Component componentFormatOrMessage,
@@ -111,7 +111,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
     }
   }
 
-  private void closeContext(final @Nullable ComponentLogContextInjector.Scope scope) {
+  private void closeContext(final ComponentLogContextInjector.@Nullable Scope scope) {
     if (scope == null) return;
 
     try {
@@ -129,7 +129,7 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
     final @Nullable Throwable throwable,
     final @NotNull Runnable action
   ) {
-    final @Nullable ComponentLogContextInjector.Scope scope = this.beginContext(
+    final ComponentLogContextInjector.@Nullable Scope scope = this.beginContext(
       level,
       marker,
       componentFormatOrMessage,

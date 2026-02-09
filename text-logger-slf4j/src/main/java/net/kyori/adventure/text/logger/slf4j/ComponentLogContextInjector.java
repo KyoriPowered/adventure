@@ -27,10 +27,27 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Injects context for component-aware log calls.
+ *
+ * @since 4.27.0
+ */
 @ApiStatus.Internal
 public interface ComponentLogContextInjector {
+  /**
+   * Begin injection of context for a component log record.
+   *
+   * @param record the current log record
+   * @return a scope to close when logging is complete, or {@code null}
+   * @since 4.27.0
+   */
   @Nullable Scope begin(final @NotNull ComponentLogRecord record);
 
+  /**
+   * A context scope that is closed after a log operation completes.
+   *
+   * @since 4.27.0
+   */
   interface Scope extends AutoCloseable {
     @Override
     void close();
