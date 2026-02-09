@@ -28,7 +28,11 @@ import com.github.valfirst.slf4jtest.TestLogger;
 import com.github.valfirst.slf4jtest.TestLoggerFactory;
 import com.github.valfirst.slf4jtest.TestLoggerFactoryExtension;
 import com.google.common.collect.ImmutableList;
+import java.lang.reflect.Proxy;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.util.ComponentMessageThrowable;
@@ -36,22 +40,31 @@ import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(TestLoggerFactoryExtension.class)
 public class ComponentLoggerTest {
   private static final TestLogger LOGGER = TestLoggerFactory.getTestLogger(ComponentLoggerTest.class);
+  private static final Function<Component, String> PLAIN_SERIALIZER = Handler.LoggerHelperImpl.INSTANCE.plainSerializer();
 
   private static final Marker MARKED = MarkerFactory.getMarker("MARKED");
 
   ComponentLogger makeLogger() {
     return ComponentLogger.logger();
+  }
+
+  ComponentLogger makeLogger(final @Nullable ComponentLogContextInjector injector) {
+    return new WrappingComponentLoggerImpl(LOGGER, PLAIN_SERIALIZER, injector);
   }
 
   @Test
@@ -156,6 +169,104 @@ public class ComponentLoggerTest {
       LOGGER.getLoggingEvents(),
       ImmutableList.of(LoggingEvent.info("Hello {}", "friend"))
     );
+  }
+
+  @Test
+  void testInjectorReceivesRawComponentRecord() {
+    final Component format = Component.text("Hello ").append(Component.text("{}", NamedTextColor.BLUE));
+    final Component arg = Component.text("friend", NamedTextColor.RED);
+    final AtomicReference<ComponentLogRecord> seen = new AtomicReference<>();
+
+    this.makeLogger(record -> {
+      seen.set(record);
+      return null;
+    }).info(format, arg);
+
+    final ComponentLogRecord captured = seen.get();
+    assertNotNull(captured);
+    assertEquals(org.slf4j.event.Level.INFO, captured.level());
+    assertSame(format, captured.componentFormatOrMessage());
+    assertNull(captured.stringFormatOrMessage());
+    assertNotNull(captured.arguments());
+    assertEquals(1, captured.arguments().length);
+    assertSame(arg, captured.arguments()[0]);
+    assertNull(captured.throwable());
+    assertEquals(LOGGER.getLoggingEvents(), ImmutableList.of(LoggingEvent.info("Hello {}", "friend")));
+  }
+
+  @Test
+  void testInjectorReceivesRawThrowableForStringRecord() {
+    final RichTestException throwable = new RichTestException(Component.text("rich"));
+    final AtomicReference<ComponentLogRecord> seen = new AtomicReference<>();
+
+    this.makeLogger(record -> {
+      seen.set(record);
+      return null;
+    }).warn("warn text", throwable);
+
+    final ComponentLogRecord captured = seen.get();
+    assertNotNull(captured);
+    assertEquals(org.slf4j.event.Level.WARN, captured.level());
+    assertEquals("warn text", captured.stringFormatOrMessage());
+    assertNull(captured.componentFormatOrMessage());
+    assertNull(captured.arguments());
+    assertSame(throwable, captured.throwable());
+  }
+
+  @Test
+  void testInjectorScopeClosedOnSuccessAndExceptionsSwallowed() {
+    final AtomicInteger beginCalls = new AtomicInteger();
+    final AtomicInteger closeCalls = new AtomicInteger();
+
+    this.makeLogger(record -> {
+      beginCalls.incrementAndGet();
+      return () -> {
+        closeCalls.incrementAndGet();
+        throw new IllegalStateException("close fail");
+      };
+    }).info("Hello world");
+
+    assertEquals(1, beginCalls.get());
+    assertEquals(1, closeCalls.get());
+    assertEquals(LOGGER.getLoggingEvents(), ImmutableList.of(LoggingEvent.info("Hello world")));
+  }
+
+  @Test
+  void testInjectorBeginFailureIsSwallowed() {
+    this.makeLogger(record -> {
+      throw new IllegalStateException("begin fail");
+    }).info("still logs");
+
+    assertEquals(LOGGER.getLoggingEvents(), ImmutableList.of(LoggingEvent.info("still logs")));
+  }
+
+  @Test
+  void testInjectorScopeClosedWhenUnderlyingLoggerThrows() {
+    final AtomicInteger closeCalls = new AtomicInteger();
+    final Logger throwingLogger = (Logger) Proxy.newProxyInstance(
+      Logger.class.getClassLoader(),
+      new Class<?>[] {Logger.class},
+      (proxy, method, args) -> {
+        if (method.getName().equals("isInfoEnabled")) {
+          return true;
+        } else if (method.getName().equals("info") && method.getParameterCount() == 1) {
+          throw new IllegalStateException("logger fail");
+        } else if (method.getName().equals("getName")) {
+          return "throwing";
+        }
+
+        if (method.getReturnType() == boolean.class) return false;
+        return null;
+      }
+    );
+    final ComponentLogger logger = new WrappingComponentLoggerImpl(
+      throwingLogger,
+      PLAIN_SERIALIZER,
+      record -> () -> closeCalls.incrementAndGet()
+    );
+
+    assertThrows(IllegalStateException.class, () -> logger.info("hello"));
+    assertEquals(1, closeCalls.get());
   }
 
   @Test

@@ -42,11 +42,21 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   private final Logger logger;
   private final boolean isLocationAware;
   private final Function<Component, String> serializer;
+  private final @Nullable ComponentLogContextInjector injector;
 
   WrappingComponentLoggerImpl(final Logger backing, final Function<Component, String> serializer) {
+    this(backing, serializer, null);
+  }
+
+  WrappingComponentLoggerImpl(
+    final Logger backing,
+    final Function<Component, String> serializer,
+    final @Nullable ComponentLogContextInjector injector
+  ) {
     this.serializer = serializer;
     this.logger = backing;
     this.isLocationAware = backing instanceof LocationAwareLogger;
+    this.injector = injector;
   }
 
   private String serialize(final Component input) {
@@ -82,6 +92,57 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
     }
 
     return writable;
+  }
+
+  private @Nullable ComponentLogContextInjector.Scope beginContext(
+    final @NotNull Level level,
+    final @Nullable Marker marker,
+    final @Nullable Component componentFormatOrMessage,
+    final @Nullable String stringFormatOrMessage,
+    final @Nullable Object[] arguments,
+    final @Nullable Throwable throwable
+  ) {
+    if (this.injector == null) return null;
+
+    try {
+      return this.injector.begin(new ComponentLogRecord(level, marker, componentFormatOrMessage, stringFormatOrMessage, arguments, throwable));
+    } catch (final Throwable ignored) {
+      return null;
+    }
+  }
+
+  private void closeContext(final @Nullable ComponentLogContextInjector.Scope scope) {
+    if (scope == null) return;
+
+    try {
+      scope.close();
+    } catch (final Throwable ignored) {
+    }
+  }
+
+  private void withContext(
+    final @NotNull Level level,
+    final @Nullable Marker marker,
+    final @Nullable Component componentFormatOrMessage,
+    final @Nullable String stringFormatOrMessage,
+    final @Nullable Object[] arguments,
+    final @Nullable Throwable throwable,
+    final @NotNull Runnable action
+  ) {
+    final @Nullable ComponentLogContextInjector.Scope scope = this.beginContext(
+      level,
+      marker,
+      componentFormatOrMessage,
+      stringFormatOrMessage,
+      arguments,
+      throwable
+    );
+
+    try {
+      action.run();
+    } finally {
+      this.closeContext(scope);
+    }
   }
 
   // Basic methods, plain delegation
@@ -166,1801 +227,2001 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   public void trace(final @NotNull String format) {
     if (!this.isTraceEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.TRACE_INT,
-        format,
-        null,
-        null
-      );
-    } else {
-      this.logger.trace(format);
-    }
+    this.withContext(Level.TRACE, null, null, format, null, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.TRACE_INT,
+          format,
+          null,
+          null
+        );
+      } else {
+        this.logger.trace(format);
+      }
+    });
   }
 
   @Override
   public void trace(final @NotNull String format, final @Nullable Object arg) {
     if (!this.isTraceEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.TRACE_INT,
-        format,
-        new Object[] {this.maybeSerialize(arg)},
-        null
-      );
-    } else {
-      this.logger.trace(format, this.maybeSerialize(arg));
-    }
+    this.withContext(Level.TRACE, null, null, format, new Object[] {arg}, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.TRACE_INT,
+          format,
+          new Object[] {this.maybeSerialize(arg)},
+          null
+        );
+      } else {
+        this.logger.trace(format, this.maybeSerialize(arg));
+      }
+    });
   }
 
   @Override
   public void trace(final @NotNull String format, final @Nullable Object arg1, final @Nullable Object arg2) {
     if (!this.isTraceEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.TRACE_INT,
-        format,
-        new Object[] {this.maybeSerialize(arg1), this.maybeSerialize(arg2)},
-        null
-      );
-    } else {
-      this.logger.trace(format, this.maybeSerialize(arg1), this.maybeSerialize(arg2));
-    }
+    this.withContext(Level.TRACE, null, null, format, new Object[] {arg1, arg2}, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.TRACE_INT,
+          format,
+          new Object[] {this.maybeSerialize(arg1), this.maybeSerialize(arg2)},
+          null
+        );
+      } else {
+        this.logger.trace(format, this.maybeSerialize(arg1), this.maybeSerialize(arg2));
+      }
+    });
   }
 
   @Override
   public void trace(final @NotNull String format, final @Nullable Object @NotNull... arguments) {
     if (!this.isTraceEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.TRACE_INT,
-        format,
-        this.maybeSerialize(arguments),
-        null
-      );
-    } else {
-      this.logger.trace(format, this.maybeSerialize(arguments));
-    }
+    this.withContext(Level.TRACE, null, null, format, arguments, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.TRACE_INT,
+          format,
+          this.maybeSerialize(arguments),
+          null
+        );
+      } else {
+        this.logger.trace(format, this.maybeSerialize(arguments));
+      }
+    });
   }
 
   @Override
   public void trace(final @NotNull String msg, final @Nullable Throwable t) {
     if (!this.isTraceEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.TRACE_INT,
-        msg,
-        null,
-        UnpackedComponentThrowable.unpack(t, this.serializer)
-      );
-    } else {
-      this.logger.trace(msg, UnpackedComponentThrowable.unpack(t, this.serializer));
-    }
+    this.withContext(Level.TRACE, null, null, msg, null, t, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.TRACE_INT,
+          msg,
+          null,
+          UnpackedComponentThrowable.unpack(t, this.serializer)
+        );
+      } else {
+        this.logger.trace(msg, UnpackedComponentThrowable.unpack(t, this.serializer));
+      }
+    });
   }
 
   @Override
   public void trace(final @NotNull Marker marker, final @NotNull String msg) {
     if (!this.isTraceEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.TRACE_INT,
-        msg,
-        null,
-        null
-      );
-    } else {
-      this.logger.trace(marker, msg);
-    }
+    this.withContext(Level.TRACE, marker, null, msg, null, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.TRACE_INT,
+          msg,
+          null,
+          null
+        );
+      } else {
+        this.logger.trace(marker, msg);
+      }
+    });
   }
 
   @Override
   public void trace(final @NotNull Marker marker, final @NotNull String format, final @Nullable Object arg) {
     if (!this.isTraceEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.TRACE_INT,
-        format,
-        new Object[] {this.maybeSerialize(arg)},
-        null
-      );
-    } else {
-      this.logger.trace(marker, format, this.maybeSerialize(arg));
-    }
+    this.withContext(Level.TRACE, marker, null, format, new Object[] {arg}, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.TRACE_INT,
+          format,
+          new Object[] {this.maybeSerialize(arg)},
+          null
+        );
+      } else {
+        this.logger.trace(marker, format, this.maybeSerialize(arg));
+      }
+    });
   }
 
   @Override
   public void trace(final @NotNull Marker marker, final @NotNull String format, final @Nullable Object arg1, final @Nullable Object arg2) {
     if (!this.isTraceEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.TRACE_INT,
-        format,
-        new Object[] {this.maybeSerialize(arg1), this.maybeSerialize(arg2)},
-        null
-      );
-    } else {
-      this.logger.trace(marker, format, this.maybeSerialize(arg1), this.maybeSerialize(arg2));
-    }
+    this.withContext(Level.TRACE, marker, null, format, new Object[] {arg1, arg2}, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.TRACE_INT,
+          format,
+          new Object[] {this.maybeSerialize(arg1), this.maybeSerialize(arg2)},
+          null
+        );
+      } else {
+        this.logger.trace(marker, format, this.maybeSerialize(arg1), this.maybeSerialize(arg2));
+      }
+    });
   }
 
   @Override
   public void trace(final @NotNull Marker marker, final @NotNull String format, final @Nullable Object @NotNull... argArray) {
     if (!this.isTraceEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.TRACE_INT,
-        format,
-        this.maybeSerialize(argArray),
-        null
-      );
-    } else {
-      this.logger.trace(marker, format, this.maybeSerialize(argArray));
-    }
+    this.withContext(Level.TRACE, marker, null, format, argArray, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.TRACE_INT,
+          format,
+          this.maybeSerialize(argArray),
+          null
+        );
+      } else {
+        this.logger.trace(marker, format, this.maybeSerialize(argArray));
+      }
+    });
   }
 
   @Override
   public void trace(final @NotNull Marker marker, final @NotNull String msg, final @Nullable Throwable t) {
     if (!this.isTraceEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.TRACE_INT,
-        msg,
-        null,
-        UnpackedComponentThrowable.unpack(t, this.serializer)
-      );
-    } else {
-      this.logger.trace(marker, msg, UnpackedComponentThrowable.unpack(t, this.serializer));
-    }
+    this.withContext(Level.TRACE, marker, null, msg, null, t, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.TRACE_INT,
+          msg,
+          null,
+          UnpackedComponentThrowable.unpack(t, this.serializer)
+        );
+      } else {
+        this.logger.trace(marker, msg, UnpackedComponentThrowable.unpack(t, this.serializer));
+      }
+    });
   }
 
   @Override
   public void debug(final @NotNull String format) {
     if (!this.isDebugEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.DEBUG_INT,
-        format,
-        null,
-        null
-      );
-    } else {
-      this.logger.debug(format);
-    }
+    this.withContext(Level.DEBUG, null, null, format, null, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.DEBUG_INT,
+          format,
+          null,
+          null
+        );
+      } else {
+        this.logger.debug(format);
+      }
+    });
   }
 
   @Override
   public void debug(final @NotNull String format, final @Nullable Object arg) {
     if (!this.isDebugEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.DEBUG_INT,
-        format,
-        new Object[] {this.maybeSerialize(arg)},
-        null
-      );
-    } else {
-      this.logger.debug(format, this.maybeSerialize(arg));
-    }
+    this.withContext(Level.DEBUG, null, null, format, new Object[] {arg}, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.DEBUG_INT,
+          format,
+          new Object[] {this.maybeSerialize(arg)},
+          null
+        );
+      } else {
+        this.logger.debug(format, this.maybeSerialize(arg));
+      }
+    });
   }
 
   @Override
   public void debug(final @NotNull String format, final @Nullable Object arg1, final @Nullable Object arg2) {
     if (!this.isDebugEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.DEBUG_INT,
-        format,
-        new Object[] {this.maybeSerialize(arg1), this.maybeSerialize(arg2)},
-        null
-      );
-    } else {
-      this.logger.debug(format, this.maybeSerialize(arg1), this.maybeSerialize(arg2));
-    }
+    this.withContext(Level.DEBUG, null, null, format, new Object[] {arg1, arg2}, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.DEBUG_INT,
+          format,
+          new Object[] {this.maybeSerialize(arg1), this.maybeSerialize(arg2)},
+          null
+        );
+      } else {
+        this.logger.debug(format, this.maybeSerialize(arg1), this.maybeSerialize(arg2));
+      }
+    });
   }
 
   @Override
   public void debug(final @NotNull String format, final @Nullable Object @NotNull... arguments) {
     if (!this.isDebugEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.DEBUG_INT,
-        format,
-        this.maybeSerialize(arguments),
-        null
-      );
-    } else {
-      this.logger.debug(format, this.maybeSerialize(arguments));
-    }
+    this.withContext(Level.DEBUG, null, null, format, arguments, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.DEBUG_INT,
+          format,
+          this.maybeSerialize(arguments),
+          null
+        );
+      } else {
+        this.logger.debug(format, this.maybeSerialize(arguments));
+      }
+    });
   }
 
   @Override
   public void debug(final @NotNull String msg, final @Nullable Throwable t) {
     if (!this.isDebugEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.DEBUG_INT,
-        msg,
-        null,
-        UnpackedComponentThrowable.unpack(t, this.serializer)
-      );
-    } else {
-      this.logger.debug(msg, UnpackedComponentThrowable.unpack(t, this.serializer));
-    }
+    this.withContext(Level.DEBUG, null, null, msg, null, t, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.DEBUG_INT,
+          msg,
+          null,
+          UnpackedComponentThrowable.unpack(t, this.serializer)
+        );
+      } else {
+        this.logger.debug(msg, UnpackedComponentThrowable.unpack(t, this.serializer));
+      }
+    });
   }
 
   @Override
   public void debug(final @NotNull Marker marker, final @NotNull String msg) {
     if (!this.isDebugEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.DEBUG_INT,
-        msg,
-        null,
-        null
-      );
-    } else {
-      this.logger.debug(marker, msg);
-    }
+    this.withContext(Level.DEBUG, marker, null, msg, null, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.DEBUG_INT,
+          msg,
+          null,
+          null
+        );
+      } else {
+        this.logger.debug(marker, msg);
+      }
+    });
   }
 
   @Override
   public void debug(final @NotNull Marker marker, final @NotNull String format, final @Nullable Object arg) {
     if (!this.isDebugEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.DEBUG_INT,
-        format,
-        new Object[] {this.maybeSerialize(arg)},
-        null
-      );
-    } else {
-      this.logger.debug(marker, format, this.maybeSerialize(arg));
-    }
+    this.withContext(Level.DEBUG, marker, null, format, new Object[] {arg}, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.DEBUG_INT,
+          format,
+          new Object[] {this.maybeSerialize(arg)},
+          null
+        );
+      } else {
+        this.logger.debug(marker, format, this.maybeSerialize(arg));
+      }
+    });
   }
 
   @Override
   public void debug(final @NotNull Marker marker, final @NotNull String format, final @Nullable Object arg1, final @Nullable Object arg2) {
     if (!this.isDebugEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.DEBUG_INT,
-        format,
-        new Object[] {this.maybeSerialize(arg1), this.maybeSerialize(arg2)},
-        null
-      );
-    } else {
-      this.logger.debug(marker, format, this.maybeSerialize(arg1), this.maybeSerialize(arg2));
-    }
+    this.withContext(Level.DEBUG, marker, null, format, new Object[] {arg1, arg2}, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.DEBUG_INT,
+          format,
+          new Object[] {this.maybeSerialize(arg1), this.maybeSerialize(arg2)},
+          null
+        );
+      } else {
+        this.logger.debug(marker, format, this.maybeSerialize(arg1), this.maybeSerialize(arg2));
+      }
+    });
   }
 
   @Override
   public void debug(final @NotNull Marker marker, final @NotNull String format, final @Nullable Object @NotNull... argArray) {
     if (!this.isDebugEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.DEBUG_INT,
-        format,
-        this.maybeSerialize(argArray),
-        null
-      );
-    } else {
-      this.logger.debug(marker, format, this.maybeSerialize(argArray));
-    }
+    this.withContext(Level.DEBUG, marker, null, format, argArray, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.DEBUG_INT,
+          format,
+          this.maybeSerialize(argArray),
+          null
+        );
+      } else {
+        this.logger.debug(marker, format, this.maybeSerialize(argArray));
+      }
+    });
   }
 
   @Override
   public void debug(final @NotNull Marker marker, final @NotNull String msg, final @Nullable Throwable t) {
     if (!this.isDebugEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.DEBUG_INT,
-        msg,
-        null,
-        UnpackedComponentThrowable.unpack(t, this.serializer)
-      );
-    } else {
-      this.logger.debug(marker, msg, UnpackedComponentThrowable.unpack(t, this.serializer));
-    }
+    this.withContext(Level.DEBUG, marker, null, msg, null, t, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.DEBUG_INT,
+          msg,
+          null,
+          UnpackedComponentThrowable.unpack(t, this.serializer)
+        );
+      } else {
+        this.logger.debug(marker, msg, UnpackedComponentThrowable.unpack(t, this.serializer));
+      }
+    });
   }
 
   @Override
   public void info(final @NotNull String format) {
     if (!this.isInfoEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.INFO_INT,
-        format,
-        null,
-        null
-      );
-    } else {
-      this.logger.info(format);
-    }
+    this.withContext(Level.INFO, null, null, format, null, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.INFO_INT,
+          format,
+          null,
+          null
+        );
+      } else {
+        this.logger.info(format);
+      }
+    });
   }
 
   @Override
   public void info(final @NotNull String format, final @Nullable Object arg) {
     if (!this.isInfoEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.INFO_INT,
-        format,
-        new Object[] {this.maybeSerialize(arg)},
-        null
-      );
-    } else {
-      this.logger.info(format, this.maybeSerialize(arg));
-    }
+    this.withContext(Level.INFO, null, null, format, new Object[] {arg}, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.INFO_INT,
+          format,
+          new Object[] {this.maybeSerialize(arg)},
+          null
+        );
+      } else {
+        this.logger.info(format, this.maybeSerialize(arg));
+      }
+    });
   }
 
   @Override
   public void info(final @NotNull String format, final @Nullable Object arg1, final @Nullable Object arg2) {
     if (!this.isInfoEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.INFO_INT,
-        format,
-        new Object[] {this.maybeSerialize(arg1), this.maybeSerialize(arg2)},
-        null
-      );
-    } else {
-      this.logger.info(format, this.maybeSerialize(arg1), this.maybeSerialize(arg2));
-    }
+    this.withContext(Level.INFO, null, null, format, new Object[] {arg1, arg2}, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.INFO_INT,
+          format,
+          new Object[] {this.maybeSerialize(arg1), this.maybeSerialize(arg2)},
+          null
+        );
+      } else {
+        this.logger.info(format, this.maybeSerialize(arg1), this.maybeSerialize(arg2));
+      }
+    });
   }
 
   @Override
   public void info(final @NotNull String format, final @Nullable Object @NotNull... arguments) {
     if (!this.isInfoEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.INFO_INT,
-        format,
-        this.maybeSerialize(arguments),
-        null
-      );
-    } else {
-      this.logger.info(format, this.maybeSerialize(arguments));
-    }
+    this.withContext(Level.INFO, null, null, format, arguments, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.INFO_INT,
+          format,
+          this.maybeSerialize(arguments),
+          null
+        );
+      } else {
+        this.logger.info(format, this.maybeSerialize(arguments));
+      }
+    });
   }
 
   @Override
   public void info(final @NotNull String msg, final @Nullable Throwable t) {
     if (!this.isInfoEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.INFO_INT,
-        msg,
-        null,
-        UnpackedComponentThrowable.unpack(t, this.serializer)
-      );
-    } else {
-      this.logger.info(msg, UnpackedComponentThrowable.unpack(t, this.serializer));
-    }
+    this.withContext(Level.INFO, null, null, msg, null, t, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.INFO_INT,
+          msg,
+          null,
+          UnpackedComponentThrowable.unpack(t, this.serializer)
+        );
+      } else {
+        this.logger.info(msg, UnpackedComponentThrowable.unpack(t, this.serializer));
+      }
+    });
   }
 
   @Override
   public void info(final @NotNull Marker marker, final @NotNull String msg) {
     if (!this.isInfoEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.INFO_INT,
-        msg,
-        null,
-        null
-      );
-    } else {
-      this.logger.info(marker, msg);
-    }
+    this.withContext(Level.INFO, marker, null, msg, null, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.INFO_INT,
+          msg,
+          null,
+          null
+        );
+      } else {
+        this.logger.info(marker, msg);
+      }
+    });
   }
 
   @Override
   public void info(final @NotNull Marker marker, final @NotNull String format, final @Nullable Object arg) {
     if (!this.isInfoEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.INFO_INT,
-        format,
-        new Object[] {this.maybeSerialize(arg)},
-        null
-      );
-    } else {
-      this.logger.info(marker, format, this.maybeSerialize(arg));
-    }
+    this.withContext(Level.INFO, marker, null, format, new Object[] {arg}, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.INFO_INT,
+          format,
+          new Object[] {this.maybeSerialize(arg)},
+          null
+        );
+      } else {
+        this.logger.info(marker, format, this.maybeSerialize(arg));
+      }
+    });
   }
 
   @Override
   public void info(final @NotNull Marker marker, final @NotNull String format, final @Nullable Object arg1, final @Nullable Object arg2) {
     if (!this.isInfoEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.INFO_INT,
-        format,
-        new Object[] {this.maybeSerialize(arg1), this.maybeSerialize(arg2)},
-        null
-      );
-    } else {
-      this.logger.info(marker, format, this.maybeSerialize(arg1), this.maybeSerialize(arg2));
-    }
+    this.withContext(Level.INFO, marker, null, format, new Object[] {arg1, arg2}, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.INFO_INT,
+          format,
+          new Object[] {this.maybeSerialize(arg1), this.maybeSerialize(arg2)},
+          null
+        );
+      } else {
+        this.logger.info(marker, format, this.maybeSerialize(arg1), this.maybeSerialize(arg2));
+      }
+    });
   }
 
   @Override
   public void info(final @NotNull Marker marker, final @NotNull String format, final @Nullable Object @NotNull... argArray) {
     if (!this.isInfoEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.INFO_INT,
-        format,
-        this.maybeSerialize(argArray),
-        null
-      );
-    } else {
-      this.logger.info(marker, format, this.maybeSerialize(argArray));
-    }
+    this.withContext(Level.INFO, marker, null, format, argArray, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.INFO_INT,
+          format,
+          this.maybeSerialize(argArray),
+          null
+        );
+      } else {
+        this.logger.info(marker, format, this.maybeSerialize(argArray));
+      }
+    });
   }
 
   @Override
   public void info(final @NotNull Marker marker, final @NotNull String msg, final @Nullable Throwable t) {
     if (!this.isInfoEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.INFO_INT,
-        msg,
-        null,
-        UnpackedComponentThrowable.unpack(t, this.serializer)
-      );
-    } else {
-      this.logger.info(marker, msg, UnpackedComponentThrowable.unpack(t, this.serializer));
-    }
+    this.withContext(Level.INFO, marker, null, msg, null, t, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.INFO_INT,
+          msg,
+          null,
+          UnpackedComponentThrowable.unpack(t, this.serializer)
+        );
+      } else {
+        this.logger.info(marker, msg, UnpackedComponentThrowable.unpack(t, this.serializer));
+      }
+    });
   }
 
   @Override
   public void warn(final @NotNull String format) {
     if (!this.isWarnEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.WARN_INT,
-        format,
-        null,
-        null
-      );
-    } else {
-      this.logger.warn(format);
-    }
+    this.withContext(Level.WARN, null, null, format, null, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.WARN_INT,
+          format,
+          null,
+          null
+        );
+      } else {
+        this.logger.warn(format);
+      }
+    });
   }
 
   @Override
   public void warn(final @NotNull String format, final @Nullable Object arg) {
     if (!this.isWarnEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.WARN_INT,
-        format,
-        new Object[] {this.maybeSerialize(arg)},
-        null
-      );
-    } else {
-      this.logger.warn(format, this.maybeSerialize(arg));
-    }
+    this.withContext(Level.WARN, null, null, format, new Object[] {arg}, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.WARN_INT,
+          format,
+          new Object[] {this.maybeSerialize(arg)},
+          null
+        );
+      } else {
+        this.logger.warn(format, this.maybeSerialize(arg));
+      }
+    });
   }
 
   @Override
   public void warn(final @NotNull String format, final @Nullable Object arg1, final @Nullable Object arg2) {
     if (!this.isWarnEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.WARN_INT,
-        format,
-        new Object[] {this.maybeSerialize(arg1), this.maybeSerialize(arg2)},
-        null
-      );
-    } else {
-      this.logger.warn(format, this.maybeSerialize(arg1), this.maybeSerialize(arg2));
-    }
+    this.withContext(Level.WARN, null, null, format, new Object[] {arg1, arg2}, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.WARN_INT,
+          format,
+          new Object[] {this.maybeSerialize(arg1), this.maybeSerialize(arg2)},
+          null
+        );
+      } else {
+        this.logger.warn(format, this.maybeSerialize(arg1), this.maybeSerialize(arg2));
+      }
+    });
   }
 
   @Override
   public void warn(final @NotNull String format, final @Nullable Object @NotNull... arguments) {
     if (!this.isWarnEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.WARN_INT,
-        format,
-        this.maybeSerialize(arguments),
-        null
-      );
-    } else {
-      this.logger.warn(format, this.maybeSerialize(arguments));
-    }
+    this.withContext(Level.WARN, null, null, format, arguments, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.WARN_INT,
+          format,
+          this.maybeSerialize(arguments),
+          null
+        );
+      } else {
+        this.logger.warn(format, this.maybeSerialize(arguments));
+      }
+    });
   }
 
   @Override
   public void warn(final @NotNull String msg, final @Nullable Throwable t) {
     if (!this.isWarnEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.WARN_INT,
-        msg,
-        null,
-        UnpackedComponentThrowable.unpack(t, this.serializer)
-      );
-    } else {
-      this.logger.warn(msg, UnpackedComponentThrowable.unpack(t, this.serializer));
-    }
+    this.withContext(Level.WARN, null, null, msg, null, t, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.WARN_INT,
+          msg,
+          null,
+          UnpackedComponentThrowable.unpack(t, this.serializer)
+        );
+      } else {
+        this.logger.warn(msg, UnpackedComponentThrowable.unpack(t, this.serializer));
+      }
+    });
   }
 
   @Override
   public void warn(final @NotNull Marker marker, final @NotNull String msg) {
     if (!this.isWarnEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.WARN_INT,
-        msg,
-        null,
-        null
-      );
-    } else {
-      this.logger.warn(marker, msg);
-    }
+    this.withContext(Level.WARN, marker, null, msg, null, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.WARN_INT,
+          msg,
+          null,
+          null
+        );
+      } else {
+        this.logger.warn(marker, msg);
+      }
+    });
   }
 
   @Override
   public void warn(final @NotNull Marker marker, final @NotNull String format, final @Nullable Object arg) {
     if (!this.isWarnEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.WARN_INT,
-        format,
-        new Object[] {this.maybeSerialize(arg)},
-        null
-      );
-    } else {
-      this.logger.warn(marker, format, this.maybeSerialize(arg));
-    }
+    this.withContext(Level.WARN, marker, null, format, new Object[] {arg}, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.WARN_INT,
+          format,
+          new Object[] {this.maybeSerialize(arg)},
+          null
+        );
+      } else {
+        this.logger.warn(marker, format, this.maybeSerialize(arg));
+      }
+    });
   }
 
   @Override
   public void warn(final @NotNull Marker marker, final @NotNull String format, final @Nullable Object arg1, final @Nullable Object arg2) {
     if (!this.isWarnEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.WARN_INT,
-        format,
-        new Object[] {this.maybeSerialize(arg1), this.maybeSerialize(arg2)},
-        null
-      );
-    } else {
-      this.logger.warn(marker, format, this.maybeSerialize(arg1), this.maybeSerialize(arg2));
-    }
+    this.withContext(Level.WARN, marker, null, format, new Object[] {arg1, arg2}, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.WARN_INT,
+          format,
+          new Object[] {this.maybeSerialize(arg1), this.maybeSerialize(arg2)},
+          null
+        );
+      } else {
+        this.logger.warn(marker, format, this.maybeSerialize(arg1), this.maybeSerialize(arg2));
+      }
+    });
   }
 
   @Override
   public void warn(final @NotNull Marker marker, final @NotNull String format, final @Nullable Object @NotNull... argArray) {
     if (!this.isWarnEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.WARN_INT,
-        format,
-        this.maybeSerialize(argArray),
-        null
-      );
-    } else {
-      this.logger.warn(marker, format, this.maybeSerialize(argArray));
-    }
+    this.withContext(Level.WARN, marker, null, format, argArray, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.WARN_INT,
+          format,
+          this.maybeSerialize(argArray),
+          null
+        );
+      } else {
+        this.logger.warn(marker, format, this.maybeSerialize(argArray));
+      }
+    });
   }
 
   @Override
   public void warn(final @NotNull Marker marker, final @NotNull String msg, final @Nullable Throwable t) {
     if (!this.isWarnEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.WARN_INT,
-        msg,
-        null,
-        UnpackedComponentThrowable.unpack(t, this.serializer)
-      );
-    } else {
-      this.logger.warn(marker, msg, UnpackedComponentThrowable.unpack(t, this.serializer));
-    }
+    this.withContext(Level.WARN, marker, null, msg, null, t, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.WARN_INT,
+          msg,
+          null,
+          UnpackedComponentThrowable.unpack(t, this.serializer)
+        );
+      } else {
+        this.logger.warn(marker, msg, UnpackedComponentThrowable.unpack(t, this.serializer));
+      }
+    });
   }
 
   @Override
   public void error(final @NotNull String format) {
     if (!this.isErrorEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.ERROR_INT,
-        format,
-        null,
-        null
-      );
-    } else {
-      this.logger.error(format);
-    }
+    this.withContext(Level.ERROR, null, null, format, null, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.ERROR_INT,
+          format,
+          null,
+          null
+        );
+      } else {
+        this.logger.error(format);
+      }
+    });
   }
 
   @Override
   public void error(final @NotNull String format, final @Nullable Object arg) {
     if (!this.isErrorEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.ERROR_INT,
-        format,
-        new Object[] {this.maybeSerialize(arg)},
-        null
-      );
-    } else {
-      this.logger.error(format, this.maybeSerialize(arg));
-    }
+    this.withContext(Level.ERROR, null, null, format, new Object[] {arg}, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.ERROR_INT,
+          format,
+          new Object[] {this.maybeSerialize(arg)},
+          null
+        );
+      } else {
+        this.logger.error(format, this.maybeSerialize(arg));
+      }
+    });
   }
 
   @Override
   public void error(final @NotNull String format, final @Nullable Object arg1, final @Nullable Object arg2) {
     if (!this.isErrorEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.ERROR_INT,
-        format,
-        new Object[] {this.maybeSerialize(arg1), this.maybeSerialize(arg2)},
-        null
-      );
-    } else {
-      this.logger.error(format, this.maybeSerialize(arg1), this.maybeSerialize(arg2));
-    }
+    this.withContext(Level.ERROR, null, null, format, new Object[] {arg1, arg2}, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.ERROR_INT,
+          format,
+          new Object[] {this.maybeSerialize(arg1), this.maybeSerialize(arg2)},
+          null
+        );
+      } else {
+        this.logger.error(format, this.maybeSerialize(arg1), this.maybeSerialize(arg2));
+      }
+    });
   }
 
   @Override
   public void error(final @NotNull String format, final @Nullable Object @NotNull... arguments) {
     if (!this.isErrorEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.ERROR_INT,
-        format,
-        this.maybeSerialize(arguments),
-        null
-      );
-    } else {
-      this.logger.error(format, this.maybeSerialize(arguments));
-    }
+    this.withContext(Level.ERROR, null, null, format, arguments, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.ERROR_INT,
+          format,
+          this.maybeSerialize(arguments),
+          null
+        );
+      } else {
+        this.logger.error(format, this.maybeSerialize(arguments));
+      }
+    });
   }
 
   @Override
   public void error(final @NotNull String msg, final @Nullable Throwable t) {
     if (!this.isErrorEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.ERROR_INT,
-        msg,
-        null,
-        UnpackedComponentThrowable.unpack(t, this.serializer)
-      );
-    } else {
-      this.logger.error(msg, UnpackedComponentThrowable.unpack(t, this.serializer));
-    }
+    this.withContext(Level.ERROR, null, null, msg, null, t, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.ERROR_INT,
+          msg,
+          null,
+          UnpackedComponentThrowable.unpack(t, this.serializer)
+        );
+      } else {
+        this.logger.error(msg, UnpackedComponentThrowable.unpack(t, this.serializer));
+      }
+    });
   }
 
   @Override
   public void error(final @NotNull Marker marker, final @NotNull String msg) {
     if (!this.isErrorEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.ERROR_INT,
-        msg,
-        null,
-        null
-      );
-    } else {
-      this.logger.error(marker, msg);
-    }
+    this.withContext(Level.ERROR, marker, null, msg, null, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.ERROR_INT,
+          msg,
+          null,
+          null
+        );
+      } else {
+        this.logger.error(marker, msg);
+      }
+    });
   }
 
   @Override
   public void error(final @NotNull Marker marker, final @NotNull String format, final @Nullable Object arg) {
     if (!this.isErrorEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.ERROR_INT,
-        format,
-        new Object[] {this.maybeSerialize(arg)},
-        null
-      );
-    } else {
-      this.logger.error(marker, format, this.maybeSerialize(arg));
-    }
+    this.withContext(Level.ERROR, marker, null, format, new Object[] {arg}, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.ERROR_INT,
+          format,
+          new Object[] {this.maybeSerialize(arg)},
+          null
+        );
+      } else {
+        this.logger.error(marker, format, this.maybeSerialize(arg));
+      }
+    });
   }
 
   @Override
   public void error(final @NotNull Marker marker, final @NotNull String format, final @Nullable Object arg1, final @Nullable Object arg2) {
     if (!this.isErrorEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.ERROR_INT,
-        format,
-        new Object[] {this.maybeSerialize(arg1), this.maybeSerialize(arg2)},
-        null
-      );
-    } else {
-      this.logger.error(marker, format, this.maybeSerialize(arg1), this.maybeSerialize(arg2));
-    }
+    this.withContext(Level.ERROR, marker, null, format, new Object[] {arg1, arg2}, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.ERROR_INT,
+          format,
+          new Object[] {this.maybeSerialize(arg1), this.maybeSerialize(arg2)},
+          null
+        );
+      } else {
+        this.logger.error(marker, format, this.maybeSerialize(arg1), this.maybeSerialize(arg2));
+      }
+    });
   }
 
   @Override
   public void error(final @NotNull Marker marker, final @NotNull String format, final @Nullable Object @NotNull... argArray) {
     if (!this.isErrorEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.ERROR_INT,
-        format,
-        this.maybeSerialize(argArray),
-        null
-      );
-    } else {
-      this.logger.error(marker, format, this.maybeSerialize(argArray));
-    }
+    this.withContext(Level.ERROR, marker, null, format, argArray, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.ERROR_INT,
+          format,
+          this.maybeSerialize(argArray),
+          null
+        );
+      } else {
+        this.logger.error(marker, format, this.maybeSerialize(argArray));
+      }
+    });
   }
 
   @Override
   public void error(final @NotNull Marker marker, final @NotNull String msg, final @Nullable Throwable t) {
     if (!this.isErrorEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.ERROR_INT,
-        msg,
-        null,
-        UnpackedComponentThrowable.unpack(t, this.serializer)
-      );
-    } else {
-      this.logger.error(marker, msg, UnpackedComponentThrowable.unpack(t, this.serializer));
-    }
+    this.withContext(Level.ERROR, marker, null, msg, null, t, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.ERROR_INT,
+          msg,
+          null,
+          UnpackedComponentThrowable.unpack(t, this.serializer)
+        );
+      } else {
+        this.logger.error(marker, msg, UnpackedComponentThrowable.unpack(t, this.serializer));
+      }
+    });
   }
 
-  // Component-primary methods
+  // Component methods
 
   @Override
   public void trace(final @NotNull Component format) {
     if (!this.isTraceEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.TRACE_INT,
-        this.serialize(format),
-        null,
-        null
-      );
-    } else {
-      this.logger.trace(this.serialize(format));
-    }
+    this.withContext(Level.TRACE, null, format, null, null, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.TRACE_INT,
+          this.serialize(format),
+          null,
+          null
+        );
+      } else {
+        this.logger.trace(this.serialize(format));
+      }
+    });
   }
 
   @Override
   public void trace(final @NotNull Component format, final @Nullable Object arg) {
     if (!this.isTraceEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.TRACE_INT,
-        this.serialize(format),
-        new Object[] {this.maybeSerialize(arg)},
-        null
-      );
-    } else {
-      this.logger.trace(this.serialize(format), this.maybeSerialize(arg));
-    }
+    this.withContext(Level.TRACE, null, format, null, new Object[] {arg}, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.TRACE_INT,
+          this.serialize(format),
+          new Object[] {this.maybeSerialize(arg)},
+          null
+        );
+      } else {
+        this.logger.trace(this.serialize(format), this.maybeSerialize(arg));
+      }
+    });
   }
 
   @Override
   public void trace(final @NotNull Component format, final @Nullable Object arg1, final @Nullable Object arg2) {
     if (!this.isTraceEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.TRACE_INT,
-        this.serialize(format),
-        new Object[] {this.maybeSerialize(arg1), this.maybeSerialize(arg2)},
-        null
-      );
-    } else {
-      this.logger.trace(this.serialize(format), this.maybeSerialize(arg1), this.maybeSerialize(arg2));
-    }
+    this.withContext(Level.TRACE, null, format, null, new Object[] {arg1, arg2}, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.TRACE_INT,
+          this.serialize(format),
+          new Object[] {this.maybeSerialize(arg1), this.maybeSerialize(arg2)},
+          null
+        );
+      } else {
+        this.logger.trace(this.serialize(format), this.maybeSerialize(arg1), this.maybeSerialize(arg2));
+      }
+    });
   }
 
   @Override
   public void trace(final @NotNull Component format, final @Nullable Object @NotNull... arguments) {
     if (!this.isTraceEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.TRACE_INT,
-        this.serialize(format),
-        this.maybeSerialize(arguments),
-        null
-      );
-    } else {
-      this.logger.trace(this.serialize(format), this.maybeSerialize(arguments));
-    }
+    this.withContext(Level.TRACE, null, format, null, arguments, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.TRACE_INT,
+          this.serialize(format),
+          this.maybeSerialize(arguments),
+          null
+        );
+      } else {
+        this.logger.trace(this.serialize(format), this.maybeSerialize(arguments));
+      }
+    });
   }
 
   @Override
   public void trace(final @NotNull Component msg, final @Nullable Throwable t) {
     if (!this.isTraceEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.TRACE_INT,
-        this.serialize(msg),
-        null,
-        UnpackedComponentThrowable.unpack(t, this.serializer)
-      );
-    } else {
-      this.logger.trace(this.serialize(msg), UnpackedComponentThrowable.unpack(t, this.serializer));
-    }
+    this.withContext(Level.TRACE, null, msg, null, null, t, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.TRACE_INT,
+          this.serialize(msg),
+          null,
+          UnpackedComponentThrowable.unpack(t, this.serializer)
+        );
+      } else {
+        this.logger.trace(this.serialize(msg), UnpackedComponentThrowable.unpack(t, this.serializer));
+      }
+    });
   }
 
   @Override
   public void trace(final @NotNull Marker marker, final @NotNull Component msg) {
     if (!this.isTraceEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.TRACE_INT,
-        this.serialize(msg),
-        null,
-        null
-      );
-    } else {
-      this.logger.trace(marker, this.serialize(msg));
-    }
+    this.withContext(Level.TRACE, marker, msg, null, null, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.TRACE_INT,
+          this.serialize(msg),
+          null,
+          null
+        );
+      } else {
+        this.logger.trace(marker, this.serialize(msg));
+      }
+    });
   }
 
   @Override
   public void trace(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object arg) {
     if (!this.isTraceEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.TRACE_INT,
-        this.serialize(format),
-        new Object[] {this.maybeSerialize(arg)},
-        null
-      );
-    } else {
-      this.logger.trace(marker, this.serialize(format), this.maybeSerialize(arg));
-    }
+    this.withContext(Level.TRACE, marker, format, null, new Object[] {arg}, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.TRACE_INT,
+          this.serialize(format),
+          new Object[] {this.maybeSerialize(arg)},
+          null
+        );
+      } else {
+        this.logger.trace(marker, this.serialize(format), this.maybeSerialize(arg));
+      }
+    });
   }
 
   @Override
   public void trace(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object arg1, final @Nullable Object arg2) {
     if (!this.isTraceEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.TRACE_INT,
-        this.serialize(format),
-        new Object[] {this.maybeSerialize(arg1), this.maybeSerialize(arg2)},
-        null
-      );
-    } else {
-      this.logger.trace(marker, this.serialize(format), this.maybeSerialize(arg1), this.maybeSerialize(arg2));
-    }
+    this.withContext(Level.TRACE, marker, format, null, new Object[] {arg1, arg2}, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.TRACE_INT,
+          this.serialize(format),
+          new Object[] {this.maybeSerialize(arg1), this.maybeSerialize(arg2)},
+          null
+        );
+      } else {
+        this.logger.trace(marker, this.serialize(format), this.maybeSerialize(arg1), this.maybeSerialize(arg2));
+      }
+    });
   }
 
   @Override
   public void trace(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object @NotNull... argArray) {
     if (!this.isTraceEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.TRACE_INT,
-        this.serialize(format),
-        this.maybeSerialize(argArray),
-        null
-      );
-    } else {
-      this.logger.trace(marker, this.serialize(format), this.maybeSerialize(argArray));
-    }
+    this.withContext(Level.TRACE, marker, format, null, argArray, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.TRACE_INT,
+          this.serialize(format),
+          this.maybeSerialize(argArray),
+          null
+        );
+      } else {
+        this.logger.trace(marker, this.serialize(format), this.maybeSerialize(argArray));
+      }
+    });
   }
 
   @Override
   public void trace(final @NotNull Marker marker, final @NotNull Component msg, final @Nullable Throwable t) {
     if (!this.isTraceEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.TRACE_INT,
-        this.serialize(msg),
-        null,
-        UnpackedComponentThrowable.unpack(t, this.serializer)
-      );
-    } else {
-      this.logger.trace(marker, this.serialize(msg), UnpackedComponentThrowable.unpack(t, this.serializer));
-    }
+    this.withContext(Level.TRACE, marker, msg, null, null, t, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.TRACE_INT,
+          this.serialize(msg),
+          null,
+          UnpackedComponentThrowable.unpack(t, this.serializer)
+        );
+      } else {
+        this.logger.trace(marker, this.serialize(msg), UnpackedComponentThrowable.unpack(t, this.serializer));
+      }
+    });
   }
 
   @Override
   public void debug(final @NotNull Component format) {
     if (!this.isDebugEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.DEBUG_INT,
-        this.serialize(format),
-        null,
-        null
-      );
-    } else {
-      this.logger.debug(this.serialize(format));
-    }
+    this.withContext(Level.DEBUG, null, format, null, null, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.DEBUG_INT,
+          this.serialize(format),
+          null,
+          null
+        );
+      } else {
+        this.logger.debug(this.serialize(format));
+      }
+    });
   }
 
   @Override
   public void debug(final @NotNull Component format, final @Nullable Object arg) {
     if (!this.isDebugEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.DEBUG_INT,
-        this.serialize(format),
-        new Object[] {this.maybeSerialize(arg)},
-        null
-      );
-    } else {
-      this.logger.debug(this.serialize(format), this.maybeSerialize(arg));
-    }
+    this.withContext(Level.DEBUG, null, format, null, new Object[] {arg}, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.DEBUG_INT,
+          this.serialize(format),
+          new Object[] {this.maybeSerialize(arg)},
+          null
+        );
+      } else {
+        this.logger.debug(this.serialize(format), this.maybeSerialize(arg));
+      }
+    });
   }
 
   @Override
   public void debug(final @NotNull Component format, final @Nullable Object arg1, final @Nullable Object arg2) {
     if (!this.isDebugEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.DEBUG_INT,
-        this.serialize(format),
-        new Object[] {this.maybeSerialize(arg1), this.maybeSerialize(arg2)},
-        null
-      );
-    } else {
-      this.logger.debug(this.serialize(format), this.maybeSerialize(arg1), this.maybeSerialize(arg2));
-    }
+    this.withContext(Level.DEBUG, null, format, null, new Object[] {arg1, arg2}, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.DEBUG_INT,
+          this.serialize(format),
+          new Object[] {this.maybeSerialize(arg1), this.maybeSerialize(arg2)},
+          null
+        );
+      } else {
+        this.logger.debug(this.serialize(format), this.maybeSerialize(arg1), this.maybeSerialize(arg2));
+      }
+    });
   }
 
   @Override
   public void debug(final @NotNull Component format, final @Nullable Object @NotNull... arguments) {
     if (!this.isDebugEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.DEBUG_INT,
-        this.serialize(format),
-        this.maybeSerialize(arguments),
-        null
-      );
-    } else {
-      this.logger.debug(this.serialize(format), this.maybeSerialize(arguments));
-    }
+    this.withContext(Level.DEBUG, null, format, null, arguments, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.DEBUG_INT,
+          this.serialize(format),
+          this.maybeSerialize(arguments),
+          null
+        );
+      } else {
+        this.logger.debug(this.serialize(format), this.maybeSerialize(arguments));
+      }
+    });
   }
 
   @Override
   public void debug(final @NotNull Component msg, final @Nullable Throwable t) {
     if (!this.isDebugEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.DEBUG_INT,
-        this.serialize(msg),
-        null,
-        UnpackedComponentThrowable.unpack(t, this.serializer)
-      );
-    } else {
-      this.logger.debug(this.serialize(msg), UnpackedComponentThrowable.unpack(t, this.serializer));
-    }
+    this.withContext(Level.DEBUG, null, msg, null, null, t, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.DEBUG_INT,
+          this.serialize(msg),
+          null,
+          UnpackedComponentThrowable.unpack(t, this.serializer)
+        );
+      } else {
+        this.logger.debug(this.serialize(msg), UnpackedComponentThrowable.unpack(t, this.serializer));
+      }
+    });
   }
 
   @Override
   public void debug(final @NotNull Marker marker, final @NotNull Component msg) {
     if (!this.isDebugEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.DEBUG_INT,
-        this.serialize(msg),
-        null,
-        null
-      );
-    } else {
-      this.logger.debug(marker, this.serialize(msg));
-    }
+    this.withContext(Level.DEBUG, marker, msg, null, null, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.DEBUG_INT,
+          this.serialize(msg),
+          null,
+          null
+        );
+      } else {
+        this.logger.debug(marker, this.serialize(msg));
+      }
+    });
   }
 
   @Override
   public void debug(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object arg) {
     if (!this.isDebugEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.DEBUG_INT,
-        this.serialize(format),
-        new Object[] {this.maybeSerialize(arg)},
-        null
-      );
-    } else {
-      this.logger.debug(marker, this.serialize(format), this.maybeSerialize(arg));
-    }
+    this.withContext(Level.DEBUG, marker, format, null, new Object[] {arg}, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.DEBUG_INT,
+          this.serialize(format),
+          new Object[] {this.maybeSerialize(arg)},
+          null
+        );
+      } else {
+        this.logger.debug(marker, this.serialize(format), this.maybeSerialize(arg));
+      }
+    });
   }
 
   @Override
   public void debug(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object arg1, final @Nullable Object arg2) {
     if (!this.isDebugEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.DEBUG_INT,
-        this.serialize(format),
-        new Object[] {this.maybeSerialize(arg1), this.maybeSerialize(arg2)},
-        null
-      );
-    } else {
-      this.logger.debug(marker, this.serialize(format), this.maybeSerialize(arg1), this.maybeSerialize(arg2));
-    }
+    this.withContext(Level.DEBUG, marker, format, null, new Object[] {arg1, arg2}, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.DEBUG_INT,
+          this.serialize(format),
+          new Object[] {this.maybeSerialize(arg1), this.maybeSerialize(arg2)},
+          null
+        );
+      } else {
+        this.logger.debug(marker, this.serialize(format), this.maybeSerialize(arg1), this.maybeSerialize(arg2));
+      }
+    });
   }
 
   @Override
   public void debug(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object @NotNull... argArray) {
     if (!this.isDebugEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.DEBUG_INT,
-        this.serialize(format),
-        this.maybeSerialize(argArray),
-        null
-      );
-    } else {
-      this.logger.debug(marker, this.serialize(format), this.maybeSerialize(argArray));
-    }
+    this.withContext(Level.DEBUG, marker, format, null, argArray, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.DEBUG_INT,
+          this.serialize(format),
+          this.maybeSerialize(argArray),
+          null
+        );
+      } else {
+        this.logger.debug(marker, this.serialize(format), this.maybeSerialize(argArray));
+      }
+    });
   }
 
   @Override
   public void debug(final @NotNull Marker marker, final @NotNull Component msg, final @Nullable Throwable t) {
     if (!this.isDebugEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.DEBUG_INT,
-        this.serialize(msg),
-        null,
-        UnpackedComponentThrowable.unpack(t, this.serializer)
-      );
-    } else {
-      this.logger.debug(marker, this.serialize(msg), UnpackedComponentThrowable.unpack(t, this.serializer));
-    }
+    this.withContext(Level.DEBUG, marker, msg, null, null, t, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.DEBUG_INT,
+          this.serialize(msg),
+          null,
+          UnpackedComponentThrowable.unpack(t, this.serializer)
+        );
+      } else {
+        this.logger.debug(marker, this.serialize(msg), UnpackedComponentThrowable.unpack(t, this.serializer));
+      }
+    });
   }
 
   @Override
   public void info(final @NotNull Component format) {
     if (!this.isInfoEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.INFO_INT,
-        this.serialize(format),
-        null,
-        null
-      );
-    } else {
-      this.logger.info(this.serialize(format));
-    }
+    this.withContext(Level.INFO, null, format, null, null, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.INFO_INT,
+          this.serialize(format),
+          null,
+          null
+        );
+      } else {
+        this.logger.info(this.serialize(format));
+      }
+    });
   }
 
   @Override
   public void info(final @NotNull Component format, final @Nullable Object arg) {
     if (!this.isInfoEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.INFO_INT,
-        this.serialize(format),
-        new Object[] {this.maybeSerialize(arg)},
-        null
-      );
-    } else {
-      this.logger.info(this.serialize(format), this.maybeSerialize(arg));
-    }
+    this.withContext(Level.INFO, null, format, null, new Object[] {arg}, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.INFO_INT,
+          this.serialize(format),
+          new Object[] {this.maybeSerialize(arg)},
+          null
+        );
+      } else {
+        this.logger.info(this.serialize(format), this.maybeSerialize(arg));
+      }
+    });
   }
 
   @Override
   public void info(final @NotNull Component format, final @Nullable Object arg1, final @Nullable Object arg2) {
     if (!this.isInfoEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.INFO_INT,
-        this.serialize(format),
-        new Object[] {this.maybeSerialize(arg1), this.maybeSerialize(arg2)},
-        null
-      );
-    } else {
-      this.logger.info(this.serialize(format), this.maybeSerialize(arg1), this.maybeSerialize(arg2));
-    }
+    this.withContext(Level.INFO, null, format, null, new Object[] {arg1, arg2}, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.INFO_INT,
+          this.serialize(format),
+          new Object[] {this.maybeSerialize(arg1), this.maybeSerialize(arg2)},
+          null
+        );
+      } else {
+        this.logger.info(this.serialize(format), this.maybeSerialize(arg1), this.maybeSerialize(arg2));
+      }
+    });
   }
 
   @Override
   public void info(final @NotNull Component format, final @Nullable Object @NotNull... arguments) {
     if (!this.isInfoEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.INFO_INT,
-        this.serialize(format),
-        this.maybeSerialize(arguments),
-        null
-      );
-    } else {
-      this.logger.info(this.serialize(format), this.maybeSerialize(arguments));
-    }
+    this.withContext(Level.INFO, null, format, null, arguments, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.INFO_INT,
+          this.serialize(format),
+          this.maybeSerialize(arguments),
+          null
+        );
+      } else {
+        this.logger.info(this.serialize(format), this.maybeSerialize(arguments));
+      }
+    });
   }
 
   @Override
   public void info(final @NotNull Component msg, final @Nullable Throwable t) {
     if (!this.isInfoEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.INFO_INT,
-        this.serialize(msg),
-        null,
-        UnpackedComponentThrowable.unpack(t, this.serializer)
-      );
-    } else {
-      this.logger.info(this.serialize(msg), UnpackedComponentThrowable.unpack(t, this.serializer));
-    }
+    this.withContext(Level.INFO, null, msg, null, null, t, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.INFO_INT,
+          this.serialize(msg),
+          null,
+          UnpackedComponentThrowable.unpack(t, this.serializer)
+        );
+      } else {
+        this.logger.info(this.serialize(msg), UnpackedComponentThrowable.unpack(t, this.serializer));
+      }
+    });
   }
 
   @Override
   public void info(final @NotNull Marker marker, final @NotNull Component msg) {
     if (!this.isInfoEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.INFO_INT,
-        this.serialize(msg),
-        null,
-        null
-      );
-    } else {
-      this.logger.info(marker, this.serialize(msg));
-    }
+    this.withContext(Level.INFO, marker, msg, null, null, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.INFO_INT,
+          this.serialize(msg),
+          null,
+          null
+        );
+      } else {
+        this.logger.info(marker, this.serialize(msg));
+      }
+    });
   }
 
   @Override
   public void info(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object arg) {
     if (!this.isInfoEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.INFO_INT,
-        this.serialize(format),
-        new Object[] {this.maybeSerialize(arg)},
-        null
-      );
-    } else {
-      this.logger.info(marker, this.serialize(format), this.maybeSerialize(arg));
-    }
+    this.withContext(Level.INFO, marker, format, null, new Object[] {arg}, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.INFO_INT,
+          this.serialize(format),
+          new Object[] {this.maybeSerialize(arg)},
+          null
+        );
+      } else {
+        this.logger.info(marker, this.serialize(format), this.maybeSerialize(arg));
+      }
+    });
   }
 
   @Override
   public void info(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object arg1, final @Nullable Object arg2) {
     if (!this.isInfoEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.INFO_INT,
-        this.serialize(format),
-        new Object[] {this.maybeSerialize(arg1), this.maybeSerialize(arg2)},
-        null
-      );
-    } else {
-      this.logger.info(marker, this.serialize(format), this.maybeSerialize(arg1), this.maybeSerialize(arg2));
-    }
+    this.withContext(Level.INFO, marker, format, null, new Object[] {arg1, arg2}, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.INFO_INT,
+          this.serialize(format),
+          new Object[] {this.maybeSerialize(arg1), this.maybeSerialize(arg2)},
+          null
+        );
+      } else {
+        this.logger.info(marker, this.serialize(format), this.maybeSerialize(arg1), this.maybeSerialize(arg2));
+      }
+    });
   }
 
   @Override
   public void info(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object @NotNull... argArray) {
     if (!this.isInfoEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.INFO_INT,
-        this.serialize(format),
-        this.maybeSerialize(argArray),
-        null
-      );
-    } else {
-      this.logger.info(marker, this.serialize(format), this.maybeSerialize(argArray));
-    }
+    this.withContext(Level.INFO, marker, format, null, argArray, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.INFO_INT,
+          this.serialize(format),
+          this.maybeSerialize(argArray),
+          null
+        );
+      } else {
+        this.logger.info(marker, this.serialize(format), this.maybeSerialize(argArray));
+      }
+    });
   }
 
   @Override
   public void info(final @NotNull Marker marker, final @NotNull Component msg, final @Nullable Throwable t) {
     if (!this.isInfoEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.INFO_INT,
-        this.serialize(msg),
-        null,
-        UnpackedComponentThrowable.unpack(t, this.serializer)
-      );
-    } else {
-      this.logger.info(marker, this.serialize(msg), UnpackedComponentThrowable.unpack(t, this.serializer));
-    }
+    this.withContext(Level.INFO, marker, msg, null, null, t, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.INFO_INT,
+          this.serialize(msg),
+          null,
+          UnpackedComponentThrowable.unpack(t, this.serializer)
+        );
+      } else {
+        this.logger.info(marker, this.serialize(msg), UnpackedComponentThrowable.unpack(t, this.serializer));
+      }
+    });
   }
 
   @Override
   public void warn(final @NotNull Component format) {
     if (!this.isWarnEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.WARN_INT,
-        this.serialize(format),
-        null,
-        null
-      );
-    } else {
-      this.logger.warn(this.serialize(format));
-    }
+    this.withContext(Level.WARN, null, format, null, null, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.WARN_INT,
+          this.serialize(format),
+          null,
+          null
+        );
+      } else {
+        this.logger.warn(this.serialize(format));
+      }
+    });
   }
 
   @Override
   public void warn(final @NotNull Component format, final @Nullable Object arg) {
     if (!this.isWarnEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.WARN_INT,
-        this.serialize(format),
-        new Object[] {this.maybeSerialize(arg)},
-        null
-      );
-    } else {
-      this.logger.warn(this.serialize(format), this.maybeSerialize(arg));
-    }
+    this.withContext(Level.WARN, null, format, null, new Object[] {arg}, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.WARN_INT,
+          this.serialize(format),
+          new Object[] {this.maybeSerialize(arg)},
+          null
+        );
+      } else {
+        this.logger.warn(this.serialize(format), this.maybeSerialize(arg));
+      }
+    });
   }
 
   @Override
   public void warn(final @NotNull Component format, final @Nullable Object arg1, final @Nullable Object arg2) {
     if (!this.isWarnEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.WARN_INT,
-        this.serialize(format),
-        new Object[] {this.maybeSerialize(arg1), this.maybeSerialize(arg2)},
-        null
-      );
-    } else {
-      this.logger.warn(this.serialize(format), this.maybeSerialize(arg1), this.maybeSerialize(arg2));
-    }
+    this.withContext(Level.WARN, null, format, null, new Object[] {arg1, arg2}, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.WARN_INT,
+          this.serialize(format),
+          new Object[] {this.maybeSerialize(arg1), this.maybeSerialize(arg2)},
+          null
+        );
+      } else {
+        this.logger.warn(this.serialize(format), this.maybeSerialize(arg1), this.maybeSerialize(arg2));
+      }
+    });
   }
 
   @Override
   public void warn(final @NotNull Component format, final @Nullable Object @NotNull... arguments) {
     if (!this.isWarnEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.WARN_INT,
-        this.serialize(format),
-        this.maybeSerialize(arguments),
-        null
-      );
-    } else {
-      this.logger.warn(this.serialize(format), this.maybeSerialize(arguments));
-    }
+    this.withContext(Level.WARN, null, format, null, arguments, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.WARN_INT,
+          this.serialize(format),
+          this.maybeSerialize(arguments),
+          null
+        );
+      } else {
+        this.logger.warn(this.serialize(format), this.maybeSerialize(arguments));
+      }
+    });
   }
 
   @Override
   public void warn(final @NotNull Component msg, final @Nullable Throwable t) {
     if (!this.isWarnEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.WARN_INT,
-        this.serialize(msg),
-        null,
-        UnpackedComponentThrowable.unpack(t, this.serializer)
-      );
-    } else {
-      this.logger.warn(this.serialize(msg), UnpackedComponentThrowable.unpack(t, this.serializer));
-    }
+    this.withContext(Level.WARN, null, msg, null, null, t, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.WARN_INT,
+          this.serialize(msg),
+          null,
+          UnpackedComponentThrowable.unpack(t, this.serializer)
+        );
+      } else {
+        this.logger.warn(this.serialize(msg), UnpackedComponentThrowable.unpack(t, this.serializer));
+      }
+    });
   }
 
   @Override
   public void warn(final @NotNull Marker marker, final @NotNull Component msg) {
     if (!this.isWarnEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.WARN_INT,
-        this.serialize(msg),
-        null,
-        null
-      );
-    } else {
-      this.logger.warn(marker, this.serialize(msg));
-    }
+    this.withContext(Level.WARN, marker, msg, null, null, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.WARN_INT,
+          this.serialize(msg),
+          null,
+          null
+        );
+      } else {
+        this.logger.warn(marker, this.serialize(msg));
+      }
+    });
   }
 
   @Override
   public void warn(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object arg) {
     if (!this.isWarnEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.WARN_INT,
-        this.serialize(format),
-        new Object[] {this.maybeSerialize(arg)},
-        null
-      );
-    } else {
-      this.logger.warn(marker, this.serialize(format), this.maybeSerialize(arg));
-    }
+    this.withContext(Level.WARN, marker, format, null, new Object[] {arg}, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.WARN_INT,
+          this.serialize(format),
+          new Object[] {this.maybeSerialize(arg)},
+          null
+        );
+      } else {
+        this.logger.warn(marker, this.serialize(format), this.maybeSerialize(arg));
+      }
+    });
   }
 
   @Override
   public void warn(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object arg1, final @Nullable Object arg2) {
     if (!this.isWarnEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.WARN_INT,
-        this.serialize(format),
-        new Object[] {this.maybeSerialize(arg1), this.maybeSerialize(arg2)},
-        null
-      );
-    } else {
-      this.logger.warn(marker, this.serialize(format), this.maybeSerialize(arg1), this.maybeSerialize(arg2));
-    }
+    this.withContext(Level.WARN, marker, format, null, new Object[] {arg1, arg2}, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.WARN_INT,
+          this.serialize(format),
+          new Object[] {this.maybeSerialize(arg1), this.maybeSerialize(arg2)},
+          null
+        );
+      } else {
+        this.logger.warn(marker, this.serialize(format), this.maybeSerialize(arg1), this.maybeSerialize(arg2));
+      }
+    });
   }
 
   @Override
   public void warn(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object @NotNull... argArray) {
     if (!this.isWarnEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.WARN_INT,
-        this.serialize(format),
-        this.maybeSerialize(argArray),
-        null
-      );
-    } else {
-      this.logger.warn(marker, this.serialize(format), this.maybeSerialize(argArray));
-    }
+    this.withContext(Level.WARN, marker, format, null, argArray, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.WARN_INT,
+          this.serialize(format),
+          this.maybeSerialize(argArray),
+          null
+        );
+      } else {
+        this.logger.warn(marker, this.serialize(format), this.maybeSerialize(argArray));
+      }
+    });
   }
 
   @Override
   public void warn(final @NotNull Marker marker, final @NotNull Component msg, final @Nullable Throwable t) {
     if (!this.isWarnEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.WARN_INT,
-        this.serialize(msg),
-        null,
-        UnpackedComponentThrowable.unpack(t, this.serializer)
-      );
-    } else {
-      this.logger.warn(marker, this.serialize(msg), UnpackedComponentThrowable.unpack(t, this.serializer));
-    }
+    this.withContext(Level.WARN, marker, msg, null, null, t, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.WARN_INT,
+          this.serialize(msg),
+          null,
+          UnpackedComponentThrowable.unpack(t, this.serializer)
+        );
+      } else {
+        this.logger.warn(marker, this.serialize(msg), UnpackedComponentThrowable.unpack(t, this.serializer));
+      }
+    });
   }
 
   @Override
   public void error(final @NotNull Component format) {
     if (!this.isErrorEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.ERROR_INT,
-        this.serialize(format),
-        null,
-        null
-      );
-    } else {
-      this.logger.error(this.serialize(format));
-    }
+    this.withContext(Level.ERROR, null, format, null, null, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.ERROR_INT,
+          this.serialize(format),
+          null,
+          null
+        );
+      } else {
+        this.logger.error(this.serialize(format));
+      }
+    });
   }
 
   @Override
   public void error(final @NotNull Component format, final @Nullable Object arg) {
     if (!this.isErrorEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.ERROR_INT,
-        this.serialize(format),
-        new Object[] {this.maybeSerialize(arg)},
-        null
-      );
-    } else {
-      this.logger.error(this.serialize(format), this.maybeSerialize(arg));
-    }
+    this.withContext(Level.ERROR, null, format, null, new Object[] {arg}, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.ERROR_INT,
+          this.serialize(format),
+          new Object[] {this.maybeSerialize(arg)},
+          null
+        );
+      } else {
+        this.logger.error(this.serialize(format), this.maybeSerialize(arg));
+      }
+    });
   }
 
   @Override
   public void error(final @NotNull Component format, final @Nullable Object arg1, final @Nullable Object arg2) {
     if (!this.isErrorEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.ERROR_INT,
-        this.serialize(format),
-        new Object[] {this.maybeSerialize(arg1), this.maybeSerialize(arg2)},
-        null
-      );
-    } else {
-      this.logger.error(this.serialize(format), this.maybeSerialize(arg1), this.maybeSerialize(arg2));
-    }
+    this.withContext(Level.ERROR, null, format, null, new Object[] {arg1, arg2}, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.ERROR_INT,
+          this.serialize(format),
+          new Object[] {this.maybeSerialize(arg1), this.maybeSerialize(arg2)},
+          null
+        );
+      } else {
+        this.logger.error(this.serialize(format), this.maybeSerialize(arg1), this.maybeSerialize(arg2));
+      }
+    });
   }
 
   @Override
   public void error(final @NotNull Component format, final @Nullable Object @NotNull... arguments) {
     if (!this.isErrorEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.ERROR_INT,
-        this.serialize(format),
-        this.maybeSerialize(arguments),
-        null
-      );
-    } else {
-      this.logger.error(this.serialize(format), this.maybeSerialize(arguments));
-    }
+    this.withContext(Level.ERROR, null, format, null, arguments, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.ERROR_INT,
+          this.serialize(format),
+          this.maybeSerialize(arguments),
+          null
+        );
+      } else {
+        this.logger.error(this.serialize(format), this.maybeSerialize(arguments));
+      }
+    });
   }
 
   @Override
   public void error(final @NotNull Component msg, final @Nullable Throwable t) {
     if (!this.isErrorEnabled()) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        null,
-        FQCN,
-        LocationAwareLogger.ERROR_INT,
-        this.serialize(msg),
-        null,
-        UnpackedComponentThrowable.unpack(t, this.serializer)
-      );
-    } else {
-      this.logger.error(this.serialize(msg), UnpackedComponentThrowable.unpack(t, this.serializer));
-    }
+    this.withContext(Level.ERROR, null, msg, null, null, t, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          null,
+          FQCN,
+          LocationAwareLogger.ERROR_INT,
+          this.serialize(msg),
+          null,
+          UnpackedComponentThrowable.unpack(t, this.serializer)
+        );
+      } else {
+        this.logger.error(this.serialize(msg), UnpackedComponentThrowable.unpack(t, this.serializer));
+      }
+    });
   }
 
   @Override
   public void error(final @NotNull Marker marker, final @NotNull Component msg) {
     if (!this.isErrorEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.ERROR_INT,
-        this.serialize(msg),
-        null,
-        null
-      );
-    } else {
-      this.logger.error(marker, this.serialize(msg));
-    }
+    this.withContext(Level.ERROR, marker, msg, null, null, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.ERROR_INT,
+          this.serialize(msg),
+          null,
+          null
+        );
+      } else {
+        this.logger.error(marker, this.serialize(msg));
+      }
+    });
   }
 
   @Override
   public void error(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object arg) {
     if (!this.isErrorEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.ERROR_INT,
-        this.serialize(format),
-        new Object[] {this.maybeSerialize(arg)},
-        null
-      );
-    } else {
-      this.logger.error(marker, this.serialize(format), this.maybeSerialize(arg));
-    }
+    this.withContext(Level.ERROR, marker, format, null, new Object[] {arg}, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.ERROR_INT,
+          this.serialize(format),
+          new Object[] {this.maybeSerialize(arg)},
+          null
+        );
+      } else {
+        this.logger.error(marker, this.serialize(format), this.maybeSerialize(arg));
+      }
+    });
   }
 
   @Override
   public void error(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object arg1, final @Nullable Object arg2) {
     if (!this.isErrorEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.ERROR_INT,
-        this.serialize(format),
-        new Object[] {this.maybeSerialize(arg1), this.maybeSerialize(arg2)},
-        null
-      );
-    } else {
-      this.logger.error(marker, this.serialize(format), this.maybeSerialize(arg1), this.maybeSerialize(arg2));
-    }
+    this.withContext(Level.ERROR, marker, format, null, new Object[] {arg1, arg2}, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.ERROR_INT,
+          this.serialize(format),
+          new Object[] {this.maybeSerialize(arg1), this.maybeSerialize(arg2)},
+          null
+        );
+      } else {
+        this.logger.error(marker, this.serialize(format), this.maybeSerialize(arg1), this.maybeSerialize(arg2));
+      }
+    });
   }
 
   @Override
   public void error(final @NotNull Marker marker, final @NotNull Component format, final @Nullable Object @NotNull... argArray) {
     if (!this.isErrorEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.ERROR_INT,
-        this.serialize(format),
-        this.maybeSerialize(argArray),
-        null
-      );
-    } else {
-      this.logger.error(marker, this.serialize(format), this.maybeSerialize(argArray));
-    }
+    this.withContext(Level.ERROR, marker, format, null, argArray, null, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.ERROR_INT,
+          this.serialize(format),
+          this.maybeSerialize(argArray),
+          null
+        );
+      } else {
+        this.logger.error(marker, this.serialize(format), this.maybeSerialize(argArray));
+      }
+    });
   }
 
   @Override
   public void error(final @NotNull Marker marker, final @NotNull Component msg, final @Nullable Throwable t) {
     if (!this.isErrorEnabled(marker)) return;
 
-    if (this.isLocationAware) {
-      ((LocationAwareLogger) this.logger).log(
-        marker,
-        FQCN,
-        LocationAwareLogger.ERROR_INT,
-        this.serialize(msg),
-        null,
-        UnpackedComponentThrowable.unpack(t, this.serializer)
-      );
-    } else {
-      this.logger.error(marker, this.serialize(msg), UnpackedComponentThrowable.unpack(t, this.serializer));
-    }
+    this.withContext(Level.ERROR, marker, msg, null, null, t, () -> {
+      if (this.isLocationAware) {
+        ((LocationAwareLogger) this.logger).log(
+          marker,
+          FQCN,
+          LocationAwareLogger.ERROR_INT,
+          this.serialize(msg),
+          null,
+          UnpackedComponentThrowable.unpack(t, this.serializer)
+        );
+      } else {
+        this.logger.error(marker, this.serialize(msg), UnpackedComponentThrowable.unpack(t, this.serializer));
+      }
+    });
   }
 }
