@@ -105,9 +105,7 @@ public non-sealed interface TextColor extends Comparable<TextColor>, RGBLike, St
     final float q = v * (1 - s * f);
     final float t = v * (1 - s * (1 - f));
 
-    if (i == 0) {
-      return color(v, t, p);
-    } else if (i == 1) {
+    if (i == 1) {
       return color(q, v, p);
     } else if (i == 2) {
       return color(p, v, t);
@@ -115,8 +113,10 @@ public non-sealed interface TextColor extends Comparable<TextColor>, RGBLike, St
       return color(p, q, v);
     } else if (i == 4) {
       return color(t, p, v);
-    } else {
+    } else if (i == 5) {
       return color(v, p, q);
+    } else {
+      return color(v, t, p);
     }
   }
 
