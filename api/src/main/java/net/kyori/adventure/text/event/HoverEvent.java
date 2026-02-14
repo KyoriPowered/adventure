@@ -23,14 +23,17 @@
  */
 package net.kyori.adventure.text.event;
 
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.function.UnaryOperator;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
+import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.StyleBuilderApplicable;
 import net.kyori.adventure.text.renderer.ComponentRenderer;
 import net.kyori.adventure.util.Index;
@@ -50,7 +53,8 @@ import static java.util.Objects.requireNonNull;
  * @param <V> the value type
  * @since 4.0.0
  */
-public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderApplicable permits HoverEventImpl {
+@SuppressWarnings("ClassCanBeRecord") // We need a private constructor.
+public final class HoverEvent<V> implements HoverEventSource<V>, StyleBuilderApplicable {
   /**
    * Creates a hover event that shows text on hover.
    *
@@ -58,7 +62,7 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
    * @return a hover event
    * @since 4.2.0
    */
-  static HoverEvent<Component> showText(final ComponentLike text) {
+  public static HoverEvent<Component> showText(final ComponentLike text) {
     return showText(text.asComponent());
   }
 
@@ -69,8 +73,8 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
    * @return a hover event
    * @since 4.0.0
    */
-  static HoverEvent<Component> showText(final Component text) {
-    return new HoverEventImpl<>(Action.SHOW_TEXT, text);
+  public static HoverEvent<Component> showText(final Component text) {
+    return new HoverEvent<>(Action.SHOW_TEXT, text);
   }
 
   /**
@@ -81,8 +85,8 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
    * @return a hover event
    * @since 4.0.0
    */
-  static HoverEvent<ShowItem> showItem(final Key item, @Range(from = 0, to = Integer.MAX_VALUE) final int count) {
-    return showItem(item, count, Collections.emptyMap());
+  public static HoverEvent<ShowItem> showItem(final Key item, @Range(from = 0, to = Integer.MAX_VALUE) final int count) {
+    return showItem(item, count, Map.of());
   }
 
   /**
@@ -93,8 +97,8 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
    * @return a hover event
    * @since 4.6.0
    */
-  static HoverEvent<ShowItem> showItem(final Keyed item, @Range(from = 0, to = Integer.MAX_VALUE) final int count) {
-    return showItem(item, count, Collections.emptyMap());
+  public static HoverEvent<ShowItem> showItem(final Keyed item, @Range(from = 0, to = Integer.MAX_VALUE) final int count) {
+    return showItem(item, count, Map.of());
   }
 
   /**
@@ -105,10 +109,10 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
    * @param nbt the nbt
    * @return a hover event
    * @since 4.0.0
-   * @deprecated since Minecraft 1.20.5 and replaced with data components, not scheduled for removal
+   * @obsoleteSinceMinecraft obsolete since 1.20.5 and replaced with data components
    */
-  @Deprecated
-  static HoverEvent<ShowItem> showItem(final Key item, @Range(from = 0, to = Integer.MAX_VALUE) final int count, final @Nullable BinaryTagHolder nbt) {
+  @ApiStatus.Obsolete
+  public static HoverEvent<ShowItem> showItem(final Key item, @Range(from = 0, to = Integer.MAX_VALUE) final int count, final @Nullable BinaryTagHolder nbt) {
     return showItem(ShowItem.showItem(item, count, nbt));
   }
 
@@ -120,10 +124,10 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
    * @param nbt the nbt
    * @return a hover event
    * @since 4.6.0
-   * @deprecated since Minecraft 1.20.5 and replaced with data components, not scheduled for removal
+   * @obsoleteSinceMinecraft obsolete since 1.20.5 and replaced with data components
    */
-  @Deprecated
-  static HoverEvent<ShowItem> showItem(final Keyed item, @Range(from = 0, to = Integer.MAX_VALUE) final int count, final @Nullable BinaryTagHolder nbt) {
+  @ApiStatus.Obsolete
+  public static HoverEvent<ShowItem> showItem(final Keyed item, @Range(from = 0, to = Integer.MAX_VALUE) final int count, final @Nullable BinaryTagHolder nbt) {
     return showItem(ShowItem.showItem(item, count, nbt));
   }
 
@@ -136,7 +140,7 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
    * @return a hover event
    * @since 4.17.0
    */
-  static HoverEvent<ShowItem> showItem(final Keyed item, @Range(from = 0, to = Integer.MAX_VALUE) final int count, final Map<Key, ? extends DataComponentValue> dataComponents) {
+  public static HoverEvent<ShowItem> showItem(final Keyed item, @Range(from = 0, to = Integer.MAX_VALUE) final int count, final Map<Key, ? extends DataComponentValue> dataComponents) {
     return showItem(ShowItem.showItem(item, count, dataComponents));
   }
 
@@ -147,8 +151,8 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
    * @return a hover event
    * @since 4.0.0
    */
-  static HoverEvent<ShowItem> showItem(final ShowItem item) {
-    return new HoverEventImpl<>(Action.SHOW_ITEM, item);
+  public static HoverEvent<ShowItem> showItem(final ShowItem item) {
+    return new HoverEvent<>(Action.SHOW_ITEM, item);
   }
 
   /**
@@ -161,7 +165,7 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
    * @return a {@code ShowEntity}
    * @since 4.0.0
    */
-  static HoverEvent<ShowEntity> showEntity(final Key type, final UUID id) {
+  public static HoverEvent<ShowEntity> showEntity(final Key type, final UUID id) {
     return showEntity(type, id, null);
   }
 
@@ -175,7 +179,7 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
    * @return a {@code ShowEntity}
    * @since 4.6.0
    */
-  static HoverEvent<ShowEntity> showEntity(final Keyed type, final UUID id) {
+  public static HoverEvent<ShowEntity> showEntity(final Keyed type, final UUID id) {
     return showEntity(type, id, null);
   }
 
@@ -190,7 +194,7 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
    * @return a {@code ShowEntity}
    * @since 4.0.0
    */
-  static HoverEvent<ShowEntity> showEntity(final Key type, final UUID id, final @Nullable Component name) {
+  public static HoverEvent<ShowEntity> showEntity(final Key type, final UUID id, final @Nullable Component name) {
     return showEntity(ShowEntity.showEntity(type, id, name));
   }
 
@@ -205,7 +209,7 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
    * @return a {@code ShowEntity}
    * @since 4.6.0
    */
-  static HoverEvent<ShowEntity> showEntity(final Keyed type, final UUID id, final @Nullable Component name) {
+  public static HoverEvent<ShowEntity> showEntity(final Keyed type, final UUID id, final @Nullable Component name) {
     return showEntity(ShowEntity.showEntity(type, id, name));
   }
 
@@ -218,8 +222,8 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
    * @return a hover event
    * @since 4.0.0
    */
-  static HoverEvent<ShowEntity> showEntity(final ShowEntity entity) {
-    return new HoverEventImpl<>(Action.SHOW_ENTITY, entity);
+  public static HoverEvent<ShowEntity> showEntity(final ShowEntity entity) {
+    return new HoverEvent<>(Action.SHOW_ENTITY, entity);
   }
 
   /**
@@ -228,11 +232,11 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
    * @param value the achievement value
    * @return a hover event
    * @since 4.14.0
-   * @deprecated Removed in Vanilla 1.12, but we keep it for backwards compatibility
+   * @obsoleteSinceMinecraft removed in 1.12
    */
-  @Deprecated
-  static HoverEvent<String> showAchievement(final String value) {
-    return new HoverEventImpl<>(Action.SHOW_ACHIEVEMENT, value);
+  @ApiStatus.Obsolete
+  public static HoverEvent<String> showAchievement(final String value) {
+    return new HoverEvent<>(Action.SHOW_ACHIEVEMENT, value);
   }
 
   /**
@@ -244,8 +248,16 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
    * @return a click event
    * @since 4.0.0
    */
-  static <V> HoverEvent<V> hoverEvent(final Action<V> action, final V value) {
-    return new HoverEventImpl<>(action, value);
+  public static <V> HoverEvent<V> hoverEvent(final Action<V> action, final V value) {
+    return new HoverEvent<>(action, value);
+  }
+
+  private final Action<V> action;
+  private final V value;
+
+  private HoverEvent(final Action<V> action, final V value) {
+    this.action = requireNonNull(action, "action");
+    this.value = requireNonNull(value, "value");
   }
 
   /**
@@ -254,7 +266,9 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
    * @return the hover event action
    * @since 4.0.0
    */
-  Action<V> action();
+  public Action<V> action() {
+    return this.action;
+  }
 
   /**
    * Gets the hover event value.
@@ -262,7 +276,9 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
    * @return the hover event value
    * @since 4.0.0
    */
-  V value();
+  public V value() {
+    return this.value;
+  }
 
   /**
    * Sets the hover event value.
@@ -272,7 +288,9 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
    * @since 4.0.0
    */
   @Contract(pure = true)
-  HoverEvent<V> value(final V value);
+  public HoverEvent<V> value(final V value) {
+    return new HoverEvent<>(this.action, value);
+  }
 
   /**
    * Returns a hover event with the value rendered using {@code renderer} when possible.
@@ -283,14 +301,57 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
    * @return a hover event
    * @since 4.0.0
    */
-  <C> HoverEvent<V> withRenderedValue(final ComponentRenderer<C> renderer, final C context);
+  public <C> HoverEvent<V> withRenderedValue(final ComponentRenderer<C> renderer, final C context) {
+    final V oldValue = this.value;
+    final V newValue = this.action.renderer().render(renderer, context, oldValue);
+    if (newValue != oldValue) return new HoverEvent<>(this.action, newValue);
+    return this;
+  }
+
+  @Override
+  public HoverEvent<V> asHoverEvent() {
+    return this; // i already am a hover event! hehehehe
+  }
+
+  @Override
+  public HoverEvent<V> asHoverEvent(final UnaryOperator<V> op) {
+    if (op == UnaryOperator.<V>identity()) return this; // nothing to do, can return ourself
+    return new HoverEvent<>(this.action, op.apply(this.value));
+  }
+
+  @Override
+  public void styleApply(final Style.Builder style) {
+    style.hoverEvent(this);
+  }
+
+  @Override
+  public boolean equals(final Object o) {
+    if (!(o instanceof HoverEvent<?> that)) return false;
+    return this.action.equals(that.action) && this.value.equals(that.value);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = this.action.hashCode();
+    result = 31 * result + this.value.hashCode();
+    return result;
+  }
+
+  @Override
+  public String toString() {
+    return "HoverEvent{" +
+      "action=" + this.action +
+      ", value=" + this.value +
+      '}';
+  }
 
   /**
    * The value of a {@link Action#SHOW_ITEM show_item} hover event.
    *
    * @since 4.0.0
    */
-  sealed interface ShowItem permits HoverEventImpl.ShowItemImpl {
+  @SuppressWarnings("ClassCanBeRecord") // We need a private constructor.
+  public static final class ShowItem {
     /**
      * Creates.
      *
@@ -299,8 +360,8 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      * @return a {@code ShowItem}
      * @since 4.14.0
      */
-    static ShowItem showItem(final Key item, final @Range(from = 0, to = Integer.MAX_VALUE) int count) {
-      return ShowItem.showItem(item, count, Collections.emptyMap());
+    public static ShowItem showItem(final Key item, final @Range(from = 0, to = Integer.MAX_VALUE) int count) {
+      return ShowItem.showItem(item, count, Map.of());
     }
 
     /**
@@ -311,23 +372,8 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      * @return a {@code ShowItem}
      * @since 4.14.0
      */
-    static ShowItem showItem(final Keyed item, final @Range(from = 0, to = Integer.MAX_VALUE) int count) {
-      return ShowItem.showItem(item, count, Collections.emptyMap());
-    }
-
-    /**
-     * Creates.
-     *
-     * @param item the item
-     * @param count the count
-     * @param nbt the nbt
-     * @return a {@code ShowItem}
-     * @since 4.14.0
-     * @deprecated since Minecraft 1.20.5 and replaced with data components, not scheduled for removal
-     */
-    @Deprecated
-    static ShowItem showItem(final Key item, final @Range(from = 0, to = Integer.MAX_VALUE) int count, final @Nullable BinaryTagHolder nbt) {
-      return new HoverEventImpl.ShowItemImpl(requireNonNull(item, "item"), count, nbt, Collections.emptyMap());
+    public static ShowItem showItem(final Keyed item, final @Range(from = 0, to = Integer.MAX_VALUE) int count) {
+      return ShowItem.showItem(item, count, Map.of());
     }
 
     /**
@@ -338,11 +384,26 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      * @param nbt the nbt
      * @return a {@code ShowItem}
      * @since 4.14.0
-     * @deprecated since Minecraft 1.20.5 and replaced with data components, not scheduled for removal
+     * @obsoleteSinceMinecraft since 1.20.5 and replaced with data components
      */
-    @Deprecated
-    static ShowItem showItem(final Keyed item, final @Range(from = 0, to = Integer.MAX_VALUE) int count, final @Nullable BinaryTagHolder nbt) {
-      return new HoverEventImpl.ShowItemImpl(requireNonNull(item, "item").key(), count, nbt, Collections.emptyMap());
+    @ApiStatus.Obsolete
+    public static ShowItem showItem(final Key item, final @Range(from = 0, to = Integer.MAX_VALUE) int count, final @Nullable BinaryTagHolder nbt) {
+      return new ShowItem(requireNonNull(item, "item"), count, nbt, Map.of());
+    }
+
+    /**
+     * Creates.
+     *
+     * @param item the item
+     * @param count the count
+     * @param nbt the nbt
+     * @return a {@code ShowItem}
+     * @since 4.14.0
+     * @deprecated since 1.20.5 and replaced with data components
+     */
+    @ApiStatus.Obsolete
+    public static ShowItem showItem(final Keyed item, final @Range(from = 0, to = Integer.MAX_VALUE) int count, final @Nullable BinaryTagHolder nbt) {
+      return new ShowItem(requireNonNull(item, "item").key(), count, nbt, Map.of());
     }
 
     /**
@@ -355,8 +416,20 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      * @since 4.17.0
      * @sinceMinecraft 1.20.5
      */
-    static ShowItem showItem(final Keyed item, final @Range(from = 0, to = Integer.MAX_VALUE) int count, final Map<Key, ? extends DataComponentValue> dataComponents) {
-      return new HoverEventImpl.ShowItemImpl(requireNonNull(item, "item").key(), count, null, Map.copyOf(requireNonNull(dataComponents, "dataComponents")));
+    public static ShowItem showItem(final Keyed item, final @Range(from = 0, to = Integer.MAX_VALUE) int count, final Map<Key, ? extends DataComponentValue> dataComponents) {
+      return new ShowItem(requireNonNull(item, "item").key(), count, null, Map.copyOf(requireNonNull(dataComponents, "dataComponents")));
+    }
+
+    private final Key item;
+    private final int count;
+    private final @Nullable BinaryTagHolder nbt;
+    private final Map<Key, DataComponentValue> dataComponents;
+
+    private ShowItem(final Key item, final int count, final @Nullable BinaryTagHolder nbt, final Map<Key, DataComponentValue> dataComponents) {
+      this.item = item;
+      this.count = count;
+      this.nbt = nbt;
+      this.dataComponents = dataComponents;
     }
 
     /**
@@ -365,7 +438,9 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      * @return the item
      * @since 4.0.0
      */
-    Key item();
+    public Key item() {
+      return this.item;
+    }
 
     /**
      * Sets the item.
@@ -374,7 +449,10 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      * @return a {@code ShowItem}
      * @since 4.0.0
      */
-    ShowItem item(final Key item);
+    public ShowItem item(final Key item) {
+      if (requireNonNull(item, "item").equals(this.item)) return this;
+      return new ShowItem(item, this.count, this.nbt, this.dataComponents);
+    }
 
     /**
      * Gets the count.
@@ -382,7 +460,9 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      * @return the count
      * @since 4.0.0
      */
-    @Range(from = 0, to = Integer.MAX_VALUE) int count();
+    public @Range(from = 0, to = Integer.MAX_VALUE) int count() {
+      return this.count;
+    }
 
     /**
      * Sets the count.
@@ -391,7 +471,10 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      * @return a {@code ShowItem}
      * @since 4.0.0
      */
-    ShowItem count(final @Range(from = 0, to = Integer.MAX_VALUE) int count);
+    public ShowItem count(final @Range(from = 0, to = Integer.MAX_VALUE) int count) {
+      if (count == this.count) return this;
+      return new ShowItem(this.item, count, this.nbt, this.dataComponents);
+    }
 
     /**
      * Gets the nbt.
@@ -400,10 +483,12 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      *
      * @return the nbt
      * @since 4.0.0
-     * @deprecated since Minecraft 1.20.5 and replaced with data components, not scheduled for removal
+     * @obsoleteSinceMinecraft since 1.20.5 and replaced with data components
      */
-    @Deprecated
-    @Nullable BinaryTagHolder nbt();
+    @ApiStatus.Obsolete
+    public @Nullable BinaryTagHolder nbt() {
+      return this.nbt;
+    }
 
     /**
      * Sets the nbt.
@@ -413,10 +498,13 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      * @param nbt the nbt
      * @return a {@code ShowItem}
      * @since 4.0.0
-     * @deprecated since Minecraft 1.20.5 and replaced with data components, not scheduled for removal
+     * @deprecated since 1.20.5 and replaced with data components
      */
-    @Deprecated
-    ShowItem nbt(final @Nullable BinaryTagHolder nbt);
+    @ApiStatus.Obsolete
+    public ShowItem nbt(final @Nullable BinaryTagHolder nbt) {
+      if (Objects.equals(nbt, this.nbt)) return this;
+      return new ShowItem(this.item, this.count, nbt, this.dataComponents);
+    }
 
     /**
      * Get the data components used for this item.
@@ -427,7 +515,9 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      * @since 4.17.0
      * @sinceMinecraft 1.20.5
      */
-    Map<Key, DataComponentValue> dataComponents();
+    public Map<Key, DataComponentValue> dataComponents() {
+      return this.dataComponents;
+    }
 
     /**
      * Set the data components used on this item.
@@ -439,7 +529,10 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      * @since 4.17.0
      * @sinceMinecraft 1.20.5
      */
-    ShowItem dataComponents(final Map<Key, DataComponentValue> holder);
+    public ShowItem dataComponents(final Map<Key, DataComponentValue> holder) {
+      if (Objects.equals(this.dataComponents, holder)) return this;
+      return new ShowItem(this.item, this.count, this.nbt, Map.copyOf(holder));
+    }
 
     /**
      * Return an unmodifiable map of data components coerced to the target type.
@@ -452,7 +545,45 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      * @since 4.17.0
      * @sinceMinecraft 1.20.5
      */
-    <V extends DataComponentValue> Map<Key, V> dataComponentsAs(final Class<V> targetType);
+    public <V extends DataComponentValue> Map<Key, V> dataComponentsAs(final Class<V> targetType) {
+      if (this.dataComponents.isEmpty()) {
+        return Map.of();
+      } else {
+        final Map<Key, V> results = new HashMap<>(this.dataComponents.size());
+        for (final Map.Entry<Key, DataComponentValue> entry : this.dataComponents.entrySet()) {
+          results.put(entry.getKey(), DataComponentValueConverterRegistry.convert(targetType, entry.getKey(), entry.getValue()));
+        }
+        return Map.copyOf(results);
+      }
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+      if (!(o instanceof ShowItem showItem)) return false;
+      return this.count == showItem.count
+        && this.item.equals(showItem.item)
+        && Objects.equals(this.nbt, showItem.nbt)
+        && this.dataComponents.equals(showItem.dataComponents);
+    }
+
+    @Override
+    public int hashCode() {
+      int result = this.item.hashCode();
+      result = 31 * result + this.count;
+      result = 31 * result + Objects.hashCode(this.nbt);
+      result = 31 * result + this.dataComponents.hashCode();
+      return result;
+    }
+
+    @Override
+    public String toString() {
+      return "ShowItem{" +
+        "item=" + this.item +
+        ", count=" + this.count +
+        ", nbt=" + this.nbt +
+        ", dataComponents=" + this.dataComponents +
+        '}';
+    }
   }
 
   /**
@@ -460,7 +591,8 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
    *
    * @since 4.0.0
    */
-  sealed interface ShowEntity permits HoverEventImpl.ShowEntityImpl {
+  @SuppressWarnings("ClassCanBeRecord") // We need a private constructor.
+  public static final class ShowEntity {
     /**
      * Creates.
      *
@@ -469,7 +601,7 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      * @return a {@code ShowEntity}
      * @since 4.14.0
      */
-    static ShowEntity showEntity(final Key type, final UUID id) {
+    public static ShowEntity showEntity(final Key type, final UUID id) {
       return ShowEntity.showEntity(type, id, null);
     }
 
@@ -481,7 +613,7 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      * @return a {@code ShowEntity}
      * @since 4.14.0
      */
-    static ShowEntity showEntity(final Keyed type, final UUID id) {
+    public static ShowEntity showEntity(final Keyed type, final UUID id) {
       return ShowEntity.showEntity(type, id, null);
     }
 
@@ -494,8 +626,8 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      * @return a {@code ShowEntity}
      * @since 4.14.0
      */
-    static ShowEntity showEntity(final Key type, final UUID id, final @Nullable Component name) {
-      return new HoverEventImpl.ShowEntityImpl(requireNonNull(type, "type"), requireNonNull(id, "id"), name);
+    public static ShowEntity showEntity(final Key type, final UUID id, final @Nullable Component name) {
+      return new ShowEntity(requireNonNull(type, "type"), requireNonNull(id, "id"), name);
     }
 
     /**
@@ -507,8 +639,18 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      * @return a {@code ShowEntity}
      * @since 4.14.0
      */
-    static ShowEntity showEntity(final Keyed type, final UUID id, final @Nullable Component name) {
-      return new HoverEventImpl.ShowEntityImpl(requireNonNull(type, "type").key(), requireNonNull(id, "id"), name);
+    public static ShowEntity showEntity(final Keyed type, final UUID id, final @Nullable Component name) {
+      return new ShowEntity(requireNonNull(type, "type").key(), requireNonNull(id, "id"), name);
+    }
+
+    private final Key type;
+    private final UUID id;
+    private final @Nullable Component name;
+
+    private ShowEntity(final Key type, final UUID id, final @Nullable Component name) {
+      this.type = type;
+      this.id = id;
+      this.name = name;
     }
 
     /**
@@ -517,7 +659,9 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      * @return the type
      * @since 4.0.0
      */
-    Key type();
+    public Key type() {
+      return this.type;
+    }
 
     /**
      * Sets the type.
@@ -526,7 +670,10 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      * @return a {@code ShowEntity}
      * @since 4.0.0
      */
-    ShowEntity type(final Key type);
+    public ShowEntity type(final Key type) {
+      if (requireNonNull(type, "type").equals(this.type)) return this;
+      return new ShowEntity(type, this.id, this.name);
+    }
 
     /**
      * Sets the type.
@@ -535,7 +682,7 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      * @return a {@code ShowEntity}
      * @since 4.6.0
      */
-    default ShowEntity type(final Keyed type) {
+    public ShowEntity type(final Keyed type) {
       return this.type(requireNonNull(type, "type").key());
     }
 
@@ -545,7 +692,9 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      * @return the id
      * @since 4.0.0
      */
-    UUID id();
+    public UUID id() {
+      return this.id;
+    }
 
     /**
      * Sets the id.
@@ -554,7 +703,10 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      * @return a {@code ShowEntity}
      * @since 4.0.0
      */
-    ShowEntity id(final UUID id);
+    public ShowEntity id(final UUID id) {
+      if (requireNonNull(id).equals(this.id)) return this;
+      return new ShowEntity(this.type, id, this.name);
+    }
 
     /**
      * Gets the name.
@@ -562,7 +714,9 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      * @return the name
      * @since 4.0.0
      */
-    @Nullable Component name();
+    public @Nullable Component name() {
+      return this.name;
+    }
 
     /**
      * Sets the name.
@@ -571,7 +725,35 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      * @return a {@code ShowEntity}
      * @since 4.0.0
      */
-    ShowEntity name(final @Nullable Component name);
+    public ShowEntity name(final @Nullable Component name) {
+      if (Objects.equals(name, this.name)) return this;
+      return new ShowEntity(this.type, this.id, name);
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+      if (!(o instanceof ShowEntity that)) return false;
+      return this.type.equals(that.type)
+        && this.id.equals(that.id)
+        && Objects.equals(this.name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+      int result = this.type.hashCode();
+      result = 31 * result + this.id.hashCode();
+      result = 31 * result + Objects.hashCode(this.name);
+      return result;
+    }
+
+    @Override
+    public String toString() {
+      return "ShowEntity{" +
+        "type=" + this.type +
+        ", id=" + this.id +
+        ", name=" + this.name +
+        '}';
+    }
   }
 
   /**
@@ -580,62 +762,63 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
    * @param <V> the value type an action handles
    * @since 4.0.0
    */
-  sealed interface Action<V> permits HoverEventImpl.ActionImpl {
+  @SuppressWarnings("ClassCanBeRecord") // We need a private constructor.
+  public static final class Action<V> {
     /**
      * Shows a {@link Component} when hovered over.
      *
      * @since 4.0.0
      */
-    Action<Component> SHOW_TEXT = new HoverEventImpl.ActionImpl<>("show_text", Component.class, true, new Renderer<>() {
-      @Override
-      public <C> Component render(final ComponentRenderer<C> renderer, final C context, final Component value) {
-        return renderer.render(value, context);
-      }
-    });
+    public static final Action<Component> SHOW_TEXT = new Action<>("show_text", Component.class, true, HoverEventRenderers.SHOW_TEXT);
     /**
      * Shows an item instance when hovered over.
      *
      * @since 4.0.0
      */
-    Action<ShowItem> SHOW_ITEM = new HoverEventImpl.ActionImpl<>("show_item", ShowItem.class, true, new Renderer<>() {
-      @Override
-      public <C> ShowItem render(final ComponentRenderer<C> renderer, final C context, final ShowItem value) {
-        return value;
-      }
-    });
+    public static final Action<ShowItem> SHOW_ITEM = new Action<>("show_item", ShowItem.class, true, HoverEventRenderers.SHOW_ITEM);
     /**
      * Shows an entity when hovered over.
      *
      * @since 4.0.0
      */
-    Action<ShowEntity> SHOW_ENTITY = new HoverEventImpl.ActionImpl<>("show_entity", ShowEntity.class, true, new Renderer<>() {
-      @Override
-      public <C> ShowEntity render(final ComponentRenderer<C> renderer, final C context, final ShowEntity value) {
-        final Component name = value.name();
-        if (name == null) return value;
-        return value.name(renderer.render(name, context));
-      }
-    });
+    public static final Action<ShowEntity> SHOW_ENTITY = new Action<>("show_entity", ShowEntity.class, true, HoverEventRenderers.SHOW_ENTITY);
     /**
      * Shows a {@link Component} when hovered over.
      *
      * @since 4.14.0
-     * @deprecated Removed in Vanilla 1.12, but we keep it for backwards compat
+     * @obsoleteSinceMinecraft removed in 1.12
      */
-    @Deprecated
-    Action<String> SHOW_ACHIEVEMENT = new HoverEventImpl.ActionImpl<>("show_achievement", String.class, true, new Renderer<>() {
-      @Override
-      public <C> String render(final ComponentRenderer<C> renderer, final C context, final String value) {
-        return value;
-      }
-    });
+    @ApiStatus.Obsolete
+    public static final Action<String> SHOW_ACHIEVEMENT = new Action<>("show_achievement", String.class, true, HoverEventRenderers.SHOW_ACHIEVEMENT);
 
     /**
      * The name map.
      *
      * @since 4.0.0
      */
-    Index<String, HoverEvent.Action<?>> NAMES = Index.create(Action::toString, SHOW_TEXT, SHOW_ITEM, SHOW_ENTITY, SHOW_ACHIEVEMENT);
+    public static final Index<String, HoverEvent.Action<?>> NAMES = Index.create(Action::toString, SHOW_TEXT, SHOW_ITEM, SHOW_ENTITY, SHOW_ACHIEVEMENT);
+
+    private final String name;
+    private final Class<V> type;
+    private final boolean readable;
+    private final Renderer<V> renderer;
+
+    private Action(final String name, final Class<V> type, final boolean readable, final Renderer<V> renderer) {
+      this.name = name;
+      this.type = type;
+      this.readable = readable;
+      this.renderer = renderer;
+    }
+
+    /**
+     * Returns the name of this action.
+     *
+     * @return the name
+     * @since 5.0.0
+     */
+    public String name() {
+      return this.name;
+    }
 
     /**
      * Gets the value type.
@@ -643,7 +826,9 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      * @return the value type
      * @since 4.0.0
      */
-    Class<V> type();
+    public Class<V> type() {
+      return this.type;
+    }
 
     /**
      * Tests if this action is readable.
@@ -651,7 +836,9 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      * @return {@code true} if this action is readable, {@code false} if this action is not readable
      * @since 4.0.0
      */
-    boolean readable();
+    public boolean readable() {
+      return this.readable;
+    }
 
     /**
      * The renderer for this action.
@@ -659,7 +846,14 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      * @return the renderer
      * @since 5.0.0
      */
-    Renderer<V> renderer();
+    public Renderer<V> renderer() {
+      return this.renderer;
+    }
+
+    @Override
+    public String toString() {
+      return this.name;
+    }
 
     /**
      * Type-specific renderer.
@@ -667,9 +861,7 @@ public sealed interface HoverEvent<V> extends HoverEventSource<V>, StyleBuilderA
      * @param <V> the value type
      * @since 4.0.0
      */
-    @FunctionalInterface
-    @ApiStatus.NonExtendable
-    interface Renderer<V> {
+    public sealed interface Renderer<V> permits HoverEventRenderers.ShowAchievement, HoverEventRenderers.ShowEntity, HoverEventRenderers.ShowItem, HoverEventRenderers.ShowText {
       /**
        * Renders a value.
        *

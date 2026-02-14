@@ -149,6 +149,8 @@ final class BossBarImpl extends HackyBossBarPlatformBridge implements BossBar {
 
   @Override
   public Set<Flag> flags() {
+    // Use the old unmodifiableSet method here, so changes to flags are reflected.
+    // `this.flags` is mutable, so we people might expect changes to follow through.
     return Collections.unmodifiableSet(this.flags);
   }
 
@@ -157,7 +159,7 @@ final class BossBarImpl extends HackyBossBarPlatformBridge implements BossBar {
     if (newFlags.isEmpty() && !this.flags.isEmpty()) {
       final Set<Flag> oldFlags = EnumSet.copyOf(this.flags);
       this.flags.clear();
-      this.forEachListener(listener -> listener.bossBarFlagsChanged(this, Collections.emptySet(), oldFlags));
+      this.forEachListener(listener -> listener.bossBarFlagsChanged(this, Set.of(), oldFlags));
     } else if (!this.flags.equals(newFlags)) {
       final Set<Flag> oldFlags = EnumSet.copyOf(this.flags);
       this.flags.clear();
@@ -263,7 +265,7 @@ final class BossBarImpl extends HackyBossBarPlatformBridge implements BossBar {
     if (this.implementation != null) {
       return this.implementation.viewers();
     }
-    return Collections.emptyList();
+    return List.of();
   }
 
   private void forEachListener(final Consumer<Listener> consumer) {
@@ -273,11 +275,11 @@ final class BossBarImpl extends HackyBossBarPlatformBridge implements BossBar {
   }
 
   private static void onFlagsAdded(final BossBarImpl bar, final Set<Flag> flagsAdded) {
-    bar.forEachListener(listener -> listener.bossBarFlagsChanged(bar, flagsAdded, Collections.emptySet()));
+    bar.forEachListener(listener -> listener.bossBarFlagsChanged(bar, flagsAdded, Set.of()));
   }
 
   private static void onFlagsRemoved(final BossBarImpl bar, final Set<Flag> flagsRemoved) {
-    bar.forEachListener(listener -> listener.bossBarFlagsChanged(bar, Collections.emptySet(), flagsRemoved));
+    bar.forEachListener(listener -> listener.bossBarFlagsChanged(bar, Set.of(), flagsRemoved));
   }
 
   @Override

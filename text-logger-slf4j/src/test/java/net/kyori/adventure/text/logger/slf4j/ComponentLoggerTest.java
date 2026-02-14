@@ -115,7 +115,7 @@ public class ComponentLoggerTest {
 
     final List<LoggingEvent> events = LOGGER.getLoggingEvents();
     assertEquals(1, events.size());
-    final Throwable thrownException = events.get(0).getThrowable().orElse(null);
+    final Throwable thrownException = events.getFirst().getThrowable().orElse(null);
     assertNotNull(thrownException);
 
     assertEquals("test.failed", thrownException.getMessage());

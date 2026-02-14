@@ -25,7 +25,6 @@ package net.kyori.adventure.text;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.testing.EqualsTester;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -279,7 +278,7 @@ abstract class AbstractComponentTest<C extends ScopedComponent<C>, B extends Com
     final B b0 = (B) c0.toBuilder();
     final C c1 = b0.build();
     assertEquals(c0, c1);
-    forEachTransformAndAssertIterable(Arrays.asList(c0, c1), Component::children, subject -> subject.containsExactly(child).inOrder());
+    forEachTransformAndAssertIterable(List.of(c0, c1), Component::children, subject -> subject.containsExactly(child).inOrder());
   }
 
   @Test
@@ -287,13 +286,13 @@ abstract class AbstractComponentTest<C extends ScopedComponent<C>, B extends Com
     final Component child1 = Component.text("abc");
     final Component child2 = Component.text("def");
     final C c0 = this.builder().append(child1, child2).build();
-    final C c1 = this.builder().append(Arrays.asList(child1, child2)).build();
+    final C c1 = this.builder().append(List.of(child1, child2)).build();
     final B b0 = (B) c0.toBuilder();
     final B b1 = (B) c1.toBuilder();
     final C c2 = b0.build();
     final C c3 = b1.build();
     assertAllEqualToEachOther(c0, c1, c2, c3);
-    forEachTransformAndAssertIterable(Arrays.asList(c0, c1, c2, c3), Component::children, subject -> subject.containsExactly(child1, child2).inOrder());
+    forEachTransformAndAssertIterable(List.of(c0, c1, c2, c3), Component::children, subject -> subject.containsExactly(child1, child2).inOrder());
   }
 
   @Test

@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.util;
 
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -36,7 +35,7 @@ import static java.util.Objects.requireNonNull;
 final class InheritanceAwareMapImpl<C, V> implements InheritanceAwareMap<C, V> {
   private static final Object NONE = new Object(); // null sentinel for CHM
   @SuppressWarnings({"rawtypes", "unchecked"})
-  static final InheritanceAwareMapImpl EMPTY = new InheritanceAwareMapImpl(false, Collections.emptyMap());
+  static final InheritanceAwareMapImpl EMPTY = new InheritanceAwareMapImpl(false, Map.of());
 
   private final Map<Class<? extends C>, V> declaredValues;
   private final boolean strict;
@@ -78,7 +77,7 @@ final class InheritanceAwareMapImpl<C, V> implements InheritanceAwareMap<C, V> {
 
     final Map<Class<? extends C>, V> newValues = new LinkedHashMap<>(this.declaredValues);
     newValues.put(clazz, value);
-    return new InheritanceAwareMapImpl<>(this.strict, Collections.unmodifiableMap(newValues));
+    return new InheritanceAwareMapImpl<>(this.strict, Map.copyOf(newValues));
   }
 
   @Override
@@ -87,7 +86,7 @@ final class InheritanceAwareMapImpl<C, V> implements InheritanceAwareMap<C, V> {
 
     final Map<Class<? extends C>, V> newValues = new LinkedHashMap<>(this.declaredValues);
     newValues.remove(clazz);
-    return new InheritanceAwareMapImpl<>(this.strict, Collections.unmodifiableMap(newValues));
+    return new InheritanceAwareMapImpl<>(this.strict, Map.copyOf(newValues));
   }
 
   static final class BuilderImpl<C, V> implements Builder<C, V> {
@@ -96,7 +95,7 @@ final class InheritanceAwareMapImpl<C, V> implements InheritanceAwareMap<C, V> {
 
     @Override
     public InheritanceAwareMap<C, V> build() {
-      return new InheritanceAwareMapImpl<>(this.strict, Collections.unmodifiableMap(new LinkedHashMap<>(this.values)));
+      return new InheritanceAwareMapImpl<>(this.strict, Map.copyOf(new LinkedHashMap<>(this.values)));
     }
 
     @Override

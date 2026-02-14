@@ -23,7 +23,7 @@
  */
 package net.kyori.adventure.text.object;
 
-import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.Contract;
@@ -82,7 +82,7 @@ public sealed interface ObjectContents permits SpriteObjectContents, PlayerHeadO
    */
   @Contract(value = "_ -> new", pure = true)
   static PlayerHeadObjectContents playerHead(final String name) {
-    return new PlayerHeadObjectContentsImpl(name, null, Collections.emptyList(), true, null);
+    return new PlayerHeadObjectContentsImpl(name, null, List.of(), true, null);
   }
 
   /**
@@ -94,7 +94,7 @@ public sealed interface ObjectContents permits SpriteObjectContents, PlayerHeadO
    */
   @Contract(value = "_ -> new", pure = true)
   static PlayerHeadObjectContents playerHead(final UUID id) {
-    return new PlayerHeadObjectContentsImpl(null, id, Collections.emptyList(), true, null);
+    return new PlayerHeadObjectContentsImpl(null, id, List.of(), true, null);
   }
 
   /**

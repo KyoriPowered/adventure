@@ -24,7 +24,6 @@
 package net.kyori.adventure.text;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 import org.jetbrains.annotations.Contract;
@@ -66,11 +65,11 @@ public interface ComponentLike {
     if (size == 0) {
       // We do not need to create a new list if the one we are copying is empty - we can
       // simply just return our known-empty list instead.
-      return Collections.emptyList();
+      return List.of();
     }
-    @Nullable ArrayList<Component> components = null;
+    ArrayList<Component> components = null;
     for (int i = 0; i < size; i++) {
-      final @Nullable ComponentLike like = likes.get(i);
+      final ComponentLike like = likes.get(i);
       if (like == null) {
         throw new NullPointerException("likes[" + i + "]");
       }
@@ -83,11 +82,11 @@ public interface ComponentLike {
       }
     }
     // if we filtered all elements out, just use an empty list instead
-    if (components == null) return Collections.emptyList();
+    if (components == null) return List.of();
     // https://github.com/KyoriPowered/adventure/pull/327#discussion_r631420264
     // we pre-size the list, but filtering might make the actual size much smaller
     components.trimToSize();
-    return Collections.unmodifiableList(components);
+    return List.copyOf(components);
   }
 
   /**

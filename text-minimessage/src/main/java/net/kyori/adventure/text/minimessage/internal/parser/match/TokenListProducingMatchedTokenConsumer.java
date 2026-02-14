@@ -24,7 +24,6 @@
 package net.kyori.adventure.text.minimessage.internal.parser.match;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import net.kyori.adventure.text.minimessage.internal.parser.Token;
 import net.kyori.adventure.text.minimessage.internal.parser.TokenType;
@@ -61,6 +60,6 @@ public final class TokenListProducingMatchedTokenConsumer extends MatchedTokenCo
 
   @Override
   public List<Token> result() {
-    return this.result == null ? Collections.emptyList() : this.result;
+    return this.result == null ? List.of() : this.result;
   }
 }

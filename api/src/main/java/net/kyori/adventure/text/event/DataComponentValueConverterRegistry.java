@@ -24,9 +24,8 @@
 package net.kyori.adventure.text.event;
 
 import java.util.ArrayDeque;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Deque;
+import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
@@ -195,7 +194,7 @@ public final class DataComponentValueConverterRegistry {
       }
 
       for (final Map.Entry<Class<?>, Set<RegisteredConversion>> entry : collected.entrySet()) {
-        entry.setValue(Collections.unmodifiableSet(entry.getValue()));
+        entry.setValue(Set.copyOf(entry.getValue()));
       }
 
       return new ConcurrentHashMap<>(collected);
@@ -236,7 +235,7 @@ public final class DataComponentValueConverterRegistry {
         queue.add(clazz.getSuperclass());
       }
 
-      queue.addAll(Arrays.asList(clazz.getInterfaces()));
+      queue.addAll(List.of(clazz.getInterfaces()));
     }
 
     static @Nullable RegisteredConversion converter(final Class<? extends DataComponentValue> src, final Class<? extends DataComponentValue> dst) {

@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.nbt;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -42,7 +41,7 @@ record CompoundBinaryTagImpl(Map<String, BinaryTag> tags) implements CompoundBin
     return new CompoundBinaryTagImpl(Map.copyOf(tags));
   }
 
-  static final CompoundBinaryTag EMPTY = new CompoundBinaryTagImpl(Collections.emptyMap());
+  static final CompoundBinaryTag EMPTY = new CompoundBinaryTagImpl(Map.of());
 
   @Override
   public boolean contains(final String key) {
@@ -57,7 +56,7 @@ record CompoundBinaryTagImpl(Map<String, BinaryTag> tags) implements CompoundBin
 
   @Override
   public Set<String> keySet() {
-    return Collections.unmodifiableSet(this.tags.keySet());
+    return Set.copyOf(this.tags.keySet());
   }
 
   @Override

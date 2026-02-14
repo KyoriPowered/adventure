@@ -227,7 +227,7 @@ final class StyleSerializer extends TypeAdapter<Style> {
               if (value != null) style.clickEvent(ClickEvent.copyToClipboard(value));
             }
             case ClickEvent.Action.Custom ignored -> {
-              if (key != null && value != null) style.clickEvent(ClickEvent.custom(key, BinaryTagHolder.binaryTagHolder(value)));
+              if (key != null) style.clickEvent(ClickEvent.custom(key, value == null ? null : BinaryTagHolder.binaryTagHolder(value)));
             }
             // Not readable.
             case ClickEvent.Action.ShowDialog ignored -> {
@@ -360,8 +360,12 @@ final class StyleSerializer extends TypeAdapter<Style> {
         case ClickEvent.Payload.Custom customPayload -> {
           out.name(CLICK_EVENT_ID);
           this.gson.toJson(customPayload.key(), SerializerFactory.KEY_TYPE, out);
-          out.name(CLICK_EVENT_PAYLOAD);
-          out.value(customPayload.nbt().string());
+
+          final BinaryTagHolder nbt = customPayload.nbt();
+          if (nbt != null) {
+            out.name(CLICK_EVENT_PAYLOAD);
+            out.value(nbt.string());
+          }
         }
         case ClickEvent.Payload.Int intPayload -> {
           out.name(CLICK_EVENT_PAGE);

@@ -24,7 +24,6 @@
 package net.kyori.adventure.serializer.configurate4;
 
 import java.lang.reflect.Type;
-import java.util.Collections;
 import java.util.List;
 import net.kyori.adventure.text.format.ShadowColor;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -61,7 +60,7 @@ record ShadowColorSerializer(boolean emitFloats) implements TypeSerializer<Shado
     }
 
     if (this.emitFloats) {
-      node.set(Collections.emptyList());
+      node.set(List.of());
       node.appendListNode().set(componentAsFloat(obj.red()));
       node.appendListNode().set(componentAsFloat(obj.green()));
       node.appendListNode().set(componentAsFloat(obj.blue()));

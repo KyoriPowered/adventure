@@ -92,7 +92,7 @@ record TransitionTag(
         throw ctx.newException("Invalid transition, not enough colors. Transitions must have at least two colors.", args);
       }
     } else {
-      textColors = Collections.emptyList();
+      textColors = List.of();
     }
 
     final TextColor[] colorsArray;

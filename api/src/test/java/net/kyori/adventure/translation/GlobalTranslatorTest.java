@@ -144,7 +144,7 @@ class GlobalTranslatorTest {
       return (component.key().equals("otherDummy") && locale.equals(Locale.US))
         ? Component.text()
           .append(Component.text("Hello "))
-          .append(component.arguments().isEmpty() ? Component.text("{0}") : component.arguments().get(0))
+          .append(component.arguments().isEmpty() ? Component.text("{0}") : component.arguments().getFirst())
           .append(Component.text("!"))
           .build()
         : null;

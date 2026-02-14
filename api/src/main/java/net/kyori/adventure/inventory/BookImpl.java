@@ -35,7 +35,7 @@ record BookImpl(Component title, Component author, List<Component> pages) implem
   BookImpl(final Component title, final Component author, final List<Component> pages) {
     this.title = requireNonNull(title, "title");
     this.author = requireNonNull(author, "author");
-    this.pages = Collections.unmodifiableList(requireNonNull(pages, "pages"));
+    this.pages = List.copyOf(requireNonNull(pages, "pages"));
   }
 
   @Override
@@ -74,6 +74,11 @@ record BookImpl(Component title, Component author, List<Component> pages) implem
       .title(this.title)
       .author(this.author)
       .pages(this.pages);
+  }
+
+  @Override
+  public Book asBook() {
+    return this;
   }
 
   static final class BuilderImpl implements Builder {

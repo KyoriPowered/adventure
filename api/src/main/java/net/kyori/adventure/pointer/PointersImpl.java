@@ -42,11 +42,7 @@ record PointersImpl(Map<Pointer<?>, Supplier<?>> pointers) implements Pointers {
   public <T> Optional<T> get(final Pointer<T> pointer) {
     Objects.requireNonNull(pointer, "pointer");
     final Supplier<?> supplier = this.pointers.get(pointer);
-    if (supplier == null) {
-      return Optional.empty();
-    } else {
-      return Optional.ofNullable((T) supplier.get());
-    }
+    return Optional.ofNullable(supplier).map(s -> (T) s.get());
   }
 
   @Override

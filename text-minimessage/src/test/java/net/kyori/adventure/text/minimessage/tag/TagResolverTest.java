@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.text.minimessage.tag;
 
-import java.util.Arrays;
 import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -59,7 +58,7 @@ class TagResolverTest {
 
   @Test
   void testSingleAndResolversCombine() {
-    final List<TagResolver> placeholders = Arrays.asList(
+    final List<TagResolver> placeholders = List.of(
       Placeholder.component("foo", Component.text("fizz")),
       Placeholder.parsed("overlapping", "from list")
     );

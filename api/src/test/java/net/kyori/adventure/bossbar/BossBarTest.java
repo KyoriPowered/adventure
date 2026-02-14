@@ -24,7 +24,6 @@
 package net.kyori.adventure.bossbar;
 
 import com.google.common.collect.ImmutableSet;
-import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -224,8 +223,8 @@ public class BossBarTest {
   }
 
   static class Changes implements BossBar.Listener {
-    final AtomicReference<Set<BossBar.Flag>> flagsAdded = new AtomicReference<>(Collections.emptySet());
-    final AtomicReference<Set<BossBar.Flag>> flagsRemoved = new AtomicReference<>(Collections.emptySet());
+    final AtomicReference<Set<BossBar.Flag>> flagsAdded = new AtomicReference<>(Set.of());
+    final AtomicReference<Set<BossBar.Flag>> flagsRemoved = new AtomicReference<>(Set.of());
 
     @Override
     public void bossBarFlagsChanged(final BossBar bar, final Set<BossBar.Flag> flagsAdded, final Set<BossBar.Flag> flagsRemoved) {
@@ -234,8 +233,8 @@ public class BossBarTest {
     }
 
     public void resetAndThen(final Runnable runnable) {
-      this.flagsAdded.set(Collections.emptySet());
-      this.flagsRemoved.set(Collections.emptySet());
+      this.flagsAdded.set(Set.of());
+      this.flagsRemoved.set(Set.of());
       runnable.run();
     }
   }

@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   call-build:
-    uses: "KyoriPowered/ci-cookbook/.github/workflows/java-ci.yaml@2025.10.17"
+    uses: "KyoriPowered/ci-cookbook/.github/workflows/java-ci.yaml@f3b9a3fbb31e9f4320d855e7be17b028522e87be" # 2026.02.07
     with:
       publish_releases: true
       publish_release_javadoc: true

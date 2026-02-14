@@ -73,6 +73,8 @@ record CharacterAndFormatSet(List<@Nullable TextFormat> formats, List<TextColor>
     if (formats.size() != characters.length()) {
       throw new IllegalStateException("formats length differs from characters length");
     }
+
+    // We need to use the old unmodifiableList method here as we have null elements. List.of does not permit null elements.
     return new CharacterAndFormatSet(Collections.unmodifiableList(formats), Collections.unmodifiableList(colors), characters.toString());
   }
 }

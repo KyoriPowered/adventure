@@ -23,7 +23,7 @@
  */
 package net.kyori.adventure.serializer.configurate4;
 
-import java.util.Collections;
+import java.util.Map;
 import java.util.UUID;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
@@ -228,7 +228,7 @@ class ComponentSerializerTest implements ConfigurateTestBase {
     this.assertRoundtrippable(
       Component.object(ObjectContents.playerHead().build()),
       this.node(n -> {
-        n.node(ComponentTreeConstants.OBJECT_PLAYER).raw(Collections.emptyMap());
+        n.node(ComponentTreeConstants.OBJECT_PLAYER).raw(Map.of());
         n.node(ComponentTreeConstants.OBJECT_HAT).raw(true);
       })
     );

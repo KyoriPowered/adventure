@@ -53,7 +53,7 @@ final class GlobalTranslatorImpl implements GlobalTranslator {
 
   @Override
   public Iterable<? extends Translator> sources() {
-    return Collections.unmodifiableSet(this.sources);
+    return Set.copyOf(this.sources);
   }
 
   @Override

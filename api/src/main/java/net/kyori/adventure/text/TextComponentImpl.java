@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.text;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import net.kyori.adventure.internal.properties.AdventureProperties;
@@ -60,7 +59,7 @@ sealed class TextComponentImpl implements TextComponent permits VirtualComponent
   }
 
   private static TextComponent createDirect(final String content) {
-    return new TextComponentImpl(Collections.emptyList(), Style.empty(), content);
+    return new TextComponentImpl(List.of(), Style.empty(), content);
   }
 
   private final String content;

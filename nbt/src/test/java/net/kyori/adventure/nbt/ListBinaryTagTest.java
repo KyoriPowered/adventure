@@ -24,8 +24,8 @@
 package net.kyori.adventure.nbt;
 
 import com.google.common.collect.ImmutableList;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import static net.kyori.adventure.nbt.LongBinaryTag.longBinaryTag;
@@ -116,7 +116,7 @@ class ListBinaryTagTest {
   void testBoxHeterogeneous() {
     final ListBinaryTag input = ListBinaryTag.listBinaryTag(
       BinaryTagTypes.LIST_WILDCARD,
-      Arrays.asList(longBinaryTag(5), stringBinaryTag("five"))
+      List.of(longBinaryTag(5), stringBinaryTag("five"))
     );
     final ListBinaryTag expected = ListBinaryTag.builder()
       .add(CompoundBinaryTag.from(Collections.singletonMap("", longBinaryTag(5))))
@@ -131,7 +131,7 @@ class ListBinaryTagTest {
     // For backwards compatibility, wrapping a tag which is already {"": value} should wrap it again.
     final ListBinaryTag input = ListBinaryTag.listBinaryTag(
       BinaryTagTypes.LIST_WILDCARD,
-      Arrays.asList(
+      List.of(
         CompoundBinaryTag.from(Collections.singletonMap("", longBinaryTag(5))),
               StringBinaryTag.stringBinaryTag("five")
       )
@@ -148,7 +148,7 @@ class ListBinaryTagTest {
   void testBoxingReversible() {
     final ListBinaryTag input = ListBinaryTag.listBinaryTag(
       BinaryTagTypes.LIST_WILDCARD,
-      Arrays.asList(longBinaryTag(5), stringBinaryTag("five"))
+      List.of(longBinaryTag(5), stringBinaryTag("five"))
     );
     assertEquals(input, input.wrapHeterogeneity().unwrapHeterogeneity());
   }

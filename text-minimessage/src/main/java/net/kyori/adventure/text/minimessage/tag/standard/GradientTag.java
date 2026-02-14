@@ -97,7 +97,7 @@ class GradientTag extends AbstractColorChangingTag {
         throw ctx.newException("Invalid gradient, not enough colors. Gradients must have at least two colors.", args);
       }
     } else {
-      textColors = Collections.emptyList();
+      textColors = List.of();
     }
 
     return new GradientTag(phase, textColors, ctx);

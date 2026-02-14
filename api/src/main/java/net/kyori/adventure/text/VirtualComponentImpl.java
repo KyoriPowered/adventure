@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.text;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import net.kyori.adventure.text.format.Style;
@@ -31,7 +30,7 @@ import org.jspecify.annotations.Nullable;
 
 final class VirtualComponentImpl<C> extends TextComponentImpl implements VirtualComponent {
   static <C> VirtualComponent createVirtual(final Class<C> contextType, final VirtualComponentRenderer<C> renderer) {
-    return createVirtual(contextType, renderer, Collections.emptyList(), Style.empty());
+    return createVirtual(contextType, renderer, List.of(), Style.empty());
   }
 
   static <C> VirtualComponent createVirtual(final Class<C> contextType, final VirtualComponentRenderer<C> renderer, final List<? extends ComponentLike> children, final Style style) {

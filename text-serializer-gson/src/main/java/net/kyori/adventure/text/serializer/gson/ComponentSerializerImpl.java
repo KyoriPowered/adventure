@@ -34,7 +34,6 @@ import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -130,7 +129,7 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
 
     // common to all component types
     final JsonObject style = new JsonObject();
-    List<Component> extra = Collections.emptyList();
+    List<Component> extra = List.of();
 
     // type specific
     String text = null;

@@ -24,7 +24,6 @@
 package net.kyori.adventure.text;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -170,7 +169,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    */
   @Contract(pure = true)
   static Component join(final JoinConfiguration.Builder configBuilder, final ComponentLike... components) {
-    return join(configBuilder, Arrays.asList(components));
+    return join(configBuilder, List.of(components));
   }
 
   /**
@@ -202,7 +201,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    */
   @Contract(pure = true)
   static Component join(final JoinConfiguration config, final ComponentLike... components) {
-    return join(config, Arrays.asList(components));
+    return join(config, List.of(components));
   }
 
   /**
@@ -327,7 +326,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
   static BlockNBTComponent blockNBT(final String nbtPath, final boolean interpret, final @Nullable ComponentLike separator, final BlockNBTComponent.Pos pos) {
-    return BlockNBTComponentImpl.create(Collections.emptyList(), Style.empty(), nbtPath, interpret, separator, pos);
+    return BlockNBTComponentImpl.create(List.of(), Style.empty(), nbtPath, interpret, separator, pos);
   }
 
   /*
@@ -435,7 +434,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    */
   @Contract(value = "_, _ -> new", pure = true)
   static KeybindComponent keybind(final String keybind, final Style style) {
-    return KeybindComponentImpl.create(Collections.emptyList(), requireNonNull(style, "style"), keybind);
+    return KeybindComponentImpl.create(List.of(), requireNonNull(style, "style"), keybind);
   }
 
   /**
@@ -448,7 +447,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    */
   @Contract(value = "_, _ -> new", pure = true)
   static KeybindComponent keybind(final KeybindComponent.KeybindLike keybind, final Style style) {
-    return KeybindComponentImpl.create(Collections.emptyList(), requireNonNull(style, "style"), requireNonNull(keybind, "keybind").asKeybind());
+    return KeybindComponentImpl.create(List.of(), requireNonNull(style, "style"), requireNonNull(keybind, "keybind").asKeybind());
   }
 
   /**
@@ -571,7 +570,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    */
   @Contract(value = "_ -> new", pure = true)
   static ObjectComponent object(final ObjectContents objectContents) {
-    return ObjectComponentImpl.create(Collections.emptyList(), Style.empty(), objectContents);
+    return ObjectComponentImpl.create(List.of(), Style.empty(), objectContents);
   }
 
   /*
@@ -629,7 +628,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
   @ApiStatus.Obsolete
   @Contract(value = "_, _, _ -> new", pure = true)
   static ScoreComponent score(final String name, final String objective, final @Nullable String value) {
-    return ScoreComponentImpl.create(Collections.emptyList(), Style.empty(), name, objective, value);
+    return ScoreComponentImpl.create(List.of(), Style.empty(), name, objective, value);
   }
 
   /*
@@ -683,7 +682,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    */
   @Contract(value = "_, _ -> new", pure = true)
   static SelectorComponent selector(final String pattern, final @Nullable ComponentLike separator) {
-    return SelectorComponentImpl.create(Collections.emptyList(), Style.empty(), pattern, separator);
+    return SelectorComponentImpl.create(List.of(), Style.empty(), pattern, separator);
   }
 
   /*
@@ -754,7 +753,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
   static StorageNBTComponent storageNBT(final String nbtPath, final boolean interpret, final @Nullable ComponentLike separator, final Key storage) {
-    return StorageNBTComponentImpl.create(Collections.emptyList(), Style.empty(), nbtPath, interpret, separator, storage);
+    return StorageNBTComponentImpl.create(List.of(), Style.empty(), nbtPath, interpret, separator, storage);
   }
 
   /*
@@ -783,7 +782,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    */
   static TextComponent textOfChildren(final ComponentLike... components) {
     if (components.length == 0) return empty();
-    return TextComponentImpl.create(Arrays.asList(components), Style.empty(), "");
+    return TextComponentImpl.create(List.of(components), Style.empty(), "");
   }
 
   /**
@@ -821,7 +820,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    */
   @Contract(value = "_, _ -> new", pure = true)
   static TextComponent text(final String content, final Style style) {
-    return TextComponentImpl.create(Collections.emptyList(), requireNonNull(style, "style"), content);
+    return TextComponentImpl.create(List.of(), requireNonNull(style, "style"), content);
   }
 
   /**
@@ -1299,7 +1298,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
   static <C> VirtualComponent virtual(final Class<C> contextType, final VirtualComponentRenderer<C> renderer, final Style style) {
     requireNonNull(contextType, "context type");
     requireNonNull(renderer, "renderer");
-    return VirtualComponentImpl.createVirtual(contextType, renderer, Collections.emptyList(), style);
+    return VirtualComponentImpl.createVirtual(contextType, renderer, List.of(), style);
   }
 
   /**
@@ -1316,7 +1315,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
   static <C> VirtualComponent virtual(final Class<C> contextType, final VirtualComponentRenderer<C> renderer, final StyleBuilderApplicable... style) {
     requireNonNull(contextType, "context type");
     requireNonNull(renderer, "renderer");
-    return VirtualComponentImpl.createVirtual(contextType, renderer, Collections.emptyList(), Style.style(style));
+    return VirtualComponentImpl.createVirtual(contextType, renderer, List.of(), Style.style(style));
   }
 
   /**
@@ -1333,7 +1332,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
   static <C> VirtualComponent virtual(final Class<C> contextType, final VirtualComponentRenderer<C> renderer, final Iterable<StyleBuilderApplicable> style) {
     requireNonNull(contextType, "context type");
     requireNonNull(renderer, "renderer");
-    return VirtualComponentImpl.createVirtual(contextType, renderer, Collections.emptyList(), Style.style(style));
+    return VirtualComponentImpl.createVirtual(contextType, renderer, List.of(), Style.style(style));
   }
 
   /*
@@ -1427,7 +1426,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    */
   @Contract(value = "_, _ -> new", pure = true)
   static TranslatableComponent translatable(final String key, final Style style) {
-    return TranslatableComponentImpl.create(Collections.emptyList(), requireNonNull(style, "style"), key, null, Collections.emptyList());
+    return TranslatableComponentImpl.create(List.of(), requireNonNull(style, "style"), key, null, List.of());
   }
 
   /**
@@ -1455,7 +1454,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    */
   @Contract(value = "_, _, _ -> new", pure = true)
   static TranslatableComponent translatable(final String key, final @Nullable String fallback, final Style style) {
-    return TranslatableComponentImpl.create(Collections.emptyList(), requireNonNull(style, "style"), key, fallback, Collections.emptyList());
+    return TranslatableComponentImpl.create(List.of(), requireNonNull(style, "style"), key, fallback, List.of());
   }
 
   /**
@@ -1546,7 +1545,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
   static TranslatableComponent translatable(final String key, final @Nullable String fallback, final Style style, final ComponentLike... args) {
-    return TranslatableComponentImpl.create(Collections.emptyList(), requireNonNull(style, "style"), key, fallback, requireNonNull(args, "args"));
+    return TranslatableComponentImpl.create(List.of(), requireNonNull(style, "style"), key, fallback, requireNonNull(args, "args"));
   }
 
   /**
@@ -1578,7 +1577,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
   static TranslatableComponent translatable(final String key, final @Nullable String fallback, final Style style, final List<? extends ComponentLike> args) {
-    return TranslatableComponentImpl.create(Collections.emptyList(), style, key, fallback, requireNonNull(args, "args"));
+    return TranslatableComponentImpl.create(List.of(), style, key, fallback, requireNonNull(args, "args"));
   }
 
   /**
@@ -1610,7 +1609,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
   static TranslatableComponent translatable(final String key, final @Nullable String fallback, final List<? extends ComponentLike> args, final Iterable<StyleBuilderApplicable> style) {
-    return TranslatableComponentImpl.create(Collections.emptyList(), Style.style(style), key, fallback, requireNonNull(args, "args"));
+    return TranslatableComponentImpl.create(List.of(), Style.style(style), key, fallback, requireNonNull(args, "args"));
   }
 
   /**
@@ -1642,7 +1641,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
   static TranslatableComponent translatable(final String key, final @Nullable String fallback, final List<? extends ComponentLike> args, final StyleBuilderApplicable... style) {
-    return TranslatableComponentImpl.create(Collections.emptyList(), Style.style(style), key, fallback, requireNonNull(args, "args"));
+    return TranslatableComponentImpl.create(List.of(), Style.style(style), key, fallback, requireNonNull(args, "args"));
   }
 
   /**
@@ -1780,7 +1779,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    */
   @Contract(value = "_, _, _ -> new", pure = true)
   static TranslatableComponent translatable(final String key, final Style style, final ComponentLike... args) {
-    return TranslatableComponentImpl.create(Collections.emptyList(), requireNonNull(style, "style"), key, null, requireNonNull(args, "args"));
+    return TranslatableComponentImpl.create(List.of(), requireNonNull(style, "style"), key, null, requireNonNull(args, "args"));
   }
 
   /**
@@ -1865,7 +1864,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    */
   @Contract(value = "_, _ -> new", pure = true)
   static TranslatableComponent translatable(final String key, final List<? extends ComponentLike> args) {
-    return TranslatableComponentImpl.create(Collections.emptyList(), Style.empty(), key, null, requireNonNull(args, "args"));
+    return TranslatableComponentImpl.create(List.of(), Style.empty(), key, null, requireNonNull(args, "args"));
   }
 
   /**
@@ -1892,7 +1891,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    */
   @Contract(value = "_, _, _ -> new", pure = true)
   static TranslatableComponent translatable(final String key, final Style style, final List<? extends ComponentLike> args) {
-    return TranslatableComponentImpl.create(Collections.emptyList(), requireNonNull(style, "style"), key, null, requireNonNull(args, "args"));
+    return TranslatableComponentImpl.create(List.of(), requireNonNull(style, "style"), key, null, requireNonNull(args, "args"));
   }
 
   /**
@@ -2609,7 +2608,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.9.0
    */
   default Iterable<Component> iterable(final ComponentIteratorType type, final ComponentIteratorFlag@Nullable... flags) {
-    return this.iterable(type, flags == null ? Collections.emptySet() : MonkeyBars.enumSet(ComponentIteratorFlag.class, flags));
+    return this.iterable(type, flags == null ? Set.of() : MonkeyBars.enumSet(ComponentIteratorFlag.class, flags));
   }
 
   /**
@@ -2637,7 +2636,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.9.0
    */
   default Iterator<Component> iterator(final ComponentIteratorType type, final ComponentIteratorFlag@Nullable... flags) {
-    return this.iterator(type, flags == null ? Collections.emptySet() : MonkeyBars.enumSet(ComponentIteratorFlag.class, flags));
+    return this.iterator(type, flags == null ? Set.of() : MonkeyBars.enumSet(ComponentIteratorFlag.class, flags));
   }
 
   /**
@@ -2665,7 +2664,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @since 4.9.0
    */
   default Spliterator<Component> spliterator(final ComponentIteratorType type, final ComponentIteratorFlag@Nullable... flags) {
-    return this.spliterator(type, flags == null ? Collections.emptySet() : MonkeyBars.enumSet(ComponentIteratorFlag.class, flags));
+    return this.spliterator(type, flags == null ? Set.of() : MonkeyBars.enumSet(ComponentIteratorFlag.class, flags));
   }
 
   /**

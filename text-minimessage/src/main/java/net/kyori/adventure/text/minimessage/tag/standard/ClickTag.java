@@ -62,7 +62,10 @@ record ClickTag() {
           }, QuotingOverride.QUOTED);
 
       if (payload instanceof ClickEvent.Payload.Custom custom) {
-        emitter.argument(custom.nbt().string());
+        final BinaryTagHolder nbt = custom.nbt();
+        if (nbt != null) {
+          emitter.argument(nbt.string());
+        }
       }
     })
   );
@@ -90,9 +93,14 @@ record ClickTag() {
           throw ctx.newException("'custom' click event requires a valid key argument", ex, args);
         }
 
-        final String nbt = args.popOr("'custom' click event requires a nbt argument").value();
+        final String nbt;
+        if (args.hasNext()) {
+          nbt = args.pop().value();
+        } else {
+          nbt = null;
+        }
 
-        yield ClickEvent.custom(key, BinaryTagHolder.binaryTagHolder(nbt));
+        yield ClickEvent.custom(key, nbt == null ? null : BinaryTagHolder.binaryTagHolder(nbt));
       }
       case ClickEvent.Action.ShowDialog ignored ->
         throw ctx.newException("'show_dialog' click events are not supported in MiniMessage yet");

@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.util;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Optional;
@@ -149,6 +148,6 @@ public final class Services {
       }
       providers.add(instance);
     }
-    return Collections.unmodifiableSet(providers);
+    return Set.copyOf(providers);
   }
 }

@@ -21,58 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.bossbar;
+package net.kyori.adventure.inventory;
 
-import java.util.List;
-import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 
 /**
- * {@link BossBar} internal implementation.
+ * Something that can be represented as a {@link Book}.
  *
- * @since 4.12.0
+ * @since 5.0.0
  */
-@ApiStatus.Internal
-public interface BossBarImplementation {
+@FunctionalInterface
+public interface BookLike {
   /**
-   * Gets an implementation, and casts it to {@code type}.
+   * Gets a {@link Book} representation of this object.
    *
-   * @param bar the bossbar
-   * @param type the implementation type
-   * @param <I> the implementation type
-   * @return a {@code I}
-   * @since 4.12.0
+   * @return a book
+   * @since 5.0.0
    */
-  @ApiStatus.Internal
-  static <I extends BossBarImplementation> I get(final BossBar bar, final Class<I> type) {
-    return BossBarImpl.ImplementationAccessor.get(bar, type);
-  }
-
-  /**
-   * Gets the viewers of this bossbar.
-   *
-   * @return the viewers of this bossbar
-   * @since 4.14.0
-   */
-  @ApiStatus.Internal
-  default Iterable<? extends BossBarViewer> viewers() {
-    return List.of();
-  }
-
-  /**
-   * A {@link BossBarImplementation} service provider.
-   *
-   * @since 4.12.0
-   */
-  @ApiStatus.Internal
-  interface Provider {
-    /**
-     * Gets an implementation.
-     *
-     * @param bar the bossbar
-     * @return a {@code I}
-     * @since 4.12.0
-     */
-    @ApiStatus.Internal
-    BossBarImplementation create(final BossBar bar);
-  }
+  @Contract(pure = true)
+  Book asBook();
 }

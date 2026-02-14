@@ -24,7 +24,6 @@
 package net.kyori.adventure.text.flattener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -86,17 +85,17 @@ class ComponentFlattenerTest {
     }
 
     public TrackingFlattener assertContents(final String... lines) {
-      assertIterableEquals(Arrays.asList(lines), this.strings);
+      assertIterableEquals(List.of(lines), this.strings);
       return this;
     }
 
     public TrackingFlattener assertStyles(final Style... styles) {
-      assertIterableEquals(Arrays.asList(styles), this.pushedStyles);
+      assertIterableEquals(List.of(styles), this.pushedStyles);
       return this;
     }
 
     public TrackingFlattener assertPoppedStyles(final Style... styles) {
-      assertIterableEquals(Arrays.asList(styles), this.poppedStyles);
+      assertIterableEquals(List.of(styles), this.poppedStyles);
       return this;
     }
   }
