@@ -71,6 +71,28 @@ public sealed interface Book extends Buildable<Book.Builder>, BookLike permits B
   }
 
   /**
+   * Creates a book with title and author set to {@link Component#empty()}.
+   *
+   * @param pages the collection of pages
+   * @return a book
+   * @since 5.1.0
+   */
+  static Book book(final Collection<Component> pages) {
+    return new BookImpl(new ArrayList<>(pages));
+  }
+
+  /**
+   * Creates a book with title and author set to {@link Component#empty()}.
+   *
+   * @param pages an array of pages
+   * @return a book
+   * @since 5.1.0
+   */
+  static Book book(final Component... pages) {
+    return new BookImpl(List.of(pages));
+  }
+
+  /**
    * Create a new builder that will create a {@link Book}.
    *
    * @return a builder

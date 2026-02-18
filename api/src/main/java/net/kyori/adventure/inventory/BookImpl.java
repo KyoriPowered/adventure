@@ -38,6 +38,10 @@ record BookImpl(Component title, Component author, List<Component> pages) implem
     this.pages = List.copyOf(requireNonNull(pages, "pages"));
   }
 
+  BookImpl(final List<Component> pages) {
+    this(Component.empty(), Component.empty(), List.copyOf(requireNonNull(pages, "pages")));
+  }
+
   @Override
   public Component title() {
     return this.title;
