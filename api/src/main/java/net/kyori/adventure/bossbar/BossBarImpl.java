@@ -265,6 +265,7 @@ final class BossBarImpl extends HackyBossBarPlatformBridge implements BossBar {
     return this;
   }
 
+  @Deprecated
   @Override
   public @NotNull Iterable<? extends BossBarViewer> viewers() {
     if (this.implementation != null) {

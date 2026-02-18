@@ -53,8 +53,10 @@ public interface BossBarImplementation {
    *
    * @return the viewers of this bossbar
    * @since 4.14.0
+   * @deprecated for removal since 4.26.1, {@link BossBarViewer} is deprecated.  Will be replaced with Audience
    */
   @ApiStatus.Internal
+  @Deprecated
   default @NotNull Iterable<? extends BossBarViewer> viewers() {
     return Collections.emptyList();
   }
