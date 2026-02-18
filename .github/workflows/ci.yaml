@@ -15,11 +15,12 @@ permissions:
 
 jobs:
   call-build:
-    uses: "KyoriPowered/ci-cookbook/.github/workflows/java-ci.yaml@2025.10.17"
+    uses: "KyoriPowered/ci-cookbook/.github/workflows/java-ci.yaml@ce1dea3f90f8e361ed19afb2c914ab0fdcf42fef" # 2025/12/17
     with:
       publish_releases: true
       publish_release_javadoc: true
       runtime_version: 17
+      extra_gradle_publish_params: "-PforceSign=true"
     secrets:
       DEPLOYMENT_APP_ID: "${{ secrets.DEPLOYMENT_APP_ID }}"
       DEPLOYMENT_APP_SECRET: "${{ secrets.DEPLOYMENT_APP_SECRET }}"
