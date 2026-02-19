@@ -51,7 +51,7 @@ final class WaypointImpl<T> implements Waypoint<T> {
 
   @Override
   public Waypoint<T> style(final Key key) {
-    this.style = key;
+    this.style = requireNonNull(key, "key");
     return this;
   }
 
@@ -62,7 +62,7 @@ final class WaypointImpl<T> implements Waypoint<T> {
 
   @Override
   public Waypoint<T> color(final TextColor color) {
-    this.color = color;
+    this.color = requireNonNull(color, "color");
     return this;
   }
 
@@ -73,7 +73,7 @@ final class WaypointImpl<T> implements Waypoint<T> {
 
   @Override
   public Waypoint<T> data(final T data) {
-    this.data = data;
+    this.data = requireNonNull(data, "data");
     return this;
   }
 }
