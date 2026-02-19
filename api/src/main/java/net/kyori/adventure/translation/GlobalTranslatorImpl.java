@@ -108,4 +108,11 @@ final class GlobalTranslatorImpl implements GlobalTranslator {
     }
     return null;
   }
+
+  @Override
+  public String toString() {
+    return "GlobalTranslatorImpl{" +
+      "sources=" + this.sources +
+      '}';
+  }
 }

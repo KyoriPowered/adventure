@@ -163,6 +163,15 @@ public abstract class AbstractTranslationStore<T> implements TranslationStore<T>
     return this.name.hashCode();
   }
 
+  @Override
+  public String toString() {
+    return "AbstractTranslationStore{" +
+      "name=" + this.name +
+      ", translations=" + this.translations +
+      ", defaultLocale=" + this.defaultLocale +
+      '}';
+  }
+
   private final class Translation {
     private final String key;
     private final Map<Locale, T> translations;
@@ -202,6 +211,14 @@ public abstract class AbstractTranslationStore<T> implements TranslationStore<T>
     @Override
     public int hashCode() {
       return Objects.hash(this.key, this.translations);
+    }
+
+    @Override
+    public String toString() {
+      return "Translation{" +
+        "key='" + this.key + '\'' +
+        ", translations=" + this.translations +
+        '}';
     }
   }
 

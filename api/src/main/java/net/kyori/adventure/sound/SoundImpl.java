@@ -100,6 +100,17 @@ sealed abstract class SoundImpl implements Sound permits SoundImpl.Eager, SoundI
     return result;
   }
 
+  @Override
+  public String toString() {
+    return "SoundImpl{" +
+      "name=" + this.name() +
+      ", source=" + this.source +
+      ", volume=" + this.volume +
+      ", pitch=" + this.pitch +
+      ", seed=" + this.seed +
+      '}';
+  }
+
   static final class BuilderImpl implements Builder {
     private static final float DEFAULT_VOLUME = 1f;
     private static final float DEFAULT_PITCH = 1f;
