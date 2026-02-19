@@ -200,6 +200,16 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
     return this.bitSet;
   }
 
+  @Override
+  public String toString() {
+    return "DecorationMap{" +
+      Arrays.stream(DECORATIONS)
+        .map(decoration -> decoration.toString() + '=' + this.get(decoration))
+        .reduce((a, b) -> a + ", " + b)
+        .orElse("") +
+      '}';
+  }
+
   final class EntrySet extends AbstractSet<Entry<TextDecoration, TextDecoration.State>> {
     @Override
     public Iterator<Entry<TextDecoration, TextDecoration.State>> iterator() {
