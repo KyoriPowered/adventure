@@ -32,6 +32,7 @@ import org.jetbrains.annotations.Contract;
  *
  * @param <T> type of waypoint data
  * @since 5.1.0
+ * @sinceMinecraft 1.21.6
  */
 public sealed interface Waypoint<T> permits WaypointImpl {
 
