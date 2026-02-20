@@ -734,7 +734,7 @@ public interface Audience extends Pointered {
    * @since 5.1.0
    * @sinceMinecraft 1.21.6
    */
-  default void track(final UUID uuid, final Waypoint<?> waypoint) {
+  default void track(final UUID uuid, final Waypoint waypoint) {
   }
 
   /**
@@ -745,7 +745,7 @@ public interface Audience extends Pointered {
    * @since 5.1.0
    * @sinceMinecraft 1.21.6
    */
-  default void track(final String id, final Waypoint<?> waypoint) {
+  default void track(final String id, final Waypoint waypoint) {
   }
 
   /**
@@ -756,7 +756,7 @@ public interface Audience extends Pointered {
    * @since 5.1.0
    * @sinceMinecraft 1.21.6
    */
-  default void update(final UUID uuid, final Waypoint<?> waypoint) {
+  default void update(final UUID uuid, final Waypoint waypoint) {
   }
 
   /**
@@ -767,7 +767,7 @@ public interface Audience extends Pointered {
    * @since 5.1.0
    * @sinceMinecraft 1.21.6
    */
-  default void update(final String id, final Waypoint<?> waypoint) {
+  default void update(final String id, final Waypoint waypoint) {
   }
 
   /**
