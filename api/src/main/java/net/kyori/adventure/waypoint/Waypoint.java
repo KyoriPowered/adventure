@@ -30,11 +30,10 @@ import org.jetbrains.annotations.Contract;
 /**
  * Represents a waypoint for a locator bar.
  *
- * @param <T> type of waypoint data
  * @since 5.1.0
  * @sinceMinecraft 1.21.6
  */
-public sealed interface Waypoint<T> permits WaypointImpl {
+public sealed interface Waypoint permits WaypointImpl, AzimuthWaypoint, ChunkWaypoint, VectorWaypoint, EmptyWaypoint {
 
   /**
    * Creates an azimuth waypoint.
@@ -44,8 +43,8 @@ public sealed interface Waypoint<T> permits WaypointImpl {
    * @return an azimuth waypoint
    * @since 5.1.0
    */
-  static Waypoint<Float> azimuth(final TextColor color, final float angle) {
-    return new WaypointImpl<>(color, angle);
+  static AzimuthWaypoint azimuth(final TextColor color, final float angle) {
+    return new AzimuthWaypointImpl(color, angle);
   }
 
   /**
@@ -57,20 +56,21 @@ public sealed interface Waypoint<T> permits WaypointImpl {
    * @return an azimuth waypoint
    * @since 5.1.0
    */
-  static Waypoint<Float> azimuth(final Key style, final TextColor color, final float angle) {
-    return new WaypointImpl<>(style, color, angle);
+  static AzimuthWaypoint azimuth(final Key style, final TextColor color, final float angle) {
+    return new AzimuthWaypointImpl(style, color, angle);
   }
 
   /**
    * Creates a chunk waypoint.
    *
    * @param color the color
-   * @param chunkPos the chunk position
+   * @param x the X coordinate
+   * @param z the Z coordinate
    * @return a chunk waypoint
    * @since 5.1.0
    */
-  static Waypoint<ChunkPos> chunk(final TextColor color, final ChunkPos chunkPos) {
-    return new WaypointImpl<>(color, chunkPos);
+  static ChunkWaypoint chunk(final TextColor color, final int x, final int z) {
+    return new ChunkWaypointImpl(color, x, z);
   }
 
   /**
@@ -78,24 +78,27 @@ public sealed interface Waypoint<T> permits WaypointImpl {
    *
    * @param style the style
    * @param color the color
-   * @param chunkPos the chunk position
+   * @param x the X coordinate
+   * @param z the Z coordinate
    * @return a chunk waypoint
    * @since 5.1.0
    */
-  static Waypoint<ChunkPos> chunk(final Key style, final TextColor color, final ChunkPos chunkPos) {
-    return new WaypointImpl<>(style, color, chunkPos);
+  static ChunkWaypoint chunk(final Key style, final TextColor color, final int x, final int z) {
+    return new ChunkWaypointImpl(style, color, x, z);
   }
 
   /**
    * Creates a vector waypoint.
    *
    * @param color the color
-   * @param vector the vector
+   * @param x the X coordinate
+   * @param y the Y coordinate
+   * @param z the Z coordinate
    * @return a vector waypoint
    * @since 5.1.0
    */
-  static Waypoint<Vector> vector(final TextColor color, final Vector vector) {
-    return new WaypointImpl<>(color, vector);
+  static VectorWaypoint vector(final TextColor color, final int x, final int y, final int z) {
+    return new VectorWaypointImpl(color, x, y, z);
   }
 
   /**
@@ -103,12 +106,14 @@ public sealed interface Waypoint<T> permits WaypointImpl {
    *
    * @param style the style
    * @param color the color
-   * @param vector the vector
+   * @param x the X coordinate
+   * @param y the Y coordinate
+   * @param z the Z coordinate
    * @return a vector waypoint
    * @since 5.1.0
    */
-  static Waypoint<Vector> vector(final Key style, final TextColor color, final Vector vector) {
-    return new WaypointImpl<>(style, color, vector);
+  static VectorWaypoint vector(final Key style, final TextColor color, final int x, final int y, final int z) {
+    return new VectorWaypointImpl(style, color, x, y, z);
   }
 
   /**
@@ -127,7 +132,7 @@ public sealed interface Waypoint<T> permits WaypointImpl {
    * @since 5.1.0
    */
   @Contract("_ -> this")
-  Waypoint<T> style(final Key key);
+  Waypoint style(final Key key);
 
   /**
    * Gets the color.
@@ -145,43 +150,6 @@ public sealed interface Waypoint<T> permits WaypointImpl {
    * @since 5.1.0
    */
   @Contract("_ -> this")
-  Waypoint<T> color(final TextColor color);
-
-  /**
-   * Gets the waypoint data.
-   *
-   * @return the waypoint data
-   * @since 5.1.0
-   */
-  T data();
-
-  /**
-   * Sets the waypoint data.
-   *
-   * @param data the waypoint data
-   * @return the waypoint
-   * @since 5.1.0
-   */
-  @Contract("_ -> this")
-  Waypoint<T> data(T data);
-
-  /**
-   * Represents a vector of 3 integers.
-   *
-   * @param x the x coordinate
-   * @param y the y coordinate
-   * @param z the z coordinate
-   * @since 5.1.0
-   */
-  record Vector(int x, int y, int z) {}
-
-  /**
-   * Represents a chunk position.
-   *
-   * @param x the x coordinate
-   * @param z the y coordinate
-   * @since 5.1.0
-   */
-  record ChunkPos(int x, int z) {}
+  Waypoint color(final TextColor color);
 
 }

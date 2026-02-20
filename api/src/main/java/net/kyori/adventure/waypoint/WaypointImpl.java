@@ -28,20 +28,18 @@ import net.kyori.adventure.text.format.TextColor;
 
 import static java.util.Objects.requireNonNull;
 
-final class WaypointImpl<T> implements Waypoint<T> {
+sealed class WaypointImpl implements Waypoint permits AzimuthWaypointImpl, ChunkWaypointImpl, EmptyWaypointImpl, VectorWaypointImpl {
 
   private Key style;
   private TextColor color;
-  private T data;
 
-  WaypointImpl(final Key style, final TextColor color, final T data) {
+  WaypointImpl(final Key style, final TextColor color) {
     this.style = requireNonNull(style, "style");
     this.color = requireNonNull(color, "color");
-    this.data = requireNonNull(data, "data");
   }
 
-  WaypointImpl(final TextColor color, final T data) {
-    this(Key.key("default"), color, data);
+  WaypointImpl(final TextColor color) {
+    this(Key.key("default"), color);
   }
 
   @Override
@@ -50,7 +48,7 @@ final class WaypointImpl<T> implements Waypoint<T> {
   }
 
   @Override
-  public Waypoint<T> style(final Key key) {
+  public Waypoint style(final Key key) {
     this.style = requireNonNull(key, "key");
     return this;
   }
@@ -61,19 +59,8 @@ final class WaypointImpl<T> implements Waypoint<T> {
   }
 
   @Override
-  public Waypoint<T> color(final TextColor color) {
+  public Waypoint color(final TextColor color) {
     this.color = requireNonNull(color, "color");
-    return this;
-  }
-
-  @Override
-  public T data() {
-    return this.data;
-  }
-
-  @Override
-  public Waypoint<T> data(final T data) {
-    this.data = requireNonNull(data, "data");
     return this;
   }
 }
