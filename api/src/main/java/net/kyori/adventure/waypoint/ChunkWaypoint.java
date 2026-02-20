@@ -37,6 +37,7 @@ public sealed interface ChunkWaypoint extends Waypoint permits ChunkWaypointImpl
    * Gets the X coordinate.
    *
    * @return the X coordinate
+   * @since 5.1.0
    */
   int x();
 
@@ -44,6 +45,7 @@ public sealed interface ChunkWaypoint extends Waypoint permits ChunkWaypointImpl
    * Gets the Z coordinate.
    *
    * @return the Z coordinate
+   * @since 5.1.0
    */
   int z();
 
@@ -53,6 +55,7 @@ public sealed interface ChunkWaypoint extends Waypoint permits ChunkWaypointImpl
    * @param x the X coordinate
    * @param z the Z coordinate
    * @return the waypoint
+   * @since 5.1.0
    */
   @Contract("_, _ -> this")
   ChunkWaypoint pos(final int x, final int z);

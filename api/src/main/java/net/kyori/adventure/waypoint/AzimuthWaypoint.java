@@ -37,6 +37,7 @@ public sealed interface AzimuthWaypoint extends Waypoint permits AzimuthWaypoint
    * Gets the angle.
    *
    * @return the angle
+   * @since 5.1.0
    */
   float angle();
 
@@ -45,6 +46,7 @@ public sealed interface AzimuthWaypoint extends Waypoint permits AzimuthWaypoint
    *
    * @param angle the angle
    * @return the waypoint
+   * @since 5.1.0
    */
   @Contract("_ -> this")
   AzimuthWaypoint angle(final float angle);

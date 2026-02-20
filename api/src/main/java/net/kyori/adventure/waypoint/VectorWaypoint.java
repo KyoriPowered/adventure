@@ -37,6 +37,7 @@ public sealed interface VectorWaypoint extends Waypoint permits VectorWaypointIm
    * Gets the X coordinate.
    *
    * @return the X coordinate
+   * @since 5.1.0
    */
   int x();
 
@@ -44,6 +45,7 @@ public sealed interface VectorWaypoint extends Waypoint permits VectorWaypointIm
    * Gets the Y coordinate.
    *
    * @return the Y coordinate
+   * @since 5.1.0
    */
   int y();
 
@@ -51,6 +53,7 @@ public sealed interface VectorWaypoint extends Waypoint permits VectorWaypointIm
    * Gets the Z coordinate.
    *
    * @return the Z coordinate
+   * @since 5.1.0
    */
   int z();
 
@@ -61,6 +64,7 @@ public sealed interface VectorWaypoint extends Waypoint permits VectorWaypointIm
    * @param y the Y coordinate
    * @param z the Z coordinate
    * @return the waypoint
+   * @since 5.1.0
    */
   @Contract("_, _, _ -> this")
   VectorWaypoint pos(final int x, final int y, final int z);

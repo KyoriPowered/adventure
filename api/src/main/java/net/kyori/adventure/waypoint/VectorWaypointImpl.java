@@ -32,14 +32,14 @@ final class VectorWaypointImpl extends WaypointImpl implements VectorWaypoint {
   private int y;
   private int z;
 
-  public VectorWaypointImpl(final Key style, final TextColor color, final int x, final int y, final int z) {
+  VectorWaypointImpl(final Key style, final TextColor color, final int x, final int y, final int z) {
     super(style, color);
     this.x = x;
     this.y = y;
     this.z = z;
   }
 
-  public VectorWaypointImpl(final TextColor color, final int x, final int y, final int z) {
+  VectorWaypointImpl(final TextColor color, final int x, final int y, final int z) {
     super(color);
     this.x = x;
     this.y = y;

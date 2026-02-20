@@ -28,7 +28,7 @@ import net.kyori.adventure.text.format.TextColor;
 
 import static java.util.Objects.requireNonNull;
 
-sealed class WaypointImpl implements Waypoint permits AzimuthWaypointImpl, ChunkWaypointImpl, EmptyWaypointImpl, VectorWaypointImpl {
+sealed class WaypointImpl implements Waypoint permits AzimuthWaypointImpl, ChunkWaypointImpl, VectorWaypointImpl {
 
   private Key style;
   private TextColor color;

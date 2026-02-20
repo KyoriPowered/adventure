@@ -30,12 +30,12 @@ final class AzimuthWaypointImpl extends WaypointImpl implements AzimuthWaypoint 
 
   private float angle;
 
-  public AzimuthWaypointImpl(final Key style, final TextColor color, final float angle) {
+  AzimuthWaypointImpl(final Key style, final TextColor color, final float angle) {
     super(style, color);
     this.angle = angle;
   }
 
-  public AzimuthWaypointImpl(final TextColor color, final float angle) {
+  AzimuthWaypointImpl(final TextColor color, final float angle) {
     super(color);
     this.angle = angle;
   }
@@ -46,7 +46,7 @@ final class AzimuthWaypointImpl extends WaypointImpl implements AzimuthWaypoint 
   }
 
   @Override
-  public AzimuthWaypoint angle(float angle) {
+  public AzimuthWaypoint angle(final float angle) {
     this.angle = angle;
     return this;
   }

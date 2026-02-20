@@ -31,13 +31,13 @@ final class ChunkWaypointImpl extends WaypointImpl implements ChunkWaypoint {
   private int x;
   private int z;
 
-  public ChunkWaypointImpl(final Key style, final TextColor color, final int x, final int z) {
+  ChunkWaypointImpl(final Key style, final TextColor color, final int x, final int z) {
     super(style, color);
     this.x = x;
     this.z = z;
   }
 
-  public ChunkWaypointImpl(final TextColor color, final int x, final int z) {
+  ChunkWaypointImpl(final TextColor color, final int x, final int z) {
     super(color);
     this.x = x;
     this.z = z;

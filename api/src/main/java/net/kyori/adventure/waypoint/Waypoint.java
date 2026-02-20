@@ -33,7 +33,7 @@ import org.jetbrains.annotations.Contract;
  * @since 5.1.0
  * @sinceMinecraft 1.21.6
  */
-public sealed interface Waypoint permits WaypointImpl, AzimuthWaypoint, ChunkWaypoint, VectorWaypoint, EmptyWaypoint {
+public sealed interface Waypoint permits WaypointImpl, AzimuthWaypoint, ChunkWaypoint, VectorWaypoint {
 
   /**
    * Creates an azimuth waypoint.
