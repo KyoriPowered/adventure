@@ -32,6 +32,7 @@ module net.kyori.adventure.api {
   exports net.kyori.adventure.title;
   exports net.kyori.adventure.translation;
   exports net.kyori.adventure.util;
+  exports net.kyori.adventure.waypoint;
 
   uses net.kyori.adventure.bossbar.BossBarImplementation.Provider;
   uses net.kyori.adventure.internal.properties.AdventureProperties.DefaultOverrideProvider;

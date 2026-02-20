@@ -50,6 +50,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.title.Title;
 import net.kyori.adventure.title.TitlePart;
+import net.kyori.adventure.waypoint.Waypoint;
 
 /**
  * A receiver of Minecraft media.
@@ -720,4 +721,73 @@ public interface Audience extends Pointered {
    */
   default void closeDialog() {
   }
+
+  // -------------------
+  // ---- Waypoints ----
+  // -------------------
+
+  /**
+   * Tracks a waypoint.
+   *
+   * @param uuid the uuid to track with
+   * @param waypoint a waypoint
+   * @since 5.1.0
+   * @sinceMinecraft 1.21.6
+   */
+  default void track(final UUID uuid, Waypoint<?> waypoint) {
+  }
+
+  /**
+   * Tracks a waypoint.
+   *
+   * @param id the id to track with
+   * @param waypoint a waypoint
+   * @since 5.1.0
+   * @sinceMinecraft 1.21.6
+   */
+  default void track(final String id, Waypoint<?> waypoint) {
+  }
+
+  /**
+   * Updates a tracked waypoint.
+   *
+   * @param uuid the uuid the waypoint is tracked with
+   * @param waypoint a waypoint
+   * @since 5.1.0
+   * @sinceMinecraft 1.21.6
+   */
+  default void update(final UUID uuid, Waypoint<?> waypoint) {
+  }
+
+  /**
+   * Updates a tracked waypoint.
+   *
+   * @param id the id the waypoint is tracked with
+   * @param waypoint a waypoint
+   * @since 5.1.0
+   * @sinceMinecraft 1.21.6
+   */
+  default void update(final String id, Waypoint<?> waypoint) {
+  }
+
+  /**
+   * Untracks a tracked waypoint.
+   *
+   * @param uuid the uuid the waypoint is tracked with
+   * @since 5.1.0
+   * @sinceMinecraft 1.21.6
+   */
+  default void untrack(final UUID uuid) {
+  }
+
+  /**
+   * Untracks a tracked waypoint.
+   *
+   * @param id the id the waypoint is tracked with
+   * @since 5.1.0
+   * @sinceMinecraft 1.21.6
+   */
+  default void untrack(final String id) {
+  }
+
 }

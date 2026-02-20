@@ -43,6 +43,7 @@ import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.TitlePart;
+import net.kyori.adventure.waypoint.Waypoint;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.UnknownNullability;
@@ -217,6 +218,36 @@ public interface ForwardingAudience extends Audience {
     for (final Audience audience : this.audiences()) audience.closeDialog();
   }
 
+  @Override
+  default void track(final UUID uuid, Waypoint<?> waypoint) {
+    for (final Audience audience : this.audiences()) audience.track(uuid, waypoint);
+  }
+
+  @Override
+  default void track(final String id, Waypoint<?> waypoint) {
+    for (final Audience audience : this.audiences()) audience.track(id, waypoint);
+  }
+
+  @Override
+  default void update(final UUID uuid, Waypoint<?> waypoint) {
+    for (final Audience audience : this.audiences()) audience.update(uuid, waypoint);
+  }
+
+  @Override
+  default void update(final String id, Waypoint<?> waypoint) {
+    for (final Audience audience : this.audiences()) audience.update(id, waypoint);
+  }
+
+  @Override
+  default void untrack(final UUID uuid) {
+    for (final Audience audience : this.audiences()) audience.untrack(uuid);
+  }
+
+  @Override
+  default void untrack(final String id) {
+    for (final Audience audience : this.audiences()) audience.untrack(id);
+  }
+
   /**
    * An audience that forwards everything to a single other audience.
    *
@@ -388,6 +419,36 @@ public interface ForwardingAudience extends Audience {
     @Override
     default void closeDialog() {
       this.audience().closeDialog();
+    }
+
+    @Override
+    default void track(final UUID uuid, Waypoint<?> waypoint) {
+      this.audience().track(uuid, waypoint);
+    }
+
+    @Override
+    default void track(final String id, Waypoint<?> waypoint) {
+      this.audience().track(id, waypoint);
+    }
+
+    @Override
+    default void update(final UUID uuid, Waypoint<?> waypoint) {
+      this.audience().update(uuid, waypoint);
+    }
+
+    @Override
+    default void update(final String id, Waypoint<?> waypoint) {
+      this.audience().update(id, waypoint);
+    }
+
+    @Override
+    default void untrack(final UUID uuid) {
+      this.audience().untrack(uuid);
+    }
+
+    @Override
+    default void untrack(final String id) {
+      this.audience().untrack(id);
     }
   }
 }
