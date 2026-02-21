@@ -26,7 +26,6 @@ package net.kyori.adventure.text.minimessage.tag.standard;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
-import java.util.regex.Pattern;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ObjectComponent;
@@ -52,8 +51,6 @@ import org.jspecify.annotations.Nullable;
  */
 final class SequentialHeadTag {
   static final String HEAD = "head";
-  // TODO: Move this to HeadTag
-  private static final Pattern UUIDv4_PATTERN = Pattern.compile("[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ABCD][0-9a-f]{3}-[0-9a-f]{12}", Pattern.CASE_INSENSITIVE);
 
   static final TagResolver RESOLVER = SerializableResolver.claimingComponent(
     HEAD,
@@ -92,10 +89,16 @@ final class SequentialHeadTag {
       throw ctx.newException("Too many arguments present", args);
     }
 
-    if (SequentialHeadTag.UUIDv4_PATTERN.matcher(argument).matches()) {
+    UUID uuid = null;
+    try {
+      uuid = UUID.fromString(argument);
+    } catch (final IllegalArgumentException ignored) {
+      // If UUID parsing fails, try other options
+    }
+    if (uuid != null) {
       return Tag.selfClosingInserting(Component.object(
         ObjectContents.playerHead()
-          .id(UUID.fromString(argument))
+          .id(uuid)
           .hat(outerLayer.toBooleanOrElse(PlayerHeadObjectContents.DEFAULT_HAT))
           .build()
       ));

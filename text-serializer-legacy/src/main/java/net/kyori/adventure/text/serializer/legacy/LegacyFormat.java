@@ -111,4 +111,13 @@ public final class LegacyFormat {
     result = (31 * result) + Boolean.hashCode(this.reset);
     return result;
   }
+
+  @Override
+  public String toString() {
+    return "LegacyFormat{" +
+      "color=" + this.color +
+      ", decoration=" + this.decoration +
+      ", reset=" + this.reset +
+      '}';
+  }
 }

@@ -287,6 +287,12 @@ final class StyleImpl implements Style {
     return result;
   }
 
+  @Override
+  public String toString() {
+    return "StyleImpl{font=%s, color=%s, shadowColor=%s, decorations=%s, clickEvent=%s, hoverEvent=%s, insertion=%s}"
+      .formatted(this.font, this.color, this.shadowColor, this.decorations, this.clickEvent, this.hoverEvent, this.insertion);
+  }
+
   static final class BuilderImpl implements Builder {
     @Nullable Key font;
     @Nullable TextColor color;
