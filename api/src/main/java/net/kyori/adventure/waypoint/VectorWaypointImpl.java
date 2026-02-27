@@ -63,9 +63,13 @@ final class VectorWaypointImpl extends WaypointImpl implements VectorWaypoint {
 
   @Override
   public VectorWaypoint pos(final int x, final int y, final int z) {
+    final int oldX = this.x;
+    final int oldY = this.y;
+    final int oldZ = this.z;
     this.x = x;
     this.y = y;
     this.z = z;
+    this.forEachListener(listener -> listener.waypointVectorChanged(this, oldX, oldY, oldZ, x, y, z));
     return this;
   }
 }

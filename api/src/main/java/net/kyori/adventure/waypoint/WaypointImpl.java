@@ -23,6 +23,11 @@
  */
 package net.kyori.adventure.waypoint;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.function.Consumer;
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.format.TextColor;
 
@@ -32,6 +37,8 @@ sealed class WaypointImpl implements Waypoint permits AzimuthWaypointImpl, Chunk
 
   private Key style;
   private TextColor color;
+  private final Set<Listener> listeners = new HashSet<>();
+  private final Set<Audience> viewers = new HashSet<>(); // platform-populated
 
   WaypointImpl(final Key style, final TextColor color) {
     this.style = requireNonNull(style, "style");
@@ -49,7 +56,10 @@ sealed class WaypointImpl implements Waypoint permits AzimuthWaypointImpl, Chunk
 
   @Override
   public Waypoint style(final Key key) {
-    this.style = requireNonNull(key, "key");
+    requireNonNull(key, "key");
+    final Key oldKey = this.style;
+    this.style = key;
+    this.forEachListener(listener -> listener.waypointStyleChanged(this, oldKey, key));
     return this;
   }
 
@@ -60,7 +70,33 @@ sealed class WaypointImpl implements Waypoint permits AzimuthWaypointImpl, Chunk
 
   @Override
   public Waypoint color(final TextColor color) {
-    this.color = requireNonNull(color, "color");
+    requireNonNull(color, "color");
+    final TextColor oldColor = this.color;
+    this.color = color;
+    this.forEachListener(listener -> listener.waypointColorChanged(this, oldColor, color));
     return this;
+  }
+
+  @Override
+  public Waypoint addListener(final Listener listener) {
+    this.listeners.add(requireNonNull(listener, "listener"));
+    return this;
+  }
+
+  @Override
+  public Waypoint removeListener(final Listener listener) {
+    this.listeners.remove(requireNonNull(listener, "listener"));
+    return this;
+  }
+
+  @Override
+  public Iterable<? extends Audience> viewers() {
+    return Collections.unmodifiableSet(this.viewers);
+  }
+
+  protected void forEachListener(final Consumer<Waypoint.Listener> consumer) {
+    for (final Waypoint.Listener listener : this.listeners) {
+      consumer.accept(listener);
+    }
   }
 }
