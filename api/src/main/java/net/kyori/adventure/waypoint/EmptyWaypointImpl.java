@@ -7,4 +7,8 @@ final class EmptyWaypointImpl extends WaypointImpl implements EmptyWaypoint {
   EmptyWaypointImpl(Key style, TextColor color) {
     super(style, color);
   }
+
+  EmptyWaypointImpl(TextColor color) {
+    super(color);
+  }
 }

@@ -36,6 +36,29 @@ import org.jetbrains.annotations.Contract;
 public sealed interface Waypoint permits AzimuthWaypoint, ChunkWaypoint, EmptyWaypoint, VectorWaypoint, WaypointImpl {
 
   /**
+   * Creates an empty waypoint.
+   *
+   * @param color the color
+   * @return an empty waypoint
+   * @since 5.1.0
+   */
+  static EmptyWaypoint empty(final TextColor color) {
+    return new EmptyWaypointImpl(color);
+  }
+
+  /**
+   * Creates an empty waypoint.
+   *
+   * @param style the style
+   * @param color the color
+   * @return an empty waypoint
+   * @since 5.1.0
+   */
+  static EmptyWaypoint empty(final Key style, final TextColor color) {
+    return new EmptyWaypointImpl(style, color);
+  }
+
+  /**
    * Creates an azimuth waypoint.
    *
    * @param color the color
