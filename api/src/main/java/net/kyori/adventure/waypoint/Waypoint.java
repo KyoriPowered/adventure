@@ -211,9 +211,6 @@ public sealed interface Waypoint permits AzimuthWaypoint, ChunkWaypoint, EmptyWa
   /**
    * A listener for changes on a {@link Waypoint}.
    *
-   * <p>The platform implements this to react when waypoint properties change
-   * or when an audience begins/stops tracking a waypoint.</p>
-   *
    * @since 5.1.0
    */
   interface Listener {
