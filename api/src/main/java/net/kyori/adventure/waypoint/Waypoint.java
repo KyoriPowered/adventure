@@ -209,6 +209,32 @@ public sealed interface Waypoint permits AzimuthWaypoint, ChunkWaypoint, EmptyWa
   Iterable<? extends Audience> viewers();
 
   /**
+   * Track this waypoint for {@code viewer}.
+   *
+   * @param viewer the viewer
+   * @return the waypoint
+   * @see Audience#trackWaypoint(Waypoint)
+   * @since 5.1.0
+   */
+  default Waypoint addViewer(final Audience viewer) {
+    viewer.trackWaypoint(this);
+    return this;
+  }
+
+  /**
+   * Untrack this waypoint for {@code viewer}.
+   *
+   * @param viewer the viewer
+   * @return the waypoint
+   * @see Audience#untrackWaypoint(Waypoint)
+   * @since 5.1.0
+   */
+  default Waypoint removeViewer(final Audience viewer) {
+    viewer.untrackWaypoint(this);
+    return this;
+  }
+
+  /**
    * A listener for changes on a {@link Waypoint}.
    *
    * @since 5.1.0
