@@ -23,13 +23,16 @@
  */
 package net.kyori.adventure.waypoint;
 
-import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.util.Services;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -38,7 +41,25 @@ sealed class WaypointImpl implements Waypoint permits AzimuthWaypointImpl, Chunk
   private Key style;
   private TextColor color;
   private final Set<Listener> listeners = new HashSet<>();
-  private final Set<Audience> viewers = new HashSet<>(); // platform-populated
+  @Nullable WaypointImplementation implementation;
+
+  static final class ImplementationAccessor {
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    private static final Optional<WaypointImplementation.Provider> SERVICE = Services.service(WaypointImplementation.Provider.class);
+
+    private ImplementationAccessor() {
+    }
+
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    static <I extends WaypointImplementation> I get(final Waypoint bar, final Class<I> type) {
+      WaypointImplementation implementation = ((WaypointImpl) bar).implementation;
+      if (implementation == null) {
+        implementation = SERVICE.get().create(bar);
+        ((WaypointImpl) bar).implementation = implementation;
+      }
+      return type.cast(implementation);
+    }
+  }
 
   WaypointImpl(final Key style, final TextColor color) {
     this.style = requireNonNull(style, "style");
@@ -91,7 +112,10 @@ sealed class WaypointImpl implements Waypoint permits AzimuthWaypointImpl, Chunk
 
   @Override
   public Iterable<? extends Audience> viewers() {
-    return Collections.unmodifiableSet(this.viewers);
+    if (this.implementation != null) {
+      return this.implementation.viewers();
+    }
+    return List.of();
   }
 
   protected void forEachListener(final Consumer<Waypoint.Listener> consumer) {
