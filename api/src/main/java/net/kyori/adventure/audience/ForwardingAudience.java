@@ -219,33 +219,18 @@ public interface ForwardingAudience extends Audience {
   }
 
   @Override
-  default void track(final UUID uuid, final Waypoint waypoint) {
-    for (final Audience audience : this.audiences()) audience.track(uuid, waypoint);
+  default void trackWaypoint(final Waypoint waypoint) {
+    for (final Audience audience : this.audiences()) audience.trackWaypoint(waypoint);
   }
 
   @Override
-  default void track(final String id, final Waypoint waypoint) {
-    for (final Audience audience : this.audiences()) audience.track(id, waypoint);
+  default void updateWaypoint(final Waypoint waypoint) {
+    for (final Audience audience : this.audiences()) audience.updateWaypoint(waypoint);
   }
 
   @Override
-  default void update(final UUID uuid, final Waypoint waypoint) {
-    for (final Audience audience : this.audiences()) audience.update(uuid, waypoint);
-  }
-
-  @Override
-  default void update(final String id, final Waypoint waypoint) {
-    for (final Audience audience : this.audiences()) audience.update(id, waypoint);
-  }
-
-  @Override
-  default void untrack(final UUID uuid) {
-    for (final Audience audience : this.audiences()) audience.untrack(uuid);
-  }
-
-  @Override
-  default void untrack(final String id) {
-    for (final Audience audience : this.audiences()) audience.untrack(id);
+  default void untrackWaypoint(final Waypoint waypoint) {
+    for (final Audience audience : this.audiences()) audience.untrackWaypoint(waypoint);
   }
 
   /**
@@ -422,33 +407,18 @@ public interface ForwardingAudience extends Audience {
     }
 
     @Override
-    default void track(final UUID uuid, final Waypoint waypoint) {
-      this.audience().track(uuid, waypoint);
+    default void trackWaypoint(final Waypoint waypoint) {
+      this.audience().trackWaypoint(waypoint);
     }
 
     @Override
-    default void track(final String id, final Waypoint waypoint) {
-      this.audience().track(id, waypoint);
+    default void updateWaypoint(final Waypoint waypoint) {
+      this.audience().updateWaypoint(waypoint);
     }
 
     @Override
-    default void update(final UUID uuid, final Waypoint waypoint) {
-      this.audience().update(uuid, waypoint);
-    }
-
-    @Override
-    default void update(final String id, final Waypoint waypoint) {
-      this.audience().update(id, waypoint);
-    }
-
-    @Override
-    default void untrack(final UUID uuid) {
-      this.audience().untrack(uuid);
-    }
-
-    @Override
-    default void untrack(final String id) {
-      this.audience().untrack(id);
+    default void untrackWaypoint(final Waypoint waypoint) {
+      this.audience().untrackWaypoint(waypoint);
     }
   }
 }

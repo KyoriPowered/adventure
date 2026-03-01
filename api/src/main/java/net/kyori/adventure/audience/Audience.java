@@ -729,65 +729,31 @@ public interface Audience extends Pointered {
   /**
    * Tracks a waypoint.
    *
-   * @param uuid the uuid to track with
    * @param waypoint a waypoint
    * @since 5.1.0
    * @sinceMinecraft 1.21.6
    */
-  default void track(final UUID uuid, final Waypoint waypoint) {
-  }
-
-  /**
-   * Tracks a waypoint.
-   *
-   * @param id the id to track with
-   * @param waypoint a waypoint
-   * @since 5.1.0
-   * @sinceMinecraft 1.21.6
-   */
-  default void track(final String id, final Waypoint waypoint) {
+  default void trackWaypoint(final Waypoint waypoint) {
   }
 
   /**
    * Updates a tracked waypoint.
    *
-   * @param uuid the uuid the waypoint is tracked with
    * @param waypoint a waypoint
    * @since 5.1.0
    * @sinceMinecraft 1.21.6
    */
-  default void update(final UUID uuid, final Waypoint waypoint) {
-  }
-
-  /**
-   * Updates a tracked waypoint.
-   *
-   * @param id the id the waypoint is tracked with
-   * @param waypoint a waypoint
-   * @since 5.1.0
-   * @sinceMinecraft 1.21.6
-   */
-  default void update(final String id, final Waypoint waypoint) {
+  default void updateWaypoint(final Waypoint waypoint) {
   }
 
   /**
    * Untracks a tracked waypoint.
    *
-   * @param uuid the uuid the waypoint is tracked with
+   * @param waypoint a waypoint
    * @since 5.1.0
    * @sinceMinecraft 1.21.6
    */
-  default void untrack(final UUID uuid) {
-  }
-
-  /**
-   * Untracks a tracked waypoint.
-   *
-   * @param id the id the waypoint is tracked with
-   * @since 5.1.0
-   * @sinceMinecraft 1.21.6
-   */
-  default void untrack(final String id) {
+  default void untrackWaypoint(final Waypoint waypoint) {
   }
 
 }
