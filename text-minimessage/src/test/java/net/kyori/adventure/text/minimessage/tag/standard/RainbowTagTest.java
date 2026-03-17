@@ -401,4 +401,39 @@ class RainbowTagTest extends AbstractTest {
       input
     );
   }
+
+  @Test
+  void testSaturation() {
+    final String input = "<yellow>Woo: <rainbow:0:0.65>||||||||||||||||||||||||</rainbow>!";
+    final Component expected = empty().color(YELLOW)
+        .append(text("Woo: "))
+      .append(virtualOfChildren(textOfChildren(
+        text("|", color(0xFF5959)),
+        text("|", color(0xff8259)),
+        text("|", color(0xffac59)),
+        text("|", color(0xffd559)),
+        text("|", color(0xffff59)),
+        text("|", color(0xd5ff59)),
+        text("|", color(0xacff59)),
+        text("|", color(0x82ff59)),
+        text("|", color(0x59FF59)),
+        text("|", color(0x59ff82)),
+        text("|", color(0x59ffac)),
+        text("|", color(0x59ffd5)),
+        text("|", color(0x59ffff)),
+        text("|", color(0x59d5ff)),
+        text("|", color(0x59acff)),
+        text("|", color(0x5982ff)),
+        text("|", color(0x5959FF)),
+        text("|", color(0x8259ff)),
+        text("|", color(0xac59ff)),
+        text("|", color(0xd559ff)),
+        text("|", color(0xff59ff)),
+        text("|", color(0xff59d5)),
+        text("|", color(0xff59ac)),
+        text("|", color(0xFF5982))
+      )
+    )).append(text("!"));
+    this.assertParsedEquals(expected, input);
+  }
 }

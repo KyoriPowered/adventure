@@ -51,12 +51,14 @@ final class RainbowTag extends AbstractColorChangingTag {
 
   private final boolean reversed;
   private final double dividedPhase;
+  private final float saturation;
 
   private int colorIndex = 0;
 
   static Tag create(final ArgumentQueue args, final Context ctx) {
     boolean reversed = false;
     int phase = 0;
+    float saturation = 1f;
 
     if (args.hasNext()) {
       String value = args.pop().value();
@@ -71,15 +73,28 @@ final class RainbowTag extends AbstractColorChangingTag {
           throw ctx.newException("Expected phase, got " + value);
         }
       }
+      if (args.hasNext()) {
+        final String saturationValue = args.pop().value();
+        if (!saturationValue.isEmpty()) {
+          try {
+            saturation = Float.parseFloat(saturationValue);
+          } catch (final NumberFormatException ex) {
+            throw ctx.newException("Expected saturation, got " + saturationValue);
+          }
+          if (saturation < 0f || saturation > 1f) {
+            throw ctx.newException(String.format("Rainbow saturation is out of range (%s). Must be in the range [0.0, 1.0] (inclusive).", saturation));
+          }
+        }
+      }
     }
-
-    return new RainbowTag(reversed, phase, ctx);
+    return new RainbowTag(reversed, phase, saturation, ctx);
   }
 
-  private RainbowTag(final boolean reversed, final int phase, final Context ctx) {
+  private RainbowTag(final boolean reversed, final int phase, final float saturation, final Context ctx) {
     super(ctx);
     this.reversed = reversed;
     this.dividedPhase = ((double) phase) / 10d;
+    this.saturation = saturation;
   }
 
   @Override
@@ -106,7 +121,7 @@ final class RainbowTag extends AbstractColorChangingTag {
   protected TextColor color() {
     final float index = this.colorIndex;
     final float hue = (float) ((index / this.size() + this.dividedPhase) % 1f);
-    return TextColor.color(HSVLike.hsvLike(hue, 1f, 1f));
+    return TextColor.color(HSVLike.hsvLike(hue, this.saturation, 1f));
   }
 
   @Override
