@@ -27,6 +27,7 @@ import java.util.Arrays;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
+import net.kyori.adventure.text.minimessage.SerializationContext;
 import net.kyori.adventure.text.minimessage.internal.serializer.ClaimConsumer;
 import net.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
 import net.kyori.adventure.text.minimessage.tag.Tag;
@@ -75,8 +76,13 @@ final class SequentialTagResolver implements TagResolver, SerializableResolver {
 
   @Override
   public boolean has(final @NotNull String name) {
+    throw new IllegalStateException("TagResolver#has(String) should not be called if TagResolver#has(String,SerializationContext) is present!");
+  }
+
+  @Override
+  public boolean has(final @NotNull String name, final SerializationContext ctx) {
     for (final TagResolver resolver : this.resolvers) {
-      if (resolver.has(name)) {
+      if (resolver.has(name, ctx)) {
         return true;
       }
     }
@@ -85,9 +91,14 @@ final class SequentialTagResolver implements TagResolver, SerializableResolver {
 
   @Override
   public void handle(final @NotNull Component serializable, final @NotNull ClaimConsumer consumer) {
+    throw new IllegalStateException("TagResolver#has(String) should not be called if TagResolver#has(String,SerializationContext) is present!");
+  }
+
+  @Override
+  public void handle(final @NotNull Component serializable, final @NotNull ClaimConsumer consumer, final @NotNull SerializationContext ctx) {
     for (final TagResolver resolver : this.resolvers) {
       if (resolver instanceof SerializableResolver) {
-        ((SerializableResolver) resolver).handle(serializable, consumer);
+        ((SerializableResolver) resolver).handle(serializable, consumer, ctx);
       }
     }
   }

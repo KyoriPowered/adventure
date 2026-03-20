@@ -23,11 +23,14 @@
  */
 package net.kyori.adventure.text.minimessage;
 
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.pointer.Pointered;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.minimessage.tag.TagPattern;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.minimessage.tree.Node;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
@@ -44,7 +47,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 4.10.0
  */
-public interface MiniMessage extends ComponentSerializer<Component, Component, String> {
+public interface MiniMessage extends ComponentSerializer<Component, Component, String>, SerializationContext {
   /**
    * Gets a simple instance with default settings.
    *
@@ -330,6 +333,71 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
      * @since 4.10.0
      */
     @NotNull Builder editTags(final @NotNull Consumer<TagResolver.Builder> adder);
+
+    /**
+     * Set the known named colors of this MiniMessage instance.
+     *
+     * @param colors the colors to use
+     * @return this builder
+     * @since 4.26.0
+     */
+    @NotNull Builder namedColors(@NotNull Map<String, TextColor> colors);
+
+    /**
+     * Add to the set of known named colors of this MiniMessage instance.
+     *
+     * @param name the name of the color
+     * @param color the color
+     * @return this builder
+     * @since 4.26.0
+     */
+    @NotNull Builder namedColor(@TagPattern @NotNull String name, @NotNull TextColor color);
+
+    /**
+     * Remove from the set of known named colors of this MiniMessage instance.
+     *
+     * @param name the name of the color to remove
+     * @return this builder
+     * @since 4.26.0
+     */
+    @NotNull Builder removeNamedColor(@TagPattern @NotNull String name);
+
+    /**
+     * Set the known named color aliases of this MiniMessage instance.
+     *
+     * <p>Named color aliases point to another color name. If the name does not exist, the aliases is silently ignored.
+     * Aliases not tied to a specific color value and are never serialized.</p>
+     *
+     * @param aliases the aliases to use
+     * @return this builder
+     * @since 4.26.0
+     */
+    @NotNull Builder namedColorAliases(@NotNull Map<String, String> aliases);
+
+    /**
+     * Add to the set of known named color aliases of this MiniMessage instance.
+     *
+     * <p>Named color aliases point to another color name. If the name does not exist, the aliases is silently ignored.
+     * Aliases not tied to a specific color value and are never serialized.</p>
+     *
+     * @param name the name of the color alias
+     * @param color the name of the named color
+     * @return this builder
+     * @since 4.26.0
+     */
+    @NotNull Builder namedColorAlias(@TagPattern @NotNull String name, @TagPattern @NotNull String color);
+
+    /**
+     * Remove from the set of known named color aliases of this MiniMessage instance.
+     *
+     * <p>Named color aliases point to another color name. If the name does not exist, the aliases is silently ignored.
+     * Aliases not tied to a specific color value and are never serialized.</p>
+     *
+     * @param name the name of the color alias
+     * @return this builder
+     * @since 4.26.0
+     */
+    @NotNull Builder removeNamedColorAlias(@TagPattern @NotNull String name);
 
     /**
      * Enables strict mode (disabled by default).

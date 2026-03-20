@@ -31,10 +31,12 @@ import java.util.function.Function;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
+import net.kyori.adventure.text.minimessage.SerializationContext;
 import net.kyori.adventure.text.minimessage.internal.TagInternals;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -111,11 +113,26 @@ public interface SerializableResolver {
   /**
    * Attempt to process a component for serialization.
    *
+   * <p>This method should never be called directly but is safe to override.</p>
+   *
    * @param serializable the component to serialize
    * @param consumer a consumer for component claims, must not be stored
    * @since 4.10.0
    */
+  @ApiStatus.Obsolete
   void handle(final @NotNull Component serializable, final @NotNull ClaimConsumer consumer);
+
+  /**
+   * Attempt to process a component for serialization.
+   *
+   * @param serializable the component to serialize
+   * @param consumer a consumer for component claims, must not be stored
+   * @param serializationContext the serialisation context
+   * @since 4.26.0
+   */
+  default void handle(final @NotNull Component serializable, final @NotNull ClaimConsumer consumer, final @NotNull SerializationContext serializationContext) {
+    this.handle(serializable, consumer);
+  }
 
   /**
    * A subinterface for resolvers that only handle one single tag.
@@ -125,9 +142,14 @@ public interface SerializableResolver {
   interface Single extends SerializableResolver {
     @Override
     default void handle(final @NotNull Component serializable, final @NotNull ClaimConsumer consumer) {
+      throw new IllegalStateException("TagResolver#has(String) should not be called if TagResolver#has(String,SerializationContext) is present!");
+    }
+
+    @Override
+    default void handle(final @NotNull Component serializable, final @NotNull ClaimConsumer consumer, final @NotNull SerializationContext ctx) {
       final @Nullable StyleClaim<?> style = this.claimStyle();
       if (style != null && !consumer.styleClaimed(style.claimKey())) {
-        final @Nullable Emitable applied = style.apply(serializable.style());
+        final @Nullable Emitable applied = style.apply(serializable.style(), ctx);
         if (applied != null) {
           consumer.style(style.claimKey(), applied);
         }

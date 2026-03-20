@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.SerializationContext;
 import net.kyori.adventure.text.minimessage.internal.serializer.ClaimConsumer;
 import net.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
 import net.kyori.adventure.text.minimessage.tag.Inserting;
@@ -75,8 +76,13 @@ final class CachingTagResolver implements TagResolver.WithoutArguments, Mappable
 
   @Override
   public void handle(final @NotNull Component serializable, final @NotNull ClaimConsumer consumer) {
+    throw new IllegalStateException("TagResolver#has(String) should not be called if TagResolver#has(String,SerializationContext) is present!");
+  }
+
+  @Override
+  public void handle(final @NotNull Component serializable, final @NotNull ClaimConsumer consumer, final @NotNull SerializationContext ctx) {
     if (this.resolver instanceof SerializableResolver) {
-      ((SerializableResolver) this.resolver).handle(serializable, consumer);
+      ((SerializableResolver) this.resolver).handle(serializable, consumer, ctx);
     }
   }
 

@@ -49,12 +49,12 @@ final class MiniMessageSerializer {
   // - abbreviated vs long tag names (tag-specific option)
   //
 
-  static @NotNull String serialize(final @NotNull Component component, final @NotNull SerializableResolver resolver, final boolean strict) {
+  static @NotNull String serialize(final @NotNull Component component, final @NotNull SerializableResolver resolver, final boolean strict, final @NotNull SerializationContext ctx) {
     final StringBuilder sb = new StringBuilder();
-    final Collector emitter = new Collector(resolver, strict, sb);
+    final Collector emitter = new Collector(resolver, strict, sb, ctx);
 
     emitter.mark();
-    visit(component, emitter, resolver, true);
+    visit(component, emitter, resolver, true, ctx);
     if (strict) {
       // If we are in strict mode, we need to close all tags at the end of our serialization journey
       emitter.popAll();
@@ -65,9 +65,9 @@ final class MiniMessageSerializer {
     return sb.toString();
   }
 
-  private static void visit(final @NotNull Component component, final Collector emitter, final SerializableResolver resolver, final boolean lastChild) {
+  private static void visit(final @NotNull Component component, final Collector emitter, final SerializableResolver resolver, final boolean lastChild, final @NotNull SerializationContext ctx) {
     // visit self
-    resolver.handle(component, emitter);
+    resolver.handle(component, emitter, ctx);
     Component childSource = emitter.flushClaims(component);
     if (childSource == null) {
       childSource = component;
@@ -76,7 +76,7 @@ final class MiniMessageSerializer {
     // then children
     for (final Iterator<Component> it = childSource.children().iterator(); it.hasNext();) {
       emitter.mark();
-      visit(it.next(), emitter, resolver, lastChild && !it.hasNext());
+      visit(it.next(), emitter, resolver, lastChild && !it.hasNext(), ctx);
     }
 
     if (!lastChild) {
@@ -106,6 +106,7 @@ final class MiniMessageSerializer {
     private static final char[] SINGLE_QUOTED_ESCAPES = {TokenParser.ESCAPE, '\''};
     private static final char[] DOUBLE_QUOTED_ESCAPES = {TokenParser.ESCAPE, '"'};
 
+    private final SerializationContext ctx;
     private final SerializableResolver resolver;
     private final boolean strict;
     private final StringBuilder consumer;
@@ -113,7 +114,8 @@ final class MiniMessageSerializer {
     private int tagLevel = 0;
     private TagState tagState = TagState.TEXT;
 
-    Collector(final SerializableResolver resolver, final boolean strict, final StringBuilder consumer) {
+    Collector(final SerializableResolver resolver, final boolean strict, final StringBuilder consumer, final SerializationContext ctx) {
+      this.ctx = ctx;
       this.resolver = resolver;
       this.strict = strict;
       this.consumer = consumer;
@@ -211,7 +213,7 @@ final class MiniMessageSerializer {
 
     @Override
     public @NotNull TokenEmitter argument(final @NotNull Component arg) {
-      final String serialized = MiniMessageSerializer.serialize(arg, this.resolver, this.strict);
+      final String serialized = MiniMessageSerializer.serialize(arg, this.resolver, this.strict, this.ctx);
       return this.argument(serialized, QuotingOverride.QUOTED); // always quote tokens
     }
 

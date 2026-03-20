@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage.tag.standard;
 
+import java.util.Objects;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -423,6 +424,23 @@ class GradientTagTest extends AbstractTest {
       ))).append(text("!"));
 
     this.assertParsedEquals(expected, input);
+  }
+
+  @Test
+  void testGradientWithCustomColors() {
+    final String ice = "#6BF8FF";
+    final String fire = "#C97118";
+
+    final MiniMessage mm = MiniMessage.builder()
+      .namedColor("ice", Objects.requireNonNull(TextColor.fromHexString(ice)))
+      .namedColor("fire", Objects.requireNonNull(TextColor.fromHexString(fire)))
+      .build();
+
+    final String withCustomColors = "<gradient:fire:ice>||||||||||||||||||||||||||||||||";
+    final String withHexColors = String.format("<gradient:%s:%s>||||||||||||||||||||||||||||||||", fire, ice);
+
+    final Component expected = MiniMessage.miniMessage().deserialize(withHexColors);
+    this.assertParsedEquals(mm, expected, withCustomColors);
   }
 
   // see #91

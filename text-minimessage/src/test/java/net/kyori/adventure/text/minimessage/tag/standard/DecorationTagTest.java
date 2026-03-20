@@ -27,6 +27,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.AbstractTest;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.junit.jupiter.api.Test;
 
@@ -42,7 +43,7 @@ class DecorationTagTest extends AbstractTest {
   void testCompleteness() {
     final TagResolver decorations = StandardTags.decorations();
     for (final String key : TextDecoration.NAMES.keys()) {
-      assertTrue(decorations.has(key), () -> "missing " + key);
+      assertTrue(decorations.has(key, MiniMessage.miniMessage()), () -> "missing " + key);
     }
   }
 

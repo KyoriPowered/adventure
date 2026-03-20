@@ -27,6 +27,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.minimessage.SerializationContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -54,6 +55,20 @@ public interface StyleClaim<V> {
   }
 
   /**
+   * Create a new style claim that will emit content for any non-null value.
+   *
+   * @param <T> the value type
+   * @param claimKey claim key for de-duplication
+   * @param lens value extractor from a {@link Style} instance
+   * @param emitable the function that handles emitting
+   * @return a new claim
+   * @since 4.26.0
+   */
+  static <T> @NotNull StyleClaim<T> claim(final @NotNull String claimKey, final @NotNull Function<Style, @Nullable T> lens, final @NotNull ContextAwareEmittable<T> emitable) {
+    return claim(claimKey, lens, $ -> true, emitable);
+  }
+
+  /**
    * Create a new style claim that will emit content for any non-null value that passes the filter.
    *
    * @param <T> the value type
@@ -65,6 +80,21 @@ public interface StyleClaim<V> {
    * @since 4.10.0
    */
   static <T> @NotNull StyleClaim<T> claim(final @NotNull String claimKey, final @NotNull Function<Style, @Nullable T> lens, final @NotNull Predicate<T> filter, final @NotNull BiConsumer<T, TokenEmitter> emitable) {
+    return claim(claimKey, lens, filter, (type, emitter, ctx) -> emitable.accept(type, emitter));
+  }
+
+  /**
+   * Create a new style claim that will emit content for any non-null value that passes the filter.
+   *
+   * @param <T> the value type
+   * @param claimKey claim key for de-duplication
+   * @param lens value extractor from a {@link Style} instance
+   * @param filter a filter for values, will only receive non-null values
+   * @param emitable the function that handles emitting
+   * @return a new claim
+   * @since 4.26.0
+   */
+  static <T> @NotNull StyleClaim<T> claim(final @NotNull String claimKey, final @NotNull Function<Style, @Nullable T> lens, final @NotNull Predicate<T> filter, final @NotNull ContextAwareEmittable<T> emitable) {
     return new StyleClaimImpl<>(
       requireNonNull(claimKey, "claimKey"),
       requireNonNull(lens, "lens"),
@@ -85,8 +115,28 @@ public interface StyleClaim<V> {
    * Prepare an emitable to apply this claim based on the style.
    *
    * @param style the style to test
+   * @param ctx the serialization context
    * @return an emitable for this style claim, if it is applicable to the provided style
-   * @since 4.10.0
+   * @since 4.26.0
    */
-  @Nullable Emitable apply(final @NotNull Style style);
+  @Nullable Emitable apply(final @NotNull Style style, final @NotNull SerializationContext ctx);
+
+  /**
+   * A context aware emittable function.
+   *
+   * @param <T> the value type
+   * @since 4.26.0
+   */
+  @FunctionalInterface
+  interface ContextAwareEmittable<T> {
+    /**
+     * A method which handles emitting.
+     *
+     * @param type the value
+     * @param emitter the emitter
+     * @param ctx the serialization context
+     * @since 4.26.0
+     */
+    void emit(T type, TokenEmitter emitter, SerializationContext ctx);
+  }
 }

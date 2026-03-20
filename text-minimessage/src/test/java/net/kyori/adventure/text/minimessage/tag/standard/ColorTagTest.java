@@ -119,7 +119,7 @@ class ColorTagTest extends AbstractTest {
   void testBritish() {
     final String input1 = "<grey>This is english"; // no it's british
     final String input2 = "<gray>This is english";
-    final String input3 = "<dark_grey>This is still english"; // British is superior english
+    final String input3 = "<dark_grey>This is still english"; // British is fake english
     final String input4 = "<dark_gray>This is still english";
     final Component out1 = PARSER.deserialize(input1);
     final Component out2 = PARSER.deserialize(input2);

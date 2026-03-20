@@ -23,18 +23,27 @@
  */
 package net.kyori.adventure.text.minimessage;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.pointer.Pointered;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.minimessage.internal.TagInternals;
 import net.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.minimessage.tree.Node;
 import net.kyori.adventure.util.Services;
+import org.intellij.lang.annotations.Subst;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -55,7 +64,7 @@ final class MiniMessageImpl implements MiniMessage {
   static final class Instances {
     static final MiniMessage INSTANCE = SERVICE
       .map(Provider::miniMessage)
-      .orElseGet(() -> new MiniMessageImpl(TagResolver.standard(), false, true, null, DEFAULT_NO_OP, DEFAULT_COMPACTING_METHOD));
+      .orElseGet(() -> new MiniMessageImpl(TagResolver.standard(), false, true, null, DEFAULT_NO_OP, DEFAULT_COMPACTING_METHOD, defaultNamedColors(), defaultNamedColorAliases()));
   }
 
   static final UnaryOperator<String> DEFAULT_NO_OP = UnaryOperator.identity();
@@ -66,15 +75,30 @@ final class MiniMessageImpl implements MiniMessage {
   private final @Nullable Consumer<String> debugOutput;
   private final UnaryOperator<Component> postProcessor;
   private final UnaryOperator<String> preProcessor;
+  private final Map<String, TextColor> namedColors;
+  private final Map<String, String> namedColorAliases;
   final MiniMessageParser parser;
 
-  MiniMessageImpl(final @NotNull TagResolver resolver, final boolean strict, final boolean emitVirtuals, final @Nullable Consumer<String> debugOutput, final @NotNull UnaryOperator<String> preProcessor, final @NotNull UnaryOperator<Component> postProcessor) {
+  MiniMessageImpl(final @NotNull TagResolver resolver, final boolean strict, final boolean emitVirtuals, final @Nullable Consumer<String> debugOutput, final @NotNull UnaryOperator<String> preProcessor, final @NotNull UnaryOperator<Component> postProcessor, final Map<String, TextColor> namedColors, final Map<String, String> namedColorAliases) {
     this.parser = new MiniMessageParser(resolver);
     this.strict = strict;
     this.emitVirtuals = emitVirtuals;
     this.debugOutput = debugOutput;
     this.preProcessor = preProcessor;
     this.postProcessor = postProcessor;
+    this.namedColors = Collections.unmodifiableMap(namedColors);
+    this.namedColorAliases = Collections.unmodifiableMap(namedColorAliases);
+  }
+
+  private static @NotNull Map<String, TextColor> defaultNamedColors() {
+    return new TreeMap<>(NamedTextColor.NAMES.keyToValue());
+  }
+
+  private static @NotNull Map<String, String> defaultNamedColorAliases() {
+    final Map<String, String> out = new TreeMap<>();
+    out.put("grey", "gray");
+    out.put("dark_grey", "dark_gray");
+    return out;
   }
 
   @Override
@@ -119,7 +143,7 @@ final class MiniMessageImpl implements MiniMessage {
 
   @Override
   public @NotNull String serialize(final @NotNull Component component) {
-    return MiniMessageSerializer.serialize(component, this.serialResolver(null), this.strict);
+    return MiniMessageSerializer.serialize(component, this.serialResolver(null), this.strict, this);
   }
 
   private SerializableResolver serialResolver(final @Nullable TagResolver extraResolver) {
@@ -158,6 +182,16 @@ final class MiniMessageImpl implements MiniMessage {
   }
 
   @Override
+  public @Unmodifiable @NotNull Map<String, TextColor> namedColors() {
+    return this.namedColors;
+  }
+
+  @Override
+  public @Unmodifiable @NotNull Map<String, String> namedColorAliases() {
+    return this.namedColorAliases;
+  }
+
+  @Override
   public boolean strict() {
     return this.strict;
   }
@@ -179,6 +213,8 @@ final class MiniMessageImpl implements MiniMessage {
     private Consumer<String> debug = null;
     private UnaryOperator<Component> postProcessor = DEFAULT_COMPACTING_METHOD;
     private UnaryOperator<String> preProcessor = DEFAULT_NO_OP;
+    private final Map<String, TextColor> namedColors = defaultNamedColors();
+    private final Map<String, String> namedColorAliases = defaultNamedColorAliases();
 
     BuilderImpl() {
       BUILDER.accept(this);
@@ -205,6 +241,54 @@ final class MiniMessageImpl implements MiniMessage {
       final TagResolver.Builder builder = TagResolver.builder().resolver(this.tagResolver);
       adder.accept(builder);
       this.tagResolver = builder.build();
+      return this;
+    }
+
+    @Override
+    public @NotNull Builder namedColors(final @NotNull Map<String, TextColor> colors) {
+      for (final @Subst("color") String name : colors.keySet()) {
+        TagInternals.assertValidTagName(name);
+      }
+      this.namedColors.clear();
+      this.namedColors.putAll(colors);
+      return this;
+    }
+
+    @Override
+    public @NotNull Builder namedColor(final @NotNull String name, final @NotNull TextColor color) {
+      TagInternals.assertValidTagName(name);
+      this.namedColors.put(name, color);
+      return this;
+    }
+
+    @Override
+    public @NotNull Builder removeNamedColor(final @NotNull String name) {
+      TagInternals.assertValidTagName(name);
+      this.namedColors.remove(name);
+      return this;
+    }
+
+    @Override
+    public @NotNull Builder namedColorAliases(final @NotNull Map<String, String> aliases) {
+      for (final @Subst("color") String name : aliases.keySet()) {
+        TagInternals.assertValidTagName(name);
+      }
+      this.namedColorAliases.clear();
+      this.namedColorAliases.putAll(aliases);
+      return this;
+    }
+
+    @Override
+    public @NotNull Builder namedColorAlias(final @NotNull String name, final @NotNull String color) {
+      TagInternals.assertValidTagName(name);
+      this.namedColorAliases.put(name, color);
+      return this;
+    }
+
+    @Override
+    public @NotNull Builder removeNamedColorAlias(final @NotNull String name) {
+      TagInternals.assertValidTagName(name);
+      this.namedColorAliases.remove(name);
       return this;
     }
 
@@ -240,7 +324,7 @@ final class MiniMessageImpl implements MiniMessage {
 
     @Override
     public @NotNull MiniMessage build() {
-      return new MiniMessageImpl(this.tagResolver, this.strict, this.emitVirtuals, this.debug, this.preProcessor, this.postProcessor);
+      return new MiniMessageImpl(this.tagResolver, this.strict, this.emitVirtuals, this.debug, this.preProcessor, this.postProcessor, new HashMap<>(this.namedColors), new HashMap<>(this.namedColorAliases));
     }
   }
 }

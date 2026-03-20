@@ -39,7 +39,7 @@ import org.jetbrains.annotations.Nullable;
  * @since 4.10.0
  */
 @ApiStatus.NonExtendable
-public interface Context {
+public interface Context extends SerializationContext {
 
   /**
    * The target of the parse context, if provided.

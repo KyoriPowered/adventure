@@ -23,13 +23,13 @@
  */
 package net.kyori.adventure.text.minimessage.tag.standard;
 
-import java.util.HashMap;
 import java.util.Map;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
+import net.kyori.adventure.text.minimessage.SerializationContext;
 import net.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
 import net.kyori.adventure.text.minimessage.internal.serializer.StyleClaim;
 import net.kyori.adventure.text.minimessage.tag.Tag;
@@ -49,22 +49,17 @@ final class ColorTagResolver implements TagResolver, SerializableResolver.Single
   private static final String COLOR = "color";
 
   static final TagResolver INSTANCE = new ColorTagResolver();
-  private static final StyleClaim<TextColor> STYLE = StyleClaim.claim(COLOR, Style::color, (color, emitter) -> {
-    // TODO: custom aliases
+  private static final StyleClaim<TextColor> STYLE = StyleClaim.claim(COLOR, Style::color, (color, emitter, ctx) -> {
     // TODO: compact vs expanded format? COLOR vs color:COLOR vs c:COLOR
-    if (color instanceof NamedTextColor) {
-      emitter.tag(NamedTextColor.NAMES.key((NamedTextColor) color));
-    } else {
-      emitter.tag(color.asHexString());
+    for (final Map.Entry<String, TextColor> entry : ctx.namedColors().entrySet()) {
+      if (entry.getValue().equals(color)) {
+        emitter.tag(entry.getKey());
+        return;
+      }
     }
+
+    emitter.tag(color.asHexString());
   });
-
-  private static final Map<String, TextColor> COLOR_ALIASES = new HashMap<>();
-
-  static {
-    COLOR_ALIASES.put("dark_grey", NamedTextColor.DARK_GRAY);
-    COLOR_ALIASES.put("grey", NamedTextColor.GRAY);
-  }
 
   private static boolean isColorOrAbbreviation(final String name) {
     return name.equals(COLOR) || name.equals(COLOR_2) || name.equals(COLOR_3);
@@ -75,7 +70,7 @@ final class ColorTagResolver implements TagResolver, SerializableResolver.Single
 
   @Override
   public @Nullable Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue args, final @NotNull Context ctx) throws ParsingException {
-    if (!this.has(name)) {
+    if (!this.has(name, ctx)) {
       return null;
     }
 
@@ -90,21 +85,19 @@ final class ColorTagResolver implements TagResolver, SerializableResolver.Single
     return Tag.styling(color);
   }
 
-  static @Nullable TextColor resolveColorOrNull(final String colorName) {
+  static @Nullable TextColor resolveColorOrNull(final String colorName, final SerializationContext ctx) {
     final TextColor color;
-    if (COLOR_ALIASES.containsKey(colorName)) {
-      color = COLOR_ALIASES.get(colorName);
-    } else if (colorName.charAt(0) == TextColor.HEX_CHARACTER) {
+    if (colorName.charAt(0) == TextColor.HEX_CHARACTER) {
       color = TextColor.fromHexString(colorName);
     } else {
-      color = NamedTextColor.NAMES.value(colorName);
+      color = ctx.namedColor(colorName);
     }
 
     return color;
   }
 
   static @NotNull TextColor resolveColor(final @NotNull String colorName, final @NotNull Context ctx) throws ParsingException {
-    final TextColor color = resolveColorOrNull(colorName);
+    final TextColor color = resolveColorOrNull(colorName, ctx);
     if (color == null) {
       throw ctx.newException(String.format("Unable to parse a color from '%s'. Please use named colours or hex (#RRGGBB) colors.", colorName));
     }
@@ -113,9 +106,15 @@ final class ColorTagResolver implements TagResolver, SerializableResolver.Single
 
   @Override
   public boolean has(final @NotNull String name) {
+    // This method should never be called. If it does, that's a bug.
+    throw new IllegalStateException("TagResolver#has(String) should not be called if TagResolver#has(String,SerializationContext) is present!");
+  }
+
+  @Override
+  public boolean has(final @NotNull String name, final SerializationContext ctx) {
     return isColorOrAbbreviation(name)
       || NamedTextColor.NAMES.value(name) != null
-      || COLOR_ALIASES.containsKey(name)
+      || ctx.namedColor(name) != null
       || TextColor.fromHexString(name) != null;
   }
 
