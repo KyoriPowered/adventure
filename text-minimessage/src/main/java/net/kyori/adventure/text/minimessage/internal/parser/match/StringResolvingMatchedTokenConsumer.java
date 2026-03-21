@@ -25,15 +25,18 @@ package net.kyori.adventure.text.minimessage.internal.parser.match;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
 import net.kyori.adventure.text.minimessage.internal.TagInternals;
 import net.kyori.adventure.text.minimessage.internal.parser.Token;
-import net.kyori.adventure.text.minimessage.internal.parser.TokenParser;
 import net.kyori.adventure.text.minimessage.internal.parser.TokenParser.TagProvider;
 import net.kyori.adventure.text.minimessage.internal.parser.TokenType;
 import net.kyori.adventure.text.minimessage.internal.parser.node.TagPart;
+import net.kyori.adventure.text.minimessage.internal.util.ListMapHolder;
 import net.kyori.adventure.text.minimessage.tag.PreProcess;
 import net.kyori.adventure.text.minimessage.tag.Tag;
+import org.intellij.lang.annotations.Subst;
 
 import static net.kyori.adventure.text.minimessage.internal.parser.TokenParser.SEPARATOR;
 import static net.kyori.adventure.text.minimessage.internal.parser.TokenParser.tokenize;
@@ -41,11 +44,12 @@ import static net.kyori.adventure.text.minimessage.internal.parser.TokenParser.t
 /**
  * A matched token consumer that produces a string and returns a copy of the string with {@link PreProcess} tags resolved.
  *
+ * @param <T> type of the tag argument
  * @since 4.10.0
  */
-public final class StringResolvingMatchedTokenConsumer extends MatchedTokenConsumer<String> {
+public final class StringResolvingMatchedTokenConsumer<T extends Tag.Argument> extends MatchedTokenConsumer<String> {
   private final StringBuilder builder;
-  private final TagProvider tagProvider;
+  private final TagProvider<T> tagProvider;
 
   /**
    * Creates a string resolving matched token consumer.
@@ -56,7 +60,7 @@ public final class StringResolvingMatchedTokenConsumer extends MatchedTokenConsu
    */
   public StringResolvingMatchedTokenConsumer(
     final String input,
-    final TagProvider tagProvider
+    final TagProvider<T> tagProvider
   ) {
     super(input);
     this.builder = new StringBuilder(input.length());
@@ -76,20 +80,34 @@ public final class StringResolvingMatchedTokenConsumer extends MatchedTokenConsu
       final String cleanup = this.input.substring(start + 1, end - 1);
 
       final int index = cleanup.indexOf(SEPARATOR);
-      final String tag = index == -1 ? cleanup : cleanup.substring(0, index);
+      final @Subst("") String tag = index == -1 ? cleanup : cleanup.substring(0, index);
 
       // we might care if it's a valid tag!
       if (TagInternals.sanitizeAndCheckValidTagName(tag)) {
         final List<Token> tokens = tokenize(match, false);
-        final List<TagPart> parts = new ArrayList<>();
-        final List<Token> childs = tokens.isEmpty() ? null : tokens.getFirst().childTokens();
-        if (childs != null) {
-          for (int i = 1; i < childs.size(); i++) {
-            parts.add(new TagPart(match, childs.get(i), this.tagProvider));
+        final List<TagPart> sequentialParts = new ArrayList<>();
+        final Map<String, TagPart> namedParts = new TreeMap<>();
+
+        final List<Token> children = tokens.isEmpty() ? null : tokens.getFirst().childTokens();
+        if (children != null) {
+          final List<Token> subList = children.subList(1, children.size());
+          for (int i = 0, subListSize = subList.size(); i < subListSize; i++) {
+            final Token token = subList.get(i);
+
+            if (token.type() == TokenType.TAG_VALUE_NAME && i + 1 < subListSize) {
+              final Token nextToken = subList.get(i + 1);
+              i += 1; // skip the next token
+              namedParts.put(
+                match.substring(token.startIndex(), token.endIndex()),
+                new TagPart(match, nextToken, this.tagProvider)
+              );
+            } else {
+              sequentialParts.add(new TagPart(match, token, this.tagProvider));
+            }
           }
         }
         // we might care if it's a pre-process!
-        final Tag replacement = this.tagProvider.resolve(TokenParser.TagProvider.sanitizePlaceholderName(tag), parts, tokens.getFirst());
+        final Tag replacement = this.tagProvider.resolve(TagProvider.sanitizePlaceholderName(tag), (ListMapHolder<T, String, T>) ListMapHolder.of(sequentialParts, namedParts), tokens.getFirst());
 
         if (replacement instanceof PreProcess preProcess) {
           this.builder.append(Objects.requireNonNull(preProcess.value(), "PreProcess replacements cannot return null"));

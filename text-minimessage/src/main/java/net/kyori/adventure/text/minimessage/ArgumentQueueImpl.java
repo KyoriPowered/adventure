@@ -23,62 +23,69 @@
  */
 package net.kyori.adventure.text.minimessage;
 
-import java.util.List;
 import java.util.function.Supplier;
+import net.kyori.adventure.text.minimessage.internal.util.ListMapHolder;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
+import net.kyori.adventure.util.TriState;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
+/*
+ * Note to anyone looking at this class and wondering about the {@link NonNull}s. For
+ * some reason, IntelliJ completely ignores any {@link NullMarked} annotations on the package
+ * or on the class, so these pop methods had to be annotated explicitly ¯\_(ツ)_/¯.
+ */
 final class ArgumentQueueImpl<T extends Tag.Argument> implements ArgumentQueue {
   private final Context context;
-  private final List<T> args;
+  private final ListMapHolder<T, String, T> args;
   private int ptr = 0;
 
-  ArgumentQueueImpl(final Context context, final List<T> args) {
+  ArgumentQueueImpl(final Context context, final ListMapHolder<T, String, T> args) {
     this.context = context;
     this.args = args;
   }
 
-  public List<T> args() {
+  public ListMapHolder<T, String, T> args() {
     return this.args;
   }
 
   @Override
-  public T pop() {
+  public @NonNull T pop() {
     if (!this.hasNext()) {
       throw this.context.newException("Missing argument for this tag!", this);
     }
-    return this.args.get(this.ptr++);
+    return this.args.list().get(this.ptr++);
   }
 
   @Override
-  public T popOr(final String errorMessage) {
+  public @NonNull T popOr(final String errorMessage) {
     requireNonNull(errorMessage, "errorMessage");
     if (!this.hasNext()) {
       throw this.context.newException(errorMessage, this);
     }
-    return this.args.get(this.ptr++);
+    return this.args.list().get(this.ptr++);
   }
 
   @Override
-  public T popOr(final Supplier<String> errorMessage) {
+  public @NonNull T popOr(final Supplier<String> errorMessage) {
     requireNonNull(errorMessage, "errorMessage");
     if (!this.hasNext()) {
       throw this.context.newException(requireNonNull(errorMessage.get(), "errorMessage.get()"), this);
     }
-    return this.args.get(this.ptr++);
+    return this.args.list().get(this.ptr++);
   }
 
   @Override
   public @Nullable T peek() {
-    return this.hasNext() ? this.args.get(this.ptr) : null;
+    return this.hasNext() ? this.args.list().get(this.ptr) : null;
   }
 
   @Override
   public boolean hasNext() {
-    return this.ptr < this.args.size();
+    return this.ptr < this.args.list().size();
   }
 
   @Override
@@ -89,5 +96,61 @@ final class ArgumentQueueImpl<T extends Tag.Argument> implements ArgumentQueue {
   @Override
   public String toString() {
     return this.args.toString();
+  }
+
+  @Override
+  public boolean isPresent(final String name) {
+    requireNonNull(name, "name");
+    return this.args.map().containsKey(name);
+  }
+
+  @Override
+  public Tag.@Nullable Argument get(final String name) {
+    requireNonNull(name, "name");
+    return this.args.map().get(name);
+  }
+
+  @Override
+  public TriState flag(final String name) {
+    final Tag.Argument argument = this.get(name);
+    if (argument == null) {
+      // The normal flag is not preset, so try the inverted flag
+      final Tag.Argument invertedArgument = this.get('!' + name);
+      if (invertedArgument == null) {
+        return TriState.NOT_SET;
+      }
+
+      return TriState.FALSE;
+    }
+
+    return TriState.TRUE;
+  }
+
+  @Override
+  public boolean isFlagPresent(final String name) {
+    if (this.isPresent(name)) {
+      return true;
+    }
+    return this.isPresent('!' + name);
+  }
+
+  @Override
+  public Tag.Argument orThrow(final String name, final String errorMessage) {
+    requireNonNull(errorMessage, "errorMessage");
+    final Tag.Argument arg = this.get(name);
+    if (arg == null) {
+      throw this.context.newException(errorMessage);
+    }
+    return arg;
+  }
+
+  @Override
+  public Tag.Argument orThrow(final String name, final Supplier<String> errorMessage) {
+    requireNonNull(errorMessage, "errorMessage");
+    final Tag.Argument arg = this.get(name);
+    if (arg == null) {
+      throw this.context.newException(errorMessage.get());
+    }
+    return arg;
   }
 }

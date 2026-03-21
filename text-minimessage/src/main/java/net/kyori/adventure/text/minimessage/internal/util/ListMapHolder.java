@@ -21,19 +21,48 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.internal.parser;
+package net.kyori.adventure.text.minimessage.internal.util;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
- * Represents the type of a token.
+ * A holder for a string and a map.
  *
- * @since 4.10.0
+ * @param list list to hold
+ * @param map map to hold
+ * @param <E> type of the list
+ * @param <K> type of the map key
+ * @param <V> type of the map value
+ * @since 5.1.0
  */
-public enum TokenType {
-  TEXT,
-  OPEN_TAG,
-  OPEN_CLOSE_TAG, // one token that both opens and closes a tag
-  CLOSE_TAG,
-  TAG_VALUE_TOGGLE,
-  TAG_VALUE_NAME,
-  TAG_VALUE;
+public record ListMapHolder<E, K, V>(List<E> list, Map<K, V> map) {
+  /**
+   * Create a new empty {@link ListMapHolder}.
+   *
+   * @param <E> type of the list
+   * @param <K> type of the map key
+   * @param <V> type of the map value
+   * @return a new empty instance
+   * @since 5.1.0
+   */
+  public static <E, K, V> ListMapHolder<E, K, V> empty() {
+    return new ListMapHolder<>(Collections.emptyList(), Collections.emptyMap());
+  }
+
+  /**
+   * Create a new {@link ListMapHolder}.
+   *
+   * @param list list to hold
+   * @param map map to hold
+   * @param <E> type of the list
+   * @param <K> type of the map key
+   * @param <V> type of the map value
+   * @return a new instance
+   * @since 5.1.0
+   */
+  public static <E, K, V> ListMapHolder<E, K, V> of(final List<E> list, final Map<K, V> map) {
+    return new ListMapHolder<>(list, map);
+  }
 }

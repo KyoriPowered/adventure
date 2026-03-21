@@ -131,7 +131,7 @@ final class MiniMessageSerializer {
         throw new IllegalStateException("Unbalanced tags, tried to pop below depth");
       }
       final String tag = this.activeTags[this.tagLevel];
-      if (!allowMarks && tag == MARK) {
+      if (!allowMarks && tag.equals(MARK)) {
         throw new IllegalStateException("Tried to pop past mark, tag stack: " + Arrays.toString(this.activeTags) + " @ " + this.tagLevel);
       }
       return tag;
@@ -146,7 +146,7 @@ final class MiniMessageSerializer {
         return;
       }
       String tag;
-      while ((tag = this.popTag(true)) != MARK) {
+      while (!(tag = this.popTag(true)).equals(MARK)) {
         this.emitClose(tag);
       }
     }
@@ -154,7 +154,7 @@ final class MiniMessageSerializer {
     void popAll() {
       while (this.tagLevel > 0) {
         final String tag = this.activeTags[--this.tagLevel];
-        if (tag != MARK) {
+        if (!tag.equals(MARK)) {
           this.emitClose(tag);
         }
       }
@@ -199,6 +199,18 @@ final class MiniMessageSerializer {
     }
 
     @Override
+    public TokenEmitter namedArgument(final String name, final String arg) {
+      if (!this.tagState.isTag) {
+        throw new IllegalStateException("Not within a tag!");
+      }
+      this.consumer.append(' ');
+      this.consumer.append(name);
+      this.consumer.append(TokenParser.NAME_VALUE_SEPARATOR);
+      this.escapeTagContent(arg, null);
+      return this;
+    }
+
+    @Override
     public TokenEmitter argument(final String arg, final QuotingOverride quotingPreference) {
       if (!this.tagState.isTag) {
         throw new IllegalStateException("Not within a tag!");
@@ -209,9 +221,37 @@ final class MiniMessageSerializer {
     }
 
     @Override
+    public TokenEmitter namedArgument(final String name, final String arg, final QuotingOverride quotingPreference) {
+      if (!this.tagState.isTag) {
+        throw new IllegalStateException("Not within a tag!");
+      }
+      this.consumer.append(' ');
+      this.consumer.append(name);
+      this.consumer.append(TokenParser.NAME_VALUE_SEPARATOR);
+      this.escapeTagContent(arg, requireNonNull(quotingPreference, "quotingPreference"));
+      return this;
+    }
+
+    @Override
     public TokenEmitter argument(final Component arg) {
       final String serialized = MiniMessageSerializer.serialize(arg, this.resolver, this.strict);
       return this.argument(serialized, QuotingOverride.QUOTED); // always quote tokens
+    }
+
+    @Override
+    public TokenEmitter namedArgument(final String name, final Component arg) {
+      final String serialized = MiniMessageSerializer.serialize(arg, this.resolver, this.strict);
+      return this.namedArgument(name, serialized, QuotingOverride.QUOTED); // always quote tokens
+    }
+
+    @Override
+    public TokenEmitter flag(final String name, final boolean value) {
+      if (!this.tagState.isTag) {
+        throw new IllegalStateException("Not within a tag!");
+      }
+      this.consumer.append(' ');
+      this.consumer.append(value ? name : '!' + name);
+      return this;
     }
 
     @Override
@@ -231,13 +271,11 @@ final class MiniMessageSerializer {
         final char active = content.charAt(i);
         if (active == TokenParser.TAG_END || active == TokenParser.SEPARATOR || active == ' ') { // space is not technically required here, but is preferred
           mustBeQuoted = true;
-          if (hasSingleQuote && hasDoubleQuote) break;
         } else if (active == '\'') {
           hasSingleQuote = true;
           break; // we know our quoting style
         } else if (active == '"') {
           hasDoubleQuote = true;
-          if (mustBeQuoted && hasSingleQuote) break;
         }
       }
 

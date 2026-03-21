@@ -25,6 +25,7 @@ package net.kyori.adventure.text.minimessage.tag.resolver;
 
 import java.util.function.Supplier;
 import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.util.TriState;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
@@ -89,4 +90,74 @@ public interface ArgumentQueue {
    * @since 4.10.0
    */
   void reset();
+
+  /**
+   * Get whether an argument of that name exists.
+   *
+   * @param name name of the argument or flag
+   * @return whether an argument by this name is present
+   * @since 5.1.0
+   */
+  boolean isPresent(String name);
+
+  /**
+   * Get an argument by its name, returning {@code null} if none was found.
+   *
+   * @param name name of the argument
+   * @return the argument
+   * @since 5.1.0
+   */
+  Tag.@Nullable Argument get(String name);
+
+  /**
+   * Get the value of a flag. If a flag is present {@code flag},
+   * this method return {@link TriState#TRUE}. If a flag
+   * is inverted {@code !flag}, {@link TriState#FALSE} is returned.
+   * Otherwise, {@link TriState#NOT_SET} is returned.
+   *
+   * @param name the name of the flag
+   * @return its presence status in the tag
+   * @since 5.1.0
+   */
+  TriState flag(String name);
+
+  /**
+   * Get whether this flag is set, inverted or not.
+   *
+   * @param name the name of the flag
+   * @return whether it is present
+   * @since 5.1.0
+   */
+  boolean isFlagPresent(String name);
+
+  /**
+   * Get an argument by its name, throwing an exception if no argument with that name was present.
+   *
+   * @param name name of the argument
+   * @return the argument
+   * @since 5.1.0
+   */
+  default Tag.Argument orThrow(final String name) {
+    return this.orThrow(name, name + " is not present");
+  }
+
+  /**
+   * Get an argument by its name, throwing an exception if no argument with that name was present.
+   *
+   * @param name name of the argument
+   * @param errorMessage the error to throw if an argument with that name is not present
+   * @return the argument
+   * @since 5.1.0
+   */
+  Tag.Argument orThrow(String name, String errorMessage);
+
+  /**
+   * Get an argument by its name, throwing an exception if no argument with that name was present.
+   *
+   * @param name name of the argument
+   * @param errorMessage the error to throw if an argument with that name is not present
+   * @return the argument
+   * @since 5.1.0
+   */
+  Tag.Argument orThrow(String name, Supplier<String> errorMessage);
 }

@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
@@ -440,6 +441,38 @@ public class MiniMessageTest extends AbstractTest {
     assertTrue(messages.contains("      }"));
     assertTrue(messages.contains("    }"));
     assertTrue(messages.contains("  }"));
+    assertTrue(messages.contains("}"));
+  }
+
+  @Test
+  void debugNamedArguments() {
+    final String input = "<head name=Strokkur24 disable_outer_layer> I have a <red>red</red> text!";
+
+    final StringBuilder sb = new StringBuilder();
+    MiniMessage.builder()
+      .tags(TagResolver.resolver(
+        // At the time of writing, the <head> tag did not yet exist.
+        TagResolver.resolver("head", (args, ctx) -> Tag.selfClosingInserting(Component.text("dummy"))),
+        TagResolver.standard()
+      )).debug(sb::append).build().deserialize(input);
+    final List<String> messages = Arrays.asList(sb.toString().split("\n"));
+
+    assertTrue(messages.contains("Beginning parsing message <head name=Strokkur24 disable_outer_layer> I have a <red>red</red> text!"));
+    assertTrue(messages.contains("Attempting to match node 'red' at column 0"));
+    assertTrue(anyMatch(messages, it -> it.startsWith("Successfully matched node 'red' to tag ")));
+    assertTrue(messages.contains("Attempting to match node 'head' at column 0"));
+    assertTrue(anyMatch(messages, it -> it.startsWith("Successfully matched node 'head' to tag ")));
+    assertTrue(messages.contains("Attempting to match node 'red' at column 52"));
+    assertTrue(anyMatch(messages, it -> it.startsWith("Successfully matched node 'red' to tag ")));
+    assertTrue(messages.contains("Text parsed into element tree:"));
+    assertTrue(messages.contains("Node {"));
+    assertTrue(messages.contains("  TagNode('head', 'name', 'Strokkur24', 'disable_outer_layer') {"));
+    assertTrue(messages.contains("  }"));
+    assertTrue(messages.contains("  TextNode(' I have a ')"));
+    assertTrue(messages.contains("  TagNode('red') {"));
+    assertTrue(messages.contains("    TextNode('red')"));
+    assertTrue(messages.contains("  }"));
+    assertTrue(messages.contains("  TextNode(' text!')"));
     assertTrue(messages.contains("}"));
   }
 

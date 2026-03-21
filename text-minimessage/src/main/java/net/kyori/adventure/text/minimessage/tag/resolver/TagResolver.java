@@ -36,6 +36,7 @@ import net.kyori.adventure.text.minimessage.internal.TagInternals;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.TagPattern;
 import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
+import org.intellij.lang.annotations.Subst;
 import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
@@ -120,7 +121,7 @@ public interface TagResolver {
    */
   static TagResolver resolver(final Set<String> names, final BiFunction<ArgumentQueue, Context, Tag> handler) {
     final Set<String> ownNames = new HashSet<>(names);
-    for (final String name : ownNames) {
+    for (final @Subst("") String name : ownNames) {
       TagInternals.assertValidTagName(name);
     }
     requireNonNull(handler, "handler");
@@ -230,7 +231,7 @@ public interface TagResolver {
    * @return whether this resolver has a tag with this name
    * @since 4.10.0
    */
-  boolean has(final String name);
+  boolean has(@TagPattern final String name);
 
   /**
    * A resolver that only handles a single tag key.
@@ -295,7 +296,7 @@ public interface TagResolver {
      * @since 4.10.0
      */
     @Override
-    default boolean has(final String name) {
+    default boolean has(@TagPattern final String name) {
       return this.resolve(name) != null;
     }
 

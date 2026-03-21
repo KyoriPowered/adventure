@@ -79,6 +79,18 @@ public interface TokenEmitter {
   TokenEmitter argument(final String arg);
 
   /**
+   * Add a single named argument to the current tag.
+   *
+   * <p>Must be called after {@link #tag(String)}, but before any call to {@link #text(String)}.</p>
+   *
+   * @param name name of the argument
+   * @param arg argument value
+   * @return this emitter
+   * @since 5.1.0
+   */
+  TokenEmitter namedArgument(final String name, final String arg);
+
+  /**
    * Add a single argument to the current tag.
    *
    * <p>Must be called after {@link #tag(String)}, but before any call to {@link #text(String)}.</p>
@@ -91,6 +103,19 @@ public interface TokenEmitter {
   TokenEmitter argument(final String arg, final QuotingOverride quotingPreference);
 
   /**
+   * Add a single named argument to the current tag.
+   *
+   * <p>Must be called after {@link #tag(String)}, but before any call to {@link #text(String)}.</p>
+   *
+   * @param name name of the argument
+   * @param arg argument value
+   * @param quotingPreference an argument-specific quoting instruction
+   * @return this emitter
+   * @since 5.1.0
+   */
+  TokenEmitter namedArgument(final String name, final String arg, final QuotingOverride quotingPreference);
+
+  /**
    * Add a single argument to the current tag.
    *
    * <p>Must be called after {@link #tag(String)}, but before any call to {@link #text(String)}.</p>
@@ -100,6 +125,30 @@ public interface TokenEmitter {
    * @since 4.10.0
    */
   TokenEmitter argument(final Component arg);
+
+  /**
+   * Add a single named argument to the current tag.
+   *
+   * <p>Must be called after {@link #tag(String)}, but before any call to {@link #text(String)}.</p>
+   *
+   * @param name name of the argument
+   * @param arg argument value, serialized as a nested MiniMessage string
+   * @return this emitter
+   * @since 5.1.0
+   */
+  TokenEmitter namedArgument(final String name, final Component arg);
+
+  /**
+   * Adds a flag argument to the current tag.
+   *
+   * <p>Must be called after {@link #tag(String)}, but before any call to {@link #text(String)}.</p>
+   *
+   * @param name the name of the flag
+   * @param value the value to set the flag to
+   * @return this emitter
+   * @since 5.1.0
+   */
+  TokenEmitter flag(final String name, final boolean value);
 
   /**
    * Emit literal text.

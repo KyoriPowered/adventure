@@ -25,9 +25,13 @@ package net.kyori.adventure.text.minimessage.internal.parser;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.TreeMap;
 import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 import net.kyori.adventure.text.minimessage.ParsingException;
@@ -40,9 +44,11 @@ import net.kyori.adventure.text.minimessage.internal.parser.node.RootNode;
 import net.kyori.adventure.text.minimessage.internal.parser.node.TagNode;
 import net.kyori.adventure.text.minimessage.internal.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.internal.parser.node.TextNode;
+import net.kyori.adventure.text.minimessage.internal.util.ListMapHolder;
 import net.kyori.adventure.text.minimessage.tag.Inserting;
 import net.kyori.adventure.text.minimessage.tag.ParserDirective;
 import net.kyori.adventure.text.minimessage.tag.Tag;
+import org.intellij.lang.annotations.Subst;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
@@ -59,6 +65,7 @@ public final class TokenParser {
   public static final char TAG_END = '>';
   public static final char CLOSE_TAG = '/';
   public static final char SEPARATOR = ':';
+  public static final char NAME_VALUE_SEPARATOR = '=';
   // misc
   public static final char ESCAPE = '\\';
 
@@ -73,12 +80,13 @@ public final class TokenParser {
    * @param message the minimessage string to parse, after processing for preprocess tags
    * @param originalMessage the string to parse, before preprocess tags
    * @param strict whether parsing in strict mode
+   * @param <T> type of the tag argument
    * @return the root of the resulting tree
    * @throws ParsingException if invalid input is provided when in strict mode
    * @since 4.10.0
    */
-  public static RootNode parse(
-    final TagProvider tagProvider,
+  public static <T extends Tag.Argument> RootNode parse(
+    final TagProvider<T> tagProvider,
     final Predicate<String> tagNameChecker,
     final String message,
     final String originalMessage,
@@ -96,17 +104,18 @@ public final class TokenParser {
    *
    * @param message the message
    * @param provider the tag resolver, to gather preprocess tags
+   * @param <T> type of the tag argument
    * @return the resulting string
    * @since 4.10.0
    */
-  public static String resolvePreProcessTags(final String message, final TagProvider provider) {
+  public static <T extends Tag.Argument> String resolvePreProcessTags(final String message, final TagProvider<T> provider) {
     int passes = 0;
     String lastResult;
     String result = message;
 
     do {
       lastResult = result;
-      final StringResolvingMatchedTokenConsumer stringTokenResolver = new StringResolvingMatchedTokenConsumer(lastResult, provider);
+      final StringResolvingMatchedTokenConsumer<T> stringTokenResolver = new StringResolvingMatchedTokenConsumer<>(lastResult, provider);
 
       parseString(lastResult, false, stringTokenResolver);
       result = stringTokenResolver.result();
@@ -135,7 +144,7 @@ public final class TokenParser {
   enum FirstPassState {
     NORMAL,
     TAG,
-    STRING;
+    STRING
   }
 
   /**
@@ -285,7 +294,6 @@ public final class TokenParser {
   /*
    * Second pass over the tag tokens identifies tag parts
    */
-  @SuppressWarnings("DuplicatedCode")
   private static void parseSecondPass(final String message, final List<Token> tokens) {
     for (final Token token : tokens) {
       final TokenType type = token.type();
@@ -297,87 +305,191 @@ public final class TokenParser {
       final int startIndex = type == TokenType.CLOSE_TAG ? token.startIndex() + 2 : token.startIndex() + 1;
       final int endIndex = type == TokenType.OPEN_CLOSE_TAG ? token.endIndex() - 2 : token.endIndex() - 1;
 
-      SecondPassState state = SecondPassState.NORMAL;
-      boolean escaped = false;
-      char currentStringChar = 0;
+      final String subString = message.substring(startIndex, endIndex);
+      final int nameIndex = readIdentifier(subString, 0, false);
+      final int substringLength = subString.length();
 
-      // Marker is the starting index for the current token
-      int marker = startIndex;
+      if (nameIndex >= substringLength) {
+        // special case where the tag is structured simply like '<name>'.
+        insert(token, new Token(startIndex, endIndex, TokenType.TAG_VALUE));
+        continue;
+      }
 
-      for (int i = startIndex; i < endIndex; i++) {
-        final int codePoint = message.codePointAt(i);
-        if (!Character.isBmpCodePoint(i)) {
-          i++;
+      int currentIndex = nameIndex;
+      boolean onlyWhitespace = false;
+
+      char currentChar = subString.charAt(currentIndex);
+      while (currentChar == ' ') {
+        currentIndex++;
+        if (currentIndex >= substringLength) {
+          onlyWhitespace = true;
+          break;
+        }
+        currentChar = subString.charAt(currentIndex);
+      }
+
+      if (onlyWhitespace) {
+        // The tag looks something like this '<name >'.
+        insert(token, new Token(startIndex, endIndex, TokenType.TAG_VALUE));
+        continue;
+      }
+
+      // If there are arguments, the tag name should be without spaces
+      insert(token, new Token(startIndex, startIndex + nameIndex, TokenType.TAG_VALUE));
+
+      while (true) {
+        currentChar = subString.charAt(currentIndex);
+
+        if (currentChar == SEPARATOR) {
+          currentIndex++;
+          break;
         }
 
-        if (!escaped) {
-          // if we're trying to escape and the next character exists
-          if (codePoint == ESCAPE && i + 1 < message.length()) {
-            final int nextCodePoint = message.codePointAt(i + 1);
-
-            escaped = switch (state) {
-              // allow escaping open tokens
-              case NORMAL -> nextCodePoint == TAG_START || nextCodePoint == ESCAPE;
-
-              // allow escaping closing string chars
-              case STRING -> currentStringChar == nextCodePoint || nextCodePoint == ESCAPE;
-            };
-
-            // only escape if we need to
-            if (escaped) {
-              continue;
-            }
-          }
-        } else {
-          escaped = false;
-          continue;
+        final int identifierIndex = readIdentifier(subString, currentIndex, true);
+        if (identifierIndex == substringLength || (currentChar = subString.charAt(identifierIndex)) == ' ') {
+          insert(token, new Token(currentIndex + startIndex, identifierIndex + startIndex, TokenType.TAG_VALUE_TOGGLE));
+          currentIndex = identifierIndex + 1;
+        } else if (currentChar == NAME_VALUE_SEPARATOR) {
+          insert(token, new Token(currentIndex + startIndex, identifierIndex + startIndex, TokenType.TAG_VALUE_NAME));
+          currentIndex = identifierIndex + 1;
+          final int valueIndex = readNamedValue(subString, currentIndex, true);
+          insert(token, new Token(currentIndex + startIndex, valueIndex + startIndex, TokenType.TAG_VALUE));
+          currentIndex = valueIndex + 1;
         }
 
-        switch (state) {
-          case NORMAL:
-            // Values are split by : unless it's in a URL
-            if (codePoint == SEPARATOR) {
-              if (boundsCheck(message, i, 2) && message.charAt(i + 1) == '/' && message.charAt(i + 2) == '/') {
-                break;
-              }
-              if (marker == i) {
-                // 2 colons side-by-side like <::> or <:text> or <text::text> would lead to this happening
-                insert(token, new Token(i, i, TokenType.TAG_VALUE));
-                marker++;
-              } else {
-                insert(token, new Token(marker, i, TokenType.TAG_VALUE));
-                marker = i + 1;
-              }
-            } else if (codePoint == '\'' || codePoint == '"') {
-              state = SecondPassState.STRING;
-              currentStringChar = (char) codePoint;
-            }
-            break;
-          case STRING:
-            if (codePoint == currentStringChar) {
-              state = SecondPassState.NORMAL;
-            }
-            break;
+        if (currentIndex >= substringLength) {
+          break;
+        }
+
+        currentChar = subString.charAt(currentIndex);
+        while (currentChar == ' ') {
+          currentIndex++;
+          currentChar = subString.charAt(currentIndex);
         }
       }
 
-      // anything not matched is the final part
-      if (token.childTokens() == null || token.childTokens().isEmpty()) {
-        insert(token, new Token(startIndex, endIndex, TokenType.TAG_VALUE));
-      } else {
-        final int end = token.childTokens().getLast().endIndex();
-        if (end != endIndex) {
-          insert(token, new Token(end + 1, endIndex, TokenType.TAG_VALUE));
+      if (currentIndex >= substringLength) {
+        continue;
+      }
+
+      while (currentIndex < substringLength) {
+        final int nextIndex = readSequentialValue(subString, currentIndex, true);
+        insert(token, new Token(currentIndex + startIndex, nextIndex + startIndex, TokenType.TAG_VALUE));
+        currentIndex = nextIndex + 1;
+
+        if (currentIndex == substringLength && subString.charAt(currentIndex - 1) == SEPARATOR) {
+          insert(token, new Token(endIndex, endIndex, TokenType.TAG_VALUE));
+          break;
         }
       }
     }
   }
 
+  /**
+   * Read an identifier.
+   *
+   * @param message the inner part of a token
+   * @param index the index to start reading at
+   * @param expectNamedSeparator whether to expect a separator between named arguments or a colon for sequential ones
+   * @return the end index of the identifier
+   */
+  private static int readIdentifier(final String message, final int index, final boolean expectNamedSeparator) {
+    if (expectNamedSeparator) {
+      for (int i = index; i < message.length(); i++) {
+        final char curr = message.charAt(i);
+
+        if (curr == ' ' || curr == NAME_VALUE_SEPARATOR) {
+          return i;
+        }
+      }
+    } else {
+      for (int i = index; i < message.length(); i++) {
+        final char curr = message.charAt(i);
+
+        if (curr == ' ' || curr == SEPARATOR) {
+          return i;
+        }
+      }
+    }
+
+    return message.length();
+  }
+
+  /**
+   * Read a named value.
+   *
+   * @param message the inner part of a token
+   * @param index the index to start reading at
+   * @param mayAttemptString whether this pass is allowed to try parse strings
+   * @return the end index of the value
+   */
+  private static int readNamedValue(final String message, final int index, final boolean mayAttemptString) {
+    final char firstChar = message.charAt(index);
+    final boolean attemptString = mayAttemptString && (firstChar == '\'' || firstChar == '"');
+
+    for (int i = attemptString ? index + 1 : index; i < message.length(); i++) {
+      final char curr = message.charAt(i);
+
+      if (attemptString) {
+        if (curr == firstChar && message.charAt(i - 1) != '\\') {
+          return i + 1;
+        }
+      } else if (curr == ' ') {
+        return i;
+      }
+    }
+
+    if (attemptString) {
+      // No closing ' or " found; trying again, but disabling stringification
+      return readNamedValue(message, index, false);
+    }
+
+    return message.length();
+  }
+
+  /**
+   * Read a sequential value.
+   *
+   * @param message the inner part of a token
+   * @param index the index to start reading at
+   * @param mayAttemptString whether this pass is allowed to try parse strings
+   * @return the end index of the value
+   */
+  private static int readSequentialValue(final String message, final int index, final boolean mayAttemptString) {
+    final char firstChar = message.charAt(index);
+    final boolean attemptString = mayAttemptString && (firstChar == '\'' || firstChar == '"');
+
+    for (int i = attemptString ? index + 1 : index; i < message.length(); i++) {
+      final char curr = message.charAt(i);
+
+      if (attemptString) {
+        if (curr == firstChar && message.charAt(i - 1) != '\\') {
+          return i + 1;
+        }
+        continue;
+      }
+
+      if (curr == SEPARATOR) {
+        if (i + 2 < message.length() && message.charAt(i + 1) == '/' && message.charAt(i + 2) == '/') {
+          continue;
+        }
+        return i;
+      }
+    }
+
+    if (attemptString) {
+      // No closing ' or " found; trying again, but disabling stringification
+      return readSequentialValue(message, index, false);
+    }
+
+    return message.length();
+  }
+
   /*
    * Build a tree from the OPEN_TAG and CLOSE_TAG tokens
    */
-  private static RootNode buildTree(
-    final TagProvider tagProvider,
+  private static <T extends Tag.Argument> RootNode buildTree(
+    final TagProvider<T> tagProvider,
     final Predicate<String> tagNameChecker,
     final List<Token> tokens,
     final String message,
@@ -393,8 +505,8 @@ public final class TokenParser {
         case TEXT -> node.addChild(new TextNode(node, token, message));
         case OPEN_TAG, OPEN_CLOSE_TAG -> {
           // Check if this even is a valid tag
-          final Token tagNamePart = token.childTokens().getFirst();
-          final String tagName = message.substring(tagNamePart.startIndex(), tagNamePart.endIndex());
+          final @Subst("") Token tagNamePart = Objects.requireNonNull(token.childTokens()).getFirst();
+          final @Subst("") String tagName = message.substring(tagNamePart.startIndex(), tagNamePart.endIndex());
           if (!TagInternals.sanitizeAndCheckValidTagName(tagName)) {
             // This wouldn't be a valid tag, just parse it as text instead!
             node.addChild(new TextNode(node, token, message));
@@ -429,7 +541,7 @@ public final class TokenParser {
           }
         }
         case CLOSE_TAG -> {
-          final List<Token> childTokens = token.childTokens();
+          final List<Token> childTokens = Objects.requireNonNull(token.childTokens());
           if (childTokens.isEmpty()) {
             throw new IllegalStateException("CLOSE_TAG token somehow has no children - " +
               "the parser should not allow this. Original text: " + message);
@@ -582,11 +694,6 @@ public final class TokenParser {
     }
   }
 
-  enum SecondPassState {
-    NORMAL,
-    STRING;
-  }
-
   /**
    * Removes escaping {@code '\`} characters from a substring where the subsequent character matches a given predicate.
    *
@@ -644,12 +751,13 @@ public final class TokenParser {
   }
 
   /**
-   * Normalizing provider for tag information.
+   * A provider for tag information.
    *
+   * @param <T> tag argument
    * @since 4.10.0
    */
   @ApiStatus.Internal
-  public interface TagProvider {
+  public interface TagProvider<T extends Tag.Argument> {
     /**
      * Look up a tag.
      *
@@ -659,9 +767,9 @@ public final class TokenParser {
      * @param trimmedArgs arguments, with the tag name trimmed off
      * @param token the token, if this tag is from a parse stream
      * @return a tag
-     * @since 4.10.0
+     * @since 5.1.0
      */
-    @Nullable Tag resolve(final String name, final List<? extends Tag.Argument> trimmedArgs, final @Nullable Token token);
+    @Nullable Tag resolve(final String name, final ListMapHolder<T, String, T> trimmedArgs, final @Nullable Token token);
 
     /**
      * Resolve by sanitized name.
@@ -671,7 +779,7 @@ public final class TokenParser {
      * @since 4.10.0
      */
     default @Nullable Tag resolve(final String name) {
-      return this.resolve(name, List.of(), null);
+      return this.resolve(name, ListMapHolder.empty(), null);
     }
 
     /**
@@ -681,10 +789,32 @@ public final class TokenParser {
      * @return a tag, if any is available
      * @since 4.10.0
      */
+    @SuppressWarnings("unchecked")
     default @Nullable Tag resolve(final TagNode node) {
+      final Map<String, T> map = new TreeMap<>();
+      final List<T> list = new LinkedList<>();
+
+      final List<TagPart> parts = node.parts();
+      for (int i = 1, partsSize = parts.size(); i < partsSize; i++) {
+        final TagPart part = parts.get(i);
+
+        if (part.token().type() == TokenType.TAG_VALUE_NAME) {
+          if (i + 1 == partsSize || parts.get(i + 1).token().type() != TokenType.TAG_VALUE) {
+            throw new IllegalStateException("Somehow a tag name has no value afterwards.");
+          }
+
+          map.put(part.value(), (T) parts.get(i + 1));
+          i++;
+        } else if (part.token().type() == TokenType.TAG_VALUE_TOGGLE) {
+          map.put(part.value(), (T) part);
+        } else {
+          list.add((T) part);
+        }
+      }
+
       return this.resolve(
-        sanitizePlaceholderName(node.name()),
-        node.parts().subList(1, node.parts().size()),
+        TagProvider.sanitizePlaceholderName(node.name()),
+        ListMapHolder.of(list, map),
         node.token()
       );
     }
