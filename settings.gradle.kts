@@ -46,6 +46,7 @@ sequenceOf(
   "text-serializer-json",
   "text-serializer-json-legacy-impl",
   "text-serializer-legacy",
+  "text-serializer-bedrock",
   "text-serializer-plain",
   "text-serializer-ansi",
 ).forEach {

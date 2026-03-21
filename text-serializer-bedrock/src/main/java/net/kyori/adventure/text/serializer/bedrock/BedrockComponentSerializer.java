@@ -1,0 +1,270 @@
+/*
+ * This file is part of adventure, licensed under the MIT License.
+ *
+ * Copyright (c) 2017-2025 KyoriPowered
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+package net.kyori.adventure.text.serializer.bedrock;
+
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.regex.Pattern;
+import net.kyori.adventure.builder.AbstractBuilder;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.flattener.ComponentFlattener;
+import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.serializer.ComponentSerializer;
+import net.kyori.adventure.util.Buildable;
+import net.kyori.adventure.util.PlatformAPI;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+/**
+ * A legacy component serializer.
+ *
+ * <p>Legacy does <b>not</b> support more complex features such as, but not limited
+ * to, {@link ClickEvent} and {@link HoverEvent}.</p>
+ *
+ * @since 4.0.0
+ */
+public interface BedrockComponentSerializer extends ComponentSerializer<Component, TextComponent, String>, Buildable<BedrockComponentSerializer, BedrockComponentSerializer.Builder> {
+  /**
+   * Gets a component serializer for legacy-based serialization and deserialization. Note that this
+   * serializer works exactly like vanilla Minecraft and does not detect any links. If you want to
+   * detect and make URLs clickable, use {@link Builder#extractUrls()}.
+   *
+   * <p>The returned serializer uses the {@link #SECTION_CHAR section} character.</p>
+   *
+   * @return a component serializer for legacy serialization and deserialization
+   * @since 4.0.0
+   */
+  static @NotNull BedrockComponentSerializer bedrock() {
+    return BedrockComponentSerializerImpl.INSTANCE;
+  }
+
+  /**
+   * Converts a legacy character ({@code 0123456789abcdefklmnor}) to a legacy format, when possible.
+   *
+   * @param character the legacy character
+   * @return the legacy format
+   * @since 4.0.0
+   */
+  static @Nullable LegacyFormat parseChar(final char character) {
+    return BedrockComponentSerializerImpl.legacyFormat(character);
+  }
+
+  /**
+   * Creates a new {@link BedrockComponentSerializer.Builder}.
+   *
+   * @return the builder
+   * @since 4.0.0
+   */
+  static @NotNull Builder builder() {
+    return new BedrockComponentSerializerImpl.BuilderImpl();
+  }
+
+  /**
+   * The legacy character used by Minecraft. ('§')
+   *
+   * @since 4.0.0
+   */
+  char SECTION_CHAR = '§';
+
+  /**
+   * The legacy character used to prefix hex colors. ('#')
+   *
+   * @since 4.0.0
+   */
+  char HEX_CHAR = TextColor.HEX_CHARACTER;
+
+  /**
+   * Deserialize a component from a legacy {@link String}.
+   *
+   * @param input the input
+   * @return the component
+   */
+  @Override
+  @NotNull TextComponent deserialize(final @NotNull String input);
+
+  /**
+   * Serializes a component into a legacy {@link String}.
+   *
+   * @param component the component
+   * @return the string
+   */
+  @Override
+  @NotNull String serialize(final @NotNull Component component);
+
+  /**
+   * A builder for {@link BedrockComponentSerializer}.
+   *
+   * @since 4.0.0
+   */
+  interface Builder extends AbstractBuilder<BedrockComponentSerializer>, Buildable.Builder<BedrockComponentSerializer> {
+    /**
+     * Sets the legacy character used by the serializer.
+     *
+     * @param legacyCharacter the legacy character
+     * @return this builder
+     * @since 4.0.0
+     */
+    @NotNull Builder character(final char legacyCharacter);
+
+    /**
+     * Sets the legacy hex character used by the serializer.
+     *
+     * @param legacyHexCharacter the legacy hex character.
+     * @return this builder
+     * @since 4.0.0
+     */
+    @NotNull Builder hexCharacter(final char legacyHexCharacter);
+
+    /**
+     * Sets that the serializer should extract URLs into {@link ClickEvent}s
+     * when deserializing.
+     *
+     * @return this builder
+     * @since 4.0.0
+     */
+    @NotNull Builder extractUrls();
+
+    /**
+     * Sets that the serializer should extract URLs into {@link ClickEvent}s
+     * when deserializing.
+     *
+     * @param pattern the url pattern
+     * @return this builder
+     * @since 4.2.0
+     */
+    @NotNull Builder extractUrls(final @NotNull Pattern pattern);
+
+    /**
+     * Sets that the serializer should extract URLs into {@link ClickEvent}s
+     * when deserializing.
+     *
+     * @param style the style to use for extracted links
+     * @return this builder
+     * @since 4.0.0
+     */
+    @NotNull Builder extractUrls(final @Nullable Style style);
+
+    /**
+     * Sets that the serializer should extract URLs into {@link ClickEvent}s
+     * when deserializing.
+     *
+     * @param pattern the url pattern
+     * @param style the style to apply to indicate that text is a link
+     * @return this builder
+     * @since 4.2.0
+     */
+    @NotNull Builder extractUrls(final @NotNull Pattern pattern, final @Nullable Style style);
+
+    /**
+     * Sets that the serializer should support hex colors.
+     *
+     * <p>Otherwise, hex colors are downsampled to the nearest named color.</p>
+     *
+     * @return this builder
+     * @since 4.0.0
+     */
+    @NotNull Builder hexColors();
+
+    /**
+     * Sets that the serializer should use the '&amp;x' repeated code format when serializing hex
+     * colors. Note that messages in this format can still be deserialized, even with this option
+     * disabled.
+     *
+     * <p>This is the format adopted by the BungeeCord (and by usage, Spigot) text API.</p>
+     *
+     * <p>The format is difficult to manipulate and read, and its use is not recommended. Support
+     * is provided for it only to allow plugin developers to use this library alongside parts of
+     * the Spigot API which expect legacy strings in this format.</p>
+     *
+     * <p>It is recommended to use only when absolutely necessary, and when no better alternatives
+     * are available.</p>
+     *
+     * @return this builder
+     * @since 4.0.0
+     */
+    @NotNull Builder useUnusualXRepeatedCharacterHexFormat();
+
+    /**
+     * Use this component flattener to convert components into plain text.
+     *
+     * <p>By default, this serializer will use {@link ComponentFlattener#basic()}</p>
+     *
+     * @param flattener the flattener to use
+     * @return this builder
+     * @since 4.7.0
+     */
+    @NotNull Builder flattener(final @NotNull ComponentFlattener flattener);
+
+    /**
+     * Sets the formats to use.
+     *
+     * @param formats the formats
+     * @return this builder
+     * @since 4.14.0
+     */
+    @NotNull Builder formats(final @NotNull List<CharacterAndFormat> formats);
+
+    /**
+     * Builds the serializer.
+     *
+     * @return the built serializer
+     */
+    @Override
+    @NotNull BedrockComponentSerializer build();
+  }
+
+  /**
+   * A {@link BedrockComponentSerializer} service provider.
+   *
+   * @since 4.8.0
+   */
+  @ApiStatus.Internal
+  @PlatformAPI
+  interface Provider {
+    /**
+     * Provides a {@link BedrockComponentSerializer}.
+     *
+     * @return a {@link BedrockComponentSerializer}
+     * @since 4.8.0
+     */
+    @ApiStatus.Internal
+    @PlatformAPI
+    @NotNull BedrockComponentSerializer bedrock();
+
+    /**
+     * Completes the building process of {@link Builder}.
+     *
+     * @return a {@link Consumer}
+     * @since 4.8.0
+     */
+    @ApiStatus.Internal
+    @PlatformAPI
+    @NotNull Consumer<Builder> legacy();
+  }
+}
