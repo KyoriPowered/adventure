@@ -4,12 +4,12 @@ version = "1.0"
 [versions]
 autoService = "1.1.1"
 checkstyle = "12.3.1"
-errorprone = "2.47.0"
+errorprone = "2.48.0"
 guava = "33.5.0-jre"
 indra = "4.0.0"
 jmh = "1.37"
 jmhPlugin = "0.7.3"
-junit = "6.0.2"
+junit = "6.0.3"
 slf4j = "2.0.1"
 truth = "1.4.5"
 
@@ -20,7 +20,7 @@ autoService-annotations = { module = "com.google.auto.service:auto-service-annot
 option = { module = "net.kyori:option", version = "1.1.0" }
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
 guava-testlib = { module = "com.google.guava:guava-testlib", version.ref = "guava" }
-jetbrainsAnnotations = "org.jetbrains:annotations:26.0.2-1"
+jetbrainsAnnotations = "org.jetbrains:annotations:26.1.0"
 jspecify = "org.jspecify:jspecify:1.0.0"
 
 # serializer-configurate*
