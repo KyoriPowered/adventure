@@ -39,7 +39,7 @@ import static java.util.Objects.requireNonNull;
  * @since 4.0.0
  */
 @FunctionalInterface
-public interface ComponentLike {
+public interface ComponentLike extends ComponentBuilderApplicable {
   /**
    * Converts a list of {@link ComponentLike}s to a list of {@link Component}s.
    *
@@ -110,4 +110,10 @@ public interface ComponentLike {
    */
   @Contract(pure = true)
   @NotNull Component asComponent();
+
+  @Override
+  @SuppressWarnings("FunctionalInterfaceMethodChanged")
+  default void componentBuilderApply(final @NotNull ComponentBuilder<?, ?> component) {
+    this.asComponent().componentBuilderApply(component);
+  }
 }
