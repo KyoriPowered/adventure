@@ -27,6 +27,7 @@ import java.util.function.Function;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
 /**
@@ -73,5 +74,24 @@ public interface ComponentLoggerProvider {
      * @since 4.11.0
      */
     @NotNull ComponentLogger delegating(final @NotNull Logger base, final @NotNull Function<Component, String> serializer);
+
+    /**
+     * Create a component logger based on one which delegates to an underlying plain {@link Logger} implementation.
+     *
+     * <p>This overload allows platforms to inject additional structured log context for each log call.</p>
+     *
+     * @param base the base logger
+     * @param serializer the serializer to translate and format a component in a log message
+     * @param injector an optional structured context injector
+     * @return a new logger
+     * @since 4.27.0
+     */
+    default @NotNull ComponentLogger delegating(
+      final @NotNull Logger base,
+      final @NotNull Function<Component, String> serializer,
+      final @Nullable ComponentLogContextInjector injector
+    ) {
+      return this.delegating(base, serializer);
+    }
   }
 }

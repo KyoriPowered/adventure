@@ -32,6 +32,7 @@ import net.kyori.adventure.text.flattener.ComponentFlattener;
 import net.kyori.adventure.translation.GlobalTranslator;
 import net.kyori.adventure.util.Services;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,6 +84,15 @@ final class Handler {
     @Override
     public @NotNull ComponentLogger delegating(final @NotNull Logger base, final @NotNull Function<Component, String> serializer) {
       return new WrappingComponentLoggerImpl(base, serializer);
+    }
+
+    @Override
+    public @NotNull ComponentLogger delegating(
+      final @NotNull Logger base,
+      final @NotNull Function<Component, String> serializer,
+      final @Nullable ComponentLogContextInjector injector
+    ) {
+      return new WrappingComponentLoggerImpl(base, serializer, injector);
     }
   }
 }
