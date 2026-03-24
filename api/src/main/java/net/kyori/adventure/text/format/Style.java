@@ -682,7 +682,16 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
    *
    * @since 4.0.0
    */
-  interface Builder extends AbstractBuilder<Style>, Buildable.Builder<Style>, MutableStyleSetter<Builder> {
+  interface Builder extends AbstractBuilder<Style>, Buildable.Builder<Style>, MutableStyleSetter<Builder>, StyleGetter {
+    /**
+     * {@inheritDoc}
+     *
+     * @since 4.25.0
+     * @sinceMinecraft 1.16
+     */
+    @Override
+    @Nullable Key font();
+
     /**
      * Sets the font.
      *
@@ -694,6 +703,14 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
     @Override
     @Contract("_ -> this")
     @NotNull Builder font(final @Nullable Key font);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 4.25.0
+     */
+    @Override
+    @Nullable TextColor color();
 
     /**
      * Sets the color.
@@ -716,6 +733,40 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
     @Override
     @Contract("_ -> this")
     @NotNull Builder colorIfAbsent(final @Nullable TextColor color);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 4.25.0
+     */
+    @Override
+    @Nullable ShadowColor shadowColor();
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 4.25.0
+     */
+    @Override
+    default boolean hasDecoration(final @NotNull TextDecoration decoration) {
+      return StyleGetter.super.hasDecoration(decoration);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 4.25.0
+     */
+    @Override
+    TextDecoration.@NotNull State decoration(final @NotNull TextDecoration decoration);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 4.25.0
+     */
+    @Override
+    @Unmodifiable @NotNull Map<TextDecoration, TextDecoration.State> decorations();
 
     /**
      * Sets {@code decoration} to {@link TextDecoration.State#TRUE}.
@@ -801,6 +852,14 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
     @NotNull Builder decorationIfAbsent(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state);
 
     /**
+     * {@inheritDoc}
+     *
+     * @since 4.25.0
+     */
+    @Override
+    @Nullable ClickEvent clickEvent();
+
+    /**
      * Sets the click event.
      *
      * @param event the click event
@@ -812,6 +871,14 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
     @NotNull Builder clickEvent(final @Nullable ClickEvent event);
 
     /**
+     * {@inheritDoc}
+     *
+     * @since 4.25.0
+     */
+    @Override
+    @Nullable HoverEvent<?> hoverEvent();
+
+    /**
      * Sets the hover event.
      *
      * @param source the hover event source
@@ -821,6 +888,14 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
     @Override
     @Contract("_ -> this")
     @NotNull Builder hoverEvent(final @Nullable HoverEventSource<?> source);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 4.25.0
+     */
+    @Override
+    @Nullable String insertion();
 
     /**
      * Sets the string to be inserted.
