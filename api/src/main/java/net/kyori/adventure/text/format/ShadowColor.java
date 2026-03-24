@@ -182,12 +182,7 @@ public interface ShadowColor extends StyleBuilderApplicable, ARGBLike {
    * @since 4.18.0
    */
   default String asHexString() {
-    final int argb = this.value();
-    final int a = (argb >> 24) & 0xFF;
-    final int r = (argb >> 16) & 0xFF;
-    final int g = (argb >> 8) & 0xFF;
-    final int b = argb & 0xFF;
-    return String.format("#%02X%02X%02X%02X", r, g, b, a);
+    return ShadowColorImpl.asHexString(this.value());
   }
 
   /**

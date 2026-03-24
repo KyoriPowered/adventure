@@ -23,8 +23,22 @@
  */
 package net.kyori.adventure.text.format;
 
+import java.util.HexFormat;
+
 // value is argb
 record ShadowColorImpl(int value) implements ShadowColor {
   static final int NONE_VALUE = 0;
   static final ShadowColorImpl NONE = new ShadowColorImpl(NONE_VALUE);
+  static final HexFormat HEX_FORMATTER = HexFormat.of().withUpperCase();
+
+  /**
+   * Convert an ARGB value to a hex string in the format of #RRGGBBAA.
+   *
+   * @param argb the ARGB value
+   * @return the uppercase hex string
+   */
+  static String asHexString(final int argb) {
+    final int rgba = Integer.rotateLeft(argb, Byte.SIZE);
+    return '#' + HEX_FORMATTER.toHexDigits(rgba, 8);
+  }
 }

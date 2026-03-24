@@ -55,6 +55,11 @@ class NamedTextColorTest {
     assertNearest(NamedTextColor.DARK_GRAY, 0x4c4c4c);
   }
 
+  @Test
+  void testAsHexString() {
+    assertEquals("#FF5555", NamedTextColor.RED.asHexString());
+  }
+
   private static void assertNearest(final NamedTextColor expected, final int value) {
     final NamedTextColor nearest = NamedTextColor.nearestTo(TextColor.color(value));
     assertEquals(expected, nearest);
