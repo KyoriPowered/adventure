@@ -190,13 +190,14 @@ final class SequentialHeadTag {
     ID(obj -> Objects.requireNonNull(obj.id()).toString()),
     TEXTURE(obj -> Objects.requireNonNull(obj.texture()).asMinimalString());
 
+    @SuppressWarnings("ImmutableEnumChecker") // It is immutable.
     private final Function<PlayerHeadObjectContents, String> mappingFunction;
 
     PresentType(final Function<PlayerHeadObjectContents, String> mappingFunction) {
       this.mappingFunction = mappingFunction;
     }
 
-    public String map(final PlayerHeadObjectContents obj) {
+    private String map(final PlayerHeadObjectContents obj) {
       return this.mappingFunction.apply(obj);
     }
   }

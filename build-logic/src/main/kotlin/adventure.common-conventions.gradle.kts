@@ -85,6 +85,7 @@ tasks {
   javadoc {
     val options = options as? StandardJavadocDocletOptions ?: return@javadoc
     options.tags(
+      "obsolete:a:Obsolete",
       "sinceMinecraft:a:Since Minecraft:",
       "obsoleteSinceMinecraft:a:Obsolete since Minecraft",
     )
@@ -101,6 +102,10 @@ tasks {
       disable("ReferenceEquality") // lots of comparison against EMPTY objects
       disable("CanIgnoreReturnValueSuggester") // suggests errorprone annotation, not JB Contract annotation
     }
+
+    options.compilerArgs.add("-Xlint:all")
+    options.compilerArgs.add("-Xlint:-processing") // unclaimed ap warnings are not needed
+    options.compilerArgs.add("-Xlint:-serial") // nobody cares about serialization
   }
 }
 

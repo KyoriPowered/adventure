@@ -33,6 +33,7 @@ import org.slf4j.Marker;
 import org.slf4j.event.Level;
 import org.slf4j.spi.LocationAwareLogger;
 
+@SuppressWarnings("OverridingMethodInconsistentArgumentNamesChecker") // This false flags basically every method here.
 final class WrappingComponentLoggerImpl implements ComponentLogger {
   private static final String FQCN = WrappingComponentLoggerImpl.class.getName();
 

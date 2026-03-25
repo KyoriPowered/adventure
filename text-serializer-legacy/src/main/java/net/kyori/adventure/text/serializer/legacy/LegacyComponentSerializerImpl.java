@@ -202,7 +202,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   private TextComponent extractUrl(final TextComponent component) {
     if (this.urlReplacementConfig == null) return component;
     final Component newComponent = component.replaceText(this.urlReplacementConfig);
-    if (newComponent instanceof TextComponent) return (TextComponent) newComponent;
+    if (newComponent instanceof TextComponent tc) return tc;
     return Component.text().append(newComponent).build();
   }
 
@@ -374,7 +374,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
         this.decorations.addAll(that.decorations);
       }
 
-      public void clear() {
+      private void clear() {
         this.color = null;
         this.decorations.clear();
       }
@@ -393,6 +393,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
                 this.needsReset = true;
               }
             }
+            case NOT_SET -> { } // do nothing
           }
         }
       }

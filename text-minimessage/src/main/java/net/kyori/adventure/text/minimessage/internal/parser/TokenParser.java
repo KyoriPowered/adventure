@@ -334,7 +334,7 @@ public final class TokenParser {
         }
 
         switch (state) {
-          case NORMAL:
+          case NORMAL -> {
             // Values are split by : unless it's in a URL
             if (codePoint == SEPARATOR) {
               if (boundsCheck(message, i, 2) && message.charAt(i + 1) == '/' && message.charAt(i + 2) == '/') {
@@ -352,12 +352,12 @@ public final class TokenParser {
               state = SecondPassState.STRING;
               currentStringChar = (char) codePoint;
             }
-            break;
-          case STRING:
+          }
+          case STRING -> {
             if (codePoint == currentStringChar) {
               state = SecondPassState.NORMAL;
             }
-            break;
+          }
         }
       }
 
@@ -484,6 +484,7 @@ public final class TokenParser {
             node.addChild(new TextNode(node, token, message));
           }
         }
+        default -> { } // no-op
       }
     }
 

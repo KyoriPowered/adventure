@@ -176,7 +176,7 @@ final class StyleSerializer extends TypeAdapter<Style> {
         style.insertion(in.nextString());
       } else if (fieldName.equals(CLICK_EVENT_SNAKE) || fieldName.equals(CLICK_EVENT_CAMEL)) {
         in.beginObject();
-        ClickEvent.Action action = null;
+        ClickEvent.Action<?> action = null;
         String value = null;
         Key key = null;
         Integer page = null;

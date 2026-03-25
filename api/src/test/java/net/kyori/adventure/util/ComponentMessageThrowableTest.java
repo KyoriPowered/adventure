@@ -47,7 +47,6 @@ class ComponentMessageThrowableTest {
     assertNull(ComponentMessageThrowable.getOrConvertMessage(new IllegalStateException((String) null)));
   }
 
-  @SuppressWarnings("serial")
   static class Checked extends Exception implements ComponentMessageThrowable {
     private final @Nullable Component componentMessage;
 

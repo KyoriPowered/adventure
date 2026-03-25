@@ -319,6 +319,7 @@ class ComponentCompactingTest {
     assertEquals(expectedCompact, notCompact.compact());
   }
 
+  @SuppressWarnings("UnusedMethod") // It is used literaly right below this.
   private static boolean shouldSkipSimplifyingStyleForBlankComponents() {
     return !ComponentCompaction.SIMPLIFY_STYLE_FOR_BLANK_COMPONENTS;
   }

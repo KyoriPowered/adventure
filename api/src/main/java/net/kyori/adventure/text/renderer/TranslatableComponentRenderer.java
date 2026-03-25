@@ -223,6 +223,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
     return this.renderTranslatableInner(component, context);
   }
 
+  @SuppressWarnings("JdkObsolete") // The MessageFormat API requires StringBuffer.
   protected Component renderTranslatableInner(final TranslatableComponent component, final C context) {
     final MessageFormat format = this.translate(component.key(), component.fallback(), context);
     if (format == null) return this.optionallyRenderChildrenAndStyle(component, context);

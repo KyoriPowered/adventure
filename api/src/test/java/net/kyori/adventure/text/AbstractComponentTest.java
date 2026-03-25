@@ -46,6 +46,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@SuppressWarnings("unchecked") // We do a whole bunch of unchecked casts, but it's okay because if any fail the tests will fail too.
 abstract class AbstractComponentTest<C extends ScopedComponent<C>, B extends ComponentBuilder<C, B>> {
   abstract B builder();
 

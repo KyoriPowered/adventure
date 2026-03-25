@@ -51,8 +51,7 @@ sealed class GsonDataComponentValueImpl implements GsonDataComponentValue {
   @Override
   public boolean equals(final @Nullable Object other) {
     if (this == other) return true;
-    if (other == null || getClass() != other.getClass()) return false;
-    final GsonDataComponentValueImpl that = (GsonDataComponentValueImpl) other;
+    if (!(other instanceof GsonDataComponentValueImpl that)) return false;
     return Objects.equals(this.element, that.element);
   }
 

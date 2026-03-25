@@ -29,6 +29,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TicksTest {
+  @SuppressWarnings("JavaDurationGetSecondsToToSeconds") // This is intentional.
   @Test
   void testTicks() {
     final Duration d0 = Ticks.duration(10);

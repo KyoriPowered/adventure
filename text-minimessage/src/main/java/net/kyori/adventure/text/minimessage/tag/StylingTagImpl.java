@@ -27,6 +27,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.StyleBuilderApplicable;
 
+@SuppressWarnings("ArrayRecordComponent") // It's okay, side effects aren't important here.
 record StylingTagImpl(StyleBuilderApplicable[] styles) implements Inserting {
 
   @Override

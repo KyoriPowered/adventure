@@ -25,10 +25,10 @@ package net.kyori.adventure.text.logger.slf4j;
 
 import java.util.function.Supplier;
 import net.kyori.adventure.text.ComponentLike;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Marker;
 
+@SuppressWarnings("OverridingMethodInconsistentArgumentNamesChecker") // This false flags basically every method here.
 final class NoOpComponentLoggingEventBuilderImpl implements ComponentLoggingEventBuilder {
   static final NoOpComponentLoggingEventBuilderImpl INSTANCE = new NoOpComponentLoggingEventBuilderImpl();
 
@@ -36,52 +36,52 @@ final class NoOpComponentLoggingEventBuilderImpl implements ComponentLoggingEven
   }
 
   @Override
-  public @NotNull ComponentLoggingEventBuilder setCause(final @Nullable Throwable cause) {
+  public ComponentLoggingEventBuilder setCause(final @Nullable Throwable cause) {
     return this;
   }
 
   @Override
-  public @NotNull ComponentLoggingEventBuilder addMarker(final @NotNull Marker marker) {
+  public ComponentLoggingEventBuilder addMarker(final Marker marker) {
     return this;
   }
 
   @Override
-  public @NotNull ComponentLoggingEventBuilder addArgument(final @Nullable Object p) {
+  public ComponentLoggingEventBuilder addArgument(final @Nullable Object p) {
     return this;
   }
 
   @Override
-  public @NotNull ComponentLoggingEventBuilder addArgument(final @Nullable Supplier<?> objectSupplier) {
+  public ComponentLoggingEventBuilder addArgument(final @Nullable Supplier<?> objectSupplier) {
     return this;
   }
 
   @Override
-  public @NotNull ComponentLoggingEventBuilder addKeyValue(final @Nullable String key, final @Nullable Object value) {
+  public ComponentLoggingEventBuilder addKeyValue(final @Nullable String key, final @Nullable Object value) {
     return this;
   }
 
   @Override
-  public @NotNull ComponentLoggingEventBuilder addKeyValue(final @Nullable String key, final Supplier<Object> valueSupplier) {
+  public ComponentLoggingEventBuilder addKeyValue(final @Nullable String key, final Supplier<Object> valueSupplier) {
     return this;
   }
 
   @Override
-  public @NotNull ComponentLoggingEventBuilder setMessage(final @Nullable String message) {
+  public ComponentLoggingEventBuilder setMessage(final @Nullable String message) {
     return this;
   }
 
   @Override
-  public @NotNull ComponentLoggingEventBuilder setMessage(final @Nullable ComponentLike message) {
+  public ComponentLoggingEventBuilder setMessage(final @Nullable ComponentLike message) {
     return this;
   }
 
   @Override
-  public @NotNull ComponentLoggingEventBuilder setMessage(final @NotNull Supplier<String> messageSupplier) {
+  public ComponentLoggingEventBuilder setMessage(final Supplier<String> messageSupplier) {
     return this;
   }
 
   @Override
-  public @NotNull ComponentLoggingEventBuilder setComponentMessage(final @NotNull Supplier<? extends ComponentLike> messageSupplier) {
+  public ComponentLoggingEventBuilder setComponentMessage(final Supplier<? extends ComponentLike> messageSupplier) {
     return this;
   }
 
@@ -122,10 +122,10 @@ final class NoOpComponentLoggingEventBuilderImpl implements ComponentLoggingEven
   }
 
   @Override
-  public void log(final @Nullable ComponentLike message, final @Nullable Object @NotNull ... args) {
+  public void log(final @Nullable ComponentLike message, final @Nullable Object... args) {
   }
 
   @Override
-  public void logComponent(final @NotNull Supplier<? extends @Nullable ComponentLike> messageSupplier) {
+  public void logComponent(final Supplier<? extends @Nullable ComponentLike> messageSupplier) {
   }
 }
