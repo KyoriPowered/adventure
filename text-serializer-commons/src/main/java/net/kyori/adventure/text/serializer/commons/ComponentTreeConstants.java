@@ -45,6 +45,7 @@ public final class ComponentTreeConstants {
   public static final String EXTRA = "extra";
   public static final String NBT = "nbt";
   public static final String NBT_INTERPRET = "interpret";
+  public static final String NBT_PLAIN = "plain";
   public static final String NBT_BLOCK = "block";
   public static final String NBT_ENTITY = "entity";
   public static final String NBT_STORAGE = "storage";

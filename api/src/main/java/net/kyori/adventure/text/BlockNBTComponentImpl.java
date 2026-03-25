@@ -30,6 +30,7 @@ import net.kyori.adventure.text.format.Style;
 import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
+import static net.kyori.adventure.text.AbstractNBTComponentBuilder.checkInterpretPlainState;
 
 record BlockNBTComponentImpl(
   List<Component> children,
@@ -37,49 +38,59 @@ record BlockNBTComponentImpl(
   String nbtPath,
   boolean interpret,
   @Nullable Component separator,
-  Pos pos
+  Pos pos,
+  boolean plain
 ) implements BlockNBTComponent {
-  static BlockNBTComponent create(final List<? extends ComponentLike> children, final Style style, final String nbtPath, final boolean interpret, final @Nullable ComponentLike separator, final Pos pos) {
+  static BlockNBTComponent create(final List<? extends ComponentLike> children, final Style style, final String nbtPath, final boolean interpret, final @Nullable ComponentLike separator, final Pos pos, final boolean plain) {
     return new BlockNBTComponentImpl(
       ComponentLike.asComponents(children, IS_NOT_EMPTY),
       requireNonNull(style, "style"),
       requireNonNull(nbtPath, "nbtPath"),
       interpret,
       ComponentLike.unbox(separator),
-      requireNonNull(pos, "pos")
+      requireNonNull(pos, "pos"),
+      plain
     );
   }
 
   @Override
   public BlockNBTComponent nbtPath(final String nbtPath) {
     if (Objects.equals(this.nbtPath, nbtPath)) return this;
-    return create(this.children, this.style, nbtPath, this.interpret, this.separator, this.pos);
+    return create(this.children, this.style, nbtPath, this.interpret, this.separator, this.pos, this.plain);
   }
 
   @Override
   public BlockNBTComponent interpret(final boolean interpret) {
     if (this.interpret == interpret) return this;
-    return create(this.children, this.style, this.nbtPath, interpret, this.separator, this.pos);
+    checkInterpretPlainState(interpret, this.plain);
+    return create(this.children, this.style, this.nbtPath, interpret, this.separator, this.pos, this.plain);
+  }
+
+  @Override
+  public BlockNBTComponent plain(final boolean plain) {
+    if (this.plain == plain) return this;
+    checkInterpretPlainState(this.interpret, plain);
+    return create(this.children, this.style, this.nbtPath, this.interpret, this.separator, this.pos, plain);
   }
 
   @Override
   public BlockNBTComponent separator(final @Nullable ComponentLike separator) {
-    return create(this.children, this.style, this.nbtPath, this.interpret, separator, this.pos);
+    return create(this.children, this.style, this.nbtPath, this.interpret, separator, this.pos, this.plain);
   }
 
   @Override
   public BlockNBTComponent pos(final Pos pos) {
-    return create(this.children, this.style, this.nbtPath, this.interpret, this.separator, pos);
+    return create(this.children, this.style, this.nbtPath, this.interpret, this.separator, pos, this.plain);
   }
 
   @Override
   public BlockNBTComponent children(final List<? extends ComponentLike> children) {
-    return create(children, this.style, this.nbtPath, this.interpret, this.separator, this.pos);
+    return create(children, this.style, this.nbtPath, this.interpret, this.separator, this.pos, this.plain);
   }
 
   @Override
   public BlockNBTComponent style(final Style style) {
-    return create(this.children, style, this.nbtPath, this.interpret, this.separator, this.pos);
+    return create(this.children, style, this.nbtPath, this.interpret, this.separator, this.pos, this.plain);
   }
 
   @Override
@@ -108,7 +119,7 @@ record BlockNBTComponentImpl(
     public BlockNBTComponent build() {
       if (this.nbtPath == null) throw new IllegalStateException("nbt path must be set");
       if (this.pos == null) throw new IllegalStateException("pos must be set");
-      return create(this.children, this.buildStyle(), this.nbtPath, this.interpret, this.separator, this.pos);
+      return create(this.children, this.buildStyle(), this.nbtPath, this.interpret, this.separator, this.pos, this.plain);
     }
   }
 

@@ -26,6 +26,7 @@ package net.kyori.adventure.text;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 abstract class AbstractNBTComponentTest<C extends NBTComponent<C> & ScopedComponent<C>, B extends NBTComponentBuilder<C, B>> extends AbstractComponentTest<C, B> {
@@ -52,5 +53,22 @@ abstract class AbstractNBTComponentTest<C extends NBTComponent<C> & ScopedCompon
     assertEquals("abc", c0.nbtPath());
     assertEquals("ghi", c1.nbtPath());
     assertEquals(c0, c1.nbtPath(c0.nbtPath()));
+  }
+
+  @Test
+  void testBuildWithPlain() {
+    final C c0 = this.buildOne();
+    assertEquals(BlockNBTComponent.INTERPRET_DEFAULT, c0.interpret());
+    final C c1 = this.builder().interpret(true).build();
+    assertTrue(c1.interpret());
+  }
+
+  @Test
+  void testExceptionIfPlainAndInterpret() {
+    assertThrows(IllegalArgumentException.class, () -> this.builder().interpret(true).plain(true).build());
+    final C c0 = this.buildOne().interpret(true);
+    assertThrows(IllegalArgumentException.class, () -> c0.plain(true));
+    final C c1 = this.buildOne().plain(true);
+    assertThrows(IllegalArgumentException.class, () -> c1.interpret(true));
   }
 }
