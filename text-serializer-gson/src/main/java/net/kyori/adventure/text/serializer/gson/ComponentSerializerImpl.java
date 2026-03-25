@@ -294,12 +294,12 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
   @Override
   public void write(final JsonWriter out, final Component value) throws IOException {
     if (
-      value instanceof TextComponent
+      value instanceof TextComponent tc
         && value.children().isEmpty()
         && !value.hasStyling()
         && this.emitCompactTextComponent
     ) {
-      out.value(((TextComponent) value).content());
+      out.value(tc.content());
       return;
     }
 

@@ -38,6 +38,7 @@ import static java.util.Objects.requireNonNull;
  * @since 4.12.0
  * @sinceMinecraft 1.19
  */
+@SuppressWarnings("ClassInitializationDeadlock") // It's fine.
 public interface ChatType {
   /**
    * A chat message from a player.

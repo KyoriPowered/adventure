@@ -28,6 +28,7 @@ package net.kyori.adventure.nbt;
  *
  * @since 4.0.0
  */
+@SuppressWarnings("ClassInitializationDeadlock") // It's fine.
 public sealed interface ByteBinaryTag extends NumberBinaryTag permits ByteBinaryTagImpl {
   /**
    * A tag with the value {@code 0}.

@@ -37,7 +37,6 @@ import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.util.Buildable;
 import net.kyori.adventure.util.MonkeyBars;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.UnknownNullability;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.Nullable;
 
@@ -160,7 +159,8 @@ public sealed interface Style extends StyleGetter, StyleSetter<Style>, Buildable
    * @return a style
    * @since 4.0.0
    */
-  static Style style(final @UnknownNullability StyleBuilderApplicable... applicables) {
+  @SuppressWarnings("overloads") // It's fine, it's not really correct.
+  static Style style(final @Nullable StyleBuilderApplicable... applicables) {
     final int length = applicables.length;
     if (length == 0) return empty();
     final Builder builder = style();
@@ -548,6 +548,7 @@ public sealed interface Style extends StyleGetter, StyleSetter<Style>, Buildable
    * @return a builder
    * @since 4.0.0
    */
+  @Override
   Builder toBuilder();
 
   /**

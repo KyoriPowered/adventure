@@ -27,8 +27,8 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import net.kyori.adventure.text.minimessage.internal.TagInternals;
 import org.intellij.lang.annotations.Pattern;
+import org.intellij.lang.annotations.RegExp;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.LOCAL_VARIABLE;
@@ -36,12 +36,20 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.PARAMETER;
 
 /**
- * A {@link Tag} name must match this pattern. This is used to validate tag names. Uses <b>[!?#]?[a-z0-9_-]*</b>
+ * A {@link Tag} name must match this pattern.
+ * This is used to validate tag names.
+ * Uses {@link TagPattern#TAG_NAME_REGEX}.
  *
  * @since 4.14.0
  */
 @Documented
 @Retention(RetentionPolicy.CLASS)
 @Target({ METHOD, FIELD, PARAMETER, LOCAL_VARIABLE })
-public @Pattern(TagInternals.TAG_NAME_REGEX) @interface TagPattern {
+public @Pattern(TagPattern.TAG_NAME_REGEX) @interface TagPattern {
+  /**
+   * The tag name regex.
+   *
+   * @since 5.0.0
+   */
+  @RegExp String TAG_NAME_REGEX = "[!?#]?[a-z0-9_-]*";
 }

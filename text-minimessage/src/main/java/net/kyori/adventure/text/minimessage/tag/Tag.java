@@ -33,6 +33,7 @@ import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.StyleBuilderApplicable;
 import net.kyori.adventure.text.minimessage.internal.parser.node.TagPart;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -127,7 +128,8 @@ public sealed interface Tag permits Inserting, Modifying, ParserDirective, PrePr
    * @return a tag for these actions
    * @since 4.10.0
    */
-  static Tag styling(final StyleBuilderApplicable... actions) {
+  @SuppressWarnings("overloads") // It's fine, it's not really correct.
+  static Tag styling(final @Nullable StyleBuilderApplicable... actions) {
     requireNonNull(actions, "actions");
     for (int i = 0, length = actions.length; i < length; i++) {
       if (actions[i] == null) {

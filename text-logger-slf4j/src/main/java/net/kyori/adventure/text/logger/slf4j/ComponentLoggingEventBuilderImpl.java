@@ -53,8 +53,8 @@ final class ComponentLoggingEventBuilderImpl extends DefaultLoggingEventBuilder 
   }
 
   private @Nullable Object maybeSerialize(final @Nullable Object input) {
-    if (input instanceof ComponentLike) {
-      return this.serialize(((ComponentLike) input).asComponent());
+    if (input instanceof ComponentLike componentLike) {
+      return this.serialize(componentLike.asComponent());
     } else {
       return input;
     }

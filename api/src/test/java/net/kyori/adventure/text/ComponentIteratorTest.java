@@ -73,8 +73,8 @@ class ComponentIteratorTest {
       .build();
 
     for (final Component inner : component.iterable(ComponentIteratorType.DEPTH_FIRST)) {
-      if (inner instanceof TextComponent) {
-        final String content = ((TextComponent) inner).content();
+      if (inner instanceof TextComponent textComponent) {
+        final String content = textComponent.content();
 
         if (content.equals("WIDE")) {
           fail("WIDE before DEEP");
@@ -97,8 +97,8 @@ class ComponentIteratorTest {
       .build();
 
     for (final Component inner : component.iterable(ComponentIteratorType.BREADTH_FIRST)) {
-      if (inner instanceof TextComponent) {
-        final String content = ((TextComponent) inner).content();
+      if (inner instanceof TextComponent textComponent) {
+        final String content = textComponent.content();
 
         if (content.equals("DEEP")) {
           fail("DEEP before WIDE");
@@ -124,9 +124,7 @@ class ComponentIteratorTest {
     boolean foundEntity = false;
 
     for (final Component inner : component.iterable(ComponentIteratorType.BREADTH_FIRST, ComponentIteratorFlag.INCLUDE_HOVER_SHOW_TEXT_COMPONENT, ComponentIteratorFlag.INCLUDE_HOVER_SHOW_ENTITY_NAME)) {
-      if (inner instanceof TextComponent) {
-        final TextComponent text = (TextComponent) inner;
-
+      if (inner instanceof TextComponent text) {
         if (text.content().equals("TEXT")) foundText = true;
         else if (text.content().equals("ENTITY")) foundEntity = true;
       }
@@ -144,9 +142,7 @@ class ComponentIteratorTest {
       .build();
 
     for (final Component inner : component.iterable(ComponentIteratorType.BREADTH_FIRST, ComponentIteratorFlag.INCLUDE_TRANSLATABLE_COMPONENT_ARGUMENTS)) {
-      if (inner instanceof TextComponent) {
-        final TextComponent text = (TextComponent) inner;
-
+      if (inner instanceof TextComponent text) {
         if (text.content().equals("ARG")) return;
       }
     }

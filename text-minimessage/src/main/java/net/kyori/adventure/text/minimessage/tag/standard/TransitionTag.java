@@ -44,6 +44,7 @@ import org.jetbrains.annotations.ApiStatus;
  * @param negativePhase whether the phase is negative
  * @since 4.10.0
  */
+@SuppressWarnings("ArrayRecordComponent") // It's okay, it's internal.
 @ApiStatus.Internal
 record TransitionTag(
   TextColor[] colors,

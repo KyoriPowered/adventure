@@ -399,7 +399,7 @@ public final class HoverEvent<V> implements HoverEventSource<V>, StyleBuilderApp
      * @param nbt the nbt
      * @return a {@code ShowItem}
      * @since 4.14.0
-     * @deprecated since 1.20.5 and replaced with data components
+     * @obsolete since 1.20.5 and replaced with data components
      */
     @ApiStatus.Obsolete
     public static ShowItem showItem(final Keyed item, final @Range(from = 0, to = Integer.MAX_VALUE) int count, final @Nullable BinaryTagHolder nbt) {
@@ -498,7 +498,7 @@ public final class HoverEvent<V> implements HoverEventSource<V>, StyleBuilderApp
      * @param nbt the nbt
      * @return a {@code ShowItem}
      * @since 4.0.0
-     * @deprecated since 1.20.5 and replaced with data components
+     * @obsoleteSinceMinecraft 1.20.5 and replaced with data components
      */
     @ApiStatus.Obsolete
     public ShowItem nbt(final @Nullable BinaryTagHolder nbt) {

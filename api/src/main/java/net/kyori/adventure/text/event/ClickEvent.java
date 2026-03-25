@@ -284,7 +284,7 @@ public final class ClickEvent<T extends ClickEvent.Payload> implements StyleBuil
    * @param <T> the payload type
    * @since 4.0.0
    */
-  @SuppressWarnings("StaticInitializerReferencesSubClass") // We have private subclasses and private constructors for them, so this is fine.
+  @SuppressWarnings({"StaticInitializerReferencesSubClass", "ClassInitializationDeadlock"}) // We have private subclasses and private constructors for them, so this is fine.
   public static sealed abstract class Action<T extends Payload> permits Action.ChangePage, Action.Custom, Action.ShowDialog, Action.TextCarrier {
     /**
      * Opens a url when clicked.
