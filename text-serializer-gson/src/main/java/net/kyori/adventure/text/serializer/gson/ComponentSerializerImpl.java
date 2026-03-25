@@ -67,6 +67,7 @@ import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NBT_INTERPRET;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NBT_STORAGE;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.OBJECT_ATLAS;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.OBJECT_FALLBACK;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.OBJECT_HAT;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.OBJECT_PLAYER;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.OBJECT_PLAYER_ID;
@@ -105,7 +106,7 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
   @Override
   public Component read(final JsonReader in) throws IOException {
     final JsonToken token = in.peek();
-    if (token == JsonToken.STRING || token == JsonToken.NUMBER || token == JsonToken.BOOLEAN) {
+    if (couldBeRepresentedAsString(token)) {
       return Component.text(GsonHacks.readString(in));
     } else if (token == JsonToken.BEGIN_ARRAY) {
       ComponentBuilder<?, ?> parent = null;
@@ -151,6 +152,7 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
     Key sprite = null;
     PlayerHeadObjectContents.Builder playerHeadContents = null;
     boolean playerHeadContentsHasProfile = false;
+    Component objectFallback = null;
 
     in.beginObject();
     while (in.hasNext()) {
@@ -158,7 +160,19 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
       switch (fieldName) {
         case TEXT -> text = GsonHacks.readString(in);
         case TRANSLATE -> translate = in.nextString();
-        case TRANSLATE_FALLBACK -> translateFallback = in.nextString();
+        case TRANSLATE_FALLBACK -> { // Also object fallback - they share the same name!
+          final JsonToken peek = in.peek();
+          if (couldBeRepresentedAsString(peek)) {
+            // Store plain strings in both fallback objects.
+            translateFallback = GsonHacks.readString(in);
+            objectFallback = Component.text(translateFallback);
+          } else if (peek == JsonToken.BEGIN_OBJECT || peek == JsonToken.BEGIN_ARRAY) {
+            // This *could* be a component, let's try and convert it!
+            objectFallback = this.read(in);
+          } else {
+            throw notSureHowToDeserialize(in.getPath());
+          }
+        }
         case TRANSLATE_WITH -> translateWith = this.gson.fromJson(in, TRANSLATABLE_ARGUMENT_LIST_TYPE);
         case SCORE -> {
           in.beginObject();
@@ -271,9 +285,9 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
       builder = Component.object().contents(ObjectContents.sprite(
         atlas != null ? atlas : SpriteObjectContents.DEFAULT_ATLAS,
         sprite
-      ));
+      )).fallback(objectFallback);
     } else if (playerHeadContents != null && playerHeadContentsHasProfile) {
-      builder = Component.object().contents(playerHeadContents.build());
+      builder = Component.object().contents(playerHeadContents.build()).fallback(objectFallback);
     } else {
       throw notSureHowToDeserialize(in.getPath());
     }
@@ -383,6 +397,12 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
         }
       }
       case ObjectComponent objectComponent -> {
+        final Component fallback = objectComponent.fallback();
+        if (fallback != null) {
+          out.name(OBJECT_FALLBACK);
+          this.write(out, fallback);
+        }
+
         final ObjectContents contents = objectComponent.contents();
         if (contents instanceof final SpriteObjectContents spriteContents) {
           if (!spriteContents.atlas().equals(SpriteObjectContents.DEFAULT_ATLAS)) {
@@ -436,6 +456,10 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
       out.name(SEPARATOR);
       this.write(out, separator);
     }
+  }
+
+  private static boolean couldBeRepresentedAsString(final JsonToken type) {
+    return type == JsonToken.STRING || type == JsonToken.NUMBER || type == JsonToken.BOOLEAN;
   }
 
   static JsonParseException notSureHowToDeserialize(final Object element) {

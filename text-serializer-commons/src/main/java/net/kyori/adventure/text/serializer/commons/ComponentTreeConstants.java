@@ -57,6 +57,7 @@ public final class ComponentTreeConstants {
   public static final String OBJECT_PLAYER_ID = "id";
   public static final String OBJECT_PLAYER_PROPERTIES = "properties";
   public static final String OBJECT_PLAYER_TEXTURE = "texture";
+  public static final String OBJECT_FALLBACK = "fallback";
   public static final String PROFILE_PROPERTY_NAME = "name";
   public static final String PROFILE_PROPERTY_VALUE = "value";
   public static final String PROFILE_PROPERTY_SIGNATURE = "signature";

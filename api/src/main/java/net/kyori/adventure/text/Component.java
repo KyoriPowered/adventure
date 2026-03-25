@@ -570,7 +570,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    */
   @Contract(value = "_ -> new", pure = true)
   static ObjectComponent object(final ObjectContents objectContents) {
-    return ObjectComponentImpl.create(List.of(), Style.empty(), objectContents);
+    return ObjectComponentImpl.create(List.of(), Style.empty(), objectContents, null);
   }
 
   /*

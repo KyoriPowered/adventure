@@ -61,6 +61,7 @@ import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NBT_INTERPRET;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NBT_STORAGE;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.OBJECT_ATLAS;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.OBJECT_FALLBACK;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.OBJECT_HAT;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.OBJECT_PLAYER;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.OBJECT_PLAYER_ID;
@@ -184,7 +185,7 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
       component = Component.object().contents(ObjectContents.sprite(
         children.containsKey(OBJECT_ATLAS) ? children.get(OBJECT_ATLAS).get(KeySerializer.INSTANCE.type()) : SpriteObjectContents.DEFAULT_ATLAS,
         children.get(OBJECT_SPRITE).get(KeySerializer.INSTANCE.type())
-      ));
+      )).fallback(readOptionalFallbackComponent(children));
     } else if (children.containsKey(OBJECT_PLAYER)) {
       final PlayerHeadObjectContents.Builder playerHeadContents = ObjectContents.playerHead();
       if (children.containsKey(OBJECT_HAT)) {
@@ -223,7 +224,7 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
         throw notSureHowToDeserialize(value);
       }
 
-      component = Component.object().contents(playerHeadContents.build());
+      component = Component.object().contents(playerHeadContents.build()).fallback(readOptionalFallbackComponent(children));
     } else {
       throw notSureHowToDeserialize(value);
     }
@@ -291,6 +292,12 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
     } else if (src instanceof ObjectComponent) {
       final ObjectComponent objectComponent = (ObjectComponent) src;
       final ObjectContents contents = objectComponent.contents();
+
+      final Component fallback = objectComponent.fallback();
+      if (fallback != null) {
+        value.node(OBJECT_FALLBACK).set(fallback);
+      }
+
       if (contents instanceof SpriteObjectContents) {
         final SpriteObjectContents spriteContents = (SpriteObjectContents) contents;
         if (!spriteContents.atlas().equals(SpriteObjectContents.DEFAULT_ATLAS)) {
@@ -341,6 +348,14 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
       // merge
       value.set(Style.class, src.style());
     }
+  }
+
+  private static @Nullable Component readOptionalFallbackComponent(final Map<Object, ? extends ConfigurationNode> children) throws SerializationException {
+    final ConfigurationNode fallback = children.get(OBJECT_FALLBACK);
+    if (fallback == null) {
+      return null;
+    }
+    return fallback.get(Component.class);
   }
 
   private static <C extends NBTComponent<C>, B extends NBTComponentBuilder<C, B>> B nbt(final B builder, final String nbt, final boolean interpret) {
