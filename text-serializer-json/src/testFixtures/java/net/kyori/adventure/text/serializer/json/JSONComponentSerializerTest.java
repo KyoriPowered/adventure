@@ -29,14 +29,16 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import org.junit.jupiter.api.Test;
 
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NULL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 final class JSONComponentSerializerTest extends SerializerTest {
   @Test
   void testDeserializeNull() {
-    assertNull(JSONComponentSerializer.json().deserialize("null"));
+    assertNotNull(JSONComponentSerializer.json().deserialize(NULL));
+    assertEquals(Component.text(NULL), JSONComponentSerializer.json().deserialize(NULL));
   }
 
   @Test

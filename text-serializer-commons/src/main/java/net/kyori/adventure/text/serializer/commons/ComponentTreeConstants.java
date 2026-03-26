@@ -93,6 +93,7 @@ public final class ComponentTreeConstants {
   @ApiStatus.Obsolete
   public static final String SHOW_ITEM_TAG = "tag";
   public static final String SHOW_ITEM_COMPONENTS = "components";
+  public static final String NULL = "null";
 
   private ComponentTreeConstants() {
     throw new IllegalStateException("Cannot instantiate");
