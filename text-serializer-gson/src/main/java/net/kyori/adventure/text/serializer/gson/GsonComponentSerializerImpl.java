@@ -36,6 +36,7 @@ import net.kyori.option.OptionState;
 import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NULL;
 
 final class GsonComponentSerializerImpl implements GsonComponentSerializer {
   private static final Optional<Provider> SERVICE = Services.service(Provider.class);
@@ -85,6 +86,7 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
 
   @Override
   public Component deserialize(final String string) {
+    if (NULL.equals(string)) return Component.text(NULL);
     return this.serializer().fromJson(string, Component.class);
   }
 
