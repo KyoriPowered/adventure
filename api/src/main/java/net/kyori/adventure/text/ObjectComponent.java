@@ -58,7 +58,7 @@ public sealed interface ObjectComponent extends ScopedComponent<ObjectComponent>
    *
    * @return the fallback component, if any
    * @since 5.0.0
-   * @sinceMinecraft 26.1.0
+   * @sinceMinecraft 26.1
    */
   @Nullable Component fallback();
 
@@ -71,7 +71,7 @@ public sealed interface ObjectComponent extends ScopedComponent<ObjectComponent>
    * @param fallback the fallback component, or {@code null} to clear the fallback
    * @return the new object component
    * @since 5.0.0
-   * @sinceMinecraft 26.1.0
+   * @sinceMinecraft 26.1
    */
   ObjectComponent fallback(final @Nullable ComponentLike fallback);
 
@@ -102,7 +102,7 @@ public sealed interface ObjectComponent extends ScopedComponent<ObjectComponent>
      * @param fallback the fallback component, or {@code null} to clear the fallback
      * @return this builder
      * @since 5.0.0
-     * @sinceMinecraft 26.1.0
+     * @sinceMinecraft 26.1
      */
     Builder fallback(final @Nullable ComponentLike fallback);
   }
