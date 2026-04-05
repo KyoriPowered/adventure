@@ -57,9 +57,11 @@ final class ChunkWaypointImpl extends WaypointImpl implements ChunkWaypoint {
   public ChunkWaypoint pos(final int x, final int z) {
     final int oldX = this.x;
     final int oldZ = this.z;
-    this.x = x;
-    this.z = z;
-    this.forEachListener(listener -> listener.waypointChunkPositionChanged(this, oldX, oldZ, x, z));
+    if (x != oldX || z != oldZ) {
+      this.x = x;
+      this.z = z;
+      this.forEachListener(listener -> listener.waypointChunkPositionChanged(this, oldX, oldZ, x, z));
+    }
     return this;
   }
 

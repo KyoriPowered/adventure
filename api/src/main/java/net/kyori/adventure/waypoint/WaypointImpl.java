@@ -79,8 +79,10 @@ sealed class WaypointImpl implements Waypoint permits AzimuthWaypointImpl, Chunk
   public Waypoint style(final Key key) {
     requireNonNull(key, "key");
     final Key oldKey = this.style;
-    this.style = key;
-    this.forEachListener(listener -> listener.waypointStyleChanged(this, oldKey, key));
+    if (!key.equals(oldKey)) {
+      this.style = key;
+      this.forEachListener(listener -> listener.waypointStyleChanged(this, oldKey, key));
+    }
     return this;
   }
 
@@ -93,8 +95,10 @@ sealed class WaypointImpl implements Waypoint permits AzimuthWaypointImpl, Chunk
   public Waypoint color(final TextColor color) {
     requireNonNull(color, "color");
     final TextColor oldColor = this.color;
-    this.color = color;
-    this.forEachListener(listener -> listener.waypointColorChanged(this, oldColor, color));
+    if (!color.equals(oldColor)) {
+      this.color = color;
+      this.forEachListener(listener -> listener.waypointColorChanged(this, oldColor, color));
+    }
     return this;
   }
 

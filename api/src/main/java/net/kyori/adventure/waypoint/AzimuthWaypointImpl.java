@@ -48,8 +48,10 @@ final class AzimuthWaypointImpl extends WaypointImpl implements AzimuthWaypoint 
   @Override
   public AzimuthWaypoint angle(final float angle) {
     final float oldAngle = this.angle;
-    this.angle = angle;
-    this.forEachListener(listener -> listener.waypointAngleChanged(this, oldAngle, angle));
+    if (angle != oldAngle) {
+      this.angle = angle;
+      this.forEachListener(listener -> listener.waypointAngleChanged(this, oldAngle, angle));
+    }
     return this;
   }
 }

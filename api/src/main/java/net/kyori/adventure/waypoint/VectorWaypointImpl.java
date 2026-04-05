@@ -66,10 +66,12 @@ final class VectorWaypointImpl extends WaypointImpl implements VectorWaypoint {
     final int oldX = this.x;
     final int oldY = this.y;
     final int oldZ = this.z;
-    this.x = x;
-    this.y = y;
-    this.z = z;
-    this.forEachListener(listener -> listener.waypointVectorChanged(this, oldX, oldY, oldZ, x, y, z));
+    if (x != oldX || y != oldY || z != oldZ) {
+      this.x = x;
+      this.y = y;
+      this.z = z;
+      this.forEachListener(listener -> listener.waypointVectorChanged(this, oldX, oldY, oldZ, x, y, z));
+    }
     return this;
   }
 }
