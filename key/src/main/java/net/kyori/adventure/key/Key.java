@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2025 KyoriPowered
+ * Copyright (c) 2017-2026 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@ package net.kyori.adventure.key;
 
 import java.util.Comparator;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.OptionalInt;
 import org.jspecify.annotations.Nullable;
 
@@ -134,6 +135,84 @@ public interface Key extends Comparable<Key>, Namespaced, Keyed {
    */
   static Key key(@KeyPattern.Namespace final String namespace, @KeyPattern.Value final String value) {
     return new KeyImpl(namespace, value);
+  }
+
+  /**
+   * Attempts to create a key.
+   *
+   * <p>This will parse {@code string} as a key, using {@code :} as a separator between the namespace and the value.</p>
+   *
+   * <p>The namespace is optional. If you do not provide one (for example, if you provide just {@code player} or {@code :player}
+   * as the string) then {@link #MINECRAFT_NAMESPACE} will be used as a namespace and {@code string} will be used as the value,
+   * removing the colon if necessary.</p>
+   *
+   * @param string the string
+   * @return an optional containing the key, or empty if the namespace or value contains an invalid character
+   * @since 5.0.0
+   */
+  @SuppressWarnings("PatternValidation")
+  static Optional<Key> tryParse(final String string) {
+    try {
+      return Optional.of(key(string));
+    } catch (final InvalidKeyException ignored) {
+      return Optional.empty();
+    }
+  }
+
+  /**
+   * Attempts to create a key.
+   *
+   * <p>This will parse {@code string} as a key, using {@code character} as a separator between the namespace and the value.</p>
+   *
+   * <p>The namespace is optional. If you do not provide one (for example, if you provide {@code player} or {@code character + "player"}
+   * as the string) then {@link #MINECRAFT_NAMESPACE} will be used as a namespace and {@code string} will be used as the value,
+   * removing the provided separator character if necessary.</p>
+   *
+   * @param string the string
+   * @param character the character that separates the namespace from the value
+   * @return an optional containing the key, or empty if the namespace or value contains an invalid character
+   * @since 5.0.0
+   */
+  static Optional<Key> tryParse(final String string, final char character) {
+    try {
+      return Optional.of(key(string, character));
+    } catch (final InvalidKeyException ignored) {
+      return Optional.empty();
+    }
+  }
+
+  /**
+   * Attempts to create a key.
+   *
+   * @param namespaced the namespace source
+   * @param value the value
+   * @return an optional containing the key, or empty if the namespace or value contains an invalid character
+   * @since 5.0.0
+   */
+  @SuppressWarnings("PatternValidation")
+  static Optional<Key> tryParse(final Namespaced namespaced, final String value) {
+    try {
+      return Optional.of(key(namespaced, value));
+    } catch (final InvalidKeyException ignored) {
+      return Optional.empty();
+    }
+  }
+
+  /**
+   * Attempts to create a key.
+   *
+   * @param namespace the namespace
+   * @param value the value
+   * @return an optional containing the key, or empty if the namespace or value contains an invalid character
+   * @since 5.0.0
+   */
+  @SuppressWarnings("PatternValidation")
+  static Optional<Key> tryParse(final String namespace, final String value) {
+    try {
+      return Optional.of(key(namespace, value));
+    } catch (final InvalidKeyException ignored) {
+      return Optional.empty();
+    }
   }
 
   /**

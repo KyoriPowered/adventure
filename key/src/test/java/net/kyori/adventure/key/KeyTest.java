@@ -26,10 +26,7 @@ package net.kyori.adventure.key;
 import com.google.common.testing.EqualsTester;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class KeyTest {
   @Test
@@ -114,6 +111,16 @@ class KeyTest {
   void testParseableValue() {
     assertTrue(Key.parseableValue("empty"));
     assertTrue(Key.parseableValue("some/path"));
+  }
+
+  @Test
+  void testOfTryParsing() {
+    assertTrue(Key.tryParse("empty").isPresent());
+    assertFalse(Key.tryParse("!").isPresent());
+    assertTrue(Key.tryParse("namespace@key", '@').isPresent());
+    assertFalse(Key.tryParse("Namespace@Key", '@').isPresent());
+    assertTrue(Key.tryParse(Key.MINECRAFT_NAMESPACE, "empty").isPresent());
+    assertFalse(Key.tryParse(Key.MINECRAFT_NAMESPACE, "Empty").isPresent());
   }
 
   @SuppressWarnings("PatternValidation") // We are testing to ensure this throws an exception.
