@@ -100,6 +100,7 @@ public final class StandardTags {
       RainbowTag.RESOLVER,
       NewlineTag.RESOLVER,
       TransitionTag.RESOLVER,
+      PrideTag.RESOLVER,
       ShadowColorTag.RESOLVER
     )
     .build();
