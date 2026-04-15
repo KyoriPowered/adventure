@@ -37,6 +37,7 @@ final class BlockNBTComponentTest extends SerializerTest {
         json.addProperty(ComponentTreeConstants.NBT, "abc");
         json.addProperty(ComponentTreeConstants.NBT_INTERPRET, false);
         json.addProperty(ComponentTreeConstants.NBT_BLOCK, "^1.23 ^2.0 ^3.89");
+        json.addProperty(ComponentTreeConstants.NBT_PLAIN, false);
       }
     );
   }
@@ -49,6 +50,7 @@ final class BlockNBTComponentTest extends SerializerTest {
         json.addProperty(ComponentTreeConstants.NBT, "xyz");
         json.addProperty(ComponentTreeConstants.NBT_INTERPRET, true);
         json.addProperty(ComponentTreeConstants.NBT_BLOCK, "4 5 6");
+        json.addProperty(ComponentTreeConstants.NBT_PLAIN, false);
       }
     );
   }
@@ -61,6 +63,7 @@ final class BlockNBTComponentTest extends SerializerTest {
         json.addProperty(ComponentTreeConstants.NBT, "eeee");
         json.addProperty(ComponentTreeConstants.NBT_INTERPRET, false);
         json.addProperty(ComponentTreeConstants.NBT_BLOCK, "~7 ~83 ~900");
+        json.addProperty(ComponentTreeConstants.NBT_PLAIN, false);
       }
     );
   }
@@ -72,11 +75,12 @@ final class BlockNBTComponentTest extends SerializerTest {
         BlockNBTComponent.WorldPos.Coordinate.absolute(12),
         BlockNBTComponent.WorldPos.Coordinate.relative(3),
         BlockNBTComponent.WorldPos.Coordinate.absolute(1200)
-      ).build(),
+      ).plain(true).build(),
       json -> {
         json.addProperty(ComponentTreeConstants.NBT, "qwert");
         json.addProperty(ComponentTreeConstants.NBT_INTERPRET, false);
         json.addProperty(ComponentTreeConstants.NBT_BLOCK, "12 ~3 1200");
+        json.addProperty(ComponentTreeConstants.NBT_PLAIN, true);
       }
     );
   }

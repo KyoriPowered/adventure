@@ -30,6 +30,7 @@ import net.kyori.adventure.text.format.Style;
 import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
+import static net.kyori.adventure.text.AbstractNBTComponentBuilder.checkInterpretPlainState;
 
 record StorageNBTComponentImpl(
   List<Component> children,
@@ -37,50 +38,60 @@ record StorageNBTComponentImpl(
   String nbtPath,
   boolean interpret,
   @Nullable Component separator,
-  Key storage
+  Key storage,
+  boolean plain
 ) implements StorageNBTComponent {
-  static StorageNBTComponent create(final List<? extends ComponentLike> children, final Style style, final String nbtPath, final boolean interpret, final @Nullable ComponentLike separator, final Key storage) {
+  static StorageNBTComponent create(final List<? extends ComponentLike> children, final Style style, final String nbtPath, final boolean interpret, final @Nullable ComponentLike separator, final Key storage, final boolean plain) {
     return new StorageNBTComponentImpl(
       ComponentLike.asComponents(children, IS_NOT_EMPTY),
       requireNonNull(style, "style"),
       requireNonNull(nbtPath, "nbtPath"),
       interpret,
       ComponentLike.unbox(separator),
-      requireNonNull(storage, "storage")
+      requireNonNull(storage, "storage"),
+      plain
     );
   }
 
   @Override
   public StorageNBTComponent nbtPath(final String nbtPath) {
     if (Objects.equals(this.nbtPath, nbtPath)) return this;
-    return create(this.children, this.style, nbtPath, this.interpret, this.separator, this.storage);
+    return create(this.children, this.style, nbtPath, this.interpret, this.separator, this.storage, this.plain);
   }
 
   @Override
   public StorageNBTComponent interpret(final boolean interpret) {
     if (this.interpret == interpret) return this;
-    return create(this.children, this.style, this.nbtPath, interpret, this.separator, this.storage);
+    checkInterpretPlainState(interpret, this.plain);
+    return create(this.children, this.style, this.nbtPath, interpret, this.separator, this.storage, this.plain);
+  }
+
+  @Override
+  public StorageNBTComponent plain(final boolean plain) {
+    if (this.plain == plain) return this;
+    checkInterpretPlainState(this.interpret, plain);
+    return create(this.children, this.style, this.nbtPath, this.interpret, this.separator, this.storage, plain);
   }
 
   @Override
   public StorageNBTComponent separator(final @Nullable ComponentLike separator) {
-    return create(this.children, this.style, this.nbtPath, this.interpret, separator, this.storage);
+    return create(this.children, this.style, this.nbtPath, this.interpret, separator, this.storage, this.plain);
   }
 
   @Override
   public StorageNBTComponent storage(final Key storage) {
     if (Objects.equals(this.storage, storage)) return this;
-    return create(this.children, this.style, this.nbtPath, this.interpret, this.separator, storage);
+    return create(this.children, this.style, this.nbtPath, this.interpret, this.separator, storage, this.plain);
   }
 
   @Override
   public StorageNBTComponent children(final List<? extends ComponentLike> children) {
-    return create(children, this.style, this.nbtPath, this.interpret, this.separator, this.storage);
+    return create(children, this.style, this.nbtPath, this.interpret, this.separator, this.storage, this.plain);
   }
 
   @Override
   public StorageNBTComponent style(final Style style) {
-    return create(this.children, style, this.nbtPath, this.interpret, this.separator, this.storage);
+    return create(this.children, style, this.nbtPath, this.interpret, this.separator, this.storage, this.plain);
   }
 
   @Override
@@ -109,7 +120,7 @@ record StorageNBTComponentImpl(
     public StorageNBTComponent build() {
       if (this.nbtPath == null) throw new IllegalStateException("nbt path must be set");
       if (this.storage == null) throw new IllegalStateException("storage must be set");
-      return create(this.children, this.buildStyle(), this.nbtPath, this.interpret, this.separator, this.storage);
+      return create(this.children, this.buildStyle(), this.nbtPath, this.interpret, this.separator, this.storage, this.plain);
     }
   }
 }

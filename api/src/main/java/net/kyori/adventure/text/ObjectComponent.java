@@ -24,6 +24,7 @@
 package net.kyori.adventure.text;
 
 import net.kyori.adventure.text.object.ObjectContents;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Displays a non-text object.
@@ -47,7 +48,32 @@ public sealed interface ObjectComponent extends ScopedComponent<ObjectComponent>
    * @return new object component
    * @since 4.25.0
    */
-  ObjectComponent contents(ObjectContents contents);
+  ObjectComponent contents(final ObjectContents contents);
+
+  /**
+   * Gets the fallback component.
+   *
+   * <p>The client displays this instead of this component in areas where object
+   * components are not supported, such as server MOTDs.</p>
+   *
+   * @return the fallback component, if any
+   * @since 5.0.0
+   * @sinceMinecraft 26.1
+   */
+  @Nullable Component fallback();
+
+  /**
+   * Creates a copy of this object component with the given fallback.
+   *
+   * <p>The client displays this instead of this component in areas where object
+   * components are not supported, such as server MOTDs.</p>
+   *
+   * @param fallback the fallback component, or {@code null} to clear the fallback
+   * @return the new object component
+   * @since 5.0.0
+   * @sinceMinecraft 26.1
+   */
+  ObjectComponent fallback(final @Nullable ComponentLike fallback);
 
   @Override
   Builder toBuilder();
@@ -65,6 +91,19 @@ public sealed interface ObjectComponent extends ScopedComponent<ObjectComponent>
      * @return this builder
      * @since 4.25.0
      */
-    Builder contents(ObjectContents objectContents);
+    Builder contents(final ObjectContents objectContents);
+
+    /**
+     * Sets the fallback component of this object component builder.
+     *
+     * <p>The client displays this instead of this component in areas where object
+     * components are not supported, such as server MOTDs.</p>
+     *
+     * @param fallback the fallback component, or {@code null} to clear the fallback
+     * @return this builder
+     * @since 5.0.0
+     * @sinceMinecraft 26.1
+     */
+    Builder fallback(final @Nullable ComponentLike fallback);
   }
 }

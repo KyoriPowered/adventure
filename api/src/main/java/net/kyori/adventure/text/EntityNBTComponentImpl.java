@@ -29,6 +29,7 @@ import net.kyori.adventure.text.format.Style;
 import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
+import static net.kyori.adventure.text.AbstractNBTComponentBuilder.checkInterpretPlainState;
 
 record EntityNBTComponentImpl(
   List<Component> children,
@@ -36,50 +37,60 @@ record EntityNBTComponentImpl(
   String nbtPath,
   boolean interpret,
   Component separator,
-  String selector
+  String selector,
+  boolean plain
 ) implements EntityNBTComponent {
-  static EntityNBTComponent create(final List<? extends ComponentLike> children, final Style style, final String nbtPath, final boolean interpret, final @Nullable ComponentLike separator, final String selector) {
+  static EntityNBTComponent create(final List<? extends ComponentLike> children, final Style style, final String nbtPath, final boolean interpret, final @Nullable ComponentLike separator, final String selector, final boolean plain) {
     return new EntityNBTComponentImpl(
       ComponentLike.asComponents(children, IS_NOT_EMPTY),
       requireNonNull(style, "style"),
       requireNonNull(nbtPath, "nbtPath"),
       interpret,
       ComponentLike.unbox(separator),
-      requireNonNull(selector, "selector")
+      requireNonNull(selector, "selector"),
+      plain
     );
   }
 
   @Override
   public EntityNBTComponent nbtPath(final String nbtPath) {
     if (Objects.equals(this.nbtPath, nbtPath)) return this;
-    return create(this.children, this.style, nbtPath, this.interpret, this.separator, this.selector);
+    return create(this.children, this.style, nbtPath, this.interpret, this.separator, this.selector, this.plain);
   }
 
   @Override
   public EntityNBTComponent interpret(final boolean interpret) {
     if (this.interpret == interpret) return this;
-    return create(this.children, this.style, this.nbtPath, interpret, this.separator, this.selector);
+    checkInterpretPlainState(interpret, this.plain);
+    return create(this.children, this.style, this.nbtPath, interpret, this.separator, this.selector, this.plain);
+  }
+
+  @Override
+  public EntityNBTComponent plain(final boolean plain) {
+    if (this.plain == plain) return this;
+    checkInterpretPlainState(this.interpret, plain);
+    return create(this.children, this.style, this.nbtPath, this.interpret, this.separator, this.selector, plain);
   }
 
   @Override
   public EntityNBTComponent separator(final @Nullable ComponentLike separator) {
-    return create(this.children, this.style, this.nbtPath, this.interpret, separator, this.selector);
+    return create(this.children, this.style, this.nbtPath, this.interpret, separator, this.selector, this.plain);
   }
 
   @Override
   public EntityNBTComponent selector(final String selector) {
     if (Objects.equals(this.selector, selector)) return this;
-    return create(this.children, this.style, this.nbtPath, this.interpret, this.separator, selector);
+    return create(this.children, this.style, this.nbtPath, this.interpret, this.separator, selector, this.plain);
   }
 
   @Override
   public EntityNBTComponent children(final List<? extends ComponentLike> children) {
-    return create(children, this.style, this.nbtPath, this.interpret, this.separator, this.selector);
+    return create(children, this.style, this.nbtPath, this.interpret, this.separator, this.selector, this.plain);
   }
 
   @Override
   public EntityNBTComponent style(final Style style) {
-    return create(this.children, style, this.nbtPath, this.interpret, this.separator, this.selector);
+    return create(this.children, style, this.nbtPath, this.interpret, this.separator, this.selector, this.plain);
   }
 
   @Override
@@ -108,7 +119,7 @@ record EntityNBTComponentImpl(
     public EntityNBTComponent build() {
       if (this.nbtPath == null) throw new IllegalStateException("nbt path must be set");
       if (this.selector == null) throw new IllegalStateException("selector must be set");
-      return create(this.children, this.buildStyle(), this.nbtPath, this.interpret, this.separator, this.selector);
+      return create(this.children, this.buildStyle(), this.nbtPath, this.interpret, this.separator, this.selector, this.plain);
     }
   }
 }
