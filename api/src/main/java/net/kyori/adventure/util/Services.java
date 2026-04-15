@@ -49,9 +49,23 @@ public final class Services {
    * @param <P> the service type
    * @return a service, or {@link Optional#empty()}
    * @since 4.8.0
+   * @deprecated Use {@link #service(ServiceLoader, Class)} instead, as this method is incompatible with java modules.
    */
+  @Deprecated(forRemoval = true, since = "5.0.1")
   public static <P> Optional<P> service(final Class<P> type) {
-    final ServiceLoader<P> loader = Services0.loader(type);
+    return service(Services0.loader(type), type);
+  }
+
+  /**
+   * Collects a service from the loader.
+   *
+   * @param loader the service loader
+   * @param type the service type
+   * @param <P> the service type
+   * @return a service, or {@link Optional#empty()}
+   * @since 4.8.0
+   */
+  public static <P> Optional<P> service(final ServiceLoader<P> loader, final Class<P> type) {
     final Iterator<P> it = loader.iterator();
     while (it.hasNext()) {
       final P instance;
@@ -75,7 +89,7 @@ public final class Services {
   /**
    * A fallback service.
    *
-   * <p>When used in tandem with {@link #serviceWithFallback(Class)}, classes that implement this interface
+   * <p>When used in tandem with {@link #serviceWithFallback(ServiceLoader, Class)}, classes that implement this interface
    * will be ignored in favour of classes that do not implement this interface.</p>
    *
    * @since 4.14.0
@@ -93,9 +107,26 @@ public final class Services {
    * @return a service, or {@link Optional#empty()}
    * @see Fallback
    * @since 4.14.0
+   * @deprecated Use {@link #serviceWithFallback(ServiceLoader, Class)} instead, as this method is incompatible with java modules.
    */
+  @Deprecated(forRemoval = true, since = "5.0.1")
   public static <P> Optional<P> serviceWithFallback(final Class<P> type) {
-    final ServiceLoader<P> loader = Services0.loader(type);
+    return serviceWithFallback(Services0.loader(type), type);
+  }
+
+  /**
+   * Collects the services.
+   *
+   * <p>If multiple services of this type exist, the first non-fallback service will be returned.</p>
+   *
+   * @param loader the service loader
+   * @param type the service type
+   * @param <P> the service type
+   * @return a service, or {@link Optional#empty()}
+   * @see Fallback
+   * @since 5.0.1
+   */
+  public static <P> Optional<P> serviceWithFallback(final ServiceLoader<P> loader, final Class<P> type) {
     final Iterator<P> it = loader.iterator();
     P firstFallback = null;
 
@@ -131,9 +162,23 @@ public final class Services {
    * @param <P> the service interface type
    * @return an unmodifiable set of all known providers of the service
    * @since 4.17.0
+   * @deprecated Use {@link #services(ServiceLoader, Class)} instead, as this method is incompatible with java modules.
    */
+  @Deprecated(forRemoval = true, since = "5.0.1")
   public static <P> Set<P> services(final Class<? extends P> clazz) {
-    final ServiceLoader<? extends P> loader = Services0.loader(clazz);
+    return services(Services0.loader(clazz), clazz);
+  }
+
+  /**
+   * Collects all providers for a certain service and initializes them.
+   *
+   * @param loader the service loader
+   * @param type the service type
+   * @param <P> the service interface type
+   * @return an unmodifiable set of all known providers of the service
+   * @since 5.0.1
+   */
+  public static <P> Set<P> services(final ServiceLoader<? extends P> loader, final Class<? extends P> type) {
     final Set<P> providers = new HashSet<>();
     for (final Iterator<? extends P> it = loader.iterator(); it.hasNext();) {
       final P instance;
@@ -141,7 +186,7 @@ public final class Services {
         instance = it.next();
       } catch (final ServiceConfigurationError ex) {
         if (SERVICE_LOAD_FAILURES_ARE_FATAL) {
-          throw new IllegalStateException("Encountered an exception loading a provider for " + clazz + ": ", ex);
+          throw new IllegalStateException("Encountered an exception loading a provider for " + type + ": ", ex);
         } else {
           continue;
         }

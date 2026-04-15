@@ -31,6 +31,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
@@ -57,7 +58,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   private static final TextDecoration[] DECORATIONS = TextDecoration.values();
   private static final char LEGACY_BUNGEE_HEX_CHAR = 'x';
 
-  private static final Optional<Provider> SERVICE = Services.service(Provider.class);
+  private static final Optional<Provider> SERVICE = Services.service(ServiceLoader.load(Provider.class), Provider.class);
   static final Consumer<Builder> BUILDER = SERVICE
     .map(Provider::legacy)
     .orElseGet(() -> builder -> {

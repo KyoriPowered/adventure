@@ -25,6 +25,7 @@ package net.kyori.adventure.text.logger.slf4j;
 
 import java.util.Locale;
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import net.kyori.adventure.text.Component;
@@ -38,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * Utility methods relating to creating component loggers.
  */
 final class Handler {
-  private static final ComponentLoggerProvider PROVIDER = Services.service(ComponentLoggerProvider.class)
+  private static final ComponentLoggerProvider PROVIDER = Services.service(ServiceLoader.load(ComponentLoggerProvider.class), ComponentLoggerProvider.class)
     .orElse(LoggerFactory.getILoggerFactory() instanceof ComponentLoggerProvider ? (ComponentLoggerProvider) LoggerFactory.getILoggerFactory() : new DefaultProvider());
 
   private Handler() {

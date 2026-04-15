@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.BiConsumer;
@@ -49,7 +50,7 @@ final class BossBarImpl extends HackyBossBarPlatformBridge implements BossBar {
 
   static final class ImplementationAccessor {
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    private static final Optional<BossBarImplementation.Provider> SERVICE = Services.service(BossBarImplementation.Provider.class);
+    private static final Optional<BossBarImplementation.Provider> SERVICE = Services.service(ServiceLoader.load(BossBarImplementation.Provider.class), BossBarImplementation.Provider.class);
 
     private ImplementationAccessor() {
     }

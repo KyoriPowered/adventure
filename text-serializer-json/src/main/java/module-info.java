@@ -6,4 +6,6 @@ module net.kyori.adventure.text.serializer.json {
   requires transitive net.kyori.option;
 
   exports net.kyori.adventure.text.serializer.json;
+
+  uses net.kyori.adventure.text.serializer.json.JSONComponentSerializer.Provider;
 }

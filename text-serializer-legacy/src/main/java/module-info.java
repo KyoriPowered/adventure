@@ -5,4 +5,6 @@ module net.kyori.adventure.text.serializer.legacy {
   requires transitive net.kyori.adventure.api;
 
   exports net.kyori.adventure.text.serializer.legacy;
+
+  uses net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer.Provider;
 }

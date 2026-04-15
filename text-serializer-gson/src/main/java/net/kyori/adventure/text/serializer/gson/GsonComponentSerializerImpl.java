@@ -27,6 +27,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import java.util.Optional;
+import java.util.ServiceLoader;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.text.Component;
@@ -39,7 +40,7 @@ import static java.util.Objects.requireNonNull;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NULL;
 
 final class GsonComponentSerializerImpl implements GsonComponentSerializer {
-  private static final Optional<Provider> SERVICE = Services.service(Provider.class);
+  private static final Optional<Provider> SERVICE = Services.service(ServiceLoader.load(Provider.class), Provider.class);
   static final Consumer<Builder> BUILDER = SERVICE
     .map(Provider::builder)
     .orElseGet(() -> builder -> {

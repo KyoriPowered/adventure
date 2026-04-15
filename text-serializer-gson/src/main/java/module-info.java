@@ -8,4 +8,6 @@ module net.kyori.adventure.text.serializer.gson {
   requires static com.google.auto.service;
 
   exports net.kyori.adventure.text.serializer.gson;
+
+  uses net.kyori.adventure.text.serializer.gson.GsonComponentSerializer.Provider;
 }
