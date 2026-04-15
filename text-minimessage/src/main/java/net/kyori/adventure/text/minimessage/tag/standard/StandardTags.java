@@ -25,6 +25,7 @@ package net.kyori.adventure.text.minimessage.tag.standard;
 
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
 import static java.util.Objects.requireNonNull;
@@ -66,6 +67,43 @@ public final class StandardTags {
         SequentialHeadTag.RESOLVER
       )
       .build();
+
+  private static final TagResolver NON_INTERACTABLE = TagResolver.builder()
+    .resolvers(
+      ColorTagResolver.INSTANCE,
+      KeybindTag.RESOLVER,
+      TranslatableTag.RESOLVER,
+      TranslatableFallbackTag.RESOLVER,
+      FontTag.RESOLVER,
+      DecorationTag.RESOLVER,
+      GradientTag.RESOLVER,
+      RainbowTag.RESOLVER,
+      ResetTag.RESOLVER,
+      NewlineTag.RESOLVER,
+      TransitionTag.RESOLVER,
+      SelectorTag.RESOLVER,
+      ScoreTag.RESOLVER,
+      NbtTag.RESOLVER,
+      PrideTag.RESOLVER,
+      ShadowColorTag.RESOLVER,
+      SpriteTag.RESOLVER,
+      SequentialHeadTag.RESOLVER
+    )
+    .build();
+
+  private static final TagResolver FORMATTED_TEXT = TagResolver.builder()
+    .resolvers(
+      ColorTagResolver.INSTANCE,
+      FontTag.RESOLVER,
+      DecorationTag.RESOLVER,
+      GradientTag.RESOLVER,
+      RainbowTag.RESOLVER,
+      NewlineTag.RESOLVER,
+      TransitionTag.RESOLVER,
+      PrideTag.RESOLVER,
+      ShadowColorTag.RESOLVER
+    )
+    .build();
 
   /**
    * Get a resolver for a specific text decoration.
@@ -322,5 +360,20 @@ public final class StandardTags {
    */
   public static TagResolver defaults() {
     return ALL;
+  }
+
+  /**
+   * Get a resolver that handles all standard tags for a given preset.
+   *
+   * @param preset the preset
+   * @return the resolver for built-in tags for a preset
+   * @since 5.0.0
+   */
+  public static TagResolver forPreset(final MiniMessage.Preset preset) {
+    return switch (requireNonNull(preset, "preset")) {
+      case DEFAULT -> ALL;
+      case NON_INTERACTABLE -> NON_INTERACTABLE;
+      case FORMATTED_TEXT -> FORMATTED_TEXT;
+    };
   }
 }

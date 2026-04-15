@@ -54,7 +54,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MiniMessageTest extends AbstractTest {
-
   @Test
   void testNormalBuilder() {
     final Component expected = text("Test").color(RED);
