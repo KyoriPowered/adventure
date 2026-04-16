@@ -38,6 +38,7 @@ sequenceOf(
   "api",
   "annotation-processors",
   "bom",
+  "javadoc",
   "key",
   "nbt",
   "serializer-configurate4",
