@@ -13,7 +13,6 @@ dependencies {
   constraints {
     sequenceOf(
       "api",
-      "annotation-processors",
       "key",
       "nbt",
       "serializer-configurate4",

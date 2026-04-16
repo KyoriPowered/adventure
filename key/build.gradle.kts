@@ -9,8 +9,8 @@ configurations {
 }
 
 dependencies {
+  api(libs.jspecify)
   compileOnlyApi(libs.jetbrainsAnnotations)
-  compileOnlyApi(libs.jspecify)
   testImplementation(libs.guava)
 }
 
