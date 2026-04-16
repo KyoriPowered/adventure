@@ -25,7 +25,7 @@ package net.kyori.adventure.serializer.configurate4;
 
 import java.lang.reflect.Type;
 import net.kyori.adventure.text.object.PlayerHeadObjectContents;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
