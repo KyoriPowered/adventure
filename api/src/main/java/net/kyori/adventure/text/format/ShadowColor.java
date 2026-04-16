@@ -226,7 +226,7 @@ public interface ShadowColor extends StyleBuilderApplicable, ARGBLike {
   /**
    * Get the alpha component of the shadow colour.
    *
-   * @return the blue component, in the range [0x0, 0xff]
+   * @return the alpha component, in the range [0x0, 0xff]
    * @since 4.18.0
    */
   @Override
