@@ -27,6 +27,18 @@ dependencies {
   javadocClasspath(libs.slf4j)
 }
 
+indra {
+  configurePublications {
+    // Publish only the aggregated docs jar, not a normal Java component.
+    artifact(tasks.javadocJar)
+
+    pom {
+      name = "Adventure Javadoc"
+      description = "Aggregated Javadocs for Adventure"
+    }
+  }
+}
+
 tasks.named<Javadoc>("javadoc").configure {
   title = "Adventure $version (all modules)"
 }
