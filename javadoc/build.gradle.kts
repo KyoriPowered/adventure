@@ -40,5 +40,6 @@ indra {
 }
 
 tasks.named<Javadoc>("javadoc").configure {
-  title = "Adventure $version (all modules)"
+  title = "Adventure $version"
+  options.overview = "src/main/javadoc/overview.html"
 }
