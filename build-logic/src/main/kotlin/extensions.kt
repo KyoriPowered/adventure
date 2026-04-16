@@ -21,10 +21,12 @@ fun Project.applyJarMetadata(moduleName: String) {
   }
 }
 
-fun StandardJavadocDocletOptions.applyCommonJavadocTags() {
+fun StandardJavadocDocletOptions.applyCommonJavadocOptions() {
   tags(
     "obsolete:a:Obsolete",
     "sinceMinecraft:a:Since Minecraft:",
     "obsoleteSinceMinecraft:a:Obsolete since Minecraft",
   )
+
+  use(true)
 }

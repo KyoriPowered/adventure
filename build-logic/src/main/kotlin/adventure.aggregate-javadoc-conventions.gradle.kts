@@ -4,7 +4,7 @@ plugins {
 }
 
 tasks.named<Javadoc>("javadoc").configure {
-  (options as StandardJavadocDocletOptions).applyCommonJavadocTags()
+  (options as StandardJavadocDocletOptions).applyCommonJavadocOptions()
 }
 
 indra {
