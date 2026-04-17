@@ -109,7 +109,7 @@ public final class Services {
    * @since 4.14.0
    * @deprecated Use {@link #serviceWithFallback(ServiceLoader, Class)} instead, as this method is incompatible with java modules.
    */
-  @Deprecated(forRemoval = true, since = "5.0.1")
+  @Deprecated(forRemoval = true, since = "5.1.0")
   public static <P> Optional<P> serviceWithFallback(final Class<P> type) {
     return serviceWithFallback(Services0.loader(type), type);
   }
