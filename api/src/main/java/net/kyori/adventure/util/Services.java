@@ -51,7 +51,7 @@ public final class Services {
    * @since 4.8.0
    * @deprecated Use {@link #service(ServiceLoader, Class)} instead, as this method is incompatible with java modules.
    */
-  @Deprecated(forRemoval = true, since = "5.0.1")
+  @Deprecated(forRemoval = true, since = "5.1.0")
   public static <P> Optional<P> service(final Class<P> type) {
     return service(Services0.loader(type), type);
   }
@@ -63,7 +63,7 @@ public final class Services {
    * @param type the service type
    * @param <P> the service type
    * @return a service, or {@link Optional#empty()}
-   * @since 4.8.0
+   * @since 5.1.0
    */
   public static <P> Optional<P> service(final ServiceLoader<P> loader, final Class<P> type) {
     final Iterator<P> it = loader.iterator();
@@ -124,7 +124,7 @@ public final class Services {
    * @param <P> the service type
    * @return a service, or {@link Optional#empty()}
    * @see Fallback
-   * @since 5.0.1
+   * @since 5.1.0
    */
   public static <P> Optional<P> serviceWithFallback(final ServiceLoader<P> loader, final Class<P> type) {
     final Iterator<P> it = loader.iterator();
@@ -164,7 +164,7 @@ public final class Services {
    * @since 4.17.0
    * @deprecated Use {@link #services(ServiceLoader, Class)} instead, as this method is incompatible with java modules.
    */
-  @Deprecated(forRemoval = true, since = "5.0.1")
+  @Deprecated(forRemoval = true, since = "5.1.0")
   public static <P> Set<P> services(final Class<? extends P> clazz) {
     return services(Services0.loader(clazz), clazz);
   }
@@ -176,7 +176,7 @@ public final class Services {
    * @param type the service type
    * @param <P> the service interface type
    * @return an unmodifiable set of all known providers of the service
-   * @since 5.0.1
+   * @since 5.1.0
    */
   public static <P> Set<P> services(final ServiceLoader<? extends P> loader, final Class<? extends P> type) {
     final Set<P> providers = new HashSet<>();
