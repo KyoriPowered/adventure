@@ -48,7 +48,7 @@ record MiniMessageImpl(
   UnaryOperator<String> preProcessor,
   UnaryOperator<Component> postProcessor
 ) implements MiniMessage {
-  private static final Optional<Provider> SERVICE = Services.service(ServiceLoader.load(Provider.class), Provider.class);
+  private static final Optional<Provider> SERVICE = Services.service(ServiceLoader.load(Provider.class, Provider.class.getClassLoader()), Provider.class);
   static final Consumer<Builder> BUILDER = SERVICE
     .map(Provider::builder)
     .orElseGet(() -> builder -> {

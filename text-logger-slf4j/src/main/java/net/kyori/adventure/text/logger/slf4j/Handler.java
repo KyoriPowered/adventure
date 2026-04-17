@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * Utility methods relating to creating component loggers.
  */
 final class Handler {
-  private static final ComponentLoggerProvider PROVIDER = Services.service(ServiceLoader.load(ComponentLoggerProvider.class), ComponentLoggerProvider.class)
+  private static final ComponentLoggerProvider PROVIDER = Services.service(ServiceLoader.load(ComponentLoggerProvider.class, ComponentLoggerProvider.class.getClassLoader()), ComponentLoggerProvider.class)
     .orElse(LoggerFactory.getILoggerFactory() instanceof ComponentLoggerProvider ? (ComponentLoggerProvider) LoggerFactory.getILoggerFactory() : new DefaultProvider());
 
   private Handler() {

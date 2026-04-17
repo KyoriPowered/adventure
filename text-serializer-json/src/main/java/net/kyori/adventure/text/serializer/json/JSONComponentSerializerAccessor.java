@@ -29,7 +29,7 @@ import java.util.function.Supplier;
 import net.kyori.adventure.util.Services;
 
 final class JSONComponentSerializerAccessor {
-  private static final Optional<JSONComponentSerializer.Provider> SERVICE = Services.serviceWithFallback(ServiceLoader.load(JSONComponentSerializer.Provider.class), JSONComponentSerializer.Provider.class);
+  private static final Optional<JSONComponentSerializer.Provider> SERVICE = Services.serviceWithFallback(ServiceLoader.load(JSONComponentSerializer.Provider.class, JSONComponentSerializer.Provider.class.getClassLoader()), JSONComponentSerializer.Provider.class);
 
   private JSONComponentSerializerAccessor() {
   }

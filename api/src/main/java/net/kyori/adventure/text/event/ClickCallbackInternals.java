@@ -35,7 +35,7 @@ final class ClickCallbackInternals {
 
   static final PermissionChecker ALWAYS_FALSE = PermissionChecker.always(TriState.FALSE);
 
-  static final ClickCallback.Provider PROVIDER = Services.service(ServiceLoader.load(ClickCallback.Provider.class), ClickCallback.Provider.class)
+  static final ClickCallback.Provider PROVIDER = Services.service(ServiceLoader.load(ClickCallback.Provider.class, ClickCallback.Provider.class.getClassLoader()), ClickCallback.Provider.class)
     .orElseGet(Fallback::new);
 
   static final class Fallback implements ClickCallback.Provider {

@@ -40,7 +40,7 @@ import static java.util.Objects.requireNonNull;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NULL;
 
 final class GsonComponentSerializerImpl implements GsonComponentSerializer {
-  private static final Optional<Provider> SERVICE = Services.service(ServiceLoader.load(Provider.class), Provider.class);
+  private static final Optional<Provider> SERVICE = Services.service(ServiceLoader.load(Provider.class, Provider.class.getClassLoader()), Provider.class);
   static final Consumer<Builder> BUILDER = SERVICE
     .map(Provider::builder)
     .orElseGet(() -> builder -> {

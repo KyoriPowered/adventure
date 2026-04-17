@@ -39,7 +39,7 @@ final class PlainTextComponentSerializerImpl implements PlainTextComponentSerial
       throw new UnsupportedOperationException("Don't know how to turn " + component.getClass().getSimpleName() + " into a string");
     })
     .build();
-  private static final Optional<Provider> SERVICE = Services.service(ServiceLoader.load(Provider.class), Provider.class);
+  private static final Optional<Provider> SERVICE = Services.service(ServiceLoader.load(Provider.class, Provider.class.getClassLoader()), Provider.class);
   static final Consumer<Builder> BUILDER = SERVICE
     .map(Provider::plainText)
     .orElseGet(() -> builder -> {

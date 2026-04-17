@@ -50,7 +50,7 @@ import static java.util.Objects.requireNonNull;
  * @since 4.17.0
  */
 public final class DataComponentValueConverterRegistry {
-  private static final Set<Provider> PROVIDERS = Services.services(ServiceLoader.load(Provider.class), Provider.class);
+  private static final Set<Provider> PROVIDERS = Services.services(ServiceLoader.load(Provider.class, Provider.class.getClassLoader()), Provider.class);
 
   private DataComponentValueConverterRegistry() {
   }

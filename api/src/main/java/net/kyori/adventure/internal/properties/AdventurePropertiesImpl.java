@@ -39,7 +39,7 @@ import org.jspecify.annotations.Nullable;
 final class AdventurePropertiesImpl {
 
   static final class Providers {
-    static final Optional<AdventureProperties.DefaultOverrideProvider> DEFAULT_PROVIDER = Services.service(ServiceLoader.load(AdventureProperties.DefaultOverrideProvider.class), AdventureProperties.DefaultOverrideProvider.class);
+    static final Optional<AdventureProperties.DefaultOverrideProvider> DEFAULT_PROVIDER = Services.service(ServiceLoader.load(AdventureProperties.DefaultOverrideProvider.class, AdventureProperties.DefaultOverrideProvider.class.getClassLoader()), AdventureProperties.DefaultOverrideProvider.class);
   }
 
   private static final String FILESYSTEM_DIRECTORY_NAME = "config";
