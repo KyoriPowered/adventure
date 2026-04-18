@@ -38,6 +38,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.EntityNBTComponent;
 import net.kyori.adventure.text.KeybindComponent;
 import net.kyori.adventure.text.NBTComponent;
+import net.kyori.adventure.text.ObjectComponent;
 import net.kyori.adventure.text.ScoreComponent;
 import net.kyori.adventure.text.SelectorComponent;
 import net.kyori.adventure.text.StorageNBTComponent;
@@ -57,6 +58,8 @@ import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NBT_ENTITY;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NBT_INTERPRET;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NBT_STORAGE;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.OBJECT_PLAYER;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.OBJECT_SPRITE;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SCORE;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SCORE_NAME;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.SCORE_OBJECTIVE;
@@ -231,6 +234,10 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
       } else {
         throw notSureHowToDeserialize(input);
       }
+    } else if (compound.get(OBJECT_SPRITE) != null || compound.get(OBJECT_PLAYER) != null) {
+      return ObjectComponentSerializer.deserialize(compound, this)
+        .style(style)
+        .children(children);
     } else {
       throw notSureHowToDeserialize(input);
     }
@@ -301,6 +308,8 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
       } else {
         throw notSureHowToSerialize(component);
       }
+    } else if (component instanceof ObjectComponent) {
+      ObjectComponentSerializer.serialize((ObjectComponent) component, builder, this);
     } else {
       throw notSureHowToSerialize(component);
     }
