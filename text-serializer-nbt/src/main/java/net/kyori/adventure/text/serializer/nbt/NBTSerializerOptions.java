@@ -91,6 +91,17 @@ public final class NBTSerializerOptions {
    */
   public static final Option<Boolean> EMIT_OPTIMIZED_LISTS;
 
+  /**
+   * Whether to prepend {@code https://} to click event URLs that are missing a scheme.
+   *
+   * <p>As of <em>Minecraft: Java Edition</em> 1.21.5 an {@code open_url} click event url
+   * will fail to parse if it does not have a {@code http://} or {@code https://} scheme.</p>
+   *
+   * @since 4.25.0
+   * @sinceMinecraft 1.21.5
+   */
+  public static final Option<Boolean> EMIT_CLICK_URL_HTTPS;
+
   private static final OptionSchema SCHEMA;
   private static final OptionState.Versioned BY_DATA_VERSION;
 
@@ -111,6 +122,7 @@ public final class NBTSerializerOptions {
     SHOW_ITEM_HOVER_DATA_MODE = schema.enumOption(key("emit/show_item_hover_data"), ShowItemHoverDataMode.class, ShowItemHoverDataMode.EMIT_EITHER);
     EMIT_SHOW_TEXT_HOVER_TEXT_FIELD = schema.booleanOption(key("emit/show_text_hover_text_field"), false);
     EMIT_OPTIMIZED_LISTS = schema.booleanOption(key("emit/optimized_lists"), false);
+    EMIT_CLICK_URL_HTTPS = schema.booleanOption(key("emit/click_url_https"), false);
     SCHEMA = schema.frozenView();
 
     BY_DATA_VERSION = SCHEMA.versionedStateBuilder()
@@ -141,6 +153,7 @@ public final class NBTSerializerOptions {
         builder -> builder.value(EMIT_HOVER_EVENT_TYPE, HoverEventValueMode.SNAKE_CASE)
           .value(EMIT_CLICK_EVENT_TYPE, ClickEventValueMode.SNAKE_CASE)
           .value(EMIT_SHOW_TEXT_HOVER_TEXT_FIELD, true)
+          .value(EMIT_CLICK_URL_HTTPS, true)
       )
       .version(
         VERSION_25W03A,

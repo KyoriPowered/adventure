@@ -149,14 +149,14 @@ final class StyleSerializer {
       final boolean emitCamelCaseClickEvent = clickEventValueMode == NBTSerializerOptions.ClickEventValueMode.CAMEL_CASE;
 
       if (emitBothClickEvents || emitSnakeCaseClickEvent) {
-        final BinaryTag clickEventTag = ClickEventSerializer.serialize(clickEvent, true);
+        final BinaryTag clickEventTag = ClickEventSerializer.serialize(clickEvent, true, serializer);
         if (clickEventTag != null) {
           builder.put(CLICK_EVENT_SNAKE, clickEventTag);
         }
       }
 
       if (emitBothClickEvents || emitCamelCaseClickEvent) {
-        final BinaryTag clickEventTag = ClickEventSerializer.serialize(clickEvent, false);
+        final BinaryTag clickEventTag = ClickEventSerializer.serialize(clickEvent, false, serializer);
         if (clickEventTag != null) {
           builder.put(CLICK_EVENT_CAMEL, clickEventTag);
         }

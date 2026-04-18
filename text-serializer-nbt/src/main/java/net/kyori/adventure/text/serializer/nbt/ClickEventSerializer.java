@@ -45,6 +45,8 @@ import static net.kyori.adventure.text.serializer.nbt.NBTSerializerUtils.require
 
 final class ClickEventSerializer {
 
+  private static final String FALLBACK_URL_PROTOCOL = "https://";
+
   private ClickEventSerializer() {
   }
 
@@ -94,16 +96,19 @@ final class ClickEventSerializer {
     }
   }
 
-  static @Nullable CompoundBinaryTag serialize(final @NotNull ClickEvent<?> event, final boolean snakeCase) {
+  static @Nullable CompoundBinaryTag serialize(final @NotNull ClickEvent<?> event, final boolean snakeCase,
+                                               final @NotNull NBTComponentSerializerImpl serializer) {
     final ClickEvent.Action<?> action = event.action();
+    if (!action.readable()) {
+      return null;
+    }
+
     final CompoundBinaryTag.Builder builder = CompoundBinaryTag.builder()
       .putString(CLICK_EVENT_ACTION, ClickEvent.Action.NAMES.keyOrThrow(action));
 
-    if (snakeCase) {
-      if (!action.readable()) {
-        return null;
-      }
+    final boolean emitHttps = serializer.options().value(NBTSerializerOptions.EMIT_CLICK_URL_HTTPS);
 
+    if (snakeCase) {
       final ClickEvent.Payload payload = event.payload();
       switch (payload) {
         case ClickEvent.Payload.Text text -> {
@@ -114,7 +119,7 @@ final class ClickEventSerializer {
             case ClickEvent.Action.CopyToClipboard ignored -> CLICK_EVENT_VALUE;
             default -> throw new IllegalArgumentException("Unexpected text-payload click event action: " + action);
           };
-          builder.putString(payloadFieldName, text.value());
+          builder.putString(payloadFieldName, textPayloadValue(action, text.value(), emitHttps));
         }
         case ClickEvent.Payload.Int intPayload -> builder.putInt(CLICK_EVENT_PAGE, intPayload.integer());
         case ClickEvent.Payload.Custom customPayload -> {
@@ -134,7 +139,7 @@ final class ClickEventSerializer {
     } else {
       final ClickEvent.Payload payload = event.payload();
       final String value = switch (payload) {
-        case ClickEvent.Payload.Text text -> text.value();
+        case ClickEvent.Payload.Text text -> textPayloadValue(action, text.value(), emitHttps);
         case ClickEvent.Payload.Int intPayload -> String.valueOf(intPayload.integer());
         case ClickEvent.Payload.Custom ignored -> null;
         case ClickEvent.Payload.Dialog ignored -> null;
@@ -146,5 +151,17 @@ final class ClickEventSerializer {
     }
 
     return builder.build();
+  }
+
+  private static @NotNull String textPayloadValue(final ClickEvent.@NotNull Action<?> action, final @NotNull String value, final boolean emitHttps) {
+    if (emitHttps && action == ClickEvent.Action.OPEN_URL && !hasUrlScheme(value)) {
+      return FALLBACK_URL_PROTOCOL + value;
+    }
+    return value;
+  }
+
+  @SuppressWarnings("HttpUrlsUsage")
+  private static boolean hasUrlScheme(final @NotNull String url) {
+    return url.startsWith("http://") || url.startsWith("https://");
   }
 }
