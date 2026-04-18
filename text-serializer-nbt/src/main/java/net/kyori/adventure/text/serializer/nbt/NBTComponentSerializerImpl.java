@@ -57,6 +57,7 @@ import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NBT_BLOCK;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NBT_ENTITY;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NBT_INTERPRET;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NBT_PLAIN;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NBT_STORAGE;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.OBJECT_PLAYER;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.OBJECT_SPRITE;
@@ -193,6 +194,9 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
       final ByteBinaryTag interpretTag = optionalTag(compound, NBT_INTERPRET, BinaryTagTypes.BYTE);
       final boolean interpret = interpretTag != null && asBoolean(interpretTag);
 
+      final ByteBinaryTag plainTag = optionalTag(compound, NBT_PLAIN, BinaryTagTypes.BYTE);
+      final boolean plain = plainTag != null && asBoolean(plainTag);
+
       final BinaryTag separatorTag = compound.get(SEPARATOR);
       Component separator = null;
 
@@ -208,6 +212,7 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
         return Component.blockNBT()
           .nbtPath(nbtPath)
           .interpret(interpret)
+          .plain(plain)
           .separator(separator)
           .pos(BlockNBTComponent.Pos.fromString(blockTag.value()))
           .style(style)
@@ -217,6 +222,7 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
         return Component.entityNBT()
           .nbtPath(nbtPath)
           .interpret(interpret)
+          .plain(plain)
           .separator(separator)
           .selector(entityTag.value())
           .style(style)
@@ -226,6 +232,7 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
         return Component.storageNBT()
           .nbtPath(nbtPath)
           .interpret(interpret)
+          .plain(plain)
           .separator(separator)
           .storage(KeySerializer.deserialize(storageTag))
           .style(style)
@@ -292,6 +299,10 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
 
       if (nbt.interpret()) {
         builder.putBoolean(NBT_INTERPRET, true);
+      }
+
+      if (nbt.plain()) {
+        builder.putBoolean(NBT_PLAIN, true);
       }
 
       final Component separator = nbt.separator();
