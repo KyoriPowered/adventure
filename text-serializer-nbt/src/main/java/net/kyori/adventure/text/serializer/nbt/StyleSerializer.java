@@ -140,7 +140,7 @@ final class StyleSerializer {
       builder.putString(INSERTION, insertion);
     }
 
-    final ClickEvent clickEvent = style.clickEvent();
+    final ClickEvent<?> clickEvent = style.clickEvent();
     if (clickEvent != null) {
       final NBTSerializerOptions.ClickEventValueMode clickEventValueMode = flags.value(NBTSerializerOptions.EMIT_CLICK_EVENT_TYPE);
 

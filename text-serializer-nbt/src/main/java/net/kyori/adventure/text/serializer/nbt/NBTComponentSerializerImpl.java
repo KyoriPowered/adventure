@@ -280,7 +280,7 @@ final class NBTComponentSerializerImpl implements NBTComponentSerializer {
         builder.put(SEPARATOR, this.serialize(separator));
       }
     } else if (component instanceof NBTComponent) {
-      final NBTComponent<?, ?> nbt = (NBTComponent<?, ?>) component;
+      final NBTComponent<?> nbt = (NBTComponent<?>) component;
       builder.putString(NBT, nbt.nbtPath());
 
       if (nbt.interpret()) {

@@ -82,7 +82,7 @@ final class SerializerTests {
     return NamedTextColor.NAMES.keyOrThrow(decoration);
   }
 
-  static @NotNull String name(final ClickEvent.@NotNull Action action) {
+  static @NotNull String name(final ClickEvent.@NotNull Action<?> action) {
     return ClickEvent.Action.NAMES.keyOrThrow(action);
   }
 
