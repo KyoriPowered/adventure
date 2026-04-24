@@ -104,13 +104,8 @@ public interface Key extends Comparable<Key>, Namespaced, Keyed {
    * @throws InvalidKeyException if the namespace or value contains an invalid character
    * @since 4.0.0
    */
-  @SuppressWarnings("PatternValidation") // impossible to validate since the character is variable
   static Key key(final String string, final char character) {
-    Objects.requireNonNull(string, "string");
-    final int index = string.indexOf(character);
-    final String namespace = index >= 1 ? string.substring(0, index) : MINECRAFT_NAMESPACE;
-    final String value = index >= 0 ? string.substring(index + 1) : string;
-    return key(namespace, value);
+    return KeyFormatImpl.parseKey(Objects.requireNonNull(string, "string"), character, MINECRAFT_NAMESPACE);
   }
 
   /**
@@ -160,13 +155,7 @@ public interface Key extends Comparable<Key>, Namespaced, Keyed {
    * @since 4.12.0
    */
   static boolean parseable(final @Nullable String string) {
-    if (string == null) {
-      return false;
-    }
-    final int index = string.indexOf(DEFAULT_SEPARATOR);
-    final String namespace = index >= 1 ? string.substring(0, index) : MINECRAFT_NAMESPACE;
-    final String value = index >= 0 ? string.substring(index + 1) : string;
-    return parseableNamespace(namespace) && parseableValue(value);
+    return KeyFormat.minecraft().parseable(string);
   }
 
   /**
@@ -280,7 +269,9 @@ public interface Key extends Comparable<Key>, Namespaced, Keyed {
    * @return the string representation
    * @since 4.0.0
    */
-  String asString();
+  default String asString() {
+    return KeyFormat.minecraft().asString(this);
+  }
 
   /**
    * Returns the string representation of this key in minimal form.
@@ -291,10 +282,7 @@ public interface Key extends Comparable<Key>, Namespaced, Keyed {
    * @since 4.15.0
    */
   default String asMinimalString() {
-    if (this.namespace().equals(MINECRAFT_NAMESPACE)) {
-      return this.value();
-    }
-    return this.asString();
+    return KeyFormat.minecraft().asMinimalString(this);
   }
 
   @Override
