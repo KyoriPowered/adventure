@@ -45,17 +45,18 @@ public final class Services {
 
   /**
    * Locates a service.
-   * <br>
-   * Note: This method is only intended for internal use, as it can only receive services from the adventures `api` module.
    *
    * @param type the service type
    * @param <P> the service type
    * @return a service, or {@link Optional#empty()}
    * @since 4.8.0
+   * @deprecated This method creates the {@link ServiceLoader} in the API module and is not compatible with JPMS service lookup.
+   *     Use {@link #service(ServiceLoader, Class)} instead.
    */
-  @ApiStatus.Internal
+  @Deprecated(since = "5.1.0", forRemoval = true)
+  @ApiStatus.ScheduledForRemoval(inVersion = "6.0.0")
   public static <P> Optional<P> service(final Class<P> type) {
-    return service(Services0.loader(type), type);
+    return service(ServiceLoader.load(type, type.getClassLoader()), type);
   }
 
   /**
@@ -103,18 +104,19 @@ public final class Services {
    * Locates a service.
    *
    * <p>If multiple services of this type exist, the first non-fallback service will be returned.</p>
-   * <br>
-   * Note: This method is only intended for internal use, as it can only receive services from the adventures `api` module.
    *
    * @param type the service type
    * @param <P> the service type
    * @return a service, or {@link Optional#empty()}
    * @see Fallback
    * @since 4.14.0
+   * @deprecated This method creates the {@link ServiceLoader} in the API module and is not compatible with JPMS service lookup.
+   *     Use {@link #serviceWithFallback(ServiceLoader, Class)} instead.
    */
-  @ApiStatus.Internal
+  @Deprecated(since = "5.1.0", forRemoval = true)
+  @ApiStatus.ScheduledForRemoval(inVersion = "6.0.0")
   public static <P> Optional<P> serviceWithFallback(final Class<P> type) {
-    return serviceWithFallback(Services0.loader(type), type);
+    return serviceWithFallback(ServiceLoader.load(type, type.getClassLoader()), type);
   }
 
   /**
@@ -160,17 +162,18 @@ public final class Services {
 
   /**
    * Locates all providers for a certain service and initializes them.
-   * <br>
-   * Note: This method is only intended for internal use, as it can only receive services from the adventures `api` module.
    *
    * @param clazz the service interface
    * @param <P> the service interface type
    * @return an unmodifiable set of all known providers of the service
    * @since 4.17.0
+   * @deprecated This method creates the {@link ServiceLoader} in the API module and is not compatible with JPMS service lookup.
+   *     Use {@link #services(ServiceLoader, Class)} instead.
    */
-  @ApiStatus.Internal
+  @Deprecated(since = "5.1.0", forRemoval = true)
+  @ApiStatus.ScheduledForRemoval(inVersion = "6.0.0")
   public static <P> Set<P> services(final Class<? extends P> clazz) {
-    return services(Services0.loader(clazz), clazz);
+    return services(ServiceLoader.load(clazz, clazz.getClassLoader()), clazz);
   }
 
   /**

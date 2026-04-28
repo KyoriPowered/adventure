@@ -30,6 +30,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.ServiceLoader;
 import java.util.function.Function;
 import net.kyori.adventure.util.Services;
 import org.jetbrains.annotations.VisibleForTesting;
@@ -38,7 +39,7 @@ import org.jspecify.annotations.Nullable;
 final class AdventurePropertiesImpl {
 
   static final class Providers {
-    static final Optional<AdventureProperties.DefaultOverrideProvider> DEFAULT_PROVIDER = Services.service(AdventureProperties.DefaultOverrideProvider.class);
+    static final Optional<AdventureProperties.DefaultOverrideProvider> DEFAULT_PROVIDER = Services.service(ServiceLoader.load(AdventureProperties.DefaultOverrideProvider.class), AdventureProperties.DefaultOverrideProvider.class);
   }
 
   private static final String FILESYSTEM_DIRECTORY_NAME = "config";
