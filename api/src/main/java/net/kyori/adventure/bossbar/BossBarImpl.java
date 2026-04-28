@@ -50,7 +50,7 @@ final class BossBarImpl extends HackyBossBarPlatformBridge implements BossBar {
 
   static final class ImplementationAccessor {
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    private static final Optional<BossBarImplementation.Provider> SERVICE = Services.service(ServiceLoader.load(BossBarImplementation.Provider.class), BossBarImplementation.Provider.class);
+    private static final Optional<BossBarImplementation.Provider> SERVICE = Services.service(ServiceLoader.load(BossBarImplementation.Provider.class, BossBarImplementation.Provider.class.getClassLoader()), BossBarImplementation.Provider.class);
 
     private ImplementationAccessor() {
     }
