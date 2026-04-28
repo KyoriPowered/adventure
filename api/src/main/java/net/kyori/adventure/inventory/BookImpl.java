@@ -32,16 +32,6 @@ import net.kyori.adventure.text.Component;
 import static java.util.Objects.requireNonNull;
 
 record BookImpl(Component title, Component author, List<Component> pages) implements Book {
-  BookImpl(final Component title, final Component author, final List<Component> pages) {
-    this.title = requireNonNull(title, "title");
-    this.author = requireNonNull(author, "author");
-    this.pages = List.copyOf(requireNonNull(pages, "pages"));
-  }
-
-  BookImpl(final List<Component> pages) {
-    this(Component.empty(), Component.empty(), List.copyOf(requireNonNull(pages, "pages")));
-  }
-
   @Override
   public Component title() {
     return this.title;
@@ -69,7 +59,7 @@ record BookImpl(Component title, Component author, List<Component> pages) implem
 
   @Override
   public Book pages(final List<Component> pages) {
-    return new BookImpl(this.title, this.author, new ArrayList<>(requireNonNull(pages, "pages")));
+    return new BookImpl(this.title, this.author, List.copyOf(requireNonNull(pages, "pages")));
   }
 
   @Override
@@ -115,14 +105,15 @@ record BookImpl(Component title, Component author, List<Component> pages) implem
     }
 
     @Override
-    public Builder pages(final Component ... pages) {
+    public Builder pages(final Component... pages) {
+      requireNonNull(pages, "pages");
       Collections.addAll(this.pages, pages);
       return this;
     }
 
     @Override
     public Book build() {
-      return new BookImpl(this.title, this.author, List.copyOf(this.pages));
+      return new BookImpl(this.title, this.author, this.pages);
     }
   }
 }
