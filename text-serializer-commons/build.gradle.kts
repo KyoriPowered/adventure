@@ -3,8 +3,8 @@ plugins {
 }
 
 dependencies {
+  api(libs.jspecify)
   compileOnlyApi(libs.jetbrainsAnnotations)
-  compileOnlyApi(libs.jspecify)
 }
 
 applyJarMetadata("net.kyori.adventure.text.serializer.constant")

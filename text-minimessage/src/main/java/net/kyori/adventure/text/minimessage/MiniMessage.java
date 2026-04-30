@@ -23,14 +23,19 @@
  */
 package net.kyori.adventure.text.minimessage;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.pointer.Pointered;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.VirtualComponent;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
 import net.kyori.adventure.text.minimessage.tree.Node;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
+import net.kyori.adventure.util.Index;
 import net.kyori.adventure.util.PlatformAPI;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
@@ -52,6 +57,134 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    */
   static MiniMessage miniMessage() {
     return MiniMessageImpl.Instances.INSTANCE;
+  }
+
+  /**
+   * Gets an instance based on a specific preset.
+   *
+   * @param preset the preset to use
+   * @return an instance
+   * @since 5.0.0
+   */
+  static MiniMessage miniMessage(final Preset preset) {
+    Objects.requireNonNull(preset, "preset");
+    return MiniMessageImpl.Instances.PRESETS.get(preset);
+  }
+
+  /**
+   * A variety of presets for configuring MiniMessage.
+   *
+   * <p>
+   *   These presets can be used to get a default confuguration for MiniMessage by
+   *   using the {@link #miniMessage(Preset)} method.
+   * </p>
+   *
+   * <p>
+   *   Alternatively, you can get a pre-configured builder based on a preset.
+   *   This can be used to make your own custom MiniMessage instance whilst still keeping
+   *   any configuration provided by a preset, such as post-processing.
+   *   An example of how to do this is provided below.
+   * </p>
+   * <pre>
+   * {@code
+   * // Obtain the pre-configured builder.
+   * final MiniMessage.Builder builder = MiniMessage.builder(MiniMessage.Preset.NON_INTERACTABLE);
+   *
+   * // Add your own tags or override other settings if needed.
+   * builder.editTags(tags -> {
+   *   tags
+   *     .resolver(new MyCustomTagResolver())
+   *     .resolver(fetchExternalTags());
+   * });
+   *
+   * // Then build your MiniMessage instance!
+   * final MiniMessage myMiniMessageInstance = builder.build();
+   * }
+   * </pre>
+   *
+   * @see #miniMessage(Preset)
+   * @see #builder(Preset)
+   * @since 5.0.0
+   */
+  enum Preset implements Consumer<Builder> {
+    /**
+     * The default preset, containing all features of MiniMessage.
+     *
+     * @since 5.0.0
+     */
+    DEFAULT {
+      @Override
+      public void accept(final Builder builder) {
+        // no op, we keep default settings
+      }
+    },
+
+    /**
+     * A preset that disables all interactive features, such as hover and click events.
+     *
+     * <p>This preset also removes hover and click events from the returned component
+     * using a custom post-processor.</p>
+     *
+     * @since 5.0.0
+     */
+    NON_INTERACTABLE {
+      @Override
+      public void accept(final Builder builder) {
+        Objects.requireNonNull(builder, "builder");
+        builder.tags(StandardTags.forPreset(this));
+        builder.postProcessor(component ->
+          component
+            .toBuilder()
+            .applyDeep(child -> child.clickEvent(null).hoverEvent(null).insertion(null))
+            .build()
+            .compact()
+        );
+      }
+    },
+
+    /**
+     * A preset that disables all non-text component types and only allows formatting
+     * text components (i.e., color, shadow, decorations, fonts).
+     *
+     * <p>This preset also performs the following modifications to the resulting component
+     * using a custom post-processor:</p>
+     * <ul>
+     *   <li>Removes click events, hover events, and insertions from all text components.</li>
+     *   <li>Filters out any non-text components.</li>
+     * </ul>
+     *
+     * @since 5.0.0
+     */
+    FORMATTED_TEXT {
+      @Override
+      public void accept(final Builder builder) {
+        Objects.requireNonNull(builder, "builder");
+        builder.tags(StandardTags.forPreset(this));
+        builder.postProcessor(component ->
+          Component
+            .textOfChildren(component) // Wrap it in the empty component so we don't care about the root when mapping.
+            .toBuilder()
+            .mapChildrenDeep(child -> {
+              if (child instanceof TextComponent && !(child instanceof VirtualComponent)) {
+                return child.toBuilder().clickEvent(null).hoverEvent(null).insertion(null).build();
+              } else {
+                return Component.empty();
+              }
+            })
+            .build()
+            .compact()
+        );
+      }
+    };
+
+    /**
+     * The name map.
+     *
+     * <p>This can be used to easily make configurable presets.</p>
+     *
+     * @since 5.0.0
+     */
+    public static final Index<String, Preset> NAMES = Index.create(Preset.class, Preset::name);
   }
 
   /**
@@ -300,6 +433,20 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    */
   static Builder builder() {
     return new MiniMessageImpl.BuilderImpl();
+  }
+
+  /**
+   * Creates a new {@link MiniMessage.Builder} pre-configured for a specific preset.
+   *
+   * @param preset the preset
+   * @return the builder
+   * @since 5.0.0
+   */
+  static Builder builder(final Preset preset) {
+    Objects.requireNonNull(preset, "preset");
+    final Builder builder = MiniMessage.builder();
+    preset.accept(builder);
+    return builder;
   }
 
   /**

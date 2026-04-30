@@ -23,11 +23,13 @@
  */
 package net.kyori.adventure.text.format;
 
+import java.util.HexFormat;
 import net.kyori.adventure.util.HSVLike;
 import org.jetbrains.annotations.Debug;
 
 @Debug.Renderer(text = "asHexString()")
 record TextColorImpl(int value) implements TextColor {
+  private static final HexFormat HEX_FORMATTER = HexFormat.of().withUpperCase();
 
   @Override
   public String toString() {
@@ -49,5 +51,15 @@ record TextColorImpl(int value) implements TextColor {
     final float saturationDiff = self.s() - other.s();
     final float valueDiff = self.v() - other.v();
     return hueDistance * hueDistance + saturationDiff * saturationDiff + valueDiff * valueDiff;
+  }
+
+  /**
+   * Parses a value into an RGB hex string using the format #RRGGBB.
+   *
+   * @param value the value in RRGGBB in the range of 0x0 to 0xffffff
+   * @return an uppercase hex string
+   */
+  public static String hexString(final int value) {
+    return HEX_CHARACTER + HEX_FORMATTER.toHexDigits(value, 6);
   }
 }

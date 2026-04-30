@@ -78,7 +78,7 @@ public interface ForwardingAudience extends Audience {
 
   @Override
   default Audience filterAudience(final Predicate<? super Audience> filter) {
-    @Nullable List<Audience> audiences = null;
+    List<Audience> audiences = null;
     for (final Audience audience : this.audiences()) {
       if (filter.test(audience)) {
         final Audience filtered = audience.filterAudience(filter);
@@ -242,16 +242,8 @@ public interface ForwardingAudience extends Audience {
      * @return the audience
      * @since 4.0.0
      */
-    @ApiStatus.OverrideOnly
     Audience audience();
 
-    /**
-     * {@inheritDoc}
-     *
-     * @return {@link #audience()}
-     * @deprecated this audience only supports forwarding to a single audience
-     */
-    @Deprecated
     @Override
     default Iterable<? extends Audience> audiences() {
       return Collections.singleton(this.audience());

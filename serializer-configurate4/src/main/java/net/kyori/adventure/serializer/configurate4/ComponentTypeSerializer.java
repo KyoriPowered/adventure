@@ -59,8 +59,10 @@ import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NBT_BLOCK;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NBT_ENTITY;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NBT_INTERPRET;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NBT_PLAIN;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NBT_STORAGE;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.OBJECT_ATLAS;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.OBJECT_FALLBACK;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.OBJECT_HAT;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.OBJECT_PLAYER;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.OBJECT_PLAYER_ID;
@@ -170,13 +172,14 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
     } else if (children.containsKey(NBT)) {
       final String nbt = children.get(NBT).getString();
       final boolean interpret = children.containsKey(NBT_INTERPRET) && children.get(NBT_INTERPRET).getBoolean();
+      final boolean plain = children.containsKey(NBT_PLAIN) && children.get(NBT_PLAIN).getBoolean();
       if (children.containsKey(NBT_BLOCK)) {
         final BlockNBTComponent.Pos pos = children.get(NBT_BLOCK).get(BlockNBTPosSerializer.INSTANCE.type());
-        component = nbt(Component.blockNBT(), nbt, interpret).pos(pos);
+        component = nbt(Component.blockNBT(), nbt, interpret, plain).pos(pos);
       } else if (children.containsKey(NBT_ENTITY)) {
-        component = nbt(Component.entityNBT(), nbt, interpret).selector(children.get(NBT_ENTITY).getString());
+        component = nbt(Component.entityNBT(), nbt, interpret, plain).selector(children.get(NBT_ENTITY).getString());
       } else if (children.containsKey(NBT_STORAGE)) {
-        component = nbt(Component.storageNBT(), nbt, interpret).storage(children.get(NBT_STORAGE).get(KeySerializer.INSTANCE.type()));
+        component = nbt(Component.storageNBT(), nbt, interpret, plain).storage(children.get(NBT_STORAGE).get(KeySerializer.INSTANCE.type()));
       } else {
         throw notSureHowToDeserialize(value);
       }
@@ -184,7 +187,7 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
       component = Component.object().contents(ObjectContents.sprite(
         children.containsKey(OBJECT_ATLAS) ? children.get(OBJECT_ATLAS).get(KeySerializer.INSTANCE.type()) : SpriteObjectContents.DEFAULT_ATLAS,
         children.get(OBJECT_SPRITE).get(KeySerializer.INSTANCE.type())
-      ));
+      )).fallback(readOptionalFallbackComponent(children));
     } else if (children.containsKey(OBJECT_PLAYER)) {
       final PlayerHeadObjectContents.Builder playerHeadContents = ObjectContents.playerHead();
       if (children.containsKey(OBJECT_HAT)) {
@@ -223,7 +226,7 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
         throw notSureHowToDeserialize(value);
       }
 
-      component = Component.object().contents(playerHeadContents.build());
+      component = Component.object().contents(playerHeadContents.build()).fallback(readOptionalFallbackComponent(children));
     } else {
       throw notSureHowToDeserialize(value);
     }
@@ -282,6 +285,7 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
     } else if (src instanceof final NBTComponent<?> nc) {
       value.node(NBT).set(nc.nbtPath());
       value.node(NBT_INTERPRET).set(nc.interpret());
+      value.node(NBT_PLAIN).set(nc.plain());
       switch (src) {
         case BlockNBTComponent blockNBTComponent -> value.node(NBT_BLOCK).set(BlockNBTPosSerializer.INSTANCE.type(), blockNBTComponent.pos());
         case EntityNBTComponent ignored -> value.node(NBT_ENTITY).set(((EntityNBTComponent) nc).selector());
@@ -291,6 +295,12 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
     } else if (src instanceof ObjectComponent) {
       final ObjectComponent objectComponent = (ObjectComponent) src;
       final ObjectContents contents = objectComponent.contents();
+
+      final Component fallback = objectComponent.fallback();
+      if (fallback != null) {
+        value.node(OBJECT_FALLBACK).set(fallback);
+      }
+
       if (contents instanceof SpriteObjectContents) {
         final SpriteObjectContents spriteContents = (SpriteObjectContents) contents;
         if (!spriteContents.atlas().equals(SpriteObjectContents.DEFAULT_ATLAS)) {
@@ -343,10 +353,21 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
     }
   }
 
-  private static <C extends NBTComponent<C>, B extends NBTComponentBuilder<C, B>> B nbt(final B builder, final String nbt, final boolean interpret) {
+  private static @Nullable Component readOptionalFallbackComponent(final Map<Object, ? extends ConfigurationNode> children) throws SerializationException {
+    final ConfigurationNode fallback = children.get(OBJECT_FALLBACK);
+    if (fallback == null) {
+      return null;
+    }
+    return fallback.get(Component.class);
+  }
+
+  private static <C extends NBTComponent<C>, B extends NBTComponentBuilder<C, B>> B nbt(final B builder, final String nbt, final boolean interpret, final boolean plain) throws SerializationException {
+    // Check manually to throw more specific exception.
+    if (interpret && plain) throw new SerializationException("Cannot have `interpret` and `plain` set to true at the same time");
     return builder
       .nbtPath(nbt)
-      .interpret(interpret);
+      .interpret(interpret)
+      .plain(plain);
   }
 
   private static SerializationException notSureHowToDeserialize(final ConfigurationNode element) {

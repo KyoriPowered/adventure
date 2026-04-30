@@ -133,4 +133,9 @@ class TextColorTest {
     final TextColor original = TextColor.color(0x77ff11);
     assertEquals(original, TextColor.fromCSSHexString("#7f1"));
   }
+
+  @Test
+  void testAsHexString() {
+    assertEquals("#7F1E2D", TextColor.color(0x7f1e2d).asHexString());
+  }
 }

@@ -28,13 +28,25 @@ import java.util.UUID;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.object.ObjectContents;
-import net.kyori.adventure.text.object.PlayerHeadObjectContents;
 import net.kyori.adventure.text.serializer.commons.ComponentTreeConstants;
 import org.junit.jupiter.api.Test;
 
+import static net.kyori.adventure.text.object.PlayerHeadObjectContents.property;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 final class ObjectComponentTest extends SerializerTest {
+  @Test
+  void testFallbackSerialization() {
+    this.testObject(
+      Component.object(ObjectContents.sprite(Key.key("item/diamond_sword")))
+        .fallback(Component.text("fallback")),
+      json -> {
+        json.addProperty(ComponentTreeConstants.OBJECT_FALLBACK, "fallback");
+        json.addProperty(ComponentTreeConstants.OBJECT_SPRITE, "minecraft:item/diamond_sword");
+      }
+    );
+  }
+
   @Test
   void testSprite() {
     this.testObject(
@@ -105,7 +117,7 @@ final class ObjectComponentTest extends SerializerTest {
   void testPlayerProperties() {
     this.testObject(
       Component.object(ObjectContents.playerHead().profileProperty(
-        PlayerHeadObjectContents.property("textures", "cool_value", "cool_signature")
+        property("textures", "cool_value", "cool_signature")
       ).build()),
       json -> {
         json.add(ComponentTreeConstants.OBJECT_PLAYER, object(profile ->
@@ -126,8 +138,8 @@ final class ObjectComponentTest extends SerializerTest {
   void testMapPropertyFormat() {
     assertEquals(
       Component.object(ObjectContents.playerHead()
-        .profileProperty(PlayerHeadObjectContents.property("textures", "cool_value"))
-        .profileProperty(PlayerHeadObjectContents.property("textures", "cooler_value"))
+        .profileProperty(property("textures", "cool_value"))
+        .profileProperty(property("textures", "cooler_value"))
         .build()),
       deserialize(object(json -> {
         json.add(ComponentTreeConstants.OBJECT_PLAYER, object(profile ->

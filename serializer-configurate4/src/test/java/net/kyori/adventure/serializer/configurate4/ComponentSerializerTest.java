@@ -130,10 +130,12 @@ class ComponentSerializerTest implements ConfigurateTestBase {
       n.node(ComponentTreeConstants.NBT).raw("Something[1].CustomName");
       n.node(ComponentTreeConstants.NBT_INTERPRET).raw(true);
       n.node(ComponentTreeConstants.NBT_BLOCK).raw("^0.0 ^0.0 ^0.0");
+      n.node(ComponentTreeConstants.NBT_PLAIN).raw(false);
     });
     final Component component = Component.blockNBT()
       .nbtPath("Something[1].CustomName")
       .interpret(true)
+      .plain(false)
       .localPos(0, 0, 0)
       .build();
 
@@ -146,10 +148,12 @@ class ComponentSerializerTest implements ConfigurateTestBase {
       n.node(ComponentTreeConstants.NBT).raw("Something[1].CustomName");
       n.node(ComponentTreeConstants.NBT_INTERPRET).raw(false);
       n.node(ComponentTreeConstants.NBT_ENTITY).raw("@e[limit=1]");
+      n.node(ComponentTreeConstants.NBT_PLAIN).raw(false);
     });
     final Component component = Component.entityNBT()
       .nbtPath("Something[1].CustomName")
       .interpret(false)
+      .plain(false)
       .selector("@e[limit=1]")
       .build();
 
@@ -162,10 +166,12 @@ class ComponentSerializerTest implements ConfigurateTestBase {
       n.node(ComponentTreeConstants.NBT).raw("Kittens.Toes[0]");
       n.node(ComponentTreeConstants.NBT_INTERPRET).raw(false);
       n.node(ComponentTreeConstants.NBT_STORAGE).raw("adventure:purr");
+      n.node(ComponentTreeConstants.NBT_PLAIN).raw(true);
     });
     final Component component = Component.storageNBT()
       .nbtPath("Kittens.Toes[0]")
       .interpret(false)
+      .plain(true)
       .storage(Key.key("adventure", "purr"))
       .build();
 

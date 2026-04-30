@@ -51,8 +51,11 @@ public sealed interface NBTComponentBuilder<C extends NBTComponent<C>, B extends
   /**
    * Sets whether to interpret.
    *
+   * <p>This cannot be {@code true} if {@link #plain(boolean)} is also {@code true}.</p>
+   *
    * @param interpret if we should be interpreting
    * @return this builder
+   * @throws IllegalArgumentException if set to {@code true} and {@link #plain(boolean)} is also {@code true}
    * @since 4.0.0
    */
   @Contract("_ -> this")
@@ -67,4 +70,17 @@ public sealed interface NBTComponentBuilder<C extends NBTComponent<C>, B extends
    */
   @Contract("_ -> this")
   B separator(final @Nullable ComponentLike separator);
+
+  /**
+   * Sets if styling should be removed from pretty-printed NBT.
+   *
+   * <p>This cannot be {@code true} if {@link #interpret(boolean)} is also {@code true}.</p>
+   *
+   * @param plain if styling should be removed when pretty-printed
+   * @return this builder
+   * @throws IllegalArgumentException if set to {@code true} and {@link #interpret(boolean)} is also {@code true}
+   * @since 5.0.0
+   * @sinceMinecraft 26.1
+   */
+  B plain(final boolean plain);
 }

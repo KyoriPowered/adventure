@@ -24,7 +24,6 @@
 package net.kyori.adventure.text.format;
 
 import java.util.List;
-import java.util.Locale;
 import net.kyori.adventure.util.HSVLike;
 import net.kyori.adventure.util.RGBLike;
 import org.jetbrains.annotations.Range;
@@ -212,14 +211,7 @@ public non-sealed interface TextColor extends Comparable<TextColor>, RGBLike, St
    * @since 4.0.0
    */
   default String asHexString() {
-    final StringBuilder result = new StringBuilder();
-    result.append(HEX_PREFIX);
-    final String hex = Integer.toHexString(this.value());
-    for (int i = 0; i < 6 - hex.length(); i++) {
-      result.append('0');
-    }
-    result.append(hex);
-    return result.toString().toUpperCase(Locale.ROOT);
+    return TextColorImpl.hexString(this.value());
   }
 
   /**

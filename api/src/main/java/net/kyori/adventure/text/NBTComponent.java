@@ -37,6 +37,8 @@ import org.jspecify.annotations.Nullable;
  *   <dd>a path to specify which parts of the nbt you want displayed(<a href="https://minecraft.wiki/w/NBT_path_format#Examples">examples</a>).</dd>
  *   <dt>interpret</dt>
  *   <dd>a boolean telling adventure if the fetched NBT value should be parsed as JSON</dd>
+ *   <dt>plain</dt>
+ *   <dd>a boolean telling adventure if the fetched NBT value should be pretty-printed without styling</dd>
  * </dl>
  *
  * <p>This component is rendered serverside and can therefore receive platform-defined
@@ -54,6 +56,13 @@ public sealed interface NBTComponent<C extends NBTComponent<C>> extends Componen
    * @since 5.0.0
    */
   boolean INTERPRET_DEFAULT = false;
+
+  /**
+   * The default value for {@link #plain()}.
+   *
+   * @since 5.0.0
+   */
+  boolean PLAIN_DEFAULT = false;
 
   /**
    * Gets the NBT path.
@@ -76,6 +85,8 @@ public sealed interface NBTComponent<C extends NBTComponent<C>> extends Componen
   /**
    * Gets if we should be interpreting.
    *
+   * <p>This cannot be {@code true} if {@link #plain()} is also {@code true}.</p>
+   *
    * @return if we should be interpreting
    * @since 4.0.0
    */
@@ -84,8 +95,11 @@ public sealed interface NBTComponent<C extends NBTComponent<C>> extends Componen
   /**
    * Sets if we should be interpreting.
    *
+   * <p>This cannot be {@code true} if {@link #plain()} is also {@code true}.</p>
+   *
    * @param interpret if we should be interpreting.
    * @return an NBT component
+   * @throws IllegalArgumentException if set to {@code true} and {@link #plain()} is also {@code true}
    * @since 4.0.0
    */
   @Contract(pure = true)
@@ -103,10 +117,34 @@ public sealed interface NBTComponent<C extends NBTComponent<C>> extends Componen
    * Sets the separator.
    *
    * @param separator the separator
-   * @return the separator
+   * @return an NBT component
    * @since 4.8.0
    */
   C separator(final @Nullable ComponentLike separator);
+
+  /**
+   * Gets if styling should be removed from pretty-printed NBT.
+   *
+   * <p>This cannot be {@code true} if {@link #interpret()} is also {@code true}.</p>
+   *
+   * @return if styling should be removed when pretty-printed
+   * @since 5.0.0
+   * @sinceMinecraft 26.1
+   */
+  boolean plain();
+
+  /**
+   * Sets if styling should be removed from pretty-printed NBT.
+   *
+   * <p>This cannot be {@code true} if {@link #interpret()} is also {@code true}.</p>
+   *
+   * @param plain if styling should be removed when pretty-printed
+   * @return an NBT component
+   * @throws IllegalArgumentException if set to {@code true} and {@link #interpret()} is also {@code true}
+   * @since 5.0.0
+   * @sinceMinecraft 26.1
+   */
+  C plain(final boolean plain);
 
   @Override
   NBTComponentBuilder<C, ? extends NBTComponentBuilder<C, ?>> toBuilder();

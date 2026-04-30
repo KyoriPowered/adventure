@@ -12,7 +12,6 @@ configurations {
 dependencies {
   api(projects.adventureKey)
   compileOnlyApi(libs.jetbrainsAnnotations)
-  compileOnlyApi(libs.jspecify)
   testImplementation(libs.guava)
   annotationProcessor(projects.adventureAnnotationProcessors)
   testCompileOnly(libs.autoService.annotations)

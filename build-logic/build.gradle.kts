@@ -13,6 +13,7 @@ dependencies {
   implementation(libs.build.testLogger)
   compileOnly(libs.build.jmh)
   implementation(libs.build.goomph)
+  implementation(libs.build.javadocAggregate)
 }
 
 dependencies {

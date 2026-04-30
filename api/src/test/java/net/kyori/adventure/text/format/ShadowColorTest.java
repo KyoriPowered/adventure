@@ -87,4 +87,10 @@ class ShadowColorTest {
       )
       .testEquals();
   }
+
+  @Test
+  void testAsHexString() {
+    assertEquals("#AABBCCDD", ShadowColor.shadowColor(0xDDAABBCC).asHexString());
+    assertEquals("#FFFFFFFF", ShadowColor.shadowColor(0xFFFFFFFF).asHexString());
+  }
 }

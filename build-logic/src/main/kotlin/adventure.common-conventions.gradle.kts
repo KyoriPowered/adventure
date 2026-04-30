@@ -84,11 +84,15 @@ indraCrossdoc {
 tasks {
   javadoc {
     val options = options as? StandardJavadocDocletOptions ?: return@javadoc
+<<<<<<< turbo/no_bbv
     options.tags(
       "obsolete:a:Obsolete",
       "sinceMinecraft:a:Since Minecraft:",
       "obsoleteSinceMinecraft:a:Obsolete since Minecraft",
     )
+=======
+    options.applyCommonJavadocOptions()
+>>>>>>> main/5
   }
 
   jacocoTestReport {

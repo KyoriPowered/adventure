@@ -31,6 +31,7 @@ abstract sealed class AbstractNBTComponentBuilder<C extends NBTComponent<C>, B e
   protected @Nullable String nbtPath;
   protected boolean interpret = NBTComponent.INTERPRET_DEFAULT;
   protected @Nullable Component separator;
+  protected boolean plain;
 
   AbstractNBTComponentBuilder() {
   }
@@ -40,6 +41,7 @@ abstract sealed class AbstractNBTComponentBuilder<C extends NBTComponent<C>, B e
     this.nbtPath = component.nbtPath();
     this.interpret = component.interpret();
     this.separator = component.separator();
+    this.plain = component.plain();
   }
 
   @Override
@@ -52,7 +54,18 @@ abstract sealed class AbstractNBTComponentBuilder<C extends NBTComponent<C>, B e
   @Override
   @SuppressWarnings("unchecked")
   public B interpret(final boolean interpret) {
+    if (this.interpret == interpret) return (B) this;
+    checkInterpretPlainState(interpret, this.plain);
     this.interpret = interpret;
+    return (B) this;
+  }
+
+  @Override
+  @SuppressWarnings("unchecked")
+  public B plain(final boolean plain) {
+    if (this.plain == plain) return (B) this;
+    checkInterpretPlainState(this.interpret, plain);
+    this.plain = plain;
     return (B) this;
   }
 
@@ -61,5 +74,11 @@ abstract sealed class AbstractNBTComponentBuilder<C extends NBTComponent<C>, B e
   public B separator(final @Nullable ComponentLike separator) {
     this.separator = ComponentLike.unbox(separator);
     return (B) this;
+  }
+
+  static void checkInterpretPlainState(final boolean interpret, final boolean plain) {
+    if (interpret && plain) {
+      throw new IllegalArgumentException("Cannot have `interpret` and `plain` set to `true` at the same time");
+    }
   }
 }
