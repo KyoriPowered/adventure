@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.event;
 
+import java.util.ServiceLoader;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.permission.PermissionChecker;
 import net.kyori.adventure.util.Services;
@@ -34,7 +35,7 @@ final class ClickCallbackInternals {
 
   static final PermissionChecker ALWAYS_FALSE = PermissionChecker.always(TriState.FALSE);
 
-  static final ClickCallback.Provider PROVIDER = Services.service(ClickCallback.Provider.class)
+  static final ClickCallback.Provider PROVIDER = Services.service(ServiceLoader.load(ClickCallback.Provider.class, ClickCallback.Provider.class.getClassLoader()), ClickCallback.Provider.class)
     .orElseGet(Fallback::new);
 
   static final class Fallback implements ClickCallback.Provider {

@@ -5,4 +5,6 @@ module net.kyori.adventure.text.serializer.plain {
   requires transitive net.kyori.adventure.api;
 
   exports net.kyori.adventure.text.serializer.plain;
+
+  uses net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.Provider;
 }
