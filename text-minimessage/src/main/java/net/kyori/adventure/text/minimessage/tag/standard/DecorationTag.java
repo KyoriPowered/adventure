@@ -75,7 +75,7 @@ final class DecorationTag {
           (args, ctx) -> DecorationTag.create(decoration, args, ctx),
           claim(decoration, (state, emitter) -> emit(canonicalName, shortName == null ? canonicalName : shortName, state, emitter))
         )),
-      names.stream().map(name -> TagResolver.resolver(DecorationTag.REVERT + canonicalName, DecorationTag.createNegated(decoration)))
+      names.stream().map(name -> TagResolver.resolver(DecorationTag.REVERT + name, DecorationTag.createNegated(decoration)))
     ));
   }
 
