@@ -5,6 +5,7 @@ plugins {
 }
 
 dependencies {
+  implementation(libs.build.asm)
   implementation(libs.build.errorpronePlugin)
   implementation(libs.build.indra)
   implementation(libs.build.indra.crossdoc)
