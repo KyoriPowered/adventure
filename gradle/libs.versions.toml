@@ -60,7 +60,7 @@ build-indra-spotless = { module = "net.kyori:indra-licenser-spotless", version.r
 build-goomph = "com.diffplug.gradle:goomph:4.4.1"
 build-jmh = { module = "me.champeau.jmh:jmh-gradle-plugin", version.ref = "jmhPlugin" }
 build-testLogger = "com.adarshr:gradle-test-logger-plugin:4.0.0"
-build-javadocAggregate = "io.freefair.aggregate-javadoc:io.freefair.aggregate-javadoc.gradle.plugin:9.2.0"
+build-javadocAggregate = "io.freefair.aggregate-javadoc:io.freefair.aggregate-javadoc.gradle.plugin:9.5.0"
 
 # unused, for renovate
 zCheckstyle = { module = "com.puppycrawl.tools:checkstyle", version.ref = "checkstyle" }
