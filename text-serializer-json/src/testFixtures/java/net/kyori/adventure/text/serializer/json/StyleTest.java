@@ -195,6 +195,24 @@ class StyleTest extends SerializerTest {
     this.testClickEvent(serializerWithSchema, "https://kezz.gay");
   }
 
+  // https://github.com/PaperMC/adventure/issues/1409
+  @Test
+  void testCamelCaseClickEventUsingOldValueName() {
+    final JSONComponentSerializer serializer = JSONComponentSerializer.builder()
+      .editOptions(b -> b.value(JSONOptions.EMIT_CLICK_EVENT_TYPE, JSONOptions.ClickEventValueMode.CAMEL_CASE))
+      .build();
+
+    final JsonObject object = object(json -> {
+      json.add(ComponentTreeConstants.CLICK_EVENT_CAMEL, object(clickEvent -> {
+        clickEvent.addProperty(ComponentTreeConstants.CLICK_EVENT_ACTION, name(ClickEvent.Action.OPEN_URL));
+        clickEvent.addProperty(ComponentTreeConstants.CLICK_EVENT_VALUE, "https://kezz.gay");
+      }));
+      json.addProperty(ComponentTreeConstants.TEXT, "");
+    });
+
+    assertEquals(object, serialize(serializer, Component.text("").clickEvent(ClickEvent.openUrl("kezz.gay"))));
+  }
+
   private void testClickEvent(final JSONComponentSerializer serializer, final String url) {
     final JsonObject object = object(json -> {
       json.addProperty(ComponentTreeConstants.TEXT, "");

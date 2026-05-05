@@ -332,7 +332,7 @@ final class StyleSerializer extends TypeAdapter<Style> {
     return component -> this.gson.toJson(component, SerializerFactory.COMPONENT_TYPE);
   }
 
-  private void writeClickEvent(final ClickEvent<?> clickEvent, final JsonWriter out) throws IOException {
+  private void writeClickEvent(final ClickEvent<?> clickEvent, final JsonWriter out, final boolean useLegacyTextPayloadValue) throws IOException {
     final ClickEvent.Action<?> action = clickEvent.action();
     out.beginObject();
     out.name(CLICK_EVENT_ACTION);
@@ -343,12 +343,16 @@ final class StyleSerializer extends TypeAdapter<Style> {
 
       switch (payload) {
         case ClickEvent.Payload.Text text -> {
-          switch (action) {
-            case ClickEvent.Action.OpenUrl ignored -> out.name(CLICK_EVENT_URL);
-            case ClickEvent.Action.RunCommand ignored -> out.name(CLICK_EVENT_COMMAND);
-            case ClickEvent.Action.SuggestCommand ignored -> out.name(CLICK_EVENT_COMMAND);
-            case ClickEvent.Action.CopyToClipboard ignored -> out.name(CLICK_EVENT_VALUE);
-            default -> {
+          if (useLegacyTextPayloadValue) {
+            out.name(CLICK_EVENT_VALUE);
+          } else {
+            switch (action) {
+              case ClickEvent.Action.OpenUrl ignored -> out.name(CLICK_EVENT_URL);
+              case ClickEvent.Action.RunCommand ignored -> out.name(CLICK_EVENT_COMMAND);
+              case ClickEvent.Action.SuggestCommand ignored -> out.name(CLICK_EVENT_COMMAND);
+              case ClickEvent.Action.CopyToClipboard ignored -> out.name(CLICK_EVENT_VALUE);
+              default -> {
+              }
             }
           }
           String payloadValue = text.value();
@@ -368,7 +372,11 @@ final class StyleSerializer extends TypeAdapter<Style> {
           }
         }
         case ClickEvent.Payload.Int intPayload -> {
-          out.name(CLICK_EVENT_PAGE);
+          if (useLegacyTextPayloadValue) {
+            out.name(CLICK_EVENT_VALUE);
+          } else {
+            out.name(CLICK_EVENT_PAGE);
+          }
           if (this.emitStringPage) {
             out.value(String.valueOf(intPayload.integer()));
           } else {
@@ -419,12 +427,12 @@ final class StyleSerializer extends TypeAdapter<Style> {
     if (clickEvent != null) {
       if (this.emitSnakeCaseClick) {
         out.name(CLICK_EVENT_SNAKE);
-        this.writeClickEvent(clickEvent, out);
+        this.writeClickEvent(clickEvent, out, false);
       }
 
       if (this.emitCamelCaseClick) {
         out.name(CLICK_EVENT_CAMEL);
-        this.writeClickEvent(clickEvent, out);
+        this.writeClickEvent(clickEvent, out, true);
       }
     }
 
