@@ -4,7 +4,7 @@ version = "1.0"
 [versions]
 autoService = "1.1.1"
 checkstyle = "12.3.1"
-errorprone = "2.48.0"
+errorprone = "2.49.0"
 guava = "33.6.0-jre"
 indra = "4.0.0"
 jmh = "1.37"
