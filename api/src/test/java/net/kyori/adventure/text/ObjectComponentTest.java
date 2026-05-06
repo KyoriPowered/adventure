@@ -32,6 +32,7 @@ import org.junit.jupiter.api.Test;
 
 import static net.kyori.adventure.text.object.PlayerHeadObjectContents.property;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ObjectComponentTest extends AbstractComponentTest<ObjectComponent, ObjectComponent.Builder> {
   @Override
@@ -62,5 +63,13 @@ class ObjectComponentTest extends AbstractComponentTest<ObjectComponent, ObjectC
       .build();
     final ObjectComponent c1 = c0.contents(head1);
     assertEquals(head1, c1.contents());
+  }
+
+  @Test
+  void testInvalidPlayerHeadName() {
+    assertThrows(IllegalArgumentException.class, () -> ObjectContents.playerHead().name("superlongnamewoah").build());
+    assertThrows(IllegalArgumentException.class, () -> ObjectContents.playerHead().name(" ").build());
+    assertThrows(IllegalArgumentException.class, () -> ObjectContents.playerHead("superduperlongname"));
+    assertThrows(IllegalArgumentException.class, () -> ObjectContents.playerHead(" spacey "));
   }
 }

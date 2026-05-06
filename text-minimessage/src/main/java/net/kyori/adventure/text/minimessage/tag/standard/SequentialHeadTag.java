@@ -113,9 +113,14 @@ final class SequentialHeadTag {
       ));
     }
 
+    final String name = argument.trim();
+    if (!PlayerHeadObjectContents.isValidName(name)) {
+      throw ctx.newException("Invalid player name: " + name, args);
+    }
+
     return Tag.selfClosingInserting(Component.object(
       ObjectContents.playerHead()
-        .name(argument)
+        .name(argument.trim())
         .hat(outerLayer.toBooleanOrElse(PlayerHeadObjectContents.DEFAULT_HAT))
         .build()
     ));
