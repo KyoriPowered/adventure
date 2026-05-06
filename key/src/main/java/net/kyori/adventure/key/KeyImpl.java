@@ -44,15 +44,23 @@ record KeyImpl(String namespace, String value) implements Key {
     requireNonNull(checkPart, name);
     if (index.isPresent()) {
       final int indexValue = index.getAsInt();
-      final char character = checkPart.charAt(indexValue);
-      throw new InvalidKeyException(namespace, value, String.format(
-        "Non " + pattern + " character in %s of Key[%s] at index %d ('%s', bytes: %s)",
-        name,
-        asString(namespace, value),
-        indexValue,
-        character,
-        Arrays.toString(String.valueOf(character).getBytes(StandardCharsets.UTF_8))
-      ));
+      if (indexValue == -1) {
+        throw new InvalidKeyException(namespace, value, String.format(
+          "'%s' is not a valid value for %s",
+          checkPart,
+          name
+        ));
+      } else {
+        final char character = checkPart.charAt(indexValue);
+        throw new InvalidKeyException(namespace, value, String.format(
+          "Non " + pattern + " character in %s of Key[%s] at index %d ('%s', bytes: %s)",
+          name,
+          asString(namespace, value),
+          indexValue,
+          character,
+          Arrays.toString(String.valueOf(character).getBytes(StandardCharsets.UTF_8))
+        ));
+      }
     }
   }
 
