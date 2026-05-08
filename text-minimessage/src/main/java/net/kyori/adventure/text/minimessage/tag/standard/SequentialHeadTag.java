@@ -120,7 +120,7 @@ final class SequentialHeadTag {
 
     return Tag.selfClosingInserting(Component.object(
       ObjectContents.playerHead()
-        .name(argument.trim())
+        .name(name)
         .hat(outerLayer.toBooleanOrElse(PlayerHeadObjectContents.DEFAULT_HAT))
         .build()
     ));

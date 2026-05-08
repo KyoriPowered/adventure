@@ -42,7 +42,7 @@ import static java.util.Objects.requireNonNull;
  * <p>
  *   This object closely mirrors the serialized form of the component contents.
  *   This means the game will use its standard heuristics to determine whether the profile needs resolving before display.
- *   As of 1.21.9, the profile will be resolved if the name or id is present withou tany properties.
+ *   As of 1.21.9, the profile will be resolved if the name or id is present without any properties.
  * </p>
  *
  * @since 4.25.0
