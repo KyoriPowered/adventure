@@ -32,6 +32,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -85,5 +86,23 @@ class ClickEventTest {
     assertThrows(IllegalArgumentException.class, () -> ClickEvent.openUrl(payload.value()));
     assertThrows(IllegalArgumentException.class, () -> ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, payload));
     assertThrows(IllegalArgumentException.class, () -> ClickEvent.Action.OPEN_URL.validate(payload));
+  }
+
+  @Test
+  void testInvalidChangePageClickEvent() {
+    final ClickEvent.Payload.Int payload = ClickEvent.Payload.integer(-1);
+    assertThrows(IllegalArgumentException.class, () -> ClickEvent.changePage(payload.integer()));
+    assertThrows(IllegalArgumentException.class, () -> ClickEvent.clickEvent(ClickEvent.Action.CHANGE_PAGE, payload));
+    assertThrows(IllegalArgumentException.class, () -> ClickEvent.Action.CHANGE_PAGE.validate(payload));
+
+    final ClickEvent.Payload.Int payload1 = ClickEvent.Payload.integer(0);
+    assertThrows(IllegalArgumentException.class, () -> ClickEvent.changePage(payload1.integer()));
+    assertThrows(IllegalArgumentException.class, () -> ClickEvent.clickEvent(ClickEvent.Action.CHANGE_PAGE, payload1));
+    assertThrows(IllegalArgumentException.class, () -> ClickEvent.Action.CHANGE_PAGE.validate(payload1));
+
+    final ClickEvent.Payload.Int payload2 = ClickEvent.Payload.integer(1);
+    assertDoesNotThrow(() -> ClickEvent.changePage(payload2.integer()));
+    assertDoesNotThrow(() -> ClickEvent.clickEvent(ClickEvent.Action.CHANGE_PAGE, payload2));
+    assertDoesNotThrow(() -> ClickEvent.Action.CHANGE_PAGE.validate(payload2));
   }
 }

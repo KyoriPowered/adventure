@@ -528,6 +528,14 @@ public final class ClickEvent<T extends ClickEvent.Payload> implements StyleBuil
       private ChangePage() {
         super("change_page", true, Payload.Int.class);
       }
+
+      @Override
+      public void validate(final Payload.Int payload) throws IllegalArgumentException {
+        final int page = payload.integer();
+        if (page < 1) {
+          throw new IllegalArgumentException("Change page payload integer must be greater than or equal to 1, was " + page);
+        }
+      }
     }
 
     /**
