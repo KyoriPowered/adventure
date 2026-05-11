@@ -18,7 +18,7 @@ jobs:
     uses: "KyoriPowered/ci-cookbook/.github/workflows/java-ci.yaml@f3b9a3fbb31e9f4320d855e7be17b028522e87be" # 2026.02.07
     with:
       publish_releases: true
-      publish_release_javadoc: true
+      publish_release_javadoc: false
       runtime_version: 25
     secrets:
       DEPLOYMENT_APP_ID: "${{ secrets.DEPLOYMENT_APP_ID }}"
