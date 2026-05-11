@@ -33,6 +33,7 @@ import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ClickEventTest {
   @Test
@@ -75,5 +76,14 @@ class ClickEventTest {
     for (final ClickEvent.Action<?> action : ClickEvent.Action.NAMES.values()) {
       assertEquals(action.readable(), !unreadable.contains(action));
     }
+  }
+
+  // https://github.com/PaperMC/adventure/issues/1406
+  @Test
+  void testInvalidUrlClickEvent() {
+    final ClickEvent.Payload.Text payload = ClickEvent.Payload.string("www.google\\.com");
+    assertThrows(IllegalArgumentException.class, () -> ClickEvent.openUrl(payload.value()));
+    assertThrows(IllegalArgumentException.class, () -> ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, payload));
+    assertThrows(IllegalArgumentException.class, () -> ClickEvent.Action.OPEN_URL.validate(payload));
   }
 }
