@@ -85,24 +85,16 @@ val patchComponentBuilderAbi = tasks.register<PatchComponentBuilderAbi>("patchCo
   dependsOn(compileJava)
 }
 
-val patchedJar = tasks.register<Jar>("patchedJar") {
-  archiveClassifier.set("patched")
+tasks.named<Jar>("jar") {
   dependsOn(patchComponentBuilderAbi)
-  from(tasks.named<JavaCompile>("compileJava").map { it.destinationDirectory }) {
-    exclude(componentBuilderClass)
+
+  filesMatching(componentBuilderClass) {
+    if (!file.toPath().startsWith(patchedClasses.get().asFile.toPath())) {
+      exclude()
+    }
   }
+
   from(patchedClasses) {
     include(componentBuilderClass)
-  }
-}
-
-configurations {
-  named("apiElements") {
-    outgoing.artifacts.clear()
-    outgoing.artifact(patchedJar)
-  }
-  named("runtimeElements") {
-    outgoing.artifacts.clear()
-    outgoing.artifact(patchedJar)
   }
 }
