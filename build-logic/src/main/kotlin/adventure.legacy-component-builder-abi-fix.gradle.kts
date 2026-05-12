@@ -85,13 +85,6 @@ val patchComponentBuilderAbi = tasks.register<PatchComponentBuilderAbi>("patchCo
   dependsOn(compileJava)
 }
 
-tasks.named<Jar>("jar") {
-  dependsOn(patchComponentBuilderAbi)
-  from(patchedClasses) {
-    include(componentBuilderClass)
-  }
-}
-
 val patchedJar = tasks.register<Jar>("patchedJar") {
   archiveClassifier.set("patched")
   dependsOn(patchComponentBuilderAbi)
