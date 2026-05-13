@@ -66,6 +66,11 @@ record ObjectComponentImpl(List<Component> children, Style style, ObjectContents
     return create(this.children, style, this.contents, this.fallback);
   }
 
+  @Override
+  public ObjectContents asObjectContents() {
+    return this.contents;
+  }
+
   static final class BuilderImpl extends AbstractComponentBuilder<ObjectComponent, Builder> implements Builder {
     private @Nullable ObjectContents objectContents; // Not nullable for built type, it errors in builder.
     private @Nullable ComponentLike fallback;

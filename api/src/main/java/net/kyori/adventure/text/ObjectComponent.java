@@ -24,6 +24,7 @@
 package net.kyori.adventure.text;
 
 import net.kyori.adventure.text.object.ObjectContents;
+import net.kyori.adventure.text.object.ObjectContentsLike;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -32,7 +33,7 @@ import org.jspecify.annotations.Nullable;
  * @since 4.25.0
  * @sinceMinecraft 1.21.9
  */
-public sealed interface ObjectComponent extends ScopedComponent<ObjectComponent> permits ObjectComponentImpl {
+public sealed interface ObjectComponent extends ScopedComponent<ObjectComponent>, ObjectContentsLike permits ObjectComponentImpl {
   /**
    * Gets the contents of this object component.
    *

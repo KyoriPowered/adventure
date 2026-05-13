@@ -36,7 +36,7 @@ import static java.util.Objects.requireNonNull;
  * @since 4.25.0
  * @sinceMinecraft 1.21.9
  */
-public sealed interface ObjectContents permits SpriteObjectContents, PlayerHeadObjectContents {
+public sealed interface ObjectContents extends ObjectContentsLike permits SpriteObjectContents, PlayerHeadObjectContents {
   /**
    * Creates a sprite contents with the given atlas and sprite.
    *
@@ -107,5 +107,10 @@ public sealed interface ObjectContents permits SpriteObjectContents, PlayerHeadO
   @Contract(value = "_ -> new", pure = true)
   static PlayerHeadObjectContents playerHead(final PlayerHeadObjectContents.SkinSource skinSource) {
     return playerHead().skin(skinSource).build();
+  }
+
+  @Override
+  default ObjectContents asObjectContents() {
+    return this;
   }
 }
