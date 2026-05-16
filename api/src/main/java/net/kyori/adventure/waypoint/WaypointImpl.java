@@ -29,6 +29,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import net.kyori.adventure.audience.Audience;
+import java.util.ServiceLoader;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.util.Services;
@@ -45,7 +46,8 @@ sealed class WaypointImpl implements Waypoint permits AzimuthWaypointImpl, Chunk
 
   static final class ImplementationAccessor {
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    private static final Optional<WaypointImplementation.Provider> SERVICE = Services.service(WaypointImplementation.Provider.class);
+    private static final Optional<WaypointImplementation.Provider> SERVICE = Services.service(ServiceLoader.load(WaypointImplementation.Provider.class,
+      WaypointImplementation.Provider.class.getClassLoader()), WaypointImplementation.Provider.class);
 
     private ImplementationAccessor() {
     }

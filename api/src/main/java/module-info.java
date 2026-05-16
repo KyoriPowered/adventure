@@ -38,4 +38,5 @@ module net.kyori.adventure.api {
   uses net.kyori.adventure.internal.properties.AdventureProperties.DefaultOverrideProvider;
   uses net.kyori.adventure.text.event.ClickCallback.Provider;
   uses net.kyori.adventure.text.event.DataComponentValueConverterRegistry.Provider;
+  uses net.kyori.adventure.waypoint.WaypointImplementation.Provider;
 }
