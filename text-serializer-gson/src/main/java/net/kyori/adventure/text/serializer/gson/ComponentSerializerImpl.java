@@ -65,8 +65,10 @@ import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NBT_BLOCK;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NBT_ENTITY;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NBT_INTERPRET;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NBT_PLAIN;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.NBT_STORAGE;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.OBJECT_ATLAS;
+import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.OBJECT_FALLBACK;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.OBJECT_HAT;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.OBJECT_PLAYER;
 import static net.kyori.adventure.text.serializer.commons.ComponentTreeConstants.OBJECT_PLAYER_ID;
@@ -105,7 +107,7 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
   @Override
   public Component read(final JsonReader in) throws IOException {
     final JsonToken token = in.peek();
-    if (token == JsonToken.STRING || token == JsonToken.NUMBER || token == JsonToken.BOOLEAN) {
+    if (couldBeRepresentedAsString(token)) {
       return Component.text(GsonHacks.readString(in));
     } else if (token == JsonToken.BEGIN_ARRAY) {
       ComponentBuilder<?, ?> parent = null;
@@ -146,11 +148,13 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
     BlockNBTComponent.Pos nbtBlock = null;
     String nbtEntity = null;
     Key nbtStorage = null;
+    boolean nbtPlain = false;
     Component separator = null;
     Key atlas = null;
     Key sprite = null;
     PlayerHeadObjectContents.Builder playerHeadContents = null;
     boolean playerHeadContentsHasProfile = false;
+    Component objectFallback = null;
 
     in.beginObject();
     while (in.hasNext()) {
@@ -158,7 +162,19 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
       switch (fieldName) {
         case TEXT -> text = GsonHacks.readString(in);
         case TRANSLATE -> translate = in.nextString();
-        case TRANSLATE_FALLBACK -> translateFallback = in.nextString();
+        case TRANSLATE_FALLBACK -> { // Also object fallback - they share the same name!
+          final JsonToken peek = in.peek();
+          if (couldBeRepresentedAsString(peek)) {
+            // Store plain strings in both fallback objects.
+            translateFallback = GsonHacks.readString(in);
+            objectFallback = Component.text(translateFallback);
+          } else if (peek == JsonToken.BEGIN_OBJECT || peek == JsonToken.BEGIN_ARRAY) {
+            // This *could* be a component, let's try and convert it!
+            objectFallback = this.read(in);
+          } else {
+            throw notSureHowToDeserialize(in.getPath());
+          }
+        }
         case TRANSLATE_WITH -> translateWith = this.gson.fromJson(in, TRANSLATABLE_ARGUMENT_LIST_TYPE);
         case SCORE -> {
           in.beginObject();
@@ -183,6 +199,7 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
         case NBT_BLOCK -> nbtBlock = this.gson.fromJson(in, SerializerFactory.BLOCK_NBT_POS_TYPE);
         case NBT_ENTITY -> nbtEntity = in.nextString();
         case NBT_STORAGE -> nbtStorage = this.gson.fromJson(in, SerializerFactory.KEY_TYPE);
+        case NBT_PLAIN -> nbtPlain = in.nextBoolean();
         case EXTRA -> extra = this.gson.fromJson(in, COMPONENT_LIST_TYPE);
         case SEPARATOR -> separator = this.read(in);
         case OBJECT_ATLAS -> atlas = this.gson.fromJson(in, SerializerFactory.KEY_TYPE);
@@ -259,11 +276,11 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
       builder = Component.keybind().keybind(keybind);
     } else if (nbt != null) {
       if (nbtBlock != null) {
-        builder = nbt(Component.blockNBT(), nbt, nbtInterpret, separator).pos(nbtBlock);
+        builder = nbt(Component.blockNBT(), nbt, nbtInterpret, separator, nbtPlain).pos(nbtBlock);
       } else if (nbtEntity != null) {
-        builder = nbt(Component.entityNBT(), nbt, nbtInterpret, separator).selector(nbtEntity);
+        builder = nbt(Component.entityNBT(), nbt, nbtInterpret, separator, nbtPlain).selector(nbtEntity);
       } else if (nbtStorage != null) {
-        builder = nbt(Component.storageNBT(), nbt, nbtInterpret, separator).storage(nbtStorage);
+        builder = nbt(Component.storageNBT(), nbt, nbtInterpret, separator, nbtPlain).storage(nbtStorage);
       } else {
         throw notSureHowToDeserialize(in.getPath());
       }
@@ -271,9 +288,9 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
       builder = Component.object().contents(ObjectContents.sprite(
         atlas != null ? atlas : SpriteObjectContents.DEFAULT_ATLAS,
         sprite
-      ));
+      )).fallback(objectFallback);
     } else if (playerHeadContents != null && playerHeadContentsHasProfile) {
-      builder = Component.object().contents(playerHeadContents.build());
+      builder = Component.object().contents(playerHeadContents.build()).fallback(objectFallback);
     } else {
       throw notSureHowToDeserialize(in.getPath());
     }
@@ -284,11 +301,14 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
     return builder.build();
   }
 
-  private static <C extends NBTComponent<C>, B extends NBTComponentBuilder<C, B>> B nbt(final B builder, final String nbt, final boolean interpret, final @Nullable Component separator) {
+  private static <C extends NBTComponent<C>, B extends NBTComponentBuilder<C, B>> B nbt(final B builder, final String nbt, final boolean interpret, final @Nullable Component separator, final boolean plain) {
+    // Check manually to throw more specific exception.
+    if (plain && interpret) throw new JsonParseException("Cannot have `plain` and `interpret` set to true at the same time");
     return builder
       .nbtPath(nbt)
       .interpret(interpret)
-      .separator(separator);
+      .separator(separator)
+      .plain(plain);
   }
 
   @Override
@@ -365,6 +385,8 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
         out.value(nbt.nbtPath());
         out.name(NBT_INTERPRET);
         out.value(nbt.interpret());
+        out.name(NBT_PLAIN);
+        out.value(nbt.plain());
         this.serializeSeparator(out, nbt.separator());
         switch (value) {
           case BlockNBTComponent blockNBTComponent -> {
@@ -383,6 +405,12 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
         }
       }
       case ObjectComponent objectComponent -> {
+        final Component fallback = objectComponent.fallback();
+        if (fallback != null) {
+          out.name(OBJECT_FALLBACK);
+          this.write(out, fallback);
+        }
+
         final ObjectContents contents = objectComponent.contents();
         if (contents instanceof final SpriteObjectContents spriteContents) {
           if (!spriteContents.atlas().equals(SpriteObjectContents.DEFAULT_ATLAS)) {
@@ -436,6 +464,10 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
       out.name(SEPARATOR);
       this.write(out, separator);
     }
+  }
+
+  private static boolean couldBeRepresentedAsString(final JsonToken type) {
+    return type == JsonToken.STRING || type == JsonToken.NUMBER || type == JsonToken.BOOLEAN;
   }
 
   static JsonParseException notSureHowToDeserialize(final Object element) {

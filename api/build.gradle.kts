@@ -1,5 +1,6 @@
 plugins {
   id("adventure.common-conventions")
+  id("adventure.legacy-component-builder-abi-fix")
   alias(libs.plugins.jmh)
 }
 
@@ -12,7 +13,6 @@ configurations {
 dependencies {
   api(projects.adventureKey)
   compileOnlyApi(libs.jetbrainsAnnotations)
-  compileOnlyApi(libs.jspecify)
   testImplementation(libs.guava)
   annotationProcessor(projects.adventureAnnotationProcessors)
   testCompileOnly(libs.autoService.annotations)

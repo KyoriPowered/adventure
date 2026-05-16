@@ -45,6 +45,7 @@ public final class ComponentTreeConstants {
   public static final String EXTRA = "extra";
   public static final String NBT = "nbt";
   public static final String NBT_INTERPRET = "interpret";
+  public static final String NBT_PLAIN = "plain";
   public static final String NBT_BLOCK = "block";
   public static final String NBT_ENTITY = "entity";
   public static final String NBT_STORAGE = "storage";
@@ -57,6 +58,7 @@ public final class ComponentTreeConstants {
   public static final String OBJECT_PLAYER_ID = "id";
   public static final String OBJECT_PLAYER_PROPERTIES = "properties";
   public static final String OBJECT_PLAYER_TEXTURE = "texture";
+  public static final String OBJECT_FALLBACK = "fallback";
   public static final String PROFILE_PROPERTY_NAME = "name";
   public static final String PROFILE_PROPERTY_VALUE = "value";
   public static final String PROFILE_PROPERTY_SIGNATURE = "signature";

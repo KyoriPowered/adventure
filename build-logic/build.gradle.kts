@@ -5,6 +5,7 @@ plugins {
 }
 
 dependencies {
+  implementation(libs.build.asm)
   implementation(libs.build.errorpronePlugin)
   implementation(libs.build.indra)
   implementation(libs.build.indra.crossdoc)
@@ -13,6 +14,7 @@ dependencies {
   implementation(libs.build.testLogger)
   compileOnly(libs.build.jmh)
   implementation(libs.build.goomph)
+  implementation(libs.build.javadocAggregate)
 }
 
 dependencies {

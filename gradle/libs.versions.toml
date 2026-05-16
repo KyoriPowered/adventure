@@ -4,8 +4,8 @@ version = "1.0"
 [versions]
 autoService = "1.1.1"
 checkstyle = "12.3.1"
-errorprone = "2.48.0"
-guava = "33.5.0-jre"
+errorprone = "2.49.0"
+guava = "33.6.0-jre"
 indra = "4.0.0"
 jmh = "1.37"
 jmhPlugin = "0.7.3"
@@ -52,6 +52,7 @@ contractValidator = "ca.stellardrift:contract-validator:1.0.1"
 errorprone = { module = "com.google.errorprone:error_prone_core", version.ref = "errorprone" }
 stylecheck = "ca.stellardrift:stylecheck:0.2.1"
 
+build-asm = { module = "org.ow2.asm:asm", version = "9.9.1" }
 build-errorpronePlugin = { module = "net.ltgt.gradle:gradle-errorprone-plugin", version = "5.0.0" }
 build-indra = { module = "net.kyori:indra-common", version.ref = "indra" }
 build-indra-crossdoc = { module = "net.kyori:indra-crossdoc", version.ref = "indra" }
@@ -60,6 +61,7 @@ build-indra-spotless = { module = "net.kyori:indra-licenser-spotless", version.r
 build-goomph = "com.diffplug.gradle:goomph:4.4.1"
 build-jmh = { module = "me.champeau.jmh:jmh-gradle-plugin", version.ref = "jmhPlugin" }
 build-testLogger = "com.adarshr:gradle-test-logger-plugin:4.0.0"
+build-javadocAggregate = "io.freefair.aggregate-javadoc:io.freefair.aggregate-javadoc.gradle.plugin:9.5.0"
 
 # unused, for renovate
 zCheckstyle = { module = "com.puppycrawl.tools:checkstyle", version.ref = "checkstyle" }

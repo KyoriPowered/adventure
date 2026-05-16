@@ -26,22 +26,29 @@ package net.kyori.adventure.text;
 import java.util.List;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.object.ObjectContents;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-record ObjectComponentImpl(List<Component> children, Style style, ObjectContents contents) implements ObjectComponent {
+record ObjectComponentImpl(List<Component> children, Style style, ObjectContents contents, @Nullable Component fallback) implements ObjectComponent {
 
-  static ObjectComponentImpl create(final List<? extends ComponentLike> children, final Style style, final ObjectContents objectContents) {
+  static ObjectComponentImpl create(final List<? extends ComponentLike> children, final Style style, final ObjectContents objectContents, final @Nullable ComponentLike fallback) {
     return new ObjectComponentImpl(
       ComponentLike.asComponents(children, IS_NOT_EMPTY),
       requireNonNull(style, "style"),
-      requireNonNull(objectContents, "contents")
+      requireNonNull(objectContents, "contents"),
+      ComponentLike.unbox(fallback)
     );
   }
 
   @Override
   public ObjectComponent contents(final ObjectContents contents) {
-    return create(this.children, this.style, contents);
+    return create(this.children, this.style, contents, this.fallback);
+  }
+
+  @Override
+  public ObjectComponent fallback(final @Nullable ComponentLike fallback) {
+    return create(this.children, this.style, this.contents, fallback);
   }
 
   @Override
@@ -51,16 +58,17 @@ record ObjectComponentImpl(List<Component> children, Style style, ObjectContents
 
   @Override
   public ObjectComponent children(final List<? extends ComponentLike> children) {
-    return create(children, this.style, this.contents);
+    return create(children, this.style, this.contents, this.fallback);
   }
 
   @Override
   public ObjectComponent style(final Style style) {
-    return create(this.children, style, this.contents);
+    return create(this.children, style, this.contents, this.fallback);
   }
 
   static final class BuilderImpl extends AbstractComponentBuilder<ObjectComponent, Builder> implements Builder {
-    private ObjectContents objectContents;
+    private @Nullable ObjectContents objectContents; // Not nullable for built type, it errors in builder.
+    private @Nullable ComponentLike fallback;
 
     BuilderImpl() {
     }
@@ -68,6 +76,7 @@ record ObjectComponentImpl(List<Component> children, Style style, ObjectContents
     BuilderImpl(final ObjectComponent component) {
       super(component);
       this.objectContents = component.contents();
+      this.fallback = component.fallback();
     }
 
     @Override
@@ -77,9 +86,15 @@ record ObjectComponentImpl(List<Component> children, Style style, ObjectContents
     }
 
     @Override
+    public Builder fallback(final @Nullable ComponentLike fallback) {
+      this.fallback = fallback;
+      return this;
+    }
+
+    @Override
     public ObjectComponent build() {
       if (this.objectContents == null) throw new IllegalStateException("contents must be set");
-      return create(this.children, this.buildStyle(), this.objectContents);
+      return create(this.children, this.buildStyle(), this.objectContents, this.fallback);
     }
   }
 }

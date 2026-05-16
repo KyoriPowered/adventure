@@ -109,4 +109,13 @@ class BookTest {
       )
       .testEquals();
   }
+
+  @Test
+  void testPagesOnly() {
+    final Book b = Book.book(arrayOfPages(1));
+    assertEquals(listOfPages(1), b.pages());
+    assertEquals(Component.empty(), b.title());
+    assertEquals(Component.empty(), b.author());
+  }
+
 }

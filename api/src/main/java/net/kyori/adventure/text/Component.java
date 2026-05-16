@@ -326,7 +326,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
   static BlockNBTComponent blockNBT(final String nbtPath, final boolean interpret, final @Nullable ComponentLike separator, final BlockNBTComponent.Pos pos) {
-    return BlockNBTComponentImpl.create(List.of(), Style.empty(), nbtPath, interpret, separator, pos);
+    return BlockNBTComponentImpl.create(List.of(), Style.empty(), nbtPath, interpret, separator, pos, NBTComponent.PLAIN_DEFAULT);
   }
 
   /*
@@ -570,7 +570,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    */
   @Contract(value = "_ -> new", pure = true)
   static ObjectComponent object(final ObjectContents objectContents) {
-    return ObjectComponentImpl.create(List.of(), Style.empty(), objectContents);
+    return ObjectComponentImpl.create(List.of(), Style.empty(), objectContents, null);
   }
 
   /*
@@ -753,7 +753,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
   static StorageNBTComponent storageNBT(final String nbtPath, final boolean interpret, final @Nullable ComponentLike separator, final Key storage) {
-    return StorageNBTComponentImpl.create(List.of(), Style.empty(), nbtPath, interpret, separator, storage);
+    return StorageNBTComponentImpl.create(List.of(), Style.empty(), nbtPath, interpret, separator, storage, NBTComponent.PLAIN_DEFAULT);
   }
 
   /*

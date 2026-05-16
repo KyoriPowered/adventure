@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.UUID;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.util.PlatformAPI;
+import org.intellij.lang.annotations.RegExp;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Unmodifiable;
@@ -36,12 +37,13 @@ import org.jspecify.annotations.Nullable;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A player head contents.
+ * The contents of a player head.
  *
- * <p>This object closely mirrors the serialized form of the component contents. This means
- * the game will use it's standard heuristics to determine whether the profile needs resolving
- * before display. As of 1.21.9, the profile will be resolved if the name or id is present without
- * any properties.</p>
+ * <p>
+ *   This object closely mirrors the serialized form of the component contents.
+ *   This means the game will use its standard heuristics to determine whether the profile needs resolving before display.
+ *   As of 1.21.9, the profile will be resolved if the name or id is present without any properties.
+ * </p>
  *
  * @since 4.25.0
  * @sinceMinecraft 1.21.9
@@ -53,6 +55,31 @@ public sealed interface PlayerHeadObjectContents extends ObjectContents permits 
    * @since 4.25.0
    */
   boolean DEFAULT_HAT = true;
+
+  /**
+   * The regular expression for a valid player name.
+   *
+   * <p>
+   *   This expression matches vanilla Minecraft's validation for what is considered a valid player name.
+   *   It is a wider validation than what is allowed when currently creating a username.
+   * </p>
+   *
+   * @since 5.1.0
+   */
+  @RegExp String NAME_REGEX = "^[!-~]{0,16}$";
+
+  /**
+   * Checks if the given name is a valid player name for a player head object.
+   *
+   * @param name the name to validate
+   * @return if the name is valid
+   * @see #NAME_REGEX
+   * @since 5.1.0
+   */
+  static boolean isValidName(final String name) {
+    if (name.length() > 16) return false;
+    return name.chars().filter(c -> c <= 32 || c >= 126).findAny().isEmpty();
+  }
 
   /**
    * Gets the name of the player if present.

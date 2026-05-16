@@ -40,7 +40,11 @@ import org.jspecify.annotations.Nullable;
  *   <dd>what this key leads to, e.g "translations" or "entity.firework_rocket.blast"</dd>
  * </dl>
  *
- * <p>Valid characters for namespaces are <a href="https://regexr.com/5ibbm">{@code [a-z0-9_.-]}</a>.</p>
+ * <p>
+ *   Valid characters for namespaces are <a href="https://regexr.com/5ibbm">{@code [a-z0-9_.-]}</a>.
+ *   As of Minecraft 26.1, {@code ..} is not a valid namespace.
+ *   Although this is a valid namespace in earlier versions, Adventure will throw an exception if you attempt to use it.
+ * </p>
  *
  * <p>Valid characters for values are <a href="https://regexr.com/5if3m">{@code [a-z0-9/._-]}</a>.</p>
  *
@@ -258,12 +262,20 @@ public interface Key extends Comparable<Key>, Namespaced, Keyed {
   /**
    * Checks if {@code value} is a valid namespace.
    *
+   * <p>The return value is as follows:</p>
+   * <ul>
+   *   <li>{@link OptionalInt#empty()} if {@code value} is a valid namespace</li>
+   *   <li>{@link OptionalInt#of(int)} with an int of {@code -1} if {@code value} is invalid because entire namespace is invalid</li>
+   *   <li>{@link OptionalInt#of(int)} if {@code value} contains invallid characters, containing the index of the start of the invalid character</li>
+   * </ul>
+   *
    * @param namespace the string to check
-   * @return {@link OptionalInt#empty()} if {@code value} is a valid namespace, otherwise an {@code OptionalInt} containing the index of an invalid character
+   * @return an optional int indicating the result of the check
    * @since 4.14.0
    */
   static OptionalInt checkNamespace(final String namespace) {
     Objects.requireNonNull(namespace, "namespace");
+    if (namespace.equals("..")) return OptionalInt.of(-1);
     for (int i = 0, length = namespace.length(); i < length; i++) {
       if (!allowedInNamespace(namespace.charAt(i))) {
         return OptionalInt.of(i);

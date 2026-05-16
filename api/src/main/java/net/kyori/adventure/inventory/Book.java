@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.inventory;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import net.kyori.adventure.audience.Audience;
@@ -32,6 +31,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.Buildable;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Unmodifiable;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Represents the in-game interface of a book.
@@ -54,7 +55,7 @@ public sealed interface Book extends Buildable<Book.Builder>, BookLike permits B
    * @since 4.0.0
    */
   static Book book(final Component title, final Component author, final Collection<Component> pages) {
-    return new BookImpl(title, author, new ArrayList<>(pages));
+    return new BookImpl(requireNonNull(title, "title"), requireNonNull(author, "author"), List.copyOf(requireNonNull(pages, "pages")));
   }
 
   /**
@@ -67,7 +68,29 @@ public sealed interface Book extends Buildable<Book.Builder>, BookLike permits B
    * @since 4.0.0
    */
   static Book book(final Component title, final Component author, final Component... pages) {
-    return book(title, author, List.of(pages));
+    return book(title, author, List.of(requireNonNull(pages)));
+  }
+
+  /**
+   * Creates a book with title and author set to {@link Component#empty()}.
+   *
+   * @param pages the collection of pages
+   * @return a book
+   * @since 5.1.0
+   */
+  static Book book(final Collection<Component> pages) {
+    return book(Component.empty(), Component.empty(), pages);
+  }
+
+  /**
+   * Creates a book with title and author set to {@link Component#empty()}.
+   *
+   * @param pages an array of pages
+   * @return a book
+   * @since 5.1.0
+   */
+  static Book book(final Component... pages) {
+    return book(Component.empty(), Component.empty(), pages);
   }
 
   /**

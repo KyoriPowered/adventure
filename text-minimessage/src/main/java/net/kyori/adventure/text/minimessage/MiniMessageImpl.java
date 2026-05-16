@@ -23,9 +23,13 @@
  */
 package net.kyori.adventure.text.minimessage;
 
+import java.util.Map;
 import java.util.Optional;
+import java.util.ServiceLoader;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 import net.kyori.adventure.pointer.Pointered;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
@@ -44,7 +48,7 @@ record MiniMessageImpl(
   UnaryOperator<String> preProcessor,
   UnaryOperator<Component> postProcessor
 ) implements MiniMessage {
-  private static final Optional<Provider> SERVICE = Services.service(Provider.class);
+  private static final Optional<Provider> SERVICE = Services.service(ServiceLoader.load(Provider.class, Provider.class.getClassLoader()), Provider.class);
   static final Consumer<Builder> BUILDER = SERVICE
     .map(Provider::builder)
     .orElseGet(() -> builder -> {
@@ -54,8 +58,25 @@ record MiniMessageImpl(
   // We cannot store these fields in MiniMessageImpl directly due to class initialisation issues.
   static final class Instances {
     static final MiniMessage INSTANCE = SERVICE
-      .map(Provider::miniMessage)
+      .map(MiniMessage.Provider::miniMessage)
       .orElseGet(() -> new MiniMessageImpl(TagResolver.standard(), false, true, null, DEFAULT_NO_OP, DEFAULT_COMPACTING_METHOD));
+
+    static final Map<MiniMessage.Preset, MiniMessage> PRESETS = MiniMessage.Preset
+      .NAMES
+      .values()
+      .stream()
+      .collect(
+        Collectors.toMap(
+          Function.identity(),
+          preset -> {
+            if (preset == Preset.DEFAULT) {
+              return INSTANCE;
+            } else {
+              return MiniMessage.builder(preset).build();
+            }
+          }
+        )
+      );
   }
 
   static final UnaryOperator<String> DEFAULT_NO_OP = UnaryOperator.identity();

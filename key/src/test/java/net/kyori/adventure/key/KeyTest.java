@@ -26,7 +26,11 @@ package net.kyori.adventure.key;
 import com.google.common.testing.EqualsTester;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class KeyTest {
   @Test
@@ -138,5 +142,14 @@ class KeyTest {
   @Test
   void testKeyWithInvalidCharacter() {
     assertThrows(InvalidKeyException.class, () -> Key.key("a/b", "a"));
+  }
+
+  @SuppressWarnings("PatternValidation") // We are testing to ensure this throws an exception.
+  @Test
+  void testInvalidNamespace() {
+    assertThrows(InvalidKeyException.class, () -> Key.key("..:hello"));
+    assertThrows(InvalidKeyException.class, () -> Key.key("..", "world"));
+    assertDoesNotThrow(() -> Key.key("minecraft:.."));
+    assertDoesNotThrow(() -> Key.key("..hello", "world"));
   }
 }

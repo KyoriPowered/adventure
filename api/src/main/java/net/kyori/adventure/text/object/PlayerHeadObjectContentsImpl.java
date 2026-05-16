@@ -34,12 +34,23 @@ import static java.util.Objects.requireNonNull;
 
 record PlayerHeadObjectContentsImpl(@Nullable String name, @Nullable UUID id, List<ProfileProperty> profileProperties, boolean hat, @Nullable Key texture) implements PlayerHeadObjectContents {
 
+  PlayerHeadObjectContentsImpl {
+    checkValidName(name);
+  }
+
   @Override
   public Builder toBuilder() {
     return new BuilderImpl(this);
   }
 
   record ProfilePropertyImpl(String name, String value, @Nullable String signature) implements ProfileProperty {
+  }
+
+  static void checkValidName(final @Nullable String name) {
+    if (name == null) return;
+    if (!PlayerHeadObjectContents.isValidName(name)) {
+      throw new IllegalArgumentException("Invalid player name: " + name);
+    }
   }
 
   static final class BuilderImpl implements Builder {
@@ -62,6 +73,7 @@ record PlayerHeadObjectContentsImpl(@Nullable String name, @Nullable UUID id, Li
 
     @Override
     public Builder name(final @Nullable String name) {
+      checkValidName(name);
       this.name = name;
       return this;
     }
