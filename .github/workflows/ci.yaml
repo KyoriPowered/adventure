@@ -26,6 +26,6 @@ jobs:
       publishing_env_vars: |
           ORG_GRADLE_PROJECT_sonatypeUsername="${{ secrets.ADVENTURE_SONATYPE_USERNAME }}"
           ORG_GRADLE_PROJECT_sonatypePassword="${{ secrets.ADVENTURE_SONATYPE_PASSWORD }}"
-          ORG_GRADLE_PROJECT_kyoriSigningKey="${{ secrets.ADVENTURE_GPG_KEY }}"
-          ORG_GRADLE_PROJECT_kyoriSigningPassword="${{ secrets.ADVENTURE_GPG_PASSWORD }}"
+          ORG_GRADLE_PROJECT_kyoriSigningKey="${{ secrets.PAPERMC_GPG_KEY }}"
+          ORG_GRADLE_PROJECT_kyoriSigningPassword="${{ secrets.PAPERMC_GPG_PASSWORD }}"
 
