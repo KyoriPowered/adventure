@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.serializer.ansi;
 
 import java.util.Optional;
+import java.util.ServiceLoader;
 import java.util.function.Consumer;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
@@ -40,7 +41,7 @@ import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.Nullable;
 
 final class ANSIComponentSerializerImpl implements ANSIComponentSerializer {
-  private static final Optional<Provider> SERVICE = Services.service(Provider.class);
+  private static final Optional<Provider> SERVICE = Services.service(ServiceLoader.load(Provider.class, Provider.class.getClassLoader()), Provider.class);
 
   static final Consumer<Builder> BUILDER = SERVICE
     .map(Provider::builder)

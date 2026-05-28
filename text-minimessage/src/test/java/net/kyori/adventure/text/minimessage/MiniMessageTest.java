@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import net.kyori.adventure.pointer.Pointered;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -474,5 +475,16 @@ public class MiniMessageTest extends AbstractTest {
   private static <T> boolean anyMatch(final Collection<T> items, final Predicate<T> test) {
     return items.stream()
       .anyMatch(test);
+  }
+
+  // https://github.com/PaperMC/adventure/issues/1408
+  @Test
+  void testNegatedDecorationTags() {
+    final String input = "<!i>Not italic<!b>Not bold also</!b>back to italic.";
+    final Component expected = Component.text("Not italic")
+      .decoration(TextDecoration.ITALIC, false)
+      .append(Component.text("Not bold also").decoration(TextDecoration.BOLD, false))
+      .append(Component.text("back to italic."));
+    assertEquals(expected, MiniMessage.miniMessage().deserialize(input));
   }
 }

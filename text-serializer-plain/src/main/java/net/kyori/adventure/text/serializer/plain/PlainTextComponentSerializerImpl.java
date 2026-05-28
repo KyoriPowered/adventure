@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.serializer.plain;
 
 import java.util.Optional;
+import java.util.ServiceLoader;
 import java.util.function.Consumer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.flattener.ComponentFlattener;
@@ -38,7 +39,7 @@ final class PlainTextComponentSerializerImpl implements PlainTextComponentSerial
       throw new UnsupportedOperationException("Don't know how to turn " + component.getClass().getSimpleName() + " into a string");
     })
     .build();
-  private static final Optional<Provider> SERVICE = Services.service(Provider.class);
+  private static final Optional<Provider> SERVICE = Services.service(ServiceLoader.load(Provider.class, Provider.class.getClassLoader()), Provider.class);
   static final Consumer<Builder> BUILDER = SERVICE
     .map(Provider::plainText)
     .orElseGet(() -> builder -> {

@@ -8,4 +8,6 @@ module net.kyori.adventure.text.logger.slf4j {
   requires transitive org.slf4j;
 
   exports net.kyori.adventure.text.logger.slf4j;
+
+  uses net.kyori.adventure.text.logger.slf4j.ComponentLoggerProvider;
 }

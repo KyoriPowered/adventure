@@ -23,6 +23,8 @@
  */
 package net.kyori.adventure.text.event;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.function.Consumer;
 import net.kyori.adventure.audience.Audience;
@@ -214,11 +216,14 @@ public final class ClickEvent<T extends ClickEvent.Payload> implements StyleBuil
    * @param payload the payload
    * @param <T> the payload type
    * @return a click event
-   * @throws IllegalArgumentException if the action does not support that payload
+   * @throws IllegalArgumentException if the action does not support that payload, or if the payload is not valid for the action
    * @since 4.25.0
    */
   public static <T extends ClickEvent.Payload> ClickEvent<T> clickEvent(final Action<T> action, final T payload) {
-    return new ClickEvent<>(requireNonNull(action, "action"), requireNonNull(payload, "payload"));
+    requireNonNull(action, "action");
+    requireNonNull(payload, "payload");
+    action.validate(payload);
+    return new ClickEvent<>(action, payload);
   }
 
   private final Action<T> action;
@@ -378,14 +383,44 @@ public final class ClickEvent<T extends ClickEvent.Payload> implements StyleBuil
     }
 
     /**
-     * Returns if this action supports the provided payload.
+     * Returns if this action supports the provided payload type.
+     *
+     * <p><b>Note</b>: This method only checks if the type of the payload is supported,
+     * to check if the payload is compatible with this action, see {@link #isValid(Payload)}.</p>
      *
      * @param payload the payload
-     * @return {@code true} if this action supports the payload
+     * @return {@code true} if this action supports the payload type
      * @since 4.22.0
      */
     public boolean supports(final Payload payload) {
       return this.payloadType.isAssignableFrom(payload.getClass());
+    }
+
+    /**
+     * Returns if the provided payload is valid for this action.
+     *
+     * @param payload the payload
+     * @return {@code true} if the payload is valid for this action, {@code false} otherwise
+     * @since 5.1.0
+     */
+    public boolean isValid(final T payload) {
+      try {
+        this.validate(payload);
+        return true;
+      } catch (final IllegalArgumentException e) {
+        return false;
+      }
+    }
+
+    /**
+     * Validates the provided payload, throwing an exception if the payload is not valid for this action.
+     *
+     * @param payload the payload
+     * @throws IllegalArgumentException if the payload is not valid for this action
+     * @since 5.1.0
+     */
+    public void validate(final T payload) throws IllegalArgumentException {
+      // No-op by default.
     }
 
     /**
@@ -433,6 +468,15 @@ public final class ClickEvent<T extends ClickEvent.Payload> implements StyleBuil
     public static final class OpenUrl extends TextCarrier {
       private OpenUrl() {
         super("open_url", true);
+      }
+
+      @Override
+      public void validate(final Payload.Text payload) throws IllegalArgumentException {
+        try {
+          new URI(payload.value());
+        } catch (final URISyntaxException e) {
+          throw new IllegalArgumentException("Syntax exception in payload value: " + payload.value(), e);
+        }
       }
     }
 
@@ -483,6 +527,14 @@ public final class ClickEvent<T extends ClickEvent.Payload> implements StyleBuil
     public static final class ChangePage extends ClickEvent.Action<Payload.Int> {
       private ChangePage() {
         super("change_page", true, Payload.Int.class);
+      }
+
+      @Override
+      public void validate(final Payload.Int payload) throws IllegalArgumentException {
+        final int page = payload.integer();
+        if (page < 1) {
+          throw new IllegalArgumentException("Change page payload integer must be greater than or equal to 1, was " + page);
+        }
       }
     }
 

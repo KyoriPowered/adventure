@@ -1,5 +1,6 @@
 plugins {
   id("adventure.common-conventions")
+  id("adventure.legacy-component-builder-abi-fix")
   alias(libs.plugins.jmh)
 }
 

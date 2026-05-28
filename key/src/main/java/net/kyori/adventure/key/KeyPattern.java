@@ -46,7 +46,7 @@ public @interface KeyPattern {
    *
    * @since 5.0.0
    */
-  @RegExp String NAMESPACE_PATTERN = "[a-z0-9_\\-.]+";
+  @RegExp String NAMESPACE_PATTERN = "^(?!\\.\\.$)[a-z0-9_.-]+$";
   /**
    * The pattern for values.
    *

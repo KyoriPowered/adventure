@@ -25,6 +25,7 @@ package net.kyori.adventure.text.minimessage;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.ServiceLoader;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
@@ -47,7 +48,7 @@ record MiniMessageImpl(
   UnaryOperator<String> preProcessor,
   UnaryOperator<Component> postProcessor
 ) implements MiniMessage {
-  private static final Optional<Provider> SERVICE = Services.service(Provider.class);
+  private static final Optional<Provider> SERVICE = Services.service(ServiceLoader.load(Provider.class, Provider.class.getClassLoader()), Provider.class);
   static final Consumer<Builder> BUILDER = SERVICE
     .map(Provider::builder)
     .orElseGet(() -> builder -> {
