@@ -167,7 +167,7 @@ public interface ForwardingAudience extends Audience {
   }
 
   @Override
-  default @UnmodifiableView Iterable<? extends BossBar> activeBossBars() {
+  default @Unmodifiable Iterable<? extends BossBar> activeBossBars() {
     final Set<BossBar> bossBars = new HashSet<>();
     for (final Audience audience : this.audiences()) {
       for (final BossBar bb : audience.activeBossBars()) bossBars.add(bb);
