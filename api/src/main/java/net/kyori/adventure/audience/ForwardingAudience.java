@@ -170,7 +170,9 @@ public interface ForwardingAudience extends Audience {
   default @Unmodifiable Iterable<? extends BossBar> activeBossBars() {
     final Set<BossBar> bossBars = new HashSet<>();
     for (final Audience audience : this.audiences()) {
-      for (final BossBar bb : audience.activeBossBars()) bossBars.add(bb);
+      for (final BossBar bb : audience.activeBossBars()) {
+        bossBars.add(bb);
+      }
     }
 
     return bossBars;
