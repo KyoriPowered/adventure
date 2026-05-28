@@ -48,6 +48,7 @@ import net.kyori.adventure.title.TitlePart;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.UnknownNullability;
+import org.jetbrains.annotations.Unmodifiable;
 import org.jetbrains.annotations.UnmodifiableView;
 import org.jspecify.annotations.Nullable;
 
@@ -349,7 +350,7 @@ public interface ForwardingAudience extends Audience {
     }
 
     @Override
-    default @UnmodifiableView Iterable<? extends BossBar> activeBossBars() {
+    default @Unmodifiable Iterable<? extends BossBar> activeBossBars() {
       return this.audience().activeBossBars();
     }
 

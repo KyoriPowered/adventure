@@ -49,7 +49,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.title.Title;
 import net.kyori.adventure.title.TitlePart;
-import org.jetbrains.annotations.UnmodifiableView;
+import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * A receiver of Minecraft media.
@@ -446,7 +446,7 @@ public interface Audience extends Pointered {
    * @return an unmodifiable view of all known currently active bossbars
    * @since 4.14.0
    */
-  @UnmodifiableView
+  @Unmodifiable
   default Iterable<? extends BossBar> activeBossBars() {
     return List.of();
   }
