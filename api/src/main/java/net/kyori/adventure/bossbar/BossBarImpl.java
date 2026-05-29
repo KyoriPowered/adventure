@@ -35,6 +35,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.Services;
+import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
@@ -261,6 +262,8 @@ final class BossBarImpl extends HackyBossBarPlatformBridge implements BossBar {
     return this;
   }
 
+  @Deprecated(since = "5.1.2")
+  @ApiStatus.ScheduledForRemoval(inVersion = "6.0.0")
   @Override
   public Iterable<? extends BossBarViewer> viewers() {
     if (this.implementation != null) {

@@ -24,6 +24,7 @@
 package net.kyori.adventure.bossbar;
 
 import java.util.List;
+import net.kyori.adventure.audience.Audience;
 import org.jetbrains.annotations.ApiStatus;
 
 /**
@@ -52,8 +53,11 @@ public interface BossBarImplementation {
    *
    * @return the viewers of this bossbar
    * @since 4.14.0
+   * @deprecated {@link BossBarViewer} is deprecated for removal as of 5.1.2.  Will be replaced with {@link Audience}.
    */
   @ApiStatus.Internal
+  @Deprecated(since = "5.1.2")
+  @ApiStatus.ScheduledForRemoval(inVersion = "6.0.0")
   default Iterable<? extends BossBarViewer> viewers() {
     return List.of();
   }

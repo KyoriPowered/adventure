@@ -28,6 +28,7 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.util.Index;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.UnmodifiableView;
 
@@ -333,7 +334,10 @@ public sealed interface BossBar permits BossBarImpl {
    *
    * @return an unmodifiable view of the viewers of this bossbar
    * @since 4.14.0
+   * @deprecated {@link BossBarViewer} is deprecated for removal as of 5.1.2.  Will be replaced with {@link Audience}.
    */
+  @Deprecated(since = "5.1.2")
+  @ApiStatus.ScheduledForRemoval(inVersion = "6.0.0")
   @UnmodifiableView
   Iterable<? extends BossBarViewer> viewers();
 
