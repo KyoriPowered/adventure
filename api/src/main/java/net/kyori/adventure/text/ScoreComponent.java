@@ -49,7 +49,8 @@ import org.jspecify.annotations.Nullable;
  *
  * @since 4.0.0
  */
-public sealed interface ScoreComponent extends ScopedComponent<ScoreComponent> permits ScoreComponentImpl {
+@SuppressWarnings("removal")
+public sealed interface ScoreComponent extends ScopedComponent<ScoreComponent>, BuildableComponent<ScoreComponent, ScoreComponent.Builder> permits ScoreComponentImpl {
   /**
    * Gets the score name.
    *

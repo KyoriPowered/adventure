@@ -38,7 +38,8 @@ import org.jetbrains.annotations.Contract;
  * @since 4.0.0
  * @sinceMinecraft 1.12
  */
-public sealed interface KeybindComponent extends ScopedComponent<KeybindComponent> permits KeybindComponentImpl {
+@SuppressWarnings("removal")
+public sealed interface KeybindComponent extends ScopedComponent<KeybindComponent>, BuildableComponent<KeybindComponent, KeybindComponent.Builder> permits KeybindComponentImpl {
   /**
    * Gets the keybind.
    *

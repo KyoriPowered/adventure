@@ -58,7 +58,8 @@ import org.jspecify.annotations.Nullable;
  * @see TranslationStore
  * @since 4.0.0
  */
-public sealed interface TranslatableComponent extends ScopedComponent<TranslatableComponent> permits TranslatableComponentImpl {
+@SuppressWarnings("removal")
+public sealed interface TranslatableComponent extends ScopedComponent<TranslatableComponent>, BuildableComponent<TranslatableComponent, TranslatableComponent.Builder> permits TranslatableComponentImpl {
   /**
    * Gets the translation key.
    *

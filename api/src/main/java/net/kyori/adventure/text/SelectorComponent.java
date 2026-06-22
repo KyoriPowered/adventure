@@ -41,7 +41,8 @@ import org.jspecify.annotations.Nullable;
  *
  * @since 4.0.0
  */
-public sealed interface SelectorComponent extends ScopedComponent<SelectorComponent> permits SelectorComponentImpl {
+@SuppressWarnings("removal")
+public sealed interface SelectorComponent extends ScopedComponent<SelectorComponent>, BuildableComponent<SelectorComponent, SelectorComponent.Builder> permits SelectorComponentImpl {
   /**
    * Gets the selector pattern.
    *

@@ -49,7 +49,8 @@ import org.jspecify.annotations.Nullable;
  * @since 4.0.0
  * @sinceMinecraft 1.14
  */
-public sealed interface NBTComponent<C extends NBTComponent<C>> extends Component permits BlockNBTComponent, EntityNBTComponent, StorageNBTComponent {
+@SuppressWarnings("removal")
+public sealed interface NBTComponent<C extends NBTComponent<C>> extends BuildableComponent<C, NBTComponentBuilder<C, ?>> permits BlockNBTComponent, EntityNBTComponent, StorageNBTComponent {
   /**
    * The default value for {@link #interpret()}.
    *

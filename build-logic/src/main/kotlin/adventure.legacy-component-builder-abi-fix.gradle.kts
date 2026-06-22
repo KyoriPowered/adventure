@@ -12,8 +12,9 @@ import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
 
 // Remove in 6.x.
-// In 5.x, ComponentBuilder#build erased from Object to Component, causing NoSuchMethodError for 4.x-compiled clients.
-// This adds a build-time classfile bridge for build():Object while keeping the 5.x source API strongly typed.
+// In 5.x, ComponentBuilder#build erased from Object/BuildableComponent to Component,
+// causing NoSuchMethodError for 4.x-compiled clients.
+// This adds build-time classfile bridges for the legacy return types while keeping the 5.x source API strongly typed.
 
 abstract class PatchComponentBuilderAbi : DefaultTask() {
   @get:InputFile
@@ -28,17 +29,43 @@ abstract class PatchComponentBuilderAbi : DefaultTask() {
     val writer = ClassWriter(reader, 0)
 
     var hasComponentBuild = false
+    var hasBuildableComponentBuild = false
     var hasObjectBuild = false
 
     reader.accept(object : ClassVisitor(Opcodes.ASM9, writer) {
       override fun visitMethod(access: Int, name: String, desc: String, sig: String?, ex: Array<out String>?): MethodVisitor {
         if (name == "build" && desc == "()Lnet/kyori/adventure/text/Component;") hasComponentBuild = true
+        if (name == "build" && desc == "()Lnet/kyori/adventure/text/BuildableComponent;") hasBuildableComponentBuild = true
         if (name == "build" && desc == "()Ljava/lang/Object;") hasObjectBuild = true
         return super.visitMethod(access, name, desc, sig, ex)
       }
 
       override fun visitEnd() {
         check(hasComponentBuild) { "Missing ComponentBuilder.build():Component" }
+
+        if (!hasBuildableComponentBuild) {
+          super.visitMethod(
+            Opcodes.ACC_PUBLIC or Opcodes.ACC_BRIDGE or Opcodes.ACC_SYNTHETIC,
+            "build",
+            "()Lnet/kyori/adventure/text/BuildableComponent;",
+            null,
+            null
+          ).apply {
+            visitCode()
+            visitVarInsn(Opcodes.ALOAD, 0)
+            visitMethodInsn(
+              Opcodes.INVOKEINTERFACE,
+              "net/kyori/adventure/text/ComponentBuilder",
+              "build",
+              "()Lnet/kyori/adventure/text/Component;",
+              true
+            )
+            visitTypeInsn(Opcodes.CHECKCAST, "net/kyori/adventure/text/BuildableComponent")
+            visitInsn(Opcodes.ARETURN)
+            visitMaxs(1, 1)
+            visitEnd()
+          }
+        }
 
         if (!hasObjectBuild) {
           super.visitMethod(
