@@ -294,7 +294,7 @@ public sealed interface PlayerHeadObjectContents extends ObjectContents permits 
    * @see ObjectContents#playerHead(SkinSource)
    * @since 4.25.0
    */
-  interface SkinSource {
+  interface SkinSource extends ObjectContentsLike {
     /**
      * Applies this skin source to the given player head contents builder.
      *
@@ -305,5 +305,10 @@ public sealed interface PlayerHeadObjectContents extends ObjectContents permits 
     @PlatformAPI
     @ApiStatus.Internal
     void applySkinToPlayerHeadContents(Builder builder);
+
+    @Override
+    default ObjectContents asObjectContents() {
+      return ObjectContents.playerHead(this);
+    }
   }
 }

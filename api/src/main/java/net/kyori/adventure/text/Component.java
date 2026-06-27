@@ -50,6 +50,8 @@ import net.kyori.adventure.text.format.StyleSetter;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.object.ObjectContents;
+import net.kyori.adventure.text.object.ObjectContentsLike;
+import net.kyori.adventure.text.object.PlayerHeadObjectContents;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.translation.Translatable;
 import net.kyori.adventure.util.ARGBLike;
@@ -559,6 +561,22 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
   @Contract("_ -> new")
   static ObjectComponent object(final Consumer<? super ObjectComponent.Builder> consumer) {
     return AbstractBuilder.configureAndBuild(object(), consumer);
+  }
+
+  /**
+   * Creates an object component with the given contents.
+   *
+   * @param objectContentsLike the contents
+   * @return an object component
+   * @since 5.2.0
+   */
+  @Contract(value = "_ -> new", pure = true)
+  static ObjectComponent object(final ObjectContentsLike objectContentsLike) {
+    if (requireNonNull(objectContentsLike, "objectContentsLike") instanceof PlayerHeadObjectContents.SkinSource skinSource) {
+      return object(ObjectContents.playerHead(skinSource));
+    } else {
+      return object(objectContentsLike.asObjectContents());
+    }
   }
 
   /**
