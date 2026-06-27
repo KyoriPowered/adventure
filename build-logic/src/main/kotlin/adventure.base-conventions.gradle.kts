@@ -20,7 +20,7 @@ indra {
   }
   mitLicense()
 
-  signWithKeyFromPrefixedProperties("kyori")
+  signWithKeyFromPrefixedProperties("paper")
   configurePublications {
     pom {
       developers {
