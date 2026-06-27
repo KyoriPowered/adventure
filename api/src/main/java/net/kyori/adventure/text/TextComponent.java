@@ -36,7 +36,8 @@ import org.jetbrains.annotations.Contract;
  *
  * @since 4.0.0
  */
-public sealed interface TextComponent extends ScopedComponent<TextComponent> permits TextComponentImpl, VirtualComponent {
+@SuppressWarnings("removal")
+public sealed interface TextComponent extends ScopedComponent<TextComponent>, BuildableComponent<TextComponent, TextComponent.Builder> permits TextComponentImpl, VirtualComponent {
   /**
    * Gets the plain text content.
    *

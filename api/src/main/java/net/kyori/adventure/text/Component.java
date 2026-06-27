@@ -108,7 +108,8 @@ import static java.util.Objects.requireNonNull;
  * @see LinearComponents
  * @since 4.0.0
  */
-public sealed interface Component extends ComponentBuilderApplicable, ComponentLike, HoverEventSource<Component>, StyleGetter, StyleSetter<Component> permits NBTComponent, ScopedComponent {
+@SuppressWarnings("removal")
+public sealed interface Component extends ComponentBuilderApplicable, ComponentLike, HoverEventSource<Component>, StyleGetter, StyleSetter<Component> permits BuildableComponent, ScopedComponent {
   /**
    * A predicate that checks equality of two {@code Component}s using {@link Objects#equals(Object, Object)}.
    *
