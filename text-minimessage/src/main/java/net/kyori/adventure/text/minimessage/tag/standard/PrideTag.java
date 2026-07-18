@@ -104,7 +104,7 @@ final class PrideTag extends GradientTag {
   private final String flag;
 
   PrideTag(final double phase, final List<TextColor> colors, final String flag, final Context ctx) {
-    super(phase, colors, ctx);
+    super(phase, colors, ColorSpace.RGB, ctx);
     this.flag = flag;
   }
 
