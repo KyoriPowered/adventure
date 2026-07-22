@@ -209,7 +209,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
         final List<TranslationArgument> translatedArguments = new ArrayList<>(arguments);
         for (int i = 0; i < translatedArguments.size(); i++) {
           final TranslationArgument arg = translatedArguments.get(i);
-          if (arg.value() instanceof Component && !(arg.value() instanceof VirtualComponent)) {
+          if (arg.value() instanceof Component && !(arg.value() instanceof final VirtualComponent virtual && virtual.renderer().skipRenderingWhenUsedAsTranslationArgument(virtual))) {
             translatedArguments.set(i, TranslationArgument.component(this.render((Component) arg.value(), context)));
           }
         }

@@ -25,6 +25,7 @@ package net.kyori.adventure.text.minimessage.translation;
 
 import net.kyori.adventure.pointer.Pointered;
 import net.kyori.adventure.text.ComponentLike;
+import net.kyori.adventure.text.VirtualComponent;
 import net.kyori.adventure.text.VirtualComponentRenderer;
 import org.jetbrains.annotations.UnknownNullability;
 
@@ -33,5 +34,10 @@ record MiniMessageTranslatorTarget(Pointered pointered) implements VirtualCompon
   @Override
   public @UnknownNullability ComponentLike apply(final Void context) {
     return null;
+  }
+
+  @Override
+  public boolean skipRenderingWhenUsedAsTranslationArgument(final VirtualComponent component) {
+    return true;
   }
 }

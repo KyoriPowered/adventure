@@ -25,6 +25,7 @@ package net.kyori.adventure.text.minimessage.translation;
 
 import java.util.Objects;
 import net.kyori.adventure.text.ComponentLike;
+import net.kyori.adventure.text.VirtualComponent;
 import net.kyori.adventure.text.VirtualComponentRenderer;
 import net.kyori.adventure.text.minimessage.internal.TagInternals;
 import net.kyori.adventure.text.minimessage.tag.TagPattern;
@@ -47,5 +48,10 @@ record MiniMessageTranslatorArgument<T>(String name, T data) implements VirtualC
     } else {
       return null;
     }
+  }
+
+  @Override
+  public boolean skipRenderingWhenUsedAsTranslationArgument(final VirtualComponent component) {
+    return true;
   }
 }
