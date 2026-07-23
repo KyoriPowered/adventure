@@ -10,4 +10,9 @@ module net.kyori.adventure.text.serializer.gson {
   exports net.kyori.adventure.text.serializer.gson;
 
   uses net.kyori.adventure.text.serializer.gson.GsonComponentSerializer.Provider;
+
+  provides net.kyori.adventure.text.event.DataComponentValueConverterRegistry.Provider
+    with net.kyori.adventure.text.serializer.gson.impl.GsonDataComponentValueConverterProvider;
+  provides net.kyori.adventure.text.serializer.json.JSONComponentSerializer.Provider
+    with net.kyori.adventure.text.serializer.gson.impl.JSONComponentSerializerProviderImpl;
 }
