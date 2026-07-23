@@ -37,6 +37,7 @@ import org.jetbrains.annotations.ApiStatus;
 @ApiStatus.Internal
 public final class TagInternals {
   private static final Pattern TAG_NAME_PATTERN = Pattern.compile(TagPattern.TAG_NAME_REGEX);
+  private static final Boolean SKIP_VALIDATION = Boolean.getBoolean("minimessage.perf.skipValidation");
 
   private TagInternals() {
   }
@@ -49,6 +50,7 @@ public final class TagInternals {
    * @since 4.10.0
    */
   public static void assertValidTagName(@TagPattern final String tagName) {
+    if (SKIP_VALIDATION) return;
     if (!TAG_NAME_PATTERN.matcher(Objects.requireNonNull(tagName)).matches()) {
       throw new IllegalArgumentException("Tag name must match pattern " + TAG_NAME_PATTERN.pattern() + ", was " + tagName);
     }
@@ -63,6 +65,7 @@ public final class TagInternals {
    * @since 4.10.1
    */
   public static boolean sanitizeAndCheckValidTagName(@TagPattern final String tagName) {
+    if (SKIP_VALIDATION) return true;
     return TAG_NAME_PATTERN.matcher(Objects.requireNonNull(tagName).toLowerCase(Locale.ROOT)).matches();
   }
 
