@@ -52,4 +52,15 @@ public interface VirtualComponentRenderer<C> {
   default String fallbackString() {
     return "";
   }
+
+  /**
+   * Checks if a {@link VirtualComponent} should be skipped when being rendered through a {@link net.kyori.adventure.text.renderer.TranslatableComponentRenderer} when used as an argument.
+   *
+   * @param component the component
+   * @return {@code true} to skip rendering, or {@code false} to render
+   * @since 5.2.1
+   */
+  default boolean skipRenderingWhenUsedAsTranslationArgument(final VirtualComponent component) {
+    return false;
+  }
 }
