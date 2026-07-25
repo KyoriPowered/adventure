@@ -57,12 +57,22 @@ class GradientTag extends AbstractColorChangingTag {
   private double multiplier = 1;
 
   private final TextColor[] colors;
+  private final ColorSpace colorSpace;
   @Range(from = -1, to = 1) double phase;
 
   private final boolean negativePhase;
 
   static Tag create(final ArgumentQueue args, final Context ctx) {
     double phase = 0;
+    ColorSpace colorSpace = ColorSpace.RGB;
+    if (args.hasNext()) {
+      final ColorSpace possibleColorSpace = ColorSpace.byName(args.peek().value());
+      if (possibleColorSpace != null) {
+        colorSpace = possibleColorSpace;
+        args.pop();
+      }
+    }
+
     final List<TextColor> textColors;
     if (args.hasNext()) {
       textColors = new ArrayList<>();
@@ -100,11 +110,12 @@ class GradientTag extends AbstractColorChangingTag {
       textColors = List.of();
     }
 
-    return new GradientTag(phase, textColors, ctx);
+    return new GradientTag(phase, textColors, colorSpace, ctx);
   }
 
-  GradientTag(final double phase, final List<TextColor> colors, final Context ctx) {
+  GradientTag(final double phase, final List<TextColor> colors, final ColorSpace colorSpace, final Context ctx) {
     super(ctx);
+    this.colorSpace = colorSpace;
     if (colors.isEmpty()) {
       this.colors = new TextColor[]{DEFAULT_WHITE, DEFAULT_BLACK};
     } else {
@@ -145,7 +156,7 @@ class GradientTag extends AbstractColorChangingTag {
     final int high = (int) Math.ceil(position) % this.colors.length;
     final int low = lowUnclamped % this.colors.length;
 
-    return TextColor.lerp((float) position - lowUnclamped, this.colors[low], this.colors[high]);
+    return this.colorSpace.interpolate((float) position - lowUnclamped, this.colors[low], this.colors[high]);
   }
 
   @Override
@@ -164,6 +175,9 @@ class GradientTag extends AbstractColorChangingTag {
 
     return emit -> {
       emit.tag(GRADIENT);
+      if (this.colorSpace != ColorSpace.RGB) {
+        emit.argument(this.colorSpace.serializedName());
+      }
       if (colors.length != 2 || !colors[0].equals(DEFAULT_WHITE) || !colors[1].equals(DEFAULT_BLACK)) { // non-default params
         for (final TextColor color : colors) {
           if (color instanceof NamedTextColor namedTextColor) {
@@ -186,12 +200,13 @@ class GradientTag extends AbstractColorChangingTag {
     if (!(other instanceof final GradientTag that)) return false;
     return this.index == that.index
       && this.phase == that.phase
+      && this.colorSpace == that.colorSpace
       && Arrays.equals(this.colors, that.colors);
   }
 
   @Override
   public int hashCode() {
-    int result = Objects.hash(this.index, this.phase);
+    int result = Objects.hash(this.index, this.phase, this.colorSpace);
     result = 31 * result + Arrays.hashCode(this.colors);
     return result;
   }
@@ -200,6 +215,7 @@ class GradientTag extends AbstractColorChangingTag {
   public String toString() {
     return "GradientTag{" +
       "colors=" + Arrays.toString(this.colors) +
+      ", colorSpace=" + this.colorSpace +
       ", phase=" + this.phase +
       '}';
   }

@@ -627,6 +627,70 @@ class GradientTagTest extends AbstractTest {
   }
 
   @Test
+  void testGradientHsv() {
+    final String input = "<gradient:hsv:#ff0000:#0000ff>|||</gradient>";
+    final Component expected = virtualOfChildren(textOfChildren(
+      text("|", color(0xff0000)),
+      text("|", color(0xff00ff)),
+      text("|", color(0x0000ff))
+    ));
+
+    this.assertParsedEquals(expected, input);
+  }
+
+  @Test
+  void testGradientOklab() {
+    final String input = "<gradient:oklab:white:black>|||</gradient>";
+    final Component expected = virtualOfChildren(textOfChildren(
+      text("|", WHITE),
+      text("|", color(0x636363)),
+      text("|", BLACK)
+    ));
+
+    this.assertParsedEquals(expected, input);
+  }
+
+  @Test
+  void testGradientOklch() {
+    final String input = "<gradient:oklch:#ff0000:#0000ff>|||</gradient>";
+    final Component expected = virtualOfChildren(textOfChildren(
+      text("|", color(0xff0000)),
+      text("|", color(0xba00c2)),
+      text("|", color(0x0000ff))
+    ));
+
+    this.assertParsedEquals(expected, input);
+  }
+
+  @Test
+  void testGradientColorSpaceCaseInsensitive() {
+    final String input = "<gradient:HSV:#ff0000:#0000ff>|||</gradient>";
+    final Component expected = virtualOfChildren(textOfChildren(
+      text("|", color(0xff0000)),
+      text("|", color(0xff00ff)),
+      text("|", color(0x0000ff))
+    ));
+
+    this.assertParsedEquals(expected, input);
+  }
+
+  @Test
+  void testRoundTripGradientColorSpace() {
+    final String input = "<gradient:oklch:red:blue>hello";
+    final Component parsed = PARSER.deserialize(input);
+
+    this.assertSerializedEquals(input, parsed);
+  }
+
+  @Test
+  void testRoundTripGradientColorSpaceWithPhase() {
+    final String input = "<gradient:hsv:red:blue:0.2>hello";
+    final Component parsed = PARSER.deserialize(input);
+
+    this.assertSerializedEquals(input, parsed);
+  }
+
+  @Test
   void testRoundTripGradient() {
     final String input = "<gradient>hello <bold>world</bold>!";
     final Component parsed = PARSER.deserialize(input);
