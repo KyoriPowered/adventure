@@ -55,7 +55,7 @@ record KeyImpl(String namespace, String value) implements Key {
         throw new InvalidKeyException(namespace, value, String.format(
           "Non " + pattern + " character in %s of Key[%s] at index %d ('%s', bytes: %s)",
           name,
-          asString(namespace, value),
+          KeyFormatImpl.asString(namespace, Key.DEFAULT_SEPARATOR, value),
           indexValue,
           character,
           Arrays.toString(String.valueOf(character).getBytes(StandardCharsets.UTF_8))
@@ -70,15 +70,6 @@ record KeyImpl(String namespace, String value) implements Key {
 
   static boolean allowedInValue(final char character) {
     return character == '_' || character == '-' || (character >= 'a' && character <= 'z') || (character >= '0' && character <= '9') || character == '.' || character == '/';
-  }
-
-  @Override
-  public String asString() {
-    return asString(this.namespace, this.value);
-  }
-
-  private static String asString(final String namespace, final String value) {
-    return namespace + ':' + value;
   }
 
   @Override
