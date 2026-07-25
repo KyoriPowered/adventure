@@ -117,6 +117,16 @@ class KeyTest {
     assertTrue(Key.parseableValue("some/path"));
   }
 
+  @Test
+  void testOfTryParsing() {
+    assertTrue(Key.tryParse("empty").isPresent());
+    assertFalse(Key.tryParse("!").isPresent());
+    assertTrue(Key.tryParse("namespace@key", '@').isPresent());
+    assertFalse(Key.tryParse("Namespace@Key", '@').isPresent());
+    assertTrue(Key.tryParse(Key.MINECRAFT_NAMESPACE, "empty").isPresent());
+    assertFalse(Key.tryParse(Key.MINECRAFT_NAMESPACE, "Empty").isPresent());
+  }
+
   @SuppressWarnings("PatternValidation") // We are testing to ensure this throws an exception.
   @Test
   void testNulChar() {
