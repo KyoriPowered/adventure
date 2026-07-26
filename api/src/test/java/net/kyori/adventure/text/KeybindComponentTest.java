@@ -25,6 +25,7 @@ package net.kyori.adventure.text;
 
 import com.google.common.collect.ImmutableSet;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.StyleBuilderApplicable;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;
 
@@ -47,7 +48,7 @@ class KeybindComponentTest extends AbstractComponentTest<KeybindComponent, Keybi
 
   @Test
   void testOf_color() {
-    final KeybindComponent component = Component.keybind("key.jump", NamedTextColor.GREEN);
+    final KeybindComponent component = Component.keybind("key.jump", (StyleBuilderApplicable) NamedTextColor.GREEN);
     assertEquals("key.jump", component.keybind());
     assertEquals(NamedTextColor.GREEN, component.color());
     TextAssertions.assertDecorations(component, ImmutableSet.of(), ImmutableSet.of());
@@ -55,7 +56,7 @@ class KeybindComponentTest extends AbstractComponentTest<KeybindComponent, Keybi
 
   @Test
   void testOf_color_decorations() {
-    final KeybindComponent component = Component.keybind("key.jump", NamedTextColor.GREEN, ImmutableSet.of(TextDecoration.BOLD));
+    final KeybindComponent component = Component.keybind("key.jump", (StyleBuilderApplicable) NamedTextColor.GREEN, TextDecoration.BOLD);
     assertEquals("key.jump", component.keybind());
     assertEquals(NamedTextColor.GREEN, component.color());
     TextAssertions.assertDecorations(component, ImmutableSet.of(TextDecoration.BOLD), ImmutableSet.of());

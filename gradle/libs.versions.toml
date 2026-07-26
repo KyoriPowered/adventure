@@ -71,3 +71,4 @@ zJmh = { module = "org.openjdk.jmh:jmh-core", version.ref = "jmh" }
 indra-sonatype = { id = "net.kyori.indra.publishing.sonatype", version.ref = "indra" }
 jmh = { id = "me.champeau.jmh", version.ref = "jmhPlugin" }
 nexusPublish = { id = "io.github.gradle-nexus.publish-plugin", version = "2.0.0" }
+byteBuddy = "net.bytebuddy.byte-buddy-gradle-plugin:1.17.8"

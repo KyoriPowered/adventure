@@ -38,6 +38,7 @@ import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collector;
 import net.kyori.adventure.builder.AbstractBuilder;
+import net.kyori.adventure.internal.Synthetic;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -460,8 +461,11 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @param color the color
    * @return the keybind component
    * @since 4.0.0
+   * @deprecated For removal in 6.0.0, use {@link #keybind(String, StyleBuilderApplicable...)} instead.
    */
   @Contract(value = "_, _ -> new", pure = true)
+  @Deprecated(forRemoval = true, since = "5.0.0")
+  @Synthetic
   static KeybindComponent keybind(final String keybind, final @Nullable TextColor color) {
     return keybind(keybind, Style.style(color));
   }
@@ -473,8 +477,11 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @param color the color
    * @return the keybind component
    * @since 4.9.0
+   * @deprecated For removal in 6.0.0, use {@link #keybind(KeybindComponent.KeybindLike, StyleBuilderApplicable...)} instead.
    */
   @Contract(value = "_, _ -> new", pure = true)
+  @Deprecated(forRemoval = true, since = "5.0.0")
+  @Synthetic
   static KeybindComponent keybind(final KeybindComponent.KeybindLike keybind, final @Nullable TextColor color) {
     return keybind(requireNonNull(keybind, "keybind").asKeybind(), Style.style(color));
   }
@@ -487,8 +494,11 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @param decorations the decorations
    * @return the keybind component
    * @since 4.0.0
+   * @deprecated For removal in 6.0.0, use {@link #keybind(String, StyleBuilderApplicable...)} instead.
    */
   @Contract(value = "_, _, _ -> new", pure = true)
+  @Deprecated(forRemoval = true, since = "5.0.0")
+  @Synthetic
   static KeybindComponent keybind(final String keybind, final @Nullable TextColor color, final TextDecoration... decorations) {
     return keybind(keybind, Style.style(color, decorations));
   }
@@ -501,8 +511,11 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @param decorations the decorations
    * @return the keybind component
    * @since 4.9.0
+   * @deprecated For removal in 6.0.0, use {@link #keybind(KeybindComponent.KeybindLike, StyleBuilderApplicable...)} instead.
    */
   @Contract(value = "_, _, _ -> new", pure = true)
+  @Deprecated(forRemoval = true, since = "5.0.0")
+  @Synthetic
   static KeybindComponent keybind(final KeybindComponent.KeybindLike keybind, final @Nullable TextColor color, final TextDecoration... decorations) {
     return keybind(requireNonNull(keybind, "keybind").asKeybind(), Style.style(color, decorations));
   }
@@ -515,8 +528,11 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @param decorations the decorations
    * @return the keybind component
    * @since 4.0.0
+   * @deprecated For removal in 6.0.0, use {@link #keybind(String, StyleBuilderApplicable...)} instead.
    */
   @Contract(value = "_, _, _ -> new", pure = true)
+  @Deprecated(forRemoval = true, since = "5.0.0")
+  @Synthetic
   static KeybindComponent keybind(final String keybind, final @Nullable TextColor color, final Set<TextDecoration> decorations) {
     return keybind(keybind, Style.style(color, decorations));
   }
@@ -529,10 +545,39 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @param decorations the decorations
    * @return the keybind component
    * @since 4.9.0
+   * @deprecated For removal in 6.0.0, use {@link #keybind(KeybindComponent.KeybindLike, StyleBuilderApplicable...)} instead.
    */
   @Contract(value = "_, _, _ -> new", pure = true)
+  @Deprecated(forRemoval = true, since = "5.0.0")
+  @Synthetic
   static KeybindComponent keybind(final KeybindComponent.KeybindLike keybind, final @Nullable TextColor color, final Set<TextDecoration> decorations) {
     return keybind(requireNonNull(keybind, "keybind").asKeybind(), Style.style(color, decorations));
+  }
+
+  /**
+   * Creates a keybind component with a keybind, and optional style builder applicables (e.g., color, decoration).
+   *
+   * @param keybind the keybind
+   * @param applicables the style builder applicables
+   * @return the keybind component
+   * @since 5.0.0
+   */
+  @Contract(value = "_, _ -> new", pure = true)
+  static KeybindComponent keybind(final String keybind, final StyleBuilderApplicable... applicables) {
+    return keybind(requireNonNull(keybind, "keybind"), Style.style(applicables));
+  }
+
+  /**
+   * Creates a keybind component with a keybind, and optional style builder applicables (e.g., color, decoration).
+   *
+   * @param keybind the keybind
+   * @param applicables the style builder applicables
+   * @return the keybind component
+   * @since 5.0.0
+   */
+  @Contract(value = "_, _ -> new", pure = true)
+  static KeybindComponent keybind(final KeybindComponent.KeybindLike keybind, final StyleBuilderApplicable... applicables) {
+    return keybind(requireNonNull(keybind, "keybind").asKeybind(), Style.style(applicables));
   }
 
   /*
@@ -843,14 +888,30 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
   }
 
   /**
+   * Creates a text component with content and styling.
+   *
+   * @param content the plain text content
+   * @param applicables the style builder applicables
+   * @return a text component
+   * @since 5.0.0
+   */
+  @Contract(value = "_, _ -> new", pure = true)
+  static TextComponent text(final String content, final StyleBuilderApplicable... applicables) {
+    return TextComponentImpl.create(Collections.emptyList(), Style.style(applicables), content);
+  }
+
+  /**
    * Creates a text component with content, and optional color.
    *
    * @param content the plain text content
    * @param color the color
    * @return a text component
    * @since 4.0.0
+   * @deprecated For removal in 6.0.0, use {@link #text(String, StyleBuilderApplicable...)} instead.
    */
   @Contract(value = "_, _ -> new", pure = true)
+  @Deprecated(forRemoval = true, since = "5.0.0")
+  @Synthetic
   static TextComponent text(final String content, final @Nullable TextColor color) {
     return text(content, Style.style(color));
   }
@@ -863,8 +924,11 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @param decorations the decorations
    * @return a text component
    * @since 4.0.0
+   * @deprecated For removal in 6.0.0, use {@link #text(String, StyleBuilderApplicable...)} instead.
    */
   @Contract(value = "_, _, _ -> new", pure = true)
+  @Deprecated(forRemoval = true, since = "5.0.0")
+  @Synthetic
   static TextComponent text(final String content, final @Nullable TextColor color, final TextDecoration... decorations) {
     return text(content, Style.style(color, decorations));
   }
@@ -877,8 +941,11 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @param decorations the decorations
    * @return a text component
    * @since 4.0.0
+   * @deprecated For removal in 6.0.0, use {@link #text(String, StyleBuilderApplicable...)} instead.
    */
   @Contract(value = "_, _, _ -> new", pure = true)
+  @Deprecated(forRemoval = true, since = "5.0.0")
+  @Synthetic
   static TextComponent text(final String content, final @Nullable TextColor color, final Set<TextDecoration> decorations) {
     return text(content, Style.style(color, decorations));
   }
@@ -909,14 +976,30 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
   }
 
   /**
+   * Creates a text component with the content of {@link String#valueOf(boolean)} and styling.
+   *
+   * @param value the boolean value
+   * @param applicables the style builder applicables
+   * @return a text component
+   * @since 5.0.0
+   */
+  @Contract(value = "_, _ -> new", pure = true)
+  static TextComponent text(final boolean value, final StyleBuilderApplicable... applicables) {
+    return text(String.valueOf(value), Style.style(applicables));
+  }
+
+  /**
    * Creates a text component with the content of {@link String#valueOf(boolean)}, and optional color.
    *
    * @param value the boolean value
    * @param color the color
    * @return a text component
    * @since 4.0.0
+   * @deprecated For removal in 6.0.0, use {@link #text(boolean, StyleBuilderApplicable...)} instead.
    */
   @Contract(value = "_, _ -> new", pure = true)
+  @Deprecated(forRemoval = true, since = "5.0.0")
+  @Synthetic
   static TextComponent text(final boolean value, final @Nullable TextColor color) {
     return text(String.valueOf(value), color);
   }
@@ -929,8 +1012,11 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @param decorations the decorations
    * @return a text component
    * @since 4.0.0
+   * @deprecated For removal in 6.0.0, use {@link #text(boolean, StyleBuilderApplicable...)} instead.
    */
   @Contract(value = "_, _, _ -> new", pure = true)
+  @Deprecated(forRemoval = true, since = "5.0.0")
+  @Synthetic
   static TextComponent text(final boolean value, final @Nullable TextColor color, final TextDecoration... decorations) {
     return text(String.valueOf(value), color, decorations);
   }
@@ -943,8 +1029,11 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @param decorations the decorations
    * @return a text component
    * @since 4.0.0
+   * @deprecated For removal in 6.0.0, use {@link #text(boolean, StyleBuilderApplicable...)} instead.
    */
   @Contract(value = "_, _, _ -> new", pure = true)
+  @Deprecated(forRemoval = true, since = "5.0.0")
+  @Synthetic
   static TextComponent text(final boolean value, final @Nullable TextColor color, final Set<TextDecoration> decorations) {
     return text(String.valueOf(value), color, decorations);
   }
@@ -977,14 +1066,30 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
   }
 
   /**
+   * Creates a text component with the content of {@link String#valueOf(char)} and styling.
+   *
+   * @param value the boolean value
+   * @param applicables the style builder applicables
+   * @return a text component
+   * @since 5.0.0
+   */
+  @Contract(value = "_, _ -> new", pure = true)
+  static TextComponent text(final char value, final StyleBuilderApplicable... applicables) {
+    return text(String.valueOf(value), Style.style(applicables));
+  }
+
+  /**
    * Creates a text component with the content of {@link String#valueOf(char)}, and optional color.
    *
    * @param value the char value
    * @param color the color
    * @return a text component
    * @since 4.0.0
+   * @deprecated For removal in 6.0.0, use {@link #text(char, StyleBuilderApplicable...)} instead.
    */
   @Contract(value = "_, _ -> new", pure = true)
+  @Deprecated(forRemoval = true, since = "5.0.0")
+  @Synthetic
   static TextComponent text(final char value, final @Nullable TextColor color) {
     return text(String.valueOf(value), color);
   }
@@ -997,8 +1102,11 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @param decorations the decorations
    * @return a text component
    * @since 4.0.0
+   * @deprecated For removal in 6.0.0, use {@link #text(char, StyleBuilderApplicable...)} instead.
    */
   @Contract(value = "_, _, _ -> new", pure = true)
+  @Deprecated(forRemoval = true, since = "5.0.0")
+  @Synthetic
   static TextComponent text(final char value, final @Nullable TextColor color, final TextDecoration... decorations) {
     return text(String.valueOf(value), color, decorations);
   }
@@ -1011,8 +1119,11 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @param decorations the decorations
    * @return a text component
    * @since 4.0.0
+   * @deprecated For removal in 6.0.0, use {@link #text(char, StyleBuilderApplicable...)} instead.
    */
   @Contract(value = "_, _, _ -> new", pure = true)
+  @Deprecated(forRemoval = true, since = "5.0.0")
+  @Synthetic
   static TextComponent text(final char value, final @Nullable TextColor color, final Set<TextDecoration> decorations) {
     return text(String.valueOf(value), color, decorations);
   }
@@ -1043,14 +1154,30 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
   }
 
   /**
+   * Creates a text component with the content of {@link String#valueOf(double)} and styling.
+   *
+   * @param value the boolean value
+   * @param applicables the style builder applicables
+   * @return a text component
+   * @since 5.0.0
+   */
+  @Contract(value = "_, _ -> new", pure = true)
+  static TextComponent text(final double value, final StyleBuilderApplicable... applicables) {
+    return text(String.valueOf(value), Style.style(applicables));
+  }
+
+  /**
    * Creates a text component with the content of {@link String#valueOf(double)}, and optional color.
    *
    * @param value the double value
    * @param color the color
    * @return a text component
    * @since 4.0.0
+   * @deprecated For removal in 6.0.0, use {@link #text(double, StyleBuilderApplicable...)} instead.
    */
   @Contract(value = "_, _ -> new", pure = true)
+  @Deprecated(forRemoval = true, since = "5.0.0")
+  @Synthetic
   static TextComponent text(final double value, final @Nullable TextColor color) {
     return text(String.valueOf(value), color);
   }
@@ -1063,8 +1190,11 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @param decorations the decorations
    * @return a text component
    * @since 4.0.0
+   * @deprecated For removal in 6.0.0, use {@link #text(double, StyleBuilderApplicable...)} instead.
    */
   @Contract(value = "_, _, _ -> new", pure = true)
+  @Deprecated(forRemoval = true, since = "5.0.0")
+  @Synthetic
   static TextComponent text(final double value, final @Nullable TextColor color, final TextDecoration... decorations) {
     return text(String.valueOf(value), color, decorations);
   }
@@ -1077,8 +1207,11 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @param decorations the decorations
    * @return a text component
    * @since 4.0.0
+   * @deprecated For removal in 6.0.0, use {@link #text(double, StyleBuilderApplicable...)} instead.
    */
   @Contract(value = "_, _, _ -> new", pure = true)
+  @Deprecated(forRemoval = true, since = "5.0.0")
+  @Synthetic
   static TextComponent text(final double value, final @Nullable TextColor color, final Set<TextDecoration> decorations) {
     return text(String.valueOf(value), color, decorations);
   }
@@ -1109,14 +1242,30 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
   }
 
   /**
+   * Creates a text component with the content of {@link String#valueOf(double)} and styling.
+   *
+   * @param value the boolean value
+   * @param applicables the style builder applicables
+   * @return a text component
+   * @since 5.0.0
+   */
+  @Contract(value = "_, _ -> new", pure = true)
+  static TextComponent text(final float value, final StyleBuilderApplicable... applicables) {
+    return text(String.valueOf(value), Style.style(applicables));
+  }
+
+  /**
    * Creates a text component with the content of {@link String#valueOf(float)}, and optional color.
    *
    * @param value the float value
    * @param color the color
    * @return a text component
    * @since 4.0.0
+   * @deprecated For removal in 6.0.0, use {@link #text(float, StyleBuilderApplicable...)} instead.
    */
   @Contract(value = "_, _ -> new", pure = true)
+  @Deprecated(forRemoval = true, since = "5.0.0")
+  @Synthetic
   static TextComponent text(final float value, final @Nullable TextColor color) {
     return text(String.valueOf(value), color);
   }
@@ -1129,8 +1278,11 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @param decorations the decorations
    * @return a text component
    * @since 4.0.0
+   * @deprecated For removal in 6.0.0, use {@link #text(float, StyleBuilderApplicable...)} instead.
    */
   @Contract(value = "_, _, _ -> new", pure = true)
+  @Deprecated(forRemoval = true, since = "5.0.0")
+  @Synthetic
   static TextComponent text(final float value, final @Nullable TextColor color, final TextDecoration... decorations) {
     return text(String.valueOf(value), color, decorations);
   }
@@ -1143,8 +1295,11 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @param decorations the decorations
    * @return a text component
    * @since 4.0.0
+   * @deprecated For removal in 6.0.0, use {@link #text(float, StyleBuilderApplicable...)} instead.
    */
   @Contract(value = "_, _, _ -> new", pure = true)
+  @Deprecated(forRemoval = true, since = "5.0.0")
+  @Synthetic
   static TextComponent text(final float value, final @Nullable TextColor color, final Set<TextDecoration> decorations) {
     return text(String.valueOf(value), color, decorations);
   }
@@ -1175,14 +1330,30 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
   }
 
   /**
+   * Creates a text component with the content of {@link String#valueOf(int)} and styling.
+   *
+   * @param value the boolean value
+   * @param applicables the style builder applicables
+   * @return a text component
+   * @since 5.0.0
+   */
+  @Contract(value = "_, _ -> new", pure = true)
+  static TextComponent text(final int value, final StyleBuilderApplicable... applicables) {
+    return text(String.valueOf(value), Style.style(applicables));
+  }
+
+  /**
    * Creates a text component with the content of {@link String#valueOf(int)}, and optional color.
    *
    * @param value the int value
    * @param color the color
    * @return a text component
    * @since 4.0.0
+   * @deprecated For removal in 6.0.0, use {@link #text(int, StyleBuilderApplicable...)} instead.
    */
   @Contract(value = "_, _ -> new", pure = true)
+  @Deprecated(forRemoval = true, since = "5.0.0")
+  @Synthetic
   static TextComponent text(final int value, final @Nullable TextColor color) {
     return text(String.valueOf(value), color);
   }
@@ -1195,8 +1366,11 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @param decorations the decorations
    * @return a text component
    * @since 4.0.0
+   * @deprecated For removal in 6.0.0, use {@link #text(int, StyleBuilderApplicable...)} instead.
    */
   @Contract(value = "_, _, _ -> new", pure = true)
+  @Deprecated(forRemoval = true, since = "5.0.0")
+  @Synthetic
   static TextComponent text(final int value, final @Nullable TextColor color, final TextDecoration... decorations) {
     return text(String.valueOf(value), color, decorations);
   }
@@ -1209,8 +1383,11 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @param decorations the decorations
    * @return a text component
    * @since 4.0.0
+   * @deprecated For removal in 6.0.0, use {@link #text(int, StyleBuilderApplicable...)} instead.
    */
   @Contract(value = "_, _, _ -> new", pure = true)
+  @Deprecated(forRemoval = true, since = "5.0.0")
+  @Synthetic
   static TextComponent text(final int value, final @Nullable TextColor color, final Set<TextDecoration> decorations) {
     return text(String.valueOf(value), color, decorations);
   }
@@ -1241,14 +1418,30 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
   }
 
   /**
+   * Creates a text component with the content of {@link String#valueOf(long)} and styling.
+   *
+   * @param value the boolean value
+   * @param applicables the style builder applicables
+   * @return a text component
+   * @since 5.0.0
+   */
+  @Contract(value = "_, _ -> new", pure = true)
+  static TextComponent text(final long value, final StyleBuilderApplicable... applicables) {
+    return text(String.valueOf(value), Style.style(applicables));
+  }
+
+  /**
    * Creates a text component with the content of {@link String#valueOf(long)}, and optional color.
    *
    * @param value the long value
    * @param color the color
    * @return a text component
    * @since 4.0.0
+   * @deprecated For removal in 6.0.0, use {@link #text(long, StyleBuilderApplicable...)} instead.
    */
   @Contract(value = "_, _ -> new", pure = true)
+  @Deprecated(forRemoval = true, since = "5.0.0")
+  @Synthetic
   static TextComponent text(final long value, final @Nullable TextColor color) {
     return text(String.valueOf(value), color);
   }
@@ -1261,8 +1454,11 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @param decorations the decorations
    * @return a text component
    * @since 4.0.0
+   * @deprecated For removal in 6.0.0, use {@link #text(long, StyleBuilderApplicable...)} instead.
    */
   @Contract(value = "_, _, _ -> new", pure = true)
+  @Deprecated(forRemoval = true, since = "5.0.0")
+  @Synthetic
   static TextComponent text(final long value, final @Nullable TextColor color, final TextDecoration... decorations) {
     return text(String.valueOf(value), color, decorations);
   }
@@ -1275,8 +1471,11 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @param decorations the decorations
    * @return a text component
    * @since 4.0.0
+   * @deprecated For removal in 6.0.0, use {@link #text(long, StyleBuilderApplicable...)} instead.
    */
   @Contract(value = "_, _, _ -> new", pure = true)
+  @Deprecated(forRemoval = true, since = "5.0.0")
+  @Synthetic
   static TextComponent text(final long value, final @Nullable TextColor color, final Set<TextDecoration> decorations) {
     return text(String.valueOf(value), color, decorations);
   }
@@ -1686,10 +1885,26 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @param color the color
    * @return a translatable component
    * @since 4.0.0
+   * @deprecated For removal in 6.0.0, use {@link #translatable(String, StyleBuilderApplicable...)} instead.
    */
   @Contract(value = "_, _ -> new", pure = true)
+  @Deprecated(forRemoval = true, since = "5.0.0")
+  @Synthetic
   static TranslatableComponent translatable(final String key, final @Nullable TextColor color) {
     return translatable(key, Style.style(color));
+  }
+
+  /**
+   * Creates a translatable component with a translation key, and styling.
+   *
+   * @param key the translation key
+   * @param applicables the style builder applicables
+   * @return a translatable component
+   * @since 5.0.0
+   */
+  @Contract(value = "_, _ -> new", pure = true)
+  static TranslatableComponent translatable(final String key, final StyleBuilderApplicable... applicables) {
+    return translatable(key, Style.style(applicables));
   }
 
   /**
@@ -1699,10 +1914,26 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @param color the color
    * @return a translatable component
    * @since 4.8.0
+   * @deprecated For removal in 6.0.0, use {@link #translatable(Translatable, StyleBuilderApplicable...)} instead.
    */
   @Contract(value = "_, _ -> new", pure = true)
+  @Deprecated(forRemoval = true, since = "5.0.0")
+  @Synthetic
   static TranslatableComponent translatable(final Translatable translatable, final @Nullable TextColor color) {
     return translatable(requireNonNull(translatable, "translatable").translationKey(), color);
+  }
+
+  /**
+   * Creates a translatable component with a translation key, and styling.
+   *
+   * @param translatable the translatable object to get the key from
+   * @param applicables the style builder applicables
+   * @return a translatable component
+   * @since 5.0.0
+   */
+  @Contract(value = "_, _ -> new", pure = true)
+  static TranslatableComponent translatable(final Translatable translatable, final StyleBuilderApplicable... applicables) {
+    return translatable(translatable, Style.style(applicables));
   }
 
   /**
@@ -1713,8 +1944,11 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @param decorations the decorations
    * @return a translatable component
    * @since 4.0.0
+   * @deprecated For removal in 6.0.0, use {@link #translatable(String, StyleBuilderApplicable...)} instead.
    */
   @Contract(value = "_, _, _ -> new", pure = true)
+  @Deprecated(forRemoval = true, since = "5.0.0")
+  @Synthetic
   static TranslatableComponent translatable(final String key, final @Nullable TextColor color, final TextDecoration... decorations) {
     return translatable(key, Style.style(color, decorations));
   }
@@ -1727,8 +1961,11 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @param decorations the decorations
    * @return a translatable component
    * @since 4.8.0
+   * @deprecated For removal in 6.0.0, use {@link #translatable(Translatable, StyleBuilderApplicable...)} instead.
    */
   @Contract(value = "_, _, _ -> new", pure = true)
+  @Deprecated(forRemoval = true, since = "5.0.0")
+  @Synthetic
   static TranslatableComponent translatable(final Translatable translatable, final @Nullable TextColor color, final TextDecoration... decorations) {
     return translatable(requireNonNull(translatable, "translatable").translationKey(), color, decorations);
   }
@@ -1741,8 +1978,11 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @param decorations the decorations
    * @return a translatable component
    * @since 4.0.0
+   * @deprecated For removal in 6.0.0, use {@link #translatable(String, StyleBuilderApplicable...)} instead.
    */
   @Contract(value = "_, _, _ -> new", pure = true)
+  @Deprecated(forRemoval = true, since = "5.0.0")
+  @Synthetic
   static TranslatableComponent translatable(final String key, final @Nullable TextColor color, final Set<TextDecoration> decorations) {
     return translatable(key, Style.style(color, decorations));
   }
@@ -1755,8 +1995,11 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @param decorations the decorations
    * @return a translatable component
    * @since 4.8.0
+   * @deprecated For removal in 6.0.0, use {@link #translatable(Translatable, StyleBuilderApplicable...)} instead.
    */
   @Contract(value = "_, _, _ -> new", pure = true)
+  @Deprecated(forRemoval = true, since = "5.0.0")
+  @Synthetic
   static TranslatableComponent translatable(final Translatable translatable, final @Nullable TextColor color, final Set<TextDecoration> decorations) {
     return translatable(requireNonNull(translatable, "translatable").translationKey(), color, decorations);
   }
@@ -1823,8 +2066,10 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @param args the translation arguments
    * @return a translatable component
    * @since 4.0.0
+   * @deprecated For removal in 6.0.0, use {@link #translatable(String, Style, ComponentLike...)} instead.
    */
   @Contract(value = "_, _, _ -> new", pure = true)
+  @Deprecated(forRemoval = true, since = "5.0.0")
   static TranslatableComponent translatable(final String key, final @Nullable TextColor color, final ComponentLike... args) {
     return translatable(key, Style.style(color), args);
   }
@@ -1837,8 +2082,10 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @param args the translation arguments
    * @return a translatable component
    * @since 4.8.0
+   * @deprecated For removal in 6.0.0, use {@link #translatable(Translatable, Style, ComponentLike...)} instead.
    */
   @Contract(value = "_, _, _ -> new", pure = true)
+  @Deprecated(forRemoval = true, since = "5.0.0")
   static TranslatableComponent translatable(final Translatable translatable, final @Nullable TextColor color, final ComponentLike... args) {
     return translatable(requireNonNull(translatable, "translatable").translationKey(), color, args);
   }
@@ -1852,8 +2099,10 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @param args the translation arguments
    * @return a translatable component
    * @since 4.0.0
+   * @deprecated For removal in 6.0.0, use {@link #translatable(String, Style, ComponentLike...)} instead.
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
+  @Deprecated(forRemoval = true, since = "5.0.0")
   static TranslatableComponent translatable(final String key, final @Nullable TextColor color, final Set<TextDecoration> decorations, final ComponentLike... args) {
     return translatable(key, Style.style(color, decorations), args);
   }
@@ -1867,8 +2116,10 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @param args the translation arguments
    * @return a translatable component
    * @since 4.8.0
+   * @deprecated For removal in 6.0.0, use {@link #translatable(Translatable, Style, ComponentLike...)} instead.
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
+  @Deprecated(forRemoval = true, since = "5.0.0")
   static TranslatableComponent translatable(final Translatable translatable, final @Nullable TextColor color, final Set<TextDecoration> decorations, final ComponentLike... args) {
     return translatable(requireNonNull(translatable, "translatable").translationKey(), color, decorations, args);
   }
@@ -1935,8 +2186,10 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @param args the translation arguments
    * @return a translatable component
    * @since 4.0.0
+   * @deprecated For removal in 6.0.0, use {@link #translatable(String, Style, List)} instead.
    */
   @Contract(value = "_, _, _ -> new", pure = true)
+  @Deprecated(forRemoval = true, since = "5.0.0")
   static TranslatableComponent translatable(final String key, final @Nullable TextColor color, final List<? extends ComponentLike> args) {
     return translatable(key, Style.style(color), args);
   }
@@ -1949,8 +2202,10 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @param args the translation arguments
    * @return a translatable component
    * @since 4.8.0
+   * @deprecated For removal in 6.0.0, use {@link #translatable(Translatable, Style, List)} instead.
    */
   @Contract(value = "_, _, _ -> new", pure = true)
+  @Deprecated(forRemoval = true, since = "5.0.0")
   static TranslatableComponent translatable(final Translatable translatable, final @Nullable TextColor color, final List<? extends ComponentLike> args) {
     return translatable(requireNonNull(translatable, "translatable").translationKey(), color, args);
   }
@@ -1964,8 +2219,10 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @param args the translation arguments
    * @return a translatable component
    * @since 4.0.0
+   * @deprecated For removal in 6.0.0, use {@link #translatable(String, Style, List)} instead.
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
+  @Deprecated(forRemoval = true, since = "5.0.0")
   static TranslatableComponent translatable(final String key, final @Nullable TextColor color, final Set<TextDecoration> decorations, final List<? extends ComponentLike> args) {
     return translatable(key, Style.style(color, decorations), args);
   }
@@ -1979,8 +2236,10 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
    * @param args the translation arguments
    * @return a translatable component
    * @since 4.8.0
+   * @deprecated For removal in 6.0.0, use {@link #translatable(Translatable, Style, List)} instead.
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
+  @Deprecated(forRemoval = true, since = "5.0.0")
   static TranslatableComponent translatable(final Translatable translatable, final @Nullable TextColor color, final Set<TextDecoration> decorations, final List<? extends ComponentLike> args) {
     return translatable(requireNonNull(translatable, "translatable").translationKey(), color, decorations, args);
   }
@@ -2034,7 +2293,7 @@ public sealed interface Component extends ComponentBuilderApplicable, ComponentL
     for (final Component child : this.children()) {
       if (child.contains(that, equals)) return true;
     }
-    final @Nullable HoverEvent<?> hoverEvent = this.hoverEvent();
+    final HoverEvent<?> hoverEvent = this.hoverEvent();
     if (hoverEvent != null) {
       final Object value = hoverEvent.value();
       Component component = null;
