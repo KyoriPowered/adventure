@@ -50,6 +50,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.title.Title;
 import net.kyori.adventure.title.TitlePart;
+import net.kyori.adventure.waypoint.Waypoint;
 
 /**
  * A receiver of Minecraft media.
@@ -720,4 +721,39 @@ public interface Audience extends Pointered {
    */
   default void closeDialog() {
   }
+
+  // -------------------
+  // ---- Waypoints ----
+  // -------------------
+
+  /**
+   * Tracks a waypoint.
+   *
+   * @param waypoint a waypoint
+   * @since 5.1.0
+   * @sinceMinecraft 1.21.6
+   */
+  default void trackWaypoint(final Waypoint waypoint) {
+  }
+
+  /**
+   * Updates a tracked waypoint.
+   *
+   * @param waypoint a waypoint
+   * @since 5.1.0
+   * @sinceMinecraft 1.21.6
+   */
+  default void updateWaypoint(final Waypoint waypoint) {
+  }
+
+  /**
+   * Untracks a tracked waypoint.
+   *
+   * @param waypoint a waypoint
+   * @since 5.1.0
+   * @sinceMinecraft 1.21.6
+   */
+  default void untrackWaypoint(final Waypoint waypoint) {
+  }
+
 }

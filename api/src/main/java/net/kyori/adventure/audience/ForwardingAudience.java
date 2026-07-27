@@ -43,6 +43,7 @@ import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.TitlePart;
+import net.kyori.adventure.waypoint.Waypoint;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.UnknownNullability;
@@ -217,6 +218,21 @@ public interface ForwardingAudience extends Audience {
     for (final Audience audience : this.audiences()) audience.closeDialog();
   }
 
+  @Override
+  default void trackWaypoint(final Waypoint waypoint) {
+    for (final Audience audience : this.audiences()) audience.trackWaypoint(waypoint);
+  }
+
+  @Override
+  default void updateWaypoint(final Waypoint waypoint) {
+    for (final Audience audience : this.audiences()) audience.updateWaypoint(waypoint);
+  }
+
+  @Override
+  default void untrackWaypoint(final Waypoint waypoint) {
+    for (final Audience audience : this.audiences()) audience.untrackWaypoint(waypoint);
+  }
+
   /**
    * An audience that forwards everything to a single other audience.
    *
@@ -388,6 +404,21 @@ public interface ForwardingAudience extends Audience {
     @Override
     default void closeDialog() {
       this.audience().closeDialog();
+    }
+
+    @Override
+    default void trackWaypoint(final Waypoint waypoint) {
+      this.audience().trackWaypoint(waypoint);
+    }
+
+    @Override
+    default void updateWaypoint(final Waypoint waypoint) {
+      this.audience().updateWaypoint(waypoint);
+    }
+
+    @Override
+    default void untrackWaypoint(final Waypoint waypoint) {
+      this.audience().untrackWaypoint(waypoint);
     }
   }
 }
