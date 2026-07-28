@@ -23,20 +23,28 @@
  */
 package net.kyori.adventure.bossbar;
 
+import net.kyori.adventure.audience.Audience;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.UnmodifiableView;
 
 /**
  * Something that can view a {@link BossBar}.
  *
  * @since 4.14.0
+ * @deprecated {@link BossBarViewer} is deprecated for removal as of 5.1.2.  Will be replaced with {@link Audience}.
  */
+@Deprecated(since = "5.1.2")
+@ApiStatus.ScheduledForRemoval(inVersion = "6.0.0")
 public interface BossBarViewer {
   /**
    * Gets an unmodifiable view of all known currently active bossbars.
    *
    * @return an unmodifiable view of all known currently active bossbars
    * @since 4.14.0
+   * @deprecated {@link BossBarViewer} is deprecated for removal as of 5.1.2.  Use separate methods on {@link Audience} for getting a player's active boss bars.
    */
+  @Deprecated(since = "5.1.2")
+  @ApiStatus.ScheduledForRemoval(inVersion = "6.0.0")
   @UnmodifiableView
   Iterable<? extends BossBar> activeBossBars();
 }
