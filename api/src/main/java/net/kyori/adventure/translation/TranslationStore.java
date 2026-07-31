@@ -167,6 +167,18 @@ public interface TranslationStore<T> extends Translator {
   void unregister(final String key);
 
   /**
+   * Unregisters a translation for a key and locale.
+   *
+   * <p>If this is the last translation registered for the key, the key is also
+   * unregistered.</p>
+   *
+   * @param key a translation key
+   * @param locale a locale
+   * @since 5.2.1
+   */
+  void unregister(final String key, final Locale locale);
+
+  /**
    * An abstract, string-based translation store.
    *
    * <p>This class extends upon the standard abstract translation store by adding
