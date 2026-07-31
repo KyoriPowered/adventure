@@ -141,6 +141,14 @@ public abstract class AbstractTranslationStore<T> implements TranslationStore<T>
   }
 
   @Override
+  public final void unregister(final String key, final Locale locale) {
+    this.translations.computeIfPresent(requireNonNull(key, "key"), (ignored, translation) -> {
+      translation.unregister(requireNonNull(locale, "locale"));
+      return translation.isEmpty() ? null : translation;
+    });
+  }
+
+  @Override
   public final Key name() {
     return this.name;
   }
@@ -199,6 +207,14 @@ public abstract class AbstractTranslationStore<T> implements TranslationStore<T>
       if (this.translations.putIfAbsent(requireNonNull(locale, "locale"), requireNonNull(translation, "translation")) != null) {
         throw new IllegalArgumentException(String.format("Translation already exists: %s for %s", this.key, locale));
       }
+    }
+
+    private void unregister(final Locale locale) {
+      this.translations.remove(locale);
+    }
+
+    private boolean isEmpty() {
+      return this.translations.isEmpty();
     }
 
     @Override

@@ -38,8 +38,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TranslationStoreTest {
   static final TranslationStore.StringBased<MessageFormat> REGISTRY = TranslationStore.messageFormat(Key.key("adventure", "test"));
@@ -56,6 +58,35 @@ class TranslationStoreTest {
   @Test
   void testRegister_duplicate() {
     assertThrows(IllegalArgumentException.class, () -> REGISTRY.register("test", Locale.US, new MessageFormat("Another test.")));
+  }
+
+  @Test
+  void testUnregister_locale() {
+    final TranslationStore.StringBased<MessageFormat> store = TranslationStore.messageFormat(Key.key("adventure", "locale-unregister"));
+    final MessageFormat english = new MessageFormat("Hello", Locale.US);
+    final MessageFormat german = new MessageFormat("Hallo", Locale.GERMANY);
+    store.register("hello-world", Locale.US, english);
+    store.register("hello-world", Locale.GERMANY, german);
+
+    store.unregister("hello-world", Locale.GERMANY);
+
+    assertEquals(english, store.translate("hello-world", Locale.US));
+    assertFalse(store.contains("hello-world", Locale.GERMANY));
+    assertTrue(store.contains("hello-world"));
+  }
+
+  @Test
+  void testUnregister_locale_lastTranslation() {
+    final TranslationStore.StringBased<MessageFormat> store = TranslationStore.messageFormat(Key.key("adventure", "locale-unregister-last"));
+    final MessageFormat translation = new MessageFormat("Hello", Locale.US);
+    store.register("hello-world", Locale.US, translation);
+
+    store.unregister("hello-world", Locale.US);
+
+    assertFalse(store.contains("hello-world"));
+    assertFalse(store.contains("hello-world", Locale.US));
+    store.register("hello-world", Locale.US, translation);
+    assertEquals(translation, store.translate("hello-world", Locale.US));
   }
 
   @Test
