@@ -26,6 +26,7 @@ package net.kyori.adventure.text.minimessage.internal.parser.match;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 import net.kyori.adventure.text.minimessage.internal.TagInternals;
 import net.kyori.adventure.text.minimessage.internal.parser.Token;
 import net.kyori.adventure.text.minimessage.internal.parser.TokenParser;
@@ -46,6 +47,7 @@ import static net.kyori.adventure.text.minimessage.internal.parser.TokenParser.t
 public final class StringResolvingMatchedTokenConsumer extends MatchedTokenConsumer<String> {
   private final StringBuilder builder;
   private final TagProvider tagProvider;
+  private final Predicate<String> preProcessTagChecker;
 
   /**
    * Creates a string resolving matched token consumer.
@@ -58,9 +60,26 @@ public final class StringResolvingMatchedTokenConsumer extends MatchedTokenConsu
     final String input,
     final TagProvider tagProvider
   ) {
+    this(input, tagProvider, name -> true);
+  }
+
+  /**
+   * Creates a string resolving matched token consumer.
+   *
+   * @param input the input
+   * @param tagProvider the resolver for argument-less tags
+   * @param preProcessTagChecker checks whether a tag may be a preprocess tag
+   * @since 5.2.1
+   */
+  public StringResolvingMatchedTokenConsumer(
+    final String input,
+    final TagProvider tagProvider,
+    final Predicate<String> preProcessTagChecker
+  ) {
     super(input);
     this.builder = new StringBuilder(input.length());
     this.tagProvider = tagProvider;
+    this.preProcessTagChecker = preProcessTagChecker;
   }
 
   @Override
@@ -79,7 +98,7 @@ public final class StringResolvingMatchedTokenConsumer extends MatchedTokenConsu
       final String tag = index == -1 ? cleanup : cleanup.substring(0, index);
 
       // we might care if it's a valid tag!
-      if (TagInternals.sanitizeAndCheckValidTagName(tag)) {
+      if (TagInternals.sanitizeAndCheckValidTagName(tag) && this.preProcessTagChecker.test(TokenParser.TagProvider.sanitizePlaceholderName(tag))) {
         final List<Token> tokens = tokenize(match, false);
         final List<TagPart> parts = new ArrayList<>();
         final List<Token> childs = tokens.isEmpty() ? null : tokens.getFirst().childTokens();

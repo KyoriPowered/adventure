@@ -64,6 +64,11 @@ final class CachingTagResolver implements TagResolver.WithoutArguments, Mappable
   }
 
   @Override
+  public @Nullable Class<? extends Tag> tagType(final String name) {
+    return this.resolver.tagType(name);
+  }
+
+  @Override
   public boolean contributeToMap(final Map<String, Tag> map) {
     if (this.resolver instanceof MappableResolver mappableResolver) {
       return mappableResolver.contributeToMap(map);

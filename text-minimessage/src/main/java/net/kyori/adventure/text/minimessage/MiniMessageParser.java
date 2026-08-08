@@ -40,8 +40,10 @@ import net.kyori.adventure.text.minimessage.internal.parser.node.TagNode;
 import net.kyori.adventure.text.minimessage.internal.parser.node.ValueNode;
 import net.kyori.adventure.text.minimessage.tag.Inserting;
 import net.kyori.adventure.text.minimessage.tag.Modifying;
+import net.kyori.adventure.text.minimessage.tag.PreProcess;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import org.jspecify.annotations.Nullable;
 
 record MiniMessageParser(TagResolver tagResolver) {
 
@@ -172,8 +174,12 @@ record MiniMessageParser(TagResolver tagResolver) {
       final String sanitized = TokenParser.TagProvider.sanitizePlaceholderName(name);
       return combinedResolver.has(sanitized);
     };
+    final Predicate<String> preProcessTagChecker = name -> {
+      final @Nullable Class<? extends Tag> type = combinedResolver.tagType(name);
+      return type == null || type == Tag.class || PreProcess.class.isAssignableFrom(type);
+    };
 
-    final String preProcessed = TokenParser.resolvePreProcessTags(processedMessage, transformationFactory);
+    final String preProcessed = TokenParser.resolvePreProcessTags(processedMessage, transformationFactory, preProcessTagChecker);
     context.message(preProcessed);
     // Then, once MiniMessage placeholders have been inserted, we can do the real parse
     final RootNode root = TokenParser.parse(transformationFactory, tagNameChecker, preProcessed, processedMessage, context.strict());

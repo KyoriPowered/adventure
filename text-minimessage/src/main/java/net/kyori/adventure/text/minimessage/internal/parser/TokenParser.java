@@ -100,13 +100,30 @@ public final class TokenParser {
    * @since 4.10.0
    */
   public static String resolvePreProcessTags(final String message, final TagProvider provider) {
+    return resolvePreProcessTags(message, provider, name -> true);
+  }
+
+  /**
+   * Resolves all pre-process tags in a string.
+   *
+   * @param message the message
+   * @param provider the tag resolver, to gather preprocess tags
+   * @param preProcessTagChecker checks whether a tag may be a preprocess tag
+   * @return the resulting string
+   * @since 5.2.1
+   */
+  public static String resolvePreProcessTags(
+    final String message,
+    final TagProvider provider,
+    final Predicate<String> preProcessTagChecker
+  ) {
     int passes = 0;
     String lastResult;
     String result = message;
 
     do {
       lastResult = result;
-      final StringResolvingMatchedTokenConsumer stringTokenResolver = new StringResolvingMatchedTokenConsumer(lastResult, provider);
+      final StringResolvingMatchedTokenConsumer stringTokenResolver = new StringResolvingMatchedTokenConsumer(lastResult, provider, preProcessTagChecker);
 
       parseString(lastResult, false, stringTokenResolver);
       result = stringTokenResolver.result();

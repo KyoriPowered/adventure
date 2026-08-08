@@ -23,13 +23,17 @@
  */
 package net.kyori.adventure.text.minimessage.tag;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.AbstractTest;
+import net.kyori.adventure.text.minimessage.Context;
+import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.junit.jupiter.api.Test;
 
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.parsed;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PreProcessTagTest extends AbstractTest {
 
@@ -69,5 +73,75 @@ public class PreProcessTagTest extends AbstractTest {
       input,
       parsed("recursion", "<recursion>")
     );
+  }
+
+  @Test
+  void resolverWithoutTypeHintRemainsCompatible() {
+    final AtomicInteger calls = new AtomicInteger();
+    final TagResolver resolver = new TagResolver() {
+      @Override
+      public Tag resolve(final String name, final ArgumentQueue arguments, final Context ctx) {
+        calls.incrementAndGet();
+        return "probe".equals(name) ? Tag.selfClosingInserting(text("value")) : null;
+      }
+
+      @Override
+      public boolean has(final String name) {
+        return "probe".equals(name);
+      }
+    };
+
+    assertParsedEquals(text("value"), "<probe>", resolver);
+    assertEquals(2, calls.get());
+  }
+
+  @Test
+  void resolverTypeHintAvoidsUnnecessaryResolution() {
+    final AtomicInteger calls = new AtomicInteger();
+    final TagResolver resolver = new TagResolver() {
+      @Override
+      public Tag resolve(final String name, final ArgumentQueue arguments, final Context ctx) {
+        calls.incrementAndGet();
+        return "probe".equals(name) ? Tag.selfClosingInserting(text("value")) : null;
+      }
+
+      @Override
+      public Class<? extends Tag> tagType(final String name) {
+        return "probe".equals(name) ? Inserting.class : null;
+      }
+
+      @Override
+      public boolean has(final String name) {
+        return "probe".equals(name);
+      }
+    };
+
+    assertParsedEquals(text("value"), "<probe>", resolver);
+    assertEquals(1, calls.get());
+  }
+
+  @Test
+  void preprocessTypeHintStillResolves() {
+    final AtomicInteger calls = new AtomicInteger();
+    final TagResolver resolver = new TagResolver() {
+      @Override
+      public Tag resolve(final String name, final ArgumentQueue arguments, final Context ctx) {
+        calls.incrementAndGet();
+        return "probe".equals(name) ? Tag.preProcessParsed("value") : null;
+      }
+
+      @Override
+      public Class<? extends Tag> tagType(final String name) {
+        return "probe".equals(name) ? PreProcess.class : null;
+      }
+
+      @Override
+      public boolean has(final String name) {
+        return "probe".equals(name);
+      }
+    };
+
+    assertParsedEquals(text("value"), "<probe>", resolver);
+    assertEquals(1, calls.get());
   }
 }

@@ -41,6 +41,12 @@ record MapTagResolver(Map<String, ? extends Tag> tagMap) implements TagResolver.
   }
 
   @Override
+  public Class<? extends Tag> tagType(final String name) {
+    final Tag tag = this.tagMap.get(name);
+    return tag == null ? null : tag.getClass();
+  }
+
+  @Override
   public boolean contributeToMap(final Map<String, Tag> map) {
     map.putAll(this.tagMap);
     return true;

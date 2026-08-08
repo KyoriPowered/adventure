@@ -81,6 +81,25 @@ record SequentialTagResolver(TagResolver[] resolvers) implements TagResolver, Se
   }
 
   @Override
+  public @Nullable Class<? extends Tag> tagType(final String name) {
+    for (final TagResolver resolver : this.resolvers) {
+      final @Nullable Class<? extends Tag> type = resolver.tagType(name);
+      if (type != null) {
+        return type;
+      }
+
+      if (resolver instanceof SingleResolver || resolver instanceof MapTagResolver) {
+        if (resolver.has(name)) {
+          return null;
+        }
+      } else if (resolver instanceof TagResolver.WithoutArguments || resolver.has(name)) {
+        return null;
+      }
+    }
+    return null;
+  }
+
+  @Override
   public void handle(final Component serializable, final ClaimConsumer consumer) {
     for (final TagResolver resolver : this.resolvers) {
       if (resolver instanceof SerializableResolver serializableResolver) {
