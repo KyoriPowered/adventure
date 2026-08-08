@@ -193,7 +193,17 @@ abstract class AbstractColorChangingTag implements Modifying {
   @Override
   public abstract String toString();
 
-  private record TagInfoHolder(Consumer<TokenEmitter> output, Component substitute) implements VirtualComponentRenderer<Void>, Emitable {
+  private static final class TagInfoHolder implements VirtualComponentRenderer<Void>, Emitable {
+    private final Consumer<TokenEmitter> output;
+    private final Component substitute;
+    private @Nullable Component transformed;
+    private @Nullable Component original;
+
+    TagInfoHolder(final Consumer<TokenEmitter> output, final Component substitute) {
+      this.output = output;
+      this.substitute = substitute;
+    }
+
     @Override
     public @UnknownNullability ComponentLike apply(final Void context) {
       return this.substitute;
@@ -208,6 +218,33 @@ abstract class AbstractColorChangingTag implements Modifying {
     public void emit(final TokenEmitter emitter) {
       this.output.accept(emitter);
     }
+
+    @Override
+    public Component substitute() {
+      return this.substitute;
+    }
+
+    @Override
+    public void bind(final Component component) {
+      this.transformed = component;
+      this.bindOriginals(this.substitute);
+    }
+
+    private void bindOriginals(final Component component) {
+      if (component instanceof VirtualComponent virtualComponent && virtualComponent.renderer() instanceof TagInfoHolder tagInfoHolder) {
+        if (tagInfoHolder.original == null) {
+          tagInfoHolder.original = virtualComponent;
+          tagInfoHolder.bindOriginals(tagInfoHolder.substitute);
+        }
+      }
+      for (final Component child : component.children()) {
+        this.bindOriginals(child);
+      }
+    }
+
+    boolean isTransformed(final Component component) {
+      return this.transformed == component || this.original == component;
+    }
   }
 
   static @Nullable Emitable claimComponent(final Component comp) {
@@ -220,6 +257,7 @@ abstract class AbstractColorChangingTag implements Modifying {
       return null;
     }
 
-    return tagInfoHolder;
+    final boolean transformed = tagInfoHolder.isTransformed(virtualComponent);
+    return transformed ? tagInfoHolder : null;
   }
 }

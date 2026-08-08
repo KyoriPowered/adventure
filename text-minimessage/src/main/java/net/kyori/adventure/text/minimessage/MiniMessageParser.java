@@ -30,6 +30,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.VirtualComponent;
 import net.kyori.adventure.text.minimessage.internal.parser.ParsingExceptionImpl;
 import net.kyori.adventure.text.minimessage.internal.parser.Token;
 import net.kyori.adventure.text.minimessage.internal.parser.TokenParser;
@@ -38,6 +39,7 @@ import net.kyori.adventure.text.minimessage.internal.parser.node.ElementNode;
 import net.kyori.adventure.text.minimessage.internal.parser.node.RootNode;
 import net.kyori.adventure.text.minimessage.internal.parser.node.TagNode;
 import net.kyori.adventure.text.minimessage.internal.parser.node.ValueNode;
+import net.kyori.adventure.text.minimessage.internal.serializer.Emitable;
 import net.kyori.adventure.text.minimessage.tag.Inserting;
 import net.kyori.adventure.text.minimessage.tag.Modifying;
 import net.kyori.adventure.text.minimessage.tag.Tag;
@@ -188,7 +190,9 @@ record MiniMessageParser(TagResolver tagResolver) {
 
   Component parseFormat(final ContextImpl context) {
     final ElementNode root = this.parseToTree(context);
-    return Objects.requireNonNull(context.postProcessor().apply(this.treeToComponent(root, context)), "Post-processor must not return null");
+    final Component component = Objects.requireNonNull(context.postProcessor().apply(this.treeToComponent(root, context)), "Post-processor must not return null");
+    this.bindVirtualComponents(component);
+    return component;
   }
 
   Component treeToComponent(final ElementNode node, final ContextImpl context) {
@@ -252,5 +256,14 @@ record MiniMessageParser(TagResolver tagResolver) {
       newComp = newComp.append(this.handleModifying(modTransformation, child, depth + 1));
     }
     return newComp;
+  }
+
+  private void bindVirtualComponents(final Component component) {
+    if (component instanceof VirtualComponent virtualComponent && virtualComponent.renderer() instanceof Emitable emitable) {
+      emitable.bind(component);
+    }
+    for (final Component child : component.children()) {
+      this.bindVirtualComponents(child);
+    }
   }
 }
