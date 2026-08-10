@@ -23,15 +23,20 @@
  */
 package net.kyori.adventure.text.minimessage;
 
+import java.util.regex.Pattern;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.Style.style;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class MiniMessageSerializerTest extends AbstractTest {
   @Test
@@ -76,5 +81,41 @@ public class MiniMessageSerializerTest extends AbstractTest {
     final Component component = text("<<aqua> a");
     this.assertSerializedEquals(expected, component);
     this.assertParsedEquals(component, expected);
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"ABCDEF", "BedWars"})
+  void testRoundTripAfterTextReplacement(final String content) {
+    final String input = "<white>[<gradient:#e83920:#ffe5dd>" + content + "<white>]";
+    final MiniMessage miniMessage = MiniMessage.miniMessage();
+    final Component expected = miniMessage.deserialize(input)
+      .replaceText(TextReplacementConfig.builder()
+        .match(Pattern.quote("["))
+        .replacement(Component.empty())
+        .build())
+      .replaceText(TextReplacementConfig.builder()
+        .match(Pattern.quote("]"))
+        .replacement(Component.empty())
+        .build());
+    final String serialized = miniMessage.serialize(expected);
+    final Component actual = miniMessage.deserialize(serialized);
+
+    assertFalse(serialized.contains("]"));
+    assertEquals(ANSI.serialize(expected), ANSI.serialize(actual));
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {
+    "<white>prefix <gradient:red:blue>text<white> suffix",
+    "<yellow>[<gradient:#ff0000:#00ff00>test<yellow>]",
+    "<white><gradient:red:blue>test<green>next",
+    "<white><gradient:red:blue>one<white> <gradient:green:yellow>two<white>"
+  })
+  void testRoundTripGradientStyles(final String input) {
+    final MiniMessage miniMessage = MiniMessage.miniMessage();
+    final Component expected = miniMessage.deserialize(input);
+    final Component actual = miniMessage.deserialize(miniMessage.serialize(expected));
+
+    assertEquals(ANSI.serialize(expected), ANSI.serialize(actual));
   }
 }

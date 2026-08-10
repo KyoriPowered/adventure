@@ -42,6 +42,15 @@ public interface Emitable {
   void emit(final TokenEmitter emitter);
 
   /**
+   * Bind the component produced by a transformation.
+   *
+   * @param component the transformed component
+   * @since 5.2.1
+   */
+  default void bind(final Component component) {
+  }
+
+  /**
    * Provide a substitute for this component's actual children.
    *
    * <p>This allows modifying tags to output original data while still transforming the created components.</p>
