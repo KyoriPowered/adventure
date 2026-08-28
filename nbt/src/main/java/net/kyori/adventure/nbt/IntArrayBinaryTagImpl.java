@@ -36,8 +36,8 @@ import org.jetbrains.annotations.Debug;
 @Debug.Renderer(text = "\"int[\" + this.value.length + \"]\"", childrenArray = "this.value", hasChildren = "this.value.length > 0")
 record IntArrayBinaryTagImpl(int... value) implements IntArrayBinaryTag {
 
-  IntArrayBinaryTagImpl(final int... value) {
-    this.value = Arrays.copyOf(value, value.length);
+  IntArrayBinaryTagImpl {
+    value = Arrays.copyOf(value, value.length);
   }
 
   @Override

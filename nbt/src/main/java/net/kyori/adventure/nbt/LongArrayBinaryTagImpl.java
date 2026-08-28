@@ -36,8 +36,8 @@ import org.jetbrains.annotations.Debug;
 @Debug.Renderer(text = "\"long[\" + this.value.length + \"]\"", childrenArray = "this.value", hasChildren = "this.value.length > 0")
 record LongArrayBinaryTagImpl(long[] value) implements LongArrayBinaryTag {
 
-  LongArrayBinaryTagImpl(final long[] value) {
-    this.value = Arrays.copyOf(value, value.length);
+  LongArrayBinaryTagImpl {
+    value = Arrays.copyOf(value, value.length);
   }
 
   @Override
