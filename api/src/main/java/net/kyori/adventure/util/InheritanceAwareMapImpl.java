@@ -95,7 +95,7 @@ final class InheritanceAwareMapImpl<C, V> implements InheritanceAwareMap<C, V> {
 
     @Override
     public InheritanceAwareMap<C, V> build() {
-      return new InheritanceAwareMapImpl<>(this.strict, Map.copyOf(new LinkedHashMap<>(this.values)));
+      return new InheritanceAwareMapImpl<>(this.strict, Map.copyOf(this.values));
     }
 
     @Override

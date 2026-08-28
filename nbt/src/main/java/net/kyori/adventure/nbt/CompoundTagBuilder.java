@@ -62,11 +62,7 @@ final class CompoundTagBuilder implements CompoundBinaryTag.Builder {
 
   @Override
   public CompoundBinaryTag.Builder put(final CompoundBinaryTag tag) {
-    final Map<String, BinaryTag> tags = this.tags();
-    for (final String key : tag.keySet()) {
-      tags.put(key, tag.get(key));
-    }
-    return this;
+    return this.put(((CompoundBinaryTagImpl) tag).tags());
   }
 
   @Override
@@ -89,6 +85,6 @@ final class CompoundTagBuilder implements CompoundBinaryTag.Builder {
   @Override
   public CompoundBinaryTag build() {
     if (this.tags == null) return CompoundBinaryTag.empty();
-    return new CompoundBinaryTagImpl(new HashMap<>(this.tags)); // explicitly copy
+    return CompoundBinaryTag.from(this.tags);
   }
 }

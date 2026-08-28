@@ -148,7 +148,7 @@ record ListBinaryTagImpl(BinaryTagType<? extends BinaryTag> elementType, boolean
     if (maybeElementType != null) {
       elementType = maybeElementType;
     }
-    return new ListBinaryTagImpl(elementType, this.permitsHeterogeneity, new ArrayList<>(tags)); // explicitly copy
+    return new ListBinaryTagImpl(elementType, this.permitsHeterogeneity, tags);
   }
 
   @Override

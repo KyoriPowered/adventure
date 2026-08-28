@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.nbt;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -62,7 +61,7 @@ public sealed interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<C
    */
   static CompoundBinaryTag from(final Map<String, ? extends BinaryTag> tags) {
     if (tags.isEmpty()) return empty();
-    return new CompoundBinaryTagImpl(new HashMap<>(tags)); // explicitly copy
+    return new CompoundBinaryTagImpl(tags);
   }
 
   /**

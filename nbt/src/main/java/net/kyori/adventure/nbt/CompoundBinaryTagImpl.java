@@ -35,13 +35,13 @@ import org.jspecify.annotations.Nullable;
 import static java.util.Objects.requireNonNull;
 
 @Debug.Renderer(text = "\"CompoundBinaryTag[length=\" + this.tags.size() + \"]\"", childrenArray = "this.tags.entrySet().toArray()", hasChildren = "!this.tags.isEmpty()")
-record CompoundBinaryTagImpl(Map<String, BinaryTag> tags) implements CompoundBinaryTag {
-
-  static CompoundBinaryTag create(final Map<String, BinaryTag> tags) {
-    return new CompoundBinaryTagImpl(Map.copyOf(tags));
-  }
+record CompoundBinaryTagImpl(Map<String, ? extends BinaryTag> tags) implements CompoundBinaryTag {
 
   static final CompoundBinaryTag EMPTY = new CompoundBinaryTagImpl(Map.of());
+
+  CompoundBinaryTagImpl {
+    tags = Map.copyOf(tags);
+  }
 
   @Override
   public boolean contains(final String key) {
@@ -81,11 +81,7 @@ record CompoundBinaryTagImpl(Map<String, BinaryTag> tags) implements CompoundBin
 
   @Override
   public CompoundBinaryTag put(final CompoundBinaryTag tag) {
-    return this.edit(map -> {
-      for (final String key : tag.keySet()) {
-        map.put(key, tag.get(key));
-      }
-    });
+    return this.put(((CompoundBinaryTagImpl) tag).tags());
   }
 
   @Override
@@ -246,7 +242,7 @@ record CompoundBinaryTagImpl(Map<String, BinaryTag> tags) implements CompoundBin
   private CompoundBinaryTag edit(final Consumer<Map<String, BinaryTag>> consumer) {
     final Map<String, BinaryTag> tags = new HashMap<>(this.tags);
     consumer.accept(tags);
-    return new CompoundBinaryTagImpl(new HashMap<>(tags)); // explicitly copy
+    return new CompoundBinaryTagImpl(tags);
   }
 
   @Override
