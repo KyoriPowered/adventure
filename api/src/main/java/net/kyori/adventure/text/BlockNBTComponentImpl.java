@@ -166,33 +166,44 @@ record BlockNBTComponentImpl(
   }
 
   static final class Tokens {
-    static final Pattern LOCAL_PATTERN = Pattern.compile("^\\^(-?\\d+(\\.\\d+)?) \\^(-?\\d+(\\.\\d+)?) \\^(-?\\d+(\\.\\d+)?)$");
-    static final Pattern WORLD_PATTERN = Pattern.compile("^(~?)(-?\\d+) (~?)(-?\\d+) (~?)(-?\\d+)$");
+    static final Pattern LOCAL_PATTERN = Pattern.compile("^\\^(-?(\\d+)?(\\.\\d+)?)? \\^(-?(\\d+)?(\\.\\d+)?)? \\^(-?(\\d+)?(\\.\\d+)?)?$");
+    static final Pattern WORLD_PATTERN = Pattern.compile("^((-?\\d+)|(~(-?(\\d+)?(\\.\\d+)?)?)) ((-?\\d+)|(~(-?(\\d+)?(\\.\\d+)?)?)) ((-?\\d+)|(~(-?(\\d+)?(\\.\\d+)?)?))$");
 
     static final String LOCAL_SYMBOL = "^";
     static final String RELATIVE_SYMBOL = "~";
-    static final String ABSOLUTE_SYMBOL = "";
 
     private Tokens() {
     }
 
-    static WorldPos.Coordinate deserializeCoordinate(final String prefix, final String value) {
-      final int i = Integer.parseInt(value);
-      if (prefix.equals(ABSOLUTE_SYMBOL)) {
-        return WorldPos.Coordinate.absolute(i);
-      } else if (prefix.equals(RELATIVE_SYMBOL)) {
-        return WorldPos.Coordinate.relative(i);
-      } else {
-        throw new AssertionError(); // regex does not allow any other value for prefix.
+    static double parseOptionalDouble(final String value) {
+      if (value.isEmpty()) {
+        return 0.0d;
       }
+      return Double.parseDouble(value);
+    }
+
+    static WorldPos.Coordinate deserializeCoordinate(final String value) {
+      if (value.startsWith(RELATIVE_SYMBOL)) {
+        return WorldPos.Coordinate.relative((int) Math.floor(parseOptionalDouble(value.substring(1))));
+      }
+      return WorldPos.Coordinate.absolute(Integer.parseInt(value));
     }
 
     static String serializeLocal(final double value) {
+      if (value == 0.0d) {
+        return LOCAL_SYMBOL;
+      }
       return LOCAL_SYMBOL + value;
     }
 
     static String serializeCoordinate(final WorldPos.Coordinate coordinate) {
-      return (coordinate.type() == WorldPos.Coordinate.Type.RELATIVE ? RELATIVE_SYMBOL : ABSOLUTE_SYMBOL) + coordinate.value();
+      if (coordinate.type() == WorldPos.Coordinate.Type.RELATIVE) {
+        if (coordinate.value() == 0) {
+          return RELATIVE_SYMBOL;
+        }
+        return RELATIVE_SYMBOL + coordinate.value();
+      }
+      return String.valueOf(coordinate.value());
     }
   }
 }
