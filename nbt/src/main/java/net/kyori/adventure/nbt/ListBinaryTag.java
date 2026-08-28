@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.nbt;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collector;
@@ -148,7 +147,7 @@ public sealed interface ListBinaryTag extends ListTagSetter<ListBinaryTag, Binar
     if (tags.isEmpty()) return empty();
     if (type == BinaryTagTypes.END) throw new IllegalArgumentException("Cannot create a list of " + BinaryTagTypes.END);
     ListBinaryTagImpl.validateTagType(tags, type == BinaryTagTypes.LIST_WILDCARD);
-    return new ListBinaryTagImpl(type, type == BinaryTagTypes.LIST_WILDCARD, new ArrayList<>(tags)); // explicitly copy
+    return new ListBinaryTagImpl(type, type == BinaryTagTypes.LIST_WILDCARD, tags);
   }
 
   /**

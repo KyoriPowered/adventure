@@ -140,7 +140,7 @@ public final class BinaryTagTypes {
         final BinaryTag tag = type.read(input);
         tags.put(key, tag);
       }
-      return CompoundBinaryTagImpl.create(tags);
+      return CompoundBinaryTag.from(tags);
     }
   }, (tag, output) -> {
     for (final Map.Entry<String, ? extends BinaryTag> entry : tag) {
