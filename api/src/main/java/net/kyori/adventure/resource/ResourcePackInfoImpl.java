@@ -41,10 +41,10 @@ import org.jspecify.annotations.Nullable;
 import static java.util.Objects.requireNonNull;
 
 record ResourcePackInfoImpl(UUID id, URI uri, String hash) implements ResourcePackInfo {
-  ResourcePackInfoImpl(final UUID id, final URI uri, final String hash) {
-    this.id = requireNonNull(id, "id");
-    this.uri = requireNonNull(uri, "uri");
-    this.hash = requireNonNull(hash, "hash");
+  ResourcePackInfoImpl {
+    requireNonNull(id, "id");
+    requireNonNull(uri, "uri");
+    requireNonNull(hash, "hash");
   }
 
   static final class BuilderImpl implements Builder {

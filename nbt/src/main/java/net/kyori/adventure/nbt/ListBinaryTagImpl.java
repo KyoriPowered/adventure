@@ -41,10 +41,8 @@ import org.jspecify.annotations.Nullable;
 record ListBinaryTagImpl(BinaryTagType<? extends BinaryTag> elementType, boolean permitsHeterogeneity, List<BinaryTag> tags) implements ListBinaryTag {
   static final ListBinaryTag EMPTY = new ListBinaryTagImpl(BinaryTagTypes.END, false, List.of());
 
-  ListBinaryTagImpl(final BinaryTagType<? extends BinaryTag> elementType, final boolean permitsHeterogeneity, final List<BinaryTag> tags) {
-    this.tags = List.copyOf(tags);
-    this.permitsHeterogeneity = permitsHeterogeneity;
-    this.elementType = elementType;
+  ListBinaryTagImpl {
+    tags = List.copyOf(tags);
   }
 
   @Override

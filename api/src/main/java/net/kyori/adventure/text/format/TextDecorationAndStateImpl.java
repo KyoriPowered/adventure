@@ -26,10 +26,9 @@ package net.kyori.adventure.text.format;
 import static java.util.Objects.requireNonNull;
 
 record TextDecorationAndStateImpl(TextDecoration decoration, TextDecoration.State state) implements TextDecorationAndState {
-  TextDecorationAndStateImpl(final TextDecoration decoration, final TextDecoration.State state) {
+  TextDecorationAndStateImpl {
     // no null check is required on the decoration since this constructor is always invoked in such a way that
     // decoration is always non-null
-    this.decoration = decoration;
-    this.state = requireNonNull(state, "state");
+    requireNonNull(state, "state");
   }
 }

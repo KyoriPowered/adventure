@@ -28,8 +28,8 @@ import net.kyori.adventure.util.Codec;
 import static java.util.Objects.requireNonNull;
 
 record BinaryTagHolderImpl(String string) implements BinaryTagHolder {
-  BinaryTagHolderImpl(final String string) {
-    this.string = requireNonNull(string, "string");
+  BinaryTagHolderImpl {
+    requireNonNull(string, "string");
   }
 
   @Override

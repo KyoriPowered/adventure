@@ -31,8 +31,8 @@ import org.jetbrains.annotations.Debug;
 @SuppressWarnings("ArrayRecordComponent") // We override equals/hashCode/toString.
 @Debug.Renderer(text = "\"byte[\" + this.value.length + \"]\"", childrenArray = "this.value", hasChildren = "this.value.length > 0")
 record ByteArrayBinaryTagImpl(byte[] value) implements ByteArrayBinaryTag {
-  ByteArrayBinaryTagImpl(final byte[] value) {
-    this.value = Arrays.copyOf(value, value.length);
+  ByteArrayBinaryTagImpl {
+    value = Arrays.copyOf(value, value.length);
   }
 
   @Override

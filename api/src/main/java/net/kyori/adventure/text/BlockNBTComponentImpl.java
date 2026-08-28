@@ -136,10 +136,10 @@ record BlockNBTComponentImpl(
   }
 
   record WorldPosImpl(Coordinate x, Coordinate y, Coordinate z) implements WorldPos {
-    WorldPosImpl(final Coordinate x, final Coordinate y, final Coordinate z) {
-      this.x = requireNonNull(x, "x");
-      this.y = requireNonNull(y, "y");
-      this.z = requireNonNull(z, "z");
+    WorldPosImpl {
+      requireNonNull(x, "x");
+      requireNonNull(y, "y");
+      requireNonNull(z, "z");
     }
 
     @Override
@@ -153,9 +153,8 @@ record BlockNBTComponentImpl(
     }
 
     record CoordinateImpl(int value, Type type) implements Coordinate {
-      CoordinateImpl(final int value, final Type type) {
-        this.value = value;
-        this.type = requireNonNull(type, "type");
+      CoordinateImpl {
+        requireNonNull(type, "type");
       }
 
       @Override

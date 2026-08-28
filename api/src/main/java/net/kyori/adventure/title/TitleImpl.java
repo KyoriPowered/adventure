@@ -31,10 +31,9 @@ import org.jspecify.annotations.Nullable;
 import static java.util.Objects.requireNonNull;
 
 record TitleImpl(Component title, Component subtitle, @Nullable Times times) implements Title {
-  TitleImpl(final Component title, final Component subtitle, final @Nullable Times times) {
-    this.title = requireNonNull(title, "title");
-    this.subtitle = requireNonNull(subtitle, "subtitle");
-    this.times = times;
+  TitleImpl {
+    requireNonNull(title, "title");
+    requireNonNull(subtitle, "subtitle");
   }
 
   @Override
@@ -53,10 +52,10 @@ record TitleImpl(Component title, Component subtitle, @Nullable Times times) imp
   }
 
   record TimesImpl(Duration fadeIn, Duration stay, Duration fadeOut) implements Times {
-    TimesImpl(final Duration fadeIn, final Duration stay, final Duration fadeOut) {
-      this.fadeIn = requireNonNull(fadeIn, "fadeIn");
-      this.stay = requireNonNull(stay, "stay");
-      this.fadeOut = requireNonNull(fadeOut, "fadeOut");
+    TimesImpl {
+      requireNonNull(fadeIn, "fadeIn");
+      requireNonNull(stay, "stay");
+      requireNonNull(fadeOut, "fadeOut");
     }
   }
 }
