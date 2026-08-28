@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.Nullable;
@@ -58,11 +59,27 @@ public sealed interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<C
    *
    * @param tags the map of contents for the created tag
    * @return a compound tag
-   * @since 4.4.0
+   * @since 5.3.0
    */
-  static CompoundBinaryTag from(final Map<String, ? extends BinaryTag> tags) {
+  static CompoundBinaryTag compoundBinaryTag(final Map<String, ? extends BinaryTag> tags) {
     if (tags.isEmpty()) return empty();
     return new CompoundBinaryTagImpl(new HashMap<>(tags)); // explicitly copy
+  }
+
+  /**
+   * Creates a compound tag populated with {@code tags}.
+   *
+   * <p>If {@code tags} is empty, {@link #empty()} will be returned.</p>
+   *
+   * @param tags the map of contents for the created tag
+   * @return a compound tag
+   * @since 4.4.0
+   * @deprecated For removal in 6.0, since 5.3. Use {@link #compoundBinaryTag(Map)} instead.
+   */
+  @Deprecated(since = "5.3.0", forRemoval = true)
+  @ApiStatus.ScheduledForRemoval(inVersion = "6.0.0")
+  static CompoundBinaryTag from(final Map<String, ? extends BinaryTag> tags) {
+    return compoundBinaryTag(tags);
   }
 
   /**
