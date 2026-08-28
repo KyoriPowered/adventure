@@ -214,18 +214,18 @@ public sealed interface BlockNBTComponent extends NBTComponent<BlockNBTComponent
       final Matcher localMatch = BlockNBTComponentImpl.Tokens.LOCAL_PATTERN.matcher(input);
       if (localMatch.matches()) {
         return BlockNBTComponent.LocalPos.localPos(
-          Double.parseDouble(localMatch.group(1)),
-          Double.parseDouble(localMatch.group(3)),
-          Double.parseDouble(localMatch.group(5))
+          BlockNBTComponentImpl.Tokens.parseOptionalDouble(localMatch.group(1)),
+          BlockNBTComponentImpl.Tokens.parseOptionalDouble(localMatch.group(4)),
+          BlockNBTComponentImpl.Tokens.parseOptionalDouble(localMatch.group(7))
         );
       }
 
       final Matcher worldMatch = BlockNBTComponentImpl.Tokens.WORLD_PATTERN.matcher(input);
       if (worldMatch.matches()) {
         return BlockNBTComponent.WorldPos.worldPos(
-          BlockNBTComponentImpl.Tokens.deserializeCoordinate(worldMatch.group(1), worldMatch.group(2)),
-          BlockNBTComponentImpl.Tokens.deserializeCoordinate(worldMatch.group(3), worldMatch.group(4)),
-          BlockNBTComponentImpl.Tokens.deserializeCoordinate(worldMatch.group(5), worldMatch.group(6))
+          BlockNBTComponentImpl.Tokens.deserializeCoordinate(worldMatch.group(1)),
+          BlockNBTComponentImpl.Tokens.deserializeCoordinate(worldMatch.group(7)),
+          BlockNBTComponentImpl.Tokens.deserializeCoordinate(worldMatch.group(13))
         );
       }
 

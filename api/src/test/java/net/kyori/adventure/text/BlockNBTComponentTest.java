@@ -93,6 +93,22 @@ class BlockNBTComponentTest extends AbstractNBTComponentTest<BlockNBTComponent, 
   }
 
   @Test
+  void testShorthandLocalPosParsing() {
+    assertEquals(
+      BlockNBTComponent.LocalPos.localPos(0.0d, 0.8d, 0.0d),
+      BlockNBTComponent.Pos.fromString("^ ^.8 ^")
+    );
+  }
+
+  @Test
+  void testLocalPosSerialize() {
+    assertEquals(
+      "^ ^0.8 ^32.0",
+      BlockNBTComponent.Pos.fromString("^ ^0.8 ^32.0").asString()
+    );
+  }
+
+  @Test
   void testAbsoluteWorldPosParsing() {
     assertEquals(
       BlockNBTComponent.WorldPos.worldPos(BlockNBTComponent.WorldPos.Coordinate.absolute(4), BlockNBTComponent.WorldPos.Coordinate.absolute(5), BlockNBTComponent.WorldPos.Coordinate.absolute(6)),
@@ -129,6 +145,30 @@ class BlockNBTComponentTest extends AbstractNBTComponentTest<BlockNBTComponent, 
     assertEquals(
       BlockNBTComponent.WorldPos.worldPos(BlockNBTComponent.WorldPos.Coordinate.relative(-6), BlockNBTComponent.WorldPos.Coordinate.absolute(-34), BlockNBTComponent.WorldPos.Coordinate.relative(13)),
       BlockNBTComponent.Pos.fromString("~-6 -34 ~13")
+    );
+  }
+
+  @Test
+  void testFloatingWorldPosParsing() {
+    assertEquals(
+      BlockNBTComponent.WorldPos.worldPos(BlockNBTComponent.WorldPos.Coordinate.relative(0), BlockNBTComponent.WorldPos.Coordinate.absolute(83), BlockNBTComponent.WorldPos.Coordinate.relative(900)),
+      BlockNBTComponent.Pos.fromString("~.6 83 ~900.34")
+    );
+  }
+
+  @Test
+  void testShorthandRelativePosParsing() {
+    assertEquals(
+      BlockNBTComponent.WorldPos.worldPos(BlockNBTComponent.WorldPos.Coordinate.relative(0), BlockNBTComponent.WorldPos.Coordinate.relative(0), BlockNBTComponent.WorldPos.Coordinate.absolute(568)),
+      BlockNBTComponent.Pos.fromString("~ ~ 568")
+    );
+  }
+
+  @Test
+  void testWorldPosSerialize() {
+    assertEquals(
+      "~ ~5 50",
+      BlockNBTComponent.Pos.fromString("~ ~5 50").asString()
     );
   }
 }
