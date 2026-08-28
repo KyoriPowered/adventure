@@ -237,6 +237,12 @@ record ListBinaryTagImpl(BinaryTagType<? extends BinaryTag> elementType, boolean
   public boolean equals(final Object that) {
     return this == that || (that instanceof final ListBinaryTagImpl lat && this.tags.equals(lat.tags));
   }
+
+  @Override
+  public int hashCode() {
+    // equality only considers the elements, so neither may the hash
+    return this.tags.hashCode();
+  }
 }
 
 final class ListBinaryTag0 {
