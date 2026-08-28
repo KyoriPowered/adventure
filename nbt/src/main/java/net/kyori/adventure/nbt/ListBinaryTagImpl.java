@@ -91,8 +91,10 @@ record ListBinaryTagImpl(BinaryTagType<? extends BinaryTag> elementType, boolean
 
   @Override
   public ListBinaryTag add(final Iterable<? extends BinaryTag> tagsToAdd) {
-    if (tagsToAdd instanceof Collection<?> && ((Collection<?>) tagsToAdd).isEmpty()) {
-      return this;
+    if (tagsToAdd instanceof final Collection<? extends BinaryTag> collection) {
+      if (collection.isEmpty()) return this;
+      final BinaryTagType<?> type = ListBinaryTagImpl.validateTagType(collection, this.permitsHeterogeneity);
+      return this.edit(tags -> tags.addAll(collection), type);
     }
     final BinaryTagType<?> type = ListBinaryTagImpl.validateTagType(tagsToAdd, this.permitsHeterogeneity);
     return this.edit(tags -> {
