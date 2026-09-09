@@ -33,6 +33,11 @@ record SingleResolver(String key, Tag tag) implements TagResolver.Single, Mappab
   }
 
   @Override
+  public Class<? extends Tag> tagType(final String name) {
+    return this.has(name) ? this.tag.getClass() : null;
+  }
+
+  @Override
   public boolean contributeToMap(final Map<String, Tag> map) {
     map.put(this.key, this.tag);
     return true;

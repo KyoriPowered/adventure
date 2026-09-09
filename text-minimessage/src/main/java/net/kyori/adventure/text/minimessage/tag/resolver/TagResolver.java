@@ -222,6 +222,21 @@ public interface TagResolver {
   @Nullable Tag resolve(@TagPattern final String name, final ArgumentQueue arguments, final Context ctx) throws ParsingException;
 
   /**
+   * Get the type of tag this resolver handles with a certain name.
+   *
+   * <p>This method may be used to avoid resolving tags during pre-processing when the returned type is known not
+   * to be a {@link net.kyori.adventure.text.minimessage.tag.PreProcess} tag. Returning {@code null} indicates that
+   * the type is unknown, and causes the tag to be resolved as usual.</p>
+   *
+   * @param name the tag name
+   * @return the tag type, or {@code null} if unknown
+   * @since 5.2.1
+   */
+  default @Nullable Class<? extends Tag> tagType(@TagPattern final String name) {
+    return null;
+  }
+
+  /**
    * Get whether this resolver handles tags with a certain name.
    *
    * <p>This does not allow validating arguments.</p>
