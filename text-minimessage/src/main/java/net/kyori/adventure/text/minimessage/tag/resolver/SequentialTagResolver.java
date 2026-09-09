@@ -82,10 +82,18 @@ record SequentialTagResolver(TagResolver[] resolvers) implements TagResolver, Se
 
   @Override
   public @Nullable Class<? extends Tag> tagType(final String name) {
+    Class<? extends Tag> combinedType = null;
     for (final TagResolver resolver : this.resolvers) {
       final @Nullable Class<? extends Tag> type = resolver.tagType(name);
       if (type != null) {
-        return type;
+        if (combinedType != null && combinedType != type) {
+          return Tag.class;
+        }
+        combinedType = type;
+        if (resolver instanceof SingleResolver || resolver instanceof MapTagResolver) {
+          return combinedType;
+        }
+        continue;
       }
 
       if (resolver instanceof SingleResolver || resolver instanceof MapTagResolver) {
@@ -96,7 +104,7 @@ record SequentialTagResolver(TagResolver[] resolvers) implements TagResolver, Se
         return null;
       }
     }
-    return null;
+    return combinedType;
   }
 
   @Override

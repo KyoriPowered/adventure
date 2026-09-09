@@ -30,6 +30,8 @@ import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.parsed;
@@ -118,6 +120,32 @@ public class PreProcessTagTest extends AbstractTest {
 
     assertParsedEquals(text("value"), "<probe>", resolver);
     assertEquals(1, calls.get());
+  }
+
+  @ParameterizedTest
+  @ValueSource(booleans = {false, true})
+  void preprocessFallbackIsNotSkippedByAnEarlierTypeHint(final boolean throwsException) {
+    final TagResolver resolver = new TagResolver() {
+      @Override
+      public Tag resolve(final String name, final ArgumentQueue arguments, final Context ctx) {
+        if (throwsException) {
+          throw ctx.newException("Try the next resolver");
+        }
+        return null;
+      }
+
+      @Override
+      public Class<? extends Tag> tagType(final String name) {
+        return "probe".equals(name) ? Inserting.class : null;
+      }
+
+      @Override
+      public boolean has(final String name) {
+        return "probe".equals(name);
+      }
+    };
+
+    assertParsedEquals(text("value"), "<probe>", TagResolver.resolver(parsed("probe", "value"), resolver));
   }
 
   @Test
